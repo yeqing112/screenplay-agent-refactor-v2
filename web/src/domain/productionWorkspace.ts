@@ -20,12 +20,16 @@ export interface ProductionPromptLane {
   stale: boolean
   state: ProductionLaneState
   payload_hash?: string | null
+  generation_policy?: Record<string, unknown>
+  reason_codes?: string[]
 }
 
 export interface ProductionModelProjection {
   selected_profile_id: string | null
   provider: string | null
   model_name: string | null
+  last_execution_profile_id?: string | null
+  last_execution_model?: string | null
 }
 
 export interface GenerationExecutionProjection {
@@ -96,6 +100,7 @@ export interface OfficialMediaProjection {
     fingerprint: string | null
   } | null
   preview: string | null
+  preview_url?: string | null
 }
 
 export interface ProductionMediaLane {
@@ -110,6 +115,13 @@ export interface ProductionMediaLane {
     items: MediaCandidateProjection[]
   }
   official: OfficialMediaProjection
+  generation_readiness?: {
+    ready: boolean
+    reason_codes: string[]
+    primary_blocker: { code: string; message: string; [key: string]: unknown } | null
+    blockers?: Array<{ code: string; message: string; [key: string]: unknown }>
+  }
+  generation_mode_source?: string | null
 }
 
 export interface ProductionAssetV2 {
@@ -130,9 +142,14 @@ export interface ProductionAssetV2 {
     mime: string | null
     width: number | null
     height: number | null
+    preview_url?: string | null
+    readiness?: Record<string, unknown>
   }
   bindings: Array<Record<string, unknown>>
   history: Array<Record<string, unknown>>
+  binding_counts?: { current: number; stale: number }
+  current_binding_count?: number
+  stale_binding_count?: number
 }
 
 export interface ProductionShotV2 {
@@ -187,11 +204,13 @@ export function findProductionShotV2(
 
 export function isProductionImageGenerationReady(shot: ProductionShotV2 | null | undefined): boolean {
   if (!shot) return false
+  if (shot.IMAGE.generation_readiness) return shot.IMAGE.generation_readiness.ready === true
   return shot.asset_readiness.current && shot.IMAGE.prompt_ir.current && !shot.IMAGE.official.current && shot.IMAGE.candidates.count === 0
 }
 
 export function isProductionVideoGenerationReady(shot: ProductionShotV2 | null | undefined): boolean {
   if (!shot) return false
+  if (shot.VIDEO.generation_readiness) return shot.VIDEO.generation_readiness.ready === true
   const sourceReady = shot.VIDEO.generation_mode === 'IMAGE_TO_VIDEO'
     ? Boolean(shot.VIDEO.source_official_image?.current)
     : shot.VIDEO.prompt_ir.current
@@ -410,6 +429,7 @@ function normalizeOfficial(value: unknown): OfficialMediaProjection {
       fingerprint: pointer.fingerprint == null ? null : String(pointer.fingerprint),
     } : null,
     preview: input.preview == null ? null : String(input.preview),
+    preview_url: input.preview_url == null ? (input.preview == null ? null : String(input.preview)) : String(input.preview_url),
   }
 }
 
@@ -450,6 +470,8 @@ function normalizeLane(value: unknown): ProductionMediaLane {
       stale: prompt.stale === true,
       state: String(prompt.state ?? 'not_started'),
       payload_hash: prompt.payload_hash == null ? null : String(prompt.payload_hash),
+      generation_policy: prompt.generation_policy && typeof prompt.generation_policy === 'object' ? prompt.generation_policy : {},
+      reason_codes: Array.isArray(prompt.reason_codes) ? prompt.reason_codes.map(String) : [],
     },
     generation_mode: input.generation_mode == null ? null : String(input.generation_mode) as ProductionMediaLane['generation_mode'],
     source_official_image: input.source_official_image ? normalizeOfficial(input.source_official_image) : null,
@@ -457,6 +479,8 @@ function normalizeLane(value: unknown): ProductionMediaLane {
       selected_profile_id: model.selected_profile_id == null ? null : String(model.selected_profile_id),
       provider: model.provider == null ? null : String(model.provider),
       model_name: model.model_name == null ? null : String(model.model_name),
+      last_execution_profile_id: model.last_execution_profile_id == null ? null : String(model.last_execution_profile_id),
+      last_execution_model: model.last_execution_model == null ? null : String(model.last_execution_model),
     },
     latest_execution: executionRecord ? {
       id: String(executionRecord.id ?? ''),
@@ -482,6 +506,13 @@ function normalizeLane(value: unknown): ProductionMediaLane {
       items: Array.isArray(candidates.items) ? candidates.items.map(normalizeCandidate).filter((item): item is MediaCandidateProjection => Boolean(item)) : [],
     },
     official: normalizeOfficial(input.official),
+    generation_readiness: {
+      ready: asRecord(input.generation_readiness).ready === true,
+      reason_codes: Array.isArray(asRecord(input.generation_readiness).reason_codes) ? asRecord(input.generation_readiness).reason_codes.map(String) : [],
+      primary_blocker: asRecord(input.generation_readiness).primary_blocker && typeof asRecord(input.generation_readiness).primary_blocker === 'object' ? asRecord(input.generation_readiness).primary_blocker as NonNullable<ProductionMediaLane['generation_readiness']>['primary_blocker'] : null,
+      blockers: Array.isArray(asRecord(input.generation_readiness).blockers) ? asRecord(input.generation_readiness).blockers as NonNullable<ProductionMediaLane['generation_readiness']>['blockers'] : [],
+    },
+    generation_mode_source: input.generation_mode_source == null ? null : String(input.generation_mode_source),
   }
 }
 
@@ -565,9 +596,14 @@ export function normalizeProductionWorkspaceV2Snapshot(value: unknown, bookId: n
         mime: media.mime == null ? null : String(media.mime),
         width: media.width == null ? null : Number(media.width),
         height: media.height == null ? null : Number(media.height),
+        preview_url: media.preview_url == null ? null : String(media.preview_url),
+        readiness: media.readiness && typeof media.readiness === 'object' ? media.readiness : undefined,
       },
       bindings: Array.isArray(item.bindings) ? item.bindings as Array<Record<string, unknown>> : [],
       history: Array.isArray(item.history) ? item.history as Array<Record<string, unknown>> : [],
+      binding_counts: item.binding_counts && typeof item.binding_counts === 'object' ? { current: Number(item.binding_counts.current ?? 0), stale: Number(item.binding_counts.stale ?? 0) } : { current: 0, stale: 0 },
+      current_binding_count: Number(item.current_binding_count ?? 0),
+      stale_binding_count: Number(item.stale_binding_count ?? 0),
     }
   }) : []
   return {

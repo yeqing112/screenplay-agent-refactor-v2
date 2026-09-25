@@ -1,9 +1,9 @@
 """Read-only Production Workspace V2 projection.
 
-V2 is a denser presentation model over the existing authority tables.  It
-does not introduce a second source of truth, write rows, or infer production
-state from browser caches.  The projection deliberately keeps candidate and
-official media separate so the UI can present the promotion boundary clearly.
+V2 is a presentation of the existing Production Authority rows. It never
+creates or updates authority, candidate, validation, prompt, or media rows.
+Currentness is resolved through the typed asset, PromptIR, and OfficialMedia
+contracts consumed by production execution.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 from typing import Any
+from urllib.parse import urlparse
 
 from .production_workspace_projection import build_production_workspace_projection
 
@@ -33,15 +34,82 @@ def _iso(value: Any) -> str | None:
     return value.isoformat() if value is not None and hasattr(value, "isoformat") else None
 
 
-def _prompt_lane(shot: dict[str, Any], target_media: str) -> dict[str, Any]:
-    prompt = shot.get("prompt_ir", {}).get(target_media) if isinstance(shot.get("prompt_ir"), dict) else None
-    prompt = prompt if isinstance(prompt, dict) else {}
+def _preview_url(identity: Any) -> str | None:
+    """Return a browser display URL separately from formal storage identity."""
+    value = _text(identity)
+    if not value:
+        return None
+    parsed = urlparse(value)
+    return value if parsed.scheme in {"http", "https"} else None
+
+
+def _prompt_lane(session: Any, *, shot: dict[str, Any], target_media: str) -> dict[str, Any]:
+    from models import PromptIRAuthority, PromptIRPointer, PromptIRVersion
+
+    book_id = int(shot.get("book_id") or 0)
+    episode = int(shot.get("episode") or 0)
+    shot_id = int(shot.get("storyboard_shot_id") or 0)
+    pointer = session.query(PromptIRPointer).filter_by(
+        book_id=book_id, episode=episode, storyboard_shot_id=shot_id, target_media=target_media,
+    ).first()
+    version = session.query(PromptIRVersion).filter_by(
+        id=getattr(pointer, "prompt_ir_version_id", 0), book_id=book_id,
+        episode=episode, storyboard_shot_id=shot_id,
+    ).first() if pointer else None
+    authority = session.query(PromptIRAuthority).filter_by(
+        prompt_ir_version_id=getattr(pointer, "prompt_ir_version_id", 0), book_id=book_id,
+        episode=episode, storyboard_shot_id=shot_id,
+    ).first() if pointer else None
+    payload = _json(getattr(version, "payload_json", "{}"), {}) if version else {}
+    policy = payload.get("generation_policy") if isinstance(payload, dict) and isinstance(payload.get("generation_policy"), dict) else {}
+    current = False
+    state = "not_started"
+    reason_codes: list[str] = []
+    if pointer is None or version is None or authority is None:
+        reason_codes.append("PROMPT_IR_POINTER_MISSING")
+    else:
+        try:
+            from core.prompt_ir_phase_e import validate_prompt_ir_current_scope
+
+            resolved = validate_prompt_ir_current_scope(
+                session, book_id=book_id, episode=episode,
+                storyboard_shot_id=shot_id, target_media=target_media,
+            )
+            current = bool(
+                resolved.get("integrity_valid")
+                and resolved.get("current_lineage_valid")
+                and str(getattr(pointer, "payload_hash", "")) == str(getattr(version, "payload_hash", ""))
+            )
+            if not current:
+                reason_codes.extend(
+                    str(item.get("code") or "PROMPT_IR_NOT_CURRENT")
+                    for item in (resolved.get("diagnostics") or [])
+                    if isinstance(item, dict)
+                )
+        except Exception as exc:  # read-only projection must fail closed
+            detail = getattr(exc, "detail", None)
+            if isinstance(detail, dict):
+                reason_codes.append(_text(detail.get("code")) or "PROMPT_IR_CURRENTNESS_INVALID")
+            else:
+                reason_codes.append("PROMPT_IR_CURRENTNESS_INVALID")
+        if _text(getattr(version, "stale_status", "")).upper() != "FRESH" or _text(getattr(authority, "stale_status", "")).upper() != "FRESH":
+            reason_codes.append("PROMPT_IR_STALE")
+        if not current and not reason_codes:
+            reason_codes.append("PROMPT_IR_NOT_CURRENT")
+    if current:
+        state = "complete"
+    elif "PROMPT_IR_STALE" in reason_codes or any("STALE" in code for code in reason_codes):
+        state = "stale"
+    elif pointer is not None:
+        state = "blocked"
     return {
-        "current": prompt.get("state") == "complete",
-        "version": prompt.get("prompt_ir_version_id"),
-        "stale": prompt.get("state") == "stale",
-        "state": prompt.get("state") or "not_started",
-        "payload_hash": prompt.get("payload_hash"),
+        "current": current,
+        "version": getattr(version, "id", None),
+        "stale": state == "stale",
+        "state": state,
+        "payload_hash": _text(getattr(version, "payload_hash", "")) or None,
+        "generation_policy": dict(policy) if isinstance(policy, dict) else {},
+        "reason_codes": sorted(set(reason_codes)),
     }
 
 
@@ -68,12 +136,26 @@ def _execution_projection(execution: Any | None) -> dict[str, Any] | None:
     }
 
 
+def _validation_for_candidate(validations: list[Any], candidate_id: str) -> Any | None:
+    """Choose validation by lifecycle meaning, then stable timestamps/ID."""
+    rows = [row for row in validations if _text(getattr(row, "candidate_id", "")) == candidate_id]
+    rank = {"TECHNICALLY_VALID": 4, "REVIEW_REQUIRED": 3, "VALIDATION_PENDING": 2, "STALE": 1}
+    rows.sort(key=lambda row: (
+        rank.get(_text(getattr(row, "status", "")).upper(), 0),
+        getattr(row, "updated_at", None) or getattr(row, "created_at", None),
+        _text(getattr(row, "validation_id", "")),
+    ), reverse=True)
+    return rows[0] if rows else None
+
+
 def _candidate_projection(candidate: Any, validation: Any | None) -> dict[str, Any]:
     technical = _json(getattr(validation, "technical_validation_payload_json", "{}"), {}) if validation else {}
+    storage = _text(getattr(candidate, "storage_identity", "")) or None
     return {
         "id": _text(getattr(candidate, "candidate_id", "")),
         "state": _text(getattr(candidate, "status", "")) or "MEDIA_CANDIDATE",
-        "preview": _text(getattr(candidate, "storage_identity", "")) or None,
+        "preview": _preview_url(storage),
+        "preview_url": _preview_url(storage),
         "created_at": _iso(getattr(candidate, "created_at", None)),
         "model_profile_id": _text(getattr(candidate, "model_profile_id", "")),
         "technical_validation": {
@@ -86,199 +168,329 @@ def _candidate_projection(candidate: Any, validation: Any | None) -> dict[str, A
             "details": technical if isinstance(technical, dict) else {},
         },
         "checksum": _text(getattr(candidate, "checksum_sha256", "")) or None,
-        "storage_identity": _text(getattr(candidate, "storage_identity", "")) or None,
+        "storage_identity": storage,
     }
 
 
-def _official_projection(pointer: Any | None, version: Any | None, authority: Any | None) -> dict[str, Any]:
-    if not pointer or not version:
-        return {
-            "current": False,
-            "currentness": "missing",
-            "version": None,
-            "authority": None,
-            "preview": None,
-        }
+def _official_projection(session: Any, *, shot: dict[str, Any], target_media: str) -> dict[str, Any]:
+    from models import OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion
+
+    book_id = int(shot.get("book_id") or 0)
+    episode = int(shot.get("episode") or 0)
+    shot_id = int(shot.get("storyboard_shot_id") or 0)
+    role = "SHOT_PRIMARY_IMAGE" if target_media == "IMAGE" else "SHOT_PRIMARY_VIDEO"
+    pointer = session.query(OfficialMediaPointer).filter_by(
+        book_id=book_id, episode=episode, storyboard_shot_id=shot_id, media_role=role,
+    ).first()
+    if pointer is None:
+        return {"current": False, "currentness": "missing", "version": None, "authority": None, "pointer": None, "preview": None, "preview_url": None}
+    version = session.query(OfficialMediaVersion).filter_by(official_media_version_id=getattr(pointer, "official_media_version_id", "")).first()
+    authority = session.query(OfficialMediaAuthority).filter_by(authority_id=getattr(pointer, "authority_id", "")).first()
+    pointer_projection = {"id": getattr(pointer, "id", None), "authority_id": _text(getattr(pointer, "authority_id", "")) or None, "fingerprint": _text(getattr(pointer, "fingerprint", "")) or None}
+    if version is None or authority is None:
+        return {"current": False, "currentness": "invalid", "version": None, "authority": None, "pointer": pointer_projection, "preview": None, "preview_url": None}
+
+    current = False
+    failure = ""
+    try:
+        from core.media_authority import resolve_current_official_media_for_shot
+
+        resolve_current_official_media_for_shot(
+            session, book_id=book_id, episode=episode,
+            storyboard_shot_id=shot_id, media_role=role,
+        )
+        current = True
+    except Exception as exc:  # resolver is intentionally fail-closed
+        failure = _text(getattr(exc, "code", "")) or _text(getattr(exc, "detail", ""))
+    if not current:
+        prompt_lane = _prompt_lane(session, shot=shot, target_media=target_media)
+        prompt_moved = bool(
+            not prompt_lane["current"]
+            or int(prompt_lane.get("version") or 0) != int(getattr(version, "prompt_ir_version_id", 0) or 0)
+            or _text(prompt_lane.get("payload_hash")) != _text(getattr(version, "prompt_ir_payload_hash", ""))
+        )
+        asset_moved = False
+        try:
+            from core.media_authority import _production_asset_binding_snapshot
+
+            envelope = _json(getattr(authority, "authority_envelope_json", "{}"), {})
+            declared = envelope.get("production_asset_binding") if isinstance(envelope, dict) else None
+            live_binding = _production_asset_binding_snapshot(session, storyboard_shot_id=shot_id)
+            asset_moved = bool(isinstance(declared, dict) and declared.get("fingerprint") != live_binding.get("fingerprint"))
+        except Exception:
+            asset_moved = False
+        if (prompt_moved or asset_moved) and _text(getattr(version, "status", "")).upper() == "CURRENT":
+            currentness = "obsolete"
+        elif _text(getattr(version, "status", "")).upper() != "CURRENT" or _text(getattr(authority, "status", "")).upper() != "CURRENT":
+            currentness = "historical"
+        else:
+            currentness = "invalid"
+    else:
+        currentness = "current"
+    storage = _text(getattr(version, "storage_identity", "")) or None
+    version_projection = {
+        "id": _text(getattr(version, "official_media_version_id", "")),
+        "revision": getattr(version, "revision", None),
+        "media_type": _text(getattr(version, "media_type", "")),
+        "storage_identity": storage,
+        "checksum": _text(getattr(version, "checksum_sha256", "")) or None,
+        "mime": _text(getattr(version, "mime_type", "")) or None,
+        "width": getattr(version, "width", None),
+        "height": getattr(version, "height", None),
+        "duration_ms": getattr(version, "duration_ms", None),
+        "candidate_id": _text(getattr(version, "candidate_id", "")) or None,
+        "validation_id": _text(getattr(version, "validation_id", "")) or None,
+    }
     return {
-        "current": _text(getattr(version, "status", "")).upper() == "CURRENT",
-        "currentness": "current" if _text(getattr(version, "status", "")).upper() == "CURRENT" else "historical",
-        "version": {
-            "id": _text(getattr(version, "official_media_version_id", "")),
-            "revision": getattr(version, "revision", None),
-            "media_type": _text(getattr(version, "media_type", "")),
-            "storage_identity": _text(getattr(version, "storage_identity", "")) or None,
-            "checksum": _text(getattr(version, "checksum_sha256", "")) or None,
-            "mime": _text(getattr(version, "mime_type", "")) or None,
-            "width": getattr(version, "width", None),
-            "height": getattr(version, "height", None),
-            "duration_ms": getattr(version, "duration_ms", None),
-            "candidate_id": _text(getattr(version, "candidate_id", "")) or None,
-            "validation_id": _text(getattr(version, "validation_id", "")) or None,
-        },
-        "authority": {
-            "id": _text(getattr(authority, "authority_id", "")) or None,
-            "status": _text(getattr(authority, "status", "")) or None,
-            "payload_hash": _text(getattr(authority, "payload_hash", "")) or None,
-            "lineage_hash": _text(getattr(authority, "lineage_hash", "")) or None,
-        } if authority else None,
-        "pointer": {
-            "id": getattr(pointer, "id", None),
-            "authority_id": _text(getattr(pointer, "authority_id", "")) or None,
-            "fingerprint": _text(getattr(pointer, "fingerprint", "")) or None,
-        },
-        "preview": _text(getattr(version, "storage_identity", "")) or None,
+        "current": current,
+        "currentness": currentness,
+        "version": version_projection,
+        "authority": {"id": _text(getattr(authority, "authority_id", "")) or None, "status": _text(getattr(authority, "status", "")) or None, "payload_hash": _text(getattr(authority, "payload_hash", "")) or None, "lineage_hash": _text(getattr(authority, "lineage_hash", "")) or None, "resolver_error": failure or None},
+        "pointer": pointer_projection,
+        "preview": _preview_url(storage),
+        "preview_url": _preview_url(storage),
     }
+
+
+def _required_asset_contract(session: Any, *, shot_id: int) -> list[tuple[str, str]]:
+    """Read the persisted formal shot requirement, never prompt prose."""
+    from models import StoryboardShot
+
+    shot = session.query(StoryboardShot).filter_by(id=shot_id).first()
+    if shot is None:
+        return []
+    links = _json(getattr(shot, "asset_links", "{}"), {})
+    meta = _json(getattr(shot, "meta_info", "{}"), {})
+    candidates: list[Any] = []
+    if isinstance(links, dict):
+        candidates.append(links)
+    if isinstance(meta, dict):
+        candidates.extend([
+            meta.get("asset_bindings"),
+            meta.get("asset_identity_bindings"),
+            (_json(meta.get("prompt_compiler"), {}) or {}).get("prompt_compile_context") if isinstance(_json(meta.get("prompt_compiler"), {}), dict) else None,
+        ])
+    result: list[tuple[str, str]] = []
+
+    def add(kind: str, value: Any) -> None:
+        kind = kind.upper()
+        if kind not in {"CHARACTER", "SCENE", "PROP"}:
+            return
+        values = value if isinstance(value, list) else [value]
+        for item in values:
+            if isinstance(item, dict):
+                item = item.get("entity_id") or item.get("canonical_asset_id") or item.get("asset_id") or item.get("identity_ref")
+                if isinstance(item, str) and ":" in item:
+                    item = item.split(":", 1)[1]
+            identity = _text(item)
+            if identity and (kind, identity) not in result:
+                result.append((kind, identity))
+
+    for candidate in candidates:
+        if not isinstance(candidate, dict):
+            continue
+        canonical = candidate.get("canonical_asset_identity") if isinstance(candidate.get("canonical_asset_identity"), dict) else candidate
+        add("SCENE", canonical.get("scene") or canonical.get("scene_id") or candidate.get("scene"))
+        add("CHARACTER", canonical.get("characters") or canonical.get("character_asset_ids") or candidate.get("characters"))
+        add("PROP", canonical.get("props") or canonical.get("prop_asset_ids") or candidate.get("props"))
+        for item in candidate.get("bound_assets", []) if isinstance(candidate.get("bound_assets"), list) else []:
+            if isinstance(item, dict):
+                add(_text(item.get("asset_type") or item.get("type")), item)
+    return result
 
 
 def _asset_readiness(session: Any, *, shot_id: int, book_id: int) -> dict[str, Any]:
     from models import ShotAssetBinding
+    from core.production_asset_authority import resolve_current_production_asset_binding
 
-    bindings = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=shot_id).all()
-    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    bindings = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=shot_id).order_by(ShotAssetBinding.id.asc()).all()
+    required: dict[str, list[dict[str, Any]]] = {"CHARACTER": [], "SCENE": [], "PROP": []}
+    missing: list[str] = []
+    stale: list[str] = []
+    formal_requirements = _required_asset_contract(session, shot_id=shot_id)
+    # Legacy materialization may carry display names (for example Chinese
+    # character names) while the typed H2 contract uses canonical IDs.  Such
+    # display-only values are not a second requirement source; fall back to
+    # the formal ShotAssetBinding set until a canonical requirement exists.
+    formal_requirements = [
+        (kind, identity)
+        for kind, identity in formal_requirements
+        if identity.isascii() and all(char.isalnum() or char in {"_", "-", "."} for char in identity)
+    ]
+    if not bindings and not formal_requirements:
+        missing.append("FORMAL_ASSET_BINDINGS")
+    resolved_rows: list[tuple[Any, dict[str, Any]]] = []
     for binding in bindings:
-        grouped[_text(getattr(binding, "asset_type", "")).upper()].append({
-            "authority_id": _text(getattr(binding, "authority_id", "")),
-            "version_id": _text(getattr(binding, "version_id", "")),
-            "status": _text(getattr(binding, "status", "ACTIVE")) or "ACTIVE",
-            "current": _text(getattr(binding, "status", "ACTIVE")).upper() == "ACTIVE",
-            "fingerprint": _text(getattr(binding, "binding_fingerprint", "")),
-        })
-    required = {"CHARACTER": grouped.get("CHARACTER", []), "SCENE": grouped.get("SCENE", []), "PROP": grouped.get("PROP", [])}
-    missing = [key for key, items in required.items() if not items]
-    stale = [key for key, items in required.items() if any(not item["current"] for item in items)]
-    return {
-        "state": "blocked" if missing else ("stale" if stale else "ready"),
-        "required": required,
-        "missing": missing,
-        "stale": stale,
-        "current": not missing and not stale,
-    }
+        resolved_rows.append((binding, resolve_current_production_asset_binding(session, binding)))
+    if formal_requirements:
+        for kind, entity_id in formal_requirements:
+            matching = [(binding, resolved) for binding, resolved in resolved_rows if _text(getattr(binding, "asset_type", "")).upper() == kind and _text(resolved.get("entity_id")) == entity_id]
+            if not matching:
+                required.setdefault(kind, []).append({"entity_id": entity_id, "authority_id": None, "version_id": None, "status": "MISSING", "current": False, "media": {}, "failed_checks": ["binding_missing"], "fingerprint": None})
+                missing.append(f"{kind}:{entity_id}")
+                continue
+            bindings_for_requirement = matching[:1]
+            for binding, resolved in bindings_for_requirement:
+                _append_resolved_requirement(required, missing, stale, kind, entity_id, binding, resolved)
+        # A formal requirement contract is authoritative; a binding row that
+        # is not named by it is historical/extra and cannot satisfy coverage.
+    else:
+        for binding, resolved in resolved_rows:
+            kind = _text(getattr(binding, "asset_type", "")).upper() or "UNKNOWN"
+            entity_id = _text(resolved.get("entity_id")) or f"{kind}:{_text(getattr(binding, 'authority_id', ''))}"
+            _append_resolved_requirement(required, missing, stale, kind, entity_id, binding, resolved)
+
+    current = bool(formal_requirements or bindings) and not missing and not stale and all(item.get("current") for values in required.values() for item in values)
+    return {"state": "ready" if current else ("stale" if stale and not missing else "blocked"), "required": required, "missing": sorted(set(missing)), "stale": sorted(set(stale)), "current": current, "required_entity_count": len(formal_requirements) or len(bindings)}
 
 
-def _lane(session: Any, *, shot: dict[str, Any], target_media: str) -> dict[str, Any]:
-    from models import GenerationExecutionRecord, MediaCandidateRecord, MediaValidationRecord, OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion
+def _append_resolved_requirement(required: dict[str, list[dict[str, Any]]], missing: list[str], stale: list[str], kind: str, entity_id: str, binding: Any, resolved: dict[str, Any]) -> None:
+        kind = _text(getattr(binding, "asset_type", "")).upper() or "UNKNOWN"
+        row = {"entity_id": entity_id, "authority_id": _text(getattr(binding, "authority_id", "")), "version_id": _text(getattr(binding, "version_id", "")), "status": _text(getattr(binding, "status", "ACTIVE")) or "ACTIVE", "current": bool(resolved.get("current")), "media": resolved.get("media", {}), "failed_checks": list(resolved.get("failed_checks", [])), "fingerprint": _text(getattr(binding, "binding_fingerprint", ""))}
+        required.setdefault(kind, []).append(row)
+        key = f"{kind}:{entity_id}"
+        if not resolved.get("current"):
+            if row["status"].upper() == "STALE" or any(code not in {"media_present", "binding_active"} for code in row["failed_checks"]):
+                stale.append(key)
+            else:
+                missing.append(key)
 
+
+def _generation_readiness(*, target_media: str, asset: dict[str, Any], lane: dict[str, Any], selected_profile_id: str | None) -> dict[str, Any]:
+    reasons: list[str] = []
+    blockers: list[dict[str, Any]] = []
+    if not asset.get("current"):
+        reasons.append("ASSET_MEDIA_NOT_READY")
+        blockers.append({"code": "ASSET_MEDIA_NOT_READY", "message": "先补齐当前镜头所需的真实 Production Asset 媒体。"})
+    if not lane["prompt_ir"].get("current"):
+        reasons.append("PROMPT_IR_NOT_CURRENT")
+        blockers.append({"code": "PROMPT_IR_NOT_CURRENT", "message": "先建立当前正式 PromptIR。"})
+    if lane["candidates"].get("count", 0) > 0:
+        reasons.append("CANDIDATE_REVIEW_REQUIRED")
+        blockers.append({"code": "CANDIDATE_REVIEW_REQUIRED", "message": "先验证或提升现有候选结果。"})
+    if lane["official"].get("current"):
+        reasons.append("OFFICIAL_MEDIA_ALREADY_CURRENT")
+        blockers.append({"code": "OFFICIAL_MEDIA_ALREADY_CURRENT", "message": "当前已有正式版本。"})
+    if target_media == "VIDEO":
+        mode = lane.get("generation_mode")
+        if mode not in {"TEXT_TO_VIDEO", "IMAGE_TO_VIDEO"}:
+            reasons.append("VIDEO_GENERATION_MODE_INVALID")
+            blockers.append({"code": "VIDEO_GENERATION_MODE_INVALID", "message": "当前 VIDEO PromptIR 没有受支持的生成模式。"})
+        elif mode == "IMAGE_TO_VIDEO" and not (lane.get("source_official_image") or {}).get("current"):
+            reasons.append("OFFICIAL_IMAGE_REQUIRED")
+            blockers.append({"code": "OFFICIAL_IMAGE_REQUIRED", "message": "IMAGE_TO_VIDEO 需要先建立当前正式图片。"})
+    if not selected_profile_id:
+        reasons.append("MODEL_PROFILE_REQUIRED")
+        blockers.append({"code": "MODEL_PROFILE_REQUIRED", "message": "请显式选择本次生成使用的模型。"})
+    return {"ready": not reasons, "reason_codes": reasons, "primary_blocker": blockers[0] if blockers else None, "blockers": blockers}
+
+
+def _lane(session: Any, *, shot: dict[str, Any], target_media: str, selected_profile_id: str | None = None) -> dict[str, Any]:
+    from models import GenerationExecutionRecord, MediaCandidateRecord, MediaValidationRecord
+
+    book_id = int(shot.get("book_id") or 0)
     episode = int(shot.get("episode") or 0)
-    storyboard_shot_id = int(shot.get("storyboard_shot_id") or 0)
-    executions = session.query(GenerationExecutionRecord).filter_by(book_id=int(shot.get("book_id") or 0), episode=episode, storyboard_shot_id=storyboard_shot_id, target_media=target_media).order_by(GenerationExecutionRecord.created_at.desc()).all()
-    candidates = session.query(MediaCandidateRecord).join(GenerationExecutionRecord, MediaCandidateRecord.execution_id == GenerationExecutionRecord.execution_id).filter(GenerationExecutionRecord.book_id == int(shot.get("book_id") or 0), GenerationExecutionRecord.episode == episode, GenerationExecutionRecord.storyboard_shot_id == storyboard_shot_id, GenerationExecutionRecord.target_media == target_media).order_by(MediaCandidateRecord.created_at.desc()).all()
+    shot_id = int(shot.get("storyboard_shot_id") or 0)
+    executions = session.query(GenerationExecutionRecord).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id, target_media=target_media).order_by(GenerationExecutionRecord.created_at.desc(), GenerationExecutionRecord.id.desc()).all()
+    candidates = session.query(MediaCandidateRecord).join(GenerationExecutionRecord, MediaCandidateRecord.execution_id == GenerationExecutionRecord.execution_id).filter(GenerationExecutionRecord.book_id == book_id, GenerationExecutionRecord.episode == episode, GenerationExecutionRecord.storyboard_shot_id == shot_id, GenerationExecutionRecord.target_media == target_media).order_by(MediaCandidateRecord.created_at.desc(), MediaCandidateRecord.id.desc()).all()
     validation_ids = [item.candidate_id for item in candidates]
     validations = session.query(MediaValidationRecord).filter(MediaValidationRecord.candidate_id.in_(validation_ids)).all() if validation_ids else []
-    validation_by_candidate = {_text(item.candidate_id): item for item in validations}
-    role = "SHOT_PRIMARY_IMAGE" if target_media == "IMAGE" else "SHOT_PRIMARY_VIDEO"
-    pointers = session.query(OfficialMediaPointer).filter_by(book_id=int(shot.get("book_id") or 0), episode=episode, storyboard_shot_id=storyboard_shot_id, media_role=role).all()
-    pointer = pointers[0] if pointers else None
-    version = session.query(OfficialMediaVersion).filter_by(official_media_version_id=getattr(pointer, "official_media_version_id", "")).first() if pointer else None
-    authority = session.query(OfficialMediaAuthority).filter_by(official_media_version_id=getattr(pointer, "official_media_version_id", "")).first() if pointer else None
+    prompt = _prompt_lane(session, shot=shot, target_media=target_media)
+    official = _official_projection(session, shot=shot, target_media=target_media)
     latest_execution = _execution_projection(executions[0] if executions else None)
-    latest_candidate = _candidate_projection(candidates[0], validation_by_candidate.get(_text(candidates[0].candidate_id))) if candidates else None
-    return {
-        "prompt_ir": _prompt_lane(shot, target_media),
-        "generation_mode": None,
-        "source_official_image": None,
-        "model": {
-            "selected_profile_id": latest_execution.get("model_profile_id") if latest_execution else None,
-            "provider": latest_execution.get("provider") if latest_execution else None,
-            "model_name": latest_execution.get("model") if latest_execution else None,
-        },
-        "latest_execution": latest_execution,
-        "candidates": {"count": len(candidates), "latest": latest_candidate, "items": [_candidate_projection(item, validation_by_candidate.get(_text(item.candidate_id))) for item in candidates[:8]]},
-        "official": _official_projection(pointer, version, authority),
-    }
+    candidate_items = [_candidate_projection(item, _validation_for_candidate(validations, _text(item.candidate_id))) for item in candidates[:8]]
+    return {"prompt_ir": prompt, "generation_mode": None, "source_official_image": None, "model": {"selected_profile_id": selected_profile_id, "provider": None, "model_name": None, "last_execution_profile_id": latest_execution.get("model_profile_id") if latest_execution else None, "last_execution_model": latest_execution.get("model") if latest_execution else None}, "latest_execution": latest_execution, "candidates": {"count": len(candidates), "latest": candidate_items[0] if candidate_items else None, "items": candidate_items}, "official": official}
 
 
-def build_production_workspace_projection_v2(session: Any, *, book_id: int) -> dict[str, Any]:
-    """Return the V2 read model over the existing V1 authority projection."""
-    from models import ProductionAssetVersionRegistry, ShotAssetBinding, StoryboardShot, VisualReferenceAuthority
+def _asset_projection(session: Any, *, base_assets: list[dict[str, Any]], book_id: int) -> list[dict[str, Any]]:
+    from models import CharacterAssetAuthority, CharacterAssetVersion, CharacterAssetPointer, SceneAssetAuthority, SceneAssetVersion, SceneAssetPointer, PropAssetAuthority, PropAssetVersion, PropAssetPointer, ShotAssetBinding, StoryboardShot
 
+    type_config = {"CHARACTER": (CharacterAssetAuthority, CharacterAssetVersion, CharacterAssetPointer, "character_id"), "SCENE": (SceneAssetAuthority, SceneAssetVersion, SceneAssetPointer, "scene_id"), "PROP": (PropAssetAuthority, PropAssetVersion, PropAssetPointer, "prop_id")}
+    by_key: dict[tuple[str, str], dict[str, Any]] = {}
+    for raw in base_assets:
+        item = dict(raw)
+        kind = _text(item.get("asset_type")).upper()
+        entity = _text(item.get("asset_key")).split(":")[-1]
+        by_key[(kind, entity)] = item
+    shots = session.query(StoryboardShot).filter_by(book_id=book_id).all()
+    shot_ids = [int(row.id) for row in shots]
+    bindings = session.query(ShotAssetBinding).filter(ShotAssetBinding.storyboard_shot_id.in_(shot_ids)).all() if shot_ids else []
+    binding_by_authority: dict[str, list[Any]] = defaultdict(list)
+    for binding in bindings:
+        binding_by_authority[_text(binding.authority_id)].append(binding)
+    binding_authorities = {(str(binding.asset_type).upper(), _text(binding.authority_id)) for binding in bindings}
+    for kind, (authority_model, version_model, pointer_model, entity_field) in type_config.items():
+        entity_names = {entity for (asset_kind, entity) in by_key if asset_kind == kind}
+        authorities = session.query(authority_model).filter(getattr(authority_model, entity_field).in_(entity_names)).all() if entity_names else []
+        authorities_by_id = {_text(row.authority_id): row for row in authorities}
+        for binding_kind, authority_id in binding_authorities:
+            if binding_kind == kind and authority_id not in authorities_by_id:
+                row = session.query(authority_model).filter_by(authority_id=authority_id).first()
+                if row is not None:
+                    authorities_by_id[authority_id] = row
+        for authority_id, authority in authorities_by_id.items():
+            entity_id = _text(getattr(authority, entity_field, ""))
+            version = session.query(version_model).filter_by(authority_id=authority_id, version_id=getattr(authority, "current_version_id", "")).first() if getattr(authority, "current_version_id", None) else None
+            pointer = session.query(pointer_model).filter_by(**{entity_field: entity_id, "authority_id": authority_id}).first()
+            media = {"present": False, "storage_identity": None, "checksum": None, "mime": None, "width": None, "height": None, "preview_url": None}
+            if version is not None:
+                from core.production_asset_authority import production_asset_media_readiness
+
+                ready = production_asset_media_readiness(storage_identity=version.storage_identity, checksum=version.checksum)
+                media = {"present": bool(ready.present and _text(getattr(authority, "status", "")).upper() == "ACTIVE" and _text(getattr(version, "status", "")).upper() == "CURRENT" and pointer is not None and _text(getattr(pointer, "version_id", "")) == _text(getattr(version, "version_id", ""))), "storage_identity": _text(getattr(version, "storage_identity", "")) or None, "checksum": _text(getattr(version, "checksum", "")) or None, "mime": None, "width": None, "height": None, "preview_url": _preview_url(getattr(version, "storage_identity", "")), "readiness": ready.to_dict()}
+            item = by_key.setdefault((kind, entity_id), {"asset_key": f"book:{book_id}:{kind.lower()}:{entity_id}", "asset_type": kind.lower()})
+            row_bindings = binding_by_authority.get(authority_id, [])
+            current_count = sum(1 for row in row_bindings if _text(row.status).upper() == "ACTIVE" and version and _text(row.version_id) == _text(getattr(version, "version_id", "")))
+            stale_count = sum(1 for row in row_bindings if _text(row.status).upper() != "ACTIVE" or not version or _text(row.version_id) != _text(getattr(version, "version_id", "")))
+            item.update({"entity_id": entity_id, "asset_type": kind, "current_version_id": _text(getattr(version, "version_id", "")) or None, "revision": getattr(version, "revision", None) if version else None, "authority_status": _text(getattr(authority, "status", "")) or None, "stale_status": "FRESH" if media["present"] else "STALE", "reference_state": item.get("reference_state", "needs_action"), "reference_count": int(item.get("reference_count", 0) or 0), "locked_reference": bool(item.get("locked_reference", False)), "media": media, "bindings": [{"storyboard_shot_id": int(row.storyboard_shot_id), "authority_id": _text(row.authority_id), "version_id": _text(row.version_id), "status": _text(row.status) or "ACTIVE", "current": bool(version and _text(row.version_id) == _text(getattr(version, "version_id", "")) and _text(row.status).upper() == "ACTIVE")} for row in sorted(row_bindings, key=lambda value: int(value.storyboard_shot_id))], "binding_counts": {"current": current_count, "stale": stale_count}, "stale_binding_count": stale_count, "current_binding_count": current_count, "history": item.get("history", [])})
+    for item in by_key.values():
+        item.setdefault("entity_id", _text(item.get("asset_key")).split(":")[-1])
+        item.setdefault("media", {"present": False, "storage_identity": None, "checksum": None, "mime": None, "width": None, "height": None, "preview_url": None})
+        item.setdefault("bindings", [])
+        item.setdefault("history", [])
+        item.setdefault("binding_counts", {"current": 0, "stale": 0})
+        item.setdefault("stale_binding_count", 0)
+        item.setdefault("current_binding_count", 0)
+    return sorted(by_key.values(), key=lambda item: (str(item.get("asset_type", "")), str(item.get("entity_id", ""))))
+
+
+def build_production_workspace_projection_v2(session: Any, *, book_id: int, generation_profile_selection: dict[str, str | None] | None = None) -> dict[str, Any]:
+    """Return the deterministic, read-only V2 production projection."""
     base = build_production_workspace_projection(session, book_id=book_id)
-    shots = []
-    for raw in base.get("shots", []):
-        raw = dict(raw)
+    selection = generation_profile_selection if isinstance(generation_profile_selection, dict) else {}
+    image_profile = _text(selection.get("IMAGE") or selection.get("imageModelProfileId")) or None
+    video_profile = _text(selection.get("VIDEO") or selection.get("videoModelProfileId")) or None
+    shots: list[dict[str, Any]] = []
+    for raw_base in base.get("shots", []):
+        raw = dict(raw_base)
         raw["book_id"] = book_id
         readiness = _asset_readiness(session, shot_id=int(raw.get("storyboard_shot_id") or 0), book_id=book_id)
-        image = _lane(session, shot=raw, target_media="IMAGE")
-        video = _lane(session, shot=raw, target_media="VIDEO")
+        image = _lane(session, shot=raw, target_media="IMAGE", selected_profile_id=image_profile)
+        video = _lane(session, shot=raw, target_media="VIDEO", selected_profile_id=video_profile)
         image["generation_mode"] = "TEXT_TO_IMAGE"
-        video["generation_mode"] = "IMAGE_TO_VIDEO" if image["official"].get("current") else "TEXT_TO_VIDEO"
-        video["source_official_image"] = image["official"] if image["official"].get("current") else None
+        video_policy = video["prompt_ir"].get("generation_policy") or {}
+        video_mode = _text(video_policy.get("mode")).upper()
+        video["generation_mode"] = video_mode if video_mode in {"TEXT_TO_VIDEO", "IMAGE_TO_VIDEO"} else None
+        video["generation_mode_source"] = "PromptIR.generation_policy.mode"
+        video["source_official_image"] = image["official"] if video["generation_mode"] == "IMAGE_TO_VIDEO" and image["official"].get("current") else None
+        image["generation_readiness"] = _generation_readiness(target_media="IMAGE", asset=readiness, lane=image, selected_profile_id=image_profile)
+        video["generation_readiness"] = _generation_readiness(target_media="VIDEO", asset=readiness, lane=video, selected_profile_id=video_profile)
         blockers = []
-        if readiness["state"] == "blocked": blockers.append({"code": "ASSET_MEDIA_MISSING", "message": "先补齐当前镜头所需的角色、场景或道具资产。"})
-        if readiness["state"] == "stale": blockers.append({"code": "ASSET_BINDING_STALE", "message": "资产已更新，镜头绑定需要同步。"})
-        next_action = "UPLOAD_ASSET" if readiness["state"] == "blocked" else ("UPDATE_BINDING" if readiness["state"] == "stale" else ("REVIEW_IMAGE_CANDIDATE" if image["candidates"]["count"] else ("GENERATE_IMAGE" if image["prompt_ir"]["current"] else "PREPARE_IMAGE")))
-        shots.append({
-            "identity": {"episode": raw.get("episode"), "shot_id": raw.get("shot_id"), "storyboard_shot_id": raw.get("storyboard_shot_id"), "plan_shot_id": raw.get("plan_shot_id")},
-            "scene": {"id": raw.get("scene_id"), "name": raw.get("scene_id")},
-            "duration": raw.get("duration", 0), "camera": raw.get("camera", {}), "action": raw.get("action", ""),
-            "asset_readiness": readiness,
-            "IMAGE": image, "VIDEO": video,
-            "next_action": {"key": next_action, "label": {"UPLOAD_ASSET":"补齐资产", "UPDATE_BINDING":"更新镜头绑定", "REVIEW_IMAGE_CANDIDATE":"审核候选图片", "GENERATE_IMAGE":"生成图片", "PREPARE_IMAGE":"准备图片生成"}.get(next_action, next_action)},
-            "blockers": blockers,
-            "legacy": {"prompt_ir_state": raw.get("prompt_ir_state"), "reference_state": raw.get("reference_state"), "media_state": raw.get("media_state")},
-        })
-
-    references = session.query(VisualReferenceAuthority).filter(
-        VisualReferenceAuthority.asset_key.in_([_text(item.get("asset_key")) for item in base.get("assets", [])])
-    ).all() if base.get("assets") else []
-    references_by_asset = defaultdict(list)
-    for reference in references:
-        references_by_asset[_text(getattr(reference, "asset_key", ""))].append(reference)
-    bindings = session.query(ShotAssetBinding).join(StoryboardShot, ShotAssetBinding.storyboard_shot_id == StoryboardShot.id).filter(StoryboardShot.book_id == book_id).all()
-    bindings_by_authority = defaultdict(list)
-    for binding in bindings:
-        bindings_by_authority[_text(getattr(binding, "authority_id", ""))].append(binding)
-    production_versions = session.query(ProductionAssetVersionRegistry).all()
-    production_version_by_visual_id = {
-        int(getattr(version, "visual_asset_version_id")): version
-        for version in production_versions
-        if getattr(version, "visual_asset_version_id", None) is not None
-    }
-
-    assets = []
-    for asset in base.get("assets", []):
-        item = dict(asset)
-        item["entity_id"] = _text(item.get("asset_key")).split(":")[-1]
-        production_version = production_version_by_visual_id.get(int(item.get("current_version_id"))) if item.get("current_version_id") is not None else None
-        authority_id = _text(getattr(production_version, "authority_id", ""))
-        asset_refs = references_by_asset.get(_text(item.get("asset_key")), [])
-        locked_ref = next((ref for ref in asset_refs if _text(getattr(ref, "status", "")).upper() == "LOCKED" and _text(getattr(ref, "stale_status", "")).upper() in {"", "FRESH", "CURRENT"}), None)
-        item["media"] = {
-            "present": bool(locked_ref and _text(getattr(locked_ref, "image_identity", "")) and _text(getattr(locked_ref, "checksum", ""))),
-            "storage_identity": _text(getattr(locked_ref, "image_identity", "")) or None,
-            "checksum": _text(getattr(locked_ref, "checksum", "")) or None,
-            "mime": None,
-            "width": None,
-            "height": None,
-        }
-        item["bindings"] = [{
-            "storyboard_shot_id": int(getattr(binding, "storyboard_shot_id", 0)),
-            "authority_id": _text(getattr(binding, "authority_id", "")),
-            "version_id": _text(getattr(binding, "version_id", "")),
-            "status": _text(getattr(binding, "status", "ACTIVE")) or "ACTIVE",
-        } for binding in bindings_by_authority.get(authority_id, [])]
-        item["history"] = [{
-            "reference_authority_id": getattr(ref, "id", None),
-            "status": _text(getattr(ref, "status", "")),
-            "stale_status": _text(getattr(ref, "stale_status", "")),
-            "lock_revision": getattr(ref, "lock_revision", None),
-        } for ref in asset_refs]
-        assets.append(item)
-
-    return {
-        "schema_version": "production_workspace_projection_v2",
-        "book_id": int(book_id),
-        "workflow_profile": "production",
-        "read_only": True,
-        "authority_source": "current_authority_pointers_only",
-        "project": base.get("project", {}),
-        "stages": base.get("stages", {}),
-        "episodes": base.get("episodes", []),
-        "shots": shots,
-        "assets": assets,
-        "view_contract": {"standard": "state,next_action,blockers,official_media", "professional": "authority,pointer,prompt_ir,model,adapter,transport,execution,candidate,validation,official,history"},
-        "legacy_adopted_is_display_only": True,
-        "provider_calls": int(base.get("provider_calls", 0) or 0),
-    }
+        if readiness["state"] == "blocked":
+            blockers.append({"code": "ASSET_MEDIA_MISSING", "message": "先补齐当前镜头所需的真实角色、场景或道具 Production Asset 媒体。", "entities": readiness["missing"]})
+        elif readiness["state"] == "stale":
+            blockers.append({"code": "ASSET_BINDING_STALE", "message": "资产已更新或绑定已漂移，请更新当前镜头绑定。", "entities": readiness["stale"]})
+        next_action = "UPLOAD_ASSET" if not readiness["current"] else ("REVIEW_IMAGE_CANDIDATE" if image["candidates"]["count"] else "GENERATE_IMAGE" if image["generation_readiness"]["ready"] else "SELECT_IMAGE_MODEL" if "MODEL_PROFILE_REQUIRED" in image["generation_readiness"]["reason_codes"] else "UPDATE_IMAGE_PROMPT" if "PROMPT_IR_NOT_CURRENT" in image["generation_readiness"]["reason_codes"] else "REVIEW_VIDEO_CANDIDATE" if video["candidates"]["count"] else "GENERATE_VIDEO" if video["generation_readiness"]["ready"] else "SELECT_VIDEO_MODEL" if "MODEL_PROFILE_REQUIRED" in video["generation_readiness"]["reason_codes"] else "PREPARE_VIDEO")
+        labels = {"UPLOAD_ASSET": "补齐真实资产", "UPDATE_BINDING": "更新镜头绑定", "REVIEW_IMAGE_CANDIDATE": "审核候选图片", "GENERATE_IMAGE": "生成图片", "SELECT_IMAGE_MODEL": "选择图片模型", "UPDATE_IMAGE_PROMPT": "更新图片 PromptIR", "REVIEW_VIDEO_CANDIDATE": "审核候选视频", "GENERATE_VIDEO": "生成视频", "SELECT_VIDEO_MODEL": "选择视频模型", "PREPARE_VIDEO": "准备视频生成"}
+        shots.append({"identity": {"episode": raw.get("episode"), "shot_id": raw.get("shot_id"), "storyboard_shot_id": raw.get("storyboard_shot_id"), "plan_shot_id": raw.get("plan_shot_id")}, "scene": {"id": raw.get("scene_id"), "name": raw.get("scene_id")}, "duration": raw.get("duration", 0), "camera": raw.get("camera", {}), "action": raw.get("action", ""), "asset_readiness": readiness, "IMAGE": image, "VIDEO": video, "next_action": {"key": next_action, "label": labels.get(next_action, next_action)}, "blockers": blockers, "legacy": {"prompt_ir_state": raw.get("prompt_ir_state"), "reference_state": raw.get("reference_state"), "media_state": raw.get("media_state")}})
+    assets = _asset_projection(session, base_assets=[dict(item) for item in base.get("assets", [])], book_id=book_id)
+    project = dict(base.get("project", {}))
+    projection_blockers = [{"code": blocker.get("code"), "title": "生产状态阻塞", "description": blocker.get("message", ""), "severity": "blocked", "stage": "PRODUCTION_WORKSPACE_V2", "scope": "shot", "book_id": int(book_id), "episode": shot["identity"].get("episode"), "shot_id": shot["identity"].get("shot_id"), "recommended_action": shot["next_action"]["label"], "target_section": "storyboard", "target_params": {"section": "storyboard", "episode": shot["identity"].get("episode"), "shot_id": shot["identity"].get("shot_id"), "blocker_code": blocker.get("code")}} for shot in shots for blocker in shot.get("blockers", [])]
+    if projection_blockers:
+        project["overall_state"] = "blocked"
+        project["current_blockers"] = list(project.get("current_blockers") or []) + projection_blockers
+        project["next_actions"] = [projection_blockers[0]]
+    return {"schema_version": "production_workspace_projection_v2", "book_id": int(book_id), "workflow_profile": "production", "read_only": True, "authority_source": "current_authority_pointers_only", "project": project, "stages": base.get("stages", {}), "episodes": base.get("episodes", []), "shots": shots, "assets": assets, "view_contract": {"standard": "state,next_action,blockers,official_media", "professional": "authority,pointer,prompt_ir,model,adapter,transport,execution,candidate,validation,official,history"}, "legacy_adopted_is_display_only": True, "provider_calls": 0}
 
 
 __all__ = ["build_production_workspace_projection_v2"]

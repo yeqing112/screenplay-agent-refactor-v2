@@ -40,3 +40,7 @@ For `book-990401 / Episode 01`, the projection must keep the asset gate visible 
 ## Refresh and persistence
 
 The frontend does not persist production truth in localStorage. Refreshing the page, clearing localStorage, or opening another browser causes the V2 route to rebuild the snapshot from backend authority records.
+
+## Upload boundary
+
+The V2 card is entity-first, but this round does not invent a browser upload contract. A formal Production Asset ingestion API must provide the durable media identity, checksum, typed Authority/Version/Pointer rows, and explicit shot binding before the card can move from `缺少真实视觉资产` to `已就绪`. Until then the state is recorded as `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API`.

@@ -11,7 +11,7 @@ from typing import Any
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-from core.production_asset_authority import bind_shot_assets, ingest_production_asset, resolve_shot_assets, validate_asset_authority_schema
+from core.production_asset_authority import bind_shot_assets, ingest_production_asset, production_asset_media_readiness, resolve_shot_assets, validate_asset_authority_schema
 from models import (
     CharacterAssetAuthority,
     CharacterAssetPointer,
@@ -113,6 +113,10 @@ def run(output_dir: Path = OUT_DIR) -> dict[str, Any]:
                     kind, entity_id = _asset_id(identity_ref)
                     identities.setdefault((kind, entity_id), ingest_production_asset(session, entity_type=kind, entity_id=entity_id, source=_source(kind, entity_id), book_id=BOOK_ID))
             session.commit()
+            media_readiness = [
+                production_asset_media_readiness(storage_identity=item["storage_identity"], checksum=item["checksum"])
+                for item in (_source(kind, entity_id) for kind, entity_id in identities)
+            ]
 
             shot_rows = session.query(StoryboardShot).filter_by(book_id=BOOK_ID, episode=1).order_by(StoryboardShot.shot_id).all()
             matrix_rows: list[dict[str, Any]] = []
@@ -174,6 +178,7 @@ def run(output_dir: Path = OUT_DIR) -> dict[str, Any]:
                 "video_calls": 0,
                 "official_media_unchanged": True,
                 "full_real_end_to_end_production_acceptance_triggered": False,
+                "real_media_readiness": {"eligible": sum(item.present for item in media_readiness), "total": len(media_readiness), "fixture_media_rejected": all(not item.present for item in media_readiness)},
                 "resolver": {"status": "PASS", "http_conflict_status": 409, "error_code": "ASSET_BINDING_INVALID"},
                 "schema_validation": schema_report,
                 "currentness_test": {"status": "PASS", "old_binding_staled_on_new_version": True, "automatic_rebinding": False},

@@ -5,7 +5,7 @@
 1. Open the project dashboard in **标准视图**.
 2. Read the project blocker and the single highlighted next action.
 3. Open **资产中心** and choose an entity from the backend manifest.
-4. Upload a real media file, preview it, and explicitly confirm the Production Asset binding. The action creates a new version; it does not overwrite history or auto-match by filename.
+4. If the formal Production Asset ingestion API is available, upload a real media file, preview it, and explicitly confirm the binding. In this round the API is not available, so the flow stops at `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API`.
 5. Return to the shot workspace. The shot card changes from `补齐资产` to the next authority-projected action.
 6. Select an explicitly configured IMAGE model. Without a model profile, `生成图片` remains blocked.
 7. Generate through the canonical IMAGE lane. The result appears as `候选结果`.
@@ -15,7 +15,7 @@
 
 ## Asset preparation
 
-The asset hub is entity-first. Each card shows type, current state, media presence, binding count and affected shots from the backend projection. A missing card routes to the existing asset center, where the ordinary flow is `选择实体 → 选择文件 → 预览 → 确认绑定`.
+The asset hub is entity-first. Each card shows type, current state, media presence, binding count and affected shots from the backend projection. A missing card exposes the required entity and blocker; it does not fabricate a binding while the formal ingestion API is absent.
 
 ## Generate IMAGE
 
@@ -32,3 +32,8 @@ Switch to **专业视图**. Expand a lane to inspect PromptIR version/hash, Mode
 ## Failure recovery
 
 Failures are shown with the user-facing event and next action first. Professional view adds failure code, adapter, transport and provider task ID. A failed execution requires explicit `重新生成`; the UI does not auto-retry.
+# Production boundary update
+
+The normal flow is `生成 → Candidate → 验证 → 设为正式版本`; every production action reads the V2 projection and fails closed when it is unavailable. Existing `adopted` media may be shown as historical context but cannot satisfy Production generation or delivery eligibility.
+
+The asset step remains blocked at `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API` until the formal entity-first ingestion contract is available. No frontend path creates Authority, Pointer, or Version rows.

@@ -16494,7 +16494,11 @@ def get_book_production_workspace(book_id: int):
 
 
 @app.get("/api/books/{book_id}/production-workspace-v2")
-def get_book_production_workspace_v2(book_id: int):
+def get_book_production_workspace_v2(
+    book_id: int,
+    image_model_profile_id: str | None = Query(default=None),
+    video_model_profile_id: str | None = Query(default=None),
+):
     """Return the read-only V2 production workspace projection.
 
     V2 is a denser DTO over the same authority/pointer records used by the
@@ -16502,7 +16506,14 @@ def get_book_production_workspace_v2(book_id: int):
     path, migration, provider call, or browser-cache fallback.
     """
     with Session() as session:
-        return build_production_workspace_projection_v2(session, book_id=book_id)
+        return build_production_workspace_projection_v2(
+            session,
+            book_id=book_id,
+            generation_profile_selection={
+                "IMAGE": image_model_profile_id,
+                "VIDEO": video_model_profile_id,
+            },
+        )
 
 
 @app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/media-preflight")

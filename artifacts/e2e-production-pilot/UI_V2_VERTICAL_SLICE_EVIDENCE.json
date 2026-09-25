@@ -1,0 +1,33 @@
+{
+  "schema_version": "ui_v2_vertical_slice_evidence_v1",
+  "stage": "PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW",
+  "fixture": {
+    "book_id": 990401,
+    "episode": 1,
+    "provider_free": true,
+    "required_real_asset_count": 15,
+    "real_asset_count": 0,
+    "status": "blocked"
+  },
+  "slices": [
+    {"name": "Asset blocker", "status": "evidenced", "evidence": "V2 asset readiness reports missing real visual media and rejects fixture identities"},
+    {"name": "IMAGE generate", "status": "wired", "evidence": "ProductionWorkspaceV2Panel and shared productionGeneration service call generate-frame"},
+    {"name": "IMAGE Candidate", "status": "wired", "evidence": "V2 lane projects MediaCandidate with preview and technical validation"},
+    {"name": "IMAGE validate", "status": "wired", "evidence": "candidate validation uses existing media-authority contract"},
+    {"name": "IMAGE promote", "status": "wired", "evidence": "promotion uses existing OfficialMedia authority contract"},
+    {"name": "Official IMAGE", "status": "strict_currentness", "evidence": "current pointer/version/authority/binding and media checks are required"},
+    {"name": "VIDEO mode/source", "status": "evidenced", "evidence": "generation mode is read from current VIDEO PromptIR policy and source Official IMAGE is projected"},
+    {"name": "VIDEO generate", "status": "wired", "evidence": "shared productionGeneration service calls generate-video"},
+    {"name": "VIDEO Candidate", "status": "wired", "evidence": "V2 VIDEO lane projects MediaCandidate independently from IMAGE"},
+    {"name": "VIDEO validate", "status": "wired", "evidence": "candidate validation uses existing media-authority contract"},
+    {"name": "VIDEO promote", "status": "wired", "evidence": "promotion uses existing OfficialMedia authority contract"},
+    {"name": "Official VIDEO", "status": "strict_currentness", "evidence": "current pointer/version/authority/binding and source lineage checks are required"}
+  ],
+  "local_verification": {
+    "backend_projection_tests": "14 passed",
+    "frontend_tests": "53 files / 311 tests passed",
+    "frontend_build": "passed",
+    "github_ci": "reported separately after push"
+  },
+  "remaining_blocker": "UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API"
+}

@@ -42,7 +42,9 @@ import {
   executeRecoveryTaskAction,
   type RecoveryTaskAction,
 } from './productWorkspaceTaskRecoveryActions'
-import { findAdoptedMediaAsset, getShotReferenceAssetIds } from './productWorkspaceBatchActions'
+import { getShotReferenceAssetIds } from './productWorkspaceBatchActions'
+import { findProductionShotV2 } from '../domain/productionWorkspace'
+import { submitCanonicalProductionGeneration } from '../services/productionGeneration'
 import {
   buildBatchCounters as buildTaskCenterBatchCounters,
   inferEpisodeFromTask as inferEpisodeFromTaskCenterEntry,
@@ -711,6 +713,13 @@ export default function ProductWorkspaceTasksSection({
         if (selectedTask.recoveryKind !== 'frame' && selectedTask.recoveryKind !== 'video') {
           throw new Error('当前仅支持对首帧或视频任务按最新镜头状态重新生成。')
         }
+        if (productionWorkspaceV2State !== 'ready' || !productionWorkspaceV2) {
+          throw new Error('Production Workspace V2 状态暂不可用，无法执行生产生成，请刷新后重试。')
+        }
+        const projectedShot = findProductionShotV2(productionWorkspaceV2, selectedEpisode, selectedShotId)
+        if (!projectedShot) {
+          throw new Error('当前镜头尚未出现在 Production Workspace V2 投影中，无法执行生产生成。')
+        }
 
         const generationKind = selectedTask.recoveryKind === 'frame' ? 'frame' : 'video'
         const explicitProfileSelection = readExplicitGenerationProfileSelection()
@@ -720,50 +729,19 @@ export default function ProductWorkspaceTasksSection({
         if (!modelProfileId) {
           throw new Error(`按最新状态重新生成${generationKind === 'frame' ? '首帧' : '视频'}前必须显式选择对应模型。`)
         }
-        const latestPayload =
-          generationKind === 'frame'
-            ? {
-                generationChain: 'task_center_regenerate_latest_frame',
-              }
-            : (() => {
-                const adoptedImage = findAdoptedMediaAsset(shot.assets?.images)
-                const adoptedImageId = String(adoptedImage?.id || '').trim()
-                if (!adoptedImageId) {
-                  throw new Error('当前镜头还没有已采纳首帧，不能按最新状态重新生成视频。')
-                }
-                return {
-                  compileIfMissing: true,
-                  firstFrameAssetId: adoptedImageId,
-                  referenceAssetIds: getShotReferenceAssetIds(shot),
-                  generationChain: 'task_center_regenerate_latest_video',
-                }
-              })()
-
-        const response = await fetch(
-          `/api/books/${bookId}/storyboard/${selectedEpisode}/${selectedShotId}/${generationKind === 'frame' ? 'generate-frame' : 'generate-video'}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              ...latestPayload,
-              modelProfileId,
-              confirmed: true,
-              allowExternalCall: true,
-            }),
-          },
-        )
-        if (!response.ok) {
-          let detail = ''
-          try {
-            const payload = await response.json()
-            detail = String(payload?.detail || payload?.error || '').trim()
-          } catch {
-            detail = await response.text()
-          }
-          throw new Error(detail || `HTTP ${response.status}`)
+        const lane = generationKind === 'frame' ? projectedShot.IMAGE : projectedShot.VIDEO
+        if (!lane.generation_readiness?.ready) {
+          throw new Error(lane.generation_readiness?.primary_blocker?.message || '当前生产状态不允许重新生成。')
         }
-
-        const payload = await response.json()
+        const payload = await submitCanonicalProductionGeneration({
+          bookId,
+          episode: selectedEpisode,
+          shotId: selectedShotId,
+          target: generationKind === 'frame' ? 'IMAGE' : 'VIDEO',
+          modelProfileId,
+          referenceAssetIds: generationKind === 'video' ? getShotReferenceAssetIds(shot) : undefined,
+          generationChain: generationKind === 'frame' ? 'task_center_regenerate_latest_frame' : 'task_center_regenerate_latest_video',
+        })
         const newTaskId = String(payload?.task_id || '').trim()
         if (!newTaskId) {
           throw new Error('按最新镜头状态重新生成失败：服务端未返回任务号。')

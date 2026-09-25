@@ -5,6 +5,7 @@ import { buildProjectStageProjectionFromAction } from './productWorkspaceProgres
 import { ProductWorkspaceProjectStageStrip } from './ProductWorkspaceProjectStageStrip'
 import WorkspaceSectionErrorBoundary from './WorkspaceSectionErrorBoundary'
 import ProductionWorkspaceV2Panel from './ProductionWorkspaceV2Panel'
+import { readExplicitGenerationProfileSelection } from './productWorkspaceGeneration'
 
 const ProductWorkspaceAdaptationSection = lazy(() => import('./ProductWorkspaceAdaptationSection'))
 const ProductWorkspaceAssetsSection = lazy(() => import('./ProductWorkspaceAssetsSection'))
@@ -114,6 +115,7 @@ export default function ProductWorkspaceSectionContent({
   const projectStage = dashboard.dashboardActions[0]
     ? buildProjectStageProjectionFromAction(dashboard.dashboardActions[0])
     : null
+  const explicitGenerationSelection = readExplicitGenerationProfileSelection()
 
   return (
     <Suspense fallback={<SectionLoadingFallback />}>
@@ -133,6 +135,8 @@ export default function ProductWorkspaceSectionContent({
             mode={dashboard.workspaceViewMode}
             onNavigateSection={dashboard.onNavigateSection}
             onRefresh={dashboard.onRefreshAll}
+            imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
+            videoModelProfileId={explicitGenerationSelection.videoModelProfileId}
           />
           <div className="mt-6">
             <ProductWorkspaceDashboardSection
@@ -259,6 +263,8 @@ export default function ProductWorkspaceSectionContent({
             focusShotId={storyboard.selectedStoryboardShotId}
             onNavigateSection={storyboard.onNavigateSection}
             onRefresh={storyboard.onRefreshAll}
+            imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
+            videoModelProfileId={explicitGenerationSelection.videoModelProfileId}
           />
           <CanvasHandoffBanner handoff={storyboard.canvasHandoff} />
           <ProductWorkspaceStoryboardSection
@@ -311,6 +317,8 @@ export default function ProductWorkspaceSectionContent({
             onNavigateSection={assets.onNavigateSection}
             onSelectAsset={assets.onSelectAsset}
             onRefresh={assets.onRefreshAll}
+            imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
+            videoModelProfileId={explicitGenerationSelection.videoModelProfileId}
           />
           <CanvasHandoffBanner handoff={assets.canvasHandoff} />
           <ProductWorkspaceAssetsSection

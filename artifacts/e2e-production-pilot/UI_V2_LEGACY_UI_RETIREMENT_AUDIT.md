@@ -60,3 +60,6 @@ submit-machine-prompt-provider / 真实提交 MiniMax H3 / 真实提交 H3: 0 re
 - Remaining legacy callsites: classified above as compatibility, historical display, recovery, or summary-only
 
 The implementation remains review-ready as `PHASE_UI_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`; it is not labelled `UI_V2_COMPLETE`.
+# Current retirement decision
+
+Legacy `adopted` values are retained for historical display and recovery context only. They are not used for V2 Production execution eligibility, candidate promotion, or current OfficialMedia readiness. Canvas and Task Center now fail closed on an unavailable V2 projection.

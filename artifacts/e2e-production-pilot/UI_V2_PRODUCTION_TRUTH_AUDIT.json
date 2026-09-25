@@ -1,0 +1,27 @@
+{
+  "schema_version": "ui_v2_production_truth_audit_v1",
+  "stage": "PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "asset_readiness_uses_real_production_media": true,
+  "asset_binding_exact_entity_coverage": true,
+  "video_generation_mode_from_prompt_ir": true,
+  "official_media_uses_strict_currentness": true,
+  "batch_legacy_fallback": false,
+  "production_execution_legacy_eligibility_callsites": 0,
+  "v2_generation_actions_wired": true,
+  "legacy_adopted_is_display_only": true,
+  "production_asset_ingestion_api_available": false,
+  "full_real_e2e_status": "FULL_REAL_E2E_BLOCKED_BY_REAL_VISUAL_ASSET_MEDIA",
+  "provider_calls": {
+    "real_image": 0,
+    "real_video": 0,
+    "paid_llm": 0
+  },
+  "database_migrations": 0,
+  "notes": [
+    "pilot://, fixture://, canary and other fixture identities are rejected as real Production Asset media",
+    "Production Workspace V2 is read-only and uses current typed Authority/Pointer/Version records",
+    "Entity-first upload remains blocked until a formal Production Asset ingestion API is available; the UI does not synthesize Authority/Pointer/Version rows"
+  ]
+}

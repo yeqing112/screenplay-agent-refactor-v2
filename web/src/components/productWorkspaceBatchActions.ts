@@ -11,6 +11,7 @@ import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTask
 import type { CreativeTaskPayload } from './productWorkspaceGeneration'
 import { resolveEffectiveReferenceAssetIds } from './productWorkspaceStoryboardReferencePayload'
 import { readExplicitGenerationProfileSelection } from './productWorkspaceGeneration'
+import { submitCanonicalProductionGeneration } from '../services/productionGeneration'
 
 export type BatchTaskAction =
   | 'batch-compile-prompts'
@@ -208,6 +209,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
 
   if (action === 'batch-generate-frames') {
     if (!imageModelProfileId) throw new Error('批量生成首帧前必须显式选择 IMAGE 生成模型。')
+    if (!options.productionWorkspaceV2) throw new Error('生产状态暂时不可用，请刷新后重试。')
     const runningFrameKeys = new Set(
       pendingTasks
         .filter((task) => task.kind === 'frame')
@@ -218,7 +220,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
       shots
         .filter((shot) => {
           const projection = findProductionShotV2(options.productionWorkspaceV2, Number(episode), shot.shot_id)
-          return projection ? isProductionBatchImageEligible(options.productionWorkspaceV2, Number(episode), shot.shot_id) : !hasGeneratedFrame(shot)
+          return Boolean(projection) && isProductionBatchImageEligible(options.productionWorkspaceV2, Number(episode), shot.shot_id)
         })
         .filter((shot) => !runningFrameKeys.has(`${Number(episode)}:${String(shot.shot_id)}`))
         .map((shot) => ({ episode: Number(episode), shotId: String(shot.shot_id) })),
@@ -234,19 +236,14 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
     const failedTargets: string[] = []
 
     for (const target of executableShots) {
-      const response = await fetch(`/api/books/${bookId}/storyboard/${target.episode}/${target.shotId}/generate-frame`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ modelProfileId: imageModelProfileId, compileIfMissing: true, confirmed: true, allowExternalCall: true }),
-      })
-
-      if (!response.ok) {
+      let payload: Record<string, any>
+      try {
+        payload = await submitCanonicalProductionGeneration({ bookId, episode: target.episode, shotId: target.shotId, target: 'IMAGE', modelProfileId: imageModelProfileId, generationChain: 'task_center_batch_image' })
+      } catch {
         failedCount += 1
         failedTargets.push(`第 ${target.episode} 集 / 镜头 ${target.shotId}`)
         continue
       }
-
-      const payload = await response.json().catch(() => ({}))
       const taskId = String(payload.task_id || '').trim()
       if (payload?.execution && !taskId) {
         startedCount += 1
@@ -305,6 +302,7 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
 
   if (action === 'batch-generate-videos') {
     if (!videoModelProfileId) throw new Error('批量生成视频前必须显式选择 VIDEO 生成模型。')
+    if (!options.productionWorkspaceV2) throw new Error('生产状态暂时不可用，请刷新后重试。')
     const runningVideoKeys = new Set(
       pendingTasks
         .filter((task) => task.kind === 'video')
@@ -315,19 +313,17 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
       shots
         .map((shot) => {
           const projection = findProductionShotV2(options.productionWorkspaceV2, Number(episode), shot.shot_id)
-          const adoptedImage = projection ? null : findAdoptedMediaAsset(shot.assets?.images)
           const officialImage = projection?.IMAGE.official.current ? projection.IMAGE.official.version : null
           return {
             episode: Number(episode),
             shotId: String(shot.shot_id),
-            firstFrameAssetId: String(officialImage?.id || adoptedImage?.id || '').trim(),
-            firstFrameUrl: String(officialImage?.storage_identity || adoptedImage?.previewUrl || adoptedImage?.uri || '').trim(),
+            firstFrameAssetId: String(officialImage?.id || '').trim(),
+            firstFrameUrl: String(officialImage?.storage_identity || '').trim(),
             referenceAssetIds: getShotReferenceAssetIds(shot),
-            hasVideo: projection ? !isProductionVideoGenerationReady(projection) : hasGeneratedVideo(shot),
             projection,
           }
         })
-        .filter((shot) => shot.projection ? isProductionBatchVideoEligible(options.productionWorkspaceV2, shot.episode, shot.shotId) : Boolean(shot.firstFrameAssetId && shot.firstFrameUrl && !shot.hasVideo))
+        .filter((shot) => Boolean(shot.projection) && isProductionBatchVideoEligible(options.productionWorkspaceV2, shot.episode, shot.shotId))
         .filter((shot) => !runningVideoKeys.has(`${shot.episode}:${shot.shotId}`)),
     )
 
@@ -341,25 +337,14 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
     const failedTargets: string[] = []
 
     for (const target of executableShots) {
-      const response = await fetch(`/api/books/${bookId}/storyboard/${target.episode}/${target.shotId}/generate-video`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          modelProfileId: videoModelProfileId,
-          confirmed: true,
-          allowExternalCall: true,
-          compileIfMissing: true,
-          ...(target.projection ? {} : { firstFrameAssetId: target.firstFrameAssetId, referenceAssetIds: target.referenceAssetIds }),
-        }),
-      })
-
-      if (!response.ok) {
+      let payload: Record<string, any>
+      try {
+        payload = await submitCanonicalProductionGeneration({ bookId, episode: target.episode, shotId: target.shotId, target: 'VIDEO', modelProfileId: videoModelProfileId, firstFrameAssetId: target.firstFrameAssetId, referenceAssetIds: target.referenceAssetIds, generationChain: 'task_center_batch_video' })
+      } catch {
         failedCount += 1
         failedTargets.push(`第 ${target.episode} 集 / 镜头 ${target.shotId}`)
         continue
       }
-
-      const payload = await response.json().catch(() => ({}))
       const taskId = String(payload.task_id || '').trim()
       if (payload?.execution && !taskId) {
         startedCount += 1

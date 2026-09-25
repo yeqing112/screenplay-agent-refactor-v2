@@ -1,8 +1,8 @@
 # UI V2 Production Workspace Convergence — Final Round Report
 
 - Date: 2026-09-25
-- Stage: `PHASE_UI_V2_PRODUCTION_WORKSPACE_CONVERGENCE`
-- Outcome: `PHASE_UI_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`
+- Stage: `PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`
+- Outcome: `PHASE_UI_V2_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`
 - Scope: read-only Production Workspace V2 convergence over the existing authority-backed backend
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: `https://github.com/yeqing112/screenplay-agent-refactor-v2.git`
@@ -23,6 +23,7 @@
 - Added the V2 domain types, service, hook, fixture and `ProductionWorkspaceV2Panel`.
 - Integrated the standard/professional view switch into the existing ProductWorkspace shell.
 - Added independent IMAGE and VIDEO lanes, candidate versus OfficialMedia semantics, stale and unavailable states, disabled generation without an explicit model, and the 15-asset blocked entity-first cards.
+- Canvas and Task Center production generation now fail closed when the V2 projection is unavailable or the projected lane is not ready; legacy `adopted` rows remain display/history only.
 - Candidate cards now expose preview, technical validation status, `验证候选`, and `设为正式版本` through the existing `/api/media-authority` contract; no frontend acceptance/favorite truth was added.
 - Professional view exposes PromptIR, ModelProfile, execution and OfficialMedia lineage; standard view hides raw lineage identifiers.
 - Retired the production Storyboard H3 submit path and manual media upload entry point; retained legacy data as read-only historical display.
@@ -35,12 +36,14 @@
 - `UI_V2_INFORMATION_ARCHITECTURE.md`
 - `UI_V2_LEGACY_UI_RETIREMENT_AUDIT.md`
 - This final round report.
+- `UI_V2_PRODUCTION_TRUTH_AUDIT.json`
+- `UI_V2_VERTICAL_SLICE_EVIDENCE.json`
 
 ## Verification evidence
 
 | Check | Result |
 |---|---|
-| `npm test` | 53 test files / 310 tests passed |
+| `npm test` | 53 test files / 311 tests passed |
 | `npm run build` | passed; Vite production bundle generated |
 | `pytest -q tests/test_production_workspace_projection.py` | 4 passed |
 | `npm run check:production` Python deterministic regression | 1780 passed; 2039 warnings from existing baseline |
@@ -68,8 +71,8 @@ This round does not create fake assets, placeholder media, a second authority, o
 
 The implementation is ready for review as `PHASE_UI_PRODUCTION_WORKSPACE_READY_FOR_REVIEW`. It must not be described as `UI_V2_COMPLETE`.
 
-The remaining review boundary is the compatibility surface outside the converged Dashboard, Storyboard and Assets views: legacy batch/task/canvas/delivery consumers still exist as read-only or migration-scope consumers and are not claimed as a second source of truth. The next review should confirm whether those consumers should be migrated to the V2 snapshot in a separate follow-up.
+The remaining review boundary is the formal entity-first Production Asset ingestion API. The UI intentionally does not synthesize Authority/Pointer/Version rows or accept browser-only uploads as production media, so the upload path is recorded as `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API`. Legacy batch/task/canvas/delivery data is display/history only and does not grant Production execution eligibility.
 
 ## Git delivery
 
-The implementation and generated regression outputs are in implementation commit `b710998` (full SHA is linked from the task response). This report is updated in the follow-up report commit created immediately after this edit; the task response supplies that exact report commit SHA and remote link.
+The implementation and generated regression outputs are pushed on this branch. The exact implementation and report commit links are supplied with the task response.

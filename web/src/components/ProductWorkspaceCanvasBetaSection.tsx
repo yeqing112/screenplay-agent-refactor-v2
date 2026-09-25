@@ -1004,8 +1004,8 @@ export default function ProductWorkspaceCanvasBetaSection({
     [selectedShot?.episode, selectedShot?.shot_id, shotExecutionSummaries],
   )
   const hasProductionImageSource = selectedProductionShot
-    ? Boolean(selectedProductionShot.IMAGE.official.current && selectedProductionShot.VIDEO.source_official_image?.current)
-    : Boolean(adoptedImage)
+    ? Boolean(productionWorkspaceV2State === 'ready' && selectedProductionShot.IMAGE.official.current)
+    : false
 
   const effectiveReferencePayload = useMemo(
     () => resolveEffectiveReferenceAssetIds(selectedShot),
@@ -1276,14 +1276,26 @@ export default function ProductWorkspaceCanvasBetaSection({
 
   const hasAdoptedFrame = Boolean(adoptedImage)
   const hasCurrentOfficialImage = selectedProductionShot
-    ? Boolean(selectedProductionShot.IMAGE.official.current && selectedProductionShot.VIDEO.source_official_image?.current)
-    : hasAdoptedFrame
+    ? Boolean(productionWorkspaceV2State === 'ready' && selectedProductionShot.IMAGE.official.current)
+    : false
 
   const isShotGenerationBusy = generationState === 'submitting'
   const isCompileBusy = compileState === 'submitting'
-  const canGenerateFrame = Boolean(selectedShot?.episode && selectedShot?.shot_id && imageModelProfileId) && !isShotGenerationBusy
+  const canGenerateFrame = Boolean(
+    productionWorkspaceV2State === 'ready' &&
+      selectedProductionShot?.IMAGE.generation_readiness?.ready &&
+      selectedShot?.episode &&
+      selectedShot?.shot_id &&
+      imageModelProfileId,
+  ) && !isShotGenerationBusy
   const canGenerateVideo =
-    Boolean(selectedShot?.episode && selectedShot?.shot_id && videoModelProfileId) && hasCurrentOfficialImage && !isShotGenerationBusy
+    Boolean(
+      productionWorkspaceV2State === 'ready' &&
+        selectedProductionShot?.VIDEO.generation_readiness?.ready &&
+        selectedShot?.episode &&
+        selectedShot?.shot_id &&
+        videoModelProfileId,
+    ) && hasCurrentOfficialImage && !isShotGenerationBusy
   const resultCount = visibleGraph.nodes.length
   const hasActiveKindFilter = activeKinds.length !== FILTERABLE_KINDS.length
   const hasActiveStatusFilter = statusFilter !== 'all'
@@ -1314,6 +1326,11 @@ export default function ProductWorkspaceCanvasBetaSection({
     promptRecompileVersion?: number
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (productionWorkspaceV2State !== 'ready' || !selectedProductionShot || !selectedProductionShot.IMAGE.generation_readiness?.ready) {
+      setGenerationState('error')
+      setGenerationMessage('Production Workspace V2 状态不可用或当前镜头尚未满足 IMAGE 生成条件。')
+      return
+    }
     if (!imageModelProfileId) {
       setGenerationState('error')
       setGenerationMessage('请先在创作画布或镜头工作台显式选择 IMAGE 生成模型。')
@@ -1433,6 +1450,11 @@ export default function ProductWorkspaceCanvasBetaSection({
     promptRecompileVersion?: number
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id || !hasCurrentOfficialImage) return
+    if (productionWorkspaceV2State !== 'ready' || !selectedProductionShot || !selectedProductionShot.VIDEO.generation_readiness?.ready) {
+      setGenerationState('error')
+      setGenerationMessage('Production Workspace V2 状态不可用或当前镜头尚未满足 VIDEO 生成条件。')
+      return
+    }
     if (!videoModelProfileId) {
       setGenerationState('error')
       setGenerationMessage('请先在创作画布或镜头工作台显式选择 VIDEO 生成模型。')

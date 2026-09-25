@@ -16,8 +16,12 @@ export async function fetchProductionWorkspace(bookId: number): Promise<Producti
   return normalizeProductionWorkspaceSnapshot(payload, bookId)
 }
 
-export async function fetchProductionWorkspaceV2(bookId: number): Promise<ProductionWorkspaceV2Snapshot> {
-  const response = await fetch(`/api/books/${bookId}/production-workspace-v2`)
+export async function fetchProductionWorkspaceV2(bookId: number, selection?: { imageModelProfileId?: string | null; videoModelProfileId?: string | null }): Promise<ProductionWorkspaceV2Snapshot> {
+  const params = new URLSearchParams()
+  if (selection?.imageModelProfileId) params.set('image_model_profile_id', selection.imageModelProfileId)
+  if (selection?.videoModelProfileId) params.set('video_model_profile_id', selection.videoModelProfileId)
+  const query = params.toString()
+  const response = await fetch(`/api/books/${bookId}/production-workspace-v2${query ? `?${query}` : ''}`)
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const payload = await response.json()
   const errors = validateProductionWorkspaceV2Snapshot(payload)

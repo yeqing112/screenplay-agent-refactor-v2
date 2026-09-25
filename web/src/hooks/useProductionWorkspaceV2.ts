@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
 import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
 import type { ProductionWorkspaceLoadState, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
+import { readExplicitGenerationProfileSelection } from '../components/productWorkspaceGeneration'
 
 export function useProductionWorkspaceV2(bookId?: number) {
   const [data, setData] = useState<ProductionWorkspaceV2Snapshot | null>(null)
@@ -26,7 +27,8 @@ export function useProductionWorkspaceV2(bookId?: number) {
         setState('ready')
         return
       }
-      setData(await fetchProductionWorkspaceV2(bookId))
+      const selection = readExplicitGenerationProfileSelection()
+      setData(await fetchProductionWorkspaceV2(bookId, selection))
       setState('ready')
     } catch (reason) {
       setData(null)

@@ -9,7 +9,9 @@ from collections.abc import Mapping
 from datetime import datetime
 import hashlib
 import json
+from dataclasses import dataclass
 from typing import Any
+from urllib.parse import urlparse
 
 from models import (
     CharacterAssetAuthority,
@@ -37,6 +39,151 @@ _CONFIG: dict[str, dict[str, Any]] = {
     "SCENE": {"entity": "scene_id", "authority": SceneAssetAuthority, "version": SceneAssetVersion, "pointer": SceneAssetPointer},
     "PROP": {"entity": "prop_id", "authority": PropAssetAuthority, "version": PropAssetVersion, "pointer": PropAssetPointer},
 }
+
+
+@dataclass(frozen=True)
+class ProductionAssetMediaReadiness:
+    """Deterministic media eligibility shared by production consumers.
+
+    The H2 pilot deliberately uses ``pilot://`` identities to exercise the
+    authority schema.  They are lineage fixtures, not readable production
+    media.  This validator keeps that distinction in one place so the
+    Full Real E2E preflight and the V2 projection cannot drift apart.
+    """
+
+    present: bool
+    reason_codes: tuple[str, ...] = ()
+    source_kind: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "present": self.present,
+            "reason_codes": list(self.reason_codes),
+            "source_kind": self.source_kind,
+        }
+
+
+_FIXTURE_SOURCE_KINDS = {"pilot", "fixture", "canary", "mock", "fake", "placeholder", "synthetic"}
+
+
+def production_asset_media_readiness(
+    *,
+    storage_identity: Any,
+    checksum: Any,
+    metadata: Mapping[str, Any] | None = None,
+) -> ProductionAssetMediaReadiness:
+    """Validate declared Production Asset media without provider/network I/O.
+
+    Source kind is structured evidence supplied by ingestion metadata; it is
+    not inferred from prompt text or a display/reference row.  A local file
+    must exist, while durable HTTPS/object-storage identities are accepted as
+    declared external media and remain subject to the provider preflight's
+    separate accessibility check.
+    """
+    identity = str(storage_identity or "").strip()
+    digest = str(checksum or "").strip()
+    meta = metadata if isinstance(metadata, Mapping) else {}
+    source_kind = str(meta.get("source_kind") or meta.get("media_source_kind") or "").strip().lower()
+    parsed = urlparse(identity) if identity else None
+    scheme = str(parsed.scheme or "").strip().lower() if parsed else ""
+    if not identity:
+        return ProductionAssetMediaReadiness(False, ("MEDIA_STORAGE_IDENTITY_MISSING",), source_kind)
+    if not digest:
+        return ProductionAssetMediaReadiness(False, ("MEDIA_CHECKSUM_MISSING",), source_kind)
+    if source_kind in _FIXTURE_SOURCE_KINDS or scheme in _FIXTURE_SOURCE_KINDS:
+        return ProductionAssetMediaReadiness(False, ("MEDIA_SOURCE_NOT_REAL",), source_kind or scheme)
+    if scheme in {"data", "blob"}:
+        return ProductionAssetMediaReadiness(False, ("MEDIA_SOURCE_NOT_DURABLE",), source_kind or scheme)
+    # Absolute/local paths are accepted only when there is an actual readable
+    # file.  Relative paths are intentionally not resolved from UI text.
+    if not scheme:
+        from pathlib import Path
+
+        path = Path(identity)
+        if not path.is_file():
+            return ProductionAssetMediaReadiness(False, ("MEDIA_SOURCE_UNREADABLE",), source_kind)
+        try:
+            with path.open("rb") as handle:
+                handle.read(1)
+        except OSError:
+            return ProductionAssetMediaReadiness(False, ("MEDIA_SOURCE_UNREADABLE",), source_kind)
+        return ProductionAssetMediaReadiness(True, (), source_kind or "local_file")
+    if scheme in {"http", "https", "s3", "gs", "qiniu", "oss", "r2", "object"}:
+        if scheme == "http" and source_kind not in {"local_http", "object_storage", "provider_url", "real_media"}:
+            return ProductionAssetMediaReadiness(False, ("MEDIA_SOURCE_UNSTABLE",), source_kind or scheme)
+        return ProductionAssetMediaReadiness(True, (), source_kind or scheme)
+    return ProductionAssetMediaReadiness(False, ("MEDIA_SOURCE_KIND_UNSUPPORTED",), source_kind or scheme)
+
+
+def resolve_current_production_asset_binding(session: Any, binding: Any) -> dict[str, Any]:
+    """Resolve one ShotAssetBinding through its typed Authority/Pointer/Version.
+
+    This is read-only and deliberately does not consult VisualReferenceAuthority.
+    It returns enough deterministic fingerprints for projections and Official
+    Media currentness checks to share the same production asset contract.
+    """
+    kind = _asset_type(getattr(binding, "asset_type", ""))
+    config = _typed_config(kind)
+    authority_id = str(getattr(binding, "authority_id", "") or "").strip()
+    version_id = str(getattr(binding, "version_id", "") or "").strip()
+    diagnostics: list[dict[str, Any]] = []
+    registry = session.query(ProductionAssetAuthorityRegistry).filter_by(authority_id=authority_id).one_or_none()
+    authority = session.query(config["authority"]).filter_by(authority_id=authority_id).one_or_none()
+    version = session.query(config["version"]).filter_by(authority_id=authority_id, version_id=version_id).one_or_none()
+    if registry is None or str(getattr(registry, "asset_type", "")).upper() != kind:
+        diagnostics.append({"code": "ASSET_AUTHORITY_REGISTRY_MISMATCH", "authority_id": authority_id})
+    if authority is None:
+        diagnostics.append({"code": "ASSET_AUTHORITY_MISSING", "authority_id": authority_id})
+    if version is None:
+        diagnostics.append({"code": "ASSET_VERSION_MISSING", "version_id": version_id})
+    if diagnostics:
+        return {"current": False, "asset_type": kind, "authority_id": authority_id, "version_id": version_id, "entity_id": "", "diagnostics": diagnostics}
+    entity_field = config["entity"]
+    entity_id = str(getattr(authority, entity_field, "") or "")
+    pointer = session.query(config["pointer"]).filter_by(**{entity_field: entity_id, "authority_id": authority_id}).one_or_none()
+    source = {"storage_identity": version.storage_identity, "checksum": version.checksum, "metadata_hash": version.metadata_hash}
+    version_fingerprint = _version_fingerprint(authority_id=authority_id, version_id=version.version_id, revision=int(version.revision or 0), source=source)
+    pointer_expected = _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=version.version_id)
+    binding_expected = _binding_fingerprint(
+        storyboard_shot_id=int(getattr(binding, "storyboard_shot_id", 0) or 0),
+        asset_type=kind,
+        authority_fingerprint=str(authority.fingerprint or ""),
+        version_fingerprint=version_fingerprint,
+        pointer_fingerprint=str(getattr(pointer, "fingerprint", "") or ""),
+    )
+    media = production_asset_media_readiness(storage_identity=version.storage_identity, checksum=version.checksum)
+    checks = {
+        "binding_active": str(getattr(binding, "status", "")).upper() == "ACTIVE",
+        "authority_active": str(getattr(authority, "status", "")).upper() == "ACTIVE",
+        "version_current": str(getattr(version, "status", "")).upper() == "CURRENT",
+        "authority_current_version": str(getattr(authority, "current_version_id", "") or "") == version_id,
+        "pointer_present": pointer is not None,
+        "pointer_authority": bool(pointer and str(getattr(pointer, "authority_id", "")) == authority_id),
+        "pointer_version": bool(pointer and str(getattr(pointer, "version_id", "")) == version_id),
+        "pointer_fingerprint": bool(pointer and str(getattr(pointer, "fingerprint", "")) == pointer_expected),
+        "binding_fingerprint": str(getattr(binding, "binding_fingerprint", "")) == binding_expected,
+        "authority_fingerprint": bool(str(getattr(authority, "fingerprint", "") or "").strip()),
+        "media_present": media.present,
+    }
+    failed = [name for name, value in checks.items() if not value]
+    return {
+        "current": not failed,
+        "asset_type": kind,
+        "entity_id": entity_id,
+        "authority_id": authority_id,
+        "version_id": version_id,
+        "authority": authority,
+        "version": version,
+        "pointer": pointer,
+        "binding": binding,
+        "checks": checks,
+        "failed_checks": failed,
+        "media": media.to_dict(),
+        "authority_fingerprint": str(authority.fingerprint or ""),
+        "version_fingerprint": version_fingerprint,
+        "pointer_fingerprint": str(getattr(pointer, "fingerprint", "") or ""),
+        "binding_fingerprint": str(getattr(binding, "binding_fingerprint", "") or ""),
+    }
 
 
 class ProductionAssetSchemaError(ValueError):
@@ -514,6 +661,9 @@ def assert_asset_authority_schema(session) -> dict[str, Any]:
 
 
 __all__ = [
+    "ProductionAssetMediaReadiness",
+    "production_asset_media_readiness",
+    "resolve_current_production_asset_binding",
     "ProductionAssetSchemaError",
     "AssetBindingInvalid",
     "ingest_production_asset",
