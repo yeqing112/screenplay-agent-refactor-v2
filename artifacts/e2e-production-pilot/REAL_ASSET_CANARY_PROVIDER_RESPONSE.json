@@ -1,0 +1,74 @@
+{
+  "schema_version": "provider_asset_response_fixture_v1",
+  "provider": "fixture-provider",
+  "fixture_mode": true,
+  "provider_calls": 0,
+  "response_id": "real-asset-canary-response-001",
+  "assets": [
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "CANARY_LIN_WAN",
+      "storage_identity": "https://assets.example.invalid/real-asset-canary/character/canary-lin-wan-v1.png",
+      "checksum": "sha256:real-asset-canary-character-v1",
+      "metadata": {
+        "schema_version": "production_asset_media_metadata_v1",
+        "mime_type": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "source_kind": "real_asset_canary",
+        "provenance": {
+          "source_reference": "provider-response://real-asset-canary/v1/character/CANARY_LIN_WAN",
+          "provider_response_id": "real-asset-canary-character-001",
+          "provider_output_fingerprint": "sha256:69709af78743d7f907572eb0add8dfd04679e30ed6fc14823be3945eae6fb656",
+          "captured_at": "2026-09-26T00:00:00Z",
+          "provider": "fixture-provider",
+          "fixture_mode": true,
+          "is_mock": false
+        }
+      },
+      "provenance": {
+        "source_reference": "provider-response://real-asset-canary/v1/character/CANARY_LIN_WAN",
+        "provider_response_id": "real-asset-canary-character-001",
+        "provider_output_fingerprint": "sha256:69709af78743d7f907572eb0add8dfd04679e30ed6fc14823be3945eae6fb656",
+        "captured_at": "2026-09-26T00:00:00Z",
+        "provider": "fixture-provider",
+        "fixture_mode": true,
+        "is_mock": false
+      },
+      "provider_response_id": "real-asset-canary-character-001"
+    },
+    {
+      "asset_type": "SCENE",
+      "entity_id": "CANARY_E01_SC001",
+      "storage_identity": "https://assets.example.invalid/real-asset-canary/scene/canary-e01-sc001-v1.png",
+      "checksum": "sha256:real-asset-canary-scene-v1",
+      "metadata": {
+        "schema_version": "production_asset_media_metadata_v1",
+        "mime_type": "image/png",
+        "width": 2048,
+        "height": 2048,
+        "source_kind": "real_asset_canary",
+        "provenance": {
+          "source_reference": "provider-response://real-asset-canary/v1/scene/CANARY_E01_SC001",
+          "provider_response_id": "real-asset-canary-scene-001",
+          "provider_output_fingerprint": "sha256:ed0cfe63a404da409bc984eb2832a7c0cbf0f316de97b4e45cb65a2b63e6b793",
+          "captured_at": "2026-09-26T00:00:00Z",
+          "provider": "fixture-provider",
+          "fixture_mode": true,
+          "is_mock": false
+        }
+      },
+      "provenance": {
+        "source_reference": "provider-response://real-asset-canary/v1/scene/CANARY_E01_SC001",
+        "provider_response_id": "real-asset-canary-scene-001",
+        "provider_output_fingerprint": "sha256:ed0cfe63a404da409bc984eb2832a7c0cbf0f316de97b4e45cb65a2b63e6b793",
+        "captured_at": "2026-09-26T00:00:00Z",
+        "provider": "fixture-provider",
+        "fixture_mode": true,
+        "is_mock": false
+      },
+      "provider_response_id": "real-asset-canary-scene-001"
+    }
+  ],
+  "response_fingerprint": "sha256:814510b8652ad6f92a853c77b9efad47b47776aa74dbfa1db9c575492afe928a"
+}

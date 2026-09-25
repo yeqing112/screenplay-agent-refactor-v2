@@ -11,6 +11,7 @@
     "gate:production": "node scripts/run-production-release-gate.js",
     "test:release-gate": "node scripts/run-production-release-gate.test.js",
     "test:golden": "python scripts/run-golden-regression.py",
+    "canary:real-assets": "python scripts/run_real_asset_canary.py",
     "config:verify": "node scripts/verify-runtime-config.js",
     "config:verify:production": "python scripts/verify-production-security.py",
     "validate:sample-registry": "python scripts/validate-production-sample-registry.py",

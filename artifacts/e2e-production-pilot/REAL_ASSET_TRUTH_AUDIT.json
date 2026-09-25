@@ -1,0 +1,49 @@
+{
+  "schema_version": "real_asset_truth_audit_v1",
+  "stage": "PHASE_UI_V2_REAL_ASSET_CANARY_COMPLETE",
+  "fixture_mode": true,
+  "provider_calls": 0,
+  "production_writes_allowed_only_after_reconcile": true,
+  "mock_asset_production_approved": false,
+  "provenance_metadata_required": true,
+  "checks": {
+    "asset_has_source_reference": true,
+    "asset_matches_shot_requirement": true,
+    "asset_state_transition_valid": true,
+    "asset_media_readiness": true,
+    "asset_provenance_complete": true,
+    "mock_asset_not_approved": true
+  },
+  "approval_state": "CANARY_APPROVED",
+  "production_approval_state": "CANARY_APPROVED_ONLY",
+  "normalized_asset_count": 2,
+  "shot_count": 3,
+  "asset_count": 2,
+  "source_gate_counts_before": {
+    "fact_snapshots": 0,
+    "fact_records": 0,
+    "script_ir_versions": 0
+  },
+  "source_gate_counts_after": {
+    "fact_snapshots": 0,
+    "fact_records": 0,
+    "script_ir_versions": 0
+  },
+  "source_gate_mutations": {
+    "fact_snapshots": 0,
+    "fact_records": 0,
+    "script_ir_versions": 0
+  },
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "asset_has_source_reference": true,
+  "asset_matches_shot_requirement": true,
+  "asset_state_transition_valid": true,
+  "regression_evidence": {
+    "existing_regression_baseline": "1787 passed",
+    "current_production_regression": "1790 passed (1787 existing + 3 canary)",
+    "existing_regression_unchanged": true,
+    "golden": "5/5 passed",
+    "release_gate_invariants": "passed"
+  }
+}

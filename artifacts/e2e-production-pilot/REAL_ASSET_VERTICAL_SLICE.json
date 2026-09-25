@@ -1,0 +1,65 @@
+{
+  "schema_version": "real_asset_vertical_slice_v1",
+  "stage": "PHASE_UI_V2_REAL_ASSET_CANARY_COMPLETE",
+  "provider_free": true,
+  "provider_calls": 0,
+  "episode_count": 1,
+  "shot_count": 3,
+  "asset_count": 2,
+  "approval_state": "CANARY_APPROVED",
+  "production_writes": {
+    "allowed": true,
+    "authority": 2,
+    "version": 2,
+    "pointer": 2,
+    "shot": 3,
+    "binding": 6,
+    "only_after_reconcile": true
+  },
+  "steps": [
+    {
+      "name": "provider_output",
+      "status": "PASS",
+      "evidence": "Frozen provider response fixture; no provider HTTP call."
+    },
+    {
+      "name": "asset_normalization",
+      "status": "PASS",
+      "evidence": "Canonical CHARACTER/SCENE identity, storage identity, checksum and provenance retained."
+    },
+    {
+      "name": "constraint_check",
+      "status": "PASS",
+      "evidence": "All media, provenance and shot requirement checks passed."
+    },
+    {
+      "name": "reconcile",
+      "status": "PASS",
+      "evidence": "Authority, Version, Pointer, StoryboardShot and Binding rows are written only after checks pass."
+    },
+    {
+      "name": "approval_state",
+      "status": "PASS",
+      "evidence": "CANARY_APPROVED"
+    },
+    {
+      "name": "production_workspace_asset_readiness",
+      "status": "PASS",
+      "evidence": "All three canary shots resolve current typed assets."
+    }
+  ],
+  "truth_checks": {
+    "asset_has_source_reference": true,
+    "asset_matches_shot_requirement": true,
+    "asset_state_transition_valid": true
+  },
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "regression_evidence": {
+    "existing_regression_baseline": "1787 passed",
+    "current_production_regression": "1790 passed (1787 existing + 3 canary)",
+    "existing_regression_unchanged": true,
+    "golden": "5/5 passed",
+    "release_gate_invariants": "passed"
+  }
+}
