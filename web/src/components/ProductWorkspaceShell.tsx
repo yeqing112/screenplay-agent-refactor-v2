@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { getProjectStatusLabel } from './productWorkspaceProjectStatus'
 import type { WorkspaceSection } from './productWorkspaceAssetViewController'
+import type { ProductionWorkspaceViewMode } from '../domain/productionWorkspace'
 
 interface WorkspaceShellSection {
   id: WorkspaceSection
@@ -20,6 +21,8 @@ interface Props {
   onSelectSection: (section: WorkspaceSection) => void
   getSectionBlockedReason: (section: WorkspaceSection) => string | null
   onRefreshAll: () => void
+  viewMode?: ProductionWorkspaceViewMode
+  onViewModeChange?: (mode: ProductionWorkspaceViewMode) => void
   children: ReactNode
 }
 
@@ -33,6 +36,8 @@ export default function ProductWorkspaceShell({
   onSelectSection,
   getSectionBlockedReason,
   onRefreshAll,
+  viewMode = 'standard',
+  onViewModeChange = () => undefined,
   children,
 }: Props) {
   const currentSectionLabel = sections.find((item) => item.id === section)?.label ?? '项目控制台'
@@ -112,6 +117,19 @@ export default function ProductWorkspaceShell({
               <h1 className="mt-1 text-xl font-semibold text-white md:text-2xl">{currentSectionLabel}</h1>
             </div>
             <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center rounded-lg border border-slate-800 bg-slate-900 p-0.5" aria-label="工作区视图模式">
+                {(['standard', 'professional'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    aria-pressed={viewMode === mode}
+                    onClick={() => onViewModeChange(mode)}
+                    className={`rounded-md px-2.5 py-1.5 text-xs transition ${viewMode === mode ? 'bg-violet-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                  >
+                    {mode === 'standard' ? '标准视图' : '专业视图'}
+                  </button>
+                ))}
+              </div>
               <button
                 type="button"
                 onClick={onRefreshAll}

@@ -91,10 +91,10 @@ function buildTaskStatusReason(statusPayload: CreativeTaskStatusPayload | undefi
   const generationChain = String(statusPayload?.generation_chain || '').trim()
   if (generationChain === 'machine_prompt_api_submission') {
     if (statusPayload?.actual_provider_submission) {
-      if (externalStatus) return `MiniMax H3 provider 状态：${externalStatus}`
-      return '已真实提交 MiniMax H3，等待 provider 回收。'
+      if (externalStatus) return `历史 provider 任务状态：${externalStatus}`
+      return '历史 provider 任务，当前页面仅提供状态回收。'
     }
-    if (status === 'queued') return '已登记提交意图；当前没有调用 provider，需要二次确认后才会真实提交 H3。'
+    if (status === 'queued') return '历史导出登记任务；当前生产入口不会自动调用 provider。'
     if (externalStatus) return `登记状态：${externalStatus}；当前没有真实外发。`
   }
   if (status === 'queued') return '任务已提交，等待 provider 开始执行。'
@@ -325,9 +325,9 @@ export function buildRecoveryTaskEntries(
         status === 'error'
           ? `任务 ${taskId} 当前无法继续自动回收，建议检查版本状态，或直接从任务中心重新发起。`
           : isMachinePromptApiSubmission && !statusPayload?.actual_provider_submission
-            ? `任务 ${taskId} 已登记机器提示词 API 提交意图；当前不会自动调用 provider，需要在镜头工作台二次确认后才会真实提交 H3。`
+            ? `任务 ${taskId} 是历史机器提示词导出登记；当前不会自动调用 provider。`
           : isMachinePromptApiSubmission
-            ? `任务 ${taskId} 已真实提交 MiniMax H3，可继续从任务中心回收 provider 视频结果。`
+            ? `任务 ${taskId} 属于历史 provider 任务，可继续查看回收状态；新的生产生成请使用当前 VIDEO 泳道。`
           : triggeredByPromptRecompile && generationChain
             ? `任务 ${taskId} 来自“${describeGenerationChain(generationChain)}”链路，可在任务中心追溯本次生成所使用的重编任务与提示词版本。`
             : generationChain.startsWith('task_center_regenerate_latest_')

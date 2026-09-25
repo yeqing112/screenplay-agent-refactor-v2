@@ -2738,7 +2738,7 @@ export default function ProductWorkspaceStoryboardSection({
       })
       setMachinePromptApiSubmissionState('submitted')
       setMachinePromptApiSubmissionMessage(
-        `已登记 API 提交任务 ${taskId}；当前尚未调用真实 provider。如需生成视频，请再执行“真实提交 H3”。`,
+        `已登记 API 提交任务 ${taskId}；当前尚未调用真实 provider。正式生成请从当前视频泳道显式发起。`,
       )
       setRuntimeVersion((current) => current + 1)
       return taskId
@@ -2749,124 +2749,6 @@ export default function ProductWorkspaceStoryboardSection({
     }
   }
 
-  const submitMachinePromptProviderTask = async () => {
-    if (!selectedShot?.episode || !selectedShot?.shot_id) return
-    if (!machinePromptExport) {
-      setMachinePromptApiSubmissionState('error')
-      setMachinePromptApiSubmissionMessage('请先加载机器提示词导出预览，再执行真实 H3 提交。')
-      return
-    }
-
-    // Run a read-only provider-input preflight before showing the billable
-    // confirmation.  This catches missing/unreachable references locally and
-    // avoids asking the user to confirm a request that the provider would
-    // reject.  The submission endpoint repeats the same checks authoritatively.
-    const usingReferenceImages = effectiveReferenceAssetIds.length > 0
-    const usingFirstFrame = !usingReferenceImages && Boolean(adoptedImageUrl)
-    try {
-      const params = new URLSearchParams({
-        target_model: 'minimax-h3',
-        use_reference_images: String(usingReferenceImages),
-        use_first_frame: String(usingFirstFrame),
-        allow_unstable_public_assets: String(allowUnstablePublicAssets),
-      })
-      if (videoModelProfile?.id) params.set('model_profile_id', videoModelProfile.id)
-      const preflightResponse = await fetch(
-        `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/media-preflight?${params.toString()}`,
-      )
-      const preflight = await preflightResponse.json().catch(() => ({}))
-      if (!preflightResponse.ok) {
-        throw new Error(String(preflight?.detail || `HTTP ${preflightResponse.status}`))
-      }
-      if (!preflight?.ready_for_real_submit) {
-        setMachinePromptApiSubmissionState('error')
-        setMachinePromptApiSubmissionMessage(getStoryboardMediaPreflightBlockerMessage(preflight))
-        return
-      }
-    } catch (error) {
-      setMachinePromptApiSubmissionState('error')
-      setMachinePromptApiSubmissionMessage(error instanceof Error ? `真实提交前检查失败：${error.message}` : '真实提交前检查失败。')
-      return
-    }
-
-    const storageConfirmationNote = allowUnstablePublicAssets
-      ? '锁定参考图可能会上传到七牛临时地址（仅本次灰度）'
-      : usingReferenceImages
-        ? '必要时会把锁定参考图上传到已配置的对象存储'
-        : ''
-    const confirmed =
-      typeof window === 'undefined'
-        ? false
-        : window.confirm(
-            [
-              '确认真实提交 MiniMax H3 视频生成？',
-              '该操作可能产生平台费用，并会把返回视频写回当前镜头资产。',
-              storageConfirmationNote,
-            ]
-              .filter(Boolean)
-              .join('\n'),
-          )
-    if (!confirmed) {
-      setMachinePromptApiSubmissionMessage('已取消真实 H3 提交；当前只保留导出/登记状态。')
-      return
-    }
-
-    let taskId = machinePromptApiSubmissionTaskId
-    if (!taskId) {
-      taskId = await submitMachinePromptApiTask()
-    }
-    if (!taskId) return
-
-    setMachinePromptApiSubmissionState('submitting')
-    setMachinePromptApiSubmissionMessage(`正在真实提交 MiniMax H3：任务 ${taskId}。`)
-    try {
-      const response = await fetch(`/api/prototyping/tasks/${taskId}/submit-machine-prompt-provider`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          confirmationToken: 'CONFIRM_MINIMAX_H3_SUBMIT',
-          aspectRatio: '16:9',
-          durationSeconds: h3ProviderSubmitSummary?.durationSeconds ?? h3Duration.durationSeconds,
-          modelProfileId: videoModelProfile?.id || undefined,
-          useReferenceImages: effectiveReferenceAssetIds.length > 0,
-          referenceAssetIds: effectiveReferenceAssetIds,
-          useFirstFrame: effectiveReferenceAssetIds.length === 0 && Boolean(adoptedImageUrl),
-          firstFrameAssetId: effectiveReferenceAssetIds.length === 0 ? (adoptedImage?.id ? String(adoptedImage.id) : undefined) : undefined,
-          allowUnstablePublicAssets,
-          notes: effectiveReferenceAssetIds.length > 0
-            ? '由正式工作台二次确认后真实提交 MiniMax H3；使用多参考图模式，不与首/尾帧模式混用。'
-            : '由正式工作台二次确认后真实提交 MiniMax H3；使用当前采纳首帧图生视频模式。',
-        }),
-      })
-      if (!response.ok) {
-        let detail = ''
-        try {
-          const payload = await response.json()
-          detail = String(payload?.detail || payload?.error || '').trim()
-        } catch {
-          detail = await response.text()
-        }
-        throw new Error(detail || `HTTP ${response.status}`)
-      }
-
-      const payload = await response.json()
-      upsertPendingStoryboardTask(_bookId, {
-        taskId,
-        episode: selectedShot.episode,
-        shotId: String(selectedShot.shot_id),
-        kind: 'video',
-        updatedAt: new Date().toISOString(),
-      })
-      setMachinePromptApiSubmissionState('submitted')
-      setMachinePromptApiSubmissionMessage(
-        `已真实提交 MiniMax H3：任务 ${taskId}，provider 状态 ${payload?.external_status || 'queued'}。可到任务中心回收视频结果。`,
-      )
-      setRuntimeVersion((current) => current + 1)
-    } catch (error) {
-      setMachinePromptApiSubmissionState('error')
-      setMachinePromptApiSubmissionMessage(error instanceof Error ? error.message : 'MiniMax H3 真实提交失败。')
-    }
-  }
 
   const persistShotExecutionSummary = (
     action: 'compile' | 'frame' | 'video',
@@ -4313,7 +4195,6 @@ export default function ProductWorkspaceStoryboardSection({
                 onDownloadFile={downloadMachinePromptExportFile}
                 onSaveRecord={saveMachinePromptExportRecord}
                 onSubmitApiTask={submitMachinePromptApiTask}
-                onSubmitProviderTask={submitMachinePromptProviderTask}
                 onLoadHistory={loadMachinePromptExportRecordHistory}
                 onRestoreRecordDraft={restoreMachinePromptExportRecordDraft}
               /> : (
@@ -4659,7 +4540,7 @@ export default function ProductWorkspaceStoryboardSection({
                   archivedAssets={selectedShot.split_archived_assets}
                   referenceImages={referenceImages}
                   onUploaded={onRefresh}
-                  allowManualUpload={canGenerateFromGate}
+                  allowManualUpload={false}
                 /> : null}
 
                 {activeStoryboardStep === 'more' ? <ProductWorkspacePromptAuthorityPanel

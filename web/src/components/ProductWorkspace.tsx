@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useBookOutputs } from '../hooks/useBookOutputs'
 import { useProductionWorkspace } from '../hooks/useProductionWorkspace'
+import { useProductionWorkspaceV2 } from '../hooks/useProductionWorkspaceV2'
 import { useProductWorkspaceUpstream } from './productWorkspaceUpstreamController'
 import {
   buildCharacterAssetSummaries,
@@ -34,6 +35,7 @@ import {
 import { useProductWorkspaceOverview } from './productWorkspaceOverviewController'
 import { useProductWorkspaceProjectData } from './productWorkspaceProjectDataController'
 import type { CanvasHandoffTarget, CanvasNavigationTarget, StoryboardStep, TaskNavigationTarget } from './productWorkspaceSectionContracts'
+import type { ProductionWorkspaceViewMode } from '../domain/productionWorkspace'
 import { useProductWorkspaceSectionBundles } from './productWorkspaceSectionBundlesController'
 import {
   readProductWorkspaceNavigationState,
@@ -99,6 +101,7 @@ export default function ProductWorkspace({
   const persistedNavigationState = useMemo(() => readProductWorkspaceNavigationState(book.id), [book.id])
   const urlNavigation = useMemo(() => readUrlWorkspaceNavigation(), [])
   const [section, setSection] = useState<WorkspaceSection>(urlNavigation.section ?? persistedNavigationState?.section ?? 'dashboard')
+  const [workspaceViewMode, setWorkspaceViewMode] = useState<ProductionWorkspaceViewMode>('standard')
   const [selectedStoryboardShotId, setSelectedStoryboardShotId] = useState<string | null>(urlNavigation.shot ?? null)
   const [initialStoryboardStep] = useState<StoryboardStep | undefined>(urlNavigation.step)
   const [canvasNavigationTarget, setCanvasNavigationTarget] = useState<CanvasNavigationTarget | null>(
@@ -126,12 +129,14 @@ export default function ProductWorkspace({
   const [isGeneratingStoryboard, setIsGeneratingStoryboard] = useState(false)
   const { data, loading, error, refresh } = useBookOutputs(book.id)
   const productionWorkspace = useProductionWorkspace(book.id)
+  const productionWorkspaceV2 = useProductionWorkspaceV2(book.id)
 
   const handleRefreshAll = useCallback(() => {
     onRefresh()
     refresh()
     void productionWorkspace.refresh()
-  }, [onRefresh, refresh, productionWorkspace.refresh])
+    void productionWorkspaceV2.refresh()
+  }, [onRefresh, refresh, productionWorkspace.refresh, productionWorkspaceV2.refresh])
 
   const {
     firstScript,
@@ -658,6 +663,10 @@ export default function ProductWorkspace({
     productionWorkspace: productionWorkspace.data,
     productionWorkspaceState: productionWorkspace.state,
     productionWorkspaceError: productionWorkspace.error,
+    productionWorkspaceV2: productionWorkspaceV2.data,
+    productionWorkspaceV2State: productionWorkspaceV2.state,
+    productionWorkspaceV2Error: productionWorkspaceV2.error,
+    workspaceViewMode,
     onNavigateSection: handleSelectSection,
     onNavigateTaskSection: navigateTaskSection,
     makeups,
@@ -674,11 +683,13 @@ export default function ProductWorkspace({
       projectStatus={summary.projectStatus}
       section={section}
       sections={sections}
-      loading={loading || productionWorkspace.loading}
+      loading={loading || productionWorkspace.loading || productionWorkspaceV2.loading}
       error={error || productionWorkspace.error}
       onSelectSection={handleSelectSection}
       getSectionBlockedReason={import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('workspace_fixture') === 'populated' ? () => null : getSectionBlockedReason}
       onRefreshAll={handleRefreshAll}
+      viewMode={workspaceViewMode}
+      onViewModeChange={setWorkspaceViewMode}
     >
       <ProductWorkspaceSectionContent {...sectionBundles} />
     </ProductWorkspaceShell>

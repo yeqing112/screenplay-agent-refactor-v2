@@ -189,7 +189,7 @@ def _lane(session: Any, *, shot: dict[str, Any], target_media: str) -> dict[str,
 
 def build_production_workspace_projection_v2(session: Any, *, book_id: int) -> dict[str, Any]:
     """Return the V2 read model over the existing V1 authority projection."""
-    from models import GenerationExecutionRecord, StoryboardShot
+    from models import ProductionAssetVersionRegistry, ShotAssetBinding, StoryboardShot, VisualReferenceAuthority
 
     base = build_production_workspace_projection(session, book_id=book_id)
     shots = []
@@ -217,13 +217,51 @@ def build_production_workspace_projection_v2(session: Any, *, book_id: int) -> d
             "legacy": {"prompt_ir_state": raw.get("prompt_ir_state"), "reference_state": raw.get("reference_state"), "media_state": raw.get("media_state")},
         })
 
+    references = session.query(VisualReferenceAuthority).filter(
+        VisualReferenceAuthority.asset_key.in_([_text(item.get("asset_key")) for item in base.get("assets", [])])
+    ).all() if base.get("assets") else []
+    references_by_asset = defaultdict(list)
+    for reference in references:
+        references_by_asset[_text(getattr(reference, "asset_key", ""))].append(reference)
+    bindings = session.query(ShotAssetBinding).join(StoryboardShot, ShotAssetBinding.storyboard_shot_id == StoryboardShot.id).filter(StoryboardShot.book_id == book_id).all()
+    bindings_by_authority = defaultdict(list)
+    for binding in bindings:
+        bindings_by_authority[_text(getattr(binding, "authority_id", ""))].append(binding)
+    production_versions = session.query(ProductionAssetVersionRegistry).all()
+    production_version_by_visual_id = {
+        int(getattr(version, "visual_asset_version_id")): version
+        for version in production_versions
+        if getattr(version, "visual_asset_version_id", None) is not None
+    }
+
     assets = []
     for asset in base.get("assets", []):
         item = dict(asset)
         item["entity_id"] = _text(item.get("asset_key")).split(":")[-1]
-        item["media"] = {"present": item.get("reference_state") == "complete", "storage_identity": None, "checksum": None, "mime": None, "width": None, "height": None}
-        item["bindings"] = []
-        item["history"] = []
+        production_version = production_version_by_visual_id.get(int(item.get("current_version_id"))) if item.get("current_version_id") is not None else None
+        authority_id = _text(getattr(production_version, "authority_id", ""))
+        asset_refs = references_by_asset.get(_text(item.get("asset_key")), [])
+        locked_ref = next((ref for ref in asset_refs if _text(getattr(ref, "status", "")).upper() == "LOCKED" and _text(getattr(ref, "stale_status", "")).upper() in {"", "FRESH", "CURRENT"}), None)
+        item["media"] = {
+            "present": bool(locked_ref and _text(getattr(locked_ref, "image_identity", "")) and _text(getattr(locked_ref, "checksum", ""))),
+            "storage_identity": _text(getattr(locked_ref, "image_identity", "")) or None,
+            "checksum": _text(getattr(locked_ref, "checksum", "")) or None,
+            "mime": None,
+            "width": None,
+            "height": None,
+        }
+        item["bindings"] = [{
+            "storyboard_shot_id": int(getattr(binding, "storyboard_shot_id", 0)),
+            "authority_id": _text(getattr(binding, "authority_id", "")),
+            "version_id": _text(getattr(binding, "version_id", "")),
+            "status": _text(getattr(binding, "status", "ACTIVE")) or "ACTIVE",
+        } for binding in bindings_by_authority.get(authority_id, [])]
+        item["history"] = [{
+            "reference_authority_id": getattr(ref, "id", None),
+            "status": _text(getattr(ref, "status", "")),
+            "stale_status": _text(getattr(ref, "stale_status", "")),
+            "lock_revision": getattr(ref, "lock_revision", None),
+        } for ref in asset_refs]
         assets.append(item)
 
     return {

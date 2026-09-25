@@ -132,7 +132,6 @@ interface MachinePromptExportPanelProps {
   onDownloadFile: (format: MachinePromptExportFormat) => void
   onSaveRecord: () => void | Promise<void>
   onSubmitApiTask: () => void | string | Promise<void | string>
-  onSubmitProviderTask: () => void | Promise<void>
   onLoadHistory: () => void | Promise<void>
   onRestoreRecordDraft: (record: ProductionExportRecordListItemLike) => void
 }
@@ -166,7 +165,6 @@ export function ProductWorkspaceMachinePromptExportPanel({
   onDownloadFile,
   onSaveRecord,
   onSubmitApiTask,
-  onSubmitProviderTask,
   onLoadHistory,
   onRestoreRecordDraft,
 }: MachinePromptExportPanelProps) {
@@ -216,15 +214,6 @@ export function ProductWorkspaceMachinePromptExportPanel({
               <span>允许临时七牛地址（灰度）</span>
             </label>
           ) : null}
-          <button
-            type="button"
-            onClick={() => { void onSubmitProviderTask() }}
-            disabled={machinePromptApiSubmissionState === 'submitting' || !machinePromptExport}
-            className="rounded-lg border border-rose-400/60 bg-rose-500/20 px-3 py-2 text-xs font-medium text-rose-50 transition hover:border-rose-300 hover:bg-rose-500/30 disabled:cursor-not-allowed disabled:opacity-50"
-            title="需要二次确认；确认后才会真实提交 MiniMax H3。"
-          >
-            {machinePromptApiSubmissionState === 'submitting' ? '提交处理中...' : '真实提交 H3'}
-          </button>
           <details className="rounded-lg border border-cyan-400/20 bg-slate-950/50 px-3 py-2">
             <summary className="cursor-pointer list-none text-xs font-medium text-cyan-100">更多导出</summary>
             <div className="mt-3 flex max-w-xl flex-wrap gap-2">
@@ -301,8 +290,8 @@ export function ProductWorkspaceMachinePromptExportPanel({
       {machinePromptExport && h3SubmitSummaryLines.length > 0 ? (
         <div className="mt-3 rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-xs font-medium text-amber-100">真实提交 H3 前摘要</div>
-            <StatusPill tone="amber">需二次确认</StatusPill>
+            <div className="text-xs font-medium text-amber-100">专业导出摘要</div>
+            <StatusPill tone="amber">仅查看 / 导出</StatusPill>
           </div>
           <div className="mt-2 grid gap-x-4 gap-y-1 text-[11px] leading-5 text-amber-100/80 md:grid-cols-2">
             {h3SubmitSummaryLines.map((line) => (
@@ -316,8 +305,8 @@ export function ProductWorkspaceMachinePromptExportPanel({
           ) : (
             <div className="mt-2 text-[11px] leading-5 text-amber-100/65">
               {h3ProviderSubmitSummary?.supportsTextToVideo === false
-                ? '提醒：当前模型不支持文生视频；请先锁定至少一张参考图，或采纳一张首帧。'
-                : '提醒：当前未检测到首帧；是否允许文生视频取决于已配置模型能力，提交前请核对模式。'}
+                ? '当前模型不支持文生视频；这里仅展示导出诊断，不会直接提交 provider。'
+                : '这里仅展示导出诊断，不会直接提交 provider。'}
             </div>
           )}
         </div>

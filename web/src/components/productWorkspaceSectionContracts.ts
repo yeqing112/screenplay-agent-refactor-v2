@@ -17,7 +17,7 @@ import type {
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
-import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot, ProductionWorkspaceV2Snapshot, ProductionWorkspaceViewMode } from '../domain/productionWorkspace'
 
 export type ContentTaskState = {
   mode: 'upload' | 'short'
@@ -152,6 +152,10 @@ export interface DashboardBundle {
   productionWorkspace: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
   productionWorkspaceError?: string | null
+  productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
+  productionWorkspaceV2Error?: string | null
+  workspaceViewMode: ProductionWorkspaceViewMode
 }
 
 export interface ContentBundle {
@@ -234,6 +238,10 @@ export interface StoryboardBundle {
   initialStoryboardStep?: StoryboardStep
   productionWorkspace: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
+  productionWorkspaceV2Error?: string | null
+  workspaceViewMode: ProductionWorkspaceViewMode
 }
 
 export type StoryboardStep = 'overview' | 'assets' | 'frame' | 'video' | 'review' | 'more'
@@ -291,6 +299,10 @@ export interface AssetsBundle {
   onSaveShotBindings: () => void
   productionWorkspace: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
+  productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
+  productionWorkspaceV2Error?: string | null
+  workspaceViewMode: ProductionWorkspaceViewMode
 }
 
 export interface CanvasBundle {

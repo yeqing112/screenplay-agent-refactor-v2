@@ -355,8 +355,8 @@ describe('productWorkspaceTaskCenterData', () => {
       actionLabel: '回到镜头工作台查看导出',
       progress: '5%',
     })
-    expect(entries[0].detail).toContain('二次确认后才会真实提交 H3')
-    expect(entries[0].statusReason).toContain('当前没有调用 provider')
+    expect(entries[0].detail).toContain('历史机器提示词导出登记')
+    expect(entries[0].statusReason).toContain('当前生产入口不会自动调用 provider')
     expect(entries[0].creativeTaskMeta).toMatchObject({
       provider: 'pending-generation-adapter',
       externalStatus: 'waiting_for_generation_adapter',

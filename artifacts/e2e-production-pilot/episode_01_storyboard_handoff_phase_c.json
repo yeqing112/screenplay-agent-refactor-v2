@@ -1922,9 +1922,9 @@
           }
         ],
         "source_shot_plan_fingerprint": "51bcb6b52e190ff37a43445ca2585f833ca8568ec3e17c68b152635ff65579e8",
-        "source_shot_plan_payload_hash": "2193a70df40467fc734f2b2a95bf035736181885af5e8f4bbcc91348abac1d1c",
+        "source_shot_plan_payload_hash": "eac9c688b0fac28ef49c543acbf599fa034a5dd0c4756d8bcef2efe2d0a8dc05",
         "projection_origin": "SHOT_PLAN_PROJECTION",
-        "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9"
+        "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2"
       },
       "materialized": [
         {
@@ -2221,7 +2221,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "f3198d9e144efb3f2f4d72dae75621df974281aedfdf0e5b964ee5c5053875ba"
             }
           },
@@ -2604,7 +2604,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "c372b6a95cadceb54fb42f5b18cbc5b6d55e7753231b93b13387c64c0fdcc882"
             }
           },
@@ -2990,7 +2990,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "b8c0fa86baf1b1142b75a656aec24e95f3023ea5037546af47a609224820d54e"
             }
           },
@@ -3401,7 +3401,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "a10d57ae893ea722d08c36ec6a99f6d21e75a13bc557d0160a89accd83d5fd89"
             }
           },
@@ -3829,7 +3829,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "09a01f357dfcebb8905074674ae135c60433ced37dfc29f3bb548602b75887eb"
             }
           },
@@ -4268,7 +4268,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "e4f3923976bd7ef2e7804a4ab2459c00440333ea78ed538ca65f37f223f24642"
             }
           },
@@ -4696,7 +4696,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "d2bd42f9e34a685dc180171dff275303633825291c22befdb9d0436f00d24181"
             }
           },
@@ -5096,7 +5096,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "203447ec6e2b38238374b21c00cccd60c1f61c74b1a4134b268b6d3c888d1ac9",
+              "handoff_fingerprint": "61ecf18a56cc365b3fee7299779d1df15a5913fdfbfffe15a32eacf2e29746c2",
               "storyboard_handoff_shot_fingerprint": "21fcc3fceac9bdb961eeb40063f82ac2a538eda21b4af460b0a5d34dd30e31f2"
             }
           },
@@ -6942,9 +6942,9 @@
           }
         ],
         "source_shot_plan_fingerprint": "6f348c5a5db85286acad4548d890cda4b810fbdc97e4463c8d1867194eac3b24",
-        "source_shot_plan_payload_hash": "875c4d1e83d0e33e7303c47579e35c07bbfe609351e961652d7b57b82fada6e5",
+        "source_shot_plan_payload_hash": "134b0a893ba96d5bf3e54be39221f2316cbab5c02b3b1a9de8567c2d8ce8965e",
         "projection_origin": "SHOT_PLAN_PROJECTION",
-        "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979"
+        "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64"
       },
       "materialized": [
         {
@@ -7276,7 +7276,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979",
+              "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64",
               "storyboard_handoff_shot_fingerprint": "db3f5ed410443aa01cc0ce2f345eb1ab4f5580cf6e537d13705b6a62ebea6fa6"
             }
           },
@@ -7687,7 +7687,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979",
+              "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64",
               "storyboard_handoff_shot_fingerprint": "f3923d8fc8d9dc307c526b7671621e57a26067279d58bc360f9f3d5480d8edaf"
             }
           },
@@ -8090,7 +8090,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979",
+              "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64",
               "storyboard_handoff_shot_fingerprint": "3e305bb188f589d0eb1ecf9269bc06d4136b6b1ac6ca916f5e7bd37ba1ce1173"
             }
           },
@@ -8509,7 +8509,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979",
+              "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64",
               "storyboard_handoff_shot_fingerprint": "a643f80bd3a360a7ee7cd5fec4ee9e63d8448b66d0b2846aec4a9a2b13172c36"
             }
           },
@@ -8926,7 +8926,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979",
+              "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64",
               "storyboard_handoff_shot_fingerprint": "2ebfcaf94e500933a8d7e0c71fe1fae527cda790daa1875d968dbea24d083c6c"
             }
           },
@@ -9326,7 +9326,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979",
+              "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64",
               "storyboard_handoff_shot_fingerprint": "f39d2f5b1f6bf53ed5a1ed9c08e936e1565a7477d37e7a1a6d71a382aaa8a238"
             }
           },
@@ -9746,7 +9746,7 @@
             "handoff": {
               "schema_version": "storyboard_handoff_v1",
               "projection_version": "storyboard_handoff_projection_v1",
-              "handoff_fingerprint": "4b7f9a3f5ae206f00758a1a0c3188ea112ec7cf17d4a6ac6304d2ded9445a979",
+              "handoff_fingerprint": "973823bbe4ba45ce65725eb0c5730c487ae9597fccac8c6a2e429056dd1cee64",
               "storyboard_handoff_shot_fingerprint": "321d55484ac85988dda3ae0d0bb89be76f9e8c6af2787793b54f85e22529220a"
             }
           },

@@ -4,6 +4,7 @@ import type { CanvasHandoffTarget, ProductWorkspaceSectionContentProps } from '.
 import { buildProjectStageProjectionFromAction } from './productWorkspaceProgress'
 import { ProductWorkspaceProjectStageStrip } from './ProductWorkspaceProjectStageStrip'
 import WorkspaceSectionErrorBoundary from './WorkspaceSectionErrorBoundary'
+import ProductionWorkspaceV2Panel from './ProductionWorkspaceV2Panel'
 
 const ProductWorkspaceAdaptationSection = lazy(() => import('./ProductWorkspaceAdaptationSection'))
 const ProductWorkspaceAssetsSection = lazy(() => import('./ProductWorkspaceAssetsSection'))
@@ -124,26 +125,37 @@ export default function ProductWorkspaceSectionContent({
         />
       ) : null}
       {section === 'dashboard' ? (
-        <ProductWorkspaceDashboardSection
-          summary={{
-            contentReady: dashboard.summary.contentReady,
-            chapterCount: dashboard.summary.chapterCount,
-            wordCount: dashboard.summary.wordCount,
-            episodesWithScripts: dashboard.summary.episodesWithScripts,
-            totalShots: dashboard.summary.totalShots,
-            visualCount: dashboard.summary.visualCount,
-            qaCount: dashboard.summary.qaCount,
-          }}
-          adaptationStateLabel={dashboard.adaptationStateLabel}
-          adaptationStateDetail={dashboard.adaptationStateDetail}
-          episodeProgress={dashboard.episodeProgress}
-          dashboardActions={dashboard.dashboardActions}
-          onNavigate={dashboard.onNavigateSection}
-          onNavigateTarget={dashboard.onNavigateTarget}
-          productionWorkspace={dashboard.productionWorkspace}
-          productionWorkspaceState={dashboard.productionWorkspaceState}
-          productionWorkspaceError={dashboard.productionWorkspaceError}
-        />
+        <>
+          <ProductionWorkspaceV2Panel
+            snapshot={dashboard.productionWorkspaceV2}
+            state={dashboard.productionWorkspaceV2State}
+            error={dashboard.productionWorkspaceV2Error}
+            mode={dashboard.workspaceViewMode}
+            onNavigateSection={dashboard.onNavigateSection}
+          />
+          <div className="mt-6">
+            <ProductWorkspaceDashboardSection
+              summary={{
+                contentReady: dashboard.summary.contentReady,
+                chapterCount: dashboard.summary.chapterCount,
+                wordCount: dashboard.summary.wordCount,
+                episodesWithScripts: dashboard.summary.episodesWithScripts,
+                totalShots: dashboard.summary.totalShots,
+                visualCount: dashboard.summary.visualCount,
+                qaCount: dashboard.summary.qaCount,
+              }}
+              adaptationStateLabel={dashboard.adaptationStateLabel}
+              adaptationStateDetail={dashboard.adaptationStateDetail}
+              episodeProgress={dashboard.episodeProgress}
+              dashboardActions={dashboard.dashboardActions}
+              onNavigate={dashboard.onNavigateSection}
+              onNavigateTarget={dashboard.onNavigateTarget}
+              productionWorkspace={dashboard.productionWorkspace}
+              productionWorkspaceState={dashboard.productionWorkspaceState}
+              productionWorkspaceError={dashboard.productionWorkspaceError}
+            />
+          </div>
+        </>
       ) : null}
 
       {section === 'content' ? (
@@ -238,6 +250,14 @@ export default function ProductWorkspaceSectionContent({
 
       {section === 'storyboard' ? (
         <>
+          <ProductionWorkspaceV2Panel
+            snapshot={storyboard.productionWorkspaceV2}
+            state={storyboard.productionWorkspaceV2State}
+            error={storyboard.productionWorkspaceV2Error}
+            mode={storyboard.workspaceViewMode}
+            focusShotId={storyboard.selectedStoryboardShotId}
+            onNavigateSection={storyboard.onNavigateSection}
+          />
           <CanvasHandoffBanner handoff={storyboard.canvasHandoff} />
           <ProductWorkspaceStoryboardSection
             bookId={storyboard.bookId}
@@ -279,6 +299,14 @@ export default function ProductWorkspaceSectionContent({
 
       {section === 'assets' ? (
         <>
+          <ProductionWorkspaceV2Panel
+            snapshot={assets.productionWorkspaceV2}
+            state={assets.productionWorkspaceV2State}
+            error={assets.productionWorkspaceV2Error}
+            mode={assets.workspaceViewMode}
+            onNavigateSection={assets.onNavigateSection}
+            onSelectAsset={assets.onSelectAsset}
+          />
           <CanvasHandoffBanner handoff={assets.canvasHandoff} />
           <ProductWorkspaceAssetsSection
             bookId={assets.bookId}

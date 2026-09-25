@@ -66,8 +66,8 @@ function MediaAssetCard({ item, showPrompt = false }: { item: MediaAssetOutput; 
           {getMediaAssetKindLabel(String(item.kind || ''))}
         </span>
         {item.adopted ? (
-          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-200">
-            当前采纳
+          <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-200">
+            Legacy / Historical
           </span>
         ) : null}
       </div>
@@ -296,7 +296,8 @@ export function ProductWorkspaceStoryboardMediaPanel({
       )}
 
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-        <div className="text-sm font-medium text-white">已生成分镜图</div>
+        <div className="text-sm font-medium text-white">历史镜头媒体（只读）</div>
+        <div className="mt-1 text-xs text-slate-500">这里仅保留旧版镜头媒体记录；当前正式版本以 Production Workspace 的 OfficialMedia 投影为准。</div>
         {imageAssets.length > 0 ? (
           <div className="mt-3 space-y-3">
             {imageAssets.map((item) => <MediaAssetCard key={item.id} item={item} />)}

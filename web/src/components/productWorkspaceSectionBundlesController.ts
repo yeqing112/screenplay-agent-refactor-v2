@@ -21,7 +21,7 @@ import type { AssetCategoryFilter, AssetStatusFilter, AssetVersionFilter, Recove
 import type { DashboardAction, EpisodeProgress } from './productWorkspaceProgress'
 import type { ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import type { GenerateReferenceOptions } from './productWorkspaceAssetActions'
-import type { ProductionNavigationTarget, ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot } from '../domain/productionWorkspace'
+import type { ProductionNavigationTarget, ProductionWorkspaceLoadState, ProductionWorkspaceSnapshot, ProductionWorkspaceV2Snapshot, ProductionWorkspaceViewMode } from '../domain/productionWorkspace'
 
 interface UseProductWorkspaceSectionBundlesParams {
   section: WorkspaceSection
@@ -136,6 +136,10 @@ interface UseProductWorkspaceSectionBundlesParams {
   productionWorkspace: ProductionWorkspaceSnapshot | null
   productionWorkspaceState?: ProductionWorkspaceLoadState
   productionWorkspaceError?: string | null
+  productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
+  productionWorkspaceV2State?: ProductionWorkspaceLoadState
+  productionWorkspaceV2Error?: string | null
+  workspaceViewMode: ProductionWorkspaceViewMode
   onNavigateSection: (section: WorkspaceSection) => void
   onNavigateTaskSection: TaskNavigateHandler
   makeups: VisualMakeupOutput[]
@@ -189,6 +193,10 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         productionWorkspace: params.productionWorkspace,
         productionWorkspaceState: params.productionWorkspaceState,
         productionWorkspaceError: params.productionWorkspaceError,
+        productionWorkspaceV2: params.productionWorkspaceV2,
+        productionWorkspaceV2State: params.productionWorkspaceV2State,
+        productionWorkspaceV2Error: params.productionWorkspaceV2Error,
+        workspaceViewMode: params.workspaceViewMode,
       },
       content: {
         bookId: params.bookId,
@@ -267,6 +275,10 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         initialStoryboardStep: params.initialStoryboardStep,
         productionWorkspace: params.productionWorkspace,
         productionWorkspaceState: params.productionWorkspaceState,
+        productionWorkspaceV2: params.productionWorkspaceV2,
+        productionWorkspaceV2State: params.productionWorkspaceV2State,
+        productionWorkspaceV2Error: params.productionWorkspaceV2Error,
+        workspaceViewMode: params.workspaceViewMode,
       },
       canvas: {
         bookId: params.bookId,
@@ -324,6 +336,10 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onSaveShotBindings: params.onSaveShotBindings,
         productionWorkspace: params.productionWorkspace,
         productionWorkspaceState: params.productionWorkspaceState,
+        productionWorkspaceV2: params.productionWorkspaceV2,
+        productionWorkspaceV2State: params.productionWorkspaceV2State,
+        productionWorkspaceV2Error: params.productionWorkspaceV2Error,
+        workspaceViewMode: params.workspaceViewMode,
       },
       qa: {
         bookId: params.bookId,

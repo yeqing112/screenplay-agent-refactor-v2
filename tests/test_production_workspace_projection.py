@@ -42,6 +42,23 @@ class ProductionWorkspaceProjectionTests(unittest.TestCase):
         self.assertTrue(payload["project"]["current_blockers"])
         self.assertEqual(before, self._counts())
 
+    def test_v2_projection_is_read_only_and_keeps_media_lanes_separate(self):
+        before = self._counts()
+        response = self.client.get(f"/api/books/{self.book_id}/production-workspace-v2")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["schema_version"], "production_workspace_projection_v2")
+        self.assertTrue(payload["read_only"])
+        self.assertEqual(payload["authority_source"], "current_authority_pointers_only")
+        self.assertTrue(payload["legacy_adopted_is_display_only"])
+        self.assertNotIn("provider_calls", payload["view_contract"]["standard"])
+        for shot in payload["shots"]:
+            self.assertIn("IMAGE", shot)
+            self.assertIn("VIDEO", shot)
+            self.assertIn("next_action", shot)
+            self.assertIn("asset_readiness", shot)
+        self.assertEqual(before, self._counts())
+
     def test_latest_approved_without_pointer_does_not_become_production_truth(self):
         with Session() as session:
             script = Script(book_id=self.book_id, episode=1, content="scene", status="approved", production_status="ready")

@@ -1,0 +1,81 @@
+import type { ProductionMediaLane, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
+
+const emptyLane: ProductionMediaLane = {
+  prompt_ir: { current: false, version: null, stale: false, state: 'not_started' },
+  generation_mode: null,
+  source_official_image: null,
+  model: { selected_profile_id: null, provider: null, model_name: null },
+  latest_execution: null,
+  candidates: { count: 0, latest: null, items: [] },
+  official: { current: false, currentness: 'missing', version: null, authority: null, pointer: null, preview: null },
+}
+
+const requiredEntities = [
+  ['LIN_WAN', 'CHARACTER'], ['GU_CHEN', 'CHARACTER'], ['LU_SHU', 'CHARACTER'], ['TICKET_CLERK', 'CHARACTER'],
+  ['E01_SC001', 'SCENE'], ['E01_SC002', 'SCENE'],
+  ['APPLE', 'PROP'], ['BROKEN_UMBRELLA_RIB', 'PROP'], ['DOOR_LOCK', 'PROP'], ['HANDBAG', 'PROP'],
+  ['POCKET_HARD_OBJECT', 'PROP'], ['RED_FIBER', 'PROP'], ['RED_UMBRELLA', 'PROP'], ['TABLE_SCRATCH', 'PROP'], ['TICKET', 'PROP'],
+] as const
+
+export const productionWorkspaceV2Fixture: ProductionWorkspaceV2Snapshot = {
+  schema_version: 'production_workspace_projection_v2',
+  book_id: 990401,
+  workflow_profile: 'production',
+  read_only: true,
+  authority_source: 'current_authority_pointers_only',
+  project: {
+    title: 'Episode 01 · Production Workspace Fixture',
+    overall_state: 'blocked',
+    overall_progress: 0,
+    current_blockers: [{
+      code: 'ASSET_MEDIA_MISSING',
+      title: '缺少真实视觉资产',
+      description: '当前项目需要 15 个真实视觉资产，尚未完成显式媒体绑定。',
+      severity: 'blocked',
+      stage: 'VISUAL_ASSET',
+      scope: 'project',
+      book_id: 990401,
+      episode: 1,
+      recommended_action: '前往资产中心补齐真实视觉资产',
+      target_section: 'assets',
+      target_params: { section: 'assets', episode: 1 },
+    }],
+    next_actions: [],
+  },
+  stages: {},
+  episodes: [],
+  shots: Array.from({ length: 2 }, (_, index) => ({
+    identity: { episode: 1, shot_id: String(index + 1), storyboard_shot_id: index + 1, plan_shot_id: `fixture-shot-${index + 1}` },
+    scene: { id: index === 0 ? 'E01_SC001' : 'E01_SC002', name: index === 0 ? '场景一' : '场景二' },
+    duration: 4,
+    camera: { angle: 'MS', movement: 'static', speed: 'slow' },
+    action: '等待真实资产绑定',
+    asset_readiness: { state: 'blocked', required: {}, missing: requiredEntities.map(([, type]) => type), stale: [], current: false },
+    IMAGE: emptyLane,
+    VIDEO: emptyLane,
+    next_action: { key: 'UPLOAD_ASSET', label: '补齐资产' },
+    blockers: [{ code: 'ASSET_MEDIA_MISSING', message: '先补齐当前镜头所需的真实视觉资产。' }],
+    legacy: { adopted_is_display_only: true },
+  })),
+  assets: requiredEntities.map(([entity_id, asset_type]) => ({
+    entity_id,
+    asset_key: `book:990401:${asset_type.toLowerCase()}:${entity_id}`,
+    asset_type,
+    current_version_id: null,
+    revision: null,
+    authority_status: 'MISSING_MEDIA',
+    stale_status: 'FRESH',
+    reference_state: 'needs_action',
+    reference_count: 0,
+    locked_reference: false,
+    media: { present: false, storage_identity: null, checksum: null, mime: null, width: null, height: null },
+    bindings: [],
+    history: [],
+  })),
+  view_contract: {
+    standard: 'state,next_action,blockers,official_media',
+    professional: 'authority,pointer,prompt_ir,model,adapter,transport,execution,candidate,validation,official,history',
+  },
+  legacy_adopted_is_display_only: true,
+  provider_calls: 0,
+}
