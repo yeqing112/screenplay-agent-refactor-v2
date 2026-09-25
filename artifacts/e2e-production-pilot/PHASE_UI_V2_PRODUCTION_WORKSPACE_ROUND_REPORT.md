@@ -72,4 +72,4 @@ The remaining review boundary is the compatibility surface outside the converged
 
 ## Git delivery
 
-The implementation, generated regression outputs and this report are committed and pushed on the branch shown above. The final commit SHA is included in the task response together with the repository and report links.
+The implementation and generated regression outputs are in implementation commit `b710998` (full SHA is linked from the task response). This report is updated in the follow-up report commit created immediately after this edit; the task response supplies that exact report commit SHA and remote link.
