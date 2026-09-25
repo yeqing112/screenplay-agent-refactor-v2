@@ -1,24 +1,29 @@
 {
-  "schema_version": "full_real_e2e_preflight_snapshot_v1",
-  "generated_at_utc": "2026-09-25T00:13:59.438163+00:00",
+  "schema_version": "full_real_e2e_preflight_snapshot_v2",
+  "generated_at_utc": "2026-09-25T04:31:24.827677+00:00",
   "phase": "FULL_REAL_END_TO_END_PRODUCTION_ACCEPTANCE",
-  "status": "FULL_REAL_E2E_BLOCKED_BY_RUNTIME_EXECUTION_AUTHORIZATION",
+  "status": "FULL_REAL_E2E_BLOCKED_BY_REAL_VISUAL_ASSET_MEDIA",
+  "validated_production_code_head": "bd0920af39948d1bd7a37016dcbb25cf1dbe696b",
+  "preflight_checked_head": "97b40aaceaacc22cbf0d17c8430c54272148d907",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "origin": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
-  "provider_calls": {
-    "provider": 0,
-    "image": 0,
-    "video": 0,
-    "paid_llm": 0,
-    "object_storage": 0
+  "asset_gate": {
+    "status": "BLOCKED",
+    "required_assets": 15,
+    "real_media_assets": 0,
+    "missing_assets": 15,
+    "manifest": "full_real_e2e_required_visual_asset_manifest.json",
+    "matrix": "full_real_e2e_real_visual_asset_matrix.json",
+    "review": "FULL_REAL_E2E_ASSET_REVIEW.md",
+    "automatic_asset_generation": false,
+    "automatic_rebinding": false
   },
-  "authorization": {
+  "authorization_gate": {
     "phase_j_provider_authorized": false,
     "phase_f_provider_canary_real": false,
     "authorization_sufficient": false,
     "credential_material_recorded": false
   },
-  "runtime_checks": {
+  "credential_gate": {
     "IMAGE": {
       "selected_model_profile_id": "local-image-mw4y52",
       "provider": "shapi-openai-images",
@@ -64,32 +69,103 @@
       }
     }
   },
-  "missing_conditions": {
-    "authorization_flags": [
-      "PHASE_J_PROVIDER_AUTHORIZED=true",
-      "PHASE_F_PROVIDER_CANARY_REAL=1"
-    ],
-    "credential_refs": [
-      "IMAGE: explicit runtime credential reference",
-      "VIDEO: explicit runtime credential reference"
-    ],
-    "unresolved_bindings": [
-      "IMAGE:profile:local-image-mw4y52",
-      "VIDEO:profile:local-video-7deneh"
-    ],
-    "validator_bindings": [
-      "IMAGE: runtime credential validator binding",
-      "VIDEO: runtime credential validator binding"
-    ]
+  "transport_gate": {
+    "IMAGE": {
+      "binding_id": "shapi-openai-images.image.v1",
+      "exists": true,
+      "provider_id": "shapi-openai-images",
+      "target_media": "IMAGE",
+      "mode": "sync",
+      "submit": "generate_image_asset",
+      "poll": "generate_image_asset"
+    },
+    "VIDEO": {
+      "binding_id": "minimax-h3-async.video.v1",
+      "exists": true,
+      "provider_id": "minimax-h3-async",
+      "target_media": "VIDEO",
+      "mode": "async",
+      "submit": "submit_minimax_h3_generation",
+      "poll": "poll_minimax_h3_generation"
+    }
   },
-  "real_visual_asset_media_check": {
-    "character_count": 4,
-    "scene_count": 2,
-    "prop_count": 9,
-    "authority_records_present": true,
-    "real_visual_media_present": false,
-    "source_identity_kind": "pilot://",
-    "reason": "H2.2 uses deterministic pilot metadata identities and checksums; no real reference-media bytes are available for production generation."
+  "lineage_gate": {
+    "status": "READY",
+    "episode": 1,
+    "scenes": 2,
+    "shots": 15,
+    "fingerprinted_artifacts": 9
+  },
+  "provider_calls": {
+    "provider": 0,
+    "image": 0,
+    "video": 0,
+    "paid_llm": 0,
+    "object_storage": 0
+  },
+  "missing_conditions": {
+    "real_visual_assets": [
+      {
+        "asset_type": "CHARACTER",
+        "entity_id": "GU_CHEN"
+      },
+      {
+        "asset_type": "CHARACTER",
+        "entity_id": "LIN_WAN"
+      },
+      {
+        "asset_type": "CHARACTER",
+        "entity_id": "LU_SHU"
+      },
+      {
+        "asset_type": "CHARACTER",
+        "entity_id": "TICKET_CLERK"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "APPLE"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "BROKEN_UMBRELLA_RIB"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "DOOR_LOCK"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "HANDBAG"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "POCKET_HARD_OBJECT"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "RED_FIBER"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "RED_UMBRELLA"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "TABLE_SCRATCH"
+      },
+      {
+        "asset_type": "PROP",
+        "entity_id": "TICKET"
+      },
+      {
+        "asset_type": "SCENE",
+        "entity_id": "E01_SC001"
+      },
+      {
+        "asset_type": "SCENE",
+        "entity_id": "E01_SC002"
+      }
+    ]
   },
   "lineage": {
     "script_ir": {
@@ -147,31 +223,13 @@
       "sha256": "e1cc6deae0e08da19b5aafdcc4dd1f91f4f2454804ac8ff88f1629fce940d670"
     }
   },
-  "acceptance_scope": {
-    "book_id": 990401,
-    "episode": "01",
-    "scenes": 2,
-    "shots": 15,
-    "required_chain": [
-      "PromptIR",
-      "AssetBinding",
-      "GenerationExecution",
-      "MediaCandidate",
-      "MediaValidation",
-      "OfficialMediaPromotion",
-      "OfficialMedia Resolve"
-    ]
-  },
   "policy": {
     "provider_free_preflight": true,
     "real_execution_started": false,
-    "automatic_retry": false,
-    "automatic_asset_swap": false,
+    "asset_generation_calls": 0,
+    "database_mutated": false,
     "production_business_semantics_modified": false,
     "new_product_capability_added": false,
     "credential_material_recorded": false
-  },
-  "preflight_checked_head": "33abf4d88153964ede39dc4363c1a13016dfabaf",
-  "validated_production_code_head": "bd0920af39948d1bd7a37016dcbb25cf1dbe696b",
-  "report_baseline_head": "33abf4d88153964ede39dc4363c1a13016dfabaf"
+  }
 }

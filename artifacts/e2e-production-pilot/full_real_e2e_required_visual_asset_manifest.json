@@ -1,0 +1,565 @@
+{
+  "schema_version": "full_real_e2e_required_visual_asset_manifest_v1",
+  "generated_at_utc": "2026-09-25T04:31:24.827677+00:00",
+  "status": "FULL_REAL_E2E_BLOCKED_BY_REAL_VISUAL_ASSET_MEDIA",
+  "book_id": 990401,
+  "episode": 1,
+  "source_of_truth": {
+    "asset_matrix": "artifacts/e2e-production-pilot/phase_h2_episode_01_asset_matrix.json",
+    "binding_matrix": "artifacts/e2e-production-pilot/phase_h2_2_episode_01_asset_binding_matrix.json",
+    "ingestion_audit": "artifacts/e2e-production-pilot/phase_h2_2_asset_ingestion_audit.json",
+    "selection_method": "current H2.2 structured authority/binding records only; no fuzzy matching"
+  },
+  "counts": {
+    "characters": 4,
+    "scenes": 2,
+    "props": 9,
+    "unique_assets": 15,
+    "shot_bindings": 53
+  },
+  "assets": [
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "GU_CHEN",
+      "current_version_id": "pav_9e3aecfdf89b5a472fe93f53",
+      "current_authority_id": "paa_character_37435b49c68898606711cbcc",
+      "current_pointer": {
+        "pointer_fingerprint": "f32e707cdd47abee753a64bc7c83180361a83eb12f7943c6c929e09fa91a2dbb",
+        "version_id": "pav_9e3aecfdf89b5a472fe93f53",
+        "authority_id": "paa_character_37435b49c68898606711cbcc"
+      },
+      "current_source_identity": "pilot://episode-01/character/GU_CHEN/v1",
+      "current_checksum": "sha256:c03119a16a2c10d6d78eec649f562fc88e6fe684023ae9d6a61b9db68d7ebd5a",
+      "shots_using_asset": [
+        3,
+        4,
+        8
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "LIN_WAN",
+      "current_version_id": "pav_6033ae432b0d07a61f4d50e7",
+      "current_authority_id": "paa_character_c32d8acd19356ece12bf28f8",
+      "current_pointer": {
+        "pointer_fingerprint": "53e5297968021a82051a5ac0a522ce5148691d0769ffaa557cdc00db93c5a2f0",
+        "version_id": "pav_6033ae432b0d07a61f4d50e7",
+        "authority_id": "paa_character_c32d8acd19356ece12bf28f8"
+      },
+      "current_source_identity": "pilot://episode-01/character/LIN_WAN/v1",
+      "current_checksum": "sha256:9edcf4ad6c69beb0cbfdb90f61766daab6ff87efd20ce835d6f30b36b3b7c432",
+      "shots_using_asset": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "LU_SHU",
+      "current_version_id": "pav_b8f31e5a2c5bfabcf481be6d",
+      "current_authority_id": "paa_character_e18c1591aecdf288c6ef9fc5",
+      "current_pointer": {
+        "pointer_fingerprint": "647d149f61fb8906799682cfaf3c36e708d3fd82f2ef76ea6b7be8a60027581b",
+        "version_id": "pav_b8f31e5a2c5bfabcf481be6d",
+        "authority_id": "paa_character_e18c1591aecdf288c6ef9fc5"
+      },
+      "current_source_identity": "pilot://episode-01/character/LU_SHU/v1",
+      "current_checksum": "sha256:1264f750cf8943cadbc3d715ad84ea120f7d7cf8ac4663535b6487126b6ab946",
+      "shots_using_asset": [
+        5,
+        7,
+        9,
+        10,
+        12,
+        14,
+        15
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "TICKET_CLERK",
+      "current_version_id": "pav_0523142173a4d6fec2ee01b3",
+      "current_authority_id": "paa_character_4482734908c0d29375fd6d04",
+      "current_pointer": {
+        "pointer_fingerprint": "032e8d61d27dad66967f539d53018d377b43168a998db576df148772d381c1d4",
+        "version_id": "pav_0523142173a4d6fec2ee01b3",
+        "authority_id": "paa_character_4482734908c0d29375fd6d04"
+      },
+      "current_source_identity": "pilot://episode-01/character/TICKET_CLERK/v1",
+      "current_checksum": "sha256:062ef1660f89a3f2ae19a553f9f0d840a7985be7409b372c0864d0fc31f503cb",
+      "shots_using_asset": [
+        1
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "APPLE",
+      "current_version_id": "pav_d7bb5b0fe5d1663d675cd283",
+      "current_authority_id": "paa_prop_448b95db50cc241ca05842f0",
+      "current_pointer": {
+        "pointer_fingerprint": "4b02a5df489658567c606bc561044e597425eaa8dcd0b7405a05c0bfb99fbb12",
+        "version_id": "pav_d7bb5b0fe5d1663d675cd283",
+        "authority_id": "paa_prop_448b95db50cc241ca05842f0"
+      },
+      "current_source_identity": "pilot://episode-01/prop/APPLE/v1",
+      "current_checksum": "sha256:8052607ae8f9c41782608ba4cdef205b9c343d5f8a150b36d7994be5bf8b466c",
+      "shots_using_asset": [
+        9
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "BROKEN_UMBRELLA_RIB",
+      "current_version_id": "pav_70c4360562349eb0fa4428e4",
+      "current_authority_id": "paa_prop_8b4575a1fffe142653aaa5b7",
+      "current_pointer": {
+        "pointer_fingerprint": "8c9efa2ae9283dcc8450c53de7b92757821e3d2bab5f182afe1dbc6d957ef163",
+        "version_id": "pav_70c4360562349eb0fa4428e4",
+        "authority_id": "paa_prop_8b4575a1fffe142653aaa5b7"
+      },
+      "current_source_identity": "pilot://episode-01/prop/BROKEN_UMBRELLA_RIB/v1",
+      "current_checksum": "sha256:0ee69a13137861b5fe43f1bc5f2df74f3d7fb4f0e6643b999f35ab7598ca005e",
+      "shots_using_asset": [
+        3,
+        6
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "DOOR_LOCK",
+      "current_version_id": "pav_b68555898e9b16a7c3d1ea6d",
+      "current_authority_id": "paa_prop_fa781a7a4c53e709bb2421e2",
+      "current_pointer": {
+        "pointer_fingerprint": "6e6dae22c1db1c2f5bab42b15d52fc376db32c564df300a30f99c954c0c0bc86",
+        "version_id": "pav_b68555898e9b16a7c3d1ea6d",
+        "authority_id": "paa_prop_fa781a7a4c53e709bb2421e2"
+      },
+      "current_source_identity": "pilot://episode-01/prop/DOOR_LOCK/v1",
+      "current_checksum": "sha256:ca599b58fa1e337a3263b5b2cc09562b4dfa09385da56fda94881416d5f78844",
+      "shots_using_asset": [
+        9
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "HANDBAG",
+      "current_version_id": "pav_2644388eab9b859fddacc2a1",
+      "current_authority_id": "paa_prop_5db065e3333e0fb67f0e85df",
+      "current_pointer": {
+        "pointer_fingerprint": "b1c2532b6725a6067a3bd971f56d30e5b273ad09ef7a26fe8c00c149c905c4de",
+        "version_id": "pav_2644388eab9b859fddacc2a1",
+        "authority_id": "paa_prop_5db065e3333e0fb67f0e85df"
+      },
+      "current_source_identity": "pilot://episode-01/prop/HANDBAG/v1",
+      "current_checksum": "sha256:dcf22ecd61f97bf31bc014fd2816e2442ae6d7a9ec61fcbc4a3f1dba9f4dec78",
+      "shots_using_asset": [
+        5,
+        11
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "POCKET_HARD_OBJECT",
+      "current_version_id": "pav_52ad9703c71808d0f30da42f",
+      "current_authority_id": "paa_prop_4992c01b57d93f257265fa85",
+      "current_pointer": {
+        "pointer_fingerprint": "ac154a5d6c7b939f4189780094ac5c3f41d23e231bea4a955c9e578fd50266a4",
+        "version_id": "pav_52ad9703c71808d0f30da42f",
+        "authority_id": "paa_prop_4992c01b57d93f257265fa85"
+      },
+      "current_source_identity": "pilot://episode-01/prop/POCKET_HARD_OBJECT/v1",
+      "current_checksum": "sha256:eabf876b2ae5cdc7f7f9eae22abf50557d626337ef01284a2a282fe7ed7b878a",
+      "shots_using_asset": [
+        12
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "RED_FIBER",
+      "current_version_id": "pav_3a08230c1458dedbb0f3d163",
+      "current_authority_id": "paa_prop_33a841b64ffb1ff975d21ae1",
+      "current_pointer": {
+        "pointer_fingerprint": "7d0c422fad7529f847edd5c50624de2e4268df0646657bbebc05b49cba6ea063",
+        "version_id": "pav_3a08230c1458dedbb0f3d163",
+        "authority_id": "paa_prop_33a841b64ffb1ff975d21ae1"
+      },
+      "current_source_identity": "pilot://episode-01/prop/RED_FIBER/v1",
+      "current_checksum": "sha256:34114d345d66b9c8922a60c28d1718951066a472612709146d130578aef24c4f",
+      "shots_using_asset": [
+        13
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "RED_UMBRELLA",
+      "current_version_id": "pav_a2d118eacdefcee61de9f439",
+      "current_authority_id": "paa_prop_d2c127f06725df787cc090b4",
+      "current_pointer": {
+        "pointer_fingerprint": "4aa69c716843e5e99218b597b37e2f562f93d4ceab128bfe468f30f3bb029505",
+        "version_id": "pav_a2d118eacdefcee61de9f439",
+        "authority_id": "paa_prop_d2c127f06725df787cc090b4"
+      },
+      "current_source_identity": "pilot://episode-01/prop/RED_UMBRELLA/v1",
+      "current_checksum": "sha256:c04c5abbff1b628e58a0018b4e9c3b4ff3f8fcc40ec682adf9d531f0f2978928",
+      "shots_using_asset": [
+        2,
+        6
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "TABLE_SCRATCH",
+      "current_version_id": "pav_bec2092927a69686cb114beb",
+      "current_authority_id": "paa_prop_781a415b9a99bc858e45e9b9",
+      "current_pointer": {
+        "pointer_fingerprint": "dfd41d9f9709a41f227e796cdc20f43c296fc5f52f9aae313409edde82f2f77d",
+        "version_id": "pav_bec2092927a69686cb114beb",
+        "authority_id": "paa_prop_781a415b9a99bc858e45e9b9"
+      },
+      "current_source_identity": "pilot://episode-01/prop/TABLE_SCRATCH/v1",
+      "current_checksum": "sha256:9d1018d951644dc17f72eb1dc956eaf02a7435047cb1ddca1b45051d9833570a",
+      "shots_using_asset": [
+        12
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "TICKET",
+      "current_version_id": "pav_2132524b070f72d5366fdad8",
+      "current_authority_id": "paa_prop_aa5a918f018a56df8f2a1f0b",
+      "current_pointer": {
+        "pointer_fingerprint": "e4a2a5573d63de1d0572a3b3c10e7502c7b06479635c0a507a1a25eb74cb84ec",
+        "version_id": "pav_2132524b070f72d5366fdad8",
+        "authority_id": "paa_prop_aa5a918f018a56df8f2a1f0b"
+      },
+      "current_source_identity": "pilot://episode-01/prop/TICKET/v1",
+      "current_checksum": "sha256:fa4e4e7f79cde242316156011a0f6d4936fbab40f53762abf765920ad0ec1a92",
+      "shots_using_asset": [
+        1
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "SCENE",
+      "entity_id": "E01_SC001",
+      "current_version_id": "pav_82614896978d97576aadc04f",
+      "current_authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1",
+      "current_pointer": {
+        "pointer_fingerprint": "00fc0d1c0d848a7f10210a9ecf1ec40d68933966d67e97a66c73ee95d462a527",
+        "version_id": "pav_82614896978d97576aadc04f",
+        "authority_id": "paa_scene_46a58b0cbd85d437beb7d7d1"
+      },
+      "current_source_identity": "pilot://episode-01/scene/E01_SC001/v1",
+      "current_checksum": "sha256:cdba601cbe93ac58c5c7d45708cbc148af3d631d44de0f09275935c452b9d9fa",
+      "shots_using_asset": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    },
+    {
+      "asset_type": "SCENE",
+      "entity_id": "E01_SC002",
+      "current_version_id": "pav_5dd54748863fe739182193a6",
+      "current_authority_id": "paa_scene_6070037502b14aed5eeeabed",
+      "current_pointer": {
+        "pointer_fingerprint": "ec172e0d973d5c8eb9061eee6c43f61f6eee69b3e77fc6b93b854fc0b63f10a3",
+        "version_id": "pav_5dd54748863fe739182193a6",
+        "authority_id": "paa_scene_6070037502b14aed5eeeabed"
+      },
+      "current_source_identity": "pilot://episode-01/scene/E01_SC002/v1",
+      "current_checksum": "sha256:0e2c75ef13725576a83837be67f33baa6d0d5ec5b473b44a99edecf46d34cfe5",
+      "shots_using_asset": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "real_media_required": true,
+      "real_media_present": false,
+      "source_status": "PILOT_METADATA_ONLY",
+      "missing_reason": "Current H2.2 source is pilot metadata; no explicit entity_id to real media identity mapping was found."
+    }
+  ],
+  "explicit_source_inventory": {
+    "formal_visual_reference_records_for_book_990401": 0,
+    "entity_to_media_mappings_found": 0,
+    "known_book_990401_files_excluded_without_binding": [
+      {
+        "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-4e523deeafa84ab0-431ced6916a2a21a.png",
+        "bytes": 68,
+        "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+        "explicit_entity_mapping": false,
+        "exclusion_reason": "No structured entity_id mapping; filename-only association is forbidden. Known Phase F canary or storyboard output is not a Production Asset reference."
+      },
+      {
+        "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-a374b1b3b34541aa-431ced6916a2a21a.png",
+        "bytes": 68,
+        "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+        "explicit_entity_mapping": false,
+        "exclusion_reason": "No structured entity_id mapping; filename-only association is forbidden. Known Phase F canary or storyboard output is not a Production Asset reference."
+      },
+      {
+        "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-dbf1fcd2aa984ce0-431ced6916a2a21a.png",
+        "bytes": 68,
+        "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+        "explicit_entity_mapping": false,
+        "exclusion_reason": "No structured entity_id mapping; filename-only association is forbidden. Known Phase F canary or storyboard output is not a Production Asset reference."
+      },
+      {
+        "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-df08054814fd45ea-431ced6916a2a21a.png",
+        "bytes": 68,
+        "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+        "explicit_entity_mapping": false,
+        "exclusion_reason": "No structured entity_id mapping; filename-only association is forbidden. Known Phase F canary or storyboard output is not a Production Asset reference."
+      },
+      {
+        "relative_path": "uploads/manual-media/book-990401-generated-分镜图 1 v2-4deadff31397-28a9944def59b1a0.png",
+        "bytes": 12726,
+        "sha256": "28a9944def59b1a09c032cd6f482866909efccbe27da38fb1c8bff9035ec305a",
+        "explicit_entity_mapping": false,
+        "exclusion_reason": "No structured entity_id mapping; filename-only association is forbidden. Known Phase F canary or storyboard output is not a Production Asset reference."
+      },
+      {
+        "relative_path": "uploads/manual-media/book-990401-generated-分镜图 1 v2-f52203bb1248-28a9944def59b1a0.png",
+        "bytes": 12726,
+        "sha256": "28a9944def59b1a09c032cd6f482866909efccbe27da38fb1c8bff9035ec305a",
+        "explicit_entity_mapping": false,
+        "exclusion_reason": "No structured entity_id mapping; filename-only association is forbidden. Known Phase F canary or storyboard output is not a Production Asset reference."
+      }
+    ]
+  },
+  "missing_entities": [
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "GU_CHEN",
+      "shots_using_asset": [
+        3,
+        4,
+        8
+      ]
+    },
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "LIN_WAN",
+      "shots_using_asset": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "LU_SHU",
+      "shots_using_asset": [
+        5,
+        7,
+        9,
+        10,
+        12,
+        14,
+        15
+      ]
+    },
+    {
+      "asset_type": "CHARACTER",
+      "entity_id": "TICKET_CLERK",
+      "shots_using_asset": [
+        1
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "APPLE",
+      "shots_using_asset": [
+        9
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "BROKEN_UMBRELLA_RIB",
+      "shots_using_asset": [
+        3,
+        6
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "DOOR_LOCK",
+      "shots_using_asset": [
+        9
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "HANDBAG",
+      "shots_using_asset": [
+        5,
+        11
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "POCKET_HARD_OBJECT",
+      "shots_using_asset": [
+        12
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "RED_FIBER",
+      "shots_using_asset": [
+        13
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "RED_UMBRELLA",
+      "shots_using_asset": [
+        2,
+        6
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "TABLE_SCRATCH",
+      "shots_using_asset": [
+        12
+      ]
+    },
+    {
+      "asset_type": "PROP",
+      "entity_id": "TICKET",
+      "shots_using_asset": [
+        1
+      ]
+    },
+    {
+      "asset_type": "SCENE",
+      "entity_id": "E01_SC001",
+      "shots_using_asset": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "asset_type": "SCENE",
+      "entity_id": "E01_SC002",
+      "shots_using_asset": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    }
+  ],
+  "provider_calls": {
+    "provider": 0,
+    "image": 0,
+    "video": 0,
+    "paid_llm": 0
+  },
+  "policy": {
+    "automatic_asset_generation": false,
+    "automatic_rebinding": false,
+    "database_mutated": false,
+    "old_versions_modified": false
+  }
+}
