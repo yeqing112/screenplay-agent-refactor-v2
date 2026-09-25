@@ -10,7 +10,7 @@
 
 This round performed a read-only inventory and did not call any Provider, image model, video model, paid LLM, or automatic asset generator. The existing H2.2 records are valid authority metadata with `pilot://` source identities and deterministic checksums, but they do not provide readable real visual reference media.
 
-The checkout contains a small number of `book-990401` files. None has an explicit structured `entity_id → media_identity` mapping. Filename, folder, approximate name, and visual similarity matching are forbidden, so those files remain excluded. Formal visual-reference records for book `990401` are also absent.
+The checkout contains six `book-990401` files: four readable 1x1 PNG Phase F canary outputs and two readable 640x360 storyboard images. None has an explicit structured `entity_id → media_identity` mapping. Filename, folder, approximate name, and visual similarity matching are forbidden, so those files remain excluded. Formal visual-reference records for book `990401` are also absent.
 
 ## Gate matrix
 

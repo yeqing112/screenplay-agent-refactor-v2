@@ -28,7 +28,7 @@ This review records factual readiness only. No aesthetic or identity-quality sco
 
 ## Excluded files
 
-The checkout contains `book-990401` files, but none has an explicit structured mapping to one of the 15 entity IDs. They remain excluded under the no-fuzzy-matching rule; known canary/storyboard outputs are not valid Production Asset references.
+The checkout contains six `book-990401` files: four readable 1x1 PNG Phase F canary outputs and two readable 640x360 storyboard images. None has an explicit structured mapping to one of the 15 entity IDs. They remain excluded under the no-fuzzy-matching rule and are not valid Production Asset references.
 
 ## Required human action
 

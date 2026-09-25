@@ -415,5 +415,97 @@
     "pointer_moves": 0,
     "new_shot_bindings": 0,
     "prompt_ir_recompiled": false
-  }
+  },
+  "excluded_source_technical_inventory": [
+    {
+      "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-4e523deeafa84ab0-431ced6916a2a21a.png",
+      "bytes": 68,
+      "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+      "explicit_entity_mapping": false,
+      "exclusion_reason": "Phase F canary output; 1x1 PNG and no explicit entity_id mapping.",
+      "technical_inspection": {
+        "readable": true,
+        "mime": "image/png",
+        "width": 1,
+        "height": 1,
+        "mode": "LA",
+        "non_empty": true
+      }
+    },
+    {
+      "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-a374b1b3b34541aa-431ced6916a2a21a.png",
+      "bytes": 68,
+      "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+      "explicit_entity_mapping": false,
+      "exclusion_reason": "Phase F canary output; 1x1 PNG and no explicit entity_id mapping.",
+      "technical_inspection": {
+        "readable": true,
+        "mime": "image/png",
+        "width": 1,
+        "height": 1,
+        "mode": "LA",
+        "non_empty": true
+      }
+    },
+    {
+      "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-dbf1fcd2aa984ce0-431ced6916a2a21a.png",
+      "bytes": 68,
+      "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+      "explicit_entity_mapping": false,
+      "exclusion_reason": "Phase F canary output; 1x1 PNG and no explicit entity_id mapping.",
+      "technical_inspection": {
+        "readable": true,
+        "mime": "image/png",
+        "width": 1,
+        "height": 1,
+        "mode": "LA",
+        "non_empty": true
+      }
+    },
+    {
+      "relative_path": "uploads/manual-media/book-990401-generated-phase-f-canary-df08054814fd45ea-431ced6916a2a21a.png",
+      "bytes": 68,
+      "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+      "explicit_entity_mapping": false,
+      "exclusion_reason": "Phase F canary output; 1x1 PNG and no explicit entity_id mapping.",
+      "technical_inspection": {
+        "readable": true,
+        "mime": "image/png",
+        "width": 1,
+        "height": 1,
+        "mode": "LA",
+        "non_empty": true
+      }
+    },
+    {
+      "relative_path": "uploads/manual-media/book-990401-generated-分镜图 1 v2-4deadff31397-28a9944def59b1a0.png",
+      "bytes": 12726,
+      "sha256": "28a9944def59b1a09c032cd6f482866909efccbe27da38fb1c8bff9035ec305a",
+      "explicit_entity_mapping": false,
+      "exclusion_reason": "Storyboard image output; no explicit entity_id mapping. Filename-only association is forbidden.",
+      "technical_inspection": {
+        "readable": true,
+        "mime": "image/png",
+        "width": 640,
+        "height": 360,
+        "mode": "RGBA",
+        "non_empty": true
+      }
+    },
+    {
+      "relative_path": "uploads/manual-media/book-990401-generated-分镜图 1 v2-f52203bb1248-28a9944def59b1a0.png",
+      "bytes": 12726,
+      "sha256": "28a9944def59b1a09c032cd6f482866909efccbe27da38fb1c8bff9035ec305a",
+      "explicit_entity_mapping": false,
+      "exclusion_reason": "Storyboard image output; no explicit entity_id mapping. Filename-only association is forbidden.",
+      "technical_inspection": {
+        "readable": true,
+        "mime": "image/png",
+        "width": 640,
+        "height": 360,
+        "mode": "RGBA",
+        "non_empty": true
+      }
+    }
+  ]
 }
