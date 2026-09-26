@@ -1,0 +1,42 @@
+{
+  "status": "PRODUCTION_BATCH_RUNTIME_COMPLETE",
+  "slice": [
+    "Episode",
+    "ProductionBatch",
+    "ProductionBatchItem",
+    "GenerationExecution",
+    "MediaCandidateValidationReviewGate"
+  ],
+  "ordering": "priority DESC, id ASC",
+  "execution_mode": "sequential",
+  "retry": {
+    "supported": true,
+    "same_execution_identity": true,
+    "bounded_by_max_retries": true
+  },
+  "provider_binding": {
+    "provider": "shapi-openai-images",
+    "endpoint": "https://shapi.vip/v1",
+    "profile_selection": "one fixed model_profile_id per batch"
+  },
+  "forbidden_paths": [
+    "VIDEO_GENERATION",
+    "MULTI_MODEL_SCHEDULING",
+    "AUTO_DIRECTOR_SCORING",
+    "PROMPT_OPTIMIZATION",
+    "NEW_QUEUE",
+    "NEW_WORKER",
+    "NEW_TASK_SYSTEM",
+    "AUTO_OFFICIAL_POINTER_REPLACEMENT"
+  ],
+  "evidence": {
+    "runtime_test_file": "tests/test_production_batch_runtime.py",
+    "migration_file": "alembic/versions/d9e0f1a2b3c4_add_production_batch_runtime.py",
+    "api_routes": [
+      "/production/batches",
+      "/production/batches/{batch_id}",
+      "/production/batches/{batch_id}/run",
+      "/api/production/batches"
+    ]
+  }
+}

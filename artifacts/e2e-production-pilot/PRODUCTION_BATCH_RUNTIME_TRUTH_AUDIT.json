@@ -1,0 +1,33 @@
+{
+  "status": "PRODUCTION_BATCH_RUNTIME_COMPLETE",
+  "commit": "4a04f1a",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "baseline": "541aef8",
+  "migration": {
+    "head": "d9e0f1a2b3c4",
+    "fresh_upgrade": "PASS",
+    "repeat_upgrade": "PASS",
+    "legacy_preservation": "PASS",
+    "schema_drift": "PASS",
+    "tables": ["production_batches", "production_batch_items"]
+  },
+  "provider": {
+    "provider": "shapi-openai-images",
+    "endpoint": "https://shapi.vip/v1",
+    "target_media": "IMAGE",
+    "video_generation": "FAIL_CLOSED"
+  },
+  "authority": {
+    "task_run": "REUSED",
+    "generation_execution": "REUSED",
+    "media_candidate_validation": "EXISTING_BOUNDARY",
+    "official_pointer_auto_replacement": false,
+    "auto_approval": false
+  },
+  "tests": {
+    "production_batch_runtime": {"passed": 4, "failed": 0},
+    "migration_and_schema": {"passed": 11, "failed": 0},
+    "generation_execution_foundation": {"passed": 4, "failed": 0},
+    "provider_and_model_adapter": {"passed": 9, "failed": 0}
+  }
+}
