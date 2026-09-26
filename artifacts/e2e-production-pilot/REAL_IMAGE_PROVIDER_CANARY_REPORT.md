@@ -4,7 +4,7 @@
 
 `REAL_IMAGE_PROVIDER_CANARY_COMPLETE`
 
-- Commit: `f777048` (canary implementation baseline; verification hardening is on this branch)
+- Commit: `43246ba` (real Provider evidence and verification hardening)
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Provider: `shapi-openai-images`
 - Model: `grok-imagine-image-quality`
