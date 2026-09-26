@@ -31,6 +31,7 @@ No second asset store, Prompt store, character management system, face swap, fac
 - `pytest -q tests/test_migration_chain_hardening.py tests/test_h2_asset_authority_schema.py` — **11 passed**
 - Existing asset/Prompt/visual regression set — **34 passed**
 - `pytest -q` — **1845 passed, 0 failed**
+- Post-integration `pytest -q tests/test_character_consistency_runtime.py tests/test_production_prompt_lineage_canary.py` — **13 passed**
 - `python -m scripts.verify_migration_chain` — **PASS**; fresh and repeated upgrade, legacy replay, schema drift
 - `npm run test:golden` — **5/5 passed**
 - API route import/registration check — **PASS**

@@ -27,6 +27,7 @@
     "migration": "alembic/versions/e1f2a3b4c5d6_add_character_consistency_runtime.py",
     "tests": "tests/test_character_consistency_runtime.py",
     "full_regression": {"passed": 1845, "failed": 0},
+    "post_prompt_integration": {"passed": 13, "failed": 0},
     "golden": {"passed": 5, "failed": 0}
   }
 }

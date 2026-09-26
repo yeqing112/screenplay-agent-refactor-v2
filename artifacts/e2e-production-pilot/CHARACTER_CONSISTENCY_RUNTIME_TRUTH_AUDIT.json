@@ -45,6 +45,7 @@
     "migration": {"passed": 11, "failed": 0},
     "asset_prompt_visual_regression": {"passed": 34, "failed": 0},
     "full_pytest": {"passed": 1845, "failed": 0},
+    "post_prompt_integration": {"passed": 13, "failed": 0},
     "golden": {"passed": 5, "failed": 0},
     "api_routes": "PASS",
     "compile": "PASS"
