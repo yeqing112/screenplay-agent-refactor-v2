@@ -368,18 +368,17 @@ def create_character_constrained_prompt_version(
     never overwritten in place.  The created row therefore remains compatible
     with ``ProductionPromptLineage`` and its append-only version contract.
     """
-    injected = inject_character_constraints(session, shot_id=shot_id, original_prompt=original_prompt)
     from core.production_prompt_lineage import create_production_prompt_version
 
-    structure = dict(prompt_structure or {})
-    structure.update(injected["prompt_structure"])
     prompt = create_production_prompt_version(
         session,
         prompt_id=prompt_id,
-        prompt_text=injected["injected_prompt"],
-        prompt_structure=structure,
+        prompt_text=original_prompt,
+        prompt_structure=dict(prompt_structure or {}),
         created_from="CHARACTER_CONSISTENCY",
+        shot_id=shot_id,
     )
+    injected = inject_character_constraints(session, shot_id=shot_id, original_prompt=original_prompt)
     return {"prompt_version": prompt, "original_prompt": injected["original_prompt"], "injected_prompt": injected["injected_prompt"], "prompt_was_mutated": False, "constraint_block": injected["constraint_block"]}
 
 

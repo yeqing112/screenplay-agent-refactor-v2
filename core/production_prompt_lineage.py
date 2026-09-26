@@ -96,12 +96,25 @@ def create_production_prompt_version(
     prompt_text: str,
     prompt_structure: Mapping[str, Any] | None = None,
     created_from: str = "SHOT_REQUIREMENT",
+    shot_id: int | None = None,
 ) -> dict[str, Any]:
     """Append a prompt version; existing versions are never updated."""
     prompt_key = str(prompt_id or "").strip()
     text = str(prompt_text or "")
     if not prompt_key or not text.strip():
         raise ProductionPromptLineageError("prompt_id and prompt_text are required")
+    structure = dict(prompt_structure or {})
+    if shot_id is not None:
+        # Character constraints are derived at prompt creation time from the
+        # current ShotCharacterBinding rows.  The source prompt remains in the
+        # immutable structure snapshot; no caller-owned source field is
+        # overwritten.
+        from core.character_consistency import inject_character_constraints
+
+        injected = inject_character_constraints(session, shot_id=int(shot_id), original_prompt=text)
+        text = injected["injected_prompt"]
+        structure.update(injected["prompt_structure"])
+        created_from = "CHARACTER_CONSISTENCY"
     existing = (
         session.query(ProductionPromptVersion)
         .filter_by(prompt_id=prompt_key)
@@ -109,7 +122,6 @@ def create_production_prompt_version(
         .first()
     )
     number = int(existing.version_number) + 1 if existing else 1
-    structure = dict(prompt_structure or {})
     fingerprint = prompt_fingerprint(text, structure)
     row = ProductionPromptVersion(
         prompt_version_id=f"ppv_{_token({'prompt_id': prompt_key, 'version_number': number, 'fingerprint': fingerprint}, '')}",
