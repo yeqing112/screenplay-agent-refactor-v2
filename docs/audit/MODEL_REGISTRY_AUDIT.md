@@ -10,10 +10,10 @@ Model Registry 没有独立 SQLAlchemy 表；api/model_registry.py 使用 runtim
 
 ## API
 
-- GET /api/model-registry：profiles、defaults、default_profiles
-- GET /api/model-registry/defaults：capability 默认 profile
-- PUT /api/model-registry：校验并保存 profile/defaults
-- POST /api/model-registry/test：连接/配置测试
+- GET /api/model-registry：返回 profiles、defaults、default_profiles；profile 列表默认去掉 api_key。
+- GET /api/model-registry/defaults：返回 defaults 和 default_profiles。
+- PUT /api/model-registry：请求体为 profiles[] 和 defaults{}；每个 profile 至少含 name、capability、provider，非 mock provider 还需合法 base_url/model_name；响应为保存后的同一 registry projection。
+- POST /api/model-registry/test：请求体为 profile_id 或内联 profile；响应为连接测试结果、脱敏 provider/model 信息和错误诊断，不创建 generation execution。
 - GET/PUT /api/agent/model-config：旧 agent 兼容面
 
 ## 前端

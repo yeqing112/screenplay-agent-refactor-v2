@@ -22,7 +22,14 @@ VisualAssetAuthority request → /visual-assets/.../authoring-requests → /auth
 
 ## Agent 判断
 
-run_script_pipeline、run_visual_setup、run_storyboard 在 api/server.py 中通过 asyncio.to_thread 执行 agent。多数 agent 产出结构化文本、Prompt、shot plan 和约束，provider 调用集中在 generation_adapters.py 与 canonical transport 层。因此旧 agent 路径是 A/B 混合，canonical 路径已有类型 C 骨架，但尚未统一所有入口。
+run_script_pipeline、run_visual_setup、run_storyboard 在 api/server.py 中通过 asyncio.to_thread 执行 agent。对目标 agent 的实际行为核对如下：
+
+- agents/portrait.py（以及 portrait_base.py、portrait_stages.py）：调用 core.llm.call_llm_json 生成 CharacterProfile/VisualMakeup 的人物事实和提示词，写入数据库与输出 Markdown；没有 image model call，因此属于类型 A/B 的“文本提示词 + LLM”，不是图片生成 Runtime。
+- agents/scene_setup.py：era_scan、run_props、run_locations、makeup 等调用 call_llm_json，将 VisualEraSpec、VisualProp、VisualLocation、VisualMakeup 写入数据库；输出视觉规格和 Prompt，不直接产出媒体，属于类型 A/B。
+- agents/storyboard.py：用 call_llm/call_llm_json 生成场景和 StoryboardShot，包含 LLM 解析失败重试和结构化 fallback；写入 StoryboardShot 及资产绑定，不直接调用 image/video provider，属于类型 A/B。
+- agents/prompt_synthesizer.py：从 StoryboardShot.asset_links 合成 visual_prompt_final，并写回 shot；在 asset_links 未就绪时 Phase 1 直接返回空列表，仍不调用 image/video provider，属于类型 A。
+
+因此，旧 agent 层总体是类型 A（Prompt/结构化资产准备）并夹有 LLM model call；类型 C 只出现在后续 creative task/canonical generation 路径。provider 调用集中在 generation_adapters.py 与 canonical transport 层，尚未统一所有入口。
 
 ## 关键断点
 
