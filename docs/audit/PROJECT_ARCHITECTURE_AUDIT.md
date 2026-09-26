@@ -1,8 +1,8 @@
 # Project Architecture & Runtime Audit
 
-审计状态：AUDIT_COMPLETE  
-审计日期：2026-09-26  
-分支：codex/visual-authoring-provider-canary-reconcile  
+审计状态：AUDIT_COMPLETE
+审计日期：2026-09-26
+分支：codex/visual-authoring-provider-canary-reconcile
 基线提交：62797ff
 
 ## 范围与方法

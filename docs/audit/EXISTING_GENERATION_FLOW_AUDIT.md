@@ -35,4 +35,3 @@ run_script_pipeline、run_visual_setup、run_storyboard 在 api/server.py 中通
 ## 目标收敛链
 
 User action → frontend service/component → canonical preview/confirm → PromptIR pointer + Production Prompt Lineage → GenerationOrchestrator → GenerationExecution → ModelAdapter/transport → provider submit/poll/reconcile → MediaCandidate → validation → authority promotion → OfficialMediaPointer。
-

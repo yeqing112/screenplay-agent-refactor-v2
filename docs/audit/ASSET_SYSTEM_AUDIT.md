@@ -31,4 +31,3 @@ Legacy asset_links/shot media 与 canonical candidate/official media 可能形�
 ## 结论
 
 Asset Authority Graph 已足够作为 production read model。下一步不是再造 Asset Manager，而是让所有生成入口写入同一 candidate/validation/official 链，并让 workspace 读取 canonical projection。
-

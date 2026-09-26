@@ -22,4 +22,3 @@ GenerationExecutionRecord → MediaCandidateRecord → MediaValidationRecord →
 核心 schema 来自：d4e5f6a7b8c9_add_persistent_task_runs.py、b2c3d4e5f6g7_add_media_scoped_prompt_pointer.py、y8h9i0j1k2l3_add_generation_execution_records.py、z0a1b2c3d4e5_add_media_authority_foundation.py、v5e6f7g8h9i0_add_visual_asset_authority.py、u4d5e6f7g8h9_add_prompt_ir_authority.py、a1b2c3d4e5f6_add_h2_production_asset_authority.py。
 
 这些迁移建立了关键外键/唯一约束，但旧表是兼容结构；表存在不等于所有运行路径已经迁移。
-

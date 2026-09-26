@@ -30,4 +30,3 @@ ProductionPromptVersion 是 append-only 版本；ProductionGenerationIntent 保�
 6. 无合格 PromptIR pointer 时返回 production readiness blocker。
 
 PromptIR、authority、provider 和 fingerprint 只能出现在 technical/production view，不应泄漏到读者剧本文本。
-

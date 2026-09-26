@@ -21,4 +21,3 @@
 ## Migration order
 
 Freeze PromptIR/profile/payload fingerprint；route legacy generation through canonical orchestrator；candidate and validation precede official pointer；workspace reads production projection v2；确认 parity 后再减少 legacy writes。
-

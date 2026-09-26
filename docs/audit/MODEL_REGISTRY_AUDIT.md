@@ -34,4 +34,3 @@ web/src/services/modelRegistry.ts 封装请求；ProjectsPage.tsx 打开 ModelRe
 ## 建议
 
 保持 Registry 为配置/选择层；生产执行要求显式 profile id，并冻结 profile fingerprint、adapter version、transport binding；凭据只在 transport 边界短暂注入；禁止在 Registry 中新增 ModelManager、队列或资产写入职责。
-

@@ -27,4 +27,3 @@
 ## 最小目标
 
 建立 GenerationOrchestrator 持久化状态机：claim/lease、submit、poll、reconcile、terminal transition、idempotency 和 retry policy。TaskRun 继续承载上层 pipeline，但不代替 GenerationExecution；若暂不引入外部 queue，至少把 worker claim 和恢复语义落到数据库。
-

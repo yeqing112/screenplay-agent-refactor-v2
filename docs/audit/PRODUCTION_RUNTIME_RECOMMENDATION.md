@@ -29,4 +29,3 @@ ProductionGenerationSelection、canonical_request_fingerprint、PromptIR pointer
 ## 不建议
 
 新增 ModelManager、AssetManager、ProviderManager；把 Registry 变成队列；在前端拼 provider 请求；让 provider 响应直接覆盖 canonical pointer；状态机未统一前继续增加 provider。
-
