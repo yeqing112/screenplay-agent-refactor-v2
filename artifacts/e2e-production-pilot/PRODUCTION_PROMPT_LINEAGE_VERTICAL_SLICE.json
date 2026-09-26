@@ -1,0 +1,41 @@
+{
+  "asset_count": 13,
+  "episode_count": 1,
+  "fingerprint_validation_result": {
+    "different_prompt_different_fingerprint": true,
+    "same_prompt_same_fingerprint": true
+  },
+  "generation_intent_count": 11,
+  "lineage_count": 13,
+  "prompt_change": {
+    "new_asset_version_id": "pav_0a558855a86e57d0cb636ab5",
+    "new_pointer_version_id": "pav_0a558855a86e57d0cb636ab5",
+    "new_prompt_version_id": "ppv_2015f5f9080855d4360740af",
+    "new_review_id": "par_6993fe54ecfcd097176a28b1_01",
+    "old_asset_version_id": "pav_c9db51515349fdb850325586",
+    "old_prompt_version_id": "ppv_5ce6b933579d1ff97fce6569",
+    "old_review_id": "par_afa33733ba37a2f9258de9df_01",
+    "old_review_state": "REJECTED"
+  },
+  "prompt_count": 12,
+  "prompt_version_count": 20,
+  "provider_calls": 0,
+  "provider_free": true,
+  "review_count": 13,
+  "schema_version": "production_prompt_lineage_vertical_slice_v1",
+  "scope_boundary": "Provider-free canary; no UI, Source Fact or ScriptIR mutation; Human Review remains the production gate.",
+  "shot_count": 10,
+  "stage": "PHASE_PRODUCTION_PROMPT_LINEAGE_CANARY_COMPLETE",
+  "traceability_result": true,
+  "truth_checks": {
+    "asset_has_prompt_lineage": true,
+    "generation_intent_exists": true,
+    "prompt_fingerprint_valid": true,
+    "prompt_history_append_only": true,
+    "prompt_version_exists": true,
+    "review_reproducible": true,
+    "script_ir_mutations": 0,
+    "source_fact_mutations": 0,
+    "traceability_result": true
+  }
+}

@@ -65,6 +65,7 @@ def _create_review_tables(bind) -> None:
             sa.Column("asset_type", sa.String(), nullable=False),
             sa.Column("asset_id", sa.String(), nullable=False),
             sa.Column("asset_version_id", sa.String(), nullable=False),
+            sa.Column("prompt_lineage_id", sa.String(), nullable=True),
             sa.Column("review_state", sa.String(), nullable=False),
             sa.Column("reviewer_type", sa.String(), nullable=False),
             sa.Column("decision", sa.String(), nullable=True),
@@ -116,6 +117,89 @@ def _drop_review_tables(bind) -> None:
         op.drop_table("production_asset_review_history")
     if "production_asset_reviews" in tables:
         op.drop_table("production_asset_reviews")
+
+
+def _create_prompt_lineage_tables(bind) -> None:
+    """Create the append-only Prompt -> Intent -> Asset lineage layer."""
+    tables = set(inspect(bind).get_table_names())
+    if "production_prompt_versions" not in tables:
+        op.create_table(
+            "production_prompt_versions",
+            sa.Column("id", sa.Integer(), primary_key=True),
+            sa.Column("prompt_version_id", sa.String(), nullable=False),
+            sa.Column("prompt_id", sa.String(), nullable=False),
+            sa.Column("version_number", sa.Integer(), nullable=False),
+            sa.Column("prompt_text", sa.Text(), nullable=False),
+            sa.Column("prompt_structure", sa.Text(), nullable=False, server_default="{}"),
+            sa.Column("prompt_fingerprint", sa.String(), nullable=False),
+            sa.Column("created_from", sa.String(), nullable=False),
+            _timestamp("created_at"),
+            sa.UniqueConstraint("prompt_version_id", name="uq_production_prompt_version_id"),
+            sa.UniqueConstraint("prompt_id", "version_number", name="uq_production_prompt_version_number"),
+            sa.CheckConstraint("version_number > 0", name="ck_production_prompt_version_positive"),
+        )
+        op.create_index("ix_production_prompt_versions_prompt_version_id", "production_prompt_versions", ["prompt_version_id"], unique=True)
+        op.create_index("ix_production_prompt_versions_prompt_id", "production_prompt_versions", ["prompt_id"])
+        op.create_index("ix_production_prompt_versions_prompt_fingerprint", "production_prompt_versions", ["prompt_fingerprint"])
+    if "production_generation_intents" not in tables:
+        op.create_table(
+            "production_generation_intents",
+            sa.Column("id", sa.Integer(), primary_key=True),
+            sa.Column("generation_intent_id", sa.String(), nullable=False),
+            sa.Column("shot_id", sa.Integer(), nullable=False),
+            sa.Column("character_requirements", sa.Text(), nullable=False, server_default="{}"),
+            sa.Column("scene_requirements", sa.Text(), nullable=False, server_default="{}"),
+            sa.Column("camera_requirements", sa.Text(), nullable=False, server_default="{}"),
+            sa.Column("style_requirements", sa.Text(), nullable=False, server_default="{}"),
+            sa.Column("constraint_snapshot", sa.Text(), nullable=False, server_default="{}"),
+            sa.Column("shot_requirement_snapshot", sa.Text(), nullable=False, server_default="{}"),
+            sa.Column("shot_requirement_fingerprint", sa.String(), nullable=False),
+            _timestamp("created_at"),
+            sa.ForeignKeyConstraint(["shot_id"], ["storyboard_shots.id"], name="fk_production_generation_intent_shot", ondelete="RESTRICT"),
+            sa.UniqueConstraint("generation_intent_id", name="uq_production_generation_intent_id"),
+        )
+        op.create_index("ix_production_generation_intents_generation_intent_id", "production_generation_intents", ["generation_intent_id"], unique=True)
+        op.create_index("ix_production_generation_intents_shot_id", "production_generation_intents", ["shot_id"])
+        op.create_index("ix_production_generation_intents_shot_requirement_fingerprint", "production_generation_intents", ["shot_requirement_fingerprint"])
+    if "production_prompt_lineages" not in tables:
+        op.create_table(
+            "production_prompt_lineages",
+            sa.Column("id", sa.Integer(), primary_key=True),
+            sa.Column("prompt_lineage_id", sa.String(), nullable=False),
+            sa.Column("asset_id", sa.String(), nullable=False),
+            sa.Column("asset_version_id", sa.String(), nullable=False),
+            sa.Column("shot_id", sa.Integer(), nullable=False),
+            sa.Column("prompt_version_id", sa.String(), nullable=False),
+            sa.Column("generation_intent_id", sa.String(), nullable=False),
+            sa.Column("prompt_fingerprint", sa.String(), nullable=False),
+            _timestamp("created_at"),
+            sa.ForeignKeyConstraint(["asset_version_id"], ["production_asset_version_registry.version_id"], name="fk_production_prompt_lineage_asset_version", ondelete="RESTRICT"),
+            sa.ForeignKeyConstraint(["shot_id"], ["storyboard_shots.id"], name="fk_production_prompt_lineage_shot", ondelete="RESTRICT"),
+            sa.ForeignKeyConstraint(["prompt_version_id"], ["production_prompt_versions.prompt_version_id"], name="fk_production_prompt_lineage_prompt_version", ondelete="RESTRICT"),
+            sa.ForeignKeyConstraint(["generation_intent_id"], ["production_generation_intents.generation_intent_id"], name="fk_production_prompt_lineage_intent", ondelete="RESTRICT"),
+            sa.UniqueConstraint("prompt_lineage_id", name="uq_production_prompt_lineage_id"),
+            sa.UniqueConstraint("asset_version_id", "prompt_version_id", "generation_intent_id", name="uq_production_prompt_lineage_edge"),
+        )
+        for name, column in (
+            ("prompt_lineage_id", "prompt_lineage_id"),
+            ("asset_id", "asset_id"),
+            ("asset_version_id", "asset_version_id"),
+            ("shot_id", "shot_id"),
+            ("prompt_version_id", "prompt_version_id"),
+            ("generation_intent_id", "generation_intent_id"),
+            ("prompt_fingerprint", "prompt_fingerprint"),
+        ):
+            op.create_index(f"ix_production_prompt_lineages_{name}", "production_prompt_lineages", [column], unique=(name == "prompt_lineage_id"))
+
+
+def _drop_prompt_lineage_tables(bind) -> None:
+    tables = set(inspect(bind).get_table_names())
+    if "production_prompt_lineages" in tables:
+        op.drop_table("production_prompt_lineages")
+    if "production_generation_intents" in tables:
+        op.drop_table("production_generation_intents")
+    if "production_prompt_versions" in tables:
+        op.drop_table("production_prompt_versions")
 
 
 def _columns(*, include_target: bool, legacy_unique: bool = False) -> sa.Table:
@@ -233,6 +317,7 @@ def upgrade() -> None:
         pass
     _verify_upgrade(bind, before_count)
     _create_review_tables(bind)
+    _create_prompt_lineage_tables(bind)
 
 
 def _verify_downgrade(bind, expected_count: int) -> None:
@@ -264,4 +349,5 @@ def downgrade() -> None:
     with op.batch_alter_table(TABLE, recreate="always", copy_from=copy):
         pass
     _verify_downgrade(bind, before_count)
+    _drop_prompt_lineage_tables(bind)
     _drop_review_tables(bind)

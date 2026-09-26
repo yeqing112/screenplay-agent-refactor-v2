@@ -18,6 +18,7 @@ from models import (
     ProductionAssetReviewHistory,
     SceneAssetVersion,
     PropAssetVersion,
+    ProductionPromptLineage,
 )
 
 from core.production_asset_authority import (
@@ -123,6 +124,7 @@ def _as_dict(row: ProductionAssetReview) -> dict[str, Any]:
         "asset_type": row.asset_type,
         "asset_id": row.asset_id,
         "asset_version_id": row.asset_version_id,
+        "prompt_lineage_id": row.prompt_lineage_id,
         "review_state": row.review_state,
         "reviewer_type": row.reviewer_type,
         "decision": row.decision,
@@ -159,9 +161,14 @@ def create_production_asset_review(
     asset_version_id: str,
     reviewer_type: str = "SYSTEM",
     comment: str = "",
+    prompt_lineage_id: str | None = None,
 ) -> dict[str, Any]:
     """Create an immutable review workflow at ``GENERATED``."""
     kind, _, version = _version_row(session, asset_type=asset_type, asset_id=asset_id, asset_version_id=asset_version_id)
+    if prompt_lineage_id:
+        lineage = session.query(ProductionPromptLineage).filter_by(prompt_lineage_id=str(prompt_lineage_id)).one_or_none()
+        if lineage is None or str(lineage.asset_version_id) != str(asset_version_id) or int(lineage.shot_id) <= 0:
+            raise ProductionAssetReviewError("prompt_lineage_id does not match the reviewed asset version")
     actor = str(reviewer_type or "SYSTEM").upper()
     if actor not in REVIEWER_TYPES:
         raise ProductionAssetReviewError(f"unsupported reviewer_type: {actor}")
@@ -172,6 +179,7 @@ def create_production_asset_review(
         asset_type=kind,
         asset_id=str(asset_id),
         asset_version_id=str(asset_version_id),
+        prompt_lineage_id=str(prompt_lineage_id) if prompt_lineage_id else None,
         review_state="GENERATED",
         reviewer_type=actor,
         decision=None,

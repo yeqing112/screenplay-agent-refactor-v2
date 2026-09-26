@@ -1,0 +1,26 @@
+{
+  "approval_state": "PRODUCTION_PROMPT_LINEAGE_CANARY_APPROVED",
+  "asset_has_prompt_lineage": true,
+  "checks": {
+    "asset_has_prompt_lineage": true,
+    "generation_intent_exists": true,
+    "prompt_fingerprint_valid": true,
+    "prompt_history_append_only": true,
+    "prompt_version_exists": true,
+    "review_reproducible": true,
+    "script_ir_mutations": 0,
+    "source_fact_mutations": 0,
+    "traceability_result": true
+  },
+  "complete": true,
+  "generation_intent_exists": true,
+  "prompt_fingerprint_valid": true,
+  "prompt_history_append_only": true,
+  "prompt_version_exists": true,
+  "provider_calls": 0,
+  "review_reproducible": true,
+  "schema_version": "production_prompt_lineage_truth_audit_v1",
+  "script_ir_mutations": 0,
+  "source_fact_mutations": 0,
+  "stage": "PHASE_PRODUCTION_PROMPT_LINEAGE_CANARY_COMPLETE"
+}

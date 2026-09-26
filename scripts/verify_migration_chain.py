@@ -75,6 +75,9 @@ AUTHORITY_TABLES = {
     "shot_asset_bindings",
     "production_asset_reviews",
     "production_asset_review_history",
+    "production_prompt_versions",
+    "production_generation_intents",
+    "production_prompt_lineages",
 }
 
 REQUIRED_COLUMNS = {
@@ -117,8 +120,11 @@ REQUIRED_COLUMNS = {
     "prop_asset_versions": {"version_id", "authority_id", "prop_id", "visual_asset_version_id", "revision", "status"},
     "prop_asset_pointers": {"prop_id", "authority_id", "version_id", "fingerprint"},
     "shot_asset_bindings": {"storyboard_shot_id", "asset_type", "authority_id", "version_id", "binding_fingerprint", "status"},
-    "production_asset_reviews": {"review_id", "asset_type", "asset_id", "asset_version_id", "review_state", "reviewer_type", "decision", "comment", "created_at"},
+    "production_asset_reviews": {"review_id", "asset_type", "asset_id", "asset_version_id", "prompt_lineage_id", "review_state", "reviewer_type", "decision", "comment", "created_at"},
     "production_asset_review_history": {"history_id", "review_id", "asset_version_id", "from_state", "to_state", "actor", "decision", "comment", "created_at"},
+    "production_prompt_versions": {"prompt_version_id", "prompt_id", "version_number", "prompt_text", "prompt_structure", "prompt_fingerprint", "created_from", "created_at"},
+    "production_generation_intents": {"generation_intent_id", "shot_id", "character_requirements", "scene_requirements", "camera_requirements", "style_requirements", "constraint_snapshot", "shot_requirement_snapshot", "shot_requirement_fingerprint", "created_at"},
+    "production_prompt_lineages": {"prompt_lineage_id", "asset_id", "asset_version_id", "shot_id", "prompt_version_id", "generation_intent_id", "prompt_fingerprint", "created_at"},
 }
 
 

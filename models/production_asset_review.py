@@ -34,6 +34,12 @@ class ProductionAssetReview(Base):
         nullable=False,
         index=True,
     )
+    prompt_lineage_id = Column(
+        String,
+        ForeignKey("production_prompt_lineages.prompt_lineage_id", ondelete="RESTRICT"),
+        nullable=True,
+        index=True,
+    )
     review_state = Column(String, nullable=False, index=True)
     reviewer_type = Column(String, nullable=False)
     decision = Column(String, nullable=True)

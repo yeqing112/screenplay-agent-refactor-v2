@@ -44,6 +44,11 @@ from .production_asset_review import (
     ProductionAssetReview,
     ProductionAssetReviewHistory,
 )
+from .production_prompt_lineage import (
+    ProductionPromptVersion,
+    ProductionGenerationIntent,
+    ProductionPromptLineage,
+)
 
 __all__ = [
     "Base", "engine", "Session",
@@ -74,4 +79,5 @@ __all__ = [
     "ShotAssetBinding",
     "REVIEW_STATES", "REVIEWER_TYPES", "REVIEW_DECISIONS",
     "ProductionAssetReview", "ProductionAssetReviewHistory",
+    "ProductionPromptVersion", "ProductionGenerationIntent", "ProductionPromptLineage",
 ]
