@@ -1,0 +1,53 @@
+{
+  "schema_version": "asset_promotion_runtime_vertical_slice_v1",
+  "stage": "ASSET_PROMOTION_RUNTIME_COMPLETE",
+  "commit": "dfcaede112a2369a0baeb8bfbc5841934edf42b6",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "provider": {
+    "id": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "binding_id": "shapi-openai-images.image.v1",
+    "calls": 0
+  },
+  "migration": {
+    "revision": "c8d9e0f1a2b3",
+    "status": "PASS"
+  },
+  "candidate_lifecycle": [
+    "MEDIA_CANDIDATE/PENDING",
+    "MEDIA_CANDIDATE/REVIEW_REQUIRED",
+    "MediaPromotionRecord/APPROVED",
+    "OfficialMediaVersion/CURRENT",
+    "OfficialMediaPointer/CURRENT"
+  ],
+  "review_decisions": {
+    "APPROVE": "official publication allowed",
+    "REJECT": "persisted as REJECTED; official publication blocked",
+    "REQUEST_CHANGE": "persisted as REQUEST_CHANGE; official publication blocked"
+  },
+  "api_routes": [
+    "/api/assets/candidates",
+    "/api/assets/candidates/{candidate_id}/validate",
+    "/api/assets/candidates/{candidate_id}/promote",
+    "/assets/candidates",
+    "/assets/candidates/{candidate_id}/validate",
+    "/assets/candidates/{candidate_id}/promote"
+  ],
+  "tests": {
+    "promotion_contract": "16 passed",
+    "runtime_review_api": "4 passed",
+    "provider_regression": "13 passed",
+    "schema_regression": "11 passed"
+  },
+  "authority_chain": [
+    "Provider Response",
+    "GenerationExecutionRecord",
+    "MediaCandidateRecord",
+    "MediaValidationRecord",
+    "MediaPromotionRecord",
+    "OfficialMediaVersion",
+    "OfficialMediaAuthority",
+    "OfficialMediaPointer"
+  ],
+  "status": "PASS"
+}

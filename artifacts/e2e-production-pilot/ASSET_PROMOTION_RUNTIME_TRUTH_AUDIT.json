@@ -1,0 +1,51 @@
+{
+  "schema_version": "asset_promotion_runtime_truth_audit_v1",
+  "stage": "ASSET_PROMOTION_RUNTIME_COMPLETE",
+  "commit": "dfcaede112a2369a0baeb8bfbc5841934edf42b6",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "provider_contract": {
+    "provider": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "transport_binding": "shapi-openai-images.image.v1",
+    "external_calls_in_phase": 0,
+    "prior_real_canary_evidence": "REAL_IMAGE_PROVIDER_CANARY_COMPLETE"
+  },
+  "migration": {
+    "head": "c8d9e0f1a2b3",
+    "fresh_upgrade": "PASS",
+    "repeat_upgrade": "PASS",
+    "legacy_fixtures": "PASS",
+    "drift": "PASS"
+  },
+  "checks": {
+    "candidate_status_remains_media_candidate": true,
+    "validation_creates_review_required": true,
+    "explicit_approve_records_reviewer": true,
+    "approve_creates_official_version_authority_pointer": true,
+    "reject_fails_closed": true,
+    "request_change_fails_closed": true,
+    "api_routes_registered": true,
+    "credential_not_persisted": true,
+    "diff_check_clean": true
+  },
+  "tests": {
+    "promotion_contract": {
+      "passed": 16,
+      "failed": 0
+    },
+    "runtime": {
+      "passed": 4,
+      "failed": 0
+    },
+    "provider_regression": {
+      "passed": 13,
+      "failed": 0
+    },
+    "schema_regression": {
+      "passed": 11,
+      "failed": 0
+    }
+  },
+  "all_checks_pass": true,
+  "secret_free_evidence": true
+}
