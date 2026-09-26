@@ -1,0 +1,46 @@
+{
+  "status": "PRODUCTION_OBSERVABILITY_RUNTIME_COMPLETE",
+  "commit": "1323129",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "baseline": "d827ccd",
+  "migration": {
+    "new_migration": false,
+    "head": "d9e0f1a2b3c4",
+    "chain_hardening": "PASS",
+    "schema_authority": "PASS",
+    "metric_tables_added": false
+  },
+  "runtime": {
+    "service": "ProductionMetricsService",
+    "source_tables": [
+      "production_batches",
+      "production_batch_items",
+      "generation_execution_records",
+      "media_candidate_records",
+      "media_promotion_records"
+    ],
+    "writes_runtime_rows": false,
+    "second_task_system": false,
+    "second_logging_system": false,
+    "second_asset_statistics_system": false
+  },
+  "provider": {
+    "provider": "shapi-openai-images",
+    "endpoint": "https://shapi.vip/v1",
+    "source": "existing_generation_execution_records"
+  },
+  "tests": {
+    "observability_and_batch": {"passed": 7, "failed": 0},
+    "migration_and_schema": {"passed": 11, "failed": 0},
+    "execution_and_provider": {"passed": 13, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "configuration": "PASS",
+    "release_gate": "PASS",
+    "frontend_build": "PASS"
+  },
+  "historical_full_regression": {
+    "passed": 1838,
+    "known_baseline_failures": 4,
+    "status": "BASELINE_EXCEPTIONS_RECORDED"
+  }
+}

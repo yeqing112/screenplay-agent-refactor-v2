@@ -1,0 +1,33 @@
+{
+  "status": "PRODUCTION_OBSERVABILITY_RUNTIME_COMPLETE",
+  "slice": [
+    "ProductionBatch",
+    "ProductionBatchItem",
+    "GenerationExecutionRecord",
+    "Provider execution fields",
+    "MediaCandidateRecord",
+    "MediaPromotionRecord"
+  ],
+  "aggregation": {
+    "batch": ["total", "completed", "failed", "running", "pending"],
+    "execution": ["success_count", "failed_count", "average_duration", "retry_count"],
+    "provider": ["provider_name", "request_count", "success_rate", "failure_rate", "average_latency"],
+    "asset": ["candidate_count", "approved_count", "rejected_count", "promotion_rate"]
+  },
+  "api": {
+    "batch_dashboard": [
+      "/production/metrics/batches/{id}",
+      "/api/production/metrics/batches/{id}"
+    ],
+    "runtime_summary": [
+      "/production/metrics/summary",
+      "/api/production/metrics/summary"
+    ]
+  },
+  "evidence": {
+    "service": "core/production_metrics.py",
+    "api": "api/production_metrics_api.py",
+    "tests": "tests/test_production_observability_runtime.py",
+    "schema_change": "none"
+  }
+}
