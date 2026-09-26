@@ -1,0 +1,31 @@
+{
+  "status": "CHARACTER_CONSISTENCY_RUNTIME_COMPLETE",
+  "runtime_commit": "85a67e7",
+  "migration_head": "e1f2a3b4c5d6",
+  "vertical_slice": [
+    "CharacterProfile / CharacterIdentity",
+    "CharacterReferenceAsset",
+    "ShotCharacterBinding",
+    "Existing VisualReferenceAsset and Production Asset Authority identities",
+    "Character constraint block",
+    "Immutable ProductionPromptVersion",
+    "Prompt lineage source snapshot",
+    "Generation constraint validation"
+  ],
+  "api": {
+    "character_query": ["/characters/{id}", "/api/characters/{id}"],
+    "shot_character_binding": ["/shots/{id}/characters", "/api/shots/{id}/characters"],
+    "reference_query": ["/characters/{id}/references", "/api/characters/{id}/references"],
+    "validation": ["/shots/{id}/characters/validation", "/api/shots/{id}/characters/validation"],
+    "prompt_injection": ["/shots/{id}/characters/prompt", "/api/shots/{id}/characters/prompt"]
+  },
+  "evidence": {
+    "model": "models/character_consistency.py",
+    "service": "core/character_consistency.py",
+    "api": "api/character_consistency_api.py",
+    "migration": "alembic/versions/e1f2a3b4c5d6_add_character_consistency_runtime.py",
+    "tests": "tests/test_character_consistency_runtime.py",
+    "full_regression": {"passed": 1845, "failed": 0},
+    "golden": {"passed": 5, "failed": 0}
+  }
+}

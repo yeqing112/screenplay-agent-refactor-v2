@@ -1,0 +1,51 @@
+{
+  "status": "CHARACTER_CONSISTENCY_RUNTIME_COMPLETE",
+  "commit": "85a67e7",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration": {
+    "head": "e1f2a3b4c5d6",
+    "fresh_upgrade": "PASS",
+    "repeated_upgrade": "PASS",
+    "legacy_replay": "PASS",
+    "schema_drift": "PASS"
+  },
+  "identity": {
+    "authority_table": "character_profiles",
+    "alias": "CharacterIdentity",
+    "fields": ["id", "name", "description", "attributes", "appearance_profile", "created_at"],
+    "second_character_system": false
+  },
+  "references": {
+    "table": "character_reference_assets",
+    "reference_types": ["portrait", "full_body", "costume", "expression"],
+    "reuses_existing_asset_identity": true,
+    "second_asset_system": false
+  },
+  "shot_binding": {
+    "table": "shot_character_bindings",
+    "supports_multiple_characters": true,
+    "supports_role": true,
+    "uses_existing_storyboard_shot": true
+  },
+  "prompt": {
+    "source_prompt_mutated": false,
+    "immutable_production_prompt_version": true,
+    "lineage_source_snapshot": true,
+    "provider_calls": 0
+  },
+  "validation": {
+    "character_binding_required": true,
+    "reference_asset_required": true,
+    "constraint_required": true,
+    "fail_closed": true
+  },
+  "tests": {
+    "character_runtime": {"passed": 3, "failed": 0},
+    "migration": {"passed": 11, "failed": 0},
+    "asset_prompt_visual_regression": {"passed": 34, "failed": 0},
+    "full_pytest": {"passed": 1845, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "api_routes": "PASS",
+    "compile": "PASS"
+  }
+}
