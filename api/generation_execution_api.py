@@ -10,6 +10,7 @@ from core.generation_execution_service import (
     GenerationExecutionService,
     serialize_generation_execution,
 )
+from core.generation_orchestrator import GenerationOrchestrator, GenerationOrchestratorError
 from models import Session
 
 
@@ -23,6 +24,12 @@ class CreateGenerationExecutionRequest(BaseModel):
     prompt_pointer_id: int = Field(gt=0, validation_alias=AliasChoices("prompt_pointer_id", "promptPointerId"))
     prompt_version_id: int = Field(gt=0, validation_alias=AliasChoices("prompt_version_id", "promptVersionId"))
     model_profile_id: str = Field(min_length=1, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
+
+
+class RunGenerationExecutionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    params: dict = Field(default_factory=dict)
 
 
 def _raise(exc: GenerationExecutionError) -> None:
@@ -67,4 +74,29 @@ def get_execution(execution_id: str):
             _raise(exc)
 
 
-__all__ = ["router", "CreateGenerationExecutionRequest"]
+@router.post("/executions/{execution_id}/run")
+def run_execution(execution_id: str, req: RunGenerationExecutionRequest | None = None):
+    """Run one execution through the provider-free runtime adapter boundary."""
+    with Session() as session:
+        try:
+            row = GenerationOrchestrator(session).run(
+                execution_id,
+                params=(req.params if req is not None else {}),
+            )
+            session.commit()
+            return serialize_generation_execution(row)
+        except GenerationOrchestratorError as exc:
+            # Provider failures are durable execution facts and must survive
+            # the request rollback.  Readiness failures have no mutation, so
+            # committing here is also safe and keeps the error path simple.
+            session.commit()
+            raise HTTPException(
+                status_code=exc.status_code,
+                detail={"code": exc.code, "message": exc.message, "provider_calls": exc.provider_calls},
+            ) from exc
+        except GenerationExecutionError as exc:
+            session.rollback()
+            _raise(exc)
+
+
+__all__ = ["router", "CreateGenerationExecutionRequest", "RunGenerationExecutionRequest"]
