@@ -1,0 +1,51 @@
+{
+  "schema_version": "production_asset_graph_truth_audit_v1",
+  "stage": "PHASE_PRODUCTION_ASSET_GRAPH_CANARY_COMPLETE",
+  "provider_calls": 0,
+  "approval_state": "GRAPH_CANARY_APPROVED",
+  "checks": {
+    "asset_authority_integrity": true,
+    "version_graph_integrity": true,
+    "pointer_resolution_complete": true,
+    "rollback_safe": true,
+    "binding_resolution_complete": true,
+    "no_orphan_version": true,
+    "no_invalid_pointer": true,
+    "provenance_metadata_complete": true,
+    "mock_asset_production_approved": false,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0
+  },
+  "asset_authority_integrity": true,
+  "version_graph_integrity": true,
+  "pointer_resolution_complete": true,
+  "rollback_safe": true,
+  "binding_resolution_complete": true,
+  "no_orphan_version": true,
+  "no_invalid_pointer": true,
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "graph_counts": {
+    "authority_registry": 6,
+    "version_registry": 12,
+    "character_authority": 3,
+    "character_versions": 6,
+    "scene_authority": 3,
+    "scene_versions": 6,
+    "shots": 10,
+    "bindings": 25,
+    "active_bindings": 20,
+    "stale_bindings": 5
+  },
+  "rollback_simulation": {
+    "before_pointer_version_id": "pav_7cfbf5e720cc37ea30fe9196",
+    "after_pointer_version_id": "pav_107886448a469aa15ff448b1",
+    "target_logical_version": "v2",
+    "pointer_changed": true,
+    "version_history_preserved": true,
+    "authority_identity_mutations": 0,
+    "shot_definitions_mutated": false,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0
+  }
+}

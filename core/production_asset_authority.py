@@ -358,6 +358,69 @@ def ingest_production_asset(
     }
 
 
+def switch_current_production_asset_version(
+    session,
+    *,
+    entity_type: str,
+    entity_id: str,
+    version_id: str,
+    book_id: int = 990401,
+):
+    """Switch one typed asset pointer without deleting version history.
+
+    Pointer movement is a graph operation, not a shot-definition rewrite. Any
+    active binding to the previous pointer is marked ``STALE``; callers must
+    then use :func:`bind_shot_assets` to create exact active bindings for the
+    selected version. Authority identity and every Version row are preserved.
+    """
+    kind = _asset_type(entity_type)
+    entity_id = str(entity_id or "").strip()
+    version_id = str(version_id or "").strip()
+    if not entity_id or not version_id:
+        raise ProductionAssetSchemaError("entity_id and version_id are required for pointer switching")
+    config = _typed_config(kind)
+    authority = session.query(config["authority"]).filter_by(**{config["entity"]: entity_id}).one_or_none()
+    if authority is None:
+        raise AssetBindingInvalid("asset authority does not exist", diagnostics=[{"asset_type": kind, "entity_id": entity_id}])
+    authority_id = str(getattr(authority, "authority_id", "") or "")
+    registry = session.query(ProductionAssetAuthorityRegistry).filter_by(authority_id=authority_id).one_or_none()
+    target = session.query(config["version"]).filter_by(authority_id=authority_id, version_id=version_id).one_or_none()
+    if registry is None or str(getattr(registry, "asset_type", "")).upper() != kind:
+        raise AssetBindingInvalid("asset authority registry is missing or typed differently", diagnostics=[{"asset_type": kind, "authority_id": authority_id}])
+    if target is None:
+        raise AssetBindingInvalid("target asset version does not exist", diagnostics=[{"asset_type": kind, "version_id": version_id}])
+    expected_authority = _authority_fingerprint(book_id=book_id, asset_type=kind, entity_id=entity_id, authority_id=authority_id)
+    if str(getattr(authority, "fingerprint", "")) != expected_authority or str(getattr(authority, "status", "")).upper() != "ACTIVE":
+        raise AssetBindingInvalid("asset authority identity is stale or drifted", diagnostics=[{"asset_type": kind, "authority_id": authority_id}])
+    pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id, "authority_id": authority_id}).one_or_none()
+    if pointer is None:
+        raise AssetBindingInvalid("asset pointer does not exist", diagnostics=[{"asset_type": kind, "entity_id": entity_id}])
+    previous_version_id = str(getattr(authority, "current_version_id", "") or "")
+    previous = session.query(config["version"]).filter_by(authority_id=authority_id, version_id=previous_version_id).one_or_none() if previous_version_id else None
+    if previous is not None and previous.version_id != target.version_id:
+        previous.status = "SUPERSEDED"
+    target.status = "CURRENT"
+    authority.current_version_id = target.version_id
+    pointer.version_id = target.version_id
+    pointer.fingerprint = _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=target.version_id)
+    session.query(ShotAssetBinding).filter(
+        ShotAssetBinding.authority_id == authority_id,
+        ShotAssetBinding.version_id != target.version_id,
+        ShotAssetBinding.status == "ACTIVE",
+    ).update({"status": "STALE"}, synchronize_session=False)
+    session.flush()
+    return {
+        "asset_type": kind,
+        "entity_id": entity_id,
+        "authority_id": authority_id,
+        "previous_version_id": previous_version_id or None,
+        "version_id": target.version_id,
+        "pointer_fingerprint": pointer.fingerprint,
+        "version_history_preserved": True,
+        "shot_definitions_mutated": False,
+    }
+
+
 def _find_asset(session, *, asset_type: str, authority_id: str, version_id: str):
     kind = _asset_type(asset_type)
     config = _typed_config(kind)
@@ -401,7 +464,9 @@ def bind_shot_assets(session, *, storyboard_shot_id: int, characters: list[Mappi
 
 def resolve_shot_assets(session, *, storyboard_shot_id: int) -> dict[str, Any]:
     """Resolve and validate a shot's formal bindings; failures are HTTP 409 compatible."""
-    rows = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=storyboard_shot_id).all()
+    # Historical STALE rows remain queryable for lineage/audit, but only the
+    # current ACTIVE binding set forms the shot's production resolution.
+    rows = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=storyboard_shot_id, status="ACTIVE").all()
     if not rows:
         raise AssetBindingInvalid("shot has no formal asset bindings")
     result = {"storyboard_shot_id": storyboard_shot_id, "characters": [], "scene": None, "props": [], "status": "PASS"}
@@ -674,6 +739,7 @@ __all__ = [
     "ProductionAssetSchemaError",
     "AssetBindingInvalid",
     "ingest_production_asset",
+    "switch_current_production_asset_version",
     "bind_shot_assets",
     "resolve_shot_assets",
     "ProductionAssetAuthorityRepository",

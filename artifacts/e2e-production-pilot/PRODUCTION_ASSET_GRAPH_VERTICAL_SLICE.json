@@ -1,0 +1,79 @@
+{
+  "schema_version": "production_asset_graph_vertical_slice_v1",
+  "stage": "PHASE_PRODUCTION_ASSET_GRAPH_CANARY_COMPLETE",
+  "provider_free": true,
+  "provider_calls": 0,
+  "book_id": 990401,
+  "episode_count": 1,
+  "shot_count": 10,
+  "asset_count": 12,
+  "authority_count": 6,
+  "version_count": 12,
+  "pointer_count": 6,
+  "binding_count": 25,
+  "active_binding_count": 20,
+  "stale_binding_count": 5,
+  "approval_state": "GRAPH_CANARY_APPROVED",
+  "production_writes": {
+    "allowed": true,
+    "only_after_reconcile": true,
+    "authority": 6,
+    "version": 12,
+    "pointer": 6,
+    "shot": 10,
+    "binding": 25
+  },
+  "steps": [
+    {
+      "name": "provider_output",
+      "status": "PASS",
+      "evidence": "Frozen provider response fixture; provider_calls=0."
+    },
+    {
+      "name": "asset_graph_normalization",
+      "status": "PASS",
+      "evidence": "12 immutable asset versions normalize to 6 typed Authorities."
+    },
+    {
+      "name": "authority_uniqueness",
+      "status": "PASS",
+      "evidence": "One Authority identity per CHARACTER/SCENE entity."
+    },
+    {
+      "name": "version_graph",
+      "status": "PASS",
+      "evidence": "All 12 versions have registry lineage and exactly one CURRENT version per Authority."
+    },
+    {
+      "name": "pointer_switch_and_rollback",
+      "status": "PASS",
+      "evidence": "CHARACTER_A pointer moved v3 to v2; identity and version history were preserved."
+    },
+    {
+      "name": "multi_shot_binding_resolution",
+      "status": "PASS",
+      "evidence": "10 shots resolve two ACTIVE typed bindings each; historical STALE rows remain auditable."
+    },
+    {
+      "name": "source_boundary",
+      "status": "PASS",
+      "evidence": "Source Fact and ScriptIR mutation counts are zero."
+    }
+  ],
+  "truth_checks": {
+    "asset_authority_integrity": true,
+    "version_graph_integrity": true,
+    "pointer_resolution_complete": true,
+    "rollback_safe": true,
+    "binding_resolution_complete": true,
+    "no_orphan_version": true,
+    "no_invalid_pointer": true,
+    "provenance_metadata_complete": true,
+    "mock_asset_production_approved": false,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0
+  },
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "scope_boundary": "This canary does not announce UI_V2_COMPLETE."
+}
