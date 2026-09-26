@@ -13,7 +13,7 @@ from scripts.verify_migration_chain import _upgrade, audit_graph, fresh_replay, 
 def test_revision_graph_is_single_head_and_has_no_forbidden_runtime_shortcuts():
     report = audit_graph()
     assert report["root"] == ["bf85be21e043"]
-    assert report["heads"] == ["c8d9e0f1a2b3"]
+    assert report["heads"] == ["d9e0f1a2b3c4"]
     assert not report["missing_predecessors"]
     assert report["status"] == "PASS"
     assert not report["forbidden_migration_patterns"]
@@ -23,7 +23,7 @@ def test_fresh_upgrade_and_repeat_are_idempotent_with_authority_schema():
     replay, schema = fresh_replay()
     assert replay["first_upgrade"] == "PASS"
     assert replay["second_upgrade"] == "PASS"
-    assert replay["alembic_version"] == "c8d9e0f1a2b3"
+    assert replay["alembic_version"] == "d9e0f1a2b3c4"
     assert schema["status"] == "PASS"
     assert not schema["missing_authority_tables"]
     assert not schema["missing_authority_columns"]
@@ -95,7 +95,7 @@ def test_historical_visual_canary_revision_upgrades_in_place_to_canonical_head(t
     columns = {row[1] for row in check.execute("pragma table_info(visual_authoring_decision_requests)")}
     assert "source_constraints_json" in columns
     assert check.execute("select request_id from visual_authoring_decision_requests where id=1").fetchone()[0] == "legacy-request"
-    assert check.execute("select version_num from alembic_version").fetchone()[0] == "c8d9e0f1a2b3"
+    assert check.execute("select version_num from alembic_version").fetchone()[0] == "d9e0f1a2b3c4"
     check.close()
 
 

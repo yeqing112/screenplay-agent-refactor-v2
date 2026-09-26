@@ -16,6 +16,7 @@ from .qa_workbench import QAIssue, ScriptVersion
 from .violation_log import AgentViolationLog
 from .task import TaskRun
 from .generation_execution import GenerationExecutionRecord, MediaCandidateRecord, MediaPromotionRecord
+from .production_batch import ProductionBatch, ProductionBatchItem
 from .media_authority import MediaValidationRecord, OfficialMediaVersion, OfficialMediaAuthority, OfficialMediaPointer
 from .agent import AgentSession, AgentPlan, AgentAuditLog, AgentAttachment, AgentMessage, AgentProjectUpdate
 from .director_treatment import DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer
@@ -64,6 +65,7 @@ __all__ = [
     "AgentViolationLog",
     "TaskRun",
     "GenerationExecutionRecord", "MediaCandidateRecord", "MediaPromotionRecord",
+    "ProductionBatch", "ProductionBatchItem",
     "MediaValidationRecord", "OfficialMediaVersion", "OfficialMediaAuthority", "OfficialMediaPointer",
     "AgentSession", "AgentPlan", "AgentAuditLog", "AgentAttachment", "AgentMessage", "AgentProjectUpdate",
     "DirectorTreatment",

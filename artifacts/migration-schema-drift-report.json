@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 201,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 231,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 83,
     "MISSING_MIGRATION": 0,
@@ -11,7 +11,7 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 285
+    "total": 315
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -1491,6 +1491,306 @@
       "index": "ix_production_asset_version_registry_type",
       "kind": "index",
       "table": "production_asset_version_registry"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "batch_id"
+      ],
+      "index": "ix_production_batch_items_batch_id",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_production_batch_items_candidate_id",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_production_batch_items_created_at",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "execution_id"
+      ],
+      "index": "ix_production_batch_items_execution_id",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "priority"
+      ],
+      "index": "ix_production_batch_items_priority",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "promotion_id"
+      ],
+      "index": "ix_production_batch_items_promotion_id",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "shot_id"
+      ],
+      "index": "ix_production_batch_items_shot_id",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_production_batch_items_status",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "batch_id"
+      ],
+      "index": "ix_production_batch_item_batch",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_production_batch_item_candidate",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_production_batch_item_created",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "execution_id"
+      ],
+      "index": "ix_production_batch_item_execution",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "priority"
+      ],
+      "index": "ix_production_batch_item_priority",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "promotion_id"
+      ],
+      "index": "ix_production_batch_item_promotion",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "shot_id"
+      ],
+      "index": "ix_production_batch_item_shot",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_production_batch_item_status",
+      "kind": "index",
+      "table": "production_batch_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "batch_key"
+      ],
+      "index": "ix_production_batches_batch_key",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_production_batches_created_at",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_production_batches_episode_id",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_number"
+      ],
+      "index": "ix_production_batches_episode_number",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "project_id"
+      ],
+      "index": "ix_production_batches_project_id",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_production_batches_status",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "task_id"
+      ],
+      "index": "ix_production_batches_task_id",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_production_batch_created",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_production_batch_episode",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_number"
+      ],
+      "index": "ix_production_batch_episode_number",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "batch_key"
+      ],
+      "index": "ix_production_batch_key",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "project_id"
+      ],
+      "index": "ix_production_batch_project",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_production_batch_status",
+      "kind": "index",
+      "table": "production_batches"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "task_id"
+      ],
+      "index": "ix_production_batch_task",
+      "kind": "index",
+      "table": "production_batches"
     },
     {
       "blocking": false,

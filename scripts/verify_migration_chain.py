@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "c8d9e0f1a2b3"
+HEAD = "d9e0f1a2b3c4"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -60,6 +60,8 @@ AUTHORITY_TABLES = {
     "media_candidate_records",
     "media_validation_records",
     "media_promotion_records",
+    "production_batches",
+    "production_batch_items",
     "official_media_versions",
     "official_media_authorities",
     "official_media_pointers",
@@ -102,6 +104,14 @@ REQUIRED_COLUMNS = {
         "promotion_id", "candidate_id", "validation_id", "execution_id", "review_status",
         "decision", "reviewer", "review_notes", "official_media_version_id", "authority_id",
         "promotion_fingerprint", "created_at", "updated_at",
+    },
+    "production_batches": {
+        "batch_key", "project_id", "episode_id", "episode_number", "task_id", "status",
+        "total_tasks", "completed_tasks", "failed_tasks", "error", "created_at", "completed_at",
+    },
+    "production_batch_items": {
+        "batch_id", "shot_id", "execution_id", "status", "priority", "retry_count",
+        "candidate_id", "promotion_id", "error", "created_at", "updated_at", "completed_at",
     },
     "official_media_versions": {
         "official_media_version_id", "book_id", "episode", "storyboard_shot_id", "media_role",
