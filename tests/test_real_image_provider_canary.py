@@ -116,6 +116,9 @@ def test_image_provider_adapter_records_request_and_response_without_secret(monk
     assert result.provider_task_id == "provider-task-1"
     assert result.asset_uri.startswith("data:image/png")
     assert result.provider_request["provider"] == "poyo-async"
+    assert result.provider_response["provider_id"] == "poyo-async"
+    assert result.provider_response["request_id"] == "provider-request-1"
+    assert result.provider_response["asset_url"].startswith("[REDACTED image data URI:")
     assert "test-secret" not in str(result.as_dict())
 
 
@@ -187,3 +190,68 @@ def test_real_image_provider_failure_is_durable_and_fail_closed(monkeypatch: pyt
         session.close()
         engine.dispose()
 
+
+def test_real_image_execution_validates_and_promotes_official_media(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    """A real-adapter result must cross validation before becoming official."""
+    monkeypatch.setenv("PHASE_F_PROVIDER_CANARY_REAL", "1")
+    monkeypatch.setattr(config, "UPLOAD_DIR", tmp_path / "uploads")
+
+    async def fake_dispatch(_context):
+        uri = "data:image/png;base64," + base64.b64encode(PNG).decode("ascii")
+        return {
+            "uri": uri,
+            "previewUrl": uri,
+            "providerResponse": {"id": "provider-response-promotion", "status": "succeeded"},
+            "providerRequestPayload": {"model": "gpt-image-2", "prompt": "a quiet cinematic room"},
+            "providerRequestId": "provider-request-promotion",
+            "providerTaskId": "provider-task-promotion",
+        }
+
+    monkeypatch.setattr("core.provider_transport_registry.dispatch_provider_transport", fake_dispatch)
+    engine, session = _session(tmp_path)
+    try:
+        # Reuse the production-shaped PromptIR authority fixture so the
+        # promotion assertion exercises the same currentness gate as the
+        # real canary, rather than a hand-written compatibility payload.
+        from scripts.run_real_image_provider_canary import _create_fixture
+        from tests.prompt_ir_authority_fixture import resolve_fixture_materialization
+
+        monkeypatch.setattr(
+            "core.storyboard_materializer.resolve_current_authoritative_materialization",
+            resolve_fixture_materialization,
+        )
+        shot, fixture = _create_fixture(session)
+        row = GenerationExecutionService(session).create_execution(
+            shot_id=shot.id,
+            prompt_pointer_id=fixture["pointer_id"],
+            prompt_version_id=fixture["prompt_version_id"],
+            model_profile_id="real-image-promotion",
+        )
+        session.commit()
+        result = GenerationOrchestrator(
+            session,
+            adapter_registry=ModelAdapterRegistry({"poyo-async": ImageGenerationProviderAdapter()}),
+            profile_resolver=lambda _profile_id: _profile("real-image-promotion"),
+        ).run_and_promote(row.execution_id)
+        session.commit()
+
+        from models import OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion
+
+        candidate = result["candidate"]
+        validation = result["validation"]["validation"]
+        version = session.query(OfficialMediaVersion).filter_by(candidate_id=candidate.candidate_id).one()
+        authority = session.query(OfficialMediaAuthority).filter_by(authority_id=result["promotion"]["authority"].authority_id).one()
+        pointer = session.query(OfficialMediaPointer).filter_by(
+            book_id=shot.book_id,
+            episode=shot.episode,
+            storyboard_shot_id=shot.id,
+            media_role="SHOT_PRIMARY_IMAGE",
+        ).one()
+        assert validation.status == "TECHNICALLY_VALID"
+        assert version.official_media_version_id == result["promotion"]["version"].official_media_version_id
+        assert authority.authority_id == result["promotion"]["authority"].authority_id
+        assert pointer.official_media_version_id == version.official_media_version_id
+        assert row.official_promotion_count == 1
+    finally:
+        session.close()
+        engine.dispose()

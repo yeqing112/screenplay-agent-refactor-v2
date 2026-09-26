@@ -17,6 +17,7 @@ import asyncio
 import hashlib
 import json
 import threading
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Mapping, Protocol
 
@@ -320,6 +321,10 @@ class ImageGenerationProviderAdapter(UnavailableProviderAdapter):
         if not isinstance(reference_images, list):
             reference_images = []
         request_timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        # Some OpenAI-compatible gateways do not return an upstream request
+        # id. Keep a local correlation id so every Provider call still has a
+        # durable request identity in GenerationExecutionRecord.
+        request_correlation_id = f"local-{uuid.uuid4().hex}"
         default_params = profile.get("default_params")
         effective_parameters = dict(default_params) if isinstance(default_params, Mapping) else {}
         effective_parameters.update(options)
@@ -331,6 +336,7 @@ class ImageGenerationProviderAdapter(UnavailableProviderAdapter):
             "target_media": "IMAGE",
             "generation_mode": request_fields["generation_mode"],
             "timestamp": request_timestamp,
+            "request_id": request_correlation_id,
             "prompt_ir_version_id": projection.get("prompt_ir_version_id"),
             "prompt_ir_payload_hash": projection.get("payload_hash"),
         }
@@ -373,7 +379,7 @@ class ImageGenerationProviderAdapter(UnavailableProviderAdapter):
                 error_code = "REAL_PROVIDER_MODEL_UNAVAILABLE"
             else:
                 error_code = getattr(exc, "code", "REAL_PROVIDER_CALL_FAILED")
-            request_id = str((raw_response.get("request_id") if isinstance(raw_response, Mapping) else "") or "").strip()
+            request_id = str((raw_response.get("request_id") if isinstance(raw_response, Mapping) else "") or request_correlation_id).strip()
             raise ModelAdapterError(
                 str(exc),
                 code=error_code,
@@ -393,9 +399,20 @@ class ImageGenerationProviderAdapter(UnavailableProviderAdapter):
         provider_response = _redact(provider_response)
         provider_request_payload = generated.get("providerRequestPayload") if isinstance(generated.get("providerRequestPayload"), Mapping) else {}
         request_evidence = {**provider_request, "provider_payload": _redact(provider_request_payload)}
-        request_id = str(generated.get("providerRequestId") or generated.get("request_id") or generated.get("externalTaskId") or "").strip()
+        request_id = str(generated.get("providerRequestId") or generated.get("request_id") or generated.get("externalTaskId") or request_correlation_id).strip()
         task_id = str(generated.get("providerTaskId") or generated.get("externalTaskId") or request_id).strip()
-        provider_response = {**provider_response, "provider": provider, "model": model}
+        provider_response = {
+            **provider_response,
+            "provider": provider,
+            "provider_id": provider,
+            "model": model,
+            "request_id": request_id,
+            "asset_url": _redact(asset_uri),
+            "metadata": {
+                "mime_type": "image/png",
+                "target_media": "IMAGE",
+            },
+        }
         response_hash = _sha256(provider_response)
         poll_attempts = int(generated.get("pollAttempts") or 1)
         return ModelAdapterResult(
