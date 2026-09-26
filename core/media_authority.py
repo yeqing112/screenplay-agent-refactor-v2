@@ -26,6 +26,7 @@ from core.public_asset_storage import _load_source_bytes
 from models import (
     GenerationExecutionRecord,
     MediaCandidateRecord,
+    MediaPromotionRecord,
     MediaValidationRecord,
     OfficialMediaAuthority,
     OfficialMediaPointer,
@@ -40,6 +41,10 @@ from models import (
 VALIDATION_VERSION = "media_validator_v2"
 MEDIA_ROLE_DEFAULT = "SHOT_PRIMARY_IMAGE"
 IMAGE_TO_VIDEO_BINDING_SCHEMA_VERSION = "image_to_video_official_media_binding_v1"
+PROMOTION_REVIEW_REQUIRED = "REVIEW_REQUIRED"
+PROMOTION_APPROVED = "APPROVED"
+PROMOTION_REJECTED = "REJECTED"
+PROMOTION_REQUEST_CHANGE = "REQUEST_CHANGE"
 
 
 # Promotion computes a new scope revision before inserting the official rows.
@@ -299,10 +304,18 @@ def validate_media_candidate_technical(candidate: MediaCandidateRecord) -> dict[
         "storage_identity_valid": bool(str(candidate.storage_identity or "").strip()),
         "storage_valid": bool(source),
         "storage_source": source,
+        "metadata_complete": bool(
+            str(candidate.media_type or "").strip()
+            and str(candidate.mime_type or "").strip()
+            and int(candidate.byte_size or 0) > 0
+            and int(candidate.width or 0) > 0
+            and int(candidate.height or 0) > 0
+            and isinstance(candidate.candidate_metadata, dict)
+        ),
     }
     payload["valid"] = all(
         payload[key]
-        for key in ("bytes_valid", "byte_size_valid", "checksum_valid", "mime_valid", "media_type_valid", "dimensions_valid", "duration_valid", "storage_identity_valid", "storage_valid")
+        for key in ("bytes_valid", "byte_size_valid", "checksum_valid", "mime_valid", "media_type_valid", "dimensions_valid", "duration_valid", "storage_identity_valid", "storage_valid", "metadata_complete")
     )
     payload["technical_validation_fingerprint"] = _fingerprint(payload)
     return payload
@@ -573,6 +586,65 @@ def _validation_fingerprint(record: MediaValidationRecord) -> str:
     return _fingerprint({"validation_id": record.validation_id, "candidate_fingerprint": record.candidate_fingerprint, "technical_validation_fingerprint": record.technical_validation_fingerprint, "authority_snapshot_fingerprint": record.authority_snapshot_fingerprint, "status": record.status})
 
 
+def _promotion_review_fingerprint(*, candidate_id: str, validation_id: str, execution_id: str) -> str:
+    return _fingerprint(
+        {
+            "schema_version": "media_promotion_review_v1",
+            "candidate_id": candidate_id,
+            "validation_id": validation_id,
+            "execution_id": execution_id,
+        }
+    )
+
+
+def _ensure_promotion_record(
+    session: Any,
+    *,
+    candidate: MediaCandidateRecord,
+    validation: MediaValidationRecord,
+    execution: GenerationExecutionRecord,
+) -> MediaPromotionRecord:
+    """Create or reuse the review gate for one validated candidate."""
+    existing = session.query(MediaPromotionRecord).filter_by(candidate_id=candidate.candidate_id).first()
+    if existing is not None:
+        if existing.validation_id != validation.validation_id or existing.execution_id != execution.execution_id:
+            _fail("MEDIA_PROMOTION_REVIEW_TAMPERED", "Promotion review is bound to a different validation or execution.")
+        return existing
+    fingerprint = _promotion_review_fingerprint(
+        candidate_id=str(candidate.candidate_id),
+        validation_id=str(validation.validation_id),
+        execution_id=str(execution.execution_id),
+    )
+    row = MediaPromotionRecord(
+        promotion_id=f"mpr-{fingerprint[:40]}",
+        candidate_id=str(candidate.candidate_id),
+        validation_id=str(validation.validation_id),
+        execution_id=str(execution.execution_id),
+        review_status=PROMOTION_REVIEW_REQUIRED,
+        decision=None,
+        reviewer="",
+        review_notes="",
+        promotion_fingerprint=fingerprint,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    try:
+        session.add(row)
+        session.flush()
+    except IntegrityError:
+        session.rollback()
+        existing = session.query(MediaPromotionRecord).filter_by(candidate_id=candidate.candidate_id).first()
+        if existing is None:
+            raise
+        return existing
+    return row
+
+
+def get_promotion_record(session: Any, candidate_id: str) -> MediaPromotionRecord | None:
+    """Return the review record for a candidate without mutating state."""
+    return session.query(MediaPromotionRecord).filter_by(candidate_id=str(candidate_id)).first()
+
+
 def validate_media_candidate(session: Any, candidate_id: str, *, validator_version: str = VALIDATION_VERSION) -> dict[str, Any]:
     """Create or reuse one deterministic validation record."""
     integrity = validate_media_candidate_integrity(session, candidate_id)
@@ -581,15 +653,21 @@ def validate_media_candidate(session: Any, candidate_id: str, *, validator_versi
     try:
         technical = validate_media_candidate_technical(candidate)
     except MediaAuthorityError as exc:
+        candidate.validation_status = "FAILED"
+        session.commit()
         _fail(
             "MEDIA_VALIDATION_FAILED",
             "Candidate failed deterministic technical validation.",
             {"cause_code": exc.code, "cause_message": exc.message, "diagnostics": exc.diagnostics},
         )
     if not technical.get("valid"):
+        candidate.validation_status = "FAILED"
+        session.commit()
         _fail("MEDIA_VALIDATION_FAILED", "Candidate failed deterministic technical validation.", technical)
     snapshot = _current_authority_snapshot(session, candidate=candidate, execution=execution)
     if not snapshot.get("currentness_valid"):
+        candidate.validation_status = "FAILED"
+        session.commit()
         _fail(
             "MEDIA_CURRENT_PROMPT_IR_INVALID",
             "Candidate cannot be validated without a current exact-scope PromptIR authority.",
@@ -598,7 +676,10 @@ def validate_media_candidate(session: Any, candidate_id: str, *, validator_versi
     snapshot_fp = _fingerprint(snapshot)
     existing = session.query(MediaValidationRecord).filter_by(candidate_fingerprint=integrity["candidate_fingerprint"], authority_snapshot_fingerprint=snapshot_fp, validator_version=validator_version).first()
     if existing is not None:
-        return {"validation": existing, "validation_id": existing.validation_id, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+        candidate.validation_status = "REVIEW_REQUIRED"
+        promotion = _ensure_promotion_record(session, candidate=candidate, validation=existing, execution=execution)
+        session.commit()
+        return {"validation": existing, "validation_id": existing.validation_id, "promotion": promotion, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
     now = datetime.utcnow()
     validation_id = f"mvr-{_fingerprint({'candidate': integrity['candidate_fingerprint'], 'snapshot': snapshot_fp, 'validator_version': validator_version})[:40]}"
     row = MediaValidationRecord(validation_id=validation_id, candidate_id=candidate.candidate_id, execution_id=execution.execution_id, candidate_fingerprint=integrity["candidate_fingerprint"], technical_validation_payload_json=_canonical(technical), technical_validation_fingerprint=str(technical["technical_validation_fingerprint"]), authority_snapshot_json=_canonical(snapshot), authority_snapshot_fingerprint=snapshot_fp, validator_version=validator_version, status="TECHNICALLY_VALID", created_at=now, updated_at=now)
@@ -611,8 +692,14 @@ def validate_media_candidate(session: Any, candidate_id: str, *, validator_versi
         if existing is None:
             raise
         row = existing
-        return {"validation": row, "validation_id": row.validation_id, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
-    return {"validation": row, "validation_id": row.validation_id, "reused": False, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+        candidate.validation_status = "REVIEW_REQUIRED"
+        promotion = _ensure_promotion_record(session, candidate=candidate, validation=row, execution=execution)
+        session.commit()
+        return {"validation": row, "validation_id": row.validation_id, "promotion": promotion, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+    candidate.validation_status = "REVIEW_REQUIRED"
+    promotion = _ensure_promotion_record(session, candidate=candidate, validation=row, execution=execution)
+    session.commit()
+    return {"validation": row, "validation_id": row.validation_id, "promotion": promotion, "reused": False, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
 
 
 def _load_validation(session: Any, validation_id: str) -> MediaValidationRecord:
@@ -656,7 +743,17 @@ def _lineage_hash(candidate: MediaCandidateRecord, execution: GenerationExecutio
     return _fingerprint({"candidate_id": candidate.candidate_id, "candidate_fingerprint": validation.candidate_fingerprint, "validation_id": validation.validation_id, "validation_fingerprint": validation.technical_validation_fingerprint, "prompt_ir_version_id": candidate.prompt_ir_version_id, "prompt_ir_payload_hash": candidate.prompt_ir_payload_hash, "generation_payload_fingerprint": candidate.generation_payload_fingerprint, "provider_request_fingerprint": candidate.provider_request_fingerprint, "provider_response_hash": candidate.provider_response_hash, "storage_identity": candidate.storage_identity, "checksum_sha256": candidate.checksum_sha256, "execution_id": execution.execution_id})
 
 
-def _promote_media_candidate(session: Any, candidate_id: str, validation_id: str, *, confirmation: bool | str) -> dict[str, Any]:
+def _promote_media_candidate(
+    session: Any,
+    candidate_id: str,
+    validation_id: str,
+    *,
+    confirmation: bool | str,
+    promotion_id: str | None = None,
+    reviewer: str = "",
+    decision: str | None = None,
+    review_notes: str = "",
+) -> dict[str, Any]:
     """Explicitly promote a validated Candidate atomically into official rows."""
     accepted_confirmation = confirmation is True or (
         isinstance(confirmation, str)
@@ -673,6 +770,33 @@ def _promote_media_candidate(session: Any, candidate_id: str, validation_id: str
     execution = integrity["execution"]
     if validation.candidate_id != candidate.candidate_id or validation.execution_id != execution.execution_id or validation.candidate_fingerprint != integrity["candidate_fingerprint"]:
         _fail("MEDIA_VALIDATION_TAMPERED", "Validation is not bound to the current Candidate and execution.")
+    promotion = _ensure_promotion_record(session, candidate=candidate, validation=validation, execution=execution)
+    if promotion_id and str(promotion.promotion_id) != str(promotion_id):
+        _fail("MEDIA_PROMOTION_REVIEW_TAMPERED", "Promotion review id does not match the candidate.")
+    normalized_decision = str(decision or "").strip().upper()
+    if normalized_decision:
+        if normalized_decision not in {"APPROVE", "REJECT", "REQUEST_CHANGE"}:
+            _fail("MEDIA_PROMOTION_DECISION_INVALID", "Promotion decision must be APPROVE, REJECT, or REQUEST_CHANGE.", status_code=400)
+        if not str(reviewer or "").strip():
+            _fail("MEDIA_PROMOTION_REVIEWER_REQUIRED", "An explicit reviewer is required for a promotion decision.", status_code=400)
+        promotion.decision = normalized_decision
+        promotion.reviewer = str(reviewer).strip()
+        promotion.review_notes = str(review_notes or "")[:4000]
+        promotion.review_status = PROMOTION_APPROVED if normalized_decision == "APPROVE" else (PROMOTION_REJECTED if normalized_decision == "REJECT" else PROMOTION_REQUEST_CHANGE)
+        promotion.updated_at = datetime.utcnow()
+        session.flush()
+    elif promotion.review_status == PROMOTION_REVIEW_REQUIRED:
+        # Existing internal callers use explicit confirmation as the legacy
+        # review boundary.  Record that approval durably as SYSTEM so the
+        # candidate still crosses Review Required -> Approved before publish.
+        promotion.decision = "APPROVE"
+        promotion.reviewer = str(reviewer or "SYSTEM").strip() or "SYSTEM"
+        promotion.review_notes = str(review_notes or "")[:4000]
+        promotion.review_status = PROMOTION_APPROVED
+        promotion.updated_at = datetime.utcnow()
+        session.flush()
+    if promotion.review_status != PROMOTION_APPROVED or promotion.decision != "APPROVE":
+        _fail("MEDIA_PROMOTION_REVIEW_REQUIRED", "Candidate requires an approved promotion review before official publication.")
     technical = validate_media_candidate_technical(candidate)
     if not technical.get("valid") or technical.get("technical_validation_fingerprint") != validation.technical_validation_fingerprint:
         _fail("MEDIA_PROMOTION_STALE", "Candidate bytes or technical validation fingerprint changed.", technical)
@@ -698,7 +822,12 @@ def _promote_media_candidate(session: Any, candidate_id: str, validation_id: str
         authority = session.query(OfficialMediaAuthority).filter_by(official_media_version_id=existing.official_media_version_id).first()
         pointer = session.query(OfficialMediaPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id, media_role=media_role).first()
         if authority is not None and pointer is not None:
-            return {"version": existing, "authority": authority, "pointer": pointer, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+            promotion.official_media_version_id = existing.official_media_version_id
+            promotion.authority_id = authority.authority_id
+            promotion.updated_at = datetime.utcnow()
+            candidate.validation_status = "TECHNICALLY_VALID"
+            session.commit()
+            return {"version": existing, "authority": authority, "pointer": pointer, "promotion": promotion, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
     current_versions = session.query(OfficialMediaVersion).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id, media_role=media_role).all()
     revision = max([int(item.revision or 0) for item in current_versions] or [0]) + 1
     lineage_hash = _lineage_hash(candidate, execution, validation)
@@ -752,6 +881,10 @@ def _promote_media_candidate(session: Any, candidate_id: str, validation_id: str
         session.add(authority)
         if pointer_is_new:
             session.add(pointer)
+        promotion.official_media_version_id = version_id
+        promotion.authority_id = authority_id
+        promotion.updated_at = datetime.utcnow()
+        candidate.validation_status = "TECHNICALLY_VALID"
         session.commit()
     except IntegrityError:
         session.rollback()
@@ -760,15 +893,38 @@ def _promote_media_candidate(session: Any, candidate_id: str, validation_id: str
             authority = session.query(OfficialMediaAuthority).filter_by(official_media_version_id=existing.official_media_version_id).first()
             pointer = session.query(OfficialMediaPointer).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id, media_role=media_role).first()
             if authority is not None and pointer is not None:
-                return {"version": existing, "authority": authority, "pointer": pointer, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+                promotion = session.query(MediaPromotionRecord).filter_by(candidate_id=candidate.candidate_id).first() or promotion
+                promotion.official_media_version_id = existing.official_media_version_id
+                promotion.authority_id = authority.authority_id
+                session.commit()
+                return {"version": existing, "authority": authority, "pointer": pointer, "promotion": promotion, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
         _fail("MEDIA_PROMOTION_CONFLICT", "Concurrent promotion conflicted with another official revision.")
-    return {"version": version, "authority": authority, "pointer": pointer, "reused": False, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
+    return {"version": version, "authority": authority, "pointer": pointer, "promotion": promotion, "reused": False, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
 
 
-def promote_media_candidate(session: Any, candidate_id: str, validation_id: str, *, confirmation: bool | str) -> dict[str, Any]:
+def promote_media_candidate(
+    session: Any,
+    candidate_id: str,
+    validation_id: str,
+    *,
+    confirmation: bool | str,
+    promotion_id: str | None = None,
+    reviewer: str = "",
+    decision: str | None = None,
+    review_notes: str = "",
+) -> dict[str, Any]:
     """Promote a validated candidate with an in-process atomicity guard."""
     with _PROMOTION_LOCK:
-        return _promote_media_candidate(session, candidate_id, validation_id, confirmation=confirmation)
+        return _promote_media_candidate(
+            session,
+            candidate_id,
+            validation_id,
+            confirmation=confirmation,
+            promotion_id=promotion_id,
+            reviewer=reviewer,
+            decision=decision,
+            review_notes=review_notes,
+        )
 
 
 def resolve_current_official_media(session: Any, *, book_id: int, episode: int, storyboard_shot_id: int, media_role: str = MEDIA_ROLE_DEFAULT) -> dict[str, Any]:

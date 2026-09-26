@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "b2c3d4e5f6g7"
+HEAD = "c8d9e0f1a2b3"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -57,7 +57,9 @@ AUTHORITY_TABLES = {
     "visual_reference_authorities",
     "visual_reference_sets",
     "visual_reference_generation_requests",
+    "media_candidate_records",
     "media_validation_records",
+    "media_promotion_records",
     "official_media_versions",
     "official_media_authorities",
     "official_media_pointers",
@@ -94,6 +96,12 @@ REQUIRED_COLUMNS = {
         "validation_id", "candidate_id", "execution_id", "candidate_fingerprint",
         "technical_validation_payload_json", "technical_validation_fingerprint",
         "authority_snapshot_json", "authority_snapshot_fingerprint", "validator_version", "status",
+    },
+    "media_candidate_records": {"validation_status", "metadata_json"},
+    "media_promotion_records": {
+        "promotion_id", "candidate_id", "validation_id", "execution_id", "review_status",
+        "decision", "reviewer", "review_notes", "official_media_version_id", "authority_id",
+        "promotion_fingerprint", "created_at", "updated_at",
     },
     "official_media_versions": {
         "official_media_version_id", "book_id", "episode", "storyboard_shot_id", "media_role",

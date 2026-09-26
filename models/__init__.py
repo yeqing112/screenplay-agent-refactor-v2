@@ -15,7 +15,7 @@ from .export_record import ProductionExportRecord
 from .qa_workbench import QAIssue, ScriptVersion
 from .violation_log import AgentViolationLog
 from .task import TaskRun
-from .generation_execution import GenerationExecutionRecord, MediaCandidateRecord
+from .generation_execution import GenerationExecutionRecord, MediaCandidateRecord, MediaPromotionRecord
 from .media_authority import MediaValidationRecord, OfficialMediaVersion, OfficialMediaAuthority, OfficialMediaPointer
 from .agent import AgentSession, AgentPlan, AgentAuditLog, AgentAttachment, AgentMessage, AgentProjectUpdate
 from .director_treatment import DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer
@@ -63,7 +63,7 @@ __all__ = [
     "QAIssue", "ScriptVersion",
     "AgentViolationLog",
     "TaskRun",
-    "GenerationExecutionRecord", "MediaCandidateRecord",
+    "GenerationExecutionRecord", "MediaCandidateRecord", "MediaPromotionRecord",
     "MediaValidationRecord", "OfficialMediaVersion", "OfficialMediaAuthority", "OfficialMediaPointer",
     "AgentSession", "AgentPlan", "AgentAuditLog", "AgentAttachment", "AgentMessage", "AgentProjectUpdate",
     "DirectorTreatment",

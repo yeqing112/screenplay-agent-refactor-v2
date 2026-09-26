@@ -2,14 +2,14 @@
   "ambiguous_production_head": false,
   "cycle_detected": false,
   "forbidden_migration_patterns": [],
-  "generated_at": "2026-09-23T18:23:16.373872+00:00",
+  "generated_at": "2026-09-26T15:54:00.224671+00:00",
   "heads": [
-    "b2c3d4e5f6g7"
+    "c8d9e0f1a2b3"
   ],
   "migration_application_runtime_imports": 0,
   "missing_predecessors": [],
   "orphan_revisions": [],
-  "revision_count": 50,
+  "revision_count": 51,
   "revisions": [
     {
       "application_runtime_import": false,
@@ -219,17 +219,31 @@
       "conditional_schema_assumptions": true,
       "data_migration_behavior": true,
       "depends_on": null,
-      "destructive_operation": false,
+      "destructive_operation": true,
       "down_revision": "a1b2c3d4e5f6",
       "downgrade_behavior": true,
       "downgrade_classification": "REVERSIBLE",
       "file": "alembic\\versions\\b2c3d4e5f6g7_add_media_scoped_prompt_pointer.py",
       "model_runtime_import": false,
       "revision": "b2c3d4e5f6g7",
-      "successors": [],
+      "successors": [
+        "c8d9e0f1a2b3"
+      ],
       "tables_altered": [],
-      "tables_created": [],
-      "tables_dropped": [],
+      "tables_created": [
+        "production_asset_reviews",
+        "production_asset_review_history",
+        "production_prompt_versions",
+        "production_generation_intents",
+        "production_prompt_lineages"
+      ],
+      "tables_dropped": [
+        "production_asset_review_history",
+        "production_asset_reviews",
+        "production_prompt_lineages",
+        "production_generation_intents",
+        "production_prompt_versions"
+      ],
       "use_of_app_engine": false,
       "use_of_create_all": false
     },
@@ -506,6 +520,33 @@
         "visual_makeups",
         "visual_locations",
         "visual_era_specs"
+      ],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": true,
+      "down_revision": "b2c3d4e5f6g7",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\c8d9e0f1a2b3_add_media_promotion_runtime.py",
+      "model_runtime_import": false,
+      "revision": "c8d9e0f1a2b3",
+      "successors": [],
+      "tables_altered": [
+        "media_candidate_records",
+        "media_candidate_records"
+      ],
+      "tables_created": [
+        "media_promotion_records"
+      ],
+      "tables_dropped": [
+        "media_promotion_records"
       ],
       "use_of_app_engine": false,
       "use_of_create_all": false

@@ -2,16 +2,16 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 187,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 201,
     "EXTRA_LEGACY_COLUMN": 1,
-    "INDEX_DRIFT": 80,
+    "INDEX_DRIFT": 83,
     "MISSING_MIGRATION": 0,
     "NULLABILITY_DRIFT": 0,
     "TYPE_DRIFT": 0
   },
   "counts": {
     "blocking": 0,
-    "total": 268
+    "total": 285
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -772,6 +772,16 @@
     },
     {
       "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "validation_status"
+      ],
+      "index": "ix_media_candidate_records_validation_status",
+      "kind": "index",
+      "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
       "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
       "columns": [
         "checksum_sha256"
@@ -819,6 +829,156 @@
       "index": "ix_media_candidate_records_provider_request",
       "kind": "index",
       "table": "media_candidate_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_media_promotion_records_authority_id",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_media_promotion_records_candidate_id",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_media_promotion_records_created_at",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "execution_id"
+      ],
+      "index": "ix_media_promotion_records_execution_id",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "official_media_version_id"
+      ],
+      "index": "ix_media_promotion_records_official_media_version_id",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "promotion_id"
+      ],
+      "index": "ix_media_promotion_records_promotion_id",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "review_status"
+      ],
+      "index": "ix_media_promotion_records_review_status",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "validation_id"
+      ],
+      "index": "ix_media_promotion_records_validation_id",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_media_promotion_authority",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "candidate_id"
+      ],
+      "index": "ix_media_promotion_candidate",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "created_at"
+      ],
+      "index": "ix_media_promotion_created",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "execution_id"
+      ],
+      "index": "ix_media_promotion_execution",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "official_media_version_id"
+      ],
+      "index": "ix_media_promotion_official_version",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "review_status"
+      ],
+      "index": "ix_media_promotion_review_status",
+      "kind": "index",
+      "table": "media_promotion_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "validation_id"
+      ],
+      "index": "ix_media_promotion_validation",
+      "kind": "index",
+      "table": "media_promotion_records"
     },
     {
       "blocking": false,
@@ -1281,6 +1441,16 @@
       "index": "ix_production_asset_authority_registry_type",
       "kind": "index",
       "table": "production_asset_authority_registry"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "prompt_lineage_id"
+      ],
+      "index": "ix_production_asset_reviews_prompt_lineage_id",
+      "kind": "index",
+      "table": "production_asset_reviews"
     },
     {
       "blocking": false,

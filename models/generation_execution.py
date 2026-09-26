@@ -3,7 +3,7 @@
 from datetime import datetime
 import json
 
-from sqlalchemy import Column, DateTime, Integer, String, Text, UniqueConstraint
+from sqlalchemy import CheckConstraint, Column, DateTime, Integer, String, Text, UniqueConstraint
 
 from .base import Base
 
@@ -181,9 +181,14 @@ class MediaCandidateRecord(Base):
     candidate_id = Column(String, nullable=False, unique=True, index=True)
     execution_id = Column(String, nullable=False, index=True)
     status = Column(String, nullable=False, default="MEDIA_CANDIDATE", index=True)
+    # Validation is an independent lifecycle from the immutable candidate
+    # status.  A candidate remains MEDIA_CANDIDATE while this field moves
+    # through PENDING/REVIEW_REQUIRED/TECHNICALLY_VALID/FAILED.
+    validation_status = Column(String, nullable=False, default="PENDING", index=True)
     media_type = Column(String, nullable=False)
     storage_identity = Column(String, nullable=False, index=True)
     storage_reference_json = Column(Text, nullable=False, default="{}")
+    metadata_json = Column(Text, nullable=False, default="{}")
     checksum_sha256 = Column(String, nullable=False, index=True)
     mime_type = Column(String, nullable=False)
     byte_size = Column(Integer, nullable=False)
@@ -199,3 +204,71 @@ class MediaCandidateRecord(Base):
     provider_response_hash = Column(String, nullable=False)
     provider_task_id = Column(String, nullable=False, default="")
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    @property
+    def generation_execution_id(self) -> str:
+        """Public promotion vocabulary alias for the canonical execution id."""
+        return str(self.execution_id or "")
+
+    @generation_execution_id.setter
+    def generation_execution_id(self, value: str) -> None:
+        self.execution_id = str(value or "")
+
+    @property
+    def asset_reference(self) -> str:
+        """Canonical storage identity used by the promotion authority."""
+        return str(self.storage_identity or "")
+
+    @asset_reference.setter
+    def asset_reference(self, value: str) -> None:
+        self.storage_identity = str(value or "")
+
+    @property
+    def candidate_metadata(self) -> dict:
+        """Return bounded candidate metadata without exposing provider secrets."""
+        try:
+            parsed = json.loads(self.metadata_json or "{}")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            parsed = {}
+        if not isinstance(parsed, dict):
+            parsed = {}
+        parsed.setdefault("media_type", self.media_type)
+        parsed.setdefault("mime_type", self.mime_type)
+        parsed.setdefault("byte_size", int(self.byte_size or 0))
+        parsed.setdefault("width", self.width)
+        parsed.setdefault("height", self.height)
+        parsed.setdefault("duration_ms", self.duration_ms)
+        return parsed
+
+
+class MediaPromotionRecord(Base):
+    """Explicit review and promotion decision for one immutable candidate."""
+
+    __tablename__ = "media_promotion_records"
+    __table_args__ = (
+        UniqueConstraint("promotion_id", name="uq_media_promotion_identity"),
+        UniqueConstraint("candidate_id", name="uq_media_promotion_candidate"),
+        CheckConstraint(
+            "review_status IN ('REVIEW_REQUIRED','APPROVED','REJECTED','REQUEST_CHANGE')",
+            name="ck_media_promotion_review_status",
+        ),
+        CheckConstraint(
+            "decision IS NULL OR decision IN ('APPROVE','REJECT','REQUEST_CHANGE')",
+            name="ck_media_promotion_decision",
+        ),
+    )
+
+    id = Column(Integer, primary_key=True)
+    promotion_id = Column(String, nullable=False, unique=True, index=True)
+    candidate_id = Column(String, nullable=False, index=True)
+    validation_id = Column(String, nullable=False, index=True)
+    execution_id = Column(String, nullable=False, index=True)
+    review_status = Column(String, nullable=False, default="REVIEW_REQUIRED", index=True)
+    decision = Column(String, nullable=True)
+    reviewer = Column(String, nullable=False, default="")
+    review_notes = Column(Text, nullable=False, default="")
+    official_media_version_id = Column(String, nullable=True, index=True)
+    authority_id = Column(String, nullable=True, index=True)
+    promotion_fingerprint = Column(String, nullable=False, default="")
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
