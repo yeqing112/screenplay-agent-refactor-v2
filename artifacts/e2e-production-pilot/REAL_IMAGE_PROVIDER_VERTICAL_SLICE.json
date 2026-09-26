@@ -1,0 +1,298 @@
+{
+  "schema_version": "real_image_provider_vertical_slice_v1",
+  "shot": {
+    "book_id": 991701,
+    "episode": 1,
+    "shot_id": 1,
+    "business_shot_id": 1,
+    "scene_id": "CANARY_E01_SCENE",
+    "character_id": "CANARY_CHARACTER",
+    "prompt_version_id": 1,
+    "prompt_payload_hash": "eb0d54c90cb151e2b84c110d6f4f858ec90d6226549fbcb22612d426483b5465",
+    "pointer_id": 1
+  },
+  "prompt": {
+    "prompt_ir_version_id": 1,
+    "payload_hash": "eb0d54c90cb151e2b84c110d6f4f858ec90d6226549fbcb22612d426483b5465"
+  },
+  "execution": {
+    "execution_id": "gex_ca2d8876b6f1494797a8387087288ddc",
+    "status": "SUCCESS",
+    "execution_status": "SUCCESS",
+    "metadata": {
+      "schema_version": "generation_execution_foundation_v1",
+      "shot_id": 1,
+      "prompt_pointer_id": 1,
+      "prompt_version_id": 1,
+      "model_profile_id": "local-image-mw4y52",
+      "target_media": "IMAGE",
+      "execution_mode": "FOUNDATION",
+      "provider_calls": 1,
+      "provider": "shapi-openai-images",
+      "model": "grok-imagine-image-quality",
+      "provider_request_id": "",
+      "provider_task_id": "",
+      "provider_response_hash": "sha256:ef1da2ab86b5d7008e5e78f3e833cec3a70a978a4fef742da282b57b11a59028",
+      "candidate_id": "candidate-d49cdef91abd4547b40e7002f3f7a6d5",
+      "official_promotion_count": 1
+    },
+    "request_payload": {
+      "_generation_execution_foundation": {
+        "prompt_pointer_id": 1,
+        "response_payload": {
+          "asset_duration_ms": null,
+          "asset_height": null,
+          "asset_mime_type": "image/png",
+          "asset_uri": "[REDACTED image data URI: 458950 chars]",
+          "asset_width": null,
+          "error_code": "",
+          "error_message": "",
+          "latency_ms": null,
+          "logical_provider_calls": 1,
+          "model": "grok-imagine-image-quality",
+          "provider": "shapi-openai-images",
+          "provider_request": {
+            "generation_mode": "TEXT_TO_IMAGE",
+            "model": "grok-imagine-image-quality",
+            "parameters": {
+              "evidence_status": "provider_catalog_verified",
+              "n": 1,
+              "response_format": "b64_json",
+              "size": "auto",
+              "supports_async_tasks": false,
+              "supports_file_upload": false,
+              "supports_image_url": false,
+              "supports_negative_prompt": false,
+              "supports_reference_images": false,
+              "task_modes": [
+                "text_to_image"
+              ],
+              "transport": "openai-images-generations"
+            },
+            "prompt": "SUBJECT: [\"CANARY_CHARACTER\"]\nENVIRONMENT: {\"asset_identity_ref\":\"CANARY_E01_SCENE\",\"scene_ref\":\"CANARY_E01_SCENE\"}\nACTION: [{\"action_id\":\"SH_E01_SC001_001_ACTION_001\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B01\"],\"event_ref\":\"SC01-B01\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"},{\"action_id\":\"SH_E01_SC001_001_ACTION_002\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B02\"],\"event_ref\":\"SC01-B02\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"WIDE\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"ACTION_COMPLETION\"}\nVISIBILITY: \"AUDIENCE_ONLY\"\nCONSTRAINTS: {\"must_include_prop_refs\":[],\"must_include_subject_refs\":[\"CANARY_CHARACTER\"],\"must_preserve_axis\":false}",
+            "prompt_ir_payload_hash": "eb0d54c90cb151e2b84c110d6f4f858ec90d6226549fbcb22612d426483b5465",
+            "prompt_ir_version_id": 1,
+            "provider": "shapi-openai-images",
+            "provider_payload": {
+              "model": "grok-imagine-image-quality",
+              "n": 1,
+              "prompt": "SUBJECT: [\"CANARY_CHARACTER\"]\nENVIRONMENT: {\"asset_identity_ref\":\"CANARY_E01_SCENE\",\"scene_ref\":\"CANARY_E01_SCENE\"}\nACTION: [{\"action_id\":\"SH_E01_SC001_001_ACTION_001\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B01\"],\"event_ref\":\"SC01-B01\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"},{\"action_id\":\"SH_E01_SC001_001_ACTION_002\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B02\"],\"event_ref\":\"SC01-B02\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"WIDE\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"ACTION_COMPLETION\"}\nVISIBILITY: \"AUDIENCE_ONLY\"\nCONSTRAINTS: {\"must_include_prop_refs\":[],\"must_include_subject_refs\":[\"CANARY_CHARACTER\"],\"must_preserve_axis\":false}",
+              "response_format": "b64_json",
+              "size": "auto"
+            },
+            "target_media": "IMAGE",
+            "timestamp": "2026-09-26T15:31:35.598370Z"
+          },
+          "provider_request_id": "",
+          "provider_request_timestamp": "2026-09-26T15:31:35.598370Z",
+          "provider_response": {
+            "created": 1790436706,
+            "data": [
+              {
+                "b64_json": "[REDACTED large value: 458928 chars]"
+              }
+            ],
+            "model": "grok-imagine-image-quality",
+            "provider": "shapi-openai-images",
+            "usage": {
+              "cost_in_usd_ticks": 500000000
+            }
+          },
+          "provider_response_hash": "sha256:ef1da2ab86b5d7008e5e78f3e833cec3a70a978a4fef742da282b57b11a59028",
+          "provider_task_id": "",
+          "status": "SUCCESS",
+          "transport_retry_count": 0
+        }
+      },
+      "asset_bindings": {},
+      "generation_policy": {
+        "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+        "language": "",
+        "mode": "TEXT_TO_IMAGE",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "explicit_request",
+        "style_profile_id": "",
+        "target_media": "IMAGE"
+      },
+      "media_role": "SHOT_PRIMARY_IMAGE",
+      "model_profile_id": "local-image-mw4y52",
+      "prompt_pointer_id": 1,
+      "prompt_version_id": 1,
+      "provider_calls": 0,
+      "reference_bindings": [],
+      "runtime": {
+        "adapter_id": "image-generation-provider",
+        "adapter_version": "image-generation-provider-v1",
+        "model": "grok-imagine-image-quality",
+        "params": {},
+        "provider": "shapi-openai-images"
+      },
+      "schema_version": "generation_execution_foundation_v1",
+      "shot_id": 1,
+      "target_media": "IMAGE"
+    },
+    "response_payload": {
+      "asset_duration_ms": null,
+      "asset_height": null,
+      "asset_mime_type": "image/png",
+      "asset_uri": "[REDACTED image data URI: 458950 chars]",
+      "asset_width": null,
+      "error_code": "",
+      "error_message": "",
+      "latency_ms": null,
+      "logical_provider_calls": 1,
+      "model": "grok-imagine-image-quality",
+      "provider": "shapi-openai-images",
+      "provider_request": {
+        "generation_mode": "TEXT_TO_IMAGE",
+        "model": "grok-imagine-image-quality",
+        "parameters": {
+          "evidence_status": "provider_catalog_verified",
+          "n": 1,
+          "response_format": "b64_json",
+          "size": "auto",
+          "supports_async_tasks": false,
+          "supports_file_upload": false,
+          "supports_image_url": false,
+          "supports_negative_prompt": false,
+          "supports_reference_images": false,
+          "task_modes": [
+            "text_to_image"
+          ],
+          "transport": "openai-images-generations"
+        },
+        "prompt": "SUBJECT: [\"CANARY_CHARACTER\"]\nENVIRONMENT: {\"asset_identity_ref\":\"CANARY_E01_SCENE\",\"scene_ref\":\"CANARY_E01_SCENE\"}\nACTION: [{\"action_id\":\"SH_E01_SC001_001_ACTION_001\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B01\"],\"event_ref\":\"SC01-B01\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"},{\"action_id\":\"SH_E01_SC001_001_ACTION_002\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B02\"],\"event_ref\":\"SC01-B02\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"WIDE\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"ACTION_COMPLETION\"}\nVISIBILITY: \"AUDIENCE_ONLY\"\nCONSTRAINTS: {\"must_include_prop_refs\":[],\"must_include_subject_refs\":[\"CANARY_CHARACTER\"],\"must_preserve_axis\":false}",
+        "prompt_ir_payload_hash": "eb0d54c90cb151e2b84c110d6f4f858ec90d6226549fbcb22612d426483b5465",
+        "prompt_ir_version_id": 1,
+        "provider": "shapi-openai-images",
+        "provider_payload": {
+          "model": "grok-imagine-image-quality",
+          "n": 1,
+          "prompt": "SUBJECT: [\"CANARY_CHARACTER\"]\nENVIRONMENT: {\"asset_identity_ref\":\"CANARY_E01_SCENE\",\"scene_ref\":\"CANARY_E01_SCENE\"}\nACTION: [{\"action_id\":\"SH_E01_SC001_001_ACTION_001\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B01\"],\"event_ref\":\"SC01-B01\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"},{\"action_id\":\"SH_E01_SC001_001_ACTION_002\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B02\"],\"event_ref\":\"SC01-B02\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"WIDE\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"ACTION_COMPLETION\"}\nVISIBILITY: \"AUDIENCE_ONLY\"\nCONSTRAINTS: {\"must_include_prop_refs\":[],\"must_include_subject_refs\":[\"CANARY_CHARACTER\"],\"must_preserve_axis\":false}",
+          "response_format": "b64_json",
+          "size": "auto"
+        },
+        "target_media": "IMAGE",
+        "timestamp": "2026-09-26T15:31:35.598370Z"
+      },
+      "provider_request_id": "",
+      "provider_request_timestamp": "2026-09-26T15:31:35.598370Z",
+      "provider_response": {
+        "created": 1790436706,
+        "data": [
+          {
+            "b64_json": "[REDACTED large value: 458928 chars]"
+          }
+        ],
+        "model": "grok-imagine-image-quality",
+        "provider": "shapi-openai-images",
+        "usage": {
+          "cost_in_usd_ticks": 500000000
+        }
+      },
+      "provider_response_hash": "sha256:ef1da2ab86b5d7008e5e78f3e833cec3a70a978a4fef742da282b57b11a59028",
+      "provider_task_id": "",
+      "status": "SUCCESS",
+      "transport_retry_count": 0
+    },
+    "error_message": "",
+    "retry_count": 0,
+    "timestamps": {
+      "created_at": "2026-09-26T15:31:35.584477",
+      "started_at": "2026-09-26T15:31:35.597941",
+      "completed_at": "2026-09-26T15:31:49.685555"
+    },
+    "status_history": [
+      "CREATED",
+      "QUEUED",
+      "RUNNING",
+      "PROVIDER_CALLED",
+      "SUCCESS"
+    ],
+    "provider_request": {
+      "generation_mode": "TEXT_TO_IMAGE",
+      "model": "grok-imagine-image-quality",
+      "parameters": {
+        "evidence_status": "provider_catalog_verified",
+        "n": 1,
+        "response_format": "b64_json",
+        "size": "auto",
+        "supports_async_tasks": false,
+        "supports_file_upload": false,
+        "supports_image_url": false,
+        "supports_negative_prompt": false,
+        "supports_reference_images": false,
+        "task_modes": [
+          "text_to_image"
+        ],
+        "transport": "openai-images-generations"
+      },
+      "prompt": "SUBJECT: [\"CANARY_CHARACTER\"]\nENVIRONMENT: {\"asset_identity_ref\":\"CANARY_E01_SCENE\",\"scene_ref\":\"CANARY_E01_SCENE\"}\nACTION: [{\"action_id\":\"SH_E01_SC001_001_ACTION_001\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B01\"],\"event_ref\":\"SC01-B01\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"},{\"action_id\":\"SH_E01_SC001_001_ACTION_002\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B02\"],\"event_ref\":\"SC01-B02\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"WIDE\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"ACTION_COMPLETION\"}\nVISIBILITY: \"AUDIENCE_ONLY\"\nCONSTRAINTS: {\"must_include_prop_refs\":[],\"must_include_subject_refs\":[\"CANARY_CHARACTER\"],\"must_preserve_axis\":false}",
+      "prompt_ir_payload_hash": "eb0d54c90cb151e2b84c110d6f4f858ec90d6226549fbcb22612d426483b5465",
+      "prompt_ir_version_id": 1,
+      "provider": "shapi-openai-images",
+      "provider_payload": {
+        "model": "grok-imagine-image-quality",
+        "n": 1,
+        "prompt": "SUBJECT: [\"CANARY_CHARACTER\"]\nENVIRONMENT: {\"asset_identity_ref\":\"CANARY_E01_SCENE\",\"scene_ref\":\"CANARY_E01_SCENE\"}\nACTION: [{\"action_id\":\"SH_E01_SC001_001_ACTION_001\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B01\"],\"event_ref\":\"SC01-B01\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"},{\"action_id\":\"SH_E01_SC001_001_ACTION_002\",\"actor_refs\":[\"CANARY_CHARACTER\"],\"beat_refs\":[\"SC01-B02\"],\"event_ref\":\"SC01-B02\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"WIDE\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"ACTION_COMPLETION\"}\nVISIBILITY: \"AUDIENCE_ONLY\"\nCONSTRAINTS: {\"must_include_prop_refs\":[],\"must_include_subject_refs\":[\"CANARY_CHARACTER\"],\"must_preserve_axis\":false}",
+        "response_format": "b64_json",
+        "size": "auto"
+      },
+      "target_media": "IMAGE",
+      "timestamp": "2026-09-26T15:31:35.598370Z"
+    },
+    "provider_response": {
+      "created": 1790436706,
+      "data": [
+        {
+          "b64_json": "[REDACTED large value: 458928 chars]"
+        }
+      ],
+      "model": "grok-imagine-image-quality",
+      "provider": "shapi-openai-images",
+      "usage": {
+        "cost_in_usd_ticks": 500000000
+      }
+    }
+  },
+  "media_candidate": {
+    "candidate_id": "candidate-d49cdef91abd4547b40e7002f3f7a6d5",
+    "execution_id": "gex_ca2d8876b6f1494797a8387087288ddc",
+    "status": "MEDIA_CANDIDATE",
+    "media_type": "IMAGE",
+    "storage_identity": "/api/prototyping/manual-media/book-991701-generated-real-image-provider-canary-gex_ca2d8876b6f1-d834b27178c80d1b.jpg",
+    "checksum_sha256": "d834b27178c80d1be95bb25fb5aa81fefc76f304b1bd56217b065ef656368950",
+    "mime_type": "image/jpeg",
+    "byte_size": 344195,
+    "width": 1024,
+    "height": 1024,
+    "prompt_ir_version_id": 1,
+    "prompt_ir_payload_hash": "eb0d54c90cb151e2b84c110d6f4f858ec90d6226549fbcb22612d426483b5465",
+    "provider_request_fingerprint": "sha256:7bb71783da397462517b64582ebd9ba4d5dd906e4c80954739c9c22eac0d0053",
+    "provider_response_hash": "sha256:ef1da2ab86b5d7008e5e78f3e833cec3a70a978a4fef742da282b57b11a59028"
+  },
+  "validation": {
+    "validation_id": "mvr-ce565f44f435191900226deb5fa551b8b6a9b111",
+    "status": "TECHNICALLY_VALID",
+    "technical_validation_fingerprint": "932383e5b491ed8b9d465b3a7603cc11d873288b53e8cbcbc742fa8d9a5c943d",
+    "authority_snapshot_fingerprint": "e0feffeb7f1d46947dfb51fa83422279980632116503294ff02893db314fa0ae"
+  },
+  "official_media": {
+    "official_media_version_id": "omv-842d1a15405fa720da51ef7bccafef7d9879aa35",
+    "authority_id": "oma-518f6c5e8269c15abf05cc66bc4aca38134df034",
+    "pointer_scope": {
+      "book_id": 991701,
+      "episode": 1,
+      "storyboard_shot_id": 1,
+      "media_role": "SHOT_PRIMARY_IMAGE"
+    }
+  },
+  "lineage": {
+    "asset_to_execution": true,
+    "execution_to_prompt_version": true,
+    "execution_to_shot": true,
+    "prompt_to_pointer": true
+  }
+}

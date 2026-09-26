@@ -18,11 +18,15 @@ from models import GenerationExecutionRecord, PromptIRAuthority, PromptIRPointer
 
 
 FOUNDATION_SCHEMA_VERSION = "generation_execution_foundation_v1"
-EXECUTION_STATUSES = frozenset({"CREATED", "QUEUED", "RUNNING", "SUCCESS", "FAILED", "RETRYING"})
+EXECUTION_STATUSES = frozenset({"CREATED", "QUEUED", "RUNNING", "PROVIDER_CALLED", "SUCCESS", "FAILED", "RETRYING"})
 _ALLOWED_TRANSITIONS: dict[str, frozenset[str]] = {
     "CREATED": frozenset({"QUEUED"}),
     "QUEUED": frozenset({"RUNNING"}),
-    "RUNNING": frozenset({"SUCCESS", "FAILED"}),
+    # SUCCESS remains a valid direct terminal transition for the deterministic
+    # provider-free MockAdapter.  Real media adapters take the explicit
+    # RUNNING -> PROVIDER_CALLED -> SUCCESS path.
+    "RUNNING": frozenset({"PROVIDER_CALLED", "SUCCESS", "FAILED"}),
+    "PROVIDER_CALLED": frozenset({"SUCCESS", "FAILED"}),
     "FAILED": frozenset({"RETRYING"}),
     "RETRYING": frozenset({"QUEUED"}),
     "SUCCESS": frozenset(),
@@ -99,6 +103,13 @@ def _serialize(row: GenerationExecutionRecord) -> dict[str, Any]:
             "target_media": row.target_media,
             "execution_mode": row.execution_mode,
             "provider_calls": int(row.logical_provider_calls or 0),
+            "provider": row.provider,
+            "model": row.model,
+            "provider_request_id": row.provider_request_id,
+            "provider_task_id": row.provider_task_id,
+            "provider_response_hash": row.provider_response_hash,
+            "candidate_id": row.candidate_id,
+            "official_promotion_count": int(row.official_promotion_count or 0),
         },
         "request_payload": row.request_payload,
         "response_payload": row.response_payload,

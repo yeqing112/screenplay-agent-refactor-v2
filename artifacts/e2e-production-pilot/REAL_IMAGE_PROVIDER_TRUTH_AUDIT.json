@@ -1,0 +1,29 @@
+{
+  "schema_version": "real_image_provider_truth_audit_v1",
+  "stage": "REAL_IMAGE_PROVIDER_CANARY_COMPLETE",
+  "provider": "shapi-openai-images",
+  "model": "grok-imagine-image-quality",
+  "real_provider_call": true,
+  "fixture_mode": false,
+  "status_history": [
+    "CREATED",
+    "QUEUED",
+    "RUNNING",
+    "PROVIDER_CALLED",
+    "SUCCESS"
+  ],
+  "checks": {
+    "provider_call_completed": true,
+    "execution_success": true,
+    "provider_request_present": true,
+    "provider_response_present": true,
+    "media_candidate_present": true,
+    "media_validation_passed": true,
+    "official_media_version_present": true,
+    "official_media_pointer_present": true,
+    "lineage_complete": true,
+    "credential_not_persisted": true
+  },
+  "all_checks_pass": true,
+  "secret_free_evidence": true
+}
