@@ -17,7 +17,9 @@ from core.prompt_ir_phase_e import _prompt_ir_payload_basis, fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_HEAD = "a1b2c3d4e5f6"
-J23_HEAD = "b2c3d4e5f6g7"
+# The media-scoped pointer migration remains the behavioral boundary under
+# test, while fresh upgrades now continue through the current production head.
+CURRENT_HEAD = "d9e0f1a2b3c4"
 
 
 def _config(db: Path) -> Config:
@@ -118,7 +120,7 @@ def test_fresh_upgrade_has_media_scope_schema_and_empty_rows(tmp_path):
     _engine_at(db, "head")
     engine = create_engine(f"sqlite:///{db.as_posix()}")
     inspector = inspect(engine)
-    assert engine.connect().execute(text("select version_num from alembic_version")).scalar() == J23_HEAD
+    assert engine.connect().execute(text("select version_num from alembic_version")).scalar() == CURRENT_HEAD
     assert "target_media" in {item["name"] for item in inspector.get_columns("prompt_ir_pointers")}
     assert {item["name"] for item in inspector.get_unique_constraints("prompt_ir_pointers")} == {"uq_prompt_ir_pointer_media_scope"}
     assert engine.connect().execute(text("select count(*) from prompt_ir_pointers")).scalar() == 0

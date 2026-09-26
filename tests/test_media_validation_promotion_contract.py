@@ -29,6 +29,7 @@ from models import (
     PromptIRAuthority,
     PromptIRVersion,
     Session,
+    StoryboardShot,
     VisualAssetPointer,
     VisualAssetVersion,
     VisualReferenceAuthority,
@@ -50,6 +51,13 @@ def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: b
     token = label or uuid.uuid4().hex
     if label is None and shot_id == 7001:
         shot_id = 100000 + (uuid.uuid5(uuid.NAMESPACE_URL, token).int % 900000000)
+    elif label is not None:
+        # The test runtime intentionally shares one isolated database across
+        # modules.  A labeled fixture always represents a fresh authority
+        # scope, so never reuse a caller's fixed business id.  This keeps
+        # StoryboardShot primary-key and PromptIR pointer scopes independent
+        # from earlier modules in the same process.
+        shot_id = 100000 + (uuid.uuid5(uuid.NAMESPACE_URL, token).int % 900000000)
     path = Path(config.UPLOAD_DIR) / f"media-authority-{token}.png"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(PNG)
@@ -59,6 +67,16 @@ def _fixture(*, label: str | None = None, shot_id: int = 7001, with_prompt_ir: b
         policy = build_generation_policy({"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE"}, allow_default=False)
         snapshot = canonical_snapshot()
         shot, source_row, _storyboard_envelope = install_authority_spine(session, book_id=990401, episode=1, shot_id=shot_id, snapshot=snapshot, scene_id=f"fixture:{token}")
+        if label is not None:
+            # Some historical tests delete a StoryboardShot while retaining
+            # its unqualified PromptIR rows.  A labeled fixture is a new
+            # authority scope, so clear stale rows that happen to reuse the
+            # newly allocated integer shot id before installing its pointer.
+            stale_version_ids = [row[0] for row in session.query(PromptIRVersion.id).filter_by(storyboard_shot_id=shot.id).all()]
+            session.query(PromptIRPointer).filter_by(storyboard_shot_id=shot.id).delete(synchronize_session=False)
+            session.query(PromptIRAuthority).filter(PromptIRAuthority.prompt_ir_version_id.in_(stale_version_ids)).delete(synchronize_session=False)
+            session.query(PromptIRVersion).filter(PromptIRVersion.id.in_(stale_version_ids)).delete(synchronize_session=False)
+            session.flush()
         snapshot = build_snapshot_from_fixture(session, shot=shot, authority=_storyboard_envelope)
         source_row = next(row for row in snapshot["ordered_shots"] if row.get("plan_shot_id") == shot.plan_shot_id)
         materialization = (_storyboard_envelope.get("materialization") or {}) if isinstance(_storyboard_envelope, dict) else {}
