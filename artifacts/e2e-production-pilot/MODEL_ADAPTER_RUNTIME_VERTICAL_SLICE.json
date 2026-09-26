@@ -1,0 +1,55 @@
+{
+  "report": "MODEL_ADAPTER_RUNTIME_VERTICAL_SLICE",
+  "phase": "PHASE_MODEL_ADAPTER_RUNTIME",
+  "status": "PASS",
+  "commit": "1bbc0686f5c57777f98b60309e96f8509ed91714",
+  "slice": [
+    {
+      "step": 1,
+      "name": "Load durable execution",
+      "component": "GenerationOrchestrator",
+      "input": "GenerationExecutionRecord.execution_id",
+      "evidence": ["GenerationExecutionService.get_execution", "PromptIRVersion lookup"],
+      "result": "resolved"
+    },
+    {
+      "step": 2,
+      "name": "Resolve model profile",
+      "component": "Existing Model Registry",
+      "input": "model_profile_id",
+      "evidence": ["api.model_registry.get_profile", "capability validation", "enabled validation"],
+      "result": "typed profile selected"
+    },
+    {
+      "step": 3,
+      "name": "Select adapter",
+      "component": "ModelAdapterRegistry",
+      "input": "model_profile.provider",
+      "evidence": ["prototype-task-adapter -> MockAdapter", "flux -> FluxAdapter placeholder"],
+      "result": "exact provider mapping"
+    },
+    {
+      "step": 4,
+      "name": "Execute mock generation",
+      "component": "MockAdapter.generate",
+      "input": "model profile, PromptIR projection, params",
+      "evidence": ["deterministic provider request/response", "media_generated=false", "no network/file I/O"],
+      "result": "normalized SUCCESS or simulated failure"
+    },
+    {
+      "step": 5,
+      "name": "Persist execution update",
+      "component": "GenerationExecutionService + GenerationExecutionRecord",
+      "evidence": ["provider/model ids", "response hash", "logical_provider_calls", "timestamps", "FAILED error projection"],
+      "result": "durable terminal status"
+    },
+    {
+      "step": 6,
+      "name": "Run API",
+      "component": "generation_execution_api",
+      "evidence": ["POST /generation/executions/{id}/run", "same router mounted under /api"],
+      "result": "contract covered"
+    }
+  ],
+  "next_phase": "PHASE_REAL_IMAGE_PROVIDER_CANARY"
+}

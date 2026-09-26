@@ -1,0 +1,49 @@
+{
+  "report": "MODEL_ADAPTER_RUNTIME_TRUTH_AUDIT",
+  "phase": "PHASE_MODEL_ADAPTER_RUNTIME",
+  "status": "PASS",
+  "generated_at": "2026-09-26",
+  "commit": "1bbc0686f5c57777f98b60309e96f8509ed91714",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "runtime_truth": {
+    "execution_record_reused": true,
+    "model_registry_reused": true,
+    "prompt_ir_version_read": true,
+    "adapter_selected_by_profile_provider": true,
+    "orchestrator_updates_execution": true,
+    "mock_adapter_is_deterministic": true,
+    "mock_creates_media_file": false,
+    "real_provider_api_called": false,
+    "provider_transport_called": false,
+    "media_candidate_created": false,
+    "asset_authority_modified": false,
+    "prompt_lineage_modified": false,
+    "review_workflow_modified": false
+  },
+  "state_evidence": {
+    "success_path": ["CREATED", "QUEUED", "RUNNING", "SUCCESS"],
+    "failure_path": ["CREATED", "QUEUED", "RUNNING", "FAILED"],
+    "non_mock_provider": "MODEL_ADAPTER_PROVIDER_NOT_ENABLED before RUNNING",
+    "provider_calls_success_mock": 1,
+    "provider_calls_non_mock": 0
+  },
+  "api": {
+    "run": [
+      "/generation/executions/{execution_id}/run",
+      "/api/generation/executions/{execution_id}/run"
+    ]
+  },
+  "schema": {
+    "new_table": false,
+    "migration_added": false,
+    "migration_head": "b2c3d4e5f6g7"
+  },
+  "verification": {
+    "runtime_tests": {"status": "PASS", "passed": 5},
+    "targeted_regression": {"status": "PASS", "passed": 42},
+    "full_backend": {"status": "PASS", "passed": 1826, "warnings": 4288},
+    "migration": {"status": "PASS"},
+    "golden": {"status": "PASS", "fixtures": 5, "failed": 0},
+    "production_regression": {"status": "PASS"}
+  }
+}
