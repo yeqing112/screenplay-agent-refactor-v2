@@ -1,7 +1,7 @@
 {
   "schema_version": "asset_promotion_runtime_vertical_slice_v1",
   "stage": "ASSET_PROMOTION_RUNTIME_COMPLETE",
-  "commit": "dfcaede112a2369a0baeb8bfbc5841934edf42b6",
+  "commit": "f2fb492ce5b24bf8fc0abf46abde078299fef096",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "provider": {
     "id": "shapi-openai-images",
@@ -23,7 +23,8 @@
   "review_decisions": {
     "APPROVE": "official publication allowed",
     "REJECT": "persisted as REJECTED; official publication blocked",
-    "REQUEST_CHANGE": "persisted as REQUEST_CHANGE; official publication blocked"
+    "REQUEST_CHANGE": "persisted as REQUEST_CHANGE; official publication blocked",
+    "Provider response incomplete": "validation blocked before review record"
   },
   "api_routes": [
     "/api/assets/candidates",
@@ -35,9 +36,10 @@
   ],
   "tests": {
     "promotion_contract": "16 passed",
-    "runtime_review_api": "4 passed",
+    "runtime_review_api": "5 passed",
     "provider_regression": "13 passed",
-    "schema_regression": "11 passed"
+    "schema_regression": "11 passed",
+    "canonical_validator_regression": "22 passed"
   },
   "authority_chain": [
     "Provider Response",

@@ -1,7 +1,7 @@
 {
   "schema_version": "asset_promotion_runtime_truth_audit_v1",
   "stage": "ASSET_PROMOTION_RUNTIME_COMPLETE",
-  "commit": "dfcaede112a2369a0baeb8bfbc5841934edf42b6",
+  "commit": "f2fb492ce5b24bf8fc0abf46abde078299fef096",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "provider_contract": {
     "provider": "shapi-openai-images",
@@ -26,7 +26,8 @@
     "request_change_fails_closed": true,
     "api_routes_registered": true,
     "credential_not_persisted": true,
-    "diff_check_clean": true
+    "diff_check_clean": true,
+    "provider_response_completeness_required": true
   },
   "tests": {
     "promotion_contract": {
@@ -34,7 +35,7 @@
       "failed": 0
     },
     "runtime": {
-      "passed": 4,
+      "passed": 5,
       "failed": 0
     },
     "provider_regression": {
@@ -43,6 +44,10 @@
     },
     "schema_regression": {
       "passed": 11,
+      "failed": 0
+    },
+    "canonical_validator_regression": {
+      "passed": 22,
       "failed": 0
     }
   },
