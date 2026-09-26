@@ -3,6 +3,7 @@
 ## CHARACTER_CONSISTENCY_RUNTIME_COMPLETE
 
 - **Commit:** `85a67e7` (`feat: add character consistency runtime`)
+- **Prompt integration follow-up:** `0b86366` (`feat: inject character constraints into prompt lineage`)
 - **Branch:** `codex/visual-authoring-provider-canary-reconcile`
 - **Migration head:** `e1f2a3b4c5d6`
 - **Provider calls:** `0` (provider-free consistency and prompt constraint runtime)

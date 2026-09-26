@@ -1,6 +1,7 @@
 {
   "status": "CHARACTER_CONSISTENCY_RUNTIME_COMPLETE",
   "commit": "85a67e7",
+  "prompt_integration_commit": "0b86366",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "migration": {
     "head": "e1f2a3b4c5d6",
