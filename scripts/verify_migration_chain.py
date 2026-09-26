@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "d9e0f1a2b3c4"
+HEAD = "e1f2a3b4c5d6"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -82,6 +82,8 @@ AUTHORITY_TABLES = {
     "production_prompt_versions",
     "production_generation_intents",
     "production_prompt_lineages",
+    "character_reference_assets",
+    "shot_character_bindings",
 }
 
 REQUIRED_COLUMNS = {
@@ -143,6 +145,9 @@ REQUIRED_COLUMNS = {
     "production_prompt_versions": {"prompt_version_id", "prompt_id", "version_number", "prompt_text", "prompt_structure", "prompt_fingerprint", "created_from", "created_at"},
     "production_generation_intents": {"generation_intent_id", "shot_id", "character_requirements", "scene_requirements", "camera_requirements", "style_requirements", "constraint_snapshot", "shot_requirement_snapshot", "shot_requirement_fingerprint", "created_at"},
     "production_prompt_lineages": {"prompt_lineage_id", "asset_id", "asset_version_id", "shot_id", "prompt_version_id", "generation_intent_id", "prompt_fingerprint", "created_at"},
+    "character_profiles": {"description", "attributes", "appearance_profile"},
+    "character_reference_assets": {"character_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},
+    "shot_character_bindings": {"storyboard_shot_id", "character_id", "role", "reference_asset_ids", "appearance_rules", "constraint_snapshot", "asset_authority_id", "asset_version_id", "binding_fingerprint", "status"},
 }
 
 

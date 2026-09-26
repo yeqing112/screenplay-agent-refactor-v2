@@ -11,6 +11,14 @@ class CharacterProfile(Base):
     name = Column(String(100), nullable=False)
     aliases = Column(Text, default="[]")
 
+    # Production character identity envelope.  These fields extend the
+    # existing CharacterProfile authority instead of introducing a second
+    # character-management table.  JSON is stored as text to preserve the
+    # project's SQLite/PostgreSQL compatibility.
+    description = Column(Text, default="")
+    attributes = Column(Text, default="{}")
+    appearance_profile = Column(Text, default="{}")
+
     # 基础信息
     gender = Column(String(20), default="")
     age_range = Column(String(50), default="")
@@ -115,3 +123,9 @@ class CharacterStage(Base):
     # 元数据
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)
+
+
+# Production identity uses the established CharacterProfile table.  This
+# explicit alias keeps the new runtime vocabulary available without creating a
+# second character management model.
+CharacterIdentity = CharacterProfile

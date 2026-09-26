@@ -101,6 +101,7 @@ from api.media_authority_api import router as media_authority_router
 from api.asset_promotion_api import router as asset_promotion_router
 from api.production_batch_api import router as production_batch_router
 from api.production_metrics_api import router as production_metrics_router
+from api.character_consistency_api import router as character_consistency_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -152,6 +153,8 @@ app.include_router(production_batch_router, prefix="/api")
 app.include_router(production_batch_router)
 app.include_router(production_metrics_router, prefix="/api")
 app.include_router(production_metrics_router)
+app.include_router(character_consistency_router, prefix="/api")
+app.include_router(character_consistency_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft

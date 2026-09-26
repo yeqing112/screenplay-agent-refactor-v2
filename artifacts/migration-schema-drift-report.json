@@ -2,16 +2,16 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 231,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 243,
     "EXTRA_LEGACY_COLUMN": 1,
-    "INDEX_DRIFT": 83,
+    "INDEX_DRIFT": 85,
     "MISSING_MIGRATION": 0,
     "NULLABILITY_DRIFT": 0,
     "TYPE_DRIFT": 0
   },
   "counts": {
     "blocking": 0,
-    "total": 315
+    "total": 329
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -477,6 +477,76 @@
       "index": "ix_character_asset_versions_status",
       "kind": "index",
       "table": "character_asset_versions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_id"
+      ],
+      "index": "ix_character_reference_assets_asset_id",
+      "kind": "index",
+      "table": "character_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_character_reference_assets_asset_version_id",
+      "kind": "index",
+      "table": "character_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "character_id"
+      ],
+      "index": "ix_character_reference_assets_character_id",
+      "kind": "index",
+      "table": "character_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "visual_reference_asset_id"
+      ],
+      "index": "ix_character_reference_assets_visual_reference_asset_id",
+      "kind": "index",
+      "table": "character_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_id"
+      ],
+      "index": "ix_character_reference_assets_asset",
+      "kind": "index",
+      "table": "character_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "character_id"
+      ],
+      "index": "ix_character_reference_assets_character",
+      "kind": "index",
+      "table": "character_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_character_reference_assets_version",
+      "kind": "index",
+      "table": "character_reference_assets"
     },
     {
       "blocking": false,
@@ -2441,6 +2511,76 @@
       "index": "ix_shot_asset_bindings_version",
       "kind": "index",
       "table": "shot_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "asset_authority_id"
+      ],
+      "index": "ix_shot_character_bindings_asset_authority_id",
+      "kind": "index",
+      "table": "shot_character_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_shot_character_bindings_asset_version_id",
+      "kind": "index",
+      "table": "shot_character_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "character_id"
+      ],
+      "index": "ix_shot_character_bindings_character_id",
+      "kind": "index",
+      "table": "shot_character_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_shot_character_bindings_storyboard_shot_id",
+      "kind": "index",
+      "table": "shot_character_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "character_id"
+      ],
+      "index": "ix_shot_character_bindings_character",
+      "kind": "index",
+      "table": "shot_character_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_shot_character_bindings_shot",
+      "kind": "index",
+      "table": "shot_character_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_version_id"
+      ],
+      "index": "ix_shot_character_bindings_version",
+      "kind": "index",
+      "table": "shot_character_bindings"
     },
     {
       "blocking": false,

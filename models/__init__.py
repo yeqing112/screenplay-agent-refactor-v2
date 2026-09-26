@@ -1,6 +1,8 @@
 from .base import Base, engine, Session, init_db, get_kv, set_kv
 from .book import Book, Chapter, BookBible
 from .character import CharacterProfile, CharacterStage
+CharacterIdentity = CharacterProfile
+from .character_consistency import CharacterReferenceAsset, ShotCharacterBinding
 from .script import EpisodeOutline, Script, QAResult
 from .script_ir import ScriptIRVersion
 from .fact_snapshot import FactSnapshot, FactRecord
@@ -55,7 +57,7 @@ __all__ = [
     "Base", "engine", "Session",
     "init_db", "get_kv", "set_kv",
     "Book", "Chapter", "BookBible",
-    "CharacterProfile", "CharacterStage",
+    "CharacterProfile", "CharacterIdentity", "CharacterStage", "CharacterReferenceAsset", "ShotCharacterBinding",
     "EpisodeOutline", "Script", "QAResult", "ScriptIRVersion", "FactSnapshot", "FactRecord",
     "KV",
     "VisualEraSpec", "VisualProp", "VisualLocation", "VisualMakeup", "VisualReferenceAsset", "AssetSemanticGovernanceRecord", "StoryboardTransitionContract", "StoryboardTransitionFrame", "StoryboardTransitionContinuityReview", "StoryboardVideoRetryAttempt", "PublicAssetStorageMigrationRecord", "DecisionPacketRecord", "VisualAssetVersion", "VisualAssetPointer", "VisualAuthoringDecisionRequest", "VisualAuthoringDecision", "VisualAuthoringProposal", "VisualReferenceAuthority", "VisualReferenceSet", "VisualReferenceGenerationRequest",
