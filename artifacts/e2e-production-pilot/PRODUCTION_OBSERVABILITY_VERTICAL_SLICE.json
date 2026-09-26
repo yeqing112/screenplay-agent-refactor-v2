@@ -1,5 +1,7 @@
 {
   "status": "PRODUCTION_OBSERVABILITY_RUNTIME_COMPLETE",
+  "runtime_commit": "1323129",
+  "regression_fixture_commit": "c5c7b30",
   "slice": [
     "ProductionBatch",
     "ProductionBatchItem",
@@ -28,6 +30,11 @@
     "service": "core/production_metrics.py",
     "api": "api/production_metrics_api.py",
     "tests": "tests/test_production_observability_runtime.py",
-    "schema_change": "none"
+    "schema_change": "none",
+    "full_regression": {
+      "passed": 1842,
+      "failed": 0,
+      "status": "PASS"
+    }
   }
 }

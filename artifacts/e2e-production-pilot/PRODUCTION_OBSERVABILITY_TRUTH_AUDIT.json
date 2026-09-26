@@ -1,6 +1,7 @@
 {
   "status": "PRODUCTION_OBSERVABILITY_RUNTIME_COMPLETE",
   "commit": "1323129",
+  "regression_fixture_commit": "c5c7b30",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "baseline": "d827ccd",
   "migration": {
@@ -39,8 +40,9 @@
     "frontend_build": "PASS"
   },
   "historical_full_regression": {
-    "passed": 1838,
-    "known_baseline_failures": 4,
-    "status": "BASELINE_EXCEPTIONS_RECORDED"
+    "passed": 1842,
+    "failed": 0,
+    "known_baseline_failures": 0,
+    "status": "PASS"
   }
 }

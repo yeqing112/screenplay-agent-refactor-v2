@@ -3,6 +3,7 @@
 ## PRODUCTION_OBSERVABILITY_RUNTIME_COMPLETE
 
 - **Commit:** `1323129` (`feat: add production observability metrics runtime`)
+- **Regression fixture follow-up:** `c5c7b30` (`test: stabilize full production regression fixtures`)
 - **Branch:** `codex/visual-authoring-provider-canary-reconcile`
 - **Baseline:** `d827ccd`
 - **Migration:** no new metric migration; current schema head remains `d9e0f1a2b3c4`.
@@ -32,4 +33,4 @@
 - `python -m compileall -q core/production_metrics.py api/production_metrics_api.py` — **PASS**
 - `git diff --check` — **PASS**
 
-The full historical `npm run check:production` reached 1,838 passed tests and reported four pre-existing baseline failures outside this observability change: a stale J2.3 head assertion, two shared-fixture currentness tests when run in the full suite, and a Phase I fixture response-completeness assertion. The targeted production/runtime suites above are green.
+The full historical `npm run check:production` now completes with **1,842 passed, 0 failed** after the fixture and current-head assertions were stabilized in `c5c7b30`.
