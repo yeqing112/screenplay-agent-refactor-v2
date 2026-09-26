@@ -168,4 +168,3 @@ TaskRun 继续表示 pipeline 级任务。GenerationExecution 不作为 Backgrou
 - request/response snapshot 脱敏，API key 只在 provider transport 短生命周期存在。
 - transport retry 与业务 retry 分开计数。
 - 任意 PromptIR、模型 profile、reference authority 变化都会使预览 stale。
-

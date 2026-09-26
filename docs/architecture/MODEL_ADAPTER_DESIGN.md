@@ -91,4 +91,3 @@ ModelAdapterResult 不包含 api_key、authorization header 或 runtime credenti
 ## 8. 兼容策略
 
 旧 creative generation endpoint 先把 request 转成 canonical payload，再调用同一个 ModelAdapter。旧 adapter 函数保留为 protocol implementation；Production Runtime 不再在 api/server.py 复制 provider 分支。
-

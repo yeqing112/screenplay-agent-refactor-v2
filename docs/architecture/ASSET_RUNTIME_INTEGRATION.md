@@ -80,4 +80,3 @@ Visual authoring proposal 的 approve 只产生 VisualAuthoringDecision；它不
 ## 7. 迁移边界
 
 本设计不执行 migration。现有 candidate/validation/official schema 已足以承载第一阶段。若运行时需要跨进程 lease，应单独设计 generation execution 的 claim/reconcile 字段迁移；不新增 Asset 表，也不复制现有 authority/pointer/review 表。
-
