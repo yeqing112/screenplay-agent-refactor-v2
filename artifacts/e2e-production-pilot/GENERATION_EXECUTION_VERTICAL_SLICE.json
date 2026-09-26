@@ -1,0 +1,50 @@
+{
+  "report": "GENERATION_EXECUTION_VERTICAL_SLICE",
+  "phase": "PHASE_GENERATION_EXECUTION_FOUNDATION",
+  "status": "PASS",
+  "implementation_commit": "3cb22be59b5d089dc8c13acbd73a52934eb07f0d",
+  "slice": [
+    {
+      "step": 1,
+      "name": "Prompt input resolution",
+      "component": "GenerationExecutionService.create_execution",
+      "evidence": ["StoryboardShot", "PromptIRPointer", "PromptIRVersion"],
+      "result": "validated"
+    },
+    {
+      "step": 2,
+      "name": "Execution fact creation",
+      "component": "GenerationExecutionRecord",
+      "evidence": ["execution_id", "model_profile_id", "request_snapshot_json", "status=CREATED"],
+      "result": "persisted"
+    },
+    {
+      "step": 3,
+      "name": "Provider boundary",
+      "component": "foundation service",
+      "evidence": ["logical_provider_calls=0", "provider_adapter_id=foundation"],
+      "result": "provider-free"
+    },
+    {
+      "step": 4,
+      "name": "State transition",
+      "component": "GenerationExecutionService.transition",
+      "evidence": ["CREATED -> QUEUED -> RUNNING -> SUCCESS", "FAILED -> RETRYING -> QUEUED"],
+      "result": "legal transitions enforced"
+    },
+    {
+      "step": 5,
+      "name": "API contract",
+      "component": "api/generation_execution_api.py",
+      "evidence": ["POST /generation/executions", "GET /generation/executions/{execution_id}"],
+      "result": "create and query covered"
+    }
+  ],
+  "out_of_scope": [
+    "ModelAdapter",
+    "Provider Transport",
+    "real model invocation",
+    "image generation",
+    "media authority changes"
+  ]
+}
