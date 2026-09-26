@@ -284,6 +284,20 @@ def validate_media_candidate_technical(candidate: MediaCandidateRecord) -> dict[
     expected_mime = str(candidate.mime_type or "").split(";", 1)[0].strip().lower()
     expected_media_type = str(candidate.media_type or "").strip().upper()
     checksum = hashlib.sha256(data).hexdigest()
+    candidate_metadata = getattr(candidate, "candidate_metadata", None)
+    if not isinstance(candidate_metadata, dict):
+        # Keep the pure validator compatible with small read-only fixtures and
+        # legacy projections that predate metadata_json.  ORM candidates use
+        # MediaCandidateRecord.candidate_metadata above, which supplies the
+        # bounded canonical projection from metadata_json.
+        candidate_metadata = {
+            "media_type": getattr(candidate, "media_type", None),
+            "mime_type": getattr(candidate, "mime_type", None),
+            "byte_size": getattr(candidate, "byte_size", None),
+            "width": getattr(candidate, "width", None),
+            "height": getattr(candidate, "height", None),
+            "duration_ms": getattr(candidate, "duration_ms", None),
+        }
     payload = {
         "schema_version": "media_technical_validation_v2",
         "bytes_valid": bool(data),
@@ -310,7 +324,7 @@ def validate_media_candidate_technical(candidate: MediaCandidateRecord) -> dict[
             and int(candidate.byte_size or 0) > 0
             and int(candidate.width or 0) > 0
             and int(candidate.height or 0) > 0
-            and isinstance(candidate.candidate_metadata, dict)
+            and isinstance(candidate_metadata, dict)
         ),
     }
     payload["valid"] = all(
@@ -347,6 +361,21 @@ def validate_media_candidate_integrity(session: Any, candidate_id: str | None = 
     invalid = [field for field, (actual, expected) in checks.items() if str(actual or "") != str(expected or "")]
     if invalid:
         _fail("MEDIA_CANDIDATE_LINEAGE_INVALID", "Candidate lineage does not match GenerationExecutionRecord.", invalid)
+    candidate_response_hash = str(candidate.provider_response_hash or "").strip()
+    execution_response_hash = str(execution.provider_response_hash or "").strip()
+    response_identity = str(candidate.provider_task_id or execution.provider_request_id or execution.provider_task_id or "").strip()
+    if not candidate_response_hash or not execution_response_hash or candidate_response_hash != execution_response_hash or not response_identity or int(execution.logical_provider_calls or 0) < 1:
+        _fail(
+            "MEDIA_PROVIDER_RESPONSE_INCOMPLETE",
+            "Candidate must retain a complete, traceable Provider response projection.",
+            {
+                "candidate_response_hash_present": bool(candidate_response_hash),
+                "execution_response_hash_present": bool(execution_response_hash),
+                "response_hash_matches": bool(candidate_response_hash and candidate_response_hash == execution_response_hash),
+                "response_identity_present": bool(response_identity),
+                "logical_provider_calls": int(execution.logical_provider_calls or 0),
+            },
+        )
     sources = _candidate_storage_sources(candidate)
     if not sources:
         _fail("MEDIA_STORAGE_IDENTITY_MISSING", "Candidate has no canonical storage identity.")

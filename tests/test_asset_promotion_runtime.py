@@ -25,6 +25,22 @@ def test_validation_creates_review_required_promotion_record():
         assert session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id).count() == 0
 
 
+def test_incomplete_provider_response_fails_validation_before_review():
+    candidate_id, execution_id, _path, _shot_id = _fixture()
+    with Session() as session:
+        candidate = session.query(__import__("models", fromlist=["MediaCandidateRecord"]).MediaCandidateRecord).filter_by(candidate_id=candidate_id).one()
+        execution = session.query(__import__("models", fromlist=["GenerationExecutionRecord"]).GenerationExecutionRecord).filter_by(execution_id=execution_id).one()
+        candidate.provider_response_hash = ""
+        execution.provider_response_hash = ""
+        execution.logical_provider_calls = 0
+        session.commit()
+        with pytest.raises(MediaAuthorityError) as exc:
+            validate_media_candidate(session, candidate_id)
+        assert exc.value.code == "MEDIA_PROVIDER_RESPONSE_INCOMPLETE"
+        assert session.query(MediaPromotionRecord).filter_by(candidate_id=candidate_id).count() == 0
+        assert session.query(OfficialMediaVersion).filter_by(candidate_id=candidate_id).count() == 0
+
+
 def test_reject_and_request_change_fail_closed_without_official_rows():
     for decision in ("REJECT", "REQUEST_CHANGE"):
         candidate_id, _execution_id, _path, _shot_id = _fixture()
