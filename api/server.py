@@ -96,6 +96,7 @@ from api.prompt_ir_authority_api import router as prompt_ir_authority_router
 from api.visual_asset_authority_api import router as visual_asset_authority_router
 from api.visual_authoring_provider_api import router as visual_authoring_provider_router
 from api.generation_canary_api import router as generation_canary_router
+from api.generation_execution_api import router as generation_execution_router
 from api.media_authority_api import router as media_authority_router
 from api.director_benchmark_api import router as director_benchmark_router
 
@@ -133,6 +134,12 @@ app.include_router(prompt_ir_authority_router)
 app.include_router(visual_asset_authority_router)
 app.include_router(visual_authoring_provider_router)
 app.include_router(generation_canary_router)
+# The foundation router is mounted at both the project's /api namespace and
+# the stable path requested by runtime integrations.  Both mounts share the
+# same provider-free service implementation; no second execution system is
+# created.
+app.include_router(generation_execution_router, prefix="/api")
+app.include_router(generation_execution_router)
 app.include_router(media_authority_router)
 app.include_router(director_benchmark_router)
 

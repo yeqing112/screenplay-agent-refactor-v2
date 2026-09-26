@@ -1,6 +1,7 @@
 """Durable Phase F generation execution and media-candidate records."""
 
 from datetime import datetime
+import json
 
 from sqlalchemy import Column, DateTime, Integer, String, Text, UniqueConstraint
 
@@ -59,6 +60,112 @@ class GenerationExecutionRecord(Base):
     candidate_id = Column(String, nullable=True, index=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    # Foundation compatibility surface.  The canonical Phase F table already
+    # owns these facts under its established names.  The properties below
+    # expose the foundation vocabulary without adding a second execution table
+    # or changing the existing migration head.
+    _FOUNDATION_METADATA_KEY = "_generation_execution_foundation"
+
+    def _snapshot(self) -> dict:
+        try:
+            value = json.loads(self.request_snapshot_json or "{}")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            value = {}
+        return dict(value) if isinstance(value, dict) else {}
+
+    def _set_snapshot(self, value: dict) -> None:
+        self.request_snapshot_json = json.dumps(value if isinstance(value, dict) else {}, ensure_ascii=False, sort_keys=True)
+
+    def _foundation_metadata(self) -> dict:
+        snapshot = self._snapshot()
+        value = snapshot.get(self._FOUNDATION_METADATA_KEY)
+        return dict(value) if isinstance(value, dict) else {}
+
+    def _set_foundation_metadata(self, **values) -> None:
+        snapshot = self._snapshot()
+        metadata = self._foundation_metadata()
+        metadata.update(values)
+        snapshot[self._FOUNDATION_METADATA_KEY] = metadata
+        self._set_snapshot(snapshot)
+
+    @property
+    def shot_id(self) -> int:
+        return int(self.storyboard_shot_id)
+
+    @shot_id.setter
+    def shot_id(self, value: int) -> None:
+        self.storyboard_shot_id = int(value)
+
+    @property
+    def prompt_pointer_id(self) -> int | None:
+        value = self._foundation_metadata().get("prompt_pointer_id")
+        return int(value) if value not in (None, "") else None
+
+    @prompt_pointer_id.setter
+    def prompt_pointer_id(self, value: int | None) -> None:
+        self._set_foundation_metadata(prompt_pointer_id=None if value is None else int(value))
+
+    @property
+    def prompt_version_id(self) -> int:
+        return int(self.prompt_ir_version_id)
+
+    @prompt_version_id.setter
+    def prompt_version_id(self, value: int) -> None:
+        self.prompt_ir_version_id = int(value)
+
+    @property
+    def execution_status(self) -> str:
+        return str(self.status or "")
+
+    @execution_status.setter
+    def execution_status(self, value: str) -> None:
+        self.status = str(value or "")
+
+    @property
+    def request_payload(self) -> dict:
+        return self._snapshot()
+
+    @request_payload.setter
+    def request_payload(self, value) -> None:
+        snapshot = dict(value) if isinstance(value, dict) else {}
+        metadata = self._foundation_metadata()
+        if metadata:
+            snapshot[self._FOUNDATION_METADATA_KEY] = metadata
+        self._set_snapshot(snapshot)
+
+    @property
+    def response_payload(self) -> dict:
+        value = self._foundation_metadata().get("response_payload")
+        return dict(value) if isinstance(value, dict) else {}
+
+    @response_payload.setter
+    def response_payload(self, value) -> None:
+        self._set_foundation_metadata(response_payload=value if isinstance(value, dict) else {})
+
+    @property
+    def error_message(self) -> str:
+        return str(self.failure_message or "")
+
+    @error_message.setter
+    def error_message(self, value: str) -> None:
+        self.failure_message = str(value or "")
+
+    @property
+    def retry_count(self) -> int:
+        return int(self.transport_retry_count or 0)
+
+    @retry_count.setter
+    def retry_count(self, value: int) -> None:
+        self.transport_retry_count = int(value or 0)
+
+    @property
+    def started_at(self):
+        return self.submitted_at
+
+    @started_at.setter
+    def started_at(self, value) -> None:
+        self.submitted_at = value
 
 
 class MediaCandidateRecord(Base):
