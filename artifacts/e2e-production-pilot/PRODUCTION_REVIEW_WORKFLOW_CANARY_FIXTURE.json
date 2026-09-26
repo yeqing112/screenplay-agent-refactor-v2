@@ -1,0 +1,642 @@
+{
+  "schema_version": "production_review_workflow_canary_v1",
+  "book_id": 990401,
+  "episode": 1,
+  "provider_free": true,
+  "provider_calls": 0,
+  "graph_fixture": {
+    "schema_version": "production_asset_graph_canary_v1",
+    "book_id": 990401,
+    "episode": 1,
+    "provider_response": {
+      "schema_version": "provider_asset_graph_response_fixture_v1",
+      "provider": "fixture-provider",
+      "fixture_mode": true,
+      "provider_calls": 0,
+      "response_id": "production-asset-graph-response-001",
+      "assets": [
+        {
+          "asset_type": "CHARACTER",
+          "entity_id": "CHARACTER_A",
+          "logical_version": "v1",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/character/character_a/v1.png",
+          "checksum": "sha256:production-asset-graph:CHARACTER:CHARACTER_A:v1",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v1",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_A/v1",
+              "provider_response_id": "production-asset-graph-character-character_a-v1",
+              "provider_output_fingerprint": "sha256:a93ad4c84b3fba6e95b8bbe13c5a7d814227cfacaac02e54c1cd6cfe0798e4da",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_A/v1",
+            "provider_response_id": "production-asset-graph-character-character_a-v1",
+            "provider_output_fingerprint": "sha256:a93ad4c84b3fba6e95b8bbe13c5a7d814227cfacaac02e54c1cd6cfe0798e4da",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 1
+        },
+        {
+          "asset_type": "CHARACTER",
+          "entity_id": "CHARACTER_A",
+          "logical_version": "v2",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/character/character_a/v2.png",
+          "checksum": "sha256:production-asset-graph:CHARACTER:CHARACTER_A:v2",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v2",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_A/v2",
+              "provider_response_id": "production-asset-graph-character-character_a-v2",
+              "provider_output_fingerprint": "sha256:f0c9bc7fb0d3aa007fbbd8d59df24c9830156e164bc9afb8bcb97bfb2fc4cd3b",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_A/v2",
+            "provider_response_id": "production-asset-graph-character-character_a-v2",
+            "provider_output_fingerprint": "sha256:f0c9bc7fb0d3aa007fbbd8d59df24c9830156e164bc9afb8bcb97bfb2fc4cd3b",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 2
+        },
+        {
+          "asset_type": "CHARACTER",
+          "entity_id": "CHARACTER_A",
+          "logical_version": "v3",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/character/character_a/v3.png",
+          "checksum": "sha256:production-asset-graph:CHARACTER:CHARACTER_A:v3",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v3",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_A/v3",
+              "provider_response_id": "production-asset-graph-character-character_a-v3",
+              "provider_output_fingerprint": "sha256:6f26c073299a9c669f10b9b6cb80e36d40af9dbc593169c4b9d248687e297e11",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_A/v3",
+            "provider_response_id": "production-asset-graph-character-character_a-v3",
+            "provider_output_fingerprint": "sha256:6f26c073299a9c669f10b9b6cb80e36d40af9dbc593169c4b9d248687e297e11",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 3
+        },
+        {
+          "asset_type": "CHARACTER",
+          "entity_id": "CHARACTER_B",
+          "logical_version": "v1",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/character/character_b/v1.png",
+          "checksum": "sha256:production-asset-graph:CHARACTER:CHARACTER_B:v1",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v1",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_B/v1",
+              "provider_response_id": "production-asset-graph-character-character_b-v1",
+              "provider_output_fingerprint": "sha256:a425c6623424218f2a05e7826b6a3f85e66d4c68d59c0f7acd4df52438bbd733",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_B/v1",
+            "provider_response_id": "production-asset-graph-character-character_b-v1",
+            "provider_output_fingerprint": "sha256:a425c6623424218f2a05e7826b6a3f85e66d4c68d59c0f7acd4df52438bbd733",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 4
+        },
+        {
+          "asset_type": "CHARACTER",
+          "entity_id": "CHARACTER_B",
+          "logical_version": "v2",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/character/character_b/v2.png",
+          "checksum": "sha256:production-asset-graph:CHARACTER:CHARACTER_B:v2",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v2",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_B/v2",
+              "provider_response_id": "production-asset-graph-character-character_b-v2",
+              "provider_output_fingerprint": "sha256:18f4448dd42ed331c5a85ed4e4da820f8ebeab86240e7c8765e8249048292fdf",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_B/v2",
+            "provider_response_id": "production-asset-graph-character-character_b-v2",
+            "provider_output_fingerprint": "sha256:18f4448dd42ed331c5a85ed4e4da820f8ebeab86240e7c8765e8249048292fdf",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 5
+        },
+        {
+          "asset_type": "CHARACTER",
+          "entity_id": "CHARACTER_C",
+          "logical_version": "v1",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/character/character_c/v1.png",
+          "checksum": "sha256:production-asset-graph:CHARACTER:CHARACTER_C:v1",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v1",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_C/v1",
+              "provider_response_id": "production-asset-graph-character-character_c-v1",
+              "provider_output_fingerprint": "sha256:8c186b584e74858d3bf9fcd9605ff8bea92e0dc4913461876b651063711842ed",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/CHARACTER_C/v1",
+            "provider_response_id": "production-asset-graph-character-character_c-v1",
+            "provider_output_fingerprint": "sha256:8c186b584e74858d3bf9fcd9605ff8bea92e0dc4913461876b651063711842ed",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 6
+        },
+        {
+          "asset_type": "SCENE",
+          "entity_id": "SCENE_HOSPITAL",
+          "logical_version": "v1_day",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/scene/scene_hospital/v1_day.png",
+          "checksum": "sha256:production-asset-graph:SCENE:SCENE_HOSPITAL:v1_day",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v1_day",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_HOSPITAL/v1_day",
+              "provider_response_id": "production-asset-graph-scene-scene_hospital-v1_day",
+              "provider_output_fingerprint": "sha256:162d594926ceefb62ca15d35dccf724db1af6c85e500e3ad548a88fb7c496959",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_HOSPITAL/v1_day",
+            "provider_response_id": "production-asset-graph-scene-scene_hospital-v1_day",
+            "provider_output_fingerprint": "sha256:162d594926ceefb62ca15d35dccf724db1af6c85e500e3ad548a88fb7c496959",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 7
+        },
+        {
+          "asset_type": "SCENE",
+          "entity_id": "SCENE_HOSPITAL",
+          "logical_version": "v2_night",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/scene/scene_hospital/v2_night.png",
+          "checksum": "sha256:production-asset-graph:SCENE:SCENE_HOSPITAL:v2_night",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v2_night",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_HOSPITAL/v2_night",
+              "provider_response_id": "production-asset-graph-scene-scene_hospital-v2_night",
+              "provider_output_fingerprint": "sha256:998b032d189eb86452deef42db71f5012a6522ee08e3f76458ee698580109195",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_HOSPITAL/v2_night",
+            "provider_response_id": "production-asset-graph-scene-scene_hospital-v2_night",
+            "provider_output_fingerprint": "sha256:998b032d189eb86452deef42db71f5012a6522ee08e3f76458ee698580109195",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 8
+        },
+        {
+          "asset_type": "SCENE",
+          "entity_id": "SCENE_HOSPITAL",
+          "logical_version": "v3_destroyed",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/scene/scene_hospital/v3_destroyed.png",
+          "checksum": "sha256:production-asset-graph:SCENE:SCENE_HOSPITAL:v3_destroyed",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v3_destroyed",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_HOSPITAL/v3_destroyed",
+              "provider_response_id": "production-asset-graph-scene-scene_hospital-v3_destroyed",
+              "provider_output_fingerprint": "sha256:ea02d8455e59442588476819ac8d7abd52fd2caf4e1ac3649618edb005c2046a",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_HOSPITAL/v3_destroyed",
+            "provider_response_id": "production-asset-graph-scene-scene_hospital-v3_destroyed",
+            "provider_output_fingerprint": "sha256:ea02d8455e59442588476819ac8d7abd52fd2caf4e1ac3649618edb005c2046a",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 9
+        },
+        {
+          "asset_type": "SCENE",
+          "entity_id": "SCENE_OFFICE",
+          "logical_version": "v1",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/scene/scene_office/v1.png",
+          "checksum": "sha256:production-asset-graph:SCENE:SCENE_OFFICE:v1",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v1",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_OFFICE/v1",
+              "provider_response_id": "production-asset-graph-scene-scene_office-v1",
+              "provider_output_fingerprint": "sha256:bdc4c5293f5265734e24d9aae68268751bbae568712b9d02ab7b9956efd83f79",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_OFFICE/v1",
+            "provider_response_id": "production-asset-graph-scene-scene_office-v1",
+            "provider_output_fingerprint": "sha256:bdc4c5293f5265734e24d9aae68268751bbae568712b9d02ab7b9956efd83f79",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 10
+        },
+        {
+          "asset_type": "SCENE",
+          "entity_id": "SCENE_OFFICE",
+          "logical_version": "v2",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/scene/scene_office/v2.png",
+          "checksum": "sha256:production-asset-graph:SCENE:SCENE_OFFICE:v2",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v2",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_OFFICE/v2",
+              "provider_response_id": "production-asset-graph-scene-scene_office-v2",
+              "provider_output_fingerprint": "sha256:68723ff85c665a1d64f978cef9a97a8f2ac394e81aaf0e9e309f1902ce8d3471",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_OFFICE/v2",
+            "provider_response_id": "production-asset-graph-scene-scene_office-v2",
+            "provider_output_fingerprint": "sha256:68723ff85c665a1d64f978cef9a97a8f2ac394e81aaf0e9e309f1902ce8d3471",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 11
+        },
+        {
+          "asset_type": "SCENE",
+          "entity_id": "SCENE_STREET",
+          "logical_version": "v1",
+          "storage_identity": "https://assets.example.invalid/production-asset-graph/scene/scene_street/v1.png",
+          "checksum": "sha256:production-asset-graph:SCENE:SCENE_STREET:v1",
+          "metadata": {
+            "schema_version": "production_asset_media_metadata_v1",
+            "source_kind": "real_asset_graph_canary",
+            "logical_version": "v1",
+            "mime_type": "image/png",
+            "width": 2048,
+            "height": 2048,
+            "provenance": {
+              "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_STREET/v1",
+              "provider_response_id": "production-asset-graph-scene-scene_street-v1",
+              "provider_output_fingerprint": "sha256:cef055a54952bf56afbeb09469a07777a5aa1b4b4fe0c5b5b26aaccc1fde2b82",
+              "captured_at": "2026-09-26T00:00:00Z",
+              "provider": "fixture-provider",
+              "fixture_mode": true,
+              "is_mock": false
+            }
+          },
+          "provenance": {
+            "source_reference": "provider-response://production-asset-graph-canary/v1/SCENE_STREET/v1",
+            "provider_response_id": "production-asset-graph-scene-scene_street-v1",
+            "provider_output_fingerprint": "sha256:cef055a54952bf56afbeb09469a07777a5aa1b4b4fe0c5b5b26aaccc1fde2b82",
+            "captured_at": "2026-09-26T00:00:00Z",
+            "provider": "fixture-provider",
+            "fixture_mode": true,
+            "is_mock": false
+          },
+          "sequence": 12
+        }
+      ],
+      "response_fingerprint": "sha256:55784db0e85abefc5558296dda39f8c1e39b00828f366956acc9bbf020faa1c3"
+    },
+    "shots": [
+      {
+        "shot_id": 1,
+        "plan_shot_id": "GRAPH_E01_SHOT_001",
+        "scene_id": "SCENE_HOSPITAL",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_A"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_HOSPITAL"
+          }
+        ]
+      },
+      {
+        "shot_id": 2,
+        "plan_shot_id": "GRAPH_E01_SHOT_002",
+        "scene_id": "SCENE_HOSPITAL",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_A"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_HOSPITAL"
+          }
+        ]
+      },
+      {
+        "shot_id": 3,
+        "plan_shot_id": "GRAPH_E01_SHOT_003",
+        "scene_id": "SCENE_HOSPITAL",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_A"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_HOSPITAL"
+          }
+        ]
+      },
+      {
+        "shot_id": 4,
+        "plan_shot_id": "GRAPH_E01_SHOT_004",
+        "scene_id": "SCENE_OFFICE",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_B"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_OFFICE"
+          }
+        ]
+      },
+      {
+        "shot_id": 5,
+        "plan_shot_id": "GRAPH_E01_SHOT_005",
+        "scene_id": "SCENE_OFFICE",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_B"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_OFFICE"
+          }
+        ]
+      },
+      {
+        "shot_id": 6,
+        "plan_shot_id": "GRAPH_E01_SHOT_006",
+        "scene_id": "SCENE_STREET",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_C"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_STREET"
+          }
+        ]
+      },
+      {
+        "shot_id": 7,
+        "plan_shot_id": "GRAPH_E01_SHOT_007",
+        "scene_id": "SCENE_OFFICE",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_A"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_OFFICE"
+          }
+        ]
+      },
+      {
+        "shot_id": 8,
+        "plan_shot_id": "GRAPH_E01_SHOT_008",
+        "scene_id": "SCENE_HOSPITAL",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_B"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_HOSPITAL"
+          }
+        ]
+      },
+      {
+        "shot_id": 9,
+        "plan_shot_id": "GRAPH_E01_SHOT_009",
+        "scene_id": "SCENE_HOSPITAL",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_C"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_HOSPITAL"
+          }
+        ]
+      },
+      {
+        "shot_id": 10,
+        "plan_shot_id": "GRAPH_E01_SHOT_010",
+        "scene_id": "SCENE_STREET",
+        "requirements": [
+          {
+            "asset_type": "CHARACTER",
+            "entity_id": "CHARACTER_A"
+          },
+          {
+            "asset_type": "SCENE",
+            "entity_id": "SCENE_STREET"
+          }
+        ]
+      }
+    ],
+    "rollback": {
+      "asset_type": "CHARACTER",
+      "entity_id": "CHARACTER_A",
+      "from_logical_version": "v3",
+      "to_logical_version": "v2"
+    }
+  },
+  "review_cases": [
+    {
+      "case_id": "approved_character_a_v3",
+      "asset_type": "CHARACTER",
+      "asset_id": "CHARACTER_A",
+      "logical_version": "v3",
+      "reviewer_type": "DIRECTOR",
+      "decision": "APPROVE",
+      "expected_final_state": "PRODUCTION_READY"
+    },
+    {
+      "case_id": "rejected_character_b_v2",
+      "asset_type": "CHARACTER",
+      "asset_id": "CHARACTER_B",
+      "logical_version": "v2",
+      "reviewer_type": "ART_DIRECTOR",
+      "decision": "REJECT",
+      "expected_final_state": "REJECTED"
+    },
+    {
+      "case_id": "request_change_scene_street_v1",
+      "asset_type": "SCENE",
+      "asset_id": "SCENE_STREET",
+      "logical_version": "v1",
+      "reviewer_type": "PRODUCER",
+      "decision": "REQUEST_CHANGE",
+      "expected_final_state": "ARCHIVED"
+    }
+  ],
+  "request_change_replacement": {
+    "asset_type": "SCENE",
+    "asset_id": "SCENE_STREET",
+    "from_logical_version": "v1",
+    "new_logical_version": "v2",
+    "storage_identity": "https://assets.example.invalid/production-review/scene/scene-street/v2.png",
+    "checksum": "sha256:production-review-scene-street-v2",
+    "metadata": {
+      "schema_version": "production_asset_media_metadata_v1",
+      "source_kind": "production_review_workflow_canary",
+      "logical_version": "v2",
+      "mime_type": "image/png",
+      "width": 2048,
+      "height": 2048,
+      "provenance": {
+        "source_reference": "provider-response://production-review-workflow-canary/v1/SCENE_STREET/v2",
+        "provider_response_id": "production-review-scene-street-v2",
+        "provider_output_fingerprint": "sha256:production-review-scene-street-v2",
+        "captured_at": "2026-09-26T00:00:00Z",
+        "provider": "fixture-provider",
+        "fixture_mode": true,
+        "is_mock": false
+      }
+    }
+  }
+}

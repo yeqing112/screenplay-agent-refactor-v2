@@ -73,6 +73,8 @@ AUTHORITY_TABLES = {
     "prop_asset_versions",
     "prop_asset_pointers",
     "shot_asset_bindings",
+    "production_asset_reviews",
+    "production_asset_review_history",
 }
 
 REQUIRED_COLUMNS = {
@@ -115,6 +117,8 @@ REQUIRED_COLUMNS = {
     "prop_asset_versions": {"version_id", "authority_id", "prop_id", "visual_asset_version_id", "revision", "status"},
     "prop_asset_pointers": {"prop_id", "authority_id", "version_id", "fingerprint"},
     "shot_asset_bindings": {"storyboard_shot_id", "asset_type", "authority_id", "version_id", "binding_fingerprint", "status"},
+    "production_asset_reviews": {"review_id", "asset_type", "asset_id", "asset_version_id", "review_state", "reviewer_type", "decision", "comment", "created_at"},
+    "production_asset_review_history": {"history_id", "review_id", "asset_version_id", "from_state", "to_state", "actor", "decision", "comment", "created_at"},
 }
 
 

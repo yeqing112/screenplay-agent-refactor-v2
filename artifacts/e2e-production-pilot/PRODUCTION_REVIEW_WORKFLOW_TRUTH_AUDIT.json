@@ -1,0 +1,42 @@
+{
+  "schema_version": "production_review_workflow_truth_audit_v1",
+  "stage": "PHASE_PRODUCTION_REVIEW_WORKFLOW_CANARY_COMPLETE",
+  "provider_calls": 0,
+  "approval_state": "PRODUCTION_REVIEW_CANARY_APPROVED",
+  "checks": {
+    "review_required_before_production": true,
+    "approval_transition_valid": true,
+    "review_history_append_only": true,
+    "rejected_asset_blocked": true,
+    "version_change_preserves_history": true,
+    "pointer_activation_requires_approval": true,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0
+  },
+  "review_required_before_production": true,
+  "approval_transition_valid": true,
+  "review_history_append_only": true,
+  "rejected_asset_blocked": true,
+  "version_change_preserves_history": true,
+  "pointer_activation_requires_approval": true,
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "review_counts": {
+    "review_count": 4,
+    "review_history_count": 23,
+    "approved_asset_count": 2,
+    "rejected_asset_count": 1,
+    "archived_review_count": 1,
+    "blocked_promotion_count": 1
+  },
+  "graph_counts": {
+    "authority_count": 6,
+    "version_count": 13,
+    "pointer_count": 6,
+    "shot_count": 10,
+    "binding_count": 27,
+    "active_binding_count": 20,
+    "stale_binding_count": 7
+  },
+  "complete": true
+}

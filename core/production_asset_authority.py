@@ -284,6 +284,7 @@ def ingest_production_asset(
     entity_id: str,
     source: Mapping[str, Any],
     book_id: int = 990401,
+    activate_pointer: bool = True,
 ):
     """Ingest one explicit Production Asset Authority/Version/Pointer triple.
 
@@ -291,8 +292,9 @@ def ingest_production_asset(
     The function never creates media, never reads PromptIR/Storyboard metadata
     to infer identity, and never accepts a display name or URL as authority.
     Re-ingesting changed source material creates a new immutable version and
-    moves the pointer; existing shot bindings are marked stale and are never
-    silently rebound.
+    moves the pointer by default; callers implementing a review workflow can
+    set ``activate_pointer=False`` to persist a candidate Version without
+    changing the current Pointer or staling existing bindings.
     """
     kind = _asset_type(entity_type)
     entity_id = str(entity_id or "").strip()
@@ -321,21 +323,22 @@ def ingest_production_asset(
         revision = (int(current.revision) + 1) if current is not None else 1
         version_id = _version_id(authority_id=authority_id, revision=revision, source=source)
         version_fingerprint = _version_fingerprint(authority_id=authority_id, version_id=version_id, revision=revision, source=source)
-        if current is not None:
+        if current is not None and activate_pointer:
             current.status = "SUPERSEDED"
             session.query(ShotAssetBinding).filter(ShotAssetBinding.authority_id == authority_id, ShotAssetBinding.version_id == current.version_id, ShotAssetBinding.status == "ACTIVE").update({"status": "STALE"}, synchronize_session=False)
         session.add(ProductionAssetVersionRegistry(version_id=version_id, authority_id=authority_id, asset_type=kind))
         session.flush()
-        version = config["version"](**{config["entity"]: entity_id, "version_id": version_id, "authority_id": authority_id, "storage_identity": source["storage_identity"], "checksum": source["checksum"], "metadata_hash": source["metadata_hash"], "revision": revision, "status": "CURRENT"})
+        version = config["version"](**{config["entity"]: entity_id, "version_id": version_id, "authority_id": authority_id, "storage_identity": source["storage_identity"], "checksum": source["checksum"], "metadata_hash": source["metadata_hash"], "revision": revision, "status": "CURRENT" if activate_pointer else "STALE"})
         session.add(version)
         session.flush()
-        authority.current_version_id = version_id
-    pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id}).one_or_none()
+        if activate_pointer:
+            authority.current_version_id = version_id
+    pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id}).one_or_none() if activate_pointer else None
     pointer_fingerprint = _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=version_id)
-    if pointer is None:
+    if activate_pointer and pointer is None:
         pointer = config["pointer"](**{config["entity"]: entity_id, "authority_id": authority_id, "version_id": version_id, "fingerprint": pointer_fingerprint})
         session.add(pointer)
-    else:
+    elif activate_pointer:
         pointer.authority_id = authority_id
         pointer.version_id = version_id
         pointer.fingerprint = pointer_fingerprint
@@ -355,10 +358,11 @@ def ingest_production_asset(
         "provider_calls": 0,
         "image_calls": 0,
         "video_calls": 0,
+        "pointer_activated": bool(activate_pointer),
     }
 
 
-def switch_current_production_asset_version(
+def _switch_current_production_asset_version(
     session,
     *,
     entity_type: str,
@@ -394,7 +398,8 @@ def switch_current_production_asset_version(
         raise AssetBindingInvalid("asset authority identity is stale or drifted", diagnostics=[{"asset_type": kind, "authority_id": authority_id}])
     pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id, "authority_id": authority_id}).one_or_none()
     if pointer is None:
-        raise AssetBindingInvalid("asset pointer does not exist", diagnostics=[{"asset_type": kind, "entity_id": entity_id}])
+        pointer = config["pointer"](**{config["entity"]: entity_id, "authority_id": authority_id, "version_id": version_id, "fingerprint": _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=version_id)})
+        session.add(pointer)
     previous_version_id = str(getattr(authority, "current_version_id", "") or "")
     previous = session.query(config["version"]).filter_by(authority_id=authority_id, version_id=previous_version_id).one_or_none() if previous_version_id else None
     if previous is not None and previous.version_id != target.version_id:
@@ -419,6 +424,60 @@ def switch_current_production_asset_version(
         "version_history_preserved": True,
         "shot_definitions_mutated": False,
     }
+
+
+def switch_current_production_asset_version(
+    session,
+    *,
+    entity_type: str,
+    entity_id: str,
+    version_id: str,
+    review_id: str | None = None,
+    book_id: int = 990401,
+):
+    """Activate a Pointer only through the Production Review Gate.
+
+    The unchecked graph primitive is private and is reserved for historical
+    graph-canary rollback setup.  Normal callers must provide a review ID;
+    the review workflow verifies human approval before moving the Pointer.
+    """
+    if not review_id:
+        raise AssetBindingInvalid(
+            "production pointer activation requires an approved human review",
+            diagnostics=[{"asset_type": _asset_type(entity_type), "entity_id": entity_id, "version_id": version_id}],
+        )
+    from core.production_asset_review import activate_production_asset_version_after_review
+    from models import ProductionAssetReview
+
+    kind = _asset_type(entity_type)
+    review = session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none()
+    if review is None:
+        raise AssetBindingInvalid(
+            "production pointer activation review does not exist",
+            diagnostics=[{"review_id": review_id}],
+        )
+    if (
+        review.asset_type != kind
+        or str(review.asset_id) != str(entity_id)
+        or str(review.asset_version_id) != str(version_id)
+    ):
+        raise AssetBindingInvalid(
+            "production pointer activation review does not match the requested asset version",
+            diagnostics=[
+                {
+                    "review_id": review_id,
+                    "review_asset_type": review.asset_type,
+                    "review_asset_id": review.asset_id,
+                    "review_asset_version_id": review.asset_version_id,
+                    "requested_asset_type": kind,
+                    "requested_asset_id": str(entity_id),
+                    "requested_asset_version_id": str(version_id),
+                }
+            ],
+        )
+
+    result = activate_production_asset_version_after_review(session, review_id=review_id, book_id=book_id)
+    return result["switch"]
 
 
 def _find_asset(session, *, asset_type: str, authority_id: str, version_id: str):

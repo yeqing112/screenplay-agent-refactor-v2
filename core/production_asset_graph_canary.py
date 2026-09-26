@@ -18,7 +18,7 @@ from core.production_asset_authority import (
     ingest_production_asset,
     resolve_current_production_asset_binding,
     resolve_shot_assets,
-    switch_current_production_asset_version,
+    _switch_current_production_asset_version,
 )
 from models import (
     CharacterAssetAuthority,
@@ -393,7 +393,7 @@ def reconcile_production_asset_graph_canary(session: Any, fixture: Mapping[str, 
         shot_ids = [int(row.id) for row in shot_rows]
         before_pointer = latest[("CHARACTER", "CHARACTER_A")]["version_id"]
         rollback_target = versions[("CHARACTER", "CHARACTER_A", "v2")]
-        switch = switch_current_production_asset_version(
+        switch = _switch_current_production_asset_version(
             session,
             entity_type="CHARACTER",
             entity_id="CHARACTER_A",

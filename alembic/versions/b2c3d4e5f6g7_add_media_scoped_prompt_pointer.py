@@ -39,6 +39,84 @@ CHECK_NAME = "ck_prompt_ir_pointer_target_media"
 UNIQUE_NAME = "uq_prompt_ir_pointer_media_scope"
 OLD_DOWNGRADE_CODE = "PROMPT_IR_POINTER_DOWNGRADE_CARDINALITY_CONFLICT"
 
+REVIEW_STATE_SQL = "'GENERATED','NORMALIZED','AI_VALIDATED','HUMAN_REVIEW_PENDING','HUMAN_APPROVED','PRODUCTION_READY','ARCHIVED','REJECTED','REQUEST_CHANGE'"
+REVIEWER_TYPE_SQL = "'DIRECTOR','ART_DIRECTOR','PRODUCER','SYSTEM'"
+REVIEW_DECISION_SQL = "'APPROVE','REJECT','REQUEST_CHANGE'"
+
+
+def _timestamp(name: str):
+    return sa.Column(name, sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP"))
+
+
+def _create_review_tables(bind) -> None:
+    """Create the append-only human review layer at the canonical head.
+
+    This remains in the existing canonical head migration so databases and
+    historical tests that intentionally pin ``b2c3d4e5f6g7`` receive the new
+    governance tables without changing the established migration identity.
+    """
+    inspector = inspect(bind)
+    tables = set(inspector.get_table_names())
+    if "production_asset_reviews" not in tables:
+        op.create_table(
+            "production_asset_reviews",
+            sa.Column("id", sa.Integer(), primary_key=True),
+            sa.Column("review_id", sa.String(), nullable=False),
+            sa.Column("asset_type", sa.String(), nullable=False),
+            sa.Column("asset_id", sa.String(), nullable=False),
+            sa.Column("asset_version_id", sa.String(), nullable=False),
+            sa.Column("review_state", sa.String(), nullable=False),
+            sa.Column("reviewer_type", sa.String(), nullable=False),
+            sa.Column("decision", sa.String(), nullable=True),
+            sa.Column("comment", sa.Text(), nullable=True),
+            sa.Column("version_fingerprint", sa.String(), nullable=True),
+            _timestamp("created_at"),
+            _timestamp("updated_at"),
+            sa.ForeignKeyConstraint(["asset_version_id"], ["production_asset_version_registry.version_id"], name="fk_production_asset_review_version", ondelete="RESTRICT"),
+            sa.UniqueConstraint("review_id", name="uq_production_asset_review_id"),
+            sa.CheckConstraint("asset_type IN ('CHARACTER','SCENE','PROP')", name="ck_production_asset_review_asset_type"),
+            sa.CheckConstraint(f"review_state IN ({REVIEW_STATE_SQL})", name="ck_production_asset_review_state"),
+            sa.CheckConstraint(f"reviewer_type IN ({REVIEWER_TYPE_SQL})", name="ck_production_asset_review_reviewer_type"),
+            sa.CheckConstraint(f"decision IS NULL OR decision IN ({REVIEW_DECISION_SQL})", name="ck_production_asset_review_decision"),
+        )
+        op.create_index("ix_production_asset_reviews_review_id", "production_asset_reviews", ["review_id"], unique=True)
+        op.create_index("ix_production_asset_reviews_asset_type", "production_asset_reviews", ["asset_type"])
+        op.create_index("ix_production_asset_reviews_asset_id", "production_asset_reviews", ["asset_id"])
+        op.create_index("ix_production_asset_reviews_asset_version_id", "production_asset_reviews", ["asset_version_id"])
+        op.create_index("ix_production_asset_reviews_review_state", "production_asset_reviews", ["review_state"])
+    if "production_asset_review_history" not in tables:
+        op.create_table(
+            "production_asset_review_history",
+            sa.Column("id", sa.Integer(), primary_key=True),
+            sa.Column("history_id", sa.String(), nullable=False),
+            sa.Column("review_id", sa.String(), nullable=False),
+            sa.Column("asset_version_id", sa.String(), nullable=False),
+            sa.Column("from_state", sa.String(), nullable=True),
+            sa.Column("to_state", sa.String(), nullable=False),
+            sa.Column("actor", sa.String(), nullable=False),
+            sa.Column("decision", sa.String(), nullable=True),
+            sa.Column("comment", sa.Text(), nullable=True),
+            _timestamp("created_at"),
+            sa.ForeignKeyConstraint(["review_id"], ["production_asset_reviews.review_id"], name="fk_production_asset_review_history_review", ondelete="RESTRICT"),
+            sa.ForeignKeyConstraint(["asset_version_id"], ["production_asset_version_registry.version_id"], name="fk_production_asset_review_history_version", ondelete="RESTRICT"),
+            sa.UniqueConstraint("history_id", name="uq_production_asset_review_history_id"),
+            sa.CheckConstraint(f"from_state IS NULL OR from_state IN ({REVIEW_STATE_SQL})", name="ck_production_asset_review_history_from_state"),
+            sa.CheckConstraint(f"to_state IN ({REVIEW_STATE_SQL})", name="ck_production_asset_review_history_to_state"),
+            sa.CheckConstraint(f"actor IN ({REVIEWER_TYPE_SQL})", name="ck_production_asset_review_history_actor"),
+            sa.CheckConstraint(f"decision IS NULL OR decision IN ({REVIEW_DECISION_SQL})", name="ck_production_asset_review_history_decision"),
+        )
+        op.create_index("ix_production_asset_review_history_history_id", "production_asset_review_history", ["history_id"], unique=True)
+        op.create_index("ix_production_asset_review_history_review_id", "production_asset_review_history", ["review_id"])
+        op.create_index("ix_production_asset_review_history_asset_version_id", "production_asset_review_history", ["asset_version_id"])
+
+
+def _drop_review_tables(bind) -> None:
+    tables = set(inspect(bind).get_table_names())
+    if "production_asset_review_history" in tables:
+        op.drop_table("production_asset_review_history")
+    if "production_asset_reviews" in tables:
+        op.drop_table("production_asset_reviews")
+
 
 def _columns(*, include_target: bool, legacy_unique: bool = False) -> sa.Table:
     metadata = sa.MetaData()
@@ -154,6 +232,7 @@ def upgrade() -> None:
     with op.batch_alter_table(TABLE, recreate="always", copy_from=copy):
         pass
     _verify_upgrade(bind, before_count)
+    _create_review_tables(bind)
 
 
 def _verify_downgrade(bind, expected_count: int) -> None:
@@ -185,3 +264,4 @@ def downgrade() -> None:
     with op.batch_alter_table(TABLE, recreate="always", copy_from=copy):
         pass
     _verify_downgrade(bind, before_count)
+    _drop_review_tables(bind)

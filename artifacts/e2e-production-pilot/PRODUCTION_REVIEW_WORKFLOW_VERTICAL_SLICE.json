@@ -1,0 +1,106 @@
+{
+  "schema_version": "production_review_workflow_vertical_slice_v1",
+  "stage": "PHASE_PRODUCTION_REVIEW_WORKFLOW_CANARY_COMPLETE",
+  "provider_free": true,
+  "provider_calls": 0,
+  "episode_count": 1,
+  "shot_count": 10,
+  "authority_count": 6,
+  "version_count": 13,
+  "pointer_count": 6,
+  "binding_count": 27,
+  "active_binding_count": 20,
+  "stale_binding_count": 7,
+  "review_count": 4,
+  "review_history_count": 23,
+  "approved_asset_count": 2,
+  "rejected_asset_count": 1,
+  "blocked_promotion_count": 1,
+  "approval_state": "PRODUCTION_REVIEW_CANARY_APPROVED",
+  "promotion_attempts": [
+    {
+      "case_id": "approved_character_a_v3",
+      "before_pointer_version_id": "pav_107886448a469aa15ff448b1",
+      "after_pointer_version_id": "pav_7cfbf5e720cc37ea30fe9196",
+      "allowed": true
+    },
+    {
+      "case_id": "rejected_character_b_v2",
+      "before_pointer_version_id": "pav_dbfaa583d6b5c4e53fede00d",
+      "after_pointer_version_id": "pav_dbfaa583d6b5c4e53fede00d",
+      "allowed": false,
+      "blocked_detail": "production review gate blocked: human_review_exists, human_decision_approve"
+    },
+    {
+      "case_id": "request_change_scene_street_v1",
+      "before_pointer_version_id": "pav_9a91211e4f61a299c87fd16d",
+      "candidate_pointer_before_approval": "pav_9a91211e4f61a299c87fd16d",
+      "after_pointer_version_id": "pav_8ceab877bf65217fdb4480bb",
+      "allowed": true
+    }
+  ],
+  "request_change": {
+    "old_review_id": "par_6c2ee62cd55105c8f266ae2c_01",
+    "old_review_final_state": "ARCHIVED",
+    "old_version_id": "pav_9a91211e4f61a299c87fd16d",
+    "new_version_id": "pav_8ceab877bf65217fdb4480bb",
+    "new_review_id": "par_1f2a906140527842571b4f62_01",
+    "old_history_count": 6,
+    "new_history_count": 6
+  },
+  "steps": [
+    {
+      "name": "asset_generated",
+      "status": "PASS",
+      "evidence": "Typed Asset Version exists before review."
+    },
+    {
+      "name": "normalized",
+      "status": "PASS",
+      "evidence": "Review history records NORMALIZED before AI_VALIDATED."
+    },
+    {
+      "name": "ai_validation",
+      "status": "PASS",
+      "evidence": "Review history records AI_VALIDATED before human review."
+    },
+    {
+      "name": "human_review_pending",
+      "status": "PASS",
+      "evidence": "All fixture paths enter HUMAN_REVIEW_PENDING."
+    },
+    {
+      "name": "human_decisions",
+      "status": "PASS",
+      "evidence": "DIRECTOR, ART_DIRECTOR and PRODUCER decisions are recorded."
+    },
+    {
+      "name": "production_review_gate",
+      "status": "PASS",
+      "evidence": "Rejected/unapproved activation leaves the Pointer unchanged."
+    },
+    {
+      "name": "request_change_new_version",
+      "status": "PASS",
+      "evidence": "Old Version and old review history remain after replacement creation."
+    },
+    {
+      "name": "binding_resolution",
+      "status": "PASS",
+      "evidence": "All 10 Shots resolve ACTIVE Character and Scene bindings."
+    }
+  ],
+  "truth_checks": {
+    "review_required_before_production": true,
+    "approval_transition_valid": true,
+    "review_history_append_only": true,
+    "rejected_asset_blocked": true,
+    "version_change_preserves_history": true,
+    "pointer_activation_requires_approval": true,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0
+  },
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "scope_boundary": "This canary does not announce UI_V2_COMPLETE and does not call a real Provider."
+}
