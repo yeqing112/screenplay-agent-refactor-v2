@@ -1,0 +1,39 @@
+{
+  "completion_marker": "AUTOMATIC_STORYBOARD_RUNTIME_COMPLETE",
+  "phase": "PHASE_AUTOMATIC_STORYBOARD_RUNTIME",
+  "implementation_commit": "83995f5f91815a8468dbf2af6491b0e0315635f3",
+  "migration_head": "k2f3g4h5i6j7",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "status": "PASS",
+  "authority": {
+    "source_fact_mutated": false,
+    "script_ir_mutated": false,
+    "human_review_required": true,
+    "generation_creates_production_storyboard_shot": false,
+    "generation_creates_production_shot_plan": false,
+    "compile_materializes_blocked_shot_plan": true,
+    "rollback_preserves_source_records": true
+  },
+  "provider_boundary": {
+    "real_llm_called": false,
+    "real_image_generation_called": false,
+    "real_video_generation_called": false,
+    "automatic_publish": false,
+    "enabled_adapter": "mock"
+  },
+  "lineage": {
+    "director_reasoning_to_storyboard": true,
+    "storyboard_to_shot_plan": true,
+    "storyboard_to_generation_intent_candidate": true,
+    "storyboard_to_prompt_version_candidate": true,
+    "rollback_versioned": true
+  },
+  "verification": {
+    "automatic_storyboard_tests": {"passed": 4, "failed": 0},
+    "director_runtime_tests": {"passed": 15, "failed": 0},
+    "full_pytest": {"passed": 1899, "failed": 0},
+    "migration_chain": "PASS",
+    "golden_regression": {"passed": 5, "failed": 0},
+    "diff_check": "PASS"
+  }
+}

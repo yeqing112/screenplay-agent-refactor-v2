@@ -1,0 +1,20 @@
+{
+  "completion_marker": "AUTOMATIC_STORYBOARD_RUNTIME_COMPLETE",
+  "slice": "ScriptIR -> DirectorReasoningIR -> StoryboardPlan draft -> Human Review -> Storyboard Compiler -> ShotPlan -> GenerationIntent candidate",
+  "steps": [
+    {"step": "director_reasoning_input", "status": "PASS", "provider_calls": 0, "source_mutation": false},
+    {"step": "storyboard_generation", "status": "PASS", "draft_status": "REVIEW_REQUIRED", "provider": "mock", "production_shot_plan_rows": 0, "production_storyboard_shot_rows": 0},
+    {"step": "human_review_boundary", "status": "PASS", "required": true, "automatic_approval": false},
+    {"step": "storyboard_compile", "status": "PASS", "validation": ["scene_exists", "character_refs_legal", "visual_style_exists", "shot_order", "camera_fields", "duration"], "shot_plan_status": "draft", "production_status": "blocked"},
+    {"step": "lineage_projection", "status": "PASS", "generation_intent_candidates": true, "prompt_version_candidates": true, "reasoning_to_storyboard": true, "storyboard_to_shot_plan": true},
+    {"step": "rollback", "status": "PASS", "source_records_preserved": true}
+  ],
+  "forbidden_operations": {
+    "real_llm": false,
+    "image_generation": false,
+    "video_generation": false,
+    "script_ir_mutation": false,
+    "source_fact_mutation": false,
+    "auto_publish": false
+  }
+}
