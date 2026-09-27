@@ -1,0 +1,34 @@
+{
+  "status": "EPISODE_RENDERING_RUNTIME_COMPLETE",
+  "implementation_commit": "f879e44aada94aa6b5e4d6d3910b4ea4bb558cac",
+  "migration_head": "f7a8b9c0d1e2",
+  "vertical_slice": [
+    "Existing EpisodeOutline authority",
+    "EpisodeRenderPlan with render strategy and durable state",
+    "Ordered EpisodeRenderItem shot queue",
+    "Validated shot dependency graph",
+    "ProductionBatch and ProductionBatchItem reuse",
+    "TaskRun and GenerationExecution lineage reuse",
+    "Review-gated episode completion",
+    "No automatic editing, audio, subtitles, or publishing",
+    "SHAPI downstream image generation contract remains unchanged"
+  ],
+  "api": {
+    "query": ["/episodes/{episode_id}/render-plan", "/api/episodes/{episode_id}/render-plan"],
+    "create": ["/episodes/{episode_id}/render-plan", "/api/episodes/{episode_id}/render-plan"],
+    "render": ["/episodes/{episode_id}/render", "/api/episodes/{episode_id}/render"],
+    "status": ["/episodes/{episode_id}/render-status", "/api/episodes/{episode_id}/render-status"],
+    "complete": ["/episodes/{episode_id}/render/complete", "/api/episodes/{episode_id}/render/complete"]
+  },
+  "evidence": {
+    "plan_model": "models/episode_rendering.py",
+    "service": "core/episode_rendering.py",
+    "api": "api/episode_rendering_api.py",
+    "migration": "alembic/versions/f7a8b9c0d1e2_add_episode_rendering_runtime.py",
+    "tests": "tests/test_episode_rendering_runtime.py",
+    "full_regression": {"passed": 1870, "failed": 0},
+    "focused_regression": {"passed": 38, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "migration_chain": "PASS"
+  }
+}

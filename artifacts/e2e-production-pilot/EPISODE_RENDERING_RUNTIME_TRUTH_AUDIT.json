@@ -1,0 +1,59 @@
+{
+  "status": "EPISODE_RENDERING_RUNTIME_COMPLETE",
+  "implementation_commit": "f879e44aada94aa6b5e4d6d3910b4ea4bb558cac",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration": {
+    "head": "f7a8b9c0d1e2",
+    "fresh_upgrade": "PASS",
+    "repeated_upgrade": "PASS",
+    "legacy_replay": "PASS",
+    "schema_drift": "PASS"
+  },
+  "providers": {
+    "image": {
+      "website": "https://www.shapi.vip/",
+      "provider": "shapi-openai-images",
+      "base_url": "https://shapi.vip/v1",
+      "transport_binding": "shapi-openai-images.image.v1",
+      "provider_calls": 0
+    },
+    "episode_render": {
+      "external_provider_calls": 0,
+      "storage_writes": 0,
+      "runner": "injected_provider_free_test_runner"
+    }
+  },
+  "plan": {
+    "table": "episode_render_plans",
+    "episode_authority": "episode_outlines",
+    "state_machine": ["DRAFT", "PREPARING", "GENERATING", "REVIEWING", "COMPLETED", "FAILED"],
+    "render_strategies": ["SEQUENTIAL", "DEPENDENCY_AWARE"],
+    "explicit_review_gate": true,
+    "automatic_editing": false
+  },
+  "items": {
+    "table": "episode_render_items",
+    "ordered_shot_scope": true,
+    "dependency_graph_validated": true,
+    "cycle_rejected": true,
+    "missing_shot_rejected": true,
+    "batch_item_linkage": true
+  },
+  "execution_chain": {
+    "production_batch": "reused",
+    "production_batch_item": "reused",
+    "task_run": "reused",
+    "generation_execution": "reused",
+    "asset_authority": "existing batch gate",
+    "review_workflow": "existing explicit media boundary"
+  },
+  "tests": {
+    "episode_render_runtime": {"passed": 5, "failed": 0},
+    "focused_regression": {"passed": 38, "failed": 0},
+    "full_pytest": {"passed": 1870, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "migration": "PASS",
+    "compile": "PASS",
+    "diff_check": "PASS"
+  }
+}
