@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "e6f7a8b9c0d1"
+HEAD = "f7a8b9c0d1e2"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -94,6 +94,8 @@ AUTHORITY_TABLES = {
     "keyframes",
     "keyframe_asset_bindings",
     "video_generation_intents",
+    "episode_render_plans",
+    "episode_render_items",
 }
 
 REQUIRED_COLUMNS = {
@@ -169,6 +171,8 @@ REQUIRED_COLUMNS = {
     "keyframes": {"keyframe_sequence_id", "frame_type", "time_seconds", "order_index", "description", "camera_state", "character_state", "scene_state", "emotion_state", "camera_motion", "character_motion", "environment_motion", "emotion_transition", "frame_fingerprint", "status"},
     "keyframe_asset_bindings": {"keyframe_id", "storyboard_shot_id", "asset_type", "authority_id", "version_id", "binding_fingerprint", "is_primary", "status"},
     "video_generation_intents": {"storyboard_shot_id", "duration", "aspect_ratio", "motion_profile", "first_frame_asset", "last_frame_asset", "prompt_version", "intent_fingerprint", "status", "generation_execution_id", "task_id"},
+    "episode_render_plans": {"episode_id", "project_id", "episode_number", "status", "render_strategy", "production_batch_id", "error", "created_at", "updated_at", "completed_at"},
+    "episode_render_items": {"render_plan_id", "episode_id", "shot_id", "order_index", "dependency", "status", "production_batch_item_id", "error", "created_at", "updated_at"},
 }
 
 

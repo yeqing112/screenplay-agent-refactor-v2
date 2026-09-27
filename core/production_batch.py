@@ -238,6 +238,22 @@ def create_production_batch(
     batch_key = "pbat-" + uuid.uuid4().hex
     task_id = "task-" + batch_key
     now = datetime.utcnow()
+    task = TaskRun(
+        task_id=task_id,
+        task_kind=BATCH_TASK_KIND,
+        status="queued",
+        progress=0,
+        book_id=project,
+        episode=episode_number,
+        payload="{}",
+        created_at=now,
+        updated_at=now,
+    )
+    session.add(task)
+    session.flush()
+    # ``production_batches.task_id`` is a real foreign key.  Persist the
+    # existing TaskRun first so SQLite deployments with foreign-key checks
+    # enabled observe the same durable ordering as the application runtime.
     batch = ProductionBatch(
         batch_key=batch_key,
         project_id=project,
@@ -251,19 +267,6 @@ def create_production_batch(
         created_at=now,
     )
     session.add(batch)
-    session.flush()
-    task = TaskRun(
-        task_id=task_id,
-        task_kind=BATCH_TASK_KIND,
-        status="queued",
-        progress=0,
-        book_id=project,
-        episode=episode_number,
-        payload="{}",
-        created_at=now,
-        updated_at=now,
-    )
-    session.add(task)
     session.flush()
     service = GenerationExecutionService(session)
     for index, (shot, pointer) in enumerate(pointers):

@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LEGACY_HEAD = "a1b2c3d4e5f6"
 # The media-scoped pointer migration remains the behavioral boundary under
 # test, while fresh upgrades now continue through the current production head.
-CURRENT_HEAD = "e6f7a8b9c0d1"
+CURRENT_HEAD = "f7a8b9c0d1e2"
 
 
 def _config(db: Path) -> Config:

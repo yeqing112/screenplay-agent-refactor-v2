@@ -2,14 +2,14 @@
   "ambiguous_production_head": false,
   "cycle_detected": false,
   "forbidden_migration_patterns": [],
-  "generated_at": "2026-09-27T09:28:18.454831+00:00",
+  "generated_at": "2026-09-27T10:29:38.538799+00:00",
   "heads": [
-    "e6f7a8b9c0d1"
+    "f7a8b9c0d1e2"
   ],
   "migration_application_runtime_imports": 0,
   "missing_predecessors": [],
   "orphan_revisions": [],
-  "revision_count": 58,
+  "revision_count": 59,
   "revisions": [
     {
       "application_runtime_import": false,
@@ -873,7 +873,9 @@
       "file": "alembic\\versions\\e6f7a8b9c0d1_add_video_generation_intents.py",
       "model_runtime_import": false,
       "revision": "e6f7a8b9c0d1",
-      "successors": [],
+      "successors": [
+        "f7a8b9c0d1e2"
+      ],
       "tables_altered": [],
       "tables_created": [
         "video_generation_intents"
@@ -984,6 +986,32 @@
       ],
       "tables_dropped": [
         "shot_plans"
+      ],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": true,
+      "down_revision": "e6f7a8b9c0d1",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\f7a8b9c0d1e2_add_episode_rendering_runtime.py",
+      "model_runtime_import": false,
+      "revision": "f7a8b9c0d1e2",
+      "successors": [],
+      "tables_altered": [],
+      "tables_created": [
+        "episode_render_plans",
+        "episode_render_items"
+      ],
+      "tables_dropped": [
+        "episode_render_items",
+        "episode_render_plans"
       ],
       "use_of_app_engine": false,
       "use_of_create_all": false

@@ -107,6 +107,7 @@ from api.visual_style_consistency_api import router as visual_style_consistency_
 from api.shot_direction_api import router as shot_direction_router
 from api.keyframe_authoring_api import router as keyframe_authoring_router
 from api.video_generation_api import router as video_generation_router
+from api.episode_rendering_api import router as episode_rendering_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -170,6 +171,8 @@ app.include_router(keyframe_authoring_router, prefix="/api")
 app.include_router(keyframe_authoring_router)
 app.include_router(video_generation_router, prefix="/api")
 app.include_router(video_generation_router)
+app.include_router(episode_rendering_router, prefix="/api")
+app.include_router(episode_rendering_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft

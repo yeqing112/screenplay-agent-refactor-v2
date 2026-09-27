@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 299,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 319,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 89,
     "MISSING_MIGRATION": 0,
@@ -11,7 +11,7 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 389
+    "total": 409
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -659,6 +659,206 @@
       "column": "content",
       "kind": "column",
       "table": "episode_outlines"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_episode_render_items_episode_id",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "production_batch_item_id"
+      ],
+      "index": "ix_episode_render_items_production_batch_item_id",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "render_plan_id"
+      ],
+      "index": "ix_episode_render_items_render_plan_id",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "shot_id"
+      ],
+      "index": "ix_episode_render_items_shot_id",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_episode_render_items_status",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "production_batch_item_id"
+      ],
+      "index": "ix_episode_render_item_batch_item",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_episode_render_item_episode",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "render_plan_id"
+      ],
+      "index": "ix_episode_render_item_plan",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "shot_id"
+      ],
+      "index": "ix_episode_render_item_shot",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_episode_render_item_status",
+      "kind": "index",
+      "table": "episode_render_items"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_episode_render_plans_episode_id",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_number"
+      ],
+      "index": "ix_episode_render_plans_episode_number",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "production_batch_id"
+      ],
+      "index": "ix_episode_render_plans_production_batch_id",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "project_id"
+      ],
+      "index": "ix_episode_render_plans_project_id",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_episode_render_plans_status",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "production_batch_id"
+      ],
+      "index": "ix_episode_render_plan_batch",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_episode_render_plan_episode",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_number"
+      ],
+      "index": "ix_episode_render_plan_episode_number",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "project_id"
+      ],
+      "index": "ix_episode_render_plan_project",
+      "kind": "index",
+      "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_episode_render_plan_status",
+      "kind": "index",
+      "table": "episode_render_plans"
     },
     {
       "blocking": false,
