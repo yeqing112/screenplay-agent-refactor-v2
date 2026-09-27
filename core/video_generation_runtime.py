@@ -189,6 +189,24 @@ def _current_shot_direction(session: Any, *, shot: StoryboardShot) -> dict[str, 
     }
 
 
+def _shot_direction_motion_profile(direction: Mapping[str, Any], fallback: Mapping[str, Any]) -> dict[str, Any]:
+    """Project the authoritative Shot Direction into the provider motion contract."""
+    camera = direction.get("camera_profile") if isinstance(direction.get("camera_profile"), Mapping) else {}
+    movement = direction.get("movement_profile") if isinstance(direction.get("movement_profile"), Mapping) else {}
+    performance = direction.get("performance_profile") if isinstance(direction.get("performance_profile"), Mapping) else {}
+    emotion = direction.get("emotion_profile") if isinstance(direction.get("emotion_profile"), Mapping) else {}
+    base = dict(fallback or {})
+    projected = {
+        "camera_motion": str(camera.get("movement") or movement.get("camera_motion") or base.get("camera_motion") or "").strip(),
+        "subject_motion": str(performance.get("body_motion") or performance.get("gesture") or movement.get("subject_motion") or base.get("subject_motion") or "").strip(),
+        "environment_motion": str(movement.get("environment_motion") or movement.get("trajectory") or movement.get("stabilization") or base.get("environment_motion") or "").strip(),
+        "emotion_transition": str(emotion.get("transition") or emotion.get("arc") or base.get("emotion_transition") or "").strip(),
+        "source": "SHOT_DIRECTION",
+        "direction_fingerprint": str(direction.get("direction_fingerprint") or ""),
+    }
+    return projected
+
+
 def create_video_generation_intent(session: Any, *, shot_id: int, duration: float, aspect_ratio: str, motion_profile: Mapping[str, Any], first_frame_asset: Mapping[str, Any], last_frame_asset: Mapping[str, Any] | None, prompt_version: str) -> dict[str, Any]:
     shot = _resolve_shot(session, shot_id)
     try:
@@ -330,7 +348,9 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     if not isinstance(provider, MockVideoProvider) and not first.get("asset_authority_current"):
         raise VideoGenerationError("first frame asset authority/version is stale", code="VIDEO_FRAME_ASSET_NOT_CURRENT", diagnostics=[{"keyframe_id": first.get("keyframe_id")}])
     is_mock = isinstance(provider, MockVideoProvider) or str(resolved_profile.get("provider") or provider_id) == "mock-video"
+    intent_motion_profile = _obj(intent.motion_profile)
     shot_direction = {} if is_mock else _current_shot_direction(session, shot=shot)
+    provider_motion_profile = intent_motion_profile if is_mock else _shot_direction_motion_profile(shot_direction, intent_motion_profile)
     prompt = session.query(ProductionPromptVersion).filter_by(prompt_version_id=intent.prompt_version).one_or_none()
     if prompt is None:
         raise VideoGenerationError("prompt lineage is missing", code="VIDEO_PROMPT_LINEAGE_REQUIRED")
@@ -348,7 +368,7 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
         task = TaskRun(task_id=task_id, task_kind="VIDEO_GENERATION", status="queued", progress=0, book_id=shot.book_id, episode=shot.episode, payload="{}", error="", created_at=now, updated_at=now)
         session.add(task)
     execution = GenerationExecutionRecord(execution_id=execution_id, schema_version="generation_execution_video_v1", book_id=shot.book_id, episode=shot.episode, storyboard_shot_id=shot.id, plan_shot_id=str(shot.plan_shot_id or ""), execution_mode="VIDEO_MOCK" if is_mock else "VIDEO_PROVIDER_CANARY", status="CREATED", target_media="VIDEO", prompt_ir_version_id=int(prompt_ir.id), prompt_ir_authority_id=int(prompt_authority.id) if prompt_authority else 0, prompt_ir_payload_hash=str(prompt_ir.payload_hash), generation_payload_fingerprint=generation_payload_fp, generation_policy_fingerprint=policy_fp, model_profile_id=resolved_profile_id, model_profile_fingerprint=_fingerprint({key: resolved_profile.get(key) for key in ("id", "provider", "base_url", "model_name", "transport_binding_id")}), provider_adapter_id=str(getattr(provider, "adapter_id", provider_id)), provider_adapter_version=str(getattr(provider, "adapter_version", "")), reference_bindings_fingerprint="", provider_request_fingerprint=provider_fp, provider=str(resolved_profile.get("provider") or provider_id), model=str(resolved_profile.get("model_name") or "deterministic-video-v1"), logical_provider_calls=0, transport_retry_count=0, created_at=now, updated_at=now)
-    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt.prompt_text, "motion_profile": _obj(intent.motion_profile), "shot_direction": shot_direction, "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "media_role": "SHOT_PRIMARY_VIDEO"}
+    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt.prompt_text, "motion_profile": provider_motion_profile, "intent_motion_profile": intent_motion_profile, "motion_source": "SHOT_DIRECTION" if not is_mock else "VIDEO_GENERATION_INTENT", "shot_direction": shot_direction, "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "media_role": "SHOT_PRIMARY_VIDEO"}
     session.add(execution)
     intent.generation_execution_id = execution_id
     intent.task_id = task_id
@@ -361,7 +381,7 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     try:
         service.transition(execution_id, "QUEUED")
         service.transition(execution_id, "RUNNING")
-        result = provider.generate_video(prompt=prompt.prompt_text, motion_profile=_obj(intent.motion_profile), duration=float(intent.duration), aspect_ratio=intent.aspect_ratio, first_frame_asset=first, last_frame_asset=last, request_context={"intent_id": intent.id, "shot_id": shot.id, "episode": shot.episode, "canary_scope": f"episode:{shot.episode}:shot:{shot.id}", "shot_direction": shot_direction, "_runtime_profile": resolved_profile})
+        result = provider.generate_video(prompt=prompt.prompt_text, motion_profile=provider_motion_profile, duration=float(intent.duration), aspect_ratio=intent.aspect_ratio, first_frame_asset=first, last_frame_asset=last, request_context={"intent_id": intent.id, "shot_id": shot.id, "episode": shot.episode, "canary_scope": f"episode:{shot.episode}:shot:{shot.id}", "shot_direction": shot_direction, "_runtime_profile": resolved_profile})
         execution.provider = result.provider
         execution.model = result.model
         execution.provider_request_id = result.provider_request_id

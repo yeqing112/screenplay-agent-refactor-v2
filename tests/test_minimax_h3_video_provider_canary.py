@@ -5,6 +5,7 @@ import os
 import pytest
 
 from core.provider_transport_registry import get_provider_transport_binding
+from core.video_generation_runtime import _shot_direction_motion_profile
 from core.video_provider_adapter import MinimaxH3VideoProvider, VideoProviderError
 from api.generation_adapters import _build_minimax_h3_video_payload
 
@@ -100,6 +101,27 @@ def test_minimax_h3_model_registry_transport_binding_is_exact():
     assert binding.mode == "async"
     assert binding.submit == "submit_minimax_h3_generation"
     assert binding.poll == "poll_minimax_h3_generation"
+
+
+def test_real_provider_motion_projection_is_derived_from_shot_direction():
+    projected = _shot_direction_motion_profile(
+        {
+            "direction_fingerprint": "sha256:direction",
+            "camera_profile": {"movement": "slow push in"},
+            "movement_profile": {"trajectory": "toward subject", "stabilization": "dolly"},
+            "performance_profile": {"body_motion": "turns slowly"},
+            "emotion_profile": {"arc": "suspicion to resolve"},
+        },
+        {"camera_motion": "intent-camera", "subject_motion": "intent-subject", "environment_motion": "intent-environment", "emotion_transition": "intent-emotion"},
+    )
+    assert projected == {
+        "camera_motion": "slow push in",
+        "subject_motion": "turns slowly",
+        "environment_motion": "toward subject",
+        "emotion_transition": "suspicion to resolve",
+        "source": "SHOT_DIRECTION",
+        "direction_fingerprint": "sha256:direction",
+    }
 
 
 def test_real_provider_canary_requires_explicit_gray_gate(monkeypatch):
