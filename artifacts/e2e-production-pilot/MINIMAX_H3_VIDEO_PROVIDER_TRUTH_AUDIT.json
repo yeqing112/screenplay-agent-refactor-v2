@@ -1,0 +1,55 @@
+{
+  "status": "MINIMAX_H3_VIDEO_PROVIDER_CANARY_COMPLETE",
+  "implementation_commit": "30cfbeec8dfe224fa308dffa5624ce4e630ac04a",
+  "scope": {
+    "episodes": 1,
+    "shots": 1,
+    "characters": 1,
+    "scenes": 1,
+    "videos": 1,
+    "batch_generation": false,
+    "editing_audio_subtitles_episode_concat": false
+  },
+  "image_provider": {
+    "website": "https://www.shapi.vip/",
+    "provider": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "transport_binding": "shapi-openai-images.image.v1",
+    "real_calls": 0
+  },
+  "video_provider": {
+    "provider": "minimax-h3-async",
+    "model": "MiniMax-H3",
+    "base_url": "https://metaso.cn/api/minimax",
+    "transport_binding": "minimax-h3-async.video.v1",
+    "real_calls": 0,
+    "real_call_gate": "blocked_without_explicit_gray_authorization",
+    "mocked_canary": "PASS",
+    "provider_response_is_fixture": true
+  },
+  "lineage": {
+    "first_frame_source": "KeyframeAssetBinding -> ProductionAssetVersionRegistry",
+    "prompt_source": "ProductionPromptVersion and media-scoped PromptIR",
+    "motion_source": "VideoGenerationIntent.motion_profile",
+    "generation_execution": true,
+    "media_candidate": true,
+    "media_validation": true,
+    "media_promotion_review_record": true,
+    "official_media_version": false,
+    "official_media_pointer": false,
+    "official_media_reason": "promotion remains behind existing human approval gate"
+  },
+  "security": {
+    "api_key_persisted": false,
+    "api_key_in_request_snapshot": false,
+    "api_key_in_response_snapshot": false
+  },
+  "migration_head": "f7a8b9c0d1e2",
+  "tests": {
+    "provider_canary_contract": "10 passed",
+    "full_pytest": "1875 passed, 0 failed",
+    "golden": "5/5 passed",
+    "migration_chain": "PASS",
+    "diff_check": "PASS"
+  }
+}

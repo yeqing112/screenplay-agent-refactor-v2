@@ -11,6 +11,7 @@ from core.video_generation_runtime import (
     create_video_generation_intent,
     execute_video_generation,
     get_video_generation_intent,
+    get_video_generation_status,
 )
 from models import Session
 
@@ -33,6 +34,7 @@ class VideoExecuteRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
     provider_id: str = Field(default="mock-video", validation_alias=AliasChoices("provider_id", "providerId"))
+    model_profile_id: str | None = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
 
 
 def _raise(exc: VideoGenerationError) -> None:
@@ -65,9 +67,18 @@ def create_video_intent(shot_id: int, req: VideoIntentRequest):
 def execute_video_intent(intent_id: int, req: VideoExecuteRequest):
     with Session() as session:
         try:
-            return execute_video_generation(session, intent_id=intent_id, provider_id=req.provider_id)
+            return execute_video_generation(session, intent_id=intent_id, provider_id=req.provider_id, model_profile_id=req.model_profile_id)
         except VideoGenerationError as exc:
             session.rollback()
+            _raise(exc)
+
+
+@router.get("/video-generation/{intent_id}")
+def get_video_generation(intent_id: int):
+    with Session() as session:
+        try:
+            return get_video_generation_status(session, intent_id=intent_id)
+        except VideoGenerationError as exc:
             _raise(exc)
 
 

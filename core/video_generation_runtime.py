@@ -10,7 +10,7 @@ from typing import Any
 
 from core.generation_execution_service import GenerationExecutionService
 from core.media_authority import MediaAuthorityError, validate_media_candidate
-from core.video_provider_adapter import DEFAULT_VIDEO_PROVIDER_REGISTRY, VideoProviderError, VideoProviderRegistry
+from core.video_provider_adapter import DEFAULT_VIDEO_PROVIDER_REGISTRY, MinimaxH3VideoProvider, MockVideoProvider, VideoProviderError, VideoProviderRegistry
 from models import (
     GenerationExecutionRecord,
     Keyframe,
@@ -128,7 +128,25 @@ def _validate_frame_asset(session: Any, *, shot: StoryboardShot, asset: Mapping[
     primary = next((item for item in bindings if item.is_primary), None)
     if primary is None:
         raise VideoGenerationError("frame asset has no active primary asset binding", code="VIDEO_FRAME_ASSET_NOT_CURRENT", diagnostics=[{"keyframe_id": frame.id}])
-    value.update({"keyframe_id": int(frame.id), "sequence_id": int(sequence.id), "binding_id": int(primary.id), "binding_fingerprint": primary.binding_fingerprint, "asset_type": primary.asset_type, "authority_id": primary.authority_id, "version_id": primary.version_id})
+    value.update({"keyframe_id": int(frame.id), "sequence_id": int(sequence.id), "binding_id": int(primary.id), "binding_fingerprint": primary.binding_fingerprint, "asset_type": primary.asset_type, "authority_id": primary.authority_id, "version_id": primary.version_id, "keyframe_motion_profile": {"camera_motion": str(frame.camera_motion or "").strip(), "subject_motion": str(frame.character_motion or "").strip(), "environment_motion": str(frame.environment_motion or "").strip(), "emotion_transition": str(frame.emotion_transition or "").strip()}})
+    # Resolve the current typed Production Asset Version so a real provider
+    # receives the authoritative keyframe bytes/URL rather than a UI supplied
+    # path.  Keep the identity in the request projection; secrets never enter
+    # this mapping.
+    try:
+        from core.production_asset_authority import resolve_current_production_asset_binding
+        resolved = resolve_current_production_asset_binding(session, primary)
+        version = resolved.get("version")
+        value["storage_identity"] = str(getattr(version, "storage_identity", "") or "")
+        value["asset_checksum"] = str(getattr(version, "checksum", "") or "")
+        value["asset_metadata_hash"] = str(getattr(version, "metadata_hash", "") or "")
+        value["asset_authority_current"] = bool(resolved.get("current"))
+    except VideoGenerationError:
+        raise
+    except Exception as exc:
+        raise VideoGenerationError("frame asset authority/version could not be resolved", code="VIDEO_FRAME_ASSET_NOT_CURRENT", diagnostics=[{"error": str(exc)}]) from exc
+    if first and not value.get("storage_identity"):
+        raise VideoGenerationError("first frame asset has no durable storage identity", code="VIDEO_FIRST_FRAME_URL_REQUIRED")
     return value
 
 
@@ -222,7 +240,56 @@ def _execution_dict(row: GenerationExecutionRecord) -> dict[str, Any]:
     return {"execution_id": row.execution_id, "generation_type": row.generation_type, "status": row.execution_status, "target_media": row.target_media, "shot_id": row.storyboard_shot_id, "provider": row.provider, "model": row.model, "provider_task_id": row.provider_task_id, "candidate_id": row.candidate_id, "provider_calls": int(row.logical_provider_calls or 0), "request_payload": row.request_payload, "response_payload": row.response_payload}
 
 
-def execute_video_generation(session: Any, *, intent_id: int, provider_id: str = "mock-video", provider_registry: VideoProviderRegistry | None = None) -> dict[str, Any]:
+def get_video_generation_status(session: Any, *, intent_id: int) -> dict[str, Any]:
+    """Read the intent/execution/candidate lineage without triggering work."""
+    intent = session.query(VideoGenerationIntent).filter_by(id=int(intent_id)).one_or_none()
+    if intent is None:
+        raise VideoGenerationError("video generation intent does not exist", code="VIDEO_INTENT_NOT_FOUND")
+    execution = session.query(GenerationExecutionRecord).filter_by(execution_id=intent.generation_execution_id).one_or_none() if intent.generation_execution_id else None
+    candidate = session.query(MediaCandidateRecord).filter_by(execution_id=intent.generation_execution_id).one_or_none() if intent.generation_execution_id else None
+    validation = None
+    promotion = None
+    if candidate is not None:
+        from models import MediaValidationRecord, MediaPromotionRecord
+        validation = session.query(MediaValidationRecord).filter_by(candidate_id=candidate.candidate_id).order_by(MediaValidationRecord.id.desc()).first()
+        promotion = session.query(MediaPromotionRecord).filter_by(candidate_id=candidate.candidate_id).first()
+    return {
+        "intent": _intent_dict(intent),
+        "execution": _execution_dict(execution) if execution else None,
+        "candidate": {"candidate_id": candidate.candidate_id, "media_type": candidate.media_type, "validation_status": candidate.validation_status, "storage_identity": candidate.storage_identity} if candidate else None,
+        "validation": {"validation_id": validation.validation_id, "status": validation.status} if validation else None,
+        "promotion": {"promotion_id": promotion.promotion_id, "review_status": promotion.review_status, "official_media_version_id": promotion.official_media_version_id} if promotion else None,
+        "official_media_ready": bool(promotion and promotion.official_media_version_id),
+    }
+
+
+def _resolve_video_provider(*, provider_id: str, model_profile_id: str | None, provider_registry: VideoProviderRegistry | None) -> tuple[Any, str, dict[str, Any]]:
+    """Resolve a provider from the existing Model Registry, never a new config."""
+    requested = str(provider_id or "mock-video").strip().lower() or "mock-video"
+    registry = provider_registry or DEFAULT_VIDEO_PROVIDER_REGISTRY
+    # An explicit profile id must be allowed to select the real provider even
+    # when the backward-compatible provider_id default is still mock-video.
+    if not (requested == "mock-video" and model_profile_id):
+        try:
+            provider = registry.resolve(requested)
+            return provider, "builtin-mock-video" if requested == "mock-video" else str(model_profile_id or requested), {"provider": requested, "model_name": "deterministic-video-v1", "capability": "video", "id": str(model_profile_id or "builtin-mock-video"), "enabled": True}
+        except VideoProviderError:
+            pass
+    from api.model_registry import get_default_profile, get_profile
+    profile = get_profile(model_profile_id or (requested if requested not in {"mock-video", "minimax-h3-async"} else None))
+    if profile is None:
+        profile = get_default_profile("video")
+    if profile is None:
+        raise VideoGenerationError("video Model Registry profile does not exist", code="VIDEO_MODEL_PROFILE_NOT_FOUND")
+    profile_provider = str(profile.get("provider") or "").strip().lower()
+    if requested not in {"mock-video", profile_provider, str(profile.get("id") or "").strip().lower()}:
+        raise VideoGenerationError("provider_id does not match the selected video Model Registry profile", code="VIDEO_PROVIDER_PROFILE_MISMATCH", diagnostics=[{"provider_id": requested, "profile_provider": profile_provider, "profile_id": profile.get("id")}])
+    if profile_provider != "minimax-h3-async":
+        raise VideoGenerationError("selected video provider is not enabled for this canary", code="VIDEO_PROVIDER_NOT_ENABLED")
+    return MinimaxH3VideoProvider(profile), str(profile.get("id") or model_profile_id or ""), profile
+
+
+def execute_video_generation(session: Any, *, intent_id: int, provider_id: str = "mock-video", model_profile_id: str | None = None, provider_registry: VideoProviderRegistry | None = None) -> dict[str, Any]:
     intent = session.query(VideoGenerationIntent).filter_by(id=int(intent_id)).one_or_none()
     if intent is None:
         raise VideoGenerationError("video generation intent does not exist", code="VIDEO_INTENT_NOT_FOUND")
@@ -231,8 +298,11 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
         candidate = session.query(MediaCandidateRecord).filter_by(execution_id=intent.generation_execution_id).one_or_none()
         return {"intent": _intent_dict(intent), "execution": _execution_dict(execution) if execution else None, "candidate": {"candidate_id": candidate.candidate_id, "media_type": candidate.media_type, "validation_status": candidate.validation_status} if candidate else None, "reused": True, "provider_calls": 0}
     shot = _resolve_shot(session, intent.storyboard_shot_id)
+    provider, resolved_profile_id, resolved_profile = _resolve_video_provider(provider_id=provider_id, model_profile_id=model_profile_id, provider_registry=provider_registry)
     first = _validate_frame_asset(session, shot=shot, asset=_obj(intent.first_frame_asset), first=True)
     last = _validate_frame_asset(session, shot=shot, asset=_obj(intent.last_frame_asset), first=False) if _obj(intent.last_frame_asset) else {}
+    if not isinstance(provider, MockVideoProvider) and not first.get("asset_authority_current"):
+        raise VideoGenerationError("first frame asset authority/version is stale", code="VIDEO_FRAME_ASSET_NOT_CURRENT", diagnostics=[{"keyframe_id": first.get("keyframe_id")}])
     prompt = session.query(ProductionPromptVersion).filter_by(prompt_version_id=intent.prompt_version).one_or_none()
     if prompt is None:
         raise VideoGenerationError("prompt lineage is missing", code="VIDEO_PROMPT_LINEAGE_REQUIRED")
@@ -242,14 +312,15 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     generation_payload_fp = _fingerprint({"intent": intent.intent_fingerprint, "prompt_ir": prompt_ir.payload_hash})
     policy_fp = str(policy.get("fingerprint") or _fingerprint(policy))
     execution_id = "gex_video_" + uuid.uuid4().hex
-    provider_fp = _fingerprint({"execution_id": execution_id, "intent": intent.intent_fingerprint, "provider": provider_id})
+    provider_fp = _fingerprint({"execution_id": execution_id, "intent": intent.intent_fingerprint, "provider": resolved_profile.get("provider") or provider_id, "model_profile_id": resolved_profile_id, "transport_binding_id": resolved_profile.get("transport_binding_id") or ""})
     now = datetime.utcnow()
     task_id = intent.task_id or f"video-generation-{intent.id}"
     task = session.query(TaskRun).filter_by(task_id=task_id).one_or_none()
     if task is None:
         task = TaskRun(task_id=task_id, task_kind="VIDEO_GENERATION", status="queued", progress=0, book_id=shot.book_id, episode=shot.episode, payload="{}", error="", created_at=now, updated_at=now)
         session.add(task)
-    execution = GenerationExecutionRecord(execution_id=execution_id, schema_version="generation_execution_video_v1", book_id=shot.book_id, episode=shot.episode, storyboard_shot_id=shot.id, plan_shot_id=str(shot.plan_shot_id or ""), execution_mode="VIDEO_MOCK", status="CREATED", target_media="VIDEO", prompt_ir_version_id=int(prompt_ir.id), prompt_ir_authority_id=int(prompt_authority.id) if prompt_authority else 0, prompt_ir_payload_hash=str(prompt_ir.payload_hash), generation_payload_fingerprint=generation_payload_fp, generation_policy_fingerprint=policy_fp, model_profile_id="builtin-mock-video", model_profile_fingerprint=_fingerprint({"provider": provider_id, "model": "deterministic-video-v1"}), provider_adapter_id=str(provider_id), provider_adapter_version="mock-video-v1", reference_bindings_fingerprint="", provider_request_fingerprint=provider_fp, provider=provider_id, model="deterministic-video-v1", logical_provider_calls=0, transport_retry_count=0, created_at=now, updated_at=now)
+    is_mock = isinstance(provider, MockVideoProvider) or str(resolved_profile.get("provider") or provider_id) == "mock-video"
+    execution = GenerationExecutionRecord(execution_id=execution_id, schema_version="generation_execution_video_v1", book_id=shot.book_id, episode=shot.episode, storyboard_shot_id=shot.id, plan_shot_id=str(shot.plan_shot_id or ""), execution_mode="VIDEO_MOCK" if is_mock else "VIDEO_PROVIDER_CANARY", status="CREATED", target_media="VIDEO", prompt_ir_version_id=int(prompt_ir.id), prompt_ir_authority_id=int(prompt_authority.id) if prompt_authority else 0, prompt_ir_payload_hash=str(prompt_ir.payload_hash), generation_payload_fingerprint=generation_payload_fp, generation_policy_fingerprint=policy_fp, model_profile_id=resolved_profile_id, model_profile_fingerprint=_fingerprint({key: resolved_profile.get(key) for key in ("id", "provider", "base_url", "model_name", "transport_binding_id")}), provider_adapter_id=str(getattr(provider, "adapter_id", provider_id)), provider_adapter_version=str(getattr(provider, "adapter_version", "")), reference_bindings_fingerprint="", provider_request_fingerprint=provider_fp, provider=str(resolved_profile.get("provider") or provider_id), model=str(resolved_profile.get("model_name") or "deterministic-video-v1"), logical_provider_calls=0, transport_retry_count=0, created_at=now, updated_at=now)
     execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt.prompt_text, "motion_profile": _obj(intent.motion_profile), "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "media_role": "SHOT_PRIMARY_VIDEO"}
     session.add(execution)
     intent.generation_execution_id = execution_id
@@ -263,8 +334,7 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     try:
         service.transition(execution_id, "QUEUED")
         service.transition(execution_id, "RUNNING")
-        provider = (provider_registry or DEFAULT_VIDEO_PROVIDER_REGISTRY).resolve(provider_id)
-        result = provider.generate_video(prompt=prompt.prompt_text, motion_profile=_obj(intent.motion_profile), duration=float(intent.duration), aspect_ratio=intent.aspect_ratio, first_frame_asset=first, last_frame_asset=last, request_context={"intent_id": intent.id, "shot_id": shot.id})
+        result = provider.generate_video(prompt=prompt.prompt_text, motion_profile=_obj(intent.motion_profile), duration=float(intent.duration), aspect_ratio=intent.aspect_ratio, first_frame_asset=first, last_frame_asset=last, request_context={"intent_id": intent.id, "shot_id": shot.id, "episode": shot.episode, "canary_scope": f"episode:{shot.episode}:shot:{shot.id}"})
         execution.provider = result.provider
         execution.model = result.model
         execution.provider_request_id = result.provider_request_id
@@ -300,4 +370,4 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
         raise VideoGenerationError("video generation failed", code=getattr(exc, "code", "VIDEO_GENERATION_FAILED"), diagnostics={"error": str(exc)}) from exc
 
 
-__all__ = ["VideoGenerationError", "create_video_generation_intent", "get_video_generation_intent", "execute_video_generation"]
+__all__ = ["VideoGenerationError", "create_video_generation_intent", "get_video_generation_intent", "get_video_generation_status", "execute_video_generation"]

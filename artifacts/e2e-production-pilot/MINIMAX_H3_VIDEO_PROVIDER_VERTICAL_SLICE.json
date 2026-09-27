@@ -1,0 +1,39 @@
+{
+  "status": "PASS_MOCKED_CANARY_REAL_PROVIDER_NOT_CALLED",
+  "vertical_slice": [
+    "SHAPI image profile at https://shapi.vip/v1",
+    "Current StoryboardShot and one-shot canary scope",
+    "Current Keyframe Asset first-frame binding",
+    "ProductionPromptVersion and media-scoped PromptIR",
+    "Shot motion profile carried into provider request projection",
+    "MiniMax H3 Model Registry profile validation",
+    "minimax-h3-async.video.v1 transport binding",
+    "Normalized provider request/response with request_id, task_id, video_url, metadata, created_time",
+    "GenerationExecutionRecord and TaskRun reuse",
+    "MediaCandidateRecord and MediaValidationRecord reuse",
+    "MediaPromotionRecord created as review required",
+    "OfficialMedia remains pending explicit approval"
+  ],
+  "api": {
+    "intent": [
+      "GET /shots/{shot_id}/video-intent",
+      "POST /shots/{shot_id}/video-intent"
+    ],
+    "execute": [
+      "POST /video-generation/{intent_id}/execute",
+      "POST /video-generation/{intent_id}/execute with modelProfileId"
+    ],
+    "status": ["GET /video-generation/{intent_id}"]
+  },
+  "evidence": {
+    "adapter": "core/video_provider_adapter.py",
+    "runtime": "core/video_generation_runtime.py",
+    "api": "api/video_generation_api.py",
+    "tests": "tests/test_minimax_h3_video_provider_canary.py",
+    "reports": [
+      "MINIMAX_H3_VIDEO_PROVIDER_CANARY_REPORT.md",
+      "MINIMAX_H3_VIDEO_PROVIDER_TRUTH_AUDIT.json",
+      "MINIMAX_H3_VIDEO_PROVIDER_VERTICAL_SLICE.json"
+    ]
+  }
+}
