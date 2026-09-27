@@ -154,9 +154,9 @@ class MinimaxH3VideoProvider:
     def __init__(self, profile: Mapping[str, Any], *, transport: Any | None = None):
         raw_profile = dict(profile or {})
         self._validate_profile(raw_profile)
-        # Keep only the non-secret Model Registry projection.  The credential
-        # is supplied as a short-lived runtime input for one transport call.
-        self.profile = {key: value for key, value in raw_profile.items() if key != "api_key"}
+        # The adapter owns no provider configuration.  The profile is only
+        # validated at construction; endpoint, model, and credential values
+        # arrive as a short-lived runtime projection for each call.
         self.transport = transport
 
     @staticmethod
@@ -224,13 +224,12 @@ class MinimaxH3VideoProvider:
         if not str(request_context.get("canary_scope") or "").strip():
             raise VideoProviderError("MiniMax H3 execution requires a single-shot canary scope", code="VIDEO_CANARY_SCOPE_REQUIRED")
 
-        last_frame_url = str(last_frame_asset.get("storage_identity") or "").strip()
-        runtime_profile = dict(self.profile)
         supplied_profile = request_context.get("_runtime_profile")
-        if isinstance(supplied_profile, Mapping):
-            runtime_profile.update(dict(supplied_profile))
-        if not str(runtime_profile.get("api_key") or "").strip():
-            raise VideoProviderError("MiniMax H3 runtime credential is missing", code="VIDEO_PROFILE_CREDENTIAL_MISSING")
+        if not isinstance(supplied_profile, Mapping):
+            raise VideoProviderError("MiniMax H3 runtime Model Registry profile is missing", code="VIDEO_PROFILE_RUNTIME_REQUIRED")
+        runtime_profile = dict(supplied_profile)
+        self._validate_profile(runtime_profile)
+        last_frame_url = str(last_frame_asset.get("storage_identity") or "").strip()
         try:
             if self.transport is not None:
                 generated = self._run(self.transport(
@@ -266,7 +265,7 @@ class MinimaxH3VideoProvider:
         created_time = str(response.get("created_time") or response.get("createdTime") or datetime.now(timezone.utc).isoformat())
         provider_response = {
             "provider": "minimax-h3-async",
-            "model": str(self.profile.get("model_name") or "MiniMax-H3"),
+            "model": str(runtime_profile.get("model_name") or "MiniMax-H3"),
             "request_id": str(generated.get("providerRequestId") or task_id),
             "task_id": task_id,
             "video_url": media_uri,
@@ -281,7 +280,7 @@ class MinimaxH3VideoProvider:
         return VideoProviderResult(
             status="SUCCESS",
             provider="minimax-h3-async",
-            model=str(self.profile.get("model_name") or "MiniMax-H3"),
+            model=str(runtime_profile.get("model_name") or "MiniMax-H3"),
             provider_request=provider_request,
             provider_response=provider_response,
             provider_request_id=str(generated.get("providerRequestId") or task_id),

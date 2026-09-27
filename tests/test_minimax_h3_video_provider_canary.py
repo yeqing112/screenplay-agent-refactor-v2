@@ -66,7 +66,9 @@ def test_minimax_h3_adapter_binds_registry_profile_and_records_response():
     assert result.provider_request["content"][2]["role"] == "last_frame"
     assert "api_key" not in str(result.as_dict())
     assert "secret-test-key" not in str(result.as_dict())
-    assert "api_key" not in adapter.profile
+    assert not hasattr(adapter, "profile")
+    assert not hasattr(adapter, "base_url")
+    assert not hasattr(adapter, "model_name")
 
 
 def test_minimax_h3_payload_carries_authoritative_first_and_last_frames():
