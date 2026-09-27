@@ -1,6 +1,6 @@
 {
   "status": "MINIMAX_H3_VIDEO_PROVIDER_CANARY_COMPLETE",
-  "implementation_commit": "8f66def0ae0c3b280d33f2ad1a4ceb86ada30962",
+  "implementation_commit": "de608187c45d0eec5c231c72623cfd3a0ac2b35d",
   "scope": {
     "episodes": 1,
     "shots": 1,
@@ -29,8 +29,10 @@
   },
   "lineage": {
     "first_frame_source": "KeyframeAssetBinding -> ProductionAssetVersionRegistry",
+    "last_frame_source": "optional KeyframeAssetBinding -> ProductionAssetVersionRegistry",
     "prompt_source": "ProductionPromptVersion and media-scoped PromptIR",
     "motion_source": "VideoGenerationIntent.motion_profile",
+    "shot_direction_source": "current validated Shot Direction (required for real provider canary)",
     "generation_execution": true,
     "media_candidate": true,
     "media_validation": true,
@@ -46,8 +48,8 @@
   },
   "migration_head": "f7a8b9c0d1e2",
   "tests": {
-    "provider_canary_contract": "10 passed",
-    "full_pytest": "1875 passed, 0 failed",
+    "provider_canary_contract": "9 passed",
+    "full_pytest": "1879 passed, 0 failed",
     "golden": "5/5 passed",
     "migration_chain": "PASS",
     "diff_check": "PASS"

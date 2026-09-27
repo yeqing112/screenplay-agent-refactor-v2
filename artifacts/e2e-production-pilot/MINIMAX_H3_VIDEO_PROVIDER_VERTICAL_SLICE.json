@@ -4,8 +4,10 @@
     "SHAPI image profile at https://shapi.vip/v1",
     "Current StoryboardShot and one-shot canary scope",
     "Current Keyframe Asset first-frame binding",
+    "Optional Keyframe Asset last-frame binding",
     "ProductionPromptVersion and media-scoped PromptIR",
     "Shot motion profile carried into provider request projection",
+    "Current validated Shot Direction required for real provider canary",
     "MiniMax H3 Model Registry profile validation",
     "minimax-h3-async.video.v1 transport binding",
     "Normalized provider request/response with request_id, task_id, video_url, metadata, created_time",
@@ -13,6 +15,7 @@
     "MediaCandidateRecord and MediaValidationRecord reuse",
     "MediaPromotionRecord created as review required",
     "OfficialMedia remains pending explicit approval"
+    ,"Adapter retains no API key; runtime credential is single-call only"
   ],
   "api": {
     "intent": [
