@@ -34,6 +34,7 @@ from .shot_plan import ShotPlan, ShotPlanAuthority, ShotPlanPointer
 from .director_runtime import DirectorPlan, ScenePlan
 from .director_reasoning import DirectorReasoning, StoryBeat, VisualDecision
 from .director_llm_adapter import DirectorReasoningGeneration
+from .automatic_storyboard import StoryboardPlan, StoryboardPlanShot, StoryboardShotDraft
 from .repair import RepairAttempt
 from .director_benchmark import DirectorBenchmarkRun
 from .production_asset_authority import (
@@ -87,6 +88,7 @@ __all__ = [
     "DirectorPlan", "ScenePlan",
     "DirectorReasoning", "StoryBeat", "VisualDecision",
     "DirectorReasoningGeneration",
+    "StoryboardPlan", "StoryboardPlanShot", "StoryboardShotDraft",
     "RepairAttempt",
     "DirectorBenchmarkRun",
     "ProductionAssetAuthorityRegistry", "ProductionAssetVersionRegistry",

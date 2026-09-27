@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "j1e2f3g4h5i6"
+HEAD = "k2f3g4h5i6j7"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -102,6 +102,8 @@ AUTHORITY_TABLES = {
     "director_story_beats",
     "director_visual_decisions",
     "director_reasoning_generations",
+    "director_storyboard_plans",
+    "director_storyboard_shots",
 }
 
 REQUIRED_COLUMNS = {
@@ -109,6 +111,8 @@ REQUIRED_COLUMNS = {
     "director_story_beats": {"director_reasoning_id", "sequence", "purpose", "emotion", "visual_goal", "character_refs", "shot_refs"},
     "director_visual_decisions": {"director_reasoning_id", "story_beat_sequence", "camera_strategy", "lighting_strategy", "color_strategy", "composition_strategy"},
     "director_reasoning_generations": {"generation_id", "episode_id", "status", "provider", "adapter_name", "context_hash", "request_hash", "response_hash", "director_reasoning_id", "director_reasoning_version", "provider_calls", "source_fact_mutated", "script_ir_mutated", "human_review_required", "error_json", "created_at", "updated_at"},
+    "director_storyboard_plans": {"episode_id", "version", "status", "storyboard_json", "director_reasoning_id", "director_reasoning_version", "compiled_shot_plan_ids", "payload_hash", "lineage_json", "created_at", "updated_at"},
+    "director_storyboard_shots": {"storyboard_id", "shot_id", "scene_id", "sequence", "shot_type", "camera", "composition", "character_actions", "emotion", "duration", "visual_style_id", "source_lineage", "created_at"},
     "director_plans": {"episode_id", "version", "status", "created_by", "reasoning_trace", "scene_plans", "shot_plans", "shot_directions", "generation_intents", "payload_hash", "lineage_json"},
     "director_scene_plans": {"director_plan_id", "scene_id", "location", "time", "mood", "characters", "visual_requirements", "source_lineage", "payload_hash"},
     "prompt_ir_pointers": {"target_media"},
@@ -166,8 +170,8 @@ REQUIRED_COLUMNS = {
     "shot_asset_bindings": {"storyboard_shot_id", "asset_type", "authority_id", "version_id", "binding_fingerprint", "status"},
     "production_asset_reviews": {"review_id", "asset_type", "asset_id", "asset_version_id", "prompt_lineage_id", "review_state", "reviewer_type", "decision", "comment", "created_at"},
     "production_asset_review_history": {"history_id", "review_id", "asset_version_id", "from_state", "to_state", "actor", "decision", "comment", "created_at"},
-    "production_prompt_versions": {"prompt_version_id", "prompt_id", "version_number", "prompt_text", "prompt_structure", "prompt_fingerprint", "created_from", "created_at"},
-    "production_generation_intents": {"generation_intent_id", "shot_id", "character_requirements", "scene_requirements", "camera_requirements", "style_requirements", "constraint_snapshot", "shot_requirement_snapshot", "shot_requirement_fingerprint", "created_at"},
+    "production_prompt_versions": {"prompt_version_id", "prompt_id", "version_number", "prompt_text", "prompt_structure", "prompt_fingerprint", "storyboard_plan_id", "storyboard_plan_version", "storyboard_lineage", "created_from", "created_at"},
+    "production_generation_intents": {"generation_intent_id", "shot_id", "character_requirements", "scene_requirements", "camera_requirements", "style_requirements", "constraint_snapshot", "shot_requirement_snapshot", "shot_requirement_fingerprint", "storyboard_plan_id", "storyboard_plan_version", "storyboard_lineage", "created_at"},
     "production_prompt_lineages": {"prompt_lineage_id", "asset_id", "asset_version_id", "shot_id", "prompt_version_id", "generation_intent_id", "prompt_fingerprint", "created_at"},
     "character_profiles": {"description", "attributes", "appearance_profile"},
     "character_reference_assets": {"character_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},

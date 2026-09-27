@@ -59,6 +59,9 @@ class ShotPlan(Base):
     director_reasoning_id = Column(Integer, nullable=True, index=True)
     director_reasoning_version = Column(Integer, nullable=True)
     reasoning_lineage = Column(Text, nullable=False, default="{}")
+    storyboard_plan_id = Column(Integer, nullable=True, index=True)
+    storyboard_plan_version = Column(Integer, nullable=True)
+    storyboard_lineage = Column(Text, nullable=False, default="{}")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
 
