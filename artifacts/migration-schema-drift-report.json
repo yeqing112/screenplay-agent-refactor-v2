@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 273,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 291,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 89,
     "MISSING_MIGRATION": 0,
@@ -11,7 +11,7 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 363
+    "total": 381
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -789,6 +789,186 @@
       "index": "ix_generation_execution_records_shot",
       "kind": "index",
       "table": "generation_execution_records"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_keyframe_asset_bindings_asset_type",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_authority_id",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "keyframe_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_keyframe_id",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_storyboard_shot_id",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "version_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_version_id",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "asset_type"
+      ],
+      "index": "ix_keyframe_asset_bindings_asset",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "authority_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_authority",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "keyframe_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_keyframe",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_shot",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "version_id"
+      ],
+      "index": "ix_keyframe_asset_bindings_version",
+      "kind": "index",
+      "table": "keyframe_asset_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "sequence_fingerprint"
+      ],
+      "index": "ix_keyframe_sequences_sequence_fingerprint",
+      "kind": "index",
+      "table": "keyframe_sequences"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_keyframe_sequences_storyboard_shot_id",
+      "kind": "index",
+      "table": "keyframe_sequences"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "sequence_fingerprint"
+      ],
+      "index": "ix_keyframe_sequences_fingerprint",
+      "kind": "index",
+      "table": "keyframe_sequences"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_keyframe_sequences_shot",
+      "kind": "index",
+      "table": "keyframe_sequences"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "frame_fingerprint"
+      ],
+      "index": "ix_keyframes_frame_fingerprint",
+      "kind": "index",
+      "table": "keyframes"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "keyframe_sequence_id"
+      ],
+      "index": "ix_keyframes_keyframe_sequence_id",
+      "kind": "index",
+      "table": "keyframes"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "frame_fingerprint"
+      ],
+      "index": "ix_keyframes_fingerprint",
+      "kind": "index",
+      "table": "keyframes"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "keyframe_sequence_id"
+      ],
+      "index": "ix_keyframes_sequence",
+      "kind": "index",
+      "table": "keyframes"
     },
     {
       "blocking": false,

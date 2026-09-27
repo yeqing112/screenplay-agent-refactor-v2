@@ -102,6 +102,7 @@ def create_production_prompt_version(
     style_id: int | str | None = None,
     style_shot_id: int | None = None,
     direction_shot_id: int | None = None,
+    keyframe_id: int | None = None,
 ) -> dict[str, Any]:
     """Append a prompt version; existing versions are never updated."""
     prompt_key = str(prompt_id or "").strip()
@@ -150,6 +151,16 @@ def create_production_prompt_version(
             created_from = "SHOT_DIRECTION"
         elif "SHOT_DIRECTION" not in created_from:
             created_from = f"{created_from}+SHOT_DIRECTION"
+    if keyframe_id is not None:
+        from core.keyframe_authoring import inject_keyframe_constraints
+
+        injected_keyframe = inject_keyframe_constraints(session, keyframe_id=int(keyframe_id), original_prompt=text)
+        text = injected_keyframe["injected_prompt"]
+        structure.update(injected_keyframe["prompt_structure"])
+        if created_from == "SHOT_REQUIREMENT":
+            created_from = "KEYFRAME_AUTHORING"
+        elif "KEYFRAME_AUTHORING" not in created_from:
+            created_from = f"{created_from}+KEYFRAME_AUTHORING"
     existing = (
         session.query(ProductionPromptVersion)
         .filter_by(prompt_id=prompt_key)

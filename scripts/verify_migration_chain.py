@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "e4f5a6b7c8d9"
+HEAD = "e5f6a7b8c9d0"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -90,6 +90,9 @@ AUTHORITY_TABLES = {
     "style_reference_assets",
     "shot_style_bindings",
     "shot_directions",
+    "keyframe_sequences",
+    "keyframes",
+    "keyframe_asset_bindings",
 }
 
 REQUIRED_COLUMNS = {
@@ -161,6 +164,9 @@ REQUIRED_COLUMNS = {
     "style_reference_assets": {"style_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},
     "shot_style_bindings": {"storyboard_shot_id", "book_id", "episode", "style_id", "scope", "reference_asset_ids", "style_rules", "constraint_snapshot", "asset_authority_id", "asset_version_id", "binding_fingerprint", "status"},
     "shot_directions": {"storyboard_shot_id", "shot_type", "camera_profile", "movement_profile", "composition_profile", "performance_profile", "emotion_profile", "revision", "direction_fingerprint", "status"},
+    "keyframe_sequences": {"storyboard_shot_id", "duration", "status", "frame_plan", "revision", "sequence_fingerprint"},
+    "keyframes": {"keyframe_sequence_id", "frame_type", "time_seconds", "order_index", "description", "camera_state", "character_state", "scene_state", "emotion_state", "camera_motion", "character_motion", "environment_motion", "emotion_transition", "frame_fingerprint", "status"},
+    "keyframe_asset_bindings": {"keyframe_id", "storyboard_shot_id", "asset_type", "authority_id", "version_id", "binding_fingerprint", "is_primary", "status"},
 }
 
 

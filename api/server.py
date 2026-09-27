@@ -105,6 +105,7 @@ from api.character_consistency_api import router as character_consistency_router
 from api.scene_continuity_api import router as scene_continuity_router
 from api.visual_style_consistency_api import router as visual_style_consistency_router
 from api.shot_direction_api import router as shot_direction_router
+from api.keyframe_authoring_api import router as keyframe_authoring_router
 from api.director_benchmark_api import router as director_benchmark_router
 
 from nodes.registry import REGISTRY, get_handler
@@ -164,6 +165,8 @@ app.include_router(visual_style_consistency_router, prefix="/api")
 app.include_router(visual_style_consistency_router)
 app.include_router(shot_direction_router, prefix="/api")
 app.include_router(shot_direction_router)
+app.include_router(keyframe_authoring_router, prefix="/api")
+app.include_router(keyframe_authoring_router)
 app.include_router(director_benchmark_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft

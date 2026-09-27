@@ -16,7 +16,7 @@ from core.production_asset_authority import validate_asset_authority_schema
 
 
 ROOT = Path(__file__).resolve().parents[1]
-H2_HEAD = "e4f5a6b7c8d9"
+H2_HEAD = "e5f6a7b8c9d0"
 H2_TABLES = {
     "production_asset_authority_registry",
     "production_asset_version_registry",
