@@ -1,0 +1,68 @@
+{
+  "status": "SCENE_CONTINUITY_RUNTIME_COMPLETE",
+  "runtime_commit": "b0fc091",
+  "migration_head": "e2f3a4b5c6d7",
+  "provider": {
+    "id": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "model": "gpt-image-2",
+    "binding_id": "shapi-openai-images.image.v1",
+    "website": "https://www.shapi.vip/"
+  },
+  "vertical_slice": [
+    "VisualLocation / SceneIdentity",
+    "SceneReferenceAsset",
+    "ShotSceneBinding",
+    "Existing VisualReferenceAsset and Production Asset Authority identities",
+    "Scene continuity validation",
+    "Immutable ProductionPromptVersion",
+    "Prompt lineage source snapshot",
+    "SHAPI downstream image generation contract"
+  ],
+  "api": {
+    "scene_create": [
+      "/scenes",
+      "/api/scenes"
+    ],
+    "scene_query": [
+      "/scenes/{scene_id}",
+      "/api/scenes/{scene_id}"
+    ],
+    "reference_create": [
+      "/scenes/{scene_id}/references",
+      "/api/scenes/{scene_id}/references"
+    ],
+    "shot_scene_binding": [
+      "/shots/{shot_id}/scene",
+      "/api/shots/{shot_id}/scene"
+    ],
+    "validation": [
+      "/shots/{shot_id}/scene/validation",
+      "/api/shots/{shot_id}/scene/validation"
+    ],
+    "prompt_injection": [
+      "/shots/{shot_id}/scene/prompt",
+      "/api/shots/{shot_id}/scene/prompt"
+    ]
+  },
+  "evidence": {
+    "model": "models/scene_continuity.py",
+    "service": "core/scene_continuity.py",
+    "api": "api/scene_continuity_api.py",
+    "migration": "alembic/versions/e2f3a4b5c6d7_add_scene_continuity_runtime.py",
+    "tests": "tests/test_scene_continuity_runtime.py",
+    "full_regression": {
+      "passed": 1848,
+      "failed": 0
+    },
+    "focused_regression": {
+      "passed": 32,
+      "failed": 0
+    },
+    "golden": {
+      "passed": 5,
+      "failed": 0
+    },
+    "migration_chain": "PASS"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "status": "SCENE_CONTINUITY_RUNTIME_COMPLETE",
+  "commit": "b0fc091",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration": {
+    "head": "e2f3a4b5c6d7",
+    "fresh_upgrade": "PASS",
+    "repeated_upgrade": "PASS",
+    "legacy_replay": "PASS",
+    "schema_drift": "PASS"
+  },
+  "provider": {
+    "provider": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "model": "gpt-image-2",
+    "transport_binding": "shapi-openai-images.image.v1",
+    "provider_calls": 0,
+    "website": "https://www.shapi.vip/"
+  },
+  "identity": {
+    "authority_table": "visual_locations",
+    "alias": "SceneIdentity",
+    "fields": [
+      "id",
+      "book_id",
+      "scene_id",
+      "name",
+      "description",
+      "attributes",
+      "environment_profile"
+    ],
+    "second_scene_system": false
+  },
+  "references": {
+    "table": "scene_reference_assets",
+    "reference_types": [
+      "overview",
+      "layout",
+      "lighting",
+      "detail",
+      "prop"
+    ],
+    "reuses_existing_asset_identity": true,
+    "second_asset_system": false
+  },
+  "shot_binding": {
+    "table": "shot_scene_bindings",
+    "one_active_primary_scene_per_shot": true,
+    "stale_on_rebind": true,
+    "uses_existing_storyboard_shot": true
+  },
+  "prompt": {
+    "source_prompt_mutated": false,
+    "immutable_production_prompt_version": true,
+    "lineage_source_snapshot": true,
+    "provenance": "SCENE_CONTINUITY"
+  },
+  "validation": {
+    "scene_binding_required": true,
+    "reference_asset_required": true,
+    "constraint_required": true,
+    "fail_closed": true
+  },
+  "tests": {
+    "scene_runtime": {
+      "passed": 3,
+      "failed": 0
+    },
+    "focused_migration_and_regression": {
+      "passed": 29,
+      "failed": 0
+    },
+    "full_pytest": {
+      "passed": 1848,
+      "failed": 0
+    },
+    "golden": {
+      "passed": 5,
+      "failed": 0
+    },
+    "migration": "PASS",
+    "compile": "PASS",
+    "diff_check": "PASS"
+  }
+}
