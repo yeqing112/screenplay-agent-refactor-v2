@@ -270,7 +270,8 @@ def persist_reasoning(session: Any, payload: Mapping[str, Any], *, source_fact_s
     data["payload_hash"] = _hash(data)
     if latest is not None and latest.status not in {"SUPERSEDED", "REJECTED", "ROLLED_BACK"}:
         latest.status = "SUPERSEDED"
-    row = DirectorReasoning(episode_id=candidate.episode_id, version=version, status="DRAFT", reasoning_json=_canonical({**data, "version": version}), source_script_ir_hash=str(data["lineage"].get("source_script_ir_hash") or ""), source_fact_snapshot_hash=source_fact_snapshot_hash, payload_hash=data["payload_hash"], lineage_json=_canonical(data["lineage"]))
+    row_status = candidate.status if candidate.status in {"DRAFT", "REVIEW_REQUIRED", "COMPILED", "SUPERSEDED", "ROLLED_BACK", "REJECTED"} else "DRAFT"
+    row = DirectorReasoning(episode_id=candidate.episode_id, version=version, status=row_status, reasoning_json=_canonical({**data, "version": version, "status": row_status}), source_script_ir_hash=str(data["lineage"].get("source_script_ir_hash") or ""), source_fact_snapshot_hash=source_fact_snapshot_hash, payload_hash=data["payload_hash"], lineage_json=_canonical(data["lineage"]))
     session.add(row)
     session.flush()
     for beat in data["beats"]:

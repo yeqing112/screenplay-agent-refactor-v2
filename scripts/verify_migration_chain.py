@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "i0d1e2f3g4h5"
+HEAD = "j1e2f3g4h5i6"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -101,12 +101,14 @@ AUTHORITY_TABLES = {
     "director_reasonings",
     "director_story_beats",
     "director_visual_decisions",
+    "director_reasoning_generations",
 }
 
 REQUIRED_COLUMNS = {
     "director_reasonings": {"episode_id", "version", "status", "reasoning_json", "payload_hash", "compiled_shot_plan_ids", "lineage_json"},
     "director_story_beats": {"director_reasoning_id", "sequence", "purpose", "emotion", "visual_goal", "character_refs", "shot_refs"},
     "director_visual_decisions": {"director_reasoning_id", "story_beat_sequence", "camera_strategy", "lighting_strategy", "color_strategy", "composition_strategy"},
+    "director_reasoning_generations": {"generation_id", "episode_id", "status", "provider", "adapter_name", "context_hash", "request_hash", "response_hash", "director_reasoning_id", "director_reasoning_version", "provider_calls", "source_fact_mutated", "script_ir_mutated", "human_review_required", "error_json", "created_at", "updated_at"},
     "director_plans": {"episode_id", "version", "status", "created_by", "reasoning_trace", "scene_plans", "shot_plans", "shot_directions", "generation_intents", "payload_hash", "lineage_json"},
     "director_scene_plans": {"director_plan_id", "scene_id", "location", "time", "mood", "characters", "visual_requirements", "source_lineage", "payload_hash"},
     "prompt_ir_pointers": {"target_media"},
