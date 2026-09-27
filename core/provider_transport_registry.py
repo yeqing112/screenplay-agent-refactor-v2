@@ -111,6 +111,7 @@ async def _video_handler(context: dict[str, Any]) -> dict[str, Any]:
     payload = context.get("payload") if isinstance(context.get("payload"), dict) else {}
     request = payload.get("request") if isinstance(payload.get("request"), dict) else {}
     source_url = str(context.get("source_storage_identity") or "").strip() or None
+    last_frame_url = str(context.get("last_frame_storage_identity") or "").strip() or None
     generated = await generate_video_asset(
         _runtime_profile(context),
         prompt=str(request.get("prompt") or ""),
@@ -118,6 +119,7 @@ async def _video_handler(context: dict[str, Any]) -> dict[str, Any]:
         negative_prompt=str(request.get("negative_prompt") or ""),
         aspect_ratio=request.get("aspect_ratio"),
         first_frame_url=source_url,
+        last_frame_url=last_frame_url,
         reference_images=context.get("reference_images") or [],
     )
     generated.setdefault("provider", context.get("profile", {}).get("provider"))

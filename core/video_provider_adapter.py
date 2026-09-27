@@ -152,15 +152,19 @@ class MinimaxH3VideoProvider:
     available = True
 
     def __init__(self, profile: Mapping[str, Any], *, transport: Any | None = None):
-        self.profile = dict(profile or {})
+        raw_profile = dict(profile or {})
+        self._validate_profile(raw_profile)
+        # Keep only the non-secret Model Registry projection.  The credential
+        # is supplied as a short-lived runtime input for one transport call.
+        self.profile = {key: value for key, value in raw_profile.items() if key != "api_key"}
         self.transport = transport
-        self._validate_profile()
 
-    def _validate_profile(self) -> None:
-        provider = str(self.profile.get("provider") or "").strip()
-        capability = str(self.profile.get("capability") or "").strip()
-        model = str(self.profile.get("model_name") or "").strip().lower()
-        base_url = str(self.profile.get("base_url") or "").strip()
+    @staticmethod
+    def _validate_profile(profile: Mapping[str, Any]) -> None:
+        provider = str(profile.get("provider") or "").strip()
+        capability = str(profile.get("capability") or "").strip()
+        model = str(profile.get("model_name") or "").strip().lower()
+        base_url = str(profile.get("base_url") or "").strip()
         parsed = urlparse(base_url)
         if capability != "video":
             raise VideoProviderError("MiniMax H3 profile must declare video capability", code="VIDEO_PROFILE_CAPABILITY_INVALID")
@@ -170,9 +174,9 @@ class MinimaxH3VideoProvider:
             raise VideoProviderError("MiniMax H3 profile model_name is invalid", code="VIDEO_PROFILE_MODEL_INVALID")
         if parsed.scheme != "https" or parsed.hostname != "metaso.cn":
             raise VideoProviderError("MiniMax H3 profile base_url must use https://metaso.cn", code="VIDEO_PROFILE_ENDPOINT_INVALID")
-        if not self.profile.get("enabled", True):
+        if not profile.get("enabled", True):
             raise VideoProviderError("MiniMax H3 profile is disabled", code="VIDEO_PROFILE_DISABLED")
-        if not str(self.profile.get("api_key") or "").strip():
+        if not str(profile.get("api_key") or "").strip():
             raise VideoProviderError("MiniMax H3 profile is missing API key", code="VIDEO_PROFILE_CREDENTIAL_MISSING")
 
     @staticmethod
@@ -220,18 +224,34 @@ class MinimaxH3VideoProvider:
         if not str(request_context.get("canary_scope") or "").strip():
             raise VideoProviderError("MiniMax H3 execution requires a single-shot canary scope", code="VIDEO_CANARY_SCOPE_REQUIRED")
 
-        from api.generation_adapters import generate_video_asset
-
-        call = self.transport or generate_video_asset
+        last_frame_url = str(last_frame_asset.get("storage_identity") or "").strip()
+        runtime_profile = dict(self.profile)
+        supplied_profile = request_context.get("_runtime_profile")
+        if isinstance(supplied_profile, Mapping):
+            runtime_profile.update(dict(supplied_profile))
+        if not str(runtime_profile.get("api_key") or "").strip():
+            raise VideoProviderError("MiniMax H3 runtime credential is missing", code="VIDEO_PROFILE_CREDENTIAL_MISSING")
         try:
-            generated = self._run(call(
-                self.profile,
-                prompt=prompt,
-                duration_seconds=int(round(float(duration))),
-                aspect_ratio=aspect_ratio,
-                first_frame_url=first_frame_url,
-                reference_images=None,
-            ))
+            if self.transport is not None:
+                generated = self._run(self.transport(
+                    runtime_profile,
+                    prompt=prompt,
+                    duration_seconds=int(round(float(duration))),
+                    aspect_ratio=aspect_ratio,
+                    first_frame_url=first_frame_url,
+                    last_frame_url=last_frame_url or None,
+                    reference_images=None,
+                ))
+            else:
+                from core.provider_transport_registry import dispatch_provider_transport
+
+                generated = self._run(dispatch_provider_transport({
+                    "profile": runtime_profile,
+                    "target_media": "VIDEO",
+                    "payload": {"request": {"prompt": prompt, "duration_seconds": int(round(float(duration))), "aspect_ratio": aspect_ratio}},
+                    "source_storage_identity": first_frame_url,
+                    "last_frame_storage_identity": last_frame_url,
+                }))
         except VideoProviderError:
             raise
         except Exception as exc:
@@ -256,6 +276,8 @@ class MinimaxH3VideoProvider:
         provider_request = dict(generated.get("providerRequestPayload") or {})
         provider_request["motion_profile"] = dict(motion_profile)
         provider_request["canary_scope"] = str(request_context.get("canary_scope"))
+        if isinstance(request_context.get("shot_direction"), Mapping):
+            provider_request["shot_direction"] = dict(request_context["shot_direction"])
         return VideoProviderResult(
             status="SUCCESS",
             provider="minimax-h3-async",

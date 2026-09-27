@@ -411,6 +411,7 @@ def _build_minimax_h3_video_payload(
     duration_seconds: int | None,
     aspect_ratio: str | None,
     first_frame_url: str | None,
+    last_frame_url: str | None = None,
     reference_images: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     normalized_prompt = str(prompt or "").strip()
@@ -467,6 +468,15 @@ def _build_minimax_h3_video_payload(
             },
             "role": "first_frame",
         })
+        normalized_last_frame_url = str(last_frame_url or "").strip()
+        if normalized_last_frame_url:
+            payload["content"].append({
+                "type": "image_url",
+                "image_url": {
+                    "url": normalized_last_frame_url,
+                },
+                "role": "last_frame",
+            })
     else:
         payload["ratio"] = ratio
 
@@ -1648,6 +1658,7 @@ async def generate_video_asset(
     negative_prompt: str | None = None,
     aspect_ratio: str | None = None,
     first_frame_url: str | None = None,
+    last_frame_url: str | None = None,
     reference_images: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     if profile.get("provider") == MOCK_PROVIDER:
@@ -1685,11 +1696,12 @@ async def generate_video_asset(
             duration_seconds=duration_seconds,
             aspect_ratio=aspect_ratio,
             first_frame_url=first_frame_url,
+            last_frame_url=last_frame_url,
             reference_images=reference_images,
         )
         submitted = await submit_minimax_h3_generation(profile, payload=provider_payload)
         polled = await poll_minimax_h3_generation(profile, external_task_id=submitted["externalTaskId"])
-        task_mode = "reference_to_video" if _extract_reference_urls(reference_images) else "image_to_video" if str(first_frame_url or "").strip() else "text_to_video"
+        task_mode = "reference_to_video" if _extract_reference_urls(reference_images) else "image_to_video" if (str(first_frame_url or "").strip() or str(last_frame_url or "").strip()) else "text_to_video"
         return {
             **polled,
             "externalTaskId": submitted["externalTaskId"],

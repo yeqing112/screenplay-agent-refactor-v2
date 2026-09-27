@@ -163,6 +163,32 @@ def _current_video_prompt_ir(session: Any, *, shot: StoryboardShot) -> tuple[Pro
     return pointer, version, authority
 
 
+def _current_shot_direction(session: Any, *, shot: StoryboardShot) -> dict[str, Any]:
+    """Resolve the active Shot Direction used by a real video canary."""
+    from core.shot_direction import validate_shot_direction
+
+    validation = validate_shot_direction(session, shot_id=shot.id)
+    if validation.get("status") != "PASS" or not isinstance(validation.get("direction"), Mapping):
+        raise VideoGenerationError(
+            "a valid current Shot Direction is required for a real video canary",
+            code="VIDEO_SHOT_DIRECTION_REQUIRED",
+            diagnostics=validation.get("errors") or [],
+        )
+    direction = dict(validation["direction"])
+    return {
+        "id": int(direction.get("id") or 0),
+        "shot_id": int(direction.get("shot_id") or shot.id),
+        "revision": int(direction.get("revision") or 0),
+        "direction_fingerprint": str(direction.get("direction_fingerprint") or ""),
+        "shot_type": str(direction.get("shot_type") or ""),
+        "camera_profile": dict(direction.get("camera_profile") or {}),
+        "movement_profile": dict(direction.get("movement_profile") or {}),
+        "composition_profile": dict(direction.get("composition_profile") or {}),
+        "performance_profile": dict(direction.get("performance_profile") or {}),
+        "emotion_profile": dict(direction.get("emotion_profile") or {}),
+    }
+
+
 def create_video_generation_intent(session: Any, *, shot_id: int, duration: float, aspect_ratio: str, motion_profile: Mapping[str, Any], first_frame_asset: Mapping[str, Any], last_frame_asset: Mapping[str, Any] | None, prompt_version: str) -> dict[str, Any]:
     shot = _resolve_shot(session, shot_id)
     try:
@@ -303,6 +329,8 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     last = _validate_frame_asset(session, shot=shot, asset=_obj(intent.last_frame_asset), first=False) if _obj(intent.last_frame_asset) else {}
     if not isinstance(provider, MockVideoProvider) and not first.get("asset_authority_current"):
         raise VideoGenerationError("first frame asset authority/version is stale", code="VIDEO_FRAME_ASSET_NOT_CURRENT", diagnostics=[{"keyframe_id": first.get("keyframe_id")}])
+    is_mock = isinstance(provider, MockVideoProvider) or str(resolved_profile.get("provider") or provider_id) == "mock-video"
+    shot_direction = {} if is_mock else _current_shot_direction(session, shot=shot)
     prompt = session.query(ProductionPromptVersion).filter_by(prompt_version_id=intent.prompt_version).one_or_none()
     if prompt is None:
         raise VideoGenerationError("prompt lineage is missing", code="VIDEO_PROMPT_LINEAGE_REQUIRED")
@@ -319,9 +347,8 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     if task is None:
         task = TaskRun(task_id=task_id, task_kind="VIDEO_GENERATION", status="queued", progress=0, book_id=shot.book_id, episode=shot.episode, payload="{}", error="", created_at=now, updated_at=now)
         session.add(task)
-    is_mock = isinstance(provider, MockVideoProvider) or str(resolved_profile.get("provider") or provider_id) == "mock-video"
     execution = GenerationExecutionRecord(execution_id=execution_id, schema_version="generation_execution_video_v1", book_id=shot.book_id, episode=shot.episode, storyboard_shot_id=shot.id, plan_shot_id=str(shot.plan_shot_id or ""), execution_mode="VIDEO_MOCK" if is_mock else "VIDEO_PROVIDER_CANARY", status="CREATED", target_media="VIDEO", prompt_ir_version_id=int(prompt_ir.id), prompt_ir_authority_id=int(prompt_authority.id) if prompt_authority else 0, prompt_ir_payload_hash=str(prompt_ir.payload_hash), generation_payload_fingerprint=generation_payload_fp, generation_policy_fingerprint=policy_fp, model_profile_id=resolved_profile_id, model_profile_fingerprint=_fingerprint({key: resolved_profile.get(key) for key in ("id", "provider", "base_url", "model_name", "transport_binding_id")}), provider_adapter_id=str(getattr(provider, "adapter_id", provider_id)), provider_adapter_version=str(getattr(provider, "adapter_version", "")), reference_bindings_fingerprint="", provider_request_fingerprint=provider_fp, provider=str(resolved_profile.get("provider") or provider_id), model=str(resolved_profile.get("model_name") or "deterministic-video-v1"), logical_provider_calls=0, transport_retry_count=0, created_at=now, updated_at=now)
-    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt.prompt_text, "motion_profile": _obj(intent.motion_profile), "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "media_role": "SHOT_PRIMARY_VIDEO"}
+    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt.prompt_text, "motion_profile": _obj(intent.motion_profile), "shot_direction": shot_direction, "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "media_role": "SHOT_PRIMARY_VIDEO"}
     session.add(execution)
     intent.generation_execution_id = execution_id
     intent.task_id = task_id
@@ -334,7 +361,7 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     try:
         service.transition(execution_id, "QUEUED")
         service.transition(execution_id, "RUNNING")
-        result = provider.generate_video(prompt=prompt.prompt_text, motion_profile=_obj(intent.motion_profile), duration=float(intent.duration), aspect_ratio=intent.aspect_ratio, first_frame_asset=first, last_frame_asset=last, request_context={"intent_id": intent.id, "shot_id": shot.id, "episode": shot.episode, "canary_scope": f"episode:{shot.episode}:shot:{shot.id}"})
+        result = provider.generate_video(prompt=prompt.prompt_text, motion_profile=_obj(intent.motion_profile), duration=float(intent.duration), aspect_ratio=intent.aspect_ratio, first_frame_asset=first, last_frame_asset=last, request_context={"intent_id": intent.id, "shot_id": shot.id, "episode": shot.episode, "canary_scope": f"episode:{shot.episode}:shot:{shot.id}", "shot_direction": shot_direction, "_runtime_profile": resolved_profile})
         execution.provider = result.provider
         execution.model = result.model
         execution.provider_request_id = result.provider_request_id
