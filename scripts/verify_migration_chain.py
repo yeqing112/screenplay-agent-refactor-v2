@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "e2f3a4b5c6d7"
+HEAD = "e3f4a5b6c7d8"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -86,6 +86,9 @@ AUTHORITY_TABLES = {
     "shot_character_bindings",
     "scene_reference_assets",
     "shot_scene_bindings",
+    "visual_style_profiles",
+    "style_reference_assets",
+    "shot_style_bindings",
 }
 
 REQUIRED_COLUMNS = {
@@ -153,6 +156,9 @@ REQUIRED_COLUMNS = {
     "visual_locations": {"attributes", "environment_profile"},
     "scene_reference_assets": {"scene_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},
     "shot_scene_bindings": {"storyboard_shot_id", "scene_id", "reference_asset_ids", "environment_rules", "constraint_snapshot", "asset_authority_id", "asset_version_id", "binding_fingerprint", "status"},
+    "visual_style_profiles": {"book_id", "name", "description", "camera_profile", "lighting_profile", "color_profile", "composition_profile"},
+    "style_reference_assets": {"style_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},
+    "shot_style_bindings": {"storyboard_shot_id", "book_id", "episode", "style_id", "scope", "reference_asset_ids", "style_rules", "constraint_snapshot", "asset_authority_id", "asset_version_id", "binding_fingerprint", "status"},
 }
 
 

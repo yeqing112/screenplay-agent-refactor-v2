@@ -99,6 +99,8 @@ def create_production_prompt_version(
     shot_id: int | None = None,
     scene_id: int | str | None = None,
     scene_shot_id: int | None = None,
+    style_id: int | str | None = None,
+    style_shot_id: int | None = None,
 ) -> dict[str, Any]:
     """Append a prompt version; existing versions are never updated."""
     prompt_key = str(prompt_id or "").strip()
@@ -127,6 +129,16 @@ def create_production_prompt_version(
             created_from = "SCENE_CONTINUITY"
         elif "SCENE_CONTINUITY" not in created_from:
             created_from = f"{created_from}+SCENE_CONTINUITY"
+    if style_id is not None or style_shot_id is not None:
+        from core.visual_style_consistency import inject_style_constraints
+
+        injected_style = inject_style_constraints(session, original_prompt=text, shot_id=style_shot_id, style_id=style_id)
+        text = injected_style["injected_prompt"]
+        structure.update(injected_style["prompt_structure"])
+        if created_from == "SHOT_REQUIREMENT":
+            created_from = "VISUAL_STYLE_CONSISTENCY"
+        elif "VISUAL_STYLE_CONSISTENCY" not in created_from:
+            created_from = f"{created_from}+VISUAL_STYLE_CONSISTENCY"
     existing = (
         session.query(ProductionPromptVersion)
         .filter_by(prompt_id=prompt_key)

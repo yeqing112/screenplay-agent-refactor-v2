@@ -44,9 +44,11 @@
     "shot_plan_pointers",
     "shot_plans",
     "shot_scene_bindings",
+    "shot_style_bindings",
     "storyboard_materialization_pointers",
     "storyboard_materialization_sets",
     "storyboard_shots",
+    "style_reference_assets",
     "visual_asset_pointers",
     "visual_asset_versions",
     "visual_authoring_decision_requests",
@@ -54,7 +56,8 @@
     "visual_authoring_proposals",
     "visual_reference_authorities",
     "visual_reference_generation_requests",
-    "visual_reference_sets"
+    "visual_reference_sets",
+    "visual_style_profiles"
   ],
   "authority_tables_present": [
     "character_asset_authorities",
@@ -101,9 +104,11 @@
     "shot_plan_pointers",
     "shot_plans",
     "shot_scene_bindings",
+    "shot_style_bindings",
     "storyboard_materialization_pointers",
     "storyboard_materialization_sets",
     "storyboard_shots",
+    "style_reference_assets",
     "visual_asset_pointers",
     "visual_asset_versions",
     "visual_authoring_decision_requests",
@@ -111,7 +116,8 @@
     "visual_authoring_proposals",
     "visual_reference_authorities",
     "visual_reference_generation_requests",
-    "visual_reference_sets"
+    "visual_reference_sets",
+    "visual_style_profiles"
   ],
   "database": "disposable temporary SQLite database",
   "missing_authority_columns": {},

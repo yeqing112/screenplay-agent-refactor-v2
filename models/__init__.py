@@ -10,6 +10,7 @@ from .kv import KV
 from .visual import VisualEraSpec, VisualProp, VisualLocation, VisualMakeup, VisualReferenceAsset, AssetSemanticGovernanceRecord, StoryboardTransitionContract, StoryboardTransitionFrame, StoryboardTransitionContinuityReview, StoryboardVideoRetryAttempt, PublicAssetStorageMigrationRecord, DecisionPacketRecord
 SceneIdentity = VisualLocation
 from .scene_continuity import SceneReferenceAsset, ShotSceneBinding
+from .visual_style import VisualStyleProfile, StyleReferenceAsset, ShotStyleBinding
 from .visual_authority import VisualAssetVersion, VisualAssetPointer, VisualAuthoringDecisionRequest, VisualAuthoringDecision, VisualAuthoringProposal, VisualReferenceAuthority, VisualReferenceSet, VisualReferenceGenerationRequest
 from .bridge import SceneCharacter, SceneProp
 from .storyboard import StoryboardShot, StoryboardMaterializationSet, StoryboardMaterializationPointer
@@ -62,7 +63,7 @@ __all__ = [
     "CharacterProfile", "CharacterIdentity", "CharacterStage", "CharacterReferenceAsset", "ShotCharacterBinding",
     "EpisodeOutline", "Script", "QAResult", "ScriptIRVersion", "FactSnapshot", "FactRecord",
     "KV",
-    "VisualEraSpec", "VisualProp", "VisualLocation", "SceneIdentity", "VisualMakeup", "VisualReferenceAsset", "SceneReferenceAsset", "ShotSceneBinding", "AssetSemanticGovernanceRecord", "StoryboardTransitionContract", "StoryboardTransitionFrame", "StoryboardTransitionContinuityReview", "StoryboardVideoRetryAttempt", "PublicAssetStorageMigrationRecord", "DecisionPacketRecord", "VisualAssetVersion", "VisualAssetPointer", "VisualAuthoringDecisionRequest", "VisualAuthoringDecision", "VisualAuthoringProposal", "VisualReferenceAuthority", "VisualReferenceSet", "VisualReferenceGenerationRequest",
+    "VisualEraSpec", "VisualProp", "VisualLocation", "SceneIdentity", "VisualMakeup", "VisualReferenceAsset", "SceneReferenceAsset", "ShotSceneBinding", "VisualStyleProfile", "StyleReferenceAsset", "ShotStyleBinding", "AssetSemanticGovernanceRecord", "StoryboardTransitionContract", "StoryboardTransitionFrame", "StoryboardTransitionContinuityReview", "StoryboardVideoRetryAttempt", "PublicAssetStorageMigrationRecord", "DecisionPacketRecord", "VisualAssetVersion", "VisualAssetPointer", "VisualAuthoringDecisionRequest", "VisualAuthoringDecision", "VisualAuthoringProposal", "VisualReferenceAuthority", "VisualReferenceSet", "VisualReferenceGenerationRequest",
     "SceneCharacter", "SceneProp",
     "StoryboardShot", "StoryboardMaterializationSet", "StoryboardMaterializationPointer", "StoryboardPromptVersion", "PromptIRVersion", "PromptIRAuthority", "PromptIRPointer", "StoryboardAcceptanceRecord", "ProductionExportRecord",
     "QAIssue", "ScriptVersion",
