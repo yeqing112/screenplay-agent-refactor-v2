@@ -1,0 +1,40 @@
+{
+  "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
+  "schema_version": "ai_director_runtime_v1",
+  "vertical_slice": [
+    "ScriptIR",
+    "DirectorPlan",
+    "ScenePlan",
+    "ShotPlan",
+    "ShotDirection",
+    "GenerationIntent"
+  ],
+  "episode": {
+    "episode_id": "E01",
+    "director_plan_version": 1,
+    "status": "DRAFT",
+    "scene_count": 1,
+    "shot_count": 1,
+    "shot_direction_count": 1,
+    "generation_intent_count": 1
+  },
+  "lineage_assertions": {
+    "source_script_ir_hash_present": true,
+    "scene_lineage_present": true,
+    "shot_direction_fingerprint_present": true,
+    "prompt_lineage_id_present": true,
+    "source_fact_immutable": true,
+    "script_ir_immutable": true
+  },
+  "execution_assertions": {
+    "llm_called": false,
+    "provider_called": false,
+    "media_created": false,
+    "human_review_required": true
+  },
+  "api": {
+    "create": "POST /episodes/{id}/director-plan",
+    "read": "GET /episodes/{id}/director-plan",
+    "revise": "POST /shots/{id}/director-revise"
+  }
+}

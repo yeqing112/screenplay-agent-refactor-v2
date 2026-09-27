@@ -1,0 +1,41 @@
+{
+  "phase": "PHASE_AI_DIRECTOR_RUNTIME_FOUNDATION",
+  "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
+  "implementation_commit": "931b666d04bc1d908abad8d0deff6b3c7edd11a2",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration_head": "h9c0d1e2f3g4",
+  "llm_called": false,
+  "image_generation_called": false,
+  "video_generation_called": false,
+  "image_provider_reference": {
+    "provider": "SHAPI",
+    "base_url": "https://www.shapi.vip/",
+    "used_in_this_phase": false
+  },
+  "source_fact_mutated": false,
+  "script_ir_mutated": false,
+  "human_review_required": true,
+  "versioning": {
+    "director_plan": "append_only_episode_version",
+    "scene_plan": "director_plan_child_version",
+    "shot_revision": "new_director_plan_version",
+    "prior_versions_preserved": true
+  },
+  "lineage": {
+    "script_ir": true,
+    "episode": true,
+    "scene_identity": true,
+    "character_profile": true,
+    "visual_style_profile": true,
+    "shot_direction": true,
+    "prompt_lineage": true,
+    "generation_execution": "downstream_only_no_execution_created"
+  },
+  "verification": {
+    "pytest_full": {"status": "PASS", "tests": 1883, "scope": "before final additive ShotDirection column migration"},
+    "director_runtime_tests": {"status": "PASS", "tests": 3},
+    "migration_chain": "PASS",
+    "golden": {"status": "PASS", "passed": 5, "failed": 0},
+    "diff_check": "PASS"
+  }
+}
