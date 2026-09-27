@@ -1,0 +1,50 @@
+{
+  "status": "SHOT_DIRECTION_RUNTIME_COMPLETE",
+  "implementation_commit": "ef54a0a",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration": {
+    "head": "e4f5a6b7c8d9",
+    "fresh_upgrade": "PASS",
+    "repeated_upgrade": "PASS",
+    "legacy_replay": "PASS",
+    "schema_drift": "PASS"
+  },
+  "provider": {
+    "website": "https://www.shapi.vip/",
+    "provider": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "transport_binding": "shapi-openai-images.image.v1",
+    "provider_calls": 0
+  },
+  "direction": {
+    "authority_table": "shot_directions",
+    "anchor_table": "storyboard_shots",
+    "one_active_direction_per_shot": true,
+    "revisioned_updates": true,
+    "fingerprint": "sha256 canonical direction payload",
+    "second_shot_system": false
+  },
+  "validation": {
+    "shot_exists_required": true,
+    "camera_required": ["lens", "angle", "distance", "movement", "speed"],
+    "composition_required": ["framing", "subject_position", "foreground", "background", "depth"],
+    "performance_required": ["expression", "gesture", "body_motion", "eye_direction"],
+    "fail_closed": true
+  },
+  "prompt": {
+    "source_prompt_mutated": false,
+    "immutable_production_prompt_version": true,
+    "lineage_source_snapshot": true,
+    "provenance": "SHOT_DIRECTION"
+  },
+  "tests": {
+    "shot_direction_runtime": {"passed": 4, "failed": 0},
+    "focused_regression": {"passed": 43, "failed": 0},
+    "full_pytest": {"passed": 1856, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "migration": "PASS",
+    "api_routes": "PASS",
+    "compile": "PASS",
+    "diff_check": "PASS"
+  }
+}

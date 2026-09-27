@@ -1,0 +1,40 @@
+{
+  "status": "SHOT_DIRECTION_RUNTIME_COMPLETE",
+  "implementation_commit": "ef54a0a",
+  "migration_head": "e4f5a6b7c8d9",
+  "provider": {
+    "website": "https://www.shapi.vip/",
+    "id": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "model_contract": "existing configured image profile",
+    "binding_id": "shapi-openai-images.image.v1",
+    "provider_calls": 0
+  },
+  "vertical_slice": [
+    "Existing StoryboardShot authority",
+    "ShotDirection camera/movement/composition/performance/emotion profiles",
+    "Revisioned update and deterministic fingerprint",
+    "Fail-closed direction and camera validation",
+    "Immutable ProductionPromptVersion",
+    "Prompt lineage source snapshot",
+    "SHAPI downstream image generation contract"
+  ],
+  "api": {
+    "create": ["/shots/{shot_id}/direction", "/api/shots/{shot_id}/direction"],
+    "query": ["/shots/{shot_id}/direction", "/api/shots/{shot_id}/direction"],
+    "update": ["/shots/{shot_id}/direction", "/api/shots/{shot_id}/direction"],
+    "validation": ["/shots/{shot_id}/direction/validation", "/api/shots/{shot_id}/direction/validation"],
+    "prompt_injection": ["/shots/{shot_id}/direction/prompt", "/api/shots/{shot_id}/direction/prompt"]
+  },
+  "evidence": {
+    "model": "models/shot_direction.py",
+    "service": "core/shot_direction.py",
+    "api": "api/shot_direction_api.py",
+    "migration": "alembic/versions/e4f5a6b7c8d9_add_shot_direction_runtime.py",
+    "tests": "tests/test_shot_direction_runtime.py",
+    "full_regression": {"passed": 1856, "failed": 0},
+    "focused_regression": {"passed": 43, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "migration_chain": "PASS"
+  }
+}
