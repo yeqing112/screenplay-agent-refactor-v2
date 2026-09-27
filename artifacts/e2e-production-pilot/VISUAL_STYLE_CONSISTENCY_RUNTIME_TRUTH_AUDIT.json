@@ -1,0 +1,89 @@
+{
+  "status": "VISUAL_STYLE_CONSISTENCY_RUNTIME_COMPLETE",
+  "commit": "a439584",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration": {
+    "head": "e3f4a5b6c7d8",
+    "fresh_upgrade": "PASS",
+    "repeated_upgrade": "PASS",
+    "legacy_replay": "PASS",
+    "schema_drift": "PASS"
+  },
+  "provider": {
+    "website": "https://www.shapi.vip/",
+    "provider": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "transport_binding": "shapi-openai-images.image.v1",
+    "provider_calls": 0
+  },
+  "identity": {
+    "authority_table": "visual_style_profiles",
+    "fields": [
+      "id",
+      "book_id",
+      "name",
+      "description",
+      "camera_profile",
+      "lighting_profile",
+      "color_profile",
+      "composition_profile"
+    ],
+    "second_style_system": false
+  },
+  "references": {
+    "table": "style_reference_assets",
+    "reference_types": [
+      "color",
+      "camera",
+      "lighting",
+      "composition",
+      "mood"
+    ],
+    "reuses_existing_asset_identity": true,
+    "second_asset_system": false
+  },
+  "shot_binding": {
+    "table": "shot_style_bindings",
+    "scopes": [
+      "EPISODE_DEFAULT",
+      "SHOT_OVERRIDE"
+    ],
+    "shot_override_precedence": true,
+    "stale_on_rebind": true,
+    "uses_existing_storyboard_shot": true
+  },
+  "prompt": {
+    "source_prompt_mutated": false,
+    "immutable_production_prompt_version": true,
+    "lineage_source_snapshot": true,
+    "provenance": "VISUAL_STYLE_CONSISTENCY"
+  },
+  "validation": {
+    "style_binding_required": true,
+    "reference_asset_required": true,
+    "camera_lighting_color_composition_required": true,
+    "fail_closed": true
+  },
+  "tests": {
+    "style_runtime": {
+      "passed": 4,
+      "failed": 0
+    },
+    "focused_regression": {
+      "passed": 39,
+      "failed": 0
+    },
+    "full_pytest": {
+      "passed": 1852,
+      "failed": 0
+    },
+    "golden": {
+      "passed": 5,
+      "failed": 0
+    },
+    "migration": "PASS",
+    "api_routes": "PASS",
+    "compile": "PASS",
+    "diff_check": "PASS"
+  }
+}

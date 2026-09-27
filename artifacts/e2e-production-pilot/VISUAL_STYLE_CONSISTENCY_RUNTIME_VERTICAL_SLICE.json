@@ -1,0 +1,76 @@
+{
+  "status": "VISUAL_STYLE_CONSISTENCY_RUNTIME_COMPLETE",
+  "runtime_commit": "a439584",
+  "migration_head": "e3f4a5b6c7d8",
+  "provider": {
+    "website": "https://www.shapi.vip/",
+    "id": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "model_contract": "existing configured image profile",
+    "binding_id": "shapi-openai-images.image.v1"
+  },
+  "vertical_slice": [
+    "VisualStyleProfile",
+    "StyleReferenceAsset",
+    "ShotStyleBinding with episode default and shot override",
+    "Existing VisualReferenceAsset and Production Asset Authority identities",
+    "Style validation",
+    "Immutable ProductionPromptVersion",
+    "Prompt lineage source snapshot",
+    "SHAPI downstream image generation contract"
+  ],
+  "api": {
+    "style_create": [
+      "/styles",
+      "/api/styles"
+    ],
+    "style_query": [
+      "/styles/{style_id}",
+      "/api/styles/{style_id}"
+    ],
+    "reference_create": [
+      "/styles/{style_id}/references",
+      "/api/styles/{style_id}/references"
+    ],
+    "reference_query": [
+      "/styles/{style_id}/references",
+      "/api/styles/{style_id}/references"
+    ],
+    "episode_default_binding": [
+      "/episodes/{book_id}/{episode}/style",
+      "/api/episodes/{book_id}/{episode}/style"
+    ],
+    "shot_override_binding": [
+      "/shots/{shot_id}/style",
+      "/api/shots/{shot_id}/style"
+    ],
+    "validation": [
+      "/shots/{shot_id}/style/validation",
+      "/api/shots/{shot_id}/style/validation"
+    ],
+    "prompt_injection": [
+      "/shots/{shot_id}/style/prompt",
+      "/api/shots/{shot_id}/style/prompt"
+    ]
+  },
+  "evidence": {
+    "model": "models/visual_style.py",
+    "service": "core/visual_style_consistency.py",
+    "api": "api/visual_style_consistency_api.py",
+    "migration": "alembic/versions/e3f4a5b6c7d8_add_visual_style_consistency_runtime.py",
+    "tests": "tests/test_visual_style_consistency_runtime.py",
+    "full_regression": {
+      "passed": 1852,
+      "failed": 0
+    },
+    "focused_regression": {
+      "passed": 39,
+      "failed": 0
+    },
+    "golden": {
+      "passed": 5,
+      "failed": 0
+    },
+    "migration_chain": "PASS"
+  }
+}
