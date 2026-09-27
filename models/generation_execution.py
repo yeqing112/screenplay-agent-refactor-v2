@@ -98,6 +98,15 @@ class GenerationExecutionRecord(Base):
         self.storyboard_shot_id = int(value)
 
     @property
+    def generation_type(self) -> str:
+        """Unified IMAGE/VIDEO vocabulary backed by target_media."""
+        return str(self.target_media or "IMAGE").upper()
+
+    @generation_type.setter
+    def generation_type(self, value: str) -> None:
+        self.target_media = str(value or "IMAGE").upper()
+
+    @property
     def prompt_pointer_id(self) -> int | None:
         value = self._foundation_metadata().get("prompt_pointer_id")
         return int(value) if value not in (None, "") else None

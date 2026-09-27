@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "e5f6a7b8c9d0"
+HEAD = "e6f7a8b9c0d1"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -93,6 +93,7 @@ AUTHORITY_TABLES = {
     "keyframe_sequences",
     "keyframes",
     "keyframe_asset_bindings",
+    "video_generation_intents",
 }
 
 REQUIRED_COLUMNS = {
@@ -167,6 +168,7 @@ REQUIRED_COLUMNS = {
     "keyframe_sequences": {"storyboard_shot_id", "duration", "status", "frame_plan", "revision", "sequence_fingerprint"},
     "keyframes": {"keyframe_sequence_id", "frame_type", "time_seconds", "order_index", "description", "camera_state", "character_state", "scene_state", "emotion_state", "camera_motion", "character_motion", "environment_motion", "emotion_transition", "frame_fingerprint", "status"},
     "keyframe_asset_bindings": {"keyframe_id", "storyboard_shot_id", "asset_type", "authority_id", "version_id", "binding_fingerprint", "is_primary", "status"},
+    "video_generation_intents": {"storyboard_shot_id", "duration", "aspect_ratio", "motion_profile", "first_frame_asset", "last_frame_asset", "prompt_version", "intent_fingerprint", "status", "generation_execution_id", "task_id"},
 }
 
 

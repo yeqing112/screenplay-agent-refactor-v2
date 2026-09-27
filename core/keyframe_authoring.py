@@ -8,7 +8,7 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 from models import Keyframe, KeyframeAssetBinding, KeyframeSequence, ProductionPromptVersion, StoryboardShot
-from core.production_asset_authority import _binding_fingerprint, resolve_current_production_asset_binding
+from core.production_asset_authority import resolve_current_production_asset_binding
 
 
 FRAME_TYPES = {"start", "middle", "end"}
@@ -35,6 +35,25 @@ def _canonical(value: Any) -> str:
 
 def _fingerprint(value: Any) -> str:
     return "sha256:" + hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
+
+
+def _keyframe_binding_fingerprint(*, keyframe_id: int, storyboard_shot_id: int, asset_type: str, authority_fingerprint: str, version_fingerprint: str, pointer_fingerprint: str) -> str:
+    """Return a unique binding identity for one keyframe-to-asset edge.
+
+    Production asset bindings are shot-scoped, while keyframe bindings are
+    edges from an individual frame to an existing authoritative asset.  The
+    frame identity must therefore participate in the fingerprint so that the
+    same scene/character asset can be used by both the start and end frames.
+    """
+    return _fingerprint({
+        "schema": "keyframe_asset_binding_v1",
+        "keyframe_id": int(keyframe_id),
+        "storyboard_shot_id": int(storyboard_shot_id),
+        "asset_type": str(asset_type).upper(),
+        "authority_fingerprint": authority_fingerprint,
+        "version_fingerprint": version_fingerprint,
+        "pointer_fingerprint": pointer_fingerprint,
+    })
 
 
 def _obj(value: Any) -> dict[str, Any]:
@@ -361,7 +380,8 @@ def bind_keyframe_asset(session: Any, *, keyframe_id: int, asset_type: str, auth
             session.delete(existing)
             session.flush()
         raise KeyframeAuthoringError("keyframe asset binding is not current", code="KEYFRAME_ASSET_BINDING_INVALID", diagnostics=[{"check": item} for item in failed or ["asset_resolution"]])
-    existing.binding_fingerprint = _binding_fingerprint(
+    existing.binding_fingerprint = _keyframe_binding_fingerprint(
+        keyframe_id=int(row.id),
         storyboard_shot_id=int(sequence.storyboard_shot_id),
         asset_type=kind,
         authority_fingerprint=str(result.get("authority_fingerprint") or ""),

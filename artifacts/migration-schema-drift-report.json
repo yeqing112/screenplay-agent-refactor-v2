@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 291,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 299,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 89,
     "MISSING_MIGRATION": 0,
@@ -11,7 +11,7 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 381
+    "total": 389
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -3401,6 +3401,86 @@
       "index": "ix_style_reference_assets_version",
       "kind": "index",
       "table": "style_reference_assets"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "generation_execution_id"
+      ],
+      "index": "ix_video_generation_intents_generation_execution_id",
+      "kind": "index",
+      "table": "video_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "intent_fingerprint"
+      ],
+      "index": "ix_video_generation_intents_intent_fingerprint",
+      "kind": "index",
+      "table": "video_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_video_generation_intents_storyboard_shot_id",
+      "kind": "index",
+      "table": "video_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "task_id"
+      ],
+      "index": "ix_video_generation_intents_task_id",
+      "kind": "index",
+      "table": "video_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "generation_execution_id"
+      ],
+      "index": "ix_video_generation_intents_execution",
+      "kind": "index",
+      "table": "video_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "intent_fingerprint"
+      ],
+      "index": "ix_video_generation_intents_fingerprint",
+      "kind": "index",
+      "table": "video_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_video_generation_intents_shot",
+      "kind": "index",
+      "table": "video_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "task_id"
+      ],
+      "index": "ix_video_generation_intents_task",
+      "kind": "index",
+      "table": "video_generation_intents"
     },
     {
       "blocking": false,
