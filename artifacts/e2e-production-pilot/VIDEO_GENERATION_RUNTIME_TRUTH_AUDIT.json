@@ -1,0 +1,61 @@
+{
+  "status": "VIDEO_GENERATION_RUNTIME_COMPLETE",
+  "implementation_commit": "5a56257f4853c37e4c01a6124efd307da368b660",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration": {
+    "head": "e6f7a8b9c0d1",
+    "fresh_upgrade": "PASS",
+    "repeated_upgrade": "PASS",
+    "legacy_replay": "PASS",
+    "schema_drift": "PASS"
+  },
+  "providers": {
+    "image": {
+      "website": "https://www.shapi.vip/",
+      "provider": "shapi-openai-images",
+      "base_url": "https://shapi.vip/v1",
+      "transport_binding": "shapi-openai-images.image.v1",
+      "provider_calls": 0
+    },
+    "video": {
+      "provider": "mock-video",
+      "provider_calls": 0,
+      "network_calls": 0,
+      "real_provider_enabled": false
+    }
+  },
+  "intent": {
+    "table": "video_generation_intents",
+    "anchor_table": "storyboard_shots",
+    "duration_required": true,
+    "aspect_ratio_required": true,
+    "motion_profile_persisted": true,
+    "first_and_last_keyframes_required": true,
+    "prompt_version_lineage_required": true,
+    "second_shot_system": false
+  },
+  "asset_binding": {
+    "table": "keyframe_asset_bindings",
+    "reuses_authority_version_pointer": true,
+    "keyframe_scoped_fingerprint": true,
+    "multi_frame_same_asset_supported": true,
+    "current_pointer_validation": true,
+    "second_asset_system": false
+  },
+  "execution_chain": {
+    "generation_execution": "reused",
+    "task_run": "reused",
+    "media_candidate": "reused",
+    "media_validation": "reused",
+    "review_promotion_linkage": "reused"
+  },
+  "tests": {
+    "video_runtime": {"passed": 5, "failed": 0},
+    "focused_regression": {"passed": 41, "failed": 0},
+    "full_pytest": {"passed": 1865, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "migration": "PASS",
+    "compile": "PASS",
+    "diff_check": "PASS"
+  }
+}
