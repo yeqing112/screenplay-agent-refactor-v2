@@ -2,7 +2,7 @@
 
 ## PHASE_MINIMAX_H3_VIDEO_PROVIDER_CANARY
 
-- **Implementation commit:** `30cfbee`.
+- **Implementation commit:** `8f66def`.
 - **Scope:** one Episode, one Shot, one Character, one Scene, one Video.
 - **Image model:** SHAPI ([shapi.vip](https://www.shapi.vip/)), profile/provider `shapi-openai-images`, transport `shapi-openai-images.image.v1`, base URL `https://shapi.vip/v1`.
 - **Video model:** MiniMax H3, registry provider `minimax-h3-async`, transport `minimax-h3-async.video.v1`, endpoint host `https://metaso.cn/api/minimax`.

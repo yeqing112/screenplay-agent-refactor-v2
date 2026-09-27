@@ -1,6 +1,6 @@
 {
   "status": "MINIMAX_H3_VIDEO_PROVIDER_CANARY_COMPLETE",
-  "implementation_commit": "30cfbeec8dfe224fa308dffa5624ce4e630ac04a",
+  "implementation_commit": "8f66def0ae0c3b280d33f2ad1a4ceb86ada30962",
   "scope": {
     "episodes": 1,
     "shots": 1,
