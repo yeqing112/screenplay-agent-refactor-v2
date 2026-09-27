@@ -109,6 +109,7 @@ from api.keyframe_authoring_api import router as keyframe_authoring_router
 from api.video_generation_api import router as video_generation_router
 from api.episode_rendering_api import router as episode_rendering_router
 from api.director_benchmark_api import router as director_benchmark_router
+from api.director_runtime_api import router as director_runtime_router
 
 from nodes.registry import REGISTRY, get_handler
 from nodes.runner import NodeRunner, WORKFLOWS_DIR, RUNS_DIR
@@ -174,6 +175,8 @@ app.include_router(video_generation_router)
 app.include_router(episode_rendering_router, prefix="/api")
 app.include_router(episode_rendering_router)
 app.include_router(director_benchmark_router)
+app.include_router(director_runtime_router)
+app.include_router(director_runtime_router, prefix="/api")
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft
 # compiled under an older delivery contract must never be deduplicated as if

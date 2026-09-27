@@ -50,6 +50,12 @@ class ShotPlan(Base):
     stale_status = Column(String, nullable=False, default="UNKNOWN")
     stale_reasons = Column(Text, nullable=False, default="[]")
     source_lineage = Column(Text, nullable=False, default="{}")
+    # AI Director runtime linkage.  The existing scene-level ShotPlan remains
+    # canonical; these fields identify the append-only DirectorPlan version
+    # that proposed this payload without changing source facts.
+    director_plan_id = Column(Integer, nullable=True, index=True)
+    director_plan_version = Column(Integer, nullable=True)
+    director_lineage = Column(Text, nullable=False, default="{}")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
 

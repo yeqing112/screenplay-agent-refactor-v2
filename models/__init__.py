@@ -31,6 +31,7 @@ from .agent import AgentSession, AgentPlan, AgentAuditLog, AgentAttachment, Agen
 from .director_treatment import DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer
 from .scene_blocking import SceneBlocking, SceneBlockingAuthority, SceneBlockingPointer
 from .shot_plan import ShotPlan, ShotPlanAuthority, ShotPlanPointer
+from .director_runtime import DirectorPlan, ScenePlan
 from .repair import RepairAttempt
 from .director_benchmark import DirectorBenchmarkRun
 from .production_asset_authority import (
@@ -81,6 +82,7 @@ __all__ = [
     "DirectorTreatmentAuthority", "DirectorTreatmentPointer",
     "SceneBlocking", "SceneBlockingAuthority", "SceneBlockingPointer",
     "ShotPlan", "ShotPlanAuthority", "ShotPlanPointer",
+    "DirectorPlan", "ScenePlan",
     "RepairAttempt",
     "DirectorBenchmarkRun",
     "ProductionAssetAuthorityRegistry", "ProductionAssetVersionRegistry",
