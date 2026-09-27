@@ -29,4 +29,4 @@
 
 ## Truth boundary
 
-The Provider Response evidence in this phase is a mocked fixture, not a real MiniMax response. No API key is included in execution snapshots, reports, tests, or committed artifacts. A real single-shot canary can be executed only after the explicit gray-gate variables and exact whitelist are supplied.
+The Provider Response evidence in this phase is a mocked fixture, not a real MiniMax response. No production API key is included in execution snapshots, reports, or committed artifacts; tests use only an explicit dummy credential. A real single-shot canary can be executed only after the explicit gray-gate variables and exact whitelist are supplied.
