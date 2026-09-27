@@ -1,0 +1,43 @@
+{
+  "status": "KEYFRAME_AUTHORING_RUNTIME_COMPLETE",
+  "implementation_commit": "64fc1e3",
+  "migration_head": "e5f6a7b8c9d0",
+  "provider": {
+    "website": "https://www.shapi.vip/",
+    "id": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "model_contract": "existing configured image profile",
+    "binding_id": "shapi-openai-images.image.v1",
+    "provider_calls": 0
+  },
+  "vertical_slice": [
+    "Existing StoryboardShot authority",
+    "Versioned KeyframeSequence with duration and frame_plan",
+    "Ordered Keyframe start/middle/end states",
+    "Camera, character, environment, and emotion motion intent",
+    "Shot Direction plus Frame State and Motion Preparation prompt injection",
+    "Immutable ProductionPromptVersion and Prompt Lineage source snapshot",
+    "KeyframeAssetBinding over existing Asset Authority/Version/Pointer",
+    "Primary first-frame asset traceability",
+    "SHAPI downstream image generation contract"
+  ],
+  "api": {
+    "query": ["/shots/{shot_id}/keyframes", "/api/shots/{shot_id}/keyframes"],
+    "create": ["/shots/{shot_id}/keyframes", "/api/shots/{shot_id}/keyframes"],
+    "update": ["/keyframes/{keyframe_id}", "/api/keyframes/{keyframe_id}"],
+    "validation": ["/shots/{shot_id}/keyframes/validation", "/api/shots/{shot_id}/keyframes/validation"],
+    "prompt": ["/keyframes/{keyframe_id}/prompt", "/api/keyframes/{keyframe_id}/prompt"],
+    "asset_binding": ["/keyframes/{keyframe_id}/assets", "/api/keyframes/{keyframe_id}/assets"]
+  },
+  "evidence": {
+    "model": "models/keyframe_authoring.py",
+    "service": "core/keyframe_authoring.py",
+    "api": "api/keyframe_authoring_api.py",
+    "migration": "alembic/versions/e5f6a7b8c9d0_add_keyframe_authoring_runtime.py",
+    "tests": "tests/test_keyframe_authoring_runtime.py",
+    "full_regression": {"passed": 1860, "failed": 0},
+    "focused_regression": {"passed": 47, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "migration_chain": "PASS"
+  }
+}

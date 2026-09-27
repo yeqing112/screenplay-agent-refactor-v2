@@ -1,0 +1,58 @@
+{
+  "status": "KEYFRAME_AUTHORING_RUNTIME_COMPLETE",
+  "implementation_commit": "64fc1e3",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration": {
+    "head": "e5f6a7b8c9d0",
+    "fresh_upgrade": "PASS",
+    "repeated_upgrade": "PASS",
+    "legacy_replay": "PASS",
+    "schema_drift": "PASS"
+  },
+  "provider": {
+    "website": "https://www.shapi.vip/",
+    "provider": "shapi-openai-images",
+    "base_url": "https://shapi.vip/v1",
+    "transport_binding": "shapi-openai-images.image.v1",
+    "provider_calls": 0
+  },
+  "sequence": {
+    "table": "keyframe_sequences",
+    "anchor_table": "storyboard_shots",
+    "versioned_sequence": true,
+    "duration_required": true,
+    "frame_plan_persisted": true,
+    "second_shot_system": false
+  },
+  "frames": {
+    "table": "keyframes",
+    "types": ["start", "middle", "end"],
+    "ordered_times": true,
+    "start_end_required": true,
+    "state_fields": ["camera_state", "character_state", "scene_state", "emotion_state"],
+    "motion_fields": ["camera_motion", "character_motion", "environment_motion", "emotion_transition"]
+  },
+  "asset_binding": {
+    "table": "keyframe_asset_bindings",
+    "reuses_authority_version_pointer": true,
+    "first_frame_primary_traceable": true,
+    "second_asset_system": false,
+    "current_pointer_validation": true
+  },
+  "prompt": {
+    "source_prompt_mutated": false,
+    "immutable_production_prompt_version": true,
+    "lineage_source_snapshot": true,
+    "provenance": ["KEYFRAME_AUTHORING", "SHOT_DIRECTION"]
+  },
+  "tests": {
+    "keyframe_runtime": {"passed": 4, "failed": 0},
+    "focused_regression": {"passed": 47, "failed": 0},
+    "full_pytest": {"passed": 1860, "failed": 0},
+    "golden": {"passed": 5, "failed": 0},
+    "migration": "PASS",
+    "api_routes": "PASS",
+    "compile": "PASS",
+    "diff_check": "PASS"
+  }
+}
