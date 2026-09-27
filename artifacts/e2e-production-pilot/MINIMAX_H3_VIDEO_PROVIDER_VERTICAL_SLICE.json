@@ -8,6 +8,7 @@
     "ProductionPromptVersion and media-scoped PromptIR",
     "Shot motion profile carried into provider request projection",
     "Current validated Shot Direction required for real provider canary",
+    "Provider motion profile derived from current Shot Direction",
     "MiniMax H3 Model Registry profile validation",
     "minimax-h3-async.video.v1 transport binding",
     "Normalized provider request/response with request_id, task_id, video_url, metadata, created_time",

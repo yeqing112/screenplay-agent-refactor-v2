@@ -1,6 +1,7 @@
 {
   "status": "MINIMAX_H3_VIDEO_PROVIDER_CANARY_COMPLETE",
-  "implementation_commit": "7d6cf45b648a6333cdbd8781b039ebd8664a2b50",
+  "implementation_commit": "7e326f614725c6c2c781acb86b90a01a4294e302",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
   "scope": {
     "episodes": 1,
     "shots": 1,
@@ -27,11 +28,24 @@
     "mocked_canary": "PASS",
     "provider_response_is_fixture": true
   },
+  "provider_response_projection": {
+    "provider": "minimax-h3-async",
+    "model": "MiniMax-H3",
+    "request_id": "task-canary-1",
+    "task_id": "task-canary-1",
+    "video_url": "https://cdn.example.test/canary.mp4",
+    "metadata": {
+      "status": "succeeded",
+      "duration": 5,
+      "seed": 7
+    },
+    "created_time": "runtime-generated UTC timestamp in fixture"
+  },
   "lineage": {
     "first_frame_source": "KeyframeAssetBinding -> ProductionAssetVersionRegistry",
     "last_frame_source": "optional KeyframeAssetBinding -> ProductionAssetVersionRegistry",
     "prompt_source": "ProductionPromptVersion and media-scoped PromptIR",
-    "motion_source": "VideoGenerationIntent.motion_profile",
+    "motion_source": "current validated Shot Direction projection",
     "shot_direction_source": "current validated Shot Direction (required for real provider canary)",
     "generation_execution": true,
     "media_candidate": true,
@@ -51,8 +65,8 @@
   },
   "migration_head": "f7a8b9c0d1e2",
   "tests": {
-    "provider_canary_contract": "9 passed",
-    "full_pytest": "1879 passed, 0 failed",
+    "provider_canary_contract": "10 passed",
+    "full_pytest": "1880 passed, 0 failed",
     "golden": "5/5 passed",
     "migration_chain": "PASS",
     "diff_check": "PASS"
