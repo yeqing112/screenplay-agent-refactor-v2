@@ -56,6 +56,9 @@ class ShotPlan(Base):
     director_plan_id = Column(Integer, nullable=True, index=True)
     director_plan_version = Column(Integer, nullable=True)
     director_lineage = Column(Text, nullable=False, default="{}")
+    director_reasoning_id = Column(Integer, nullable=True, index=True)
+    director_reasoning_version = Column(Integer, nullable=True)
+    reasoning_lineage = Column(Text, nullable=False, default="{}")
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
 

@@ -42,6 +42,9 @@ class ProductionGenerationIntent(Base):
     constraint_snapshot = Column(Text, nullable=False, default="{}")
     shot_requirement_snapshot = Column(Text, nullable=False, default="{}")
     shot_requirement_fingerprint = Column(String, nullable=False, index=True)
+    director_reasoning_id = Column(Integer, nullable=True, index=True)
+    director_reasoning_version = Column(Integer, nullable=True)
+    reasoning_lineage = Column(Text, nullable=False, default="{}")
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 

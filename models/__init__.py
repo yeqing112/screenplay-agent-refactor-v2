@@ -32,6 +32,7 @@ from .director_treatment import DirectorTreatment, DirectorTreatmentAuthority, D
 from .scene_blocking import SceneBlocking, SceneBlockingAuthority, SceneBlockingPointer
 from .shot_plan import ShotPlan, ShotPlanAuthority, ShotPlanPointer
 from .director_runtime import DirectorPlan, ScenePlan
+from .director_reasoning import DirectorReasoning, StoryBeat, VisualDecision
 from .repair import RepairAttempt
 from .director_benchmark import DirectorBenchmarkRun
 from .production_asset_authority import (
@@ -83,6 +84,7 @@ __all__ = [
     "SceneBlocking", "SceneBlockingAuthority", "SceneBlockingPointer",
     "ShotPlan", "ShotPlanAuthority", "ShotPlanPointer",
     "DirectorPlan", "ScenePlan",
+    "DirectorReasoning", "StoryBeat", "VisualDecision",
     "RepairAttempt",
     "DirectorBenchmarkRun",
     "ProductionAssetAuthorityRegistry", "ProductionAssetVersionRegistry",
