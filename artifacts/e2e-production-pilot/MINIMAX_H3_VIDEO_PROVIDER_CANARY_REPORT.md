@@ -2,7 +2,7 @@
 
 ## PHASE_MINIMAX_H3_VIDEO_PROVIDER_CANARY
 
-- **Implementation commit:** `de608187c45d0eec5c231c72623cfd3a0ac2b35d`.
+- **Implementation commit:** `7d6cf45b648a6333cdbd8781b039ebd8664a2b50`.
 - **Scope:** one Episode, one Shot, one Character, one Scene, one Video.
 - **Image model:** SHAPI ([shapi.vip](https://www.shapi.vip/)), profile/provider `shapi-openai-images`, transport `shapi-openai-images.image.v1`, base URL `https://shapi.vip/v1`.
 - **Video model:** MiniMax H3, registry provider `minimax-h3-async`, transport `minimax-h3-async.video.v1`, endpoint host `https://metaso.cn/api/minimax`.
@@ -15,7 +15,7 @@
 - `execute_video_generation()` now accepts `model_profile_id`, resolves real video profiles through `api.model_registry`, records `VIDEO_PROVIDER_CANARY`, profile fingerprint, adapter/version, request/task IDs, response hash, and secret-free request/response projections.
 - First frame URL is resolved from the current Keyframe Asset binding and Production Asset Version. Motion profile is carried from the Video Generation Intent into the provider request projection.
 - First and last frame URLs are carried as authoritative `first_frame` / `last_frame` payload parts when present. Real provider execution also requires a valid current Shot Direction; its fingerprint and profiles are recorded in the request projection.
-- The adapter keeps only the non-secret Model Registry projection. The API key is supplied as a short-lived runtime credential for the transport call and is not retained on the adapter or in snapshots.
+- The adapter retains no Model Registry profile, endpoint, model name, or API key. Each call receives and validates a short-lived runtime Model Registry profile; the credential is used only for that transport call and is absent from snapshots.
 - Added `GET /video-generation/{intent_id}` for read-only intent, execution, candidate, validation, and promotion status.
 - The existing lineage remains intact: `GenerationExecutionRecord` → `MediaCandidateRecord` → `MediaValidationRecord` → pending `MediaPromotionRecord`; OfficialMedia is created only after the existing review approval gate.
 

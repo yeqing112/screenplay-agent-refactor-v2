@@ -15,7 +15,7 @@
     "MediaCandidateRecord and MediaValidationRecord reuse",
     "MediaPromotionRecord created as review required",
     "OfficialMedia remains pending explicit approval"
-    ,"Adapter retains no API key; runtime credential is single-call only"
+    ,"Adapter retains no Model Registry profile, endpoint, model name, or API key; runtime profile is single-call only"
   ],
   "api": {
     "intent": [

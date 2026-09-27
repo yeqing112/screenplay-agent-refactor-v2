@@ -1,6 +1,6 @@
 {
   "status": "MINIMAX_H3_VIDEO_PROVIDER_CANARY_COMPLETE",
-  "implementation_commit": "de608187c45d0eec5c231c72623cfd3a0ac2b35d",
+  "implementation_commit": "7d6cf45b648a6333cdbd8781b039ebd8664a2b50",
   "scope": {
     "episodes": 1,
     "shots": 1,
@@ -42,6 +42,9 @@
     "official_media_reason": "promotion remains behind existing human approval gate"
   },
   "security": {
+    "adapter_profile_persisted": false,
+    "adapter_endpoint_persisted": false,
+    "adapter_model_persisted": false,
     "api_key_persisted": false,
     "api_key_in_request_snapshot": false,
     "api_key_in_response_snapshot": false
