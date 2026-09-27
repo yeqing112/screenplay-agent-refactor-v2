@@ -1,0 +1,43 @@
+{
+  "phase": "PHASE_DIRECTOR_LLM_ADAPTER_RUNTIME",
+  "completion_marker": "DIRECTOR_LLM_ADAPTER_RUNTIME_COMPLETE",
+  "implementation_commit": "422bc742aae9a549a1a54f3d3ffb1ac798a2a881",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration_head": "j1e2f3g4h5i6",
+  "truth_boundary": {
+    "real_llm_called": false,
+    "mock_adapter_allowed_for_tests": true,
+    "real_provider_transport_enabled": false,
+    "image_generation_called": false,
+    "video_generation_called": false,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0,
+    "shot_mutations": 0,
+    "asset_mutations": 0,
+    "direct_database_write_from_adapter": false,
+    "human_review_required": true,
+    "compile_triggered_by_generation": false
+  },
+  "validation_pipeline": [
+    "Provider envelope extraction",
+    "DirectorReasoningPayload JSON schema validation",
+    "DirectorReasoningIR scene/character/style/shot reference validation",
+    "Context and source lineage creation",
+    "REVIEW_REQUIRED draft persistence"
+  ],
+  "providers": [
+    {"name": "openai-compatible", "transport": "injected only", "real_calls": 0},
+    {"name": "anthropic-compatible", "transport": "injected only", "real_calls": 0},
+    {"name": "custom", "transport": "callable contract", "real_calls": 0},
+    {"name": "mock", "transport": "deterministic test adapter", "real_calls": 0}
+  ],
+  "generation_statuses": ["RUNNING", "REVIEW_REQUIRED", "FAILED"],
+  "verification": {
+    "adapter_tests": "7 passed",
+    "reasoning_regression": "5 passed",
+    "full_suite": "1895 passed",
+    "golden_tests": "5 passed, 0 failed",
+    "migration_ci": "PASS",
+    "diff_check": "PASS"
+  }
+}

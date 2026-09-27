@@ -1,0 +1,23 @@
+{
+  "phase": "PHASE_DIRECTOR_LLM_ADAPTER_RUNTIME",
+  "completion_marker": "DIRECTOR_LLM_ADAPTER_RUNTIME_COMPLETE",
+  "implementation_commit": "422bc742aae9a549a1a54f3d3ffb1ac798a2a881",
+  "migration_head": "j1e2f3g4h5i6",
+  "vertical_slice": [
+    {"stage": "Episode", "source": "episode_context", "reviewable": true},
+    {"stage": "DirectorContextBuilder", "source": "Episode + ScriptIR + Characters + Scenes + VisualStyle + ExistingShots", "snapshot_hashed": true, "database_write": false},
+    {"stage": "DirectorLLMAdapter", "providers": ["openai-compatible", "anthropic-compatible", "custom", "mock"], "database_write": false, "media_generation": false},
+    {"stage": "DirectorReasoningIR", "authority": "director_reasonings", "status": "REVIEW_REQUIRED", "versioned": true},
+    {"stage": "HumanReview", "required": true, "bypass": false},
+    {"stage": "Compile", "endpoint": "POST /episodes/{id}/director-reasoning/compile", "automatic": false, "fail_closed": true},
+    {"stage": "ShotPlan", "authority": "shot_plans", "created_only_by_compile": true},
+    {"stage": "GenerationIntent", "lineage": "director_reasoning_id + director_reasoning_version", "media_submitted": false}
+  ],
+  "api": [
+    "POST /episodes/{id}/director-reasoning/generate",
+    "GET /episodes/{id}/director-reasoning/generation-status",
+    "POST /episodes/{id}/director-reasoning/compile"
+  ],
+  "review_boundary": "Generation persists only a review-required DirectorReasoning draft; ShotPlan compilation remains a separate human-reviewed action.",
+  "provider_policy": "No real LLM, image provider, video provider, or media generation was invoked."
+}
