@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 271,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 273,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 89,
     "MISSING_MIGRATION": 0,
@@ -11,7 +11,7 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 361
+    "total": 363
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -2651,6 +2651,26 @@
       "index": "ix_shot_character_bindings_version",
       "kind": "index",
       "table": "shot_character_bindings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_shot_directions_storyboard_shot_id",
+      "kind": "index",
+      "table": "shot_directions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_shot_directions_shot",
+      "kind": "index",
+      "table": "shot_directions"
     },
     {
       "blocking": false,

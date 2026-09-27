@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "e3f4a5b6c7d8"
+HEAD = "e4f5a6b7c8d9"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -89,6 +89,7 @@ AUTHORITY_TABLES = {
     "visual_style_profiles",
     "style_reference_assets",
     "shot_style_bindings",
+    "shot_directions",
 }
 
 REQUIRED_COLUMNS = {
@@ -159,6 +160,7 @@ REQUIRED_COLUMNS = {
     "visual_style_profiles": {"book_id", "name", "description", "camera_profile", "lighting_profile", "color_profile", "composition_profile"},
     "style_reference_assets": {"style_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},
     "shot_style_bindings": {"storyboard_shot_id", "book_id", "episode", "style_id", "scope", "reference_asset_ids", "style_rules", "constraint_snapshot", "asset_authority_id", "asset_version_id", "binding_fingerprint", "status"},
+    "shot_directions": {"storyboard_shot_id", "shot_type", "camera_profile", "movement_profile", "composition_profile", "performance_profile", "emotion_profile", "revision", "direction_fingerprint", "status"},
 }
 
 

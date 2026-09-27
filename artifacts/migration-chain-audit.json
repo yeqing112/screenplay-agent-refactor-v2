@@ -2,14 +2,14 @@
   "ambiguous_production_head": false,
   "cycle_detected": false,
   "forbidden_migration_patterns": [],
-  "generated_at": "2026-09-27T02:38:49.093133+00:00",
+  "generated_at": "2026-09-27T04:58:13.077251+00:00",
   "heads": [
-    "e3f4a5b6c7d8"
+    "e4f5a6b7c8d9"
   ],
   "migration_application_runtime_imports": 0,
   "missing_predecessors": [],
   "orphan_revisions": [],
-  "revision_count": 55,
+  "revision_count": 56,
   "revisions": [
     {
       "application_runtime_import": false,
@@ -761,7 +761,9 @@
       "file": "alembic\\versions\\e3f4a5b6c7d8_add_visual_style_consistency_runtime.py",
       "model_runtime_import": false,
       "revision": "e3f4a5b6c7d8",
-      "successors": [],
+      "successors": [
+        "e4f5a6b7c8d9"
+      ],
       "tables_altered": [],
       "tables_created": [
         "visual_style_profiles",
@@ -772,6 +774,30 @@
         "shot_style_bindings",
         "style_reference_assets",
         "visual_style_profiles"
+      ],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": true,
+      "down_revision": "e3f4a5b6c7d8",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\e4f5a6b7c8d9_add_shot_direction_runtime.py",
+      "model_runtime_import": false,
+      "revision": "e4f5a6b7c8d9",
+      "successors": [],
+      "tables_altered": [],
+      "tables_created": [
+        "shot_directions"
+      ],
+      "tables_dropped": [
+        "shot_directions"
       ],
       "use_of_app_engine": false,
       "use_of_create_all": false
