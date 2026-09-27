@@ -97,6 +97,8 @@ def create_production_prompt_version(
     prompt_structure: Mapping[str, Any] | None = None,
     created_from: str = "SHOT_REQUIREMENT",
     shot_id: int | None = None,
+    scene_id: int | str | None = None,
+    scene_shot_id: int | None = None,
 ) -> dict[str, Any]:
     """Append a prompt version; existing versions are never updated."""
     prompt_key = str(prompt_id or "").strip()
@@ -115,6 +117,16 @@ def create_production_prompt_version(
         text = injected["injected_prompt"]
         structure.update(injected["prompt_structure"])
         created_from = "CHARACTER_CONSISTENCY"
+    if scene_id is not None or scene_shot_id is not None:
+        from core.scene_continuity import inject_scene_constraints
+
+        injected_scene = inject_scene_constraints(session, original_prompt=text, shot_id=scene_shot_id, scene_id=scene_id)
+        text = injected_scene["injected_prompt"]
+        structure.update(injected_scene["prompt_structure"])
+        if created_from == "SHOT_REQUIREMENT":
+            created_from = "SCENE_CONTINUITY"
+        elif "SCENE_CONTINUITY" not in created_from:
+            created_from = f"{created_from}+SCENE_CONTINUITY"
     existing = (
         session.query(ProductionPromptVersion)
         .filter_by(prompt_id=prompt_key)

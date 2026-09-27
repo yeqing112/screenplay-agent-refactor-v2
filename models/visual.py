@@ -93,6 +93,10 @@ class VisualLocation(Base):
     category = Column(String, default="")
     style = Column(String, default="")
     description = Column(Text, default="")
+    # Scene Continuity identity envelope.  These fields extend the existing
+    # VisualLocation authority and do not introduce a second scene registry.
+    attributes = Column(Text, default="{}")
+    environment_profile = Column(Text, default="{}")
     color_palette = Column(Text, default="")
     lighting_mood = Column(Text, default="")
     key_props = Column(Text, default="[]")
@@ -344,3 +348,7 @@ class DecisionPacketRecord(Base):
     confirmed_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
+
+
+# Scene continuity uses the established VisualLocation authority.
+SceneIdentity = VisualLocation

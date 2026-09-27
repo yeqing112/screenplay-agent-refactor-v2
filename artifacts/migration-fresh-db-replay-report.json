@@ -1,8 +1,8 @@
 {
-  "alembic_version": "e1f2a3b4c5d6",
+  "alembic_version": "e2f3a4b5c6d7",
   "first_error": null,
   "first_upgrade": "PASS",
-  "head": "e1f2a3b4c5d6",
+  "head": "e2f3a4b5c6d7",
   "second_error": null,
   "second_upgrade": "PASS",
   "status": "PASS"

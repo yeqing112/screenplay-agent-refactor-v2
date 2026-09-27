@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "e1f2a3b4c5d6"
+HEAD = "e2f3a4b5c6d7"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -84,6 +84,8 @@ AUTHORITY_TABLES = {
     "production_prompt_lineages",
     "character_reference_assets",
     "shot_character_bindings",
+    "scene_reference_assets",
+    "shot_scene_bindings",
 }
 
 REQUIRED_COLUMNS = {
@@ -148,6 +150,9 @@ REQUIRED_COLUMNS = {
     "character_profiles": {"description", "attributes", "appearance_profile"},
     "character_reference_assets": {"character_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},
     "shot_character_bindings": {"storyboard_shot_id", "character_id", "role", "reference_asset_ids", "appearance_rules", "constraint_snapshot", "asset_authority_id", "asset_version_id", "binding_fingerprint", "status"},
+    "visual_locations": {"attributes", "environment_profile"},
+    "scene_reference_assets": {"scene_id", "asset_id", "reference_type", "priority", "visual_reference_asset_id", "asset_version_id", "constraint_snapshot", "status"},
+    "shot_scene_bindings": {"storyboard_shot_id", "scene_id", "reference_asset_ids", "environment_rules", "constraint_snapshot", "asset_authority_id", "asset_version_id", "binding_fingerprint", "status"},
 }
 
 
