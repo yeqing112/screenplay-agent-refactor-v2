@@ -1,0 +1,23 @@
+{
+  "phase": "PHASE_DIRECTOR_REASONING_RUNTIME",
+  "completion_marker": "DIRECTOR_REASONING_RUNTIME_COMPLETE",
+  "implementation_commit": "70b67a36afe4353754c3e401e27b231edeee823e",
+  "migration_head": "i0d1e2f3g4h5",
+  "vertical_slice": [
+    {"stage": "Episode", "authority": "episode_context", "reviewable": true},
+    {"stage": "DirectorReasoningIR", "authority": "director_reasonings", "reviewable": true, "versioned": true},
+    {"stage": "StoryBeat", "authority": "director_story_beats", "reviewable": true},
+    {"stage": "VisualDecision", "authority": "director_visual_decisions", "reviewable": true},
+    {"stage": "ShotPlan", "authority": "shot_plans", "reviewable": true, "generation_blocked_until_review": true},
+    {"stage": "GenerationIntent", "authority": "production_generation_intents", "reviewable": true, "generation_submitted": false},
+    {"stage": "PromptVersion", "authority": "prompt_lineage_candidate", "reviewable": true, "generation_submitted": false}
+  ],
+  "api": [
+    "POST /episodes/{id}/director-reasoning",
+    "GET /episodes/{id}/director-reasoning",
+    "POST /episodes/{id}/director-reasoning/compile",
+    "POST /episodes/{id}/director-reasoning/{version}/rollback"
+  ],
+  "human_review_boundary": "Compile emits reviewable draft candidates and requires human approval before authority activation or media generation.",
+  "provider_policy": "No real LLM, image provider, or video provider is invoked in this phase."
+}

@@ -1,0 +1,37 @@
+{
+  "phase": "PHASE_DIRECTOR_REASONING_RUNTIME",
+  "completion_marker": "DIRECTOR_REASONING_RUNTIME_COMPLETE",
+  "implementation_commit": "70b67a36afe4353754c3e401e27b231edeee823e",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration_head": "i0d1e2f3g4h5",
+  "truth_boundary": {
+    "real_llm_called": false,
+    "image_generation_called": false,
+    "video_generation_called": false,
+    "source_fact_mutated": false,
+    "script_ir_mutated": false,
+    "human_review_required": true,
+    "compile_fails_closed": true
+  },
+  "lineage": [
+    "DirectorReasoningIR",
+    "StoryBeat",
+    "VisualDecision",
+    "ShotPlan",
+    "GenerationIntent",
+    "PromptVersion"
+  ],
+  "versioning": {
+    "reasoning_versions_are_append_only": true,
+    "rollback_preserves_prior_versions": true,
+    "shot_plan_lineage_fields": ["director_reasoning_id", "director_reasoning_version", "reasoning_lineage"],
+    "generation_intent_lineage_fields": ["director_reasoning_id", "director_reasoning_version", "reasoning_lineage"]
+  },
+  "verification": {
+    "director_reasoning_tests": "5 passed",
+    "migration_chain_tests": "7 passed",
+    "golden_tests": "5 passed, 0 failed",
+    "migration_ci": "PASS",
+    "diff_check": "PASS"
+  }
+}
