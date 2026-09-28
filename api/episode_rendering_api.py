@@ -15,6 +15,11 @@ from core.episode_rendering import (
     render_episode,
     serialize_episode_render_plan,
 )
+from core.episode_production import (
+    EpisodeProductionError,
+    get_episode_production_status,
+    run_episode_production,
+)
 from models import Session
 
 
@@ -52,7 +57,21 @@ class CompleteEpisodeRenderRequest(BaseModel):
     reviewed: bool = False
 
 
+class EpisodeProductionRunRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    plan_id: int | None = Field(default=None, gt=0, validation_alias=AliasChoices("plan_id", "planId"))
+    dry_run: bool = Field(default=False, validation_alias=AliasChoices("dry_run", "dryRun"))
+    retry_failed: bool = Field(default=False, validation_alias=AliasChoices("retry_failed", "retryFailed"))
+    provider_id: str = Field(default="mock-video", validation_alias=AliasChoices("provider_id", "providerId"))
+    model_profile_id: str | None = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
+
+
 def _raise(exc: EpisodeRenderingError) -> None:
+    raise HTTPException(status_code=exc.status_code, detail=exc.to_dict()) from exc
+
+
+def _raise_production(exc: EpisodeProductionError) -> None:
     raise HTTPException(status_code=exc.status_code, detail=exc.to_dict()) from exc
 
 
@@ -128,4 +147,40 @@ def complete_render(episode_id: int, req: CompleteEpisodeRenderRequest | None = 
             _raise(exc)
 
 
-__all__ = ["router"]
+@router.post("/{episode_id}/production/run")
+def production_run(episode_id: int, req: EpisodeProductionRunRequest | None = None):
+    request = req or EpisodeProductionRunRequest()
+    with Session() as session:
+        try:
+            result = run_episode_production(
+                session,
+                episode_id=episode_id,
+                plan_id=request.plan_id,
+                dry_run=request.dry_run,
+                retry_failed=request.retry_failed,
+                provider_id=request.provider_id,
+                model_profile_id=request.model_profile_id,
+            )
+            if not request.dry_run:
+                session.commit()
+            return result
+        except EpisodeProductionError as exc:
+            session.rollback()
+            _raise_production(exc)
+        except EpisodeRenderingError as exc:
+            session.rollback()
+            _raise(exc)
+
+
+@router.get("/{episode_id}/production-status")
+def production_status(episode_id: int, plan_id: int | None = None):
+    with Session() as session:
+        try:
+            return get_episode_production_status(session, episode_id=episode_id, plan_id=plan_id)
+        except EpisodeProductionError as exc:
+            _raise_production(exc)
+        except EpisodeRenderingError as exc:
+            _raise(exc)
+
+
+__all__ = ["router", "EpisodeProductionRunRequest"]

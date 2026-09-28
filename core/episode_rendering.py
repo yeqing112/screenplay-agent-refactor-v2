@@ -331,6 +331,19 @@ def complete_episode_render_plan(session: Any, *, episode_id: int, plan_id: int 
     items = _items(session, plan)
     if any(item.status != "COMPLETED" for item in items):
         raise EpisodeRenderingError("Every render item must complete before episode completion.", code="EPISODE_RENDER_ITEMS_INCOMPLETE", diagnostics={"statuses": {item.shot_id: item.status for item in items}})
+    # Episode production plans may use the legacy render-plan row as their
+    # coordination index.  When any VIDEO intent exists, completion is a
+    # strict projection over current Official SHOT_PRIMARY_VIDEO authorities;
+    # the older IMAGE-only render contract remains compatible for legacy
+    # callers that have no video intents.
+    from models import VideoGenerationIntent
+    video_shot_ids = {int(row.storyboard_shot_id) for row in session.query(VideoGenerationIntent).filter(VideoGenerationIntent.storyboard_shot_id.in_([int(item.shot_id) for item in items])).all()}
+    if video_shot_ids:
+        from core.episode_production import resolve_shot_production_state
+        production_states = {int(item.shot_id): resolve_shot_production_state(session, shot_id=int(item.shot_id)) for item in items}
+        incomplete = {shot_id: detail.get("state") for shot_id, detail in production_states.items() if detail.get("state") != "COMPLETE"}
+        if incomplete:
+            raise EpisodeRenderingError("Every required shot must have a current approved Official Shot Video before episode completion.", code="EPISODE_RENDER_ITEMS_INCOMPLETE", diagnostics={"production_states": incomplete})
     now = datetime.utcnow()
     plan.status = "COMPLETED"
     plan.completed_at = now
