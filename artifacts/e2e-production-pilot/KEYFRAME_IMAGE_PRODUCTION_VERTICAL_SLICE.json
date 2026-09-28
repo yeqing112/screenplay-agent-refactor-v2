@@ -42,7 +42,14 @@
     "generation_intent_eligibility": "PASS",
     "middle_optional_production": "PASS",
     "real_provider_gate_default": "SKIP",
-    "production_prompt_lineage": "PASS"
+    "production_prompt_lineage": "PASS",
+    "keyframe_image_tests": "12 passed",
+    "focused_regression": "49 passed",
+    "full_regression": "1923 passed",
+    "prompt_projection": "PASS",
+    "prompt_authority_stale_guard": "PASS",
+    "real_candidate_lineage": "PASS",
+    "source_revision_after_execution": "PASS"
   },
   "failure_slice": {
     "source_revision_during_or_before_promotion": "promotion blocked",

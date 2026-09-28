@@ -29,14 +29,14 @@
 
 ## Verification
 
-- `pytest -q` — **1918 passed** on the current branch (including downstream runtime migrations).
-- Focused Director/production regression — **44 passed** (`test_ai_director_runtime_foundation`, migration hardening, keyframe image, automatic keyframe, asset promotion, model adapter, generation execution, and video runtime).
+- `pytest -q` — **1923 passed** on the current branch (including downstream runtime migrations).
+- Focused Director/production regression — **49 passed** (`test_ai_director_runtime_foundation`, migration hardening, keyframe image, automatic keyframe, asset promotion, model adapter, generation execution, and video runtime).
 - `npm run test:golden` — **5/5 passed**.
 - `python -m scripts.verify_migration_chain --ci` — **PASS**; fresh upgrade, repeat upgrade, legacy fixtures, schema, and metadata drift all passed (current repository head `m4h5i6j7k8l9`).
 - `git diff --check` — **PASS**.
 - `python -m compileall -q core api models scripts tests` — **PASS**.
 
-The latest guard and evidence implementation is commit `9e39592` (`feat: tighten keyframe image production guards`). It adds the GenerationIntent eligibility check, optional MIDDLE production, START/END video-intent compatibility, prompt-lineage binding, and a default-disabled real-provider canary gate.
+The latest guard and evidence implementation is commit `0e17e6e` (`feat: harden keyframe image lineage guards`). It adds the GenerationIntent eligibility check, optional MIDDLE production, START/END video-intent compatibility, prompt-lineage binding, and a default-disabled real-provider canary gate.
 
 ## Migration and lineage
 

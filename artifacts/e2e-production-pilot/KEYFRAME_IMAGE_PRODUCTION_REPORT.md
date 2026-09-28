@@ -15,8 +15,9 @@ The executable prompt authority is the existing **PromptIRPointer + PromptIRVers
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Previous remote HEAD before this implementation: `6f1a537b68e3ead98c28bb620c22e7111e13709b`
 - Implementation commit: `33fc4f7841b933754eae8e68fa876b1d55ade0eb`
-- Guard hardening commit: `9e39592` (`feat: tighten keyframe image production guards`)
-- Report commit: recorded by the commit containing this report
+- Guard hardening commit: `0e17e6e` (`feat: harden keyframe image lineage guards`)
+- Report commit: the commit containing this report
+- Remote HEAD: `origin/codex/visual-authoring-provider-canary-reconcile` (verified after push)
 - Migration head: `m4h5i6j7k8l9`
 - New migration: **not required**. Existing GenerationExecution, PromptIR, Media Authority, Production Asset Authority, and Keyframe Authoring tables express the new scope.
 
@@ -24,9 +25,9 @@ The executable prompt authority is the existing **PromptIRPointer + PromptIRVers
 
 | Check | Result |
 |---|---:|
-| Keyframe image production tests | 7 passed |
-| Focused regression | 44 passed |
-| Full regression | 1918 passed |
+| Keyframe image production tests | 12 passed |
+| Focused regression | 49 passed |
+| Full regression | 1923 passed |
 | Golden | 5/5 (existing baseline) |
 | Migration CI | fresh/repeat/legacy/drift PASS (existing baseline) |
 | SHAPI provider calls | 0 real calls; fixture provider metadata only |
@@ -50,6 +51,8 @@ The executable prompt authority is the existing **PromptIRPointer + PromptIRVers
 - No source fact, ScriptIR, StoryboardPlan, StoryboardShot, ShotDirection, or AutomaticKeyframePlan fact is mutated by image production.
 - The fixture path emits no network request and no secret. Real provider execution remains fail-closed unless `PHASE_F_PROVIDER_CANARY_REAL=1` explicitly enables the canonical provider orchestrator.
 - Approved assets now write the existing `ProductionPromptLineage` record; no second prompt authority is introduced.
+- The executable request carries the immutable keyframe-scoped ProductionPromptVersion projection, while PromptIRPointer + PromptIRVersion remain the sole GenerationExecution authority.
+- Real-provider candidates are enriched with keyframe, sequence, plan, prompt, execution, and source-fingerprint metadata without storing credentials.
 - Video compatibility remains through the existing keyframe binding contract; no video is generated in this phase.
 
 ## API
