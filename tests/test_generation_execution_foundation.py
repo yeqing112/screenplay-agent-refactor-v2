@@ -109,6 +109,8 @@ def test_state_machine_accepts_required_transitions_and_rejects_terminal_reentry
         )
         service.transition(row.execution_id, "QUEUED")
         service.transition(row.execution_id, "RUNNING")
+        service.transition(row.execution_id, "PROVIDER_PENDING")
+        service.transition(row.execution_id, "PROVIDER_CALLED")
         service.transition(row.execution_id, "SUCCESS", response_payload={"provider_calls": 0})
         session.commit()
         assert row.execution_status == "SUCCESS"
@@ -149,6 +151,32 @@ def test_failed_retry_cycle_returns_to_queue_and_counts_retry(tmp_path: Path):
         engine.dispose()
 
 
+def test_provider_pending_failure_is_terminal_and_retryable(tmp_path: Path):
+    engine, session = _session(tmp_path)
+    try:
+        shot, version, pointer = _fixture(session, business_shot_id=7005)
+        service = GenerationExecutionService(session)
+        row = service.create_execution(
+            shot_id=shot.id,
+            prompt_pointer_id=pointer.id,
+            prompt_version_id=version.id,
+            model_profile_id="foundation-pending-profile",
+        )
+        service.transition(row.execution_id, "QUEUED")
+        service.transition(row.execution_id, "RUNNING")
+        service.transition(row.execution_id, "PROVIDER_PENDING")
+        service.transition(row.execution_id, "FAILED", error_message="provider polling failed")
+        service.transition(row.execution_id, "RETRYING")
+        session.commit()
+        assert row.execution_status == "RETRYING"
+        assert row.error_message == "provider polling failed"
+        assert row.completed_at is not None
+        assert row.retry_count == 1
+    finally:
+        session.close()
+        engine.dispose()
+
+
 def test_api_contract_functions_create_and_query_execution(tmp_path: Path, monkeypatch):
     engine, session = _session(tmp_path)
     try:
@@ -172,4 +200,3 @@ def test_api_contract_functions_create_and_query_execution(tmp_path: Path, monke
     finally:
         session.close()
         engine.dispose()
-

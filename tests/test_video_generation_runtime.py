@@ -46,6 +46,14 @@ def _motion():
     return {"camera_motion": "slow_push_in", "subject_motion": "head_turn", "environment_motion": "wind_motion", "emotion_transition": "calm_to_fear"}
 
 
+def test_execution_projection_redacts_nested_provider_credentials():
+    assert runtime._secret_free({
+        "Authorization": "Bearer secret",
+        "api_key": "secret",
+        "nested": {"x-api-key": "secret", "status": "succeeded"},
+    }) == {"nested": {"status": "succeeded"}}
+
+
 def test_migration_exposes_video_generation_intent(tmp_path):
     engine, session = _session(tmp_path)
     try:

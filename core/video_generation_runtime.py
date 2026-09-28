@@ -66,6 +66,21 @@ def _text(value: Any) -> str:
     return str(value or "").strip()
 
 
+_SECRET_KEYS = frozenset({"apikey", "authorization", "accesstoken", "refreshtoken", "clientsecret", "secret", "token"})
+
+
+def _secret_free(value: Any) -> Any:
+    """Return a JSON-safe provider projection with credentials removed."""
+    if isinstance(value, Mapping):
+        def normalized_key(key: Any) -> str:
+            return "".join(character for character in str(key).lower() if character.isalnum())
+
+        return {str(key): _secret_free(item) for key, item in value.items() if normalized_key(key) not in _SECRET_KEYS and not normalized_key(key).endswith("apikey")}
+    if isinstance(value, (list, tuple)):
+        return [_secret_free(item) for item in value]
+    return value
+
+
 def _iso(value: datetime | None) -> str | None:
     return value.isoformat() if value else None
 
@@ -292,7 +307,7 @@ def _persist_video_candidate(session: Any, execution: GenerationExecutionRecord,
 
 
 def _execution_dict(row: GenerationExecutionRecord) -> dict[str, Any]:
-    return {"execution_id": row.execution_id, "generation_type": row.generation_type, "status": row.execution_status, "target_media": row.target_media, "shot_id": row.storyboard_shot_id, "provider": row.provider, "model": row.model, "provider_task_id": row.provider_task_id, "candidate_id": row.candidate_id, "provider_calls": int(row.logical_provider_calls or 0), "request_payload": row.request_payload, "response_payload": row.response_payload}
+    return {"execution_id": row.execution_id, "generation_type": row.generation_type, "status": row.execution_status, "target_media": row.target_media, "shot_id": row.storyboard_shot_id, "provider": row.provider, "model": row.model, "provider_task_id": row.provider_task_id, "candidate_id": row.candidate_id, "provider_calls": int(row.logical_provider_calls or 0), "request_payload": _secret_free(row.request_payload), "response_payload": _secret_free(row.response_payload)}
 
 
 def get_video_generation_status(session: Any, *, intent_id: int) -> dict[str, Any]:
@@ -417,7 +432,7 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
         "source_prompt_ir_version_id": int(first.get("source_prompt_ir_version_id") or 0),
         "source_prompt_ir_payload_hash": str(first.get("source_prompt_ir_payload_hash") or ""),
     }
-    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt_text, "prompt_authority": {"pointer_id": int(pointer.id), "version_id": int(prompt_ir.id), "payload_hash": str(prompt_ir.payload_hash), "authority_id": int(prompt_authority.id) if prompt_authority else None}, "motion_profile": provider_motion_profile, "intent_motion_profile": intent_motion_profile, "motion_source": "SHOT_DIRECTION" if not is_mock else "VIDEO_GENERATION_INTENT", "shot_direction": shot_direction, "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "image_to_video_source": source_binding if str(policy.get("mode") or "").upper() == "IMAGE_TO_VIDEO" else None, "media_role": "SHOT_PRIMARY_VIDEO", "shot_video_lineage": strict_lineage}
+    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "source_fingerprint": strict_lineage.get("base_source_fingerprint"), "shot_direction_fingerprint": strict_lineage.get("shot_direction_fingerprint"), "keyframe_sequence_revision": strict_lineage.get("keyframe_sequence_revision"), "prompt_version": intent.prompt_version, "prompt_text": prompt_text, "prompt_authority": {"pointer_id": int(pointer.id), "version_id": int(prompt_ir.id), "payload_hash": str(prompt_ir.payload_hash), "authority_id": int(prompt_authority.id) if prompt_authority else None}, "motion_profile": provider_motion_profile, "intent_motion_profile": intent_motion_profile, "motion_source": "SHOT_DIRECTION" if not is_mock else "VIDEO_GENERATION_INTENT", "shot_direction": shot_direction, "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "image_to_video_source": source_binding if str(policy.get("mode") or "").upper() == "IMAGE_TO_VIDEO" else None, "media_role": "SHOT_PRIMARY_VIDEO", "shot_video_lineage": strict_lineage}
     session.add(execution)
     intent.generation_execution_id = execution_id
     intent.task_id = task_id
@@ -430,6 +445,8 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
     try:
         service.transition(execution_id, "QUEUED")
         service.transition(execution_id, "RUNNING")
+        if not is_mock:
+            service.transition(execution_id, "PROVIDER_PENDING")
         result = provider.generate_video(prompt=prompt_text, motion_profile=provider_motion_profile, duration=float(intent.duration), aspect_ratio=intent.aspect_ratio, first_frame_asset=first, last_frame_asset=last, request_context={"intent_id": intent.id, "shot_id": shot.id, "episode": shot.episode, "canary_scope": f"episode:{shot.episode}:shot:{shot.id}", "shot_direction": shot_direction, "_runtime_profile": resolved_profile})
         execution.provider = result.provider
         execution.model = result.model
@@ -437,11 +454,11 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
         execution.provider_task_id = result.provider_task_id
         execution.provider_response_hash = result.provider_response_hash
         execution.logical_provider_calls = int(result.logical_provider_calls)
-        execution.request_payload = {**execution.request_payload, "provider_request": dict(result.provider_request)}
-        service.transition(execution_id, "PROVIDER_CALLED", response_payload={"provider_response": dict(result.provider_response), "media_type": "VIDEO"})
+        execution.request_payload = {**execution.request_payload, "provider_request": _secret_free(dict(result.provider_request))}
+        service.transition(execution_id, "PROVIDER_CALLED", response_payload={"provider_response": _secret_free(dict(result.provider_response)), "media_type": "VIDEO", "source_fingerprint": strict_lineage.get("base_source_fingerprint")})
         candidate = _persist_video_candidate(session, execution, result)
         execution.candidate_id = candidate.candidate_id
-        service.transition(execution_id, "SUCCESS", response_payload={"provider_response": dict(result.provider_response), "candidate_id": candidate.candidate_id, "media_type": "VIDEO"})
+        service.transition(execution_id, "SUCCESS", response_payload={"provider_response": _secret_free(dict(result.provider_response)), "candidate_id": candidate.candidate_id, "media_type": "VIDEO", "source_fingerprint": strict_lineage.get("base_source_fingerprint")})
         if strict_lineage:
             # The adapter owns submit/poll.  Re-read every authority after its
             # terminal response before technical validation; a changed
@@ -471,7 +488,7 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
         task.status = "failed"
         task.error = str(getattr(exc, "message", exc))
         task.updated_at = datetime.utcnow()
-        if execution.execution_status in {"RUNNING", "PROVIDER_CALLED"}:
+        if execution.execution_status in {"RUNNING", "PROVIDER_PENDING", "PROVIDER_CALLED"}:
             try:
                 service.transition(execution_id, "FAILED", error_message=str(getattr(exc, "message", exc)))
             except Exception:

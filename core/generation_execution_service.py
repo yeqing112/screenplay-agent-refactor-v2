@@ -18,14 +18,15 @@ from models import GenerationExecutionRecord, PromptIRAuthority, PromptIRPointer
 
 
 FOUNDATION_SCHEMA_VERSION = "generation_execution_foundation_v1"
-EXECUTION_STATUSES = frozenset({"CREATED", "QUEUED", "RUNNING", "PROVIDER_CALLED", "SUCCESS", "FAILED", "RETRYING"})
+EXECUTION_STATUSES = frozenset({"CREATED", "QUEUED", "RUNNING", "PROVIDER_PENDING", "PROVIDER_CALLED", "SUCCESS", "FAILED", "RETRYING"})
 _ALLOWED_TRANSITIONS: dict[str, frozenset[str]] = {
     "CREATED": frozenset({"QUEUED"}),
     "QUEUED": frozenset({"RUNNING"}),
     # SUCCESS remains a valid direct terminal transition for the deterministic
     # provider-free MockAdapter.  Real media adapters take the explicit
     # RUNNING -> PROVIDER_CALLED -> SUCCESS path.
-    "RUNNING": frozenset({"PROVIDER_CALLED", "SUCCESS", "FAILED"}),
+    "RUNNING": frozenset({"PROVIDER_PENDING", "PROVIDER_CALLED", "SUCCESS", "FAILED"}),
+    "PROVIDER_PENDING": frozenset({"PROVIDER_CALLED", "FAILED"}),
     "PROVIDER_CALLED": frozenset({"SUCCESS", "FAILED"}),
     "FAILED": frozenset({"RETRYING"}),
     "RETRYING": frozenset({"QUEUED"}),

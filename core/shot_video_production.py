@@ -322,6 +322,7 @@ def _source_context(session: Any, shot_id: int, *, provider_id: str = "mock-vide
         "production_generation_intent": {"id": _text(generation_intent.generation_intent_id), "fingerprint": _text(generation_intent.shot_requirement_fingerprint)},
         "prompt_authority": {"pointer_id": int(pointer.id), "version_id": int(prompt_ir.id), "payload_hash": _text(prompt_ir.payload_hash), "authority_id": int(prompt_authority.id) if prompt_authority else None},
         "model_profile": {key: profile.get(key) for key in ("id", "provider", "model_name", "transport_binding_id", "capability")},
+        "video_generation_intent": {"duration": float(sequence.duration), "aspect_ratio": aspect_ratio, "motion_profile": motion, "prompt_version": _text(prompt.prompt_version_id)},
         "duration": float(sequence.duration),
         "aspect_ratio": aspect_ratio,
         "motion_profile": motion,
@@ -398,7 +399,7 @@ def current_source_for_execution(session: Any, execution: GenerationExecutionRec
         return {"current": True, "reasons": [], "strict": False}
     try:
         context = _source_context(session, int(execution.storyboard_shot_id), provider_id=str(execution.provider or "mock-video"), model_profile_id=str(execution.model_profile_id or "") or None)
-    except ShotVideoProductionError as exc:
+    except (ShotVideoProductionError, VideoGenerationError) as exc:
         return {"current": False, "reasons": [exc.code], "strict": True, "error": exc.message}
     expected = _text(_intent_lineage(intent).get("base_source_fingerprint"))
     reasons = [] if expected == context["source_fingerprint"] else ["SOURCE_FINGERPRINT_CHANGED"]
