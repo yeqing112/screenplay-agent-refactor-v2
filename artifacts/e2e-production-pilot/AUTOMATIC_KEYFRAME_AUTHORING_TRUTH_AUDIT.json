@@ -5,7 +5,7 @@
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "remote_head_before_report": "2abc0b6cf1561cc22f6a8bb49ded9306aa0c77ce",
   "implementation_commit": "8dd00e43dd78766dd4c41a38b8e66ae52852f70f",
-  "report_commit": "recorded in the final report commit",
+  "report_commit": "44e19e79b1af5ea0fe6d872d5611ad3c79ea4243",
   "migration_head": "m4h5i6j7k8l9",
   "automatic_keyframe_plan_review_required": true,
   "existing_keyframe_runtime_reused": true,
@@ -76,3 +76,4 @@
   },
   "working_tree_state": "CLEAN_BEFORE_REPORT_FILES"
 }
+
