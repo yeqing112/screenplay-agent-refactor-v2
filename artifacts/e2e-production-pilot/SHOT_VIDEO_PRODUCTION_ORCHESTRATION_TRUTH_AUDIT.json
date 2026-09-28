@@ -4,6 +4,8 @@
   "schema_version": "shot_video_production_orchestration_v1",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "remote_head_verified_before_report_commit": "921b5132108001fb0083526345b74fe6ed7baa2b",
+  "working_tree_state_before_report_commit": "clean",
   "implementation_commit": "95750d9",
   "report_commit": "abef362",
   "migration_head": "m4h5i6j7k8l9",
@@ -70,11 +72,11 @@
   "verification": {
     "pytest_full": {
       "status": "PASS",
-      "tests": 1927
+      "tests": 1929
     },
     "focused_runtime_regression": {
       "status": "PASS",
-      "tests": 30
+      "tests": 15
     },
     "shot_video_production_tests": {
       "status": "PASS",
@@ -94,7 +96,13 @@
       "drift": "PASS"
     },
     "compileall": "PASS",
-    "diff_check": "PASS"
+    "diff_check": "PASS",
+    "gray_gate": {
+      "MINIMAX_H3_GRAY_REAL": "unset",
+      "MINIMAX_H3_GRAY_CONFIRM": "unset",
+      "MINIMAX_H3_GRAY_WHITELIST": "unset",
+      "real_calls": 0
+    }
   },
   "results": {
     "idempotency": "PASS: same source reuses intent/execution with zero additional provider calls",

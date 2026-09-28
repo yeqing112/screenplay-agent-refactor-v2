@@ -3,6 +3,9 @@
   "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
   "implementation_commit": "931b666d04bc1d908abad8d0deff6b3c7edd11a2",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "remote_head_verified_before_report_commit": "921b5132108001fb0083526345b74fe6ed7baa2b",
+  "working_tree_state_before_report_commit": "clean",
   "migration_head": "m4h5i6j7k8l9",
   "llm_called": false,
   "image_generation_called": false,
@@ -34,7 +37,7 @@
   "verification": {
     "pytest_full": {
       "status": "PASS",
-      "tests": 1923,
+      "tests": 1929,
       "scope": "current branch including downstream runtime migrations"
     },
     "director_runtime_tests": {
@@ -53,6 +56,12 @@
       "tests": 49
     },
     "compileall": "PASS",
-    "latest_guard_commit": "0e17e6e"
+    "latest_guard_commit": "921b513"
+  },
+  "minimax_h3_gray_gate": {
+    "MINIMAX_H3_GRAY_REAL": "unset",
+    "MINIMAX_H3_GRAY_CONFIRM": "unset",
+    "MINIMAX_H3_GRAY_WHITELIST": "unset",
+    "real_calls": 0
   }
 }

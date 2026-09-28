@@ -1,12 +1,21 @@
 {
   "phase": "PHASE_SHOT_VIDEO_PRODUCTION_ORCHESTRATION",
   "status": "SHOT_VIDEO_PRODUCTION_ORCHESTRATION_COMPLETE",
+  "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "remote_head_verified_before_report_commit": "921b5132108001fb0083526345b74fe6ed7baa2b",
+  "working_tree_state_before_report_commit": "clean",
   "provider_policy": {
     "image_model": "SHAPI",
     "image_model_website": "https://www.shapi.vip/",
     "real_image_calls": 0,
     "real_minimax_h3_calls": 0,
     "default_video_provider": "deterministic mock"
+  },
+  "minimax_h3_gray_gate": {
+    "MINIMAX_H3_GRAY_REAL": "unset",
+    "MINIMAX_H3_GRAY_CONFIRM": "unset",
+    "MINIMAX_H3_GRAY_WHITELIST": "unset",
+    "real_calls": 0
   },
   "chain": [
     "Official START Keyframe",

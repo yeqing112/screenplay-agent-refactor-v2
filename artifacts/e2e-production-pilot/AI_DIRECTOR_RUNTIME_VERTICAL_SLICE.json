@@ -1,6 +1,9 @@
 {
   "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
   "schema_version": "ai_director_runtime_v1",
+  "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "remote_head_verified_before_report_commit": "921b5132108001fb0083526345b74fe6ed7baa2b",
+  "working_tree_state_before_report_commit": "clean",
   "vertical_slice": [
     "ScriptIR",
     "DirectorPlan",
@@ -31,6 +34,12 @@
     "provider_called": false,
     "media_created": false,
     "human_review_required": true
+  },
+  "minimax_h3_gray_gate": {
+    "MINIMAX_H3_GRAY_REAL": "unset",
+    "MINIMAX_H3_GRAY_CONFIRM": "unset",
+    "MINIMAX_H3_GRAY_WHITELIST": "unset",
+    "real_calls": 0
   },
   "api": {
     "create": "POST /episodes/{id}/director-plan",

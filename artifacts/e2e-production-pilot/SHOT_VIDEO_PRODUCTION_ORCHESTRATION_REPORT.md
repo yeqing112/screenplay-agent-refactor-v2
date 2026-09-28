@@ -9,6 +9,9 @@
 - Implementation commit: `95750d9`
 - Report commit: `abef362`
 - Migration head: `m4h5i6j7k8l9`
+- Runtime guard follow-up commit: `921b5132108001fb0083526345b74fe6ed7baa2b`
+- Remote HEAD verified before report commit: `921b5132108001fb0083526345b74fe6ed7baa2b`
+- Working tree state before report commit: clean
 
 ## Delivered
 
@@ -33,7 +36,7 @@ Counts: 1 VideoGenerationIntent, 1 GenerationExecution, 1 VIDEO candidate, 1 val
 |---|---:|
 | Shot video production tests | 4 passed |
 | Focused runtime regression | 30 passed |
-| Full regression | 1927 passed |
+| Full regression | 1929 passed |
 | Golden fixtures | 5/5 |
 | Migration CI | PASS: fresh/repeat/legacy/drift; head `m4h5i6j7k8l9` |
 | Compileall | PASS |
@@ -50,5 +53,11 @@ Counts: 1 VideoGenerationIntent, 1 GenerationExecution, 1 VIDEO candidate, 1 val
 - Human approval remains mandatory before OfficialMedia publication.
 - Image generation remains configured for SHAPI at [https://www.shapi.vip/](https://www.shapi.vip/); this phase made no external image request.
 - Default real MiniMax H3 calls remain `0`.
+
+## MiniMax H3 gray gate
+
+- `MINIMAX_H3_GRAY_REAL`: unset (`real calls blocked`)
+- `MINIMAX_H3_GRAY_CONFIRM`: unset (`submission confirmation absent`)
+- `MINIMAX_H3_GRAY_WHITELIST`: unset (`no shot whitelist supplied`)
 
 See the machine-readable [Truth Audit](SHOT_VIDEO_PRODUCTION_ORCHESTRATION_TRUTH_AUDIT.json) and [Vertical Slice](SHOT_VIDEO_PRODUCTION_ORCHESTRATION_VERTICAL_SLICE.json).

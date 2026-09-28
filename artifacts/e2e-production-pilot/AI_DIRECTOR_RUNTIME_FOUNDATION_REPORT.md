@@ -7,6 +7,9 @@
 - Implementation commit: `931b666d04bc1d908abad8d0deff6b3c7edd11a2`
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Migration head: `m4h5i6j7k8l9` (includes Director Runtime revisions `g8b9c0d1e2f3` and `h9c0d1e2f3g4`)
+- Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2.git)
+- Remote HEAD verified before report commit: `921b5132108001fb0083526345b74fe6ed7baa2b`
+- Working tree state before report commit: clean
 
 ## Delivered
 
@@ -29,12 +32,18 @@
 
 ## Verification
 
-- `pytest -q` — **1923 passed** on the current branch (including downstream runtime migrations).
+- `pytest -q` — **1929 passed** on the current branch (including downstream runtime migrations).
 - Focused Director/production regression — **49 passed** (`test_ai_director_runtime_foundation`, migration hardening, keyframe image, automatic keyframe, asset promotion, model adapter, generation execution, and video runtime).
 - `npm run test:golden` — **5/5 passed**.
 - `python -m scripts.verify_migration_chain --ci` — **PASS**; fresh upgrade, repeat upgrade, legacy fixtures, schema, and metadata drift all passed (current repository head `m4h5i6j7k8l9`).
 - `git diff --check` — **PASS**.
 - `python -m compileall -q core api models scripts tests` — **PASS**.
+
+## MiniMax H3 gray gate
+
+- `MINIMAX_H3_GRAY_REAL`: unset (`real calls blocked`)
+- `MINIMAX_H3_GRAY_CONFIRM`: unset (`submission confirmation absent`)
+- `MINIMAX_H3_GRAY_WHITELIST`: unset (`no shot whitelist supplied`)
 
 The latest guard and evidence implementation is commit `0e17e6e` (`feat: harden keyframe image lineage guards`). It adds the GenerationIntent eligibility check, optional MIDDLE production, START/END video-intent compatibility, prompt-lineage binding, and a default-disabled real-provider canary gate.
 
