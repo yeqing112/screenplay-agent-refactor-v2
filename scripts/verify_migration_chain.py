@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "l3g4h5i6j7k8"
+HEAD = "m4h5i6j7k8l9"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -104,6 +104,7 @@ AUTHORITY_TABLES = {
     "director_reasoning_generations",
     "director_storyboard_plans",
     "director_storyboard_shots",
+    "automatic_keyframe_plans",
 }
 
 REQUIRED_COLUMNS = {
@@ -190,6 +191,14 @@ REQUIRED_COLUMNS = {
     "video_generation_intents": {"storyboard_shot_id", "duration", "aspect_ratio", "motion_profile", "first_frame_asset", "last_frame_asset", "prompt_version", "intent_fingerprint", "status", "generation_execution_id", "task_id"},
     "episode_render_plans": {"episode_id", "project_id", "episode_number", "status", "render_strategy", "production_batch_id", "error", "created_at", "updated_at", "completed_at"},
     "episode_render_items": {"render_plan_id", "episode_id", "shot_id", "order_index", "dependency", "status", "production_batch_item_id", "error", "created_at", "updated_at"},
+    "automatic_keyframe_plans": {
+        "episode_id", "storyboard_shot_id", "storyboard_materialization_set_id", "storyboard_materialization_version",
+        "materialization_set_fingerprint", "shot_plan_id", "shot_plan_revision", "shot_direction_id",
+        "shot_direction_revision", "shot_direction_fingerprint", "generation_intent_id", "generation_intent_fingerprint",
+        "production_prompt_version_id", "production_prompt_fingerprint", "version", "status", "duration", "plan_json",
+        "source_fingerprint", "source_lineage_json", "created_by", "reviewed_by", "reviewed_at", "review_lineage_json",
+        "compiled_sequence_id", "compiled_sequence_fingerprint", "stale_reasons", "created_at", "updated_at",
+    },
 }
 
 

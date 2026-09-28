@@ -106,6 +106,7 @@ from api.scene_continuity_api import router as scene_continuity_router
 from api.visual_style_consistency_api import router as visual_style_consistency_router
 from api.shot_direction_api import router as shot_direction_router
 from api.keyframe_authoring_api import router as keyframe_authoring_router
+from api.automatic_keyframe_api import router as automatic_keyframe_router
 from api.video_generation_api import router as video_generation_router
 from api.episode_rendering_api import router as episode_rendering_router
 from api.director_benchmark_api import router as director_benchmark_router
@@ -172,6 +173,8 @@ app.include_router(shot_direction_router, prefix="/api")
 app.include_router(shot_direction_router)
 app.include_router(keyframe_authoring_router, prefix="/api")
 app.include_router(keyframe_authoring_router)
+app.include_router(automatic_keyframe_router, prefix="/api")
+app.include_router(automatic_keyframe_router)
 app.include_router(video_generation_router, prefix="/api")
 app.include_router(video_generation_router)
 app.include_router(episode_rendering_router, prefix="/api")
