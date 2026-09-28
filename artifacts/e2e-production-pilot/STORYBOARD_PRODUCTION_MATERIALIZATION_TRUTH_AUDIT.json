@@ -3,7 +3,7 @@
   "status": "STORYBOARD_PRODUCTION_MATERIALIZATION_COMPLETE",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "implementation_commits": ["f834c3e554acde5a833edeaf5dbad7fb83c4a9c3", "ca88fdb8290d45bcf3f072204cfb4dc782e566e7"],
-  "report_commit": "pending",
+  "report_commit": "cc84223876e5ddd07aa2f5d268f9a8c10ab066c2",
   "migration_head": "l3g4h5i6j7k8",
   "review_required_before_materialization": true,
   "materialization_idempotent": true,

@@ -6,7 +6,7 @@
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Implementation commits: `f834c3e554acde5a833edeaf5dbad7fb83c4a9c3`, `ca88fdb8290d45bcf3f072204cfb4dc782e566e7`
-- Report commit: `pending`
+- Report commit: `cc84223876e5ddd07aa2f5d268f9a8c10ab066c2`
 - Migration head: `l3g4h5i6j7k8`
 
 ## Delivered
