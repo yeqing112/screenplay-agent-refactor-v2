@@ -140,6 +140,10 @@ def test_materialization_switch_marks_old_plan_stale_and_rollback_rechecks_sourc
             approved = review_keyframe_plan(session, shot_id=shot_id, version=1, decision="APPROVE", reviewer="rollback-review")
             assert approved["status"] == "APPROVED"
             assert shot.materialization_set_id == old_set.id
+            shot.source_shot_plan_revision = int(old_set.shot_plan_revision) + 1
+            changed_revision = get_keyframe_plan(session, shot_id=shot_id, version=1)
+            assert changed_revision["status"] == "STALE"
+            assert "SHOT_PLAN_REVISION_CHANGED" in changed_revision["stale_reasons"]
     finally:
         engine.dispose()
 

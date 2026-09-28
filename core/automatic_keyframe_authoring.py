@@ -320,8 +320,11 @@ def _currentness(session: Any, row: AutomaticKeyframePlan) -> dict[str, Any]:
     reasons: list[str] = []
     expected = context["authority_basis"]
     if int(row.storyboard_materialization_set_id) != int(expected["materialization_set_id"]): reasons.append("MATERIALIZATION_POINTER_CHANGED")
+    if int(row.storyboard_materialization_version) != int(expected["materialization_version"]): reasons.append("MATERIALIZATION_VERSION_CHANGED")
     if _text(row.materialization_set_fingerprint) != _text(expected["materialization_set_fingerprint"]): reasons.append("MATERIALIZATION_FINGERPRINT_CHANGED")
     if int(row.storyboard_shot_id) != int(expected["storyboard_shot_id"]): reasons.append("STORYBOARD_SHOT_CHANGED")
+    if int(row.shot_plan_id) != int(expected["shot_plan_id"]): reasons.append("SHOT_PLAN_CHANGED")
+    if int(row.shot_plan_revision) != int(expected["shot_plan_revision"]): reasons.append("SHOT_PLAN_REVISION_CHANGED")
     if _text(row.shot_direction_fingerprint) != _text(expected["shot_direction_fingerprint"]): reasons.append("SHOT_DIRECTION_CHANGED")
     if int(row.shot_direction_revision) != int(expected["shot_direction_revision"]): reasons.append("SHOT_DIRECTION_REVISION_CHANGED")
     if _text(row.generation_intent_id) != _text(expected["generation_intent_id"]) or _text(row.generation_intent_fingerprint) != _text(expected["generation_intent_fingerprint"]): reasons.append("GENERATION_INTENT_CHANGED")
