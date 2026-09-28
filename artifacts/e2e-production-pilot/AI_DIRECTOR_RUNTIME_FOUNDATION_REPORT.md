@@ -6,7 +6,7 @@
 
 - Implementation commit: `931b666d04bc1d908abad8d0deff6b3c7edd11a2`
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Migration head: `h9c0d1e2f3g4`
+- Migration head: `m4h5i6j7k8l9` (includes Director Runtime revisions `g8b9c0d1e2f3` and `h9c0d1e2f3g4`)
 
 ## Delivered
 
@@ -22,19 +22,21 @@
 ## Contract and truth boundary
 
 - No real LLM is imported or called by the runtime adapter.
-- No image/video generation is submitted. The existing image provider remains SHAPI (`https://www.shapi.vip/`) in the prior provider registry; this phase only emits reviewable intent.
+- No image/video generation is submitted. The existing image provider remains SHAPI (`https://www.shapi.vip/`) in the provider registry; this phase only emits reviewable intent.
 - Source Fact and ScriptIR inputs are deep-copied, hashed, and carried as immutable lineage references. The adapter marks `source_fact_mutated=false` and `script_ir_mutated=false`.
 - POST creates a `DRAFT` version; a newer version supersedes the prior draft. Shot revision is whitelist-limited and creates a new version, preserving the prior version.
 - Human review remains required before authority activation or downstream generation.
 
 ## Verification
 
-- `pytest -q` — **1911 passed** on the current branch (including downstream runtime migrations).
-- `pytest -q tests/test_ai_director_runtime_foundation.py tests/test_migration_chain_hardening.py` — **10 passed** after the final ShotDirection migration.
+- `pytest -q` — **1918 passed** on the current branch (including downstream runtime migrations).
+- Focused Director/production regression — **44 passed** (`test_ai_director_runtime_foundation`, migration hardening, keyframe image, automatic keyframe, asset promotion, model adapter, generation execution, and video runtime).
 - `npm run test:golden` — **5/5 passed**.
 - `python -m scripts.verify_migration_chain --ci` — **PASS**; fresh upgrade, repeat upgrade, legacy fixtures, schema, and metadata drift all passed (current repository head `m4h5i6j7k8l9`).
-- `python -m compileall -q api core models scripts tests` — **PASS**.
 - `git diff --check` — **PASS**.
+- `python -m compileall -q core api models scripts tests` — **PASS**.
+
+The latest guard and evidence implementation is commit `9e39592` (`feat: tighten keyframe image production guards`). It adds the GenerationIntent eligibility check, optional MIDDLE production, START/END video-intent compatibility, prompt-lineage binding, and a default-disabled real-provider canary gate.
 
 ## Migration and lineage
 

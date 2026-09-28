@@ -22,6 +22,14 @@
   "minimax_h3_calls": 0,
   "migration_required": false,
   "migration_head": "m4h5i6j7k8l9",
-  "full_regression": "1915 passed",
-  "working_tree": "clean after report commit"
+  "full_regression": "1918 passed",
+  "working_tree": "clean after report commit",
+  "focused_regression": "44 passed",
+  "keyframe_image_tests": "7 passed",
+  "generation_intent_eligibility_guard": true,
+  "middle_optional_production": true,
+  "start_end_video_intent_compatibility": true,
+  "production_prompt_lineage_written_on_approval": true,
+  "real_provider_canary_gate": "PHASE_F_PROVIDER_CANARY_REAL=1",
+  "guard_hardening_commit": "9e39592"
 }

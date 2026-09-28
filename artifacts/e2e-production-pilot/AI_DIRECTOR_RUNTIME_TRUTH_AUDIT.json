@@ -3,7 +3,7 @@
   "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
   "implementation_commit": "931b666d04bc1d908abad8d0deff6b3c7edd11a2",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "migration_head": "h9c0d1e2f3g4",
+  "migration_head": "m4h5i6j7k8l9",
   "llm_called": false,
   "image_generation_called": false,
   "video_generation_called": false,
@@ -34,7 +34,7 @@
   "verification": {
     "pytest_full": {
       "status": "PASS",
-      "tests": 1911,
+      "tests": 1918,
       "scope": "current branch including downstream runtime migrations"
     },
     "director_runtime_tests": {
@@ -47,6 +47,12 @@
       "passed": 5,
       "failed": 0
     },
-    "diff_check": "PASS"
+    "diff_check": "PASS",
+    "focused_regression": {
+      "status": "PASS",
+      "tests": 44
+    },
+    "compileall": "PASS",
+    "latest_guard_commit": "9e39592"
   }
 }
