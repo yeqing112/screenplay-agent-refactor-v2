@@ -1,0 +1,44 @@
+{
+  "schema_version": "keyframe_image_production_vertical_slice_v1",
+  "completion": "KEYFRAME_IMAGE_PRODUCTION_COMPLETE",
+  "scope": "one storyboard shot",
+  "production_order": ["START", "END"],
+  "chain": [
+    "Active Storyboard Materialization",
+    "StoryboardShot",
+    "ShotDirection",
+    "Approved AutomaticKeyframePlan",
+    "Active KeyframeSequence",
+    "START/END Keyframe",
+    "ProductionPromptVersion",
+    "PromptIRPointer + PromptIRVersion",
+    "GenerationExecutionRecord",
+    "SHAPI-compatible deterministic fixture",
+    "MediaCandidate",
+    "MediaValidationRecord",
+    "REVIEW_REQUIRED",
+    "Human APPROVE",
+    "OfficialMediaVersion + OfficialMediaPointer",
+    "Production Asset Authority bridge",
+    "KeyframeAssetBinding"
+  ],
+  "evidence": {
+    "candidates_created": 2,
+    "validated_candidates": 2,
+    "approved_candidates": 2,
+    "official_media_versions": 2,
+    "keyframe_asset_bindings": 2,
+    "start_primary_binding": true,
+    "real_shapi_calls": 0,
+    "minimax_h3_calls": 0,
+    "idempotency": "same active request reuses execution; rejected request creates a new execution",
+    "stale_promotion_guard": "PASS",
+    "atomic_promotion": "PASS",
+    "video_compatibility": "PASS through existing keyframe binding contract"
+  },
+  "failure_slice": {
+    "source_revision_during_or_before_promotion": "promotion blocked",
+    "candidate_history_retained": true,
+    "current_keyframe_binding_created": false
+  }
+}
