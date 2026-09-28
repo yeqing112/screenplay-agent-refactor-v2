@@ -113,6 +113,8 @@ def _source_guard(session: Any, frame: Keyframe, sequence: KeyframeSequence, sho
     plan = get_keyframe_plan(session, shot_id=int(shot.id), version=int(sequence.revision))
     if str(plan.get("status") or "").upper() == "STALE":
         raise KeyframeImageProductionError("keyframe source is stale", code="STALE_SOURCE", diagnostics=plan.get("stale_reasons") or [])
+    if str(plan.get("status") or "").upper() != "COMPILED":
+        raise KeyframeImageProductionError("approved and compiled AutomaticKeyframePlan is required", code="KEYFRAME_PLAN_NOT_COMPILED", diagnostics=[{"status": plan.get("status")}])
     if int(plan.get("compiled_sequence_id") or 0) != int(sequence.id):
         raise KeyframeImageProductionError("keyframe sequence is not the compiled current plan", code="KEYFRAME_SEQUENCE_STALE")
     if str(sequence.status).upper() != "ACTIVE" or str(frame.status).upper() != "ACTIVE":
@@ -134,8 +136,13 @@ def _ensure_prompt_authority(session: Any, shot: StoryboardShot) -> tuple[Prompt
     if existing is not None:
         version = session.query(PromptIRVersion).filter_by(id=int(existing.prompt_ir_version_id)).one_or_none()
         authority = session.query(PromptIRAuthority).filter_by(prompt_ir_version_id=int(existing.prompt_ir_version_id)).one_or_none()
-        if version is not None:
-            return existing, version, authority
+        if version is None or authority is None:
+            raise KeyframeImageProductionError("current PromptIR authority is missing", code="PROMPT_AUTHORITY_STALE")
+        if str(existing.payload_hash or "") != str(version.payload_hash or "") or str(version.stale_status or "FRESH").upper() != "FRESH" or str(authority.stale_status or "FRESH").upper() != "FRESH":
+            raise KeyframeImageProductionError("current PromptIR authority is stale", code="PROMPT_AUTHORITY_STALE")
+        if str(existing.qualification_state or "").upper() not in {"PROMPT_IR_QUALIFIED", "QUALIFIED"} or str(version.qualification_state or "").upper() not in {"PROMPT_IR_QUALIFIED", "QUALIFIED"}:
+            raise KeyframeImageProductionError("current PromptIR authority is not qualified", code="PROMPT_AUTHORITY_INELIGIBLE")
+        return existing, version, authority
     # Use the canonical Storyboard snapshot/compiler when a prior image PromptIR
     # has not yet been activated for this shot.
     try:
@@ -168,6 +175,29 @@ def _ensure_prompt_authority(session: Any, shot: StoryboardShot) -> tuple[Prompt
     session.add(pointer)
     session.flush()
     return pointer, version, authority
+
+
+def _candidate_keyframe_metadata(source: Mapping[str, Any], frame: Keyframe, sequence: KeyframeSequence, execution: GenerationExecutionRecord, prompt: ProductionPromptVersion) -> dict[str, Any]:
+    return {
+        "keyframe_id": int(frame.id),
+        "keyframe_sequence_id": int(sequence.id),
+        "frame_type": str(frame.frame_type).lower(),
+        "generation_execution_id": str(execution.execution_id),
+        "prompt_version_id": str(prompt.prompt_version_id),
+        "source_fingerprint": str(source.get("source_fingerprint") or ""),
+        "automatic_keyframe_plan_id": int(source.get("automatic_keyframe_plan_id") or 0),
+        "automatic_keyframe_plan_version": int(source.get("automatic_keyframe_plan_version") or 0),
+    }
+
+
+def _enrich_real_candidate(candidate: MediaCandidateRecord, *, source: Mapping[str, Any], frame: Keyframe, sequence: KeyframeSequence, execution: GenerationExecutionRecord, prompt: ProductionPromptVersion) -> None:
+    metadata = _json(candidate.metadata_json, {})
+    metadata.update(_candidate_keyframe_metadata(source, frame, sequence, execution, prompt))
+    candidate.metadata_json = _canonical(metadata)
+    execution.response_payload = {
+        **_json(execution.response_payload, {}),
+        "keyframe_image": _candidate_keyframe_metadata(source, frame, sequence, execution, prompt),
+    }
 
 
 def _profile(model_profile_id: str | None) -> dict[str, Any]:
@@ -221,7 +251,7 @@ def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: 
     role = f"KEYFRAME_{str(frame.frame_type).upper()}_IMAGE"
     from core.prompt_ir_phase_e import build_generation_policy
     policy = build_generation_policy({"mode": "TEXT_TO_IMAGE", "target_media": "IMAGE"}, allow_default=False)
-    request = {"schema_version": SCHEMA_VERSION, "media_role": role, "prompt_version_id": str(prompt.prompt_version_id), "prompt_text": prompt.prompt_text, "keyframe": {"id": int(frame.id), "sequence_id": int(sequence.id), "frame_type": str(frame.frame_type), "time_seconds": float(frame.time_seconds), "description": frame.description, "camera_state": _json(frame.camera_state, {}), "character_state": _json(frame.character_state, {}), "scene_state": _json(frame.scene_state, {}), "emotion_state": _json(frame.emotion_state, {})}, "_keyframe_image_production": {**marker, "idempotency_fingerprint": marker_fp, "fixture": bool(fixture)}, "generation_policy": policy}
+    request = {"schema_version": SCHEMA_VERSION, "media_role": role, "prompt_version_id": str(prompt.prompt_version_id), "prompt_text": prompt.prompt_text, "keyframe_prompt": {"prompt_version_id": str(prompt.prompt_version_id), "prompt_fingerprint": str(prompt.prompt_fingerprint), "prompt_text": prompt.prompt_text, "source": "ProductionPromptVersion"}, "keyframe": {"id": int(frame.id), "sequence_id": int(sequence.id), "frame_type": str(frame.frame_type), "time_seconds": float(frame.time_seconds), "description": frame.description, "camera_state": _json(frame.camera_state, {}), "character_state": _json(frame.character_state, {}), "scene_state": _json(frame.scene_state, {}), "emotion_state": _json(frame.emotion_state, {})}, "_keyframe_image_production": {**marker, "idempotency_fingerprint": marker_fp, "fixture": bool(fixture)}, "generation_policy": policy}
     execution.request_payload = request
     execution.execution_mode = "KEYFRAME_IMAGE_FIXTURE" if fixture else "KEYFRAME_IMAGE_PROVIDER"
     execution.provider = str(profile.get("provider") or "shapi-openai-images")
@@ -241,9 +271,17 @@ def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: 
             service.transition(execution.execution_id, "QUEUED")
             row = GenerationOrchestrator(session).run(execution.execution_id)
         except GenerationOrchestratorError as exc:
+            # Keep the canonical FAILED execution durable so the next request
+            # can use the existing retry/failure semantics.
+            session.commit()
             raise KeyframeImageProductionError(exc.message, code=exc.code, diagnostics=[{"provider_calls": exc.provider_calls}]) from exc
         if not row.candidate_id:
             raise KeyframeImageProductionError("real provider execution returned no MediaCandidate", code="GENERATION_EXECUTION_CANDIDATE_MISSING")
+        candidate = session.query(MediaCandidateRecord).filter_by(candidate_id=row.candidate_id).one_or_none()
+        if candidate is None:
+            raise KeyframeImageProductionError("real provider execution returned no MediaCandidate", code="GENERATION_EXECUTION_CANDIDATE_MISSING")
+        _enrich_real_candidate(candidate, source=source, frame=frame, sequence=sequence, execution=row, prompt=prompt)
+        session.flush()
         try:
             current = _source_guard(session, frame, sequence, shot)
         except KeyframeImageProductionError as exc:
@@ -254,7 +292,7 @@ def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: 
         return {**_serialize(session, frame, sequence), "idempotent": False, "validation_id": validation["validation_id"], "provider_calls": int(row.logical_provider_calls or 0), "real_provider_calls": int(row.logical_provider_calls or 0), "source_guard": current}
     service.transition(execution.execution_id, "QUEUED")
     service.transition(execution.execution_id, "RUNNING")
-    response = {"fixture": True, "provider": execution.provider, "model": execution.model, "request_id": "fixture-" + marker_fp[7:23], "keyframe_id": int(frame.id), "frame_type": str(frame.frame_type)}
+    response = {"fixture": True, "provider": execution.provider, "model": execution.model, "request_id": "fixture-" + marker_fp[7:23], "execution_id": str(execution.execution_id), "keyframe_id": int(frame.id), "frame_type": str(frame.frame_type)}
     response_hash = _fp(response)
     root = Path(config.UPLOAD_DIR)
     root.mkdir(parents=True, exist_ok=True)
@@ -288,6 +326,7 @@ def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: 
 def promote_keyframe_image(session: Any, *, keyframe_id: int, validation_id: str, reviewer: str, decision: str = "APPROVE", review_notes: str = "") -> dict[str, Any]:
     frame, sequence, shot = _keyframe(keyframe_id, session)
     source = _source_guard(session, frame, sequence, shot)
+    current_prompt = _prompt_for_keyframe(session, frame, sequence)
     candidate = None
     for candidate_row in session.query(MediaCandidateRecord).join(GenerationExecutionRecord, GenerationExecutionRecord.execution_id == MediaCandidateRecord.execution_id).filter(GenerationExecutionRecord.storyboard_shot_id == int(shot.id)).order_by(MediaCandidateRecord.id.desc()).all():
         candidate_marker = _json(session.query(GenerationExecutionRecord).filter_by(execution_id=candidate_row.execution_id).one().request_payload, {}).get("_keyframe_image_production") or {}
@@ -302,7 +341,16 @@ def promote_keyframe_image(session: Any, *, keyframe_id: int, validation_id: str
         raise KeyframeImageProductionError("candidate does not belong to the requested keyframe", code="CANDIDATE_KEYFRAME_MISMATCH")
     if marker.get("source_fingerprint") and marker.get("source_fingerprint") != source.get("source_fingerprint"):
         raise KeyframeImageProductionError("source changed after generation; promotion is blocked", code="STALE_SOURCE")
+    if str(marker.get("prompt_version_id") or "") != str(current_prompt.prompt_version_id):
+        raise KeyframeImageProductionError("keyframe prompt is no longer current", code="PROMPT_LINEAGE_STALE")
     def bridge(_rows: dict[str, Any]) -> None:
+        # Re-check immediately before the typed binding is created.  Review
+        # may take long enough for materialization, direction, intent, or
+        # prompt authorities to change.
+        _source_guard(session, frame, sequence, shot)
+        latest_prompt = _prompt_for_keyframe(session, frame, sequence)
+        if str(marker.get("prompt_version_id") or "") != str(latest_prompt.prompt_version_id):
+            raise KeyframeImageProductionError("keyframe prompt is no longer current", code="PROMPT_LINEAGE_STALE")
         version = _rows["version"]
         # The existing typed Production Asset Authority accepts durable object
         # identities.  Keep the MediaCandidate's local fixture path as the

@@ -373,6 +373,19 @@ class GenerationOrchestrator:
                             f"PromptIR could not be compiled into an image GenerationPayload: {exc}",
                             code=getattr(exc, "code", "GENERATION_PROMPT_COMPILE_FAILED"),
                         ) from exc
+            # Keyframe image production carries an immutable derived prompt
+            # snapshot alongside the PromptIR authority. PromptIR remains the
+            # execution authority; only the provider request projection gets
+            # the keyframe-scoped ProductionPromptVersion text.
+            keyframe_prompt = row.request_payload.get("keyframe_prompt") if isinstance(row.request_payload, Mapping) else None
+            if isinstance(keyframe_prompt, Mapping) and str(keyframe_prompt.get("prompt_text") or "").strip():
+                payload = dict(prompt.get("payload") or {}) if isinstance(prompt.get("payload"), Mapping) else {}
+                provider_request = dict(payload.get("request") or {}) if isinstance(payload.get("request"), Mapping) else {}
+                provider_request["prompt"] = str(keyframe_prompt["prompt_text"])
+                payload["prompt"] = str(keyframe_prompt["prompt_text"])
+                payload["request"] = provider_request
+                payload["keyframe_prompt_lineage"] = {key: keyframe_prompt.get(key) for key in ("prompt_version_id", "prompt_fingerprint", "source")}
+                prompt["payload"] = payload
             runtime_params = _runtime_params(row, params)
 
             prompt_payload = prompt.get("payload") if isinstance(prompt.get("payload"), Mapping) else {}
