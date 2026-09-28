@@ -1,27 +1,48 @@
 {
+  "phase": "PHASE_SHOT_VIDEO_PRODUCTION_ORCHESTRATION",
   "status": "SHOT_VIDEO_PRODUCTION_ORCHESTRATION_COMPLETE",
-  "schema_version": "shot_video_production_orchestration_v1",
-  "vertical_slice": [
-    "Official START keyframe asset",
-    "Official END keyframe asset",
+  "provider_policy": {
+    "image_model": "SHAPI",
+    "image_model_website": "https://www.shapi.vip/",
+    "real_image_calls": 0,
+    "real_minimax_h3_calls": 0,
+    "default_video_provider": "deterministic mock"
+  },
+  "chain": [
+    "Official START Keyframe",
+    "Official END Keyframe",
     "VideoGenerationIntent",
     "GenerationExecutionRecord",
     "TaskRun",
-    "MiniMax H3 adapter boundary",
+    "existing MiniMax H3 adapter boundary",
     "VIDEO MediaCandidate",
     "technical validation",
-    "human review",
-    "OfficialMediaVersion/Pointer"
+    "REVIEW_REQUIRED",
+    "human APPROVE",
+    "OfficialMediaVersion",
+    "OfficialMediaPointer"
   ],
+  "fixture_evidence": {
+    "video_intents": 1,
+    "generation_executions": 1,
+    "video_candidates": 1,
+    "validated_candidates": 1,
+    "approved_videos": 1,
+    "official_media_versions": 1,
+    "official_video_pointers": 1,
+    "provider_calls": 0
+  },
   "assertions": {
-    "intent_reconciliation_is_idempotent": true,
-    "execution_reuses_in_flight_or_successful_record": true,
-    "candidate_is_retained_on_stale_source": true,
+    "official_start_end_required": true,
+    "source_fingerprint_stable": true,
+    "same_source_idempotent": true,
+    "candidate_retained_on_stale_source": true,
     "promotion_rechecks_source": true,
-    "rejected_intent_gets_new_revision": true,
-    "api_projection_is_json_safe": true,
     "human_review_required": true,
-    "real_provider_default_calls": 0
+    "official_only_after_approval": true,
+    "api_projection_json_safe": true,
+    "no_source_fact_mutation": true,
+    "no_script_ir_mutation": true
   },
   "api": {
     "reconcile": "POST /shots/{id}/video-production/reconcile",

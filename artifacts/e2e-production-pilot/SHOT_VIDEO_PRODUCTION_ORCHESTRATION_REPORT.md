@@ -4,34 +4,51 @@
 
 `PHASE_SHOT_VIDEO_PRODUCTION_ORCHESTRATION` — `SHOT_VIDEO_PRODUCTION_ORCHESTRATION_COMPLETE`
 
-- Implementation commit: `e2903d4`
+- Branch: `codex/visual-authoring-provider-canary-reconcile`
+- Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)
+- Implementation commit: `95750d9`
+- Report commit: this report commit
+- Migration head: `m4h5i6j7k8l9`
 
 ## Delivered
 
-- Added a thin shot-scoped orchestration boundary in `core/shot_video_production.py`.
-- Reconciles current Storyboard materialization, ShotDirection, AutomaticKeyframePlan, official START/END keyframe assets, production GenerationIntent, VIDEO PromptIR, and Model Registry profile into the existing `VideoGenerationIntent`.
-- Reuses the existing `GenerationExecutionRecord`/`TaskRun`, `MinimaxH3VideoProvider`, `MediaCandidateRecord`, technical validation, review, and OfficialMedia promotion paths.
-- Added `POST /shots/{id}/video-production`, `GET /shots/{id}/video-production`, and `POST /shots/{id}/video-production/reconcile`.
-- Added strict source fingerprints, in-flight execution reuse, stale guards before validation and before OfficialMedia promotion, and reject/request-change revisioning.
-- API source responses now expose a JSON-safe lineage projection; internal ORM rows never cross the response boundary.
+- Added a thin shot-scoped orchestration boundary over the existing `VideoGenerationIntent`, `GenerationExecutionRecord`, `TaskRun`, `MediaCandidateRecord`, validation, review, and OfficialMedia authorities.
+- Requires current materialization, ShotDirection, compiled AutomaticKeyframePlan, VIDEO PromptIR, and approved Official START/END keyframe assets.
+- Stabilized source fingerprints by resolving the same Model Registry profile used by execution; the default mock path now fingerprints `builtin-mock-video` consistently.
+- Carries an explicit OfficialMedia image-to-video source binding for keyframe roles and revalidates it before technical validation and promotion.
+- Preserves candidate history on stale source changes and blocks publication until a current source is reconciled.
+- API: `POST /shots/{id}/video-production`, `GET /shots/{id}/video-production`, `POST /shots/{id}/video-production/reconcile`.
 
-## Guardrails
+## Vertical slice evidence
 
-- Default execution remains provider-free deterministic mock execution; real MiniMax H3 stays behind the existing Model Registry/canary gates.
-- No image generation is called in this phase. Existing image assets remain the approved upstream inputs; the configured image provider remains SHAPI (`https://www.shapi.vip/`).
-- No source facts, ScriptIR, ShotDirection, AutomaticKeyframePlan, or KeyframeSequence authority is mutated.
-- Candidates remain retained history when a source becomes stale; promotion is blocked until a current source is reconciled.
-- Human review remains required before OfficialMedia promotion.
+The deterministic fixture completed:
+
+`Official START/END Keyframes → VideoGenerationIntent → GenerationExecution/TaskRun → existing provider adapter boundary → VIDEO MediaCandidate → technical validation → REVIEW_REQUIRED → human APPROVE → OfficialMediaVersion/Pointer`.
+
+Counts: 1 VideoGenerationIntent, 1 GenerationExecution, 1 VIDEO candidate, 1 validated candidate, 1 approved video, 1 OfficialMediaVersion, and 1 `SHOT_PRIMARY_VIDEO` pointer. Real MiniMax H3 calls: `0`; real image calls: `0`.
 
 ## Verification
 
-- `pytest -q` — **1926 passed**.
-- Focused orchestration and adjacent runtime suites — **76 passed**.
-- `npm run test:golden` — **5/5 passed**.
-- `python -m scripts.verify_migration_chain --ci` — **PASS**, fresh/repeat/legacy/drift; head `m4h5i6j7k8l9`.
-- `python -m compileall -q core api models scripts tests` — **PASS**.
-- `git diff --check` — **PASS**.
+| Check | Result |
+|---|---:|
+| Shot video production tests | 4 passed |
+| Focused runtime regression | 30 passed |
+| Full regression | 1927 passed |
+| Golden fixtures | 5/5 |
+| Migration CI | PASS: fresh/repeat/legacy/drift; head `m4h5i6j7k8l9` |
+| Compileall | PASS |
+| `git diff --check` | PASS |
+| Idempotency | PASS; same source reuses intent/execution |
+| Stale promotion guard | PASS; stale candidate retained, promotion blocked |
+| Atomic promotion | PASS |
+| Episode runtime compatibility | PASS |
 
-## Scope boundary
+## Guardrails
 
-This phase stops at the existing video candidate and review/promotion authorities. It does not introduce a second video queue, provider manager, asset manager, or review system, and it does not call the real provider by default.
+- Existing MiniMax H3 async adapter and generation execution runtime are reused; no second video system, provider manager, asset manager, or review workflow was created.
+- Source Fact and ScriptIR mutations: `0`.
+- Human approval remains mandatory before OfficialMedia publication.
+- Image generation remains configured for SHAPI at [https://www.shapi.vip/](https://www.shapi.vip/); this phase made no external image request.
+- Default real MiniMax H3 calls remain `0`.
+
+See the machine-readable [Truth Audit](SHOT_VIDEO_PRODUCTION_ORCHESTRATION_TRUTH_AUDIT.json) and [Vertical Slice](SHOT_VIDEO_PRODUCTION_ORCHESTRATION_VERTICAL_SLICE.json).

@@ -1,16 +1,38 @@
 {
   "phase": "PHASE_SHOT_VIDEO_PRODUCTION_ORCHESTRATION",
   "status": "SHOT_VIDEO_PRODUCTION_ORCHESTRATION_COMPLETE",
-  "implementation_commit": "e2903d4",
+  "schema_version": "shot_video_production_orchestration_v1",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "implementation_commit": "95750d9",
+  "report_commit": "this report commit",
   "migration_head": "m4h5i6j7k8l9",
   "provider_calls": {
     "default_mock": 1,
     "real_minimax_h3": 0,
-    "image_generation": 0,
+    "real_image_provider": 0,
     "configured_image_provider": "SHAPI",
     "configured_image_provider_base_url": "https://www.shapi.vip/"
   },
+  "existing_video_runtime_reused": true,
+  "existing_minimax_h3_adapter_reused": true,
+  "existing_generation_execution_reused": true,
+  "existing_asset_promotion_reused": true,
+  "second_video_system_created": false,
+  "official_keyframe_assets_required": true,
+  "video_intent_reconciled": true,
+  "video_execution_idempotent": true,
+  "async_provider_runtime_reused": true,
+  "source_fingerprint_guard": true,
+  "stale_result_promotion_blocked": true,
+  "candidate_requires_human_review": true,
+  "official_video_only_after_approval": true,
+  "promotion_atomic": true,
+  "episode_runtime_compatible": true,
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "real_image_provider_calls": 0,
+  "real_minimax_h3_calls": 0,
   "authority_guards": {
     "materialization_pointer": true,
     "shot_direction": true,
@@ -20,7 +42,9 @@
     "production_generation_intent": true,
     "video_prompt_ir": true,
     "source_fingerprint": true,
-    "stale_before_promotion": true
+    "stale_before_validation": true,
+    "stale_before_promotion": true,
+    "image_to_video_official_source_binding": true
   },
   "lineage": {
     "StoryboardMaterialization": true,
@@ -34,14 +58,48 @@
     "MediaCandidate": true
   },
   "human_review_required": true,
-  "source_fact_mutated": false,
-  "script_ir_mutated": false,
+  "vertical_slice_counts": {
+    "video_intents": 1,
+    "generation_executions": 1,
+    "video_candidates": 1,
+    "validated_candidates": 1,
+    "approved_videos": 1,
+    "official_media_versions": 1,
+    "official_video_pointers": 1
+  },
   "verification": {
-    "pytest_full": {"status": "PASS", "tests": 1926},
-    "focused": {"status": "PASS", "tests": 76},
-    "golden": {"status": "PASS", "passed": 5, "failed": 0},
-    "migration_chain": "PASS",
+    "pytest_full": {
+      "status": "PASS",
+      "tests": 1927
+    },
+    "focused_runtime_regression": {
+      "status": "PASS",
+      "tests": 30
+    },
+    "shot_video_production_tests": {
+      "status": "PASS",
+      "tests": 4
+    },
+    "golden": {
+      "status": "PASS",
+      "passed": 5,
+      "failed": 0
+    },
+    "migration_chain": {
+      "status": "PASS",
+      "head": "m4h5i6j7k8l9",
+      "fresh": "PASS",
+      "repeat": "PASS",
+      "legacy": "PASS",
+      "drift": "PASS"
+    },
     "compileall": "PASS",
     "diff_check": "PASS"
+  },
+  "results": {
+    "idempotency": "PASS: same source reuses intent/execution with zero additional provider calls",
+    "stale_promotion_guard": "PASS: stale candidate retained and promotion blocked",
+    "atomic_promotion": "PASS: promotion transaction remains atomic",
+    "episode_runtime_compatibility": "PASS: official shot video remains consumable by existing episode runtime"
   }
 }
