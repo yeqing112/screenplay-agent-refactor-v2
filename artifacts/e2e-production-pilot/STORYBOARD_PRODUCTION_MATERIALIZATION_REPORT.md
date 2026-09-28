@@ -6,7 +6,7 @@
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Implementation commit: `f834c3e554acde5a833edeaf5dbad7fb83c4a9c3`
-- Report commit: recorded by the final report commit in this push
+- Report commit: `edcdada36ae0c07a3f2a1210c0bd499b6df5ff93`
 - Migration head: `l3g4h5i6j7k8`
 
 ## Delivered
@@ -56,4 +56,3 @@ DirectorReasoningIR
 - All materialization outputs are versioned and retain prior history.
 - Prompt and generation intent lineage points back to StoryboardPlan and DirectorReasoning versions.
 - No real LLM, image, or video provider was called. The configured image provider boundary remains [SHAPI](https://www.shapi.vip/); provider calls in this phase: `0`.
-
