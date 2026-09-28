@@ -102,6 +102,12 @@ def test_review_gate_and_valid_materialization(tmp_path: Path):
             assert session.query(ShotDirection).count() == 1
             assert session.query(ProductionGenerationIntent).count() == 1
             assert session.query(ProductionPromptVersion).count() == 1
+            intent = session.query(ProductionGenerationIntent).one()
+            assert json.loads(intent.constraint_snapshot)["production_eligible"] is True
+            prompt = session.query(ProductionPromptVersion).one()
+            prompt_structure = json.loads(prompt.prompt_structure)
+            assert prompt_structure["production_eligibility"] == "MATERIALIZATION_PASS"
+            assert prompt_structure["prompt_ir_pointer_status"] == "DOWNSTREAM_NOT_CREATED"
             shot = session.query(StoryboardShot).one()
             assert shot.storyboard_plan_id == row.id
             assert shot.storyboard_plan_version == 1
@@ -138,6 +144,53 @@ def test_materialization_is_idempotent_and_invalid_direction_fails_closed(tmp_pa
             with pytest.raises(StoryboardProductionMaterializationError) as blocked:
                 materialize_storyboard_plan(session, episode_id="mat-ep-1", storyboard_plan_id=invalid_row.id, storyboard_version=2, book_id=77, episode_number=1)
             assert blocked.value.code == "SHOT_DIRECTION_INVALID"
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "code"),
+    [
+        ("scene_id", "missing-scene", "SCENE_NOT_FOUND"),
+        ("visual_style_id", "missing-style", "VISUAL_STYLE_NOT_FOUND"),
+    ],
+)
+def test_approved_snapshot_invalid_reference_fails_closed_without_partial_materialization(tmp_path: Path, field: str, value: str, code: str):
+    engine, factory = _db(tmp_path)
+    try:
+        plan_id, _ = _compiled_approved(factory)
+        with factory() as session:
+            row = session.query(StoryboardPlan).filter_by(id=plan_id).one()
+            snapshot = json.loads(row.storyboard_json)
+            snapshot["shots"][0][field] = value
+            row.storyboard_json = json.dumps(snapshot, ensure_ascii=False)
+            session.commit()
+            with pytest.raises(StoryboardProductionMaterializationError) as blocked:
+                materialize_storyboard_plan(session, episode_id="mat-ep-1", storyboard_plan_id=plan_id, storyboard_version=1, book_id=77, episode_number=1)
+            assert any(item["code"] == code for item in blocked.value.diagnostics)
+            assert session.query(StoryboardMaterializationSet).count() == 0
+            assert session.query(StoryboardShot).count() == 0
+            assert session.query(ProductionGenerationIntent).count() == 0
+            assert session.query(ProductionPromptVersion).count() == 0
+    finally:
+        engine.dispose()
+
+
+def test_approved_snapshot_invalid_character_reference_fails_closed(tmp_path: Path):
+    engine, factory = _db(tmp_path)
+    try:
+        plan_id, _ = _compiled_approved(factory)
+        with factory() as session:
+            row = session.query(StoryboardPlan).filter_by(id=plan_id).one()
+            snapshot = json.loads(row.storyboard_json)
+            snapshot["shots"][0]["character_actions"]["characters"] = ["missing-character"]
+            row.storyboard_json = json.dumps(snapshot, ensure_ascii=False)
+            session.commit()
+            with pytest.raises(StoryboardProductionMaterializationError) as blocked:
+                materialize_storyboard_plan(session, episode_id="mat-ep-1", storyboard_plan_id=plan_id, storyboard_version=1, book_id=77, episode_number=1)
+            assert any(item["code"] == "CHARACTER_NOT_FOUND" for item in blocked.value.diagnostics)
+            assert session.query(StoryboardMaterializationSet).count() == 0
+            assert session.query(StoryboardShot).count() == 0
     finally:
         engine.dispose()
 

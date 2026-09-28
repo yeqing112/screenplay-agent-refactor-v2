@@ -130,6 +130,12 @@ def _validate_review_gate(row: StoryboardPlan) -> dict[str, Any]:
             "Only an explicitly human-approved StoryboardPlan can materialize.",
             [{"code": "STORYBOARD_REVIEW_REQUIRED", "status": row.status}],
         )
+    review_lineage = _obj(row.review_lineage_json)
+    if not _text(row.approved_by) or not row.approved_at or review_lineage.get("human_approved") is not True:
+        raise StoryboardProductionMaterializationError(
+            "StoryboardPlan approval metadata is incomplete.",
+            [{"code": "STORYBOARD_APPROVAL_LINEAGE_INVALID"}],
+        )
     lineage = _obj(row.lineage_json)
     validation = lineage.get("compile_validation") if isinstance(lineage.get("compile_validation"), Mapping) else {}
     if validation.get("status") != "PASS":
@@ -332,7 +338,7 @@ def _reuse_result(session: Any, *, row: StoryboardPlan, set_row: StoryboardMater
     return {"status": "MATERIALIZED", "mutated": False, "reused": True, "materialization_set_ids": [int(set_row.id)], "storyboard_shot_ids": [int(item.id) for item in shots], "generation_intent_ids": [item.generation_intent_id for item in session.query(ProductionGenerationIntent).filter(ProductionGenerationIntent.shot_id.in_([item.id for item in shots])).all()], "prompt_version_ids": [item.prompt_version_id for item in session.query(ProductionPromptVersion).filter(ProductionPromptVersion.storyboard_plan_id == row.id, ProductionPromptVersion.storyboard_plan_version == row.version).all()], "active_pointer": _set_payload(set_row, pointer=pointer, shots=shots), "source": {"storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "director_reasoning_id": row.director_reasoning_id, "director_reasoning_version": row.director_reasoning_version}, "human_review_required": True, "provider_calls": 0}
 
 
-def materialize_storyboard_plan(
+def _materialize_storyboard_plan(
     session: Any,
     *,
     episode_id: str,
@@ -483,11 +489,11 @@ def materialize_storyboard_plan(
                 raise StoryboardProductionMaterializationError("Persisted ShotDirection failed validation.", direction_validation.get("errors") or [], code="SHOT_DIRECTION_INVALID")
             shot_requirement = {"shot_id": shot.plan_shot_id, "scene_id": scene_id, "shot_type": source.get("shot_type") or direction.get("shot_type"), "camera": source.get("camera") or {}, "duration": shot.duration, "action": shot.action_process, "shot_direction": direction, "source_lineage": {"storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "shot_plan_id": plan.id, "shot_plan_revision": plan.revision}}
             lineage = {"storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "shot_plan_id": plan.id, "shot_plan_revision": plan.revision, "storyboard_shot_id": shot.id, "plan_shot_id": shot.plan_shot_id}
-            intent = create_production_generation_intent(session, shot_id=shot.id, shot_requirement=shot_requirement, camera_requirements=source.get("camera") or {}, style_requirements={"visual_style_id": source.get("visual_style_id") or ""}, constraint_snapshot={"materialization_set_id": set_row.id, "human_review_required": True, "provider_calls": 0}, storyboard_plan_id=row.id, storyboard_plan_version=row.version, storyboard_lineage=lineage, director_reasoning_id=row.director_reasoning_id, director_reasoning_version=row.director_reasoning_version, reasoning_lineage={"director_reasoning_id": row.director_reasoning_id, "director_reasoning_version": row.director_reasoning_version, "storyboard_plan_id": row.id, "storyboard_plan_version": row.version})
+            intent = create_production_generation_intent(session, shot_id=shot.id, shot_requirement=shot_requirement, camera_requirements=source.get("camera") or {}, style_requirements={"visual_style_id": source.get("visual_style_id") or ""}, constraint_snapshot={"materialization_set_id": set_row.id, "materialization_status": "MATERIALIZED", "production_eligible": True, "prompt_ir_pointer_status": "DOWNSTREAM_NOT_CREATED", "human_review_required": True, "provider_calls": 0}, storyboard_plan_id=row.id, storyboard_plan_version=row.version, storyboard_lineage=lineage, director_reasoning_id=row.director_reasoning_id, director_reasoning_version=row.director_reasoning_version, reasoning_lineage={"director_reasoning_id": row.director_reasoning_id, "director_reasoning_version": row.director_reasoning_version, "storyboard_plan_id": row.id, "storyboard_plan_version": row.version})
             intent_ids.append(intent["generation_intent_id"])
             prompt_id = f"storyboard-{row.id}-v{row.version}-{shot.plan_shot_id}"
             prompt_text = f"Storyboard shot {shot.plan_shot_id}: {shot.action_process or shot.shot_purpose}."
-            prompt_structure = {"source": "StoryboardPlan", "shot_id": shot.plan_shot_id, "shot_direction": direction, "generation_intent_id": intent["generation_intent_id"], "lineage": lineage}
+            prompt_structure = {"source": "StoryboardPlan", "shot_id": shot.plan_shot_id, "shot_direction": direction, "generation_intent_id": intent["generation_intent_id"], "production_eligibility": "MATERIALIZATION_PASS", "prompt_ir_pointer_status": "DOWNSTREAM_NOT_CREATED", "lineage": lineage}
             existing_prompt = _existing_prompt(session, prompt_id, prompt_text, prompt_structure)
             prompt = existing_prompt or create_production_prompt_version(session, prompt_id=prompt_id, prompt_text=prompt_text, prompt_structure=prompt_structure, created_from="STORYBOARD_MATERIALIZATION", storyboard_plan_id=row.id, storyboard_plan_version=row.version, storyboard_lineage=lineage)
             prompt_ids.append(prompt["prompt_version_id"])
@@ -514,6 +520,33 @@ def materialize_storyboard_plan(
     all_set_ids = [item for result in results for item in result.get("materialization_set_ids", [])]
     all_shot_ids = [item for result in results for item in result.get("storyboard_shot_ids", [])]
     return {"status": "MATERIALIZED", "mutated": any(item.get("mutated") for item in results), "reused": bool(results) and all(not item.get("mutated") for item in results), "materialization_set_ids": all_set_ids, "storyboard_shot_ids": all_shot_ids, "generation_intent_ids": [item for result in results for item in result.get("generation_intent_ids", [])], "prompt_version_ids": [item for result in results for item in result.get("prompt_version_ids", [])], "scene_results": results, "source": {"storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "director_reasoning_id": row.director_reasoning_id, "director_reasoning_version": row.director_reasoning_version}, "human_review_required": True, "provider_calls": 0}
+
+
+def materialize_storyboard_plan(
+    session: Any,
+    *,
+    episode_id: str,
+    storyboard_plan_id: int | None = None,
+    storyboard_version: int | None = None,
+    book_id: int = 0,
+    episode_number: int = 0,
+) -> dict[str, Any]:
+    """Materialize atomically, rolling back the savepoint on any failure.
+
+    The caller may have an outer transaction (the API and direct runtime tests
+    both do).  A nested transaction ensures validation or downstream lineage
+    errors cannot leave a partially materialized production set in that outer
+    transaction.
+    """
+    with session.begin_nested():
+        return _materialize_storyboard_plan(
+            session,
+            episode_id=episode_id,
+            storyboard_plan_id=storyboard_plan_id,
+            storyboard_version=storyboard_version,
+            book_id=book_id,
+            episode_number=episode_number,
+        )
 
 
 def get_storyboard_materialization(session: Any, *, episode_id: str, book_id: int = 0, episode_number: int = 0) -> dict[str, Any]:
