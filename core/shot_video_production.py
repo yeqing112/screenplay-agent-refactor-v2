@@ -153,7 +153,13 @@ def _current_production_intent(session: Any, shot: StoryboardShot) -> Production
 def _profile(provider_id: str, model_profile_id: str | None) -> dict[str, Any]:
     if model_profile_id:
         profile = get_profile(model_profile_id)
-    elif provider_id and provider_id not in {"mock-video", "minimax-h3-async"}:
+    elif provider_id == "mock-video":
+        # The execution runtime resolves the default mock provider to the
+        # built-in mock profile.  Resolve the same identity while building
+        # the source fingerprint so the strict stale guard compares one
+        # stable Model Registry projection before and after execution.
+        profile = get_profile("builtin-mock-video")
+    elif provider_id and provider_id != "minimax-h3-async":
         profile = get_profile(provider_id)
     else:
         profile = get_default_profile("video")
@@ -248,7 +254,7 @@ def _official_asset(session: Any, *, shot: StoryboardShot, frame: Keyframe, asse
     pointer = session.query(OfficialMediaPointer).filter_by(book_id=int(shot.book_id), episode=int(shot.episode), storyboard_shot_id=int(shot.id), media_role=str(official.media_role)).one_or_none()
     if pointer is None:
         raise ShotVideoProductionError("Official keyframe pointer is missing", code="VIDEO_OFFICIAL_KEYFRAME_POINTER_REQUIRED")
-    return {"keyframe_id": int(frame.id), "binding_id": int(binding.id), "binding_fingerprint": binding.binding_fingerprint, "asset_authority_id": binding.authority_id, "asset_version_id": binding.version_id, "storage_identity": storage_identity, "official_media_version_id": official.official_media_version_id, "official_media_authority_id": authority.authority_id, "official_media_role": official.media_role, "official_pointer_fingerprint": pointer.fingerprint, "checksum_sha256": official.checksum_sha256}
+    return {"keyframe_id": int(frame.id), "binding_id": int(binding.id), "binding_fingerprint": binding.binding_fingerprint, "asset_authority_id": binding.authority_id, "asset_version_id": binding.version_id, "asset_authority_current": True, "storage_identity": storage_identity, "official_media_version_id": official.official_media_version_id, "official_media_authority_id": authority.authority_id, "official_media_role": official.media_role, "official_pointer_fingerprint": pointer.fingerprint, "checksum_sha256": official.checksum_sha256, "source_prompt_ir_version_id": int(official.prompt_ir_version_id), "source_prompt_ir_payload_hash": official.prompt_ir_payload_hash}
 
 
 def _frames(session: Any, shot: StoryboardShot, sequence: KeyframeSequence, *, require_end: bool) -> tuple[Keyframe, Keyframe, dict[str, Any], dict[str, Any]]:

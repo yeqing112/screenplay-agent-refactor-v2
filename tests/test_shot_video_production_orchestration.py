@@ -111,3 +111,68 @@ def test_mock_execution_reuses_existing_execution_and_keeps_lineage(tmp_path, mo
     finally:
         session.close()
         engine.dispose()
+
+
+def test_real_keyframe_fixture_reaches_review_gate_without_stale_profile(tmp_path, monkeypatch):
+    """Exercise the shipped keyframe authorities through the video runtime.
+
+    The provider registry is explicitly restricted to the deterministic mock;
+    this proves the real START/END OfficialMedia lineage can produce a VIDEO
+    candidate and technical review record without a network call.
+    """
+    import core.storyboard_materializer as storyboard_materializer
+    from core.automatic_keyframe_authoring import compile_keyframe_plan, plan_keyframes, review_keyframe_plan
+    from core.keyframe_image_production import produce_keyframe_image, promote_keyframe_image
+    from core.media_authority import promote_media_candidate, resolve_current_official_media
+    from core.shot_video_production import execute_shot_video_production
+    from core.video_provider_adapter import VideoProviderRegistry
+    from models import MediaPromotionRecord, MediaValidationRecord, OfficialMediaVersion, PromptIRAuthority, PromptIRVersion, Keyframe
+    from tests.prompt_ir_authority_fixture import resolve_fixture_materialization
+    from tests.test_automatic_keyframe_authoring import _db, _materialized
+    from tests.test_j2_3_dual_media_currentness import _install_video_scope
+
+    monkeypatch.setattr(storyboard_materializer, "resolve_current_authoritative_materialization", resolve_fixture_materialization)
+    engine, factory = _db(tmp_path)
+    session = factory()
+    try:
+        shot_id = _materialized(factory)
+        plan_keyframes(session, shot_id=shot_id)
+        review_keyframe_plan(session, shot_id=shot_id, version=1, decision="APPROVE", reviewer="human")
+        compile_keyframe_plan(session, shot_id=shot_id, version=1)
+        session.commit()
+        frame_ids = [row.id for row in session.query(Keyframe).order_by(Keyframe.order_index.asc()).all()]
+        for frame_id in (frame_ids[0], frame_ids[-1]):
+            produced = produce_keyframe_image(session, keyframe_id=frame_id)
+            promote_keyframe_image(session, keyframe_id=frame_id, validation_id=produced["validation_id"], reviewer="human")
+        session.commit()
+
+        image_ir = session.query(PromptIRVersion).one()
+        image_authority = session.query(PromptIRAuthority).one()
+        _install_video_scope(session, image_ir, image_authority)
+        session.commit()
+
+        result = execute_shot_video_production(session, shot_id=shot_id, provider_registry=VideoProviderRegistry())
+        assert result["execution"]["status"] == "SUCCESS"
+        assert result["candidate"]["media_type"] == "VIDEO"
+        assert result["candidate"]["validation_status"] == "REVIEW_REQUIRED"
+        assert result["validation"]["status"] == "TECHNICALLY_VALID"
+        assert result["validation"]["promotion_id"]
+        assert session.query(MediaCandidateRecord).filter_by(media_type="VIDEO").count() == 1
+        assert session.query(MediaValidationRecord).filter_by(execution_id=result["execution"]["execution_id"]).count() == 1
+        assert session.query(MediaPromotionRecord).filter_by(execution_id=result["execution"]["execution_id"], review_status="REVIEW_REQUIRED").count() == 1
+        assert session.query(OfficialMediaVersion).filter_by(media_type="VIDEO").count() == 0
+        promoted = promote_media_candidate(
+            session,
+            result["candidate"]["candidate_id"],
+            result["validation"]["validation_id"],
+            confirmation=True,
+            reviewer="human",
+            decision="APPROVE",
+        )
+        assert promoted["promotion"].official_media_version_id
+        resolved = resolve_current_official_media(session, book_id=77, episode=1, storyboard_shot_id=shot_id, media_role="SHOT_PRIMARY_VIDEO")
+        assert resolved["version"].media_type == "VIDEO"
+        assert resolved["version"].official_media_version_id == promoted["promotion"].official_media_version_id
+    finally:
+        session.close()
+        engine.dispose()

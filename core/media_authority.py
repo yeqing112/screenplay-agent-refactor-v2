@@ -137,8 +137,8 @@ def validate_image_to_video_source_binding(session: Any, *, execution: Generatio
         and int(version.episode) == int(execution.episode)
         and int(version.storyboard_shot_id) == int(execution.storyboard_shot_id)
         and str(version.media_type) == "IMAGE"
-        and str(version.media_role) == "SHOT_PRIMARY_IMAGE"
-        and str(binding["media_role"]) == "SHOT_PRIMARY_IMAGE"
+        and str(version.media_role) in {"SHOT_PRIMARY_IMAGE", "KEYFRAME_START_IMAGE", "KEYFRAME_END_IMAGE"}
+        and str(binding["media_role"]) in {"SHOT_PRIMARY_IMAGE", "KEYFRAME_START_IMAGE", "KEYFRAME_END_IMAGE"}
         and str(binding["checksum_sha256"]) == str(version.checksum_sha256)
         and int(prompt.id) == int(version.prompt_ir_version_id)
         and str(prompt.payload_hash) == str(version.prompt_ir_payload_hash)

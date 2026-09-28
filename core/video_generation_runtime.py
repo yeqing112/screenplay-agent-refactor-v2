@@ -144,7 +144,14 @@ def _validate_frame_asset(session: Any, *, shot: StoryboardShot, asset: Mapping[
         value["storage_identity"] = str(getattr(version, "storage_identity", "") or "")
         value["asset_checksum"] = str(getattr(version, "checksum", "") or "")
         value["asset_metadata_hash"] = str(getattr(version, "metadata_hash", "") or "")
-        value["asset_authority_current"] = bool(resolved.get("current"))
+        # KeyframeAssetBinding deliberately uses a frame-scoped fingerprint,
+        # while the shared H2 resolver also reports the shot-scoped binding
+        # check.  The keyframe authoring runtime owns that one edge, so it is
+        # excluded consistently when deciding whether the typed authority,
+        # pointer, version, and media are current.
+        effective_failed_checks = [item for item in (resolved.get("failed_checks") or []) if item != "binding_fingerprint"]
+        value["asset_authority_current"] = not effective_failed_checks
+        value["asset_authority_failed_checks"] = effective_failed_checks
     except VideoGenerationError:
         raise
     except Exception as exc:
@@ -400,7 +407,17 @@ def execute_video_generation(session: Any, *, intent_id: int, provider_id: str =
         session.add(task)
     execution = GenerationExecutionRecord(execution_id=execution_id, schema_version="generation_execution_video_v1", book_id=shot.book_id, episode=shot.episode, storyboard_shot_id=shot.id, plan_shot_id=str(shot.plan_shot_id or ""), execution_mode="VIDEO_MOCK" if is_mock else "VIDEO_PROVIDER_CANARY", status="CREATED", target_media="VIDEO", prompt_ir_version_id=int(prompt_ir.id), prompt_ir_authority_id=int(prompt_authority.id) if prompt_authority else 0, prompt_ir_payload_hash=str(prompt_ir.payload_hash), generation_payload_fingerprint=generation_payload_fp, generation_policy_fingerprint=policy_fp, model_profile_id=resolved_profile_id, model_profile_fingerprint=_fingerprint({key: resolved_profile.get(key) for key in ("id", "provider", "base_url", "model_name", "transport_binding_id")}), provider_adapter_id=str(getattr(provider, "adapter_id", provider_id)), provider_adapter_version=str(getattr(provider, "adapter_version", "")), reference_bindings_fingerprint="", provider_request_fingerprint=provider_fp, provider=str(resolved_profile.get("provider") or provider_id), model=str(resolved_profile.get("model_name") or "deterministic-video-v1"), logical_provider_calls=0, transport_retry_count=0, created_at=now, updated_at=now)
     prompt_text = _text(payload.get("prompt") or payload.get("prompt_text") or _obj(payload.get("request")).get("prompt") or prompt.prompt_text)
-    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt_text, "prompt_authority": {"pointer_id": int(pointer.id), "version_id": int(prompt_ir.id), "payload_hash": str(prompt_ir.payload_hash), "authority_id": int(prompt_authority.id) if prompt_authority else None}, "motion_profile": provider_motion_profile, "intent_motion_profile": intent_motion_profile, "motion_source": "SHOT_DIRECTION" if not is_mock else "VIDEO_GENERATION_INTENT", "shot_direction": shot_direction, "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "media_role": "SHOT_PRIMARY_VIDEO", "shot_video_lineage": strict_lineage}
+    source_binding = {
+        "schema_version": "image_to_video_source_binding_v1",
+        "authority_class": "OFFICIAL_MEDIA",
+        "official_media_authority_id": str(first.get("official_media_authority_id") or ""),
+        "official_media_version_id": str(first.get("official_media_version_id") or ""),
+        "media_role": str(first.get("official_media_role") or ""),
+        "checksum_sha256": str(first.get("checksum_sha256") or ""),
+        "source_prompt_ir_version_id": int(first.get("source_prompt_ir_version_id") or 0),
+        "source_prompt_ir_payload_hash": str(first.get("source_prompt_ir_payload_hash") or ""),
+    }
+    execution.request_payload = {"generation_type": "VIDEO", "video_intent_id": int(intent.id), "prompt_version": intent.prompt_version, "prompt_text": prompt_text, "prompt_authority": {"pointer_id": int(pointer.id), "version_id": int(prompt_ir.id), "payload_hash": str(prompt_ir.payload_hash), "authority_id": int(prompt_authority.id) if prompt_authority else None}, "motion_profile": provider_motion_profile, "intent_motion_profile": intent_motion_profile, "motion_source": "SHOT_DIRECTION" if not is_mock else "VIDEO_GENERATION_INTENT", "shot_direction": shot_direction, "first_frame_asset": first, "last_frame_asset": last, "generation_policy": policy, "image_to_video_source": source_binding if str(policy.get("mode") or "").upper() == "IMAGE_TO_VIDEO" else None, "media_role": "SHOT_PRIMARY_VIDEO", "shot_video_lineage": strict_lineage}
     session.add(execution)
     intent.generation_execution_id = execution_id
     intent.task_id = task_id
