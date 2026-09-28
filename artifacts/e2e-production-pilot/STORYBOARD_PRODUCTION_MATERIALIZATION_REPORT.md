@@ -5,8 +5,8 @@
 `PHASE_STORYBOARD_PRODUCTION_MATERIALIZATION` — `STORYBOARD_PRODUCTION_MATERIALIZATION_COMPLETE`
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Implementation commit: `f834c3e554acde5a833edeaf5dbad7fb83c4a9c3`
-- Report commit: `edcdada36ae0c07a3f2a1210c0bd499b6df5ff93`
+- Implementation commits: `f834c3e554acde5a833edeaf5dbad7fb83c4a9c3`, `ca88fdb8290d45bcf3f072204cfb4dc782e566e7`
+- Report commit: `pending`
 - Migration head: `l3g4h5i6j7k8`
 
 ## Delivered
@@ -43,9 +43,11 @@ DirectorReasoningIR
 
 ## Verification
 
-- `pytest -q`: **1904 passed**.
-- `pytest -q tests/test_storyboard_production_materialization.py`: **5 passed**.
+- `pytest -q tests/test_storyboard_production_materialization.py`: **8 passed**.
+- Focused materialization/runtime/migration suite: **44 passed**.
+- Atomic failure behavior: savepoint rollback leaves zero production rows after invalid references.
 - `npm run test:golden`: **5/5 passed**.
+- `pytest -q`: **1907 passed**.
 - `python scripts/verify_migration_chain.py`: **MIGRATION_CHAIN_HARDENING_READY**; fresh, repeat, legacy, and drift checks PASS; head `l3g4h5i6j7k8`.
 - `git diff --check`: **PASS**.
 

@@ -2,8 +2,8 @@
   "phase": "PHASE_STORYBOARD_PRODUCTION_MATERIALIZATION",
   "status": "STORYBOARD_PRODUCTION_MATERIALIZATION_COMPLETE",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "implementation_commit": "f834c3e554acde5a833edeaf5dbad7fb83c4a9c3",
-  "report_commit": "edcdada36ae0c07a3f2a1210c0bd499b6df5ff93",
+  "implementation_commits": ["f834c3e554acde5a833edeaf5dbad7fb83c4a9c3", "ca88fdb8290d45bcf3f072204cfb4dc782e566e7"],
+  "report_commit": "pending",
   "migration_head": "l3g4h5i6j7k8",
   "review_required_before_materialization": true,
   "materialization_idempotent": true,
@@ -11,6 +11,9 @@
   "version_history_preserved": true,
   "pointer_switch_safe": true,
   "rollback_safe": true,
+  "atomic_fail_closed": true,
+  "production_eligibility_marked_after_materialization": true,
+  "prompt_ir_pointer_created_in_this_phase": false,
   "director_reasoning_lineage_complete": true,
   "storyboard_lineage_complete": true,
   "prompt_lineage_complete": true,
@@ -39,8 +42,9 @@
     "history_preserved": true
   },
   "verification": {
-    "focused_materialization_tests": {"status": "PASS", "passed": 5},
-    "pytest_full": {"status": "PASS", "passed": 1904},
+    "focused_materialization_tests": {"status": "PASS", "passed": 8},
+    "focused_runtime_migration_suite": {"status": "PASS", "passed": 44},
+    "pytest_full": {"status": "PASS", "passed": 1907},
     "golden": {"status": "PASS", "passed": 5, "failed": 0},
     "migration_chain": {"status": "PASS", "head": "l3g4h5i6j7k8", "fresh": "PASS", "repeat": "PASS", "legacy": "PASS", "drift": "PASS"},
     "diff_check": "PASS"
