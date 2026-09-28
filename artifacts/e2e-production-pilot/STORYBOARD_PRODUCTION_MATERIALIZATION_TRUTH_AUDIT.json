@@ -1,0 +1,48 @@
+{
+  "phase": "PHASE_STORYBOARD_PRODUCTION_MATERIALIZATION",
+  "status": "STORYBOARD_PRODUCTION_MATERIALIZATION_COMPLETE",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "implementation_commit": "f834c3e554acde5a833edeaf5dbad7fb83c4a9c3",
+  "report_commit": "recorded_in_final_report_commit",
+  "migration_head": "l3g4h5i6j7k8",
+  "review_required_before_materialization": true,
+  "materialization_idempotent": true,
+  "invalid_reference_fail_closed": true,
+  "version_history_preserved": true,
+  "pointer_switch_safe": true,
+  "rollback_safe": true,
+  "director_reasoning_lineage_complete": true,
+  "storyboard_lineage_complete": true,
+  "prompt_lineage_complete": true,
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "real_llm_calls": 0,
+  "real_image_provider_calls": 0,
+  "real_video_provider_calls": 0,
+  "image_provider_reference": {
+    "provider": "SHAPI",
+    "base_url": "https://www.shapi.vip/",
+    "used_in_this_phase": false
+  },
+  "counts": {
+    "materialization_calls": 3,
+    "materialization_sets_created": 2,
+    "storyboard_shots_retained": 2,
+    "shot_plans_retained": 2,
+    "active_pointers": 1,
+    "generation_intents_created": 2,
+    "prompt_versions_created": 2
+  },
+  "rollback": {
+    "result": "ROLLED_BACK",
+    "target_storyboard_version": 1,
+    "history_preserved": true
+  },
+  "verification": {
+    "focused_materialization_tests": {"status": "PASS", "passed": 5},
+    "pytest_full": {"status": "PASS", "passed": 1904},
+    "golden": {"status": "PASS", "passed": 5, "failed": 0},
+    "migration_chain": {"status": "PASS", "head": "l3g4h5i6j7k8", "fresh": "PASS", "repeat": "PASS", "legacy": "PASS", "drift": "PASS"},
+    "diff_check": "PASS"
+  }
+}

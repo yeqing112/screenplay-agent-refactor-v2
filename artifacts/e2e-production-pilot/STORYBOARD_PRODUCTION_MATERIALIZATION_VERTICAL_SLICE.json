@@ -1,0 +1,30 @@
+{
+  "phase": "PHASE_STORYBOARD_PRODUCTION_MATERIALIZATION",
+  "status": "COMPLETE",
+  "provider_calls": 0,
+  "steps": [
+    {"step": 1, "artifact": "DirectorReasoningIR", "version": 1, "status": "PERSISTED"},
+    {"step": 2, "artifact": "StoryboardPlan", "version": 1, "status": "REVIEW_REQUIRED"},
+    {"step": 3, "artifact": "StoryboardPlan", "version": 1, "status": "APPROVED", "reviewer": "human-reviewer"},
+    {"step": 4, "artifact": "StoryboardPlan compile validation", "version": 1, "status": "PASS"},
+    {"step": 5, "artifact": "ShotPlan", "version": 1, "status": "READY_FOR_MATERIALIZATION"},
+    {"step": 6, "artifact": "StoryboardMaterializationSet", "version": 1, "set": 1, "status": "MATERIALIZED"},
+    {"step": 7, "artifact": "StoryboardShot + ShotDirection", "version": 1, "count": 1, "status": "MATERIALIZED"},
+    {"step": 8, "artifact": "GenerationIntent + PromptVersion", "version": 1, "count": 1, "status": "LINEAGE_COMPLETE"},
+    {"step": 9, "artifact": "StoryboardPlan", "version": 2, "status": "APPROVED"},
+    {"step": 10, "artifact": "StoryboardMaterializationSet", "version": 2, "set": 2, "status": "MATERIALIZED"},
+    {"step": 11, "artifact": "MaterializationPointer", "from": 1, "to": 2, "status": "SWITCHED"},
+    {"step": 12, "artifact": "MaterializationPointer", "from": 2, "to": 1, "status": "ROLLED_BACK", "history_preserved": true}
+  ],
+  "invariants": {
+    "human_review_required": true,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0,
+    "prior_versions_deleted": 0,
+    "real_llm_calls": 0,
+    "real_image_provider_calls": 0,
+    "real_video_provider_calls": 0,
+    "image_provider": "SHAPI",
+    "image_provider_url": "https://www.shapi.vip/"
+  }
+}
