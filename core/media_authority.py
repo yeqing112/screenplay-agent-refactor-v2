@@ -782,6 +782,7 @@ def _promote_media_candidate(
     reviewer: str = "",
     decision: str | None = None,
     review_notes: str = "",
+    before_commit: Any | None = None,
 ) -> dict[str, Any]:
     """Explicitly promote a validated Candidate atomically into official rows."""
     accepted_confirmation = confirmation is True or (
@@ -855,6 +856,8 @@ def _promote_media_candidate(
             promotion.authority_id = authority.authority_id
             promotion.updated_at = datetime.utcnow()
             candidate.validation_status = "TECHNICALLY_VALID"
+            if before_commit is not None:
+                before_commit({"version": existing, "authority": authority, "pointer": pointer, "candidate": candidate, "execution": execution, "validation": validation})
             session.commit()
             return {"version": existing, "authority": authority, "pointer": pointer, "promotion": promotion, "reused": True, "provider_calls": 0, "llm_calls": 0, "image_calls": 0, "video_calls": 0}
     current_versions = session.query(OfficialMediaVersion).filter_by(book_id=book_id, episode=episode, storyboard_shot_id=shot_id, media_role=media_role).all()
@@ -914,6 +917,8 @@ def _promote_media_candidate(
         promotion.authority_id = authority_id
         promotion.updated_at = datetime.utcnow()
         candidate.validation_status = "TECHNICALLY_VALID"
+        if before_commit is not None:
+            before_commit({"version": version, "authority": authority, "pointer": pointer, "candidate": candidate, "execution": execution, "validation": validation})
         session.commit()
     except IntegrityError:
         session.rollback()
@@ -941,6 +946,7 @@ def promote_media_candidate(
     reviewer: str = "",
     decision: str | None = None,
     review_notes: str = "",
+    before_commit: Any | None = None,
 ) -> dict[str, Any]:
     """Promote a validated candidate with an in-process atomicity guard."""
     with _PROMOTION_LOCK:
@@ -953,6 +959,7 @@ def promote_media_candidate(
             reviewer=reviewer,
             decision=decision,
             review_notes=review_notes,
+            before_commit=before_commit,
         )
 
 
