@@ -1,0 +1,36 @@
+{
+  "episode_id": 50101,
+  "render_plan_id": 1,
+  "shots": [
+    {"shot_id": 1, "order": 0, "dependency": []},
+    {"shot_id": 2, "order": 1, "dependency": [1]},
+    {"shot_id": 3, "order": 2, "dependency": [2]}
+  ],
+  "runs": [
+    {"run": 1, "shot_states": ["KEYFRAME_PLAN_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW", "pause_reason": "Shot 1 keyframe plan review"},
+    {"run": 2, "human_action": "APPROVE Shot 1 keyframe plan", "shot_states": ["KEYFRAME_IMAGE_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW"},
+    {"run": 3, "human_action": "APPROVE Shot 1 START image", "shot_states": ["KEYFRAME_IMAGE_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW"},
+    {"run": 4, "human_action": "APPROVE Shot 1 END image; install fixture VIDEO PromptIR", "shot_states": ["VIDEO_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW"},
+    {"run": 5, "human_action": "APPROVE Shot 1 video", "shot_states": ["COMPLETE", "KEYFRAME_PLAN_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW"},
+    {"run": 6, "human_action": "APPROVE Shot 2 keyframe plan", "shot_states": ["COMPLETE", "KEYFRAME_IMAGE_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW"},
+    {"run": 7, "human_action": "APPROVE Shot 2 START image", "shot_states": ["COMPLETE", "KEYFRAME_IMAGE_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW"},
+    {"run": 8, "human_action": "APPROVE Shot 2 END image; install fixture VIDEO PromptIR", "shot_states": ["COMPLETE", "VIDEO_REVIEW_REQUIRED", "BLOCKED_DEPENDENCY"], "episode_state": "WAITING_REVIEW"},
+    {"run": 9, "human_action": "APPROVE Shot 2 video", "shot_states": ["COMPLETE", "COMPLETE", "KEYFRAME_PLAN_REVIEW_REQUIRED"], "episode_state": "WAITING_REVIEW"},
+    {"run": 10, "human_action": "APPROVE Shot 3 keyframe plan", "shot_states": ["COMPLETE", "COMPLETE", "KEYFRAME_IMAGE_REVIEW_REQUIRED"], "episode_state": "WAITING_REVIEW"},
+    {"run": 11, "human_action": "APPROVE Shot 3 START image", "shot_states": ["COMPLETE", "COMPLETE", "KEYFRAME_IMAGE_REVIEW_REQUIRED"], "episode_state": "WAITING_REVIEW"},
+    {"run": 12, "human_action": "APPROVE Shot 3 END image; install fixture VIDEO PromptIR", "shot_states": ["COMPLETE", "COMPLETE", "VIDEO_REVIEW_REQUIRED"], "episode_state": "WAITING_REVIEW"},
+    {"run": 13, "human_action": "APPROVE Shot 3 video", "shot_states": ["COMPLETE", "COMPLETE", "COMPLETE"], "episode_state": "PRODUCTION_COMPLETE"}
+  ],
+  "review_pauses": 12,
+  "resume_count": 12,
+  "keyframe_plans_created": 3,
+  "keyframe_image_executions": 6,
+  "video_executions": 3,
+  "official_shot_videos": 3,
+  "duplicate_executions": 0,
+  "duplicate_candidates": 0,
+  "stale_blocks": 0,
+  "retry_result": "No provider retry required; missing VIDEO PromptIR is fail-closed as NOT_READY and resumes after authority installation.",
+  "dry_run_result": "PASS: zero GenerationExecutionRecord and TaskRun writes.",
+  "real_provider_calls": {"llm": 0, "shapi": 0, "minimax_h3": 0}
+}
