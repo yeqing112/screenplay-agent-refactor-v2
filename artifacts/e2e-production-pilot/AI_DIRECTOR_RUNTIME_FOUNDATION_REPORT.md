@@ -29,10 +29,11 @@
 
 ## Verification
 
-- `pytest -q` — **1883 passed** after migration-head assertions were updated for the first additive runtime revision.
+- `pytest -q` — **1911 passed** on the current branch (including downstream runtime migrations).
 - `pytest -q tests/test_ai_director_runtime_foundation.py tests/test_migration_chain_hardening.py` — **10 passed** after the final ShotDirection migration.
 - `npm run test:golden` — **5/5 passed**.
-- `python -m scripts.verify_migration_chain --ci` — **PASS**; fresh upgrade, repeat upgrade, legacy fixtures, schema, and metadata drift all passed.
+- `python -m scripts.verify_migration_chain --ci` — **PASS**; fresh upgrade, repeat upgrade, legacy fixtures, schema, and metadata drift all passed (current repository head `m4h5i6j7k8l9`).
+- `python -m compileall -q api core models scripts tests` — **PASS**.
 - `git diff --check` — **PASS**.
 
 ## Migration and lineage

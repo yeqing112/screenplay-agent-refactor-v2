@@ -32,10 +32,21 @@
     "generation_execution": "downstream_only_no_execution_created"
   },
   "verification": {
-    "pytest_full": {"status": "PASS", "tests": 1883, "scope": "before final additive ShotDirection column migration"},
-    "director_runtime_tests": {"status": "PASS", "tests": 3},
-    "migration_chain": "PASS",
-    "golden": {"status": "PASS", "passed": 5, "failed": 0},
+    "pytest_full": {
+      "status": "PASS",
+      "tests": 1911,
+      "scope": "current branch including downstream runtime migrations"
+    },
+    "director_runtime_tests": {
+      "status": "PASS",
+      "tests": 3
+    },
+    "migration_chain": "PASS (current repository head m4h5i6j7k8l9)",
+    "golden": {
+      "status": "PASS",
+      "passed": 5,
+      "failed": 0
+    },
     "diff_check": "PASS"
   }
 }
