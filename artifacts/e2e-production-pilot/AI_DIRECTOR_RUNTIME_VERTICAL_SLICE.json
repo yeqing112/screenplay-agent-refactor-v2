@@ -45,5 +45,19 @@
     "create": "POST /episodes/{id}/director-plan",
     "read": "GET /episodes/{id}/director-plan",
     "revise": "POST /shots/{id}/director-revise"
+  },
+  "final_push_commit": "aeb0ec4a579e4c2930e1a32ace417b1775ec9fdf",
+  "final_remote_branch": "codex/visual-authoring-provider-canary-reconcile",
+  "working_tree_after_push": "clean",
+  "verification": {
+    "pytest_full_final": {
+      "status": "PASS",
+      "tests": 1932
+    },
+    "golden_final": {
+      "status": "PASS",
+      "passed": 5,
+      "failed": 0
+    }
   }
 }

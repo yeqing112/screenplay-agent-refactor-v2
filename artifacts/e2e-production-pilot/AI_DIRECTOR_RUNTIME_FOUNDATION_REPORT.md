@@ -54,3 +54,12 @@ The latest guard and evidence implementation is commit `0e17e6e` (`feat: harden 
 ## Known scope boundary
 
 This foundation stops at a structured, versioned, human-reviewable production plan. It intentionally does not bind an LLM, call SHAPI, create media, mutate scripts, or remove review gates.
+
+## Final push reconciliation
+
+- Final implementation/push commit: `aeb0ec4a579e4c2930e1a32ace417b1775ec9fdf`
+- Final remote branch: `codex/visual-authoring-provider-canary-reconcile`
+- Full regression after the runtime changes: `1932 passed`
+- Golden regression: `5/5 passed`
+- Migration CI, compileall, and diff check: `PASS`
+- Working tree after push: clean
