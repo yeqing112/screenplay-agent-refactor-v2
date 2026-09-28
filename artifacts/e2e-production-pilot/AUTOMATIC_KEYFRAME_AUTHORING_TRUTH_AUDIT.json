@@ -1,0 +1,78 @@
+{
+  "completion_marker": "AUTOMATIC_KEYFRAME_AUTHORING_COMPLETE",
+  "phase": "PHASE_AUTOMATIC_KEYFRAME_AUTHORING",
+  "status": "PASS",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "remote_head_before_report": "2abc0b6cf1561cc22f6a8bb49ded9306aa0c77ce",
+  "implementation_commit": "8dd00e43dd78766dd4c41a38b8e66ae52852f70f",
+  "report_commit": "recorded in the final report commit",
+  "migration_head": "m4h5i6j7k8l9",
+  "automatic_keyframe_plan_review_required": true,
+  "existing_keyframe_runtime_reused": true,
+  "second_keyframe_system_created": false,
+  "active_materialization_guard": true,
+  "stale_plan_detection": true,
+  "compile_idempotent": true,
+  "compile_atomic": true,
+  "version_history_preserved": true,
+  "prompt_lineage_complete": true,
+  "video_runtime_compatible": true,
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "storyboard_plan_mutations": 0,
+  "materialized_shot_mutations": 0,
+  "provider_calls": {
+    "real_llm_calls": 0,
+    "real_image_provider_calls": 0,
+    "real_video_provider_calls": 0,
+    "shapi_base_url": "https://www.shapi.vip/",
+    "shapi_called_in_phase": false,
+    "minimax_h3_called_in_phase": false
+  },
+  "review": {
+    "initial_status": "REVIEW_REQUIRED",
+    "actions": ["APPROVE", "REJECT", "REVISE"],
+    "automatic_approval": false
+  },
+  "stale_detection_result": {
+    "status": "PASS",
+    "pointer_switch": "MATERIALIZATION_POINTER_CHANGED",
+    "source_revision_checks": [
+      "SHOT_PLAN_REVISION_CHANGED",
+      "SHOT_DIRECTION_CHANGED",
+      "GENERATION_INTENT_CHANGED",
+      "PROMPT_VERSION_CHANGED",
+      "SOURCE_FINGERPRINT_CHANGED"
+    ],
+    "history_preserved": true,
+    "rollback_requires_reapproval": true
+  },
+  "compile_result": {
+    "atomic": true,
+    "idempotent": true,
+    "existing_sequence_runtime": true,
+    "existing_keyframe_runtime": true,
+    "invalid_frame_partial_rows": 0
+  },
+  "lineage": {
+    "active_materialization_set": true,
+    "storyboard_shot": true,
+    "shot_direction": true,
+    "generation_intent": true,
+    "production_prompt_version": true,
+    "automatic_keyframe_plan": true,
+    "keyframe_sequence": true,
+    "keyframes": true,
+    "prompt_ir_pointer_created_in_this_phase": false
+  },
+  "verification": {
+    "automatic_keyframe_tests": {"passed": 4, "failed": 0},
+    "focused_regression": {"passed": 46, "failed": 0},
+    "full_pytest": {"passed": 1911, "failed": 0},
+    "golden_regression": {"passed": 5, "failed": 0},
+    "migration_ci": {"status": "PASS", "fresh": "PASS", "repeat": "PASS", "legacy": "PASS", "drift": "PASS"},
+    "compileall": "PASS",
+    "diff_check": "PASS"
+  },
+  "working_tree_state": "CLEAN_BEFORE_REPORT_FILES"
+}

@@ -1,0 +1,63 @@
+{
+  "completion_marker": "AUTOMATIC_KEYFRAME_AUTHORING_COMPLETE",
+  "schema_version": "automatic_keyframe_plan_v1",
+  "slice": "Active Materialization Set -> StoryboardShot -> ShotDirection -> GenerationIntent -> AutomaticKeyframePlan -> Human Review -> Existing KeyframeSequence -> Existing Keyframe -> ProductionPromptVersion",
+  "authority_input": {
+    "materialization_set": "ACTIVE/MATERIALIZED/FRESH",
+    "materialization_pointer": "current pointer fingerprint matched",
+    "storyboard_shot": "active materialized shot",
+    "shot_direction": "ACTIVE with direction fingerprint",
+    "generation_intent": "production_eligible with requirement fingerprint",
+    "production_prompt_version": "current immutable version"
+  },
+  "v1": {
+    "plan_status_before_review": "REVIEW_REQUIRED",
+    "review_decision": "APPROVE",
+    "compiled_sequence_revision": 1,
+    "frames": ["start", "middle", "end"],
+    "prompt_versions_per_frame": true,
+    "video_compatibility": "PASS",
+    "provider_calls": {"llm": 0, "image": 0, "video": 0}
+  },
+  "failure_boundaries": {
+    "compile_before_approval": "BLOCKED_REVIEW_REQUIRED",
+    "invalid_frame_atomic_result": "0_partial_sequence_or_keyframe_rows",
+    "materialization_pointer_switch": "v1_STALE_SOURCE_SUPERSEDED",
+    "source_revision_change": "compile_fail_closed"
+  },
+  "rollback": {
+    "pointer_restored": true,
+    "historical_plan_deleted": false,
+    "unconditional_reactivation": false,
+    "fresh_source_revalidation": true,
+    "human_reapproval_required": true
+  },
+  "v2": {
+    "trigger": "ShotDirection revision / changed authority fingerprint",
+    "plan_status_before_review": "REVIEW_REQUIRED",
+    "review_decision": "APPROVE",
+    "compiled_sequence_revision": 2,
+    "v1_preserved": true,
+    "v1_status": "STALE",
+    "v2_status": "ACTIVE"
+  },
+  "lineage_assertions": {
+    "automatic_plan_to_sequence": true,
+    "sequence_to_keyframes": true,
+    "keyframes_to_production_prompt_versions": true,
+    "shot_direction_motion_inherited": true,
+    "character_scene_style_bindings_snapshotted": true,
+    "prompt_ir_pointer_created": false
+  },
+  "forbidden_operations": {
+    "real_llm": false,
+    "real_shapi_image": false,
+    "real_minimax_h3_video": false,
+    "source_fact_mutation": false,
+    "script_ir_mutation": false,
+    "storyboard_plan_mutation": false,
+    "materialized_shot_mutation": false,
+    "automatic_rendering": false,
+    "automatic_publishing": false
+  }
+}
