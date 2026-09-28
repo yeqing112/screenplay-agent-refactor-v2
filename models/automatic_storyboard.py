@@ -22,13 +22,16 @@ class StoryboardPlan(Base):
     compiled_shot_plan_ids = Column(Text, nullable=False, default="[]")
     payload_hash = Column(String, nullable=False, default="", index=True)
     lineage_json = Column(Text, nullable=False, default="{}")
+    approved_by = Column(String, nullable=True)
+    approved_at = Column(DateTime, nullable=True)
+    review_lineage_json = Column(Text, nullable=False, default="{}")
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     __table_args__ = (
         UniqueConstraint("episode_id", "version", name="uq_director_storyboard_episode_version"),
         CheckConstraint("version >= 1", name="ck_director_storyboard_version_positive"),
-        CheckConstraint("status IN ('DRAFT','REVIEW_REQUIRED','COMPILED','SUPERSEDED','ROLLED_BACK','REJECTED')", name="ck_director_storyboard_status"),
+        CheckConstraint("status IN ('DRAFT','REVIEW_REQUIRED','COMPILED','APPROVED','SUPERSEDED','ROLLED_BACK','REJECTED')", name="ck_director_storyboard_status"),
     )
 
 
@@ -49,6 +52,7 @@ class StoryboardPlanShot(Base):
     emotion = Column(Text, nullable=False, default="")
     duration = Column(Integer, nullable=False, default=3)
     visual_style_id = Column(String, nullable=False, default="")
+    shot_direction = Column(Text, nullable=False, default="{}")
     source_lineage = Column(Text, nullable=False, default="{}")
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 

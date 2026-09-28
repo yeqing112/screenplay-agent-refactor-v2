@@ -2,16 +2,16 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 319,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 351,
     "EXTRA_LEGACY_COLUMN": 1,
-    "INDEX_DRIFT": 89,
+    "INDEX_DRIFT": 96,
     "MISSING_MIGRATION": 0,
     "NULLABILITY_DRIFT": 0,
     "TYPE_DRIFT": 0
   },
   "counts": {
     "blocking": 0,
-    "total": 409
+    "total": 448
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -561,6 +561,266 @@
     },
     {
       "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_reasoning_generations_director_reasoning_id",
+      "kind": "index",
+      "table": "director_reasoning_generations"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_reasoning_generations_reasoning_id",
+      "kind": "index",
+      "table": "director_reasoning_generations"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_director_reasonings_episode_id",
+      "kind": "index",
+      "table": "director_reasonings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "payload_hash"
+      ],
+      "index": "ix_director_reasonings_payload_hash",
+      "kind": "index",
+      "table": "director_reasonings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_director_reasonings_episode",
+      "kind": "index",
+      "table": "director_reasonings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "payload_hash"
+      ],
+      "index": "ix_director_reasonings_payload",
+      "kind": "index",
+      "table": "director_reasonings"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_plan_id"
+      ],
+      "index": "ix_director_scene_plans_director_plan_id",
+      "kind": "index",
+      "table": "director_scene_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_director_scene_plans_episode_id",
+      "kind": "index",
+      "table": "director_scene_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_director_scene_plans_scene_id",
+      "kind": "index",
+      "table": "director_scene_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_director_scene_plans_episode",
+      "kind": "index",
+      "table": "director_scene_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_plan_id"
+      ],
+      "index": "ix_director_scene_plans_plan",
+      "kind": "index",
+      "table": "director_scene_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_director_scene_plans_scene",
+      "kind": "index",
+      "table": "director_scene_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_story_beats_director_reasoning_id",
+      "kind": "index",
+      "table": "director_story_beats"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_director_story_beats_scene_id",
+      "kind": "index",
+      "table": "director_story_beats"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_story_beats_reasoning",
+      "kind": "index",
+      "table": "director_story_beats"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_director_story_beats_scene",
+      "kind": "index",
+      "table": "director_story_beats"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_storyboard_plans_director_reasoning_id",
+      "kind": "index",
+      "table": "director_storyboard_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_director_storyboard_plans_episode_id",
+      "kind": "index",
+      "table": "director_storyboard_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "payload_hash"
+      ],
+      "index": "ix_director_storyboard_plans_payload_hash",
+      "kind": "index",
+      "table": "director_storyboard_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_director_storyboard_plans_episode",
+      "kind": "index",
+      "table": "director_storyboard_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "payload_hash"
+      ],
+      "index": "ix_director_storyboard_plans_payload",
+      "kind": "index",
+      "table": "director_storyboard_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_storyboard_plans_reasoning",
+      "kind": "index",
+      "table": "director_storyboard_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_director_storyboard_shots_scene_id",
+      "kind": "index",
+      "table": "director_storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_id"
+      ],
+      "index": "ix_director_storyboard_shots_storyboard_id",
+      "kind": "index",
+      "table": "director_storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "scene_id"
+      ],
+      "index": "ix_director_storyboard_shots_scene",
+      "kind": "index",
+      "table": "director_storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_id"
+      ],
+      "index": "ix_director_storyboard_shots_storyboard",
+      "kind": "index",
+      "table": "director_storyboard_shots"
+    },
+    {
+      "blocking": false,
       "category": "INDEX_DRIFT",
       "columns": [
         "book_id"
@@ -652,6 +912,46 @@
       "index": "ix_director_treatments_source_script_ir_version_id",
       "kind": "index",
       "table": "director_treatments"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_visual_decisions_director_reasoning_id",
+      "kind": "index",
+      "table": "director_visual_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "visual_style_id"
+      ],
+      "index": "ix_director_visual_decisions_visual_style_id",
+      "kind": "index",
+      "table": "director_visual_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_director_visual_decisions_reasoning",
+      "kind": "index",
+      "table": "director_visual_decisions"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "visual_style_id"
+      ],
+      "index": "ix_director_visual_decisions_style",
+      "kind": "index",
+      "table": "director_visual_decisions"
     },
     {
       "blocking": false,
@@ -2244,6 +2544,46 @@
     },
     {
       "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_production_generation_intents_director_reasoning_id",
+      "kind": "index",
+      "table": "production_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "storyboard_plan_id"
+      ],
+      "index": "ix_production_generation_intents_storyboard_plan_id",
+      "kind": "index",
+      "table": "production_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_generation_intents_director_reasoning_id",
+      "kind": "index",
+      "table": "production_generation_intents"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "storyboard_plan_id"
+      ],
+      "index": "ix_production_prompt_versions_storyboard_plan_id",
+      "kind": "index",
+      "table": "production_prompt_versions"
+    },
+    {
+      "blocking": false,
       "category": "INDEX_DRIFT",
       "columns": [
         "book_id"
@@ -3160,6 +3500,16 @@
       "blocking": false,
       "category": "INDEX_DRIFT",
       "columns": [
+        "storyboard_plan_id"
+      ],
+      "index": "ix_shot_plans_storyboard_plan_id",
+      "kind": "index",
+      "table": "shot_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
         "asset_authority_id"
       ],
       "index": "ix_shot_scene_bindings_asset_authority_id",
@@ -3373,6 +3723,16 @@
       "blocking": false,
       "category": "INDEX_DRIFT",
       "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_storyboard_materialization_sets_director_reasoning_id",
+      "kind": "index",
+      "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
         "episode"
       ],
       "index": "ix_storyboard_materialization_sets_episode",
@@ -3386,6 +3746,16 @@
         "shot_plan_authority_fingerprint"
       ],
       "index": "ix_storyboard_materialization_sets_shot_plan_authority_fingerprint",
+      "kind": "index",
+      "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "storyboard_plan_id"
+      ],
+      "index": "ix_storyboard_materialization_sets_storyboard_plan_id",
       "kind": "index",
       "table": "storyboard_materialization_sets"
     },
@@ -3409,6 +3779,16 @@
       "index": "ix_storyboard_materialization_sets_book_episode",
       "kind": "index",
       "table": "storyboard_materialization_sets"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "director_reasoning_id"
+      ],
+      "index": "ix_storyboard_shots_director_reasoning_id",
+      "kind": "index",
+      "table": "storyboard_shots"
     },
     {
       "blocking": false,
@@ -3467,6 +3847,16 @@
         "source_shot_plan_id"
       ],
       "index": "ix_storyboard_shots_source_shot_plan_id",
+      "kind": "index",
+      "table": "storyboard_shots"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "storyboard_plan_id"
+      ],
+      "index": "ix_storyboard_shots_storyboard_plan_id",
       "kind": "index",
       "table": "storyboard_shots"
     },

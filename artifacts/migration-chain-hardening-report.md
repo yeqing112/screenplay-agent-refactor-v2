@@ -1,7 +1,7 @@
 # Migration Chain Hardening Report
 
 - Final status: **MIGRATION_CHAIN_HARDENING_READY**
-- Revision graph: root=['bf85be21e043'], head=['f7a8b9c0d1e2'], revisions=59
+- Revision graph: root=['bf85be21e043'], head=['l3g4h5i6j7k8'], revisions=65
 - Fresh upgrade: PASS; repeated upgrade: PASS
 - Legacy fixtures (pre-f05 / pre-authority / pre-visual-authority): PASS
 - Authority schema verification: PASS

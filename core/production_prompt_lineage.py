@@ -70,6 +70,9 @@ def _prompt_dict(row: ProductionPromptVersion) -> dict[str, Any]:
         "prompt_structure": _load_json(row.prompt_structure),
         "prompt_fingerprint": row.prompt_fingerprint,
         "created_from": row.created_from,
+        "storyboard_plan_id": row.storyboard_plan_id,
+        "storyboard_plan_version": row.storyboard_plan_version,
+        "storyboard_lineage": _load_json(row.storyboard_lineage),
         "created_at": row.created_at.isoformat() if row.created_at else None,
     }
 
@@ -85,6 +88,12 @@ def _intent_dict(row: ProductionGenerationIntent) -> dict[str, Any]:
         "constraint_snapshot": _load_json(row.constraint_snapshot),
         "shot_requirement_snapshot": _load_json(row.shot_requirement_snapshot),
         "shot_requirement_fingerprint": row.shot_requirement_fingerprint,
+        "storyboard_plan_id": row.storyboard_plan_id,
+        "storyboard_plan_version": row.storyboard_plan_version,
+        "storyboard_lineage": _load_json(row.storyboard_lineage),
+        "director_reasoning_id": row.director_reasoning_id,
+        "director_reasoning_version": row.director_reasoning_version,
+        "reasoning_lineage": _load_json(row.reasoning_lineage),
         "created_at": row.created_at.isoformat() if row.created_at else None,
     }
 
@@ -103,6 +112,9 @@ def create_production_prompt_version(
     style_shot_id: int | None = None,
     direction_shot_id: int | None = None,
     keyframe_id: int | None = None,
+    storyboard_plan_id: int | None = None,
+    storyboard_plan_version: int | None = None,
+    storyboard_lineage: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Append a prompt version; existing versions are never updated."""
     prompt_key = str(prompt_id or "").strip()
@@ -176,6 +188,9 @@ def create_production_prompt_version(
         prompt_text=text,
         prompt_structure=_json(structure),
         prompt_fingerprint=fingerprint,
+        storyboard_plan_id=storyboard_plan_id,
+        storyboard_plan_version=storyboard_plan_version,
+        storyboard_lineage=_json(storyboard_lineage),
         created_from=str(created_from or "SHOT_REQUIREMENT"),
     )
     session.add(row)
@@ -205,6 +220,12 @@ def create_production_generation_intent(
     camera_requirements: Mapping[str, Any] | None = None,
     style_requirements: Mapping[str, Any] | None = None,
     constraint_snapshot: Mapping[str, Any] | None = None,
+    storyboard_plan_id: int | None = None,
+    storyboard_plan_version: int | None = None,
+    storyboard_lineage: Mapping[str, Any] | None = None,
+    director_reasoning_id: int | None = None,
+    director_reasoning_version: int | None = None,
+    reasoning_lineage: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Persist an intent whose source is an explicit Shot Requirement snapshot."""
     shot = session.query(StoryboardShot).filter_by(id=int(shot_id)).one_or_none()
@@ -228,6 +249,12 @@ def create_production_generation_intent(
         constraint_snapshot=_json(constraint_snapshot),
         shot_requirement_snapshot=_json(snapshot),
         shot_requirement_fingerprint=requirement_fp,
+        storyboard_plan_id=storyboard_plan_id,
+        storyboard_plan_version=storyboard_plan_version,
+        storyboard_lineage=_json(storyboard_lineage),
+        director_reasoning_id=director_reasoning_id,
+        director_reasoning_version=director_reasoning_version,
+        reasoning_lineage=_json(reasoning_lineage),
     )
     session.add(row)
     session.flush()

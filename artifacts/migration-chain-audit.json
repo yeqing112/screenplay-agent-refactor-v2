@@ -2,14 +2,14 @@
   "ambiguous_production_head": false,
   "cycle_detected": false,
   "forbidden_migration_patterns": [],
-  "generated_at": "2026-09-27T11:39:54.180354+00:00",
+  "generated_at": "2026-09-28T03:23:13.560430+00:00",
   "heads": [
-    "f7a8b9c0d1e2"
+    "l3g4h5i6j7k8"
   ],
   "migration_application_runtime_imports": 0,
   "missing_predecessors": [],
   "orphan_revisions": [],
-  "revision_count": 59,
+  "revision_count": 65,
   "revisions": [
     {
       "application_runtime_import": false,
@@ -1003,7 +1003,9 @@
       "file": "alembic\\versions\\f7a8b9c0d1e2_add_episode_rendering_runtime.py",
       "model_runtime_import": false,
       "revision": "f7a8b9c0d1e2",
-      "successors": [],
+      "successors": [
+        "g8b9c0d1e2f3"
+      ],
       "tables_altered": [],
       "tables_created": [
         "episode_render_plans",
@@ -1073,6 +1075,36 @@
     {
       "application_runtime_import": false,
       "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": true,
+      "down_revision": "f7a8b9c0d1e2",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\g8b9c0d1e2f3_add_ai_director_runtime_foundation.py",
+      "model_runtime_import": false,
+      "revision": "g8b9c0d1e2f3",
+      "successors": [
+        "h9c0d1e2f3g4"
+      ],
+      "tables_altered": [
+        "shot_plans"
+      ],
+      "tables_created": [
+        "director_plans",
+        "director_scene_plans"
+      ],
+      "tables_dropped": [
+        "director_scene_plans",
+        "director_plans"
+      ],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
       "depends_on": null,
@@ -1097,6 +1129,60 @@
     {
       "application_runtime_import": false,
       "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": false,
+      "down_revision": "g8b9c0d1e2f3",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\h9c0d1e2f3g4_add_shot_direction_candidates.py",
+      "model_runtime_import": false,
+      "revision": "h9c0d1e2f3g4",
+      "successors": [
+        "i0d1e2f3g4h5"
+      ],
+      "tables_altered": [
+        "director_plans"
+      ],
+      "tables_created": [],
+      "tables_dropped": [],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": true,
+      "down_revision": "h9c0d1e2f3g4",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\i0d1e2f3g4h5_add_director_reasoning_ir.py",
+      "model_runtime_import": false,
+      "revision": "i0d1e2f3g4h5",
+      "successors": [
+        "j1e2f3g4h5i6"
+      ],
+      "tables_altered": [],
+      "tables_created": [
+        "director_reasonings",
+        "director_story_beats",
+        "director_visual_decisions"
+      ],
+      "tables_dropped": [
+        "director_visual_decisions",
+        "director_story_beats",
+        "director_reasonings"
+      ],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
       "conditional_schema_assumptions": false,
       "data_migration_behavior": false,
       "depends_on": null,
@@ -1115,6 +1201,32 @@
       ],
       "tables_created": [],
       "tables_dropped": [],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": true,
+      "down_revision": "i0d1e2f3g4h5",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\j1e2f3g4h5i6_add_director_llm_adapter_runtime.py",
+      "model_runtime_import": false,
+      "revision": "j1e2f3g4h5i6",
+      "successors": [
+        "k2f3g4h5i6j7"
+      ],
+      "tables_altered": [],
+      "tables_created": [
+        "director_reasoning_generations"
+      ],
+      "tables_dropped": [
+        "director_reasoning_generations"
+      ],
       "use_of_app_engine": false,
       "use_of_create_all": false
     },
@@ -1146,6 +1258,31 @@
       "conditional_schema_assumptions": true,
       "data_migration_behavior": false,
       "depends_on": null,
+      "destructive_operation": false,
+      "down_revision": "j1e2f3g4h5i6",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\k2f3g4h5i6j7_add_automatic_storyboard_runtime.py",
+      "model_runtime_import": false,
+      "revision": "k2f3g4h5i6j7",
+      "successors": [
+        "l3g4h5i6j7k8"
+      ],
+      "tables_altered": [],
+      "tables_created": [
+        "director_storyboard_plans",
+        "director_storyboard_shots"
+      ],
+      "tables_dropped": [],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
       "destructive_operation": true,
       "down_revision": "j3d4e5f6g7h8",
       "downgrade_behavior": true,
@@ -1165,6 +1302,26 @@
       "tables_dropped": [
         "script_ir_versions"
       ],
+      "use_of_app_engine": false,
+      "use_of_create_all": false
+    },
+    {
+      "application_runtime_import": false,
+      "branch_labels": null,
+      "conditional_schema_assumptions": true,
+      "data_migration_behavior": false,
+      "depends_on": null,
+      "destructive_operation": false,
+      "down_revision": "k2f3g4h5i6j7",
+      "downgrade_behavior": true,
+      "downgrade_classification": "LOSSY_DOWNGRADE",
+      "file": "alembic\\versions\\l3g4h5i6j7k8_add_storyboard_production_materialization.py",
+      "model_runtime_import": false,
+      "revision": "l3g4h5i6j7k8",
+      "successors": [],
+      "tables_altered": [],
+      "tables_created": [],
+      "tables_dropped": [],
       "use_of_app_engine": false,
       "use_of_create_all": false
     },

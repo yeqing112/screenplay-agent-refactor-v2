@@ -12,12 +12,19 @@ from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 from core.automatic_storyboard import (
+    approve_storyboard,
     StoryboardCompileError,
     compile_storyboard,
     get_storyboard,
     persist_storyboard,
     rollback_storyboard,
     storyboard_from_reasoning,
+)
+from core.storyboard_production_materialization import (
+    StoryboardProductionMaterializationError,
+    get_storyboard_materialization,
+    materialize_storyboard_plan,
+    rollback_storyboard_materialization,
 )
 from core.director_llm_adapter import (
     DirectorContextBuilder,
@@ -61,6 +68,31 @@ class StoryboardCompileRequest(BaseModel):
     existing_shots: list[dict[str, Any]] = Field(default_factory=list, validation_alias=AliasChoices("existing_shots", "existingShots"))
     book_id: int = Field(default=0, validation_alias=AliasChoices("book_id", "bookId"))
     episode_number: int = Field(default=0, validation_alias=AliasChoices("episode_number", "episodeNumber"))
+
+
+class StoryboardMaterializationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    storyboard_plan_id: int | None = Field(default=None, validation_alias=AliasChoices("storyboard_plan_id", "storyboardPlanId"))
+    storyboard_version: int | None = Field(default=None, validation_alias=AliasChoices("storyboard_version", "storyboardVersion", "version"))
+    book_id: int = Field(default=0, validation_alias=AliasChoices("book_id", "bookId"))
+    episode_number: int = Field(default=0, validation_alias=AliasChoices("episode_number", "episodeNumber"))
+
+
+class StoryboardMaterializationRollbackRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    storyboard_version: int | None = Field(default=None, validation_alias=AliasChoices("storyboard_version", "storyboardVersion", "version"))
+    materialization_set_id: int | None = Field(default=None, validation_alias=AliasChoices("materialization_set_id", "materializationSetId"))
+    book_id: int = Field(default=0, validation_alias=AliasChoices("book_id", "bookId"))
+    episode_number: int = Field(default=0, validation_alias=AliasChoices("episode_number", "episodeNumber"))
+
+
+class StoryboardApprovalRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    reviewer: str = Field(default="human-review")
+    review_note: str = Field(default="", validation_alias=AliasChoices("review_note", "reviewNote"))
 
 
 def _decode(value: Any, fallback: Any) -> Any:
@@ -179,6 +211,58 @@ def compile_storyboard_route(episode_id: str, req: StoryboardCompileRequest):
         except Exception as exc:
             session.rollback()
             raise HTTPException(status_code=409, detail={"code": "AUTOMATIC_STORYBOARD_COMPILE_FAILED", "message": str(exc)}) from exc
+
+
+@router.post("/episodes/{episode_id}/storyboard/{version}/approve")
+def approve_storyboard_route(episode_id: str, version: int, req: StoryboardApprovalRequest | None = None):
+    with Session() as session:
+        try:
+            request = req or StoryboardApprovalRequest()
+            result = approve_storyboard(session, str(episode_id), int(version), reviewer=request.reviewer, review_note=request.review_note)
+            session.commit()
+            return result
+        except StoryboardCompileError as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail=exc.to_dict()) from exc
+
+
+@router.post("/episodes/{episode_id}/storyboard/materialize", status_code=201)
+def materialize_storyboard_plan_route(episode_id: str, req: StoryboardMaterializationRequest):
+    with Session() as session:
+        try:
+            _episode_context, _script_ir, _scene_context, book_id, episode_number = _contexts(session, episode_id, StoryboardCompileRequest(book_id=req.book_id, episode_number=req.episode_number))
+            result = materialize_storyboard_plan(session, episode_id=str(episode_id), storyboard_plan_id=req.storyboard_plan_id, storyboard_version=req.storyboard_version, book_id=book_id, episode_number=episode_number)
+            session.commit()
+            return result
+        except StoryboardProductionMaterializationError as exc:
+            session.rollback()
+            raise HTTPException(status_code=exc.status_code, detail=exc.to_dict()) from exc
+        except Exception as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail={"code": "STORYBOARD_PRODUCTION_MATERIALIZATION_FAILED", "message": str(exc)}) from exc
+
+
+@router.get("/episodes/{episode_id}/storyboard/materialization")
+def read_storyboard_materialization_route(episode_id: str, book_id: int = 0, episode_number: int = 0):
+    with Session() as session:
+        _episode_context, _script_ir, _scene_context, resolved_book_id, resolved_episode = _contexts(session, episode_id, StoryboardCompileRequest(book_id=book_id, episode_number=episode_number))
+        return get_storyboard_materialization(session, episode_id=str(episode_id), book_id=resolved_book_id, episode_number=resolved_episode)
+
+
+@router.post("/episodes/{episode_id}/storyboard/materialization/rollback")
+def rollback_storyboard_materialization_route(episode_id: str, req: StoryboardMaterializationRollbackRequest):
+    with Session() as session:
+        try:
+            _episode_context, _script_ir, _scene_context, book_id, episode_number = _contexts(session, episode_id, StoryboardCompileRequest(book_id=req.book_id, episode_number=req.episode_number))
+            result = rollback_storyboard_materialization(session, episode_id=str(episode_id), target_storyboard_version=req.storyboard_version, target_materialization_set_id=req.materialization_set_id, book_id=book_id, episode_number=episode_number)
+            session.commit()
+            return result
+        except StoryboardProductionMaterializationError as exc:
+            session.rollback()
+            raise HTTPException(status_code=exc.status_code, detail=exc.to_dict()) from exc
+        except Exception as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail={"code": "STORYBOARD_MATERIALIZATION_ROLLBACK_FAILED", "message": str(exc)}) from exc
 
 
 @router.post("/episodes/{episode_id}/storyboard/{version}/rollback")

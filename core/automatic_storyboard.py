@@ -67,6 +67,7 @@ class StoryboardShotPayload(BaseModel):
     emotion: str = ""
     duration: float = Field(default=3.0, gt=0, le=60)
     visual_style_id: str = ""
+    shot_direction: dict[str, Any] = Field(default_factory=dict)
     source_lineage: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("shot_id", mode="before")
@@ -92,7 +93,7 @@ class StoryboardPlanPayload(BaseModel):
     @classmethod
     def valid_status(cls, value: str) -> str:
         normalized = str(value or "REVIEW_REQUIRED").upper()
-        if normalized not in {"DRAFT", "REVIEW_REQUIRED", "COMPILED", "SUPERSEDED", "ROLLED_BACK", "REJECTED"}:
+        if normalized not in {"DRAFT", "REVIEW_REQUIRED", "COMPILED", "APPROVED", "SUPERSEDED", "ROLLED_BACK", "REJECTED"}:
             raise ValueError("invalid storyboard plan status")
         return normalized
 
@@ -213,6 +214,14 @@ def storyboard_from_reasoning(
                 "emotion": str(beat.get("emotion") or "neutral"),
                 "duration": 3.0,
                 "visual_style_id": str(decision.get("visual_style_id") or ""),
+                "shot_direction": {
+                    "shot_type": "medium",
+                    "camera_profile": {"lens": "35mm", "angle": "eye_level", "distance": "medium", "movement": "static", "speed": "slow"},
+                    "movement_profile": {"movement": "static", "speed": "slow"},
+                    "composition_profile": {"framing": "balanced", "subject_position": "center", "foreground": "clear", "background": "contextual", "depth": "medium"},
+                    "performance_profile": {"expression": str(beat.get("emotion") or "neutral"), "gesture": "natural", "body_motion": str(beat.get("purpose") or "hold position"), "eye_direction": "toward action"},
+                    "emotion_profile": {"emotion": str(beat.get("emotion") or "neutral"), "intensity": "medium"},
+                },
                 "source_lineage": {"director_reasoning_id": director_reasoning_id, "director_reasoning_version": director_reasoning_version, "story_beat_sequence": int(beat.get("sequence") or 0), "shot_id": ref},
             })
             sequence += 1
@@ -302,7 +311,7 @@ def validate_storyboard_for_compile(
 
 def _row_payload(row: StoryboardPlan) -> dict[str, Any]:
     payload = _obj(row.storyboard_json)
-    payload.update({"id": row.id, "episode_id": row.episode_id, "version": row.version, "status": row.status, "director_reasoning_id": row.director_reasoning_id, "director_reasoning_version": row.director_reasoning_version, "compiled_shot_plan_ids": _list(row.compiled_shot_plan_ids), "payload_hash": row.payload_hash, "lineage": _obj(row.lineage_json), "created_at": row.created_at.isoformat() if row.created_at else None, "updated_at": row.updated_at.isoformat() if row.updated_at else None})
+    payload.update({"id": row.id, "episode_id": row.episode_id, "version": row.version, "status": row.status, "director_reasoning_id": row.director_reasoning_id, "director_reasoning_version": row.director_reasoning_version, "compiled_shot_plan_ids": _list(row.compiled_shot_plan_ids), "payload_hash": row.payload_hash, "lineage": _obj(row.lineage_json), "approved_by": row.approved_by, "approved_at": row.approved_at.isoformat() if row.approved_at else None, "review_lineage": _obj(row.review_lineage_json), "created_at": row.created_at.isoformat() if row.created_at else None, "updated_at": row.updated_at.isoformat() if row.updated_at else None})
     return payload
 
 
@@ -322,13 +331,27 @@ def persist_storyboard(session: Any, payload: Mapping[str, Any]) -> dict[str, An
     data["payload_hash"] = _hash(data)
     if latest is not None and latest.status not in {"SUPERSEDED", "REJECTED", "ROLLED_BACK"}:
         latest.status = "SUPERSEDED"
-    row = StoryboardPlan(episode_id=candidate.episode_id, version=version, status=data["status"], storyboard_json=_canonical({"schema_version": STORYBOARD_SCHEMA_VERSION, "shots": [shot.model_dump() for shot in shots]}), director_reasoning_id=data.get("director_reasoning_id"), director_reasoning_version=data.get("director_reasoning_version"), payload_hash=data["payload_hash"], lineage_json=_canonical(data["lineage"]))
+    row = StoryboardPlan(episode_id=candidate.episode_id, version=version, status=data["status"], storyboard_json=_canonical({"schema_version": STORYBOARD_SCHEMA_VERSION, "shots": [shot.model_dump() for shot in shots]}), director_reasoning_id=data.get("director_reasoning_id"), director_reasoning_version=data.get("director_reasoning_version"), payload_hash=data["payload_hash"], lineage_json=_canonical(data["lineage"]), review_lineage_json=_canonical({"human_review_required": True}))
     session.add(row)
     session.flush()
+    # Store the reviewed snapshot with complete per-shot lineage. The materializer
+    # validates this immutable snapshot rather than reconstructing source links
+    # from mutable child rows.
+    stored_shots: list[dict[str, Any]] = []
     for shot in shots:
         shot_data = shot.model_dump()
         shot_id = shot_data["shot_id"] or f"{shot_data['scene_id']}:shot-{shot_data['sequence']}"
-        session.add(StoryboardPlanShot(storyboard_id=row.id, shot_id=shot_id, scene_id=shot_data["scene_id"], sequence=shot_data["sequence"], shot_type=shot_data["shot_type"], camera=_canonical(shot_data["camera"]), composition=_canonical(shot_data["composition"]), character_actions=_canonical(shot_data["character_actions"]), emotion=shot_data["emotion"], duration=int(round(float(shot_data["duration"]))), visual_style_id=shot_data["visual_style_id"], source_lineage=_canonical({**shot_data.get("source_lineage", {}), "storyboard_plan_id": row.id, "storyboard_plan_version": version})))
+        source_lineage = {
+            **(shot_data.get("source_lineage") or {}),
+            "storyboard_plan_id": row.id,
+            "storyboard_plan_version": version,
+            "director_reasoning_id": row.director_reasoning_id,
+            "director_reasoning_version": row.director_reasoning_version,
+        }
+        shot_data["source_lineage"] = source_lineage
+        stored_shots.append(shot_data)
+        session.add(StoryboardPlanShot(storyboard_id=row.id, shot_id=shot_id, scene_id=shot_data["scene_id"], sequence=shot_data["sequence"], shot_type=shot_data["shot_type"], camera=_canonical(shot_data["camera"]), composition=_canonical(shot_data["composition"]), character_actions=_canonical(shot_data["character_actions"]), emotion=shot_data["emotion"], duration=int(round(float(shot_data["duration"]))), visual_style_id=shot_data["visual_style_id"], shot_direction=_canonical(shot_data.get("shot_direction") or {}), source_lineage=_canonical(source_lineage)))
+    row.storyboard_json = _canonical({"schema_version": STORYBOARD_SCHEMA_VERSION, "shots": stored_shots})
     return _row_payload(row)
 
 
@@ -352,7 +375,11 @@ def compile_storyboard(session: Any, row: StoryboardPlan, *, episode_context: Ma
         prompt_version_id = f"storyboard-{row.id}-v{row.version}-{shot_id}-prompt-v1"
         intent_id = _hash({"storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "shot_id": shot_id})
         lineage = {"director_reasoning_id": reasoning_id, "director_reasoning_version": reasoning_version, "storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "sequence": shot.sequence, "shot_id": shot_id, "prompt_version_id": prompt_version_id}
-        by_scene[shot.scene_id].append({"plan_shot_id": shot_id, "shot_id": shot_id, "shot_type": shot.shot_type, "camera": shot.camera, "composition": shot.composition, "character_actions": shot.character_actions, "emotion": shot.emotion, "duration": shot.duration, "visual_style_id": shot.visual_style_id, "storyboard_lineage": lineage})
+        action_text = str(shot.character_actions.get("action") or shot.character_actions.get("actions") or "")
+        characters = [str(item) for item in _list(shot.character_actions.get("characters")) if str(item).strip()]
+        camera = {"shot_size": shot.shot_type, "angle": str(shot.camera.get("angle") or "eye_level"), "movement": str(shot.camera.get("movement") or "static"), "speed": str(shot.camera.get("speed") or "slow"), "lens": str(shot.camera.get("lens") or "35mm")}
+        canonical_shot = {"plan_shot_id": shot_id, "beat_id": str(shot.source_lineage.get("story_beat_sequence") or shot_id), "shot_purpose": shot.emotion or "emotion", "camera": camera, "duration_hint_seconds": float(shot.duration), "event": action_text, "action_beats": [{"action_id": f"{shot_id}_ACTION_001", "actor_refs": characters, "event_ref": str(shot.source_lineage.get("story_beat_sequence") or shot_id)}], "entry_state": {"state_ref": f"{shot_id}:entry", "characters": characters}, "exit_state": {"state_ref": f"{shot_id}:exit", "characters": characters}, "asset_bindings": {"scene": shot.scene_id, "characters": characters, "props": []}, "continuity_contract": {"blocking_state_refs": [f"{shot_id}:entry", f"{shot_id}:exit"]}, "subjects": characters, "beat_refs": [str(shot.source_lineage.get("story_beat_sequence") or shot_id)], "visual_style_id": shot.visual_style_id, "shot_direction": shot.shot_direction}
+        by_scene[shot.scene_id].append({**canonical_shot, "shot_id": shot_id, "shot_type": shot.shot_type, "composition": shot.composition, "character_actions": shot.character_actions, "emotion": shot.emotion, "duration": shot.duration, "storyboard_lineage": lineage})
         generation_intents.append({"generation_intent_id": intent_id, "shot_id": shot_id, "storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "director_reasoning_id": reasoning_id, "director_reasoning_version": reasoning_version, "prompt_version_id": prompt_version_id, "storyboard_lineage": lineage})
         prompt_versions.append({"prompt_version_id": prompt_version_id, "prompt_id": f"shot-{shot_id}-storyboard", "version_number": 1, "created_from": "AUTOMATIC_STORYBOARD", "prompt_fingerprint": _hash({"intent_id": intent_id, "shot_id": shot_id}), "storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "storyboard_lineage": lineage})
     scene_items = _scene_items(script_ir, scene_context)
@@ -369,6 +396,7 @@ def compile_storyboard(session: Any, row: StoryboardPlan, *, episode_context: Ma
         shot_plans.append({"id": plan.id, "scene_id": scene_id, "shots": scene_shots, "storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "storyboard_lineage": _obj(plan.storyboard_lineage)})
     row.status = "COMPILED"
     row.compiled_shot_plan_ids = _canonical(shot_plan_ids)
+    row.lineage_json = _canonical({**_obj(row.lineage_json), "compile_validation": validation, "shot_plan_ids": shot_plan_ids, "human_review_required": True})
     row.updated_at = datetime.utcnow()
     return {"status": "COMPILED", "validation": validation, "storyboard": _row_payload(row), "shot_plans": shot_plans, "generation_intents": generation_intents, "prompt_versions": prompt_versions, "lineage": {"director_reasoning_id": reasoning_id, "director_reasoning_version": reasoning_version, "storyboard_plan_id": row.id, "storyboard_plan_version": row.version, "shot_plan_ids": shot_plan_ids, "generation_intent_ids": [item["generation_intent_id"] for item in generation_intents], "prompt_version_ids": [item["prompt_version_id"] for item in prompt_versions], "human_review_required": True}}
 
@@ -389,4 +417,31 @@ def rollback_storyboard(session: Any, episode_id: str, version: int) -> dict[str
     return {"status": "ROLLED_BACK", "episode_id": row.episode_id, "version": row.version, "shot_plan_ids": plan_ids, "preserved": True}
 
 
-__all__ = ["STORYBOARD_SCHEMA_VERSION", "StoryboardShotPayload", "StoryboardPlanPayload", "StoryboardCompileError", "storyboard_from_reasoning", "validate_storyboard_for_compile", "persist_storyboard", "get_storyboard", "compile_storyboard", "rollback_storyboard"]
+def approve_storyboard(session: Any, episode_id: str, version: int, *, reviewer: str = "human-review", review_note: str = "") -> dict[str, Any]:
+    """Record an explicit human approval after compile validation has passed."""
+    row = session.query(StoryboardPlan).filter_by(episode_id=str(episode_id), version=int(version)).one_or_none()
+    if row is None:
+        raise StoryboardCompileError("StoryboardPlan version does not exist", [{"code": "STORYBOARD_NOT_FOUND", "episode_id": str(episode_id), "version": version}])
+    if row.status not in {"COMPILED", "REVIEW_REQUIRED"}:
+        raise StoryboardCompileError("StoryboardPlan is not awaiting approval", [{"code": "STORYBOARD_APPROVAL_STATE_INVALID", "status": row.status}])
+    lineage = _obj(row.lineage_json)
+    validation = lineage.get("compile_validation") if isinstance(lineage.get("compile_validation"), dict) else {}
+    if validation.get("status") != "PASS":
+        raise StoryboardCompileError("StoryboardPlan compile validation has not passed", [{"code": "STORYBOARD_COMPILE_VALIDATION_REQUIRED"}])
+    row.status = "APPROVED"
+    row.approved_by = str(reviewer or "human-review")
+    row.approved_at = datetime.utcnow()
+    row.review_lineage_json = _canonical({"reviewer": row.approved_by, "review_note": str(review_note or ""), "approved_at": row.approved_at.isoformat(), "source_status": "COMPILED", "human_approved": True})
+    row.updated_at = datetime.utcnow()
+    plan_ids = [int(item) for item in _list(row.compiled_shot_plan_ids) if str(item).isdigit()]
+    plans = session.query(ShotPlan).filter(ShotPlan.id.in_(plan_ids)).all() if plan_ids else []
+    for plan in plans:
+        plan.status = "ready_for_materialization"
+        plan.quality_status = "validated"
+        plan.production_status = "blocked"
+        plan.workflow_profile = "storyboard_production"
+        plan.updated_at = datetime.utcnow()
+    return {"status": "APPROVED", "episode_id": row.episode_id, "version": row.version, "reviewer": row.approved_by, "shot_plan_ids": plan_ids, "human_approved": True}
+
+
+__all__ = ["STORYBOARD_SCHEMA_VERSION", "StoryboardShotPayload", "StoryboardPlanPayload", "StoryboardCompileError", "storyboard_from_reasoning", "validate_storyboard_for_compile", "persist_storyboard", "get_storyboard", "compile_storyboard", "approve_storyboard", "rollback_storyboard"]
