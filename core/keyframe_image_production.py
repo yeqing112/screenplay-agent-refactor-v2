@@ -12,6 +12,7 @@ import base64
 from datetime import datetime
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any, Mapping
 import uuid
@@ -116,7 +117,16 @@ def _source_guard(session: Any, frame: Keyframe, sequence: KeyframeSequence, sho
         raise KeyframeImageProductionError("keyframe sequence is not the compiled current plan", code="KEYFRAME_SEQUENCE_STALE")
     if str(sequence.status).upper() != "ACTIVE" or str(frame.status).upper() != "ACTIVE":
         raise KeyframeImageProductionError("keyframe source is not active", code="STALE_SOURCE")
-    return {"automatic_keyframe_plan_id": int(plan["id"]), "automatic_keyframe_plan_version": int(plan["version"]), "source_fingerprint": str(plan.get("source_fingerprint") or ""), "plan_fingerprint": str(plan.get("plan_fingerprint") or ""), "sequence_id": int(sequence.id), "sequence_revision": int(sequence.revision), "keyframe_id": int(frame.id), "frame_type": str(frame.frame_type).lower(), "storyboard_shot_id": int(shot.id)}
+    intent_id = str(plan.get("generation_intent_id") or "").strip()
+    intent = session.query(ProductionGenerationIntent).filter_by(generation_intent_id=intent_id, shot_id=int(shot.id)).one_or_none() if intent_id else None
+    if intent is None:
+        raise KeyframeImageProductionError("production GenerationIntent is missing for the keyframe plan", code="GENERATION_INTENT_REQUIRED")
+    constraints = _json(intent.constraint_snapshot, {})
+    if isinstance(constraints, dict) and constraints.get("production_eligible") is False:
+        raise KeyframeImageProductionError("GenerationIntent is not production eligible", code="GENERATION_INTENT_INELIGIBLE")
+    if not str(intent.shot_requirement_fingerprint or "").strip():
+        raise KeyframeImageProductionError("GenerationIntent fingerprint is missing", code="GENERATION_INTENT_INVALID")
+    return {"automatic_keyframe_plan_id": int(plan["id"]), "automatic_keyframe_plan_version": int(plan["version"]), "source_fingerprint": str(plan.get("source_fingerprint") or ""), "plan_fingerprint": str(plan.get("plan_fingerprint") or ""), "generation_intent_id": intent.generation_intent_id, "generation_intent_fingerprint": str(intent.shot_requirement_fingerprint or ""), "sequence_id": int(sequence.id), "sequence_revision": int(sequence.revision), "keyframe_id": int(frame.id), "frame_type": str(frame.frame_type).lower(), "storyboard_shot_id": int(shot.id)}
 
 
 def _ensure_prompt_authority(session: Any, shot: StoryboardShot) -> tuple[PromptIRPointer, PromptIRVersion, PromptIRAuthority | None]:
@@ -182,9 +192,11 @@ def _serialize(session: Any, frame: Keyframe, sequence: KeyframeSequence) -> dic
     return {"schema_version": SCHEMA_VERSION, "keyframe_id": int(frame.id), "sequence_id": int(sequence.id), "frame_type": str(frame.frame_type), "execution": {"execution_id": row.execution_id, "status": row.execution_status, "provider": row.provider, "model": row.model, "provider_calls": int(row.logical_provider_calls or 0), "prompt_version_id": row.prompt_pointer_id, "request": row.request_payload} if row else None, "candidate": {"candidate_id": candidate.candidate_id, "status": candidate.status, "validation_status": candidate.validation_status, "storage_identity": candidate.storage_identity} if candidate else None, "validation": {"validation_id": validation.validation_id, "status": validation.status} if validation else None, "review": {"promotion_id": review.promotion_id, "review_status": review.review_status, "decision": review.decision, "official_media_version_id": review.official_media_version_id} if review else None}
 
 
-def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: str | None = None, fixture: bool = True) -> dict[str, Any]:
+def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: str | None = None, fixture: bool = True, production_required: bool = True) -> dict[str, Any]:
     frame, sequence, shot = _keyframe(keyframe_id, session)
     source = _source_guard(session, frame, sequence, shot)
+    if str(frame.frame_type).lower() == "middle" and not production_required:
+        return {"schema_version": SCHEMA_VERSION, "keyframe_id": int(frame.id), "sequence_id": int(sequence.id), "frame_type": str(frame.frame_type), "production_required": False, "skipped": True, "reason": "MIDDLE_FRAME_OPTIONAL"}
     prompt = _prompt_for_keyframe(session, frame, sequence)
     profile = _profile(model_profile_id)
     marker = {**source, "prompt_version_id": str(prompt.prompt_version_id), "model_profile_id": str(profile.get("id") or model_profile_id or ""), "source_fingerprint": source.get("source_fingerprint") or _fp(source)}
@@ -212,17 +224,37 @@ def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: 
     request = {"schema_version": SCHEMA_VERSION, "media_role": role, "prompt_version_id": str(prompt.prompt_version_id), "prompt_text": prompt.prompt_text, "keyframe": {"id": int(frame.id), "sequence_id": int(sequence.id), "frame_type": str(frame.frame_type), "time_seconds": float(frame.time_seconds), "description": frame.description, "camera_state": _json(frame.camera_state, {}), "character_state": _json(frame.character_state, {}), "scene_state": _json(frame.scene_state, {}), "emotion_state": _json(frame.emotion_state, {})}, "_keyframe_image_production": {**marker, "idempotency_fingerprint": marker_fp, "fixture": bool(fixture)}, "generation_policy": policy}
     execution.request_payload = request
     execution.execution_mode = "KEYFRAME_IMAGE_FIXTURE" if fixture else "KEYFRAME_IMAGE_PROVIDER"
-    execution.provider = "shapi-openai-images" if fixture else str(profile.get("provider") or "")
+    execution.provider = str(profile.get("provider") or "shapi-openai-images")
     execution.model = str(profile.get("model_name") or profile.get("model") or "fixture-image-v1")
     execution.model_profile_fingerprint = _fp({key: profile.get(key) for key in ("id", "provider", "base_url", "model_name", "transport_binding_id")})
     execution.generation_policy_fingerprint = str(request["generation_policy"]["fingerprint"])
     execution.provider_request_fingerprint = _fp({"idempotency": marker_fp, "profile": execution.model_profile_fingerprint})
     service = GenerationExecutionService(session)
+    if not fixture:
+        if os.getenv("PHASE_F_PROVIDER_CANARY_REAL", "").strip() != "1":
+            raise KeyframeImageProductionError("real provider canary is disabled by gate", code="REAL_PROVIDER_CANARY_SKIPPED_BY_GATE")
+        # Real provider calls stay on the canonical GenerationOrchestrator and
+        # existing ModelAdapter registry.  The gate is checked before any
+        # execution transition, so a skipped canary leaves no RUNNING row.
+        from core.generation_orchestrator import GenerationOrchestrator, GenerationOrchestratorError
+        try:
+            service.transition(execution.execution_id, "QUEUED")
+            row = GenerationOrchestrator(session).run(execution.execution_id)
+        except GenerationOrchestratorError as exc:
+            raise KeyframeImageProductionError(exc.message, code=exc.code, diagnostics=[{"provider_calls": exc.provider_calls}]) from exc
+        if not row.candidate_id:
+            raise KeyframeImageProductionError("real provider execution returned no MediaCandidate", code="GENERATION_EXECUTION_CANDIDATE_MISSING")
+        try:
+            current = _source_guard(session, frame, sequence, shot)
+        except KeyframeImageProductionError as exc:
+            row.response_payload = {**row.response_payload, "source_guard": {"status": "STALE_SOURCE", "code": exc.code}}
+            session.commit()
+            raise
+        validation = validate_media_candidate(session, row.candidate_id)
+        return {**_serialize(session, frame, sequence), "idempotent": False, "validation_id": validation["validation_id"], "provider_calls": int(row.logical_provider_calls or 0), "real_provider_calls": int(row.logical_provider_calls or 0), "source_guard": current}
     service.transition(execution.execution_id, "QUEUED")
     service.transition(execution.execution_id, "RUNNING")
-    if not fixture:
-        raise KeyframeImageProductionError("real provider execution is disabled for this phase", code="REAL_PROVIDER_CANARY_SKIPPED_BY_GATE")
-    response = {"fixture": True, "provider": "shapi-openai-images", "model": execution.model, "request_id": "fixture-" + marker_fp[7:23], "keyframe_id": int(frame.id), "frame_type": str(frame.frame_type)}
+    response = {"fixture": True, "provider": execution.provider, "model": execution.model, "request_id": "fixture-" + marker_fp[7:23], "keyframe_id": int(frame.id), "frame_type": str(frame.frame_type)}
     response_hash = _fp(response)
     root = Path(config.UPLOAD_DIR)
     root.mkdir(parents=True, exist_ok=True)
@@ -241,10 +273,16 @@ def produce_keyframe_image(session: Any, *, keyframe_id: int, model_profile_id: 
     service.transition(execution.execution_id, "SUCCESS", response_payload={"provider_response": response, "candidate_id": candidate.candidate_id, "keyframe_id": int(frame.id), "source_fingerprint": marker["source_fingerprint"]})
     session.commit()
     try:
+        source_after_provider = _source_guard(session, frame, sequence, shot)
+    except KeyframeImageProductionError as exc:
+        execution.response_payload = {**execution.response_payload, "source_guard": {"status": "STALE_SOURCE", "code": exc.code}}
+        session.commit()
+        raise
+    try:
         validation = validate_media_candidate(session, candidate.candidate_id)
     except MediaAuthorityError as exc:
         raise KeyframeImageProductionError(exc.message, code=exc.code, diagnostics=exc.diagnostics) from exc
-    return {**_serialize(session, frame, sequence), "idempotent": False, "validation_id": validation["validation_id"], "provider_calls": 1, "real_provider_calls": 0}
+    return {**_serialize(session, frame, sequence), "idempotent": False, "validation_id": validation["validation_id"], "provider_calls": 1, "real_provider_calls": 0, "source_guard": source_after_provider}
 
 
 def promote_keyframe_image(session: Any, *, keyframe_id: int, validation_id: str, reviewer: str, decision: str = "APPROVE", review_notes: str = "") -> dict[str, Any]:
@@ -271,7 +309,8 @@ def promote_keyframe_image(session: Any, *, keyframe_id: int, validation_id: str
         # canonical bytes source and expose a deterministic HTTPS identity for
         # the cross-runtime asset pointer.
         asset = ingest_production_asset(session, entity_type="PROP", entity_id=f"keyframe-image:{int(frame.id)}", book_id=int(shot.book_id), source={"storage_identity": f"https://fixture.invalid/keyframes/{int(frame.id)}/{str(version.official_media_version_id)}.png", "checksum": str(candidate.checksum_sha256), "metadata": {"role": str(version.media_role), "official_media_version_id": str(version.official_media_version_id), "keyframe_id": int(frame.id), "sequence_id": int(sequence.id)}})
-        bind_keyframe_asset(session, keyframe_id=int(frame.id), asset_type="PROP", authority_id=asset["authority_id"], version_id=asset["version_id"], is_primary=str(frame.frame_type).lower() == "start")
+        bind_keyframe_asset(session, keyframe_id=int(frame.id), asset_type="PROP", authority_id=asset["authority_id"], version_id=asset["version_id"], is_primary=str(frame.frame_type).lower() in {"start", "end"})
+        create_production_prompt_lineage(session, asset_type="PROP", asset_id=f"keyframe-image:{int(frame.id)}", asset_version_id=asset["version_id"], shot_id=int(shot.id), prompt_version_id=str(marker.get("prompt_version_id") or ""), generation_intent_id=str(marker.get("generation_intent_id") or ""))
     try:
         result = promote_media_candidate(session, candidate.candidate_id, validation_id, confirmation=True, reviewer=reviewer, decision=decision, review_notes=review_notes, before_commit=bridge if str(decision).upper() == "APPROVE" else None)
     except MediaAuthorityError as exc:

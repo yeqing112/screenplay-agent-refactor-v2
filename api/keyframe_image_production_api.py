@@ -22,6 +22,7 @@ class ProduceKeyframeImageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
     model_profile_id: str | None = Field(default=None, validation_alias="modelProfileId")
     fixture: bool = True
+    production_required: bool = Field(default=True, validation_alias="productionRequired")
 
 
 class ReviewKeyframeImageRequest(BaseModel):
@@ -40,7 +41,7 @@ def _raise(exc: KeyframeImageProductionError) -> None:
 def produce(keyframe_id: int, req: ProduceKeyframeImageRequest):
     with Session() as session:
         try:
-            result = produce_keyframe_image(session, keyframe_id=keyframe_id, model_profile_id=req.model_profile_id, fixture=req.fixture)
+            result = produce_keyframe_image(session, keyframe_id=keyframe_id, model_profile_id=req.model_profile_id, fixture=req.fixture, production_required=req.production_required)
             return result
         except KeyframeImageProductionError as exc:
             session.rollback()
