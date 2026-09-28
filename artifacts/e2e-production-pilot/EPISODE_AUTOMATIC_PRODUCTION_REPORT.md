@@ -9,7 +9,7 @@ This phase adds a resumable Episode coordinator over the existing rendering, key
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote HEAD at audit start: `48bd16f4c411d49f421e367518ac0213afd64d04`
 - Implementation Commit: `fa03f10`
-- Report Commit: `PENDING_FINAL_REPORT_COMMIT`
+- Report Commit: `db62d49` (report artifact commit; final metadata fix follows)
 - Migration Head: `m4h5i6j7k8l9` (no new migration)
 - APIs: `POST /episodes/{id}/production/run`, `GET /episodes/{id}/production-status`
 - Resume: repeated `run` re-resolves live authorities and acts as resume
