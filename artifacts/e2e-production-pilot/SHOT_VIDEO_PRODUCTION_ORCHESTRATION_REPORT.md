@@ -7,7 +7,7 @@
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)
 - Implementation commit: `95750d9`
-- Report commit: this report commit
+- Report commit: `abef362`
 - Migration head: `m4h5i6j7k8l9`
 
 ## Delivered

@@ -5,7 +5,7 @@
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
   "implementation_commit": "95750d9",
-  "report_commit": "this report commit",
+  "report_commit": "abef362",
   "migration_head": "m4h5i6j7k8l9",
   "provider_calls": {
     "default_mock": 1,
