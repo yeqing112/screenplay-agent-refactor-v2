@@ -6,9 +6,9 @@
 
 - Phase: `PHASE_AUTOMATIC_KEYFRAME_AUTHORING`
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Remote HEAD before this report commit: `2abc0b6cf1561cc22f6a8bb49ded9306aa0c77ce`
-- Implementation commit: `8dd00e43dd78766dd4c41a38b8e66ae52852f70f`
-- Report commit: `44e19e79b1af5ea0fe6d872d5611ad3c79ea4243`
+- Remote HEAD before final report refresh: `6668a1a85ece52bcc576b0fd308d8cc0d7af031c`
+- Implementation commit: `545242c118104ff9e13f250291af13ad7c4f985b`
+- Report commit: `6668a1a85ece52bcc576b0fd308d8cc0d7af031c`
 - Migration head: `m4h5i6j7k8l9`
 
 ## Delivered
@@ -61,4 +61,5 @@
 Provider calls in this phase: LLM `0`, SHAPI image `0`, MiniMax H3 video `0`.
 
 The SHAPI endpoint `https://www.shapi.vip/` remains the existing image-provider reference only; this phase stops at reviewed KeyframeSequence and Keyframe rows.
+
 
