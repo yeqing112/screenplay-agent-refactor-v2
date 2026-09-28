@@ -835,6 +835,23 @@ def _promote_media_candidate(
     if not snapshot.get("currentness_valid") or snapshot_fp != validation.authority_snapshot_fingerprint:
         _mark_validation_stale(session, validation)
         _fail("MEDIA_PROMOTION_STALE", "Current PromptIR, Asset, Reference, or Generation Policy lineage changed.", snapshot)
+    # Shot video orchestration carries a second, shot-scoped source snapshot
+    # (materialization, ShotDirection, KeyframeSequence and Official frames)
+    # in the existing execution request projection.  Re-check it immediately
+    # before creating OfficialMedia rows so a provider result cannot become a
+    # current video after an upstream revision.
+    if str(execution.target_media or "").upper() == "VIDEO":
+        request_projection = _json(execution.request_snapshot_json, {})
+        lineage = request_projection.get("shot_video_lineage") if isinstance(request_projection, dict) else None
+        if isinstance(lineage, dict) and lineage.get("base_source_fingerprint"):
+            try:
+                from core.shot_video_production import current_source_for_execution
+                current_video_source = current_source_for_execution(session, execution)
+            except Exception as exc:
+                current_video_source = {"current": False, "reasons": ["VIDEO_SOURCE_GUARD_ERROR"], "error": str(exc)}
+            if not current_video_source.get("current"):
+                _mark_validation_stale(session, validation)
+                _fail("MEDIA_PROMOTION_STALE", "Shot video source changed after generation; promotion is blocked.", current_video_source)
     book_id, episode, shot_id, media_role = _promotion_scope(execution)
     from models import StoryboardShot
 

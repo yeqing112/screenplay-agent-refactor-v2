@@ -1,0 +1,47 @@
+{
+  "phase": "PHASE_SHOT_VIDEO_PRODUCTION_ORCHESTRATION",
+  "status": "SHOT_VIDEO_PRODUCTION_ORCHESTRATION_COMPLETE",
+  "implementation_commit": "e2903d4",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "migration_head": "m4h5i6j7k8l9",
+  "provider_calls": {
+    "default_mock": 1,
+    "real_minimax_h3": 0,
+    "image_generation": 0,
+    "configured_image_provider": "SHAPI",
+    "configured_image_provider_base_url": "https://www.shapi.vip/"
+  },
+  "authority_guards": {
+    "materialization_pointer": true,
+    "shot_direction": true,
+    "automatic_keyframe_plan": true,
+    "official_start_keyframe": true,
+    "official_end_keyframe": true,
+    "production_generation_intent": true,
+    "video_prompt_ir": true,
+    "source_fingerprint": true,
+    "stale_before_promotion": true
+  },
+  "lineage": {
+    "StoryboardMaterialization": true,
+    "ShotDirection": true,
+    "KeyframeSequence": true,
+    "OfficialMedia": true,
+    "GenerationIntent": true,
+    "PromptIR": true,
+    "GenerationExecution": true,
+    "TaskRun": true,
+    "MediaCandidate": true
+  },
+  "human_review_required": true,
+  "source_fact_mutated": false,
+  "script_ir_mutated": false,
+  "verification": {
+    "pytest_full": {"status": "PASS", "tests": 1926},
+    "focused": {"status": "PASS", "tests": 76},
+    "golden": {"status": "PASS", "passed": 5, "failed": 0},
+    "migration_chain": "PASS",
+    "compileall": "PASS",
+    "diff_check": "PASS"
+  }
+}

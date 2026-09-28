@@ -13,6 +13,12 @@ from core.video_generation_runtime import (
     get_video_generation_intent,
     get_video_generation_status,
 )
+from core.shot_video_production import (
+    ShotVideoProductionError,
+    execute_shot_video_production,
+    get_shot_video_production,
+    reconcile_video_intent,
+)
 from models import Session
 
 
@@ -37,8 +43,22 @@ class VideoExecuteRequest(BaseModel):
     model_profile_id: str | None = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
 
 
+class ShotVideoProductionRequest(BaseModel):
+    """Shot-scoped orchestration request; source assets are authority-resolved."""
+
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    provider_id: str = Field(default="mock-video", validation_alias=AliasChoices("provider_id", "providerId"))
+    model_profile_id: str | None = Field(default=None, validation_alias=AliasChoices("model_profile_id", "modelProfileId"))
+
+
 def _raise(exc: VideoGenerationError) -> None:
     status = 404 if exc.code in {"SHOT_NOT_FOUND", "VIDEO_INTENT_NOT_FOUND"} else exc.status_code
+    raise HTTPException(status_code=status, detail=exc.to_dict()) from exc
+
+
+def _raise_shot(exc: ShotVideoProductionError) -> None:
+    status = 404 if exc.code == "SHOT_NOT_FOUND" else exc.status_code
     raise HTTPException(status_code=status, detail=exc.to_dict()) from exc
 
 
@@ -82,4 +102,40 @@ def get_video_generation(intent_id: int):
             _raise(exc)
 
 
-__all__ = ["router"]
+@router.post("/shots/{shot_id}/video-production", status_code=201)
+def produce_shot_video(shot_id: int, req: ShotVideoProductionRequest):
+    """Reconcile current authorities then dispatch the existing video runtime."""
+    with Session() as session:
+        try:
+            return execute_shot_video_production(session, shot_id=shot_id, provider_id=req.provider_id, model_profile_id=req.model_profile_id)
+        except ShotVideoProductionError as exc:
+            session.rollback()
+            _raise_shot(exc)
+        except VideoGenerationError as exc:
+            session.rollback()
+            _raise(exc)
+
+
+@router.get("/shots/{shot_id}/video-production")
+def get_shot_video(shot_id: int):
+    with Session() as session:
+        try:
+            return get_shot_video_production(session, shot_id=shot_id)
+        except ShotVideoProductionError as exc:
+            _raise_shot(exc)
+
+
+@router.post("/shots/{shot_id}/video-production/reconcile", status_code=201)
+def reconcile_shot_video(shot_id: int, req: ShotVideoProductionRequest):
+    """Create or reuse one deterministic VideoGenerationIntent without dispatch."""
+    with Session() as session:
+        try:
+            result = reconcile_video_intent(session, shot_id=shot_id, provider_id=req.provider_id, model_profile_id=req.model_profile_id)
+            session.commit()
+            return {"intent": result["intent"], "source_fingerprint": result["source"]["source_fingerprint"], "idempotent": result["idempotent"], "human_review_required": True}
+        except ShotVideoProductionError as exc:
+            session.rollback()
+            _raise_shot(exc)
+
+
+__all__ = ["router", "ShotVideoProductionRequest"]

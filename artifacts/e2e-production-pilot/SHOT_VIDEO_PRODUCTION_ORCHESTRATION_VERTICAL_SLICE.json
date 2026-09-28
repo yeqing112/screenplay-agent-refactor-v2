@@ -1,0 +1,31 @@
+{
+  "status": "SHOT_VIDEO_PRODUCTION_ORCHESTRATION_COMPLETE",
+  "schema_version": "shot_video_production_orchestration_v1",
+  "vertical_slice": [
+    "Official START keyframe asset",
+    "Official END keyframe asset",
+    "VideoGenerationIntent",
+    "GenerationExecutionRecord",
+    "TaskRun",
+    "MiniMax H3 adapter boundary",
+    "VIDEO MediaCandidate",
+    "technical validation",
+    "human review",
+    "OfficialMediaVersion/Pointer"
+  ],
+  "assertions": {
+    "intent_reconciliation_is_idempotent": true,
+    "execution_reuses_in_flight_or_successful_record": true,
+    "candidate_is_retained_on_stale_source": true,
+    "promotion_rechecks_source": true,
+    "rejected_intent_gets_new_revision": true,
+    "api_projection_is_json_safe": true,
+    "human_review_required": true,
+    "real_provider_default_calls": 0
+  },
+  "api": {
+    "reconcile": "POST /shots/{id}/video-production/reconcile",
+    "execute": "POST /shots/{id}/video-production",
+    "status": "GET /shots/{id}/video-production"
+  }
+}
