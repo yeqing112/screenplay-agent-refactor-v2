@@ -136,6 +136,19 @@ def _image_frame_state(session: Any, shot: StoryboardShot, frame: Keyframe, sequ
     role_prefix = f"KEYFRAME_{str(frame.frame_type).upper()}_IMAGE"
     pointer = session.query(OfficialMediaPointer).filter(OfficialMediaPointer.book_id == int(shot.book_id), OfficialMediaPointer.episode == int(shot.episode), OfficialMediaPointer.storyboard_shot_id == _shot_id(shot), OfficialMediaPointer.media_role == role_prefix).one_or_none()
     official = session.query(OfficialMediaVersion).filter_by(official_media_version_id=pointer.official_media_version_id).one_or_none() if pointer is not None else None
+    # A candidate may still be waiting for review when one of its source
+    # authorities changes.  Resolve currentness before exposing the review
+    # gate so the Episode projection fails closed and preserves the candidate
+    # as history instead of inviting promotion of stale media.
+    if execution is not None and sequence is not None:
+        marker = _obj(execution.request_payload).get("_keyframe_image_production")
+        if isinstance(marker, Mapping) and marker.get("source_fingerprint"):
+            try:
+                current_source = _image_source_guard(session, frame, sequence, shot)
+                if marker.get("source_fingerprint") != current_source.get("source_fingerprint"):
+                    return {"frame_type": str(frame.frame_type).upper(), "keyframe_id": int(frame.id), "state": "STALE", "next_action": "GENERATE_KEYFRAME_IMAGE", "blocking_reason": f"{str(frame.frame_type).upper()} image source is stale", "candidate_id": candidate.candidate_id if candidate else None}
+            except Exception:
+                return {"frame_type": str(frame.frame_type).upper(), "keyframe_id": int(frame.id), "state": "STALE", "next_action": "GENERATE_KEYFRAME_IMAGE", "blocking_reason": f"{str(frame.frame_type).upper()} image authority is stale", "candidate_id": candidate.candidate_id if candidate else None}
     if official is not None and _text(official.status).upper() == "CURRENT" and _text(official.media_type).upper() == "IMAGE":
         if sequence is not None:
             try:
@@ -164,6 +177,18 @@ def _video_state(session: Any, shot: StoryboardShot, *, expected_source: str = "
     review = _review_for_candidate(session, candidate)
     pointer = session.query(OfficialMediaPointer).filter_by(book_id=int(shot.book_id), episode=int(shot.episode), storyboard_shot_id=_shot_id(shot), media_role=VIDEO_ROLE).one_or_none()
     official = session.query(OfficialMediaVersion).filter_by(official_media_version_id=pointer.official_media_version_id).one_or_none() if pointer else None
+    # Reconcile source currentness for every execution state, including a
+    # candidate that is still awaiting review.  This is the durable stale
+    # boundary; review status alone must never make an obsolete candidate
+    # promotable.
+    if execution is not None and lineage.get("base_source_fingerprint"):
+        try:
+            from core.shot_video_production import current_source_for_execution
+            current = current_source_for_execution(session, execution)
+            if not current.get("current"):
+                return {"state": "STALE", "next_action": "RECONCILE_VIDEO", "blocking_reason": "video source is stale", "intent": intent, "execution": execution, "candidate": candidate, "official_media": official, "review": review, "source_fingerprint": lineage.get("base_source_fingerprint"), "stale": current}
+        except Exception as exc:
+            return {"state": "STALE", "next_action": "RECONCILE_VIDEO", "blocking_reason": str(exc), "intent": intent, "execution": execution, "candidate": candidate, "official_media": official, "review": review, "source_fingerprint": lineage.get("base_source_fingerprint")}
     if official is not None and _text(official.status).upper() == "CURRENT" and _text(official.media_type).upper() == "VIDEO":
         if execution is not None and lineage.get("base_source_fingerprint"):
             try:
@@ -228,6 +253,19 @@ def resolve_shot_production_state(session: Any, *, shot_id: int) -> dict[str, An
     if any(item["state"] != "APPROVED" for item in images):
         base.update(state="NEEDS_KEYFRAME_IMAGES", blocking_reason=next(item.get("blocking_reason") for item in images if item["state"] != "APPROVED"), next_action="GENERATE_KEYFRAME_IMAGE", source_fingerprint=plan.source_fingerprint)
         return base
+    # Video generation requires an explicit VIDEO-scoped PromptIR authority.
+    # Keep this preparation boundary derived from the existing pointer rather
+    # than allowing the video runtime to turn a missing authority into a
+    # provider failure.
+    video_prompt = session.query(PromptIRPointer).filter_by(
+        book_id=int(shot.book_id),
+        episode=int(shot.episode),
+        storyboard_shot_id=_shot_id(shot),
+        target_media="VIDEO",
+    ).one_or_none()
+    if video_prompt is None:
+        base.update(state="NOT_READY", blocking_reason="current VIDEO PromptIR pointer is required", next_action="PREPARE_VIDEO_PROMPT", source_fingerprint=plan.source_fingerprint)
+        return base
     video = _video_state(session, shot)
     base.update({key: value for key, value in video.items() if key not in {"intent", "execution", "candidate", "official_media"}})
     base["current_authorities"]["video_intent_id"] = int(video["intent"].id) if video.get("intent") is not None else None
@@ -269,7 +307,7 @@ def _episode_summary(details: list[dict[str, Any]], *, episode_id: int, plan_id:
         if state == "COMPLETE": counts["shots_complete"] += 1
         if state in {"KEYFRAME_PLAN_REVIEW_REQUIRED", "KEYFRAME_IMAGE_REVIEW_REQUIRED", "VIDEO_REVIEW_REQUIRED"}: counts["shots_waiting_review"] += 1
         if state == "VIDEO_GENERATING": counts["shots_generating"] += 1
-        if state in {"NOT_READY", "NEEDS_KEYFRAME_PLAN", "NEEDS_KEYFRAME_COMPILE", "NEEDS_KEYFRAME_IMAGES", "BLOCKED_DEPENDENCY"}: counts["shots_blocked"] += 1
+        if state in {"NOT_READY", "NEEDS_KEYFRAME_PLAN", "NEEDS_KEYFRAME_COMPILE", "NEEDS_KEYFRAME_IMAGES", "READY_FOR_VIDEO", "BLOCKED_DEPENDENCY"}: counts["shots_blocked"] += 1
         if state == "FAILED": counts["shots_failed"] += 1
         if state == "STALE": counts["shots_stale"] += 1
     if counts["shots_total"] and counts["shots_complete"] == counts["shots_total"]:
@@ -302,45 +340,82 @@ def run_episode_production(session: Any, *, episode_id: int, plan_id: int | str 
             detail["next_action"] = "WAIT_FOR_DEPENDENCY"
             detail["blocking_reason"] = f"dependency shot {next(dep.get('shot_id') for dep in dependency_details if dep.get('state') != 'COMPLETE')} is not COMPLETE"
         elif not dry_run:
-            state = _text(detail.get("state")).upper()
-            try:
-                if state == "NEEDS_KEYFRAME_PLAN":
-                    generated = plan_keyframes(session, shot_id=int(item.shot_id))
-                    actions.append({"shot_id": int(item.shot_id), "action": "GENERATE_KEYFRAME_PLAN", "result": generated.get("status")})
-                elif state == "NEEDS_KEYFRAME_COMPILE":
-                    plan_row = _active_plan(session, _resolve_shot(session, int(item.shot_id)))
-                    if plan_row is None:
-                        raise EpisodeProductionError("keyframe plan disappeared during run", code="EPISODE_KEYFRAME_PLAN_MISSING")
-                    compiled = compile_keyframe_plan(session, shot_id=int(item.shot_id), version=int(plan_row.version))
-                    actions.append({"shot_id": int(item.shot_id), "action": "COMPILE_KEYFRAME_PLAN", "result": compiled.get("plan", {}).get("status")})
-                elif state == "NEEDS_KEYFRAME_IMAGES":
-                    shot = _resolve_shot(session, int(item.shot_id))
-                    sequence = _active_sequence(session, shot, _active_plan(session, shot))
-                    frames = _frames(session, sequence)
-                    for frame_name in ("start", "end"):
-                        frame = frames.get(frame_name)
-                        if frame is None:
-                            continue
-                        frame_state = _image_frame_state(session, shot, frame)
-                        if frame_state.get("state") != "APPROVED":
-                            produced = produce_keyframe_image(session, keyframe_id=int(frame.id), fixture=True, production_required=True)
-                            actions.append({"shot_id": int(item.shot_id), "action": "GENERATE_KEYFRAME_IMAGE", "frame_type": frame_name.upper(), "idempotent": bool(produced.get("idempotent"))})
+            # A single run may cross deterministic boundaries (plan compile
+            # then image dispatch), but it always stops at a human review,
+            # provider-in-flight, stale, or failure boundary.
+            for _stage in range(4):
+                state = _text(detail.get("state")).upper()
+                try:
+                    if state == "NEEDS_KEYFRAME_PLAN":
+                        generated = plan_keyframes(session, shot_id=int(item.shot_id))
+                        actions.append({"shot_id": int(item.shot_id), "action": "GENERATE_KEYFRAME_PLAN", "result": generated.get("status"), "provider_calls": 0})
+                    elif state == "NEEDS_KEYFRAME_COMPILE":
+                        plan_row = _active_plan(session, _resolve_shot(session, int(item.shot_id)))
+                        if plan_row is None:
+                            raise EpisodeProductionError("keyframe plan disappeared during run", code="EPISODE_KEYFRAME_PLAN_MISSING")
+                        compiled = compile_keyframe_plan(session, shot_id=int(item.shot_id), version=int(plan_row.version))
+                        actions.append({"shot_id": int(item.shot_id), "action": "COMPILE_KEYFRAME_PLAN", "result": compiled.get("plan", {}).get("status"), "provider_calls": 0})
+                    elif state == "NEEDS_KEYFRAME_IMAGES":
+                        shot = _resolve_shot(session, int(item.shot_id))
+                        sequence = _active_sequence(session, shot, _active_plan(session, shot))
+                        frames = _frames(session, sequence)
+                        produced_frame = None
+                        for frame_name in ("start", "end"):
+                            frame = frames.get(frame_name)
+                            if frame is None:
+                                continue
+                            frame_state = _image_frame_state(session, shot, frame, sequence)
+                            if frame_state.get("state") != "APPROVED":
+                                produced = produce_keyframe_image(session, keyframe_id=int(frame.id), fixture=True, production_required=True)
+                                produced_frame = frame_name.upper()
+                                actions.append({"shot_id": int(item.shot_id), "action": "GENERATE_KEYFRAME_IMAGE", "frame_type": produced_frame, "idempotent": bool(produced.get("idempotent")), "provider_calls": int(produced.get("provider_calls") or 0)})
+                                break
+                        # Image candidates are review gates.  Re-resolve once
+                        # and stop this shot even if an adapter reports a
+                        # reused candidate.
+                        if produced_frame:
                             break
-                elif state == "FAILED" and not retry_failed:
-                    detail["next_action"] = "RETRY_VIDEO"
-                elif state == "READY_FOR_VIDEO" or (state == "FAILED" and retry_failed):
-                    # Real provider polling remains behind its existing canary
-                    # gate.  Episode runs never block on a paid async poll.
-                    if provider_id != "mock-video":
-                        actions.append({"shot_id": int(item.shot_id), "action": "PROVIDER_CANARY_DISABLED", "provider": provider_id})
-                    else:
+                    elif state == "FAILED" and not retry_failed:
+                        detail["next_action"] = "RETRY_VIDEO"
+                        break
+                    elif state == "READY_FOR_VIDEO" or (state == "FAILED" and retry_failed):
+                        # Real provider polling remains behind its existing
+                        # canary gate.  Also reject a real model profile when
+                        # provider_id keeps the backward-compatible mock
+                        # default, so the Episode boundary cannot accidentally
+                        # open a paid provider.
+                        mock_allowed = provider_id == "mock-video" and model_profile_id in {None, "", "builtin-mock-video"}
+                        if not mock_allowed:
+                            actions.append({"shot_id": int(item.shot_id), "action": "PROVIDER_CANARY_DISABLED", "provider": provider_id, "model_profile_id": model_profile_id, "provider_calls": 0})
+                            detail["next_action"] = "PROVIDER_CANARY_DISABLED"
+                            detail["blocking_reason"] = "real video provider canary is disabled for Episode orchestration"
+                            break
                         result = execute_shot_video_production(session, shot_id=int(item.shot_id), provider_id=provider_id, model_profile_id=model_profile_id)
                         actions.append({"shot_id": int(item.shot_id), "action": "GENERATE_VIDEO", "execution_id": result.get("execution", {}).get("execution_id"), "provider_calls": int(result.get("provider_calls") or 0)})
-            except (AutomaticKeyframePlanError, KeyframeImageProductionError, ShotVideoProductionError, EpisodeProductionError, Exception) as exc:
-                detail["state"] = "FAILED" if _text(getattr(exc, "code", "")).upper() not in {"REVIEW_REQUIRED", "VIDEO_KEYFRAME_PLAN_NOT_COMPILED"} else detail.get("state")
-                detail["next_action"] = "RETRY" if detail["state"] == "FAILED" else detail.get("next_action")
-                detail["blocking_reason"] = str(getattr(exc, "message", exc))
-            detail = resolve_shot_production_state(session, shot_id=int(item.shot_id))
+                        break
+                    else:
+                        break
+                    detail = resolve_shot_production_state(session, shot_id=int(item.shot_id))
+                    detail["dependency_ready"] = dependency_ready
+                    if _text(detail.get("state")).upper() in {"KEYFRAME_PLAN_REVIEW_REQUIRED", "KEYFRAME_IMAGE_REVIEW_REQUIRED", "VIDEO_REVIEW_REQUIRED", "VIDEO_GENERATING", "STALE", "FAILED", "COMPLETE", "BLOCKED_DEPENDENCY", "NOT_READY"}:
+                        break
+                except (AutomaticKeyframePlanError, KeyframeImageProductionError, ShotVideoProductionError, EpisodeProductionError) as exc:
+                    detail["state"] = "FAILED" if _text(getattr(exc, "code", "")).upper() not in {"REVIEW_REQUIRED", "VIDEO_KEYFRAME_PLAN_NOT_COMPILED"} else detail.get("state")
+                    detail["next_action"] = "RETRY" if detail["state"] == "FAILED" else detail.get("next_action")
+                    detail["blocking_reason"] = str(getattr(exc, "message", exc))
+                    break
+                except Exception as exc:
+                    # Unexpected errors are surfaced as a durable shot
+                    # failure projection while the caller retains control of
+                    # the outer transaction.
+                    detail["state"] = "FAILED"
+                    detail["next_action"] = "RETRY"
+                    detail["blocking_reason"] = str(exc)
+                    break
+            # Re-resolve after every successful dispatch so the returned
+            # projection exposes the newly created review or in-flight gate
+            # instead of echoing the pre-dispatch READY_FOR_VIDEO state.
+            detail = resolve_shot_production_state(session, shot_id=int(item.shot_id)) if _text(detail.get("state")).upper() != "FAILED" else detail
             detail["dependency_ready"] = dependency_ready
         by_shot[int(item.shot_id)] = detail
         if not dry_run:
@@ -353,7 +428,7 @@ def run_episode_production(session: Any, *, episode_id: int, plan_id: int | str 
     summary["actions"] = actions
     summary["human_review_required"] = True
     summary["resumable"] = True
-    summary["provider_calls"] = {"llm": 0, "image": sum(1 for item in actions if item.get("action") == "GENERATE_KEYFRAME_IMAGE"), "video": sum(1 for item in actions if item.get("action") == "GENERATE_VIDEO"), "real_llm": 0, "real_image": 0, "real_video": 0}
+    summary["provider_calls"] = {"llm": 0, "image": sum(int(item.get("provider_calls") or 0) for item in actions if item.get("action") == "GENERATE_KEYFRAME_IMAGE"), "video": sum(int(item.get("provider_calls") or 0) for item in actions if item.get("action") == "GENERATE_VIDEO"), "real_llm": 0, "real_image": 0, "real_video": 0}
     if not dry_run:
         if summary["state"] == "PRODUCTION_COMPLETE":
             plan.status = "REVIEWING"
