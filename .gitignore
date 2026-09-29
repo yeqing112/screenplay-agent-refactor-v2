@@ -31,6 +31,7 @@ tmp-*
 .codex-*.png
 .codex-temp-*
 .codex-artifacts/
+.playwright-cli/
 audit_data.json
 artifacts-*.png
 *.legacy-*
