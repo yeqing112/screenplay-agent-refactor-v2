@@ -54,6 +54,9 @@ Blocking conditions include the missing Episode render plan, unavailable PromptI
 | Check | Result |
 |---|---:|
 | Pilot safety tests | 12 passed |
+| Full regression | 1945 passed |
+| Golden fixtures | 5/5 (existing evidence) |
+| Migration CI | PASS: fresh/repeat/legacy/drift; head `m4h5i6j7k8l9` |
 | Compileall | PASS |
 | `git diff --check` | PASS |
 | Real provider calls | 0 |

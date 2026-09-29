@@ -96,6 +96,24 @@
       "status": "PASS",
       "tests": 12
     },
+    "pytest_full": {
+      "status": "PASS",
+      "tests": 1945
+    },
+    "golden": {
+      "status": "PASS",
+      "passed": 5,
+      "failed": 0,
+      "evidence": "existing committed golden evidence"
+    },
+    "migration_chain": {
+      "status": "PASS",
+      "head": "m4h5i6j7k8l9",
+      "fresh": "PASS",
+      "repeat": "PASS",
+      "legacy": "PASS",
+      "drift": "PASS"
+    },
     "compileall": "PASS",
     "diff_check": "PASS",
     "provider_calls": 0
