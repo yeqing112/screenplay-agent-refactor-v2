@@ -1,9 +1,9 @@
 {
   "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
-  "schema_version": "real_episode_production_pilot_vertical_slice_v3",
-  "implementation_commit": "17f24a5ea1a78bf750101977e372ebbf57192bf4",
-  "report_commit": "eb4dc81",
+  "schema_version": "real_episode_production_pilot_vertical_slice_v4",
+  "implementation_commit": "33d6037656bf716ad42447ec23524365fe70d4b4",
+  "report_commit": "pending-report-commit",
   "provider_policy": {
     "image_provider": "SHAPI",
     "image_provider_website": "https://www.shapi.vip/",
@@ -16,7 +16,10 @@
   },
   "pilot_scope": {
     "episode_id": 13,
-    "shot_ids": [],
+    "shot_ids": [
+      214,
+      215
+    ],
     "planned_shot_keys": [
       "pilot-e13-shot-a",
       "pilot-e13-shot-b"
@@ -35,24 +38,36 @@
       "submitted_at": null,
       "provider_completed_at": null,
       "candidate_created_at": null,
-      "reason": "source fixture requires human storyboard review"
+      "reason": "KeyframePlan human review and provider gates are not complete",
+      "render_plan_id": 1,
+      "shot_ids": [
+        214,
+        215
+      ]
     },
     {
       "stage": "SOURCE_FIXTURE",
-      "status": "COMPILED_REVIEW_REQUIRED",
+      "status": "MATERIALIZED_REVIEW_REQUIRED",
       "provider_calls": 0,
       "submitted_at": null,
       "provider_completed_at": null,
       "candidate_created_at": null,
       "storyboard_plan_id": 1,
-      "planned_shot_keys": [
-        "pilot-e13-shot-a",
-        "pilot-e13-shot-b"
+      "storyboard_status": "APPROVED",
+      "render_plan_id": 1,
+      "shot_ids": [
+        214,
+        215
+      ],
+      "keyframe_plan_ids": [
+        1,
+        2
       ]
     },
     {
       "stage": "STAGE_A_SHOT_A",
       "status": "NOT_STARTED",
+      "shot_id": 214,
       "provider_calls": 0,
       "submitted_at": null,
       "provider_completed_at": null,
@@ -61,6 +76,7 @@
     {
       "stage": "STAGE_B_SHOT_B",
       "status": "NOT_STARTED",
+      "shot_id": 215,
       "provider_calls": 0,
       "submitted_at": null,
       "provider_completed_at": null,
@@ -77,5 +93,14 @@
     "prompt_lineage_retained": true,
     "secrets_redacted": true
   },
-  "next_gate": "Human review/approval of the two-shot StoryboardPlan; then create the exact render plan and approve/compile both AutomaticKeyframePlans before any provider gate can be considered."
+  "dry_run": {
+    "status": "PASS",
+    "production_writes": 0,
+    "planned_operations": [],
+    "review_gates": [
+      "HUMAN_REVIEW",
+      "WAIT_FOR_DEPENDENCY"
+    ]
+  },
+  "next_gate": "Approve and compile AutomaticKeyframePlans 1 and 2, then re-run preflight with existing Provider gates enabled."
 }

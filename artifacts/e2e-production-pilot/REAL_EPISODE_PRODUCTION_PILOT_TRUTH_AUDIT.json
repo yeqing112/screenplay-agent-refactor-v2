@@ -1,11 +1,11 @@
 {
   "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
-  "schema_version": "real_episode_production_pilot_truth_audit_v3",
+  "schema_version": "real_episode_production_pilot_truth_audit_v4",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
-  "implementation_commit": "17f24a5ea1a78bf750101977e372ebbf57192bf4",
-  "report_commit": "eb4dc81",
+  "implementation_commit": "33d6037656bf716ad42447ec23524365fe70d4b4",
+  "report_commit": "pending-report-commit",
   "migration_head": "m4h5i6j7k8l9",
   "pilot_scope_enforced": true,
   "episode_count": 1,
@@ -24,7 +24,10 @@
   "real_llm_calls": 0,
   "pilot_scope": {
     "episode_id": 13,
-    "shot_ids": [],
+    "shot_ids": [
+      214,
+      215
+    ],
     "planned_shot_keys": [
       "pilot-e13-shot-a",
       "pilot-e13-shot-b"
@@ -46,10 +49,29 @@
     "credentials_redacted": true
   },
   "source_fixture": {
-    "status": "STORYBOARD_REVIEW_REQUIRED",
+    "status": "SOURCE_SPINE_READY_FOR_HUMAN_REVIEW",
     "storyboard_plan_id": 1,
     "storyboard_plan_version": 1,
-    "storyboard_status": "COMPILED",
+    "storyboard_status": "APPROVED",
+    "render_plan_id": 1,
+    "shot_ids": [
+      214,
+      215
+    ],
+    "automatic_keyframe_plans": [
+      {
+        "shot_id": 214,
+        "id": 1,
+        "version": 1,
+        "status": "REVIEW_REQUIRED"
+      },
+      {
+        "shot_id": 215,
+        "id": 2,
+        "version": 1,
+        "status": "REVIEW_REQUIRED"
+      }
+    ],
     "source_script_ir_version_id": 2,
     "source_fact_snapshot_id": 1,
     "human_review_required": true,
@@ -60,14 +82,19 @@
     }
   },
   "gates": {
-    "PHASE_F_PROVIDER_CANARY_REAL": "unset",
-    "MINIMAX_H3_GRAY_REAL": "unset",
-    "MINIMAX_H3_GRAY_CONFIRM": "unset",
-    "MINIMAX_H3_GRAY_WHITELIST": "unset",
+    "image_canary_enabled": false,
+    "video_gray_enabled": false,
+    "video_confirmation_matches": false,
+    "video_whitelist": [],
+    "exact_shots_whitelisted": false,
+    "episode_allowlist_present": true,
+    "episode_allowlist_matches": true,
+    "consent_token_required": "CONFIRM_REAL_EPISODE_PRODUCTION_PILOT",
+    "secrets_redacted": true,
     "real_execution_allowed": false
   },
   "observed": {
-    "render_plan_available": false,
+    "render_plan_available": true,
     "authorities_current": false,
     "production_writes": 0,
     "real_shapi_calls": 0,
@@ -90,13 +117,12 @@
     "no_second_queue_or_provider_system": true
   },
   "blockers": [
-    "PILOT_SOURCE_FIXTURE_STORYBOARD_REVIEW_REQUIRED",
-    "EPISODE_RENDER_PLAN_NOT_CREATED",
-    "EXACT_SHOT_ALLOWLIST_NOT_AVAILABLE_UNTIL_MATERIALIZATION",
     "PHASE_F_PROVIDER_CANARY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_CONFIRM_missing_or_invalid",
-    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
+    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots",
+    "shot_214_source_authority_not_current",
+    "shot_215_source_authority_not_current"
   ],
   "verification": {
     "pilot_source_tests": {
@@ -107,6 +133,8 @@
       "status": "PASS",
       "tests": 12
     },
+    "preflight": "BLOCKED",
+    "dry_run": "PASS",
     "provider_calls": 0,
     "compileall": "PASS",
     "diff_check": "PASS"
