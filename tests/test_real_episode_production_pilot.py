@@ -27,6 +27,18 @@ def test_missing_real_gates_are_blocked_without_provider_calls(monkeypatch):
     assert result["exact_shots_whitelisted"] is False
 
 
+def test_repository_snapshot_reads_expected_migration_head(tmp_path: Path):
+    engine, session = _session(tmp_path)
+    try:
+        snapshot = pilot._repository_snapshot(session)
+        assert snapshot["migration_head"] == pilot.EXPECTED_MIGRATION_HEAD
+        assert snapshot["migration_head_matches"] is True
+        assert snapshot["head"]
+    finally:
+        session.close()
+        engine.dispose()
+
+
 def test_exact_shot_allowlist_is_required(monkeypatch):
     monkeypatch.setenv("PHASE_F_PROVIDER_CANARY_REAL", "1")
     monkeypatch.setenv("MINIMAX_H3_GRAY_REAL", "1")

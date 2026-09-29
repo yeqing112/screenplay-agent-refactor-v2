@@ -1,7 +1,17 @@
 {
   "schema_version": "real_episode_production_pilot_v1",
   "status": "BLOCKED",
-  "created_at": "2026-09-29T01:03:03.534757+00:00",
+  "created_at": "2026-09-29T01:23:06.150175+00:00",
+  "repository": {
+    "branch": "codex/visual-authoring-provider-canary-reconcile",
+    "expected_branch": "codex/visual-authoring-provider-canary-reconcile",
+    "branch_matches": true,
+    "head": "e1933d08a4d058baeb080c9f6bd6090708ec5753",
+    "working_tree_clean": false,
+    "migration_head": "i0d1e2f3g4h5",
+    "expected_migration_head": "m4h5i6j7k8l9",
+    "migration_head_matches": false
+  },
   "episode_id": 13,
   "render_plan_id": null,
   "shot_ids": [
@@ -57,6 +67,8 @@
   },
   "authorities": [],
   "blockers": [
+    "working_tree_not_clean",
+    "migration_head_mismatch",
     "episode_render_plan_unavailable:EpisodeRenderingError",
     "episode_render_plan_must_contain_exactly_two_shots",
     "exact_shot_allowlist_does_not_match_episode_render_plan",

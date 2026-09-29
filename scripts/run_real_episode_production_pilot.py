@@ -14,8 +14,11 @@ from datetime import UTC, datetime
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 from typing import Any, Mapping
+
+from sqlalchemy import text
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -56,6 +59,8 @@ IMAGE_PROVIDER = "shapi-openai-images"
 IMAGE_TRANSPORT = "shapi-openai-images.image.v1"
 VIDEO_PROVIDER = "minimax-h3-async"
 VIDEO_TRANSPORT = "minimax-h3-async.video.v1"
+EXPECTED_BRANCH = "codex/visual-authoring-provider-canary-reconcile"
+EXPECTED_MIGRATION_HEAD = "m4h5i6j7k8l9"
 
 
 def _text(value: Any) -> str:
@@ -65,6 +70,33 @@ def _text(value: Any) -> str:
 def _short_exception(exc: BaseException) -> str:
     """Return a stable, secret-free blocker token for operator reports."""
     return type(exc).__name__
+
+
+def _repository_snapshot(session: Any) -> dict[str, Any]:
+    """Read repository and database state without changing either one."""
+    def git(*args: str) -> str:
+        try:
+            result = subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True)
+            return result.stdout.strip()
+        except (OSError, subprocess.CalledProcessError):
+            return ""
+
+    try:
+        migration_head = str(session.execute(text("select version_num from alembic_version limit 1")).scalar() or "")
+    except Exception:
+        migration_head = ""
+    branch = git("branch", "--show-current")
+    commit = git("rev-parse", "HEAD")
+    return {
+        "branch": branch,
+        "expected_branch": EXPECTED_BRANCH,
+        "branch_matches": branch == EXPECTED_BRANCH,
+        "head": commit,
+        "working_tree_clean": git("status", "--porcelain") == "",
+        "migration_head": migration_head,
+        "expected_migration_head": EXPECTED_MIGRATION_HEAD,
+        "migration_head_matches": migration_head == EXPECTED_MIGRATION_HEAD,
+    }
 
 
 def _safe_profile(profile: Mapping[str, Any] | None) -> dict[str, Any]:
@@ -148,6 +180,13 @@ def _current_authority_check(session: Any, shot: StoryboardShot) -> dict[str, An
 
 def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image_profile_id: str, video_profile_id: str, allowed_image_calls: int = MAX_IMAGE_CALLS, allowed_video_calls: int = MAX_VIDEO_CALLS, allowed_episode_id: int | None = None) -> dict[str, Any]:
     blockers: list[str] = []
+    repository = _repository_snapshot(session)
+    if not repository["branch_matches"]:
+        blockers.append("branch_mismatch")
+    if not repository["working_tree_clean"]:
+        blockers.append("working_tree_not_clean")
+    if not repository["migration_head_matches"]:
+        blockers.append("migration_head_mismatch")
     plan = None
     try:
         plan = get_episode_render_plan(session, episode_id=int(episode_id))
@@ -218,6 +257,7 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
         "schema_version": SCHEMA_VERSION,
         "status": "READY_FOR_REAL_PILOT" if not blockers else "BLOCKED",
         "created_at": datetime.now(UTC).isoformat(),
+        "repository": repository,
         "episode_id": int(episode_id),
         "render_plan_id": int(plan.id) if plan is not None else None,
         "shot_ids": requested,
