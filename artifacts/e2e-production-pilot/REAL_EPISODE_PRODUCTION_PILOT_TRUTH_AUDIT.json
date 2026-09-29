@@ -3,9 +3,11 @@
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
   "schema_version": "real_episode_production_pilot_truth_audit_v1",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "implementation_commit": "507d17d",
+  "implementation_commit": "7f56309",
   "report_commit": "see remote HEAD after report commit",
   "migration_head": "m4h5i6j7k8l9",
+  "preflight_observed_migration_head": "i0d1e2f3g4h5",
+  "preflight_working_tree_clean": true,
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
   "pilot_scope_enforced": true,
   "episode_count": 1,
@@ -70,6 +72,7 @@
     "no_second_queue_or_provider_system": true
   },
   "blockers": [
+    "migration_head_mismatch",
     "episode_render_plan_unavailable:EpisodeRenderingError",
     "storyboard_shot_unavailable:OperationalError",
     "PHASE_F_PROVIDER_CANARY_REAL_not_enabled",
@@ -78,8 +81,8 @@
     "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
   ],
   "verification": {
-    "pilot_safety_tests": {"status": "PASS", "tests": 10},
-    "pytest_full": {"status": "PASS", "tests": 1943},
+    "pilot_safety_tests": {"status": "PASS", "tests": 11},
+    "pytest_full": {"status": "PASS", "tests": 1944},
     "golden": {"status": "PASS", "passed": 5, "failed": 0},
     "migration_chain": {"status": "PASS", "head": "m4h5i6j7k8l9", "fresh": "PASS", "repeat": "PASS", "legacy": "PASS", "drift": "PASS"},
     "compileall": "PASS",

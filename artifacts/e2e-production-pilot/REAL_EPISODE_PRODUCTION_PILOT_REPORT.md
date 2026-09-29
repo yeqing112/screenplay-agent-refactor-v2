@@ -6,7 +6,7 @@
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)
-- Implementation commit: `507d17d`
+- Implementation commit: `7f56309`
 - Report commit: see the remote HEAD after the report commit is pushed
 - Migration head: `m4h5i6j7k8l9`
 - Pilot target: Episode `13`, requested shots `1`, `2`
@@ -23,6 +23,8 @@ The configured image provider is SHAPI ([https://www.shapi.vip/](https://www.sha
 | Check | Result |
 |---|---:|
 | Render plan for requested episode | unavailable (`EpisodeRenderingError`) |
+| Preflight branch / working tree | correct / clean at snapshot |
+| Preflight migration head | `i0d1e2f3g4h5` (expected `m4h5i6j7k8l9`) |
 | Exact Episode allowlist | matched (`13`) |
 | Requested unique shots | 2 |
 | Planned real SHAPI calls | 0 |
@@ -44,12 +46,13 @@ The configured image provider is SHAPI ([https://www.shapi.vip/](https://www.sha
 
 Dry run was requested and returned `BLOCKED` with `production_writes = 0`; planned operations, existing assets, new executions, and review gates were empty because the Episode render plan was unavailable.
 
-Blocking conditions include missing render plan/shot authority in the current local database and unset `PHASE_F_PROVIDER_CANARY_REAL`, `MINIMAX_H3_GRAY_REAL`, `MINIMAX_H3_GRAY_CONFIRM`, and exact `MINIMAX_H3_GRAY_WHITELIST`.
+Blocking conditions include migration head drift (`i0d1e2f3g4h5` vs expected `m4h5i6j7k8l9`), missing render plan/shot authority in the current local database, and unset `PHASE_F_PROVIDER_CANARY_REAL`, `MINIMAX_H3_GRAY_REAL`, `MINIMAX_H3_GRAY_CONFIRM`, and exact `MINIMAX_H3_GRAY_WHITELIST`.
 
 ## Delivered implementation
 
 - Added `scripts/run_real_episode_production_pilot.py` as a fail-closed, read-only-by-default pilot runner.
 - Added an explicit `--allow-episode-id` requirement and a Stage A → Stage B execution gate.
+- Added read-only repository, working-tree, and migration-head checks to preflight.
 - Reused the existing Episode production, keyframe image, shot video, Model Registry, GenerationExecution, MediaCandidate, review, promotion, and OfficialMedia paths.
 - Enforced one operation per execute invocation, exact two-shot scope, image budget `<=4`, video budget `<=2`, explicit consent, provider/transport matching, and no automatic retry.
 - Added safety tests for missing gates, exact allowlist, provider contract, missing episode write isolation, explicit consent, budget exhaustion, and secret-free blocker serialization.
@@ -59,7 +62,7 @@ Blocking conditions include missing render plan/shot authority in the current lo
 | Check | Result |
 |---|---:|
 | Pilot safety tests | 10 passed |
-| Full regression | 1943 passed |
+| Full regression | 1944 passed |
 | Golden fixtures | 5/5 |
 | Migration CI | PASS: fresh/repeat/legacy/drift; head `m4h5i6j7k8l9` |
 | Compileall | PASS |

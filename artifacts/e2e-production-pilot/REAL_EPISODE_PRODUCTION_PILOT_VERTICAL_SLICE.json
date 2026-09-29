@@ -2,7 +2,7 @@
   "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
   "schema_version": "real_episode_production_pilot_vertical_slice_v1",
-  "implementation_commit": "507d17d",
+  "implementation_commit": "7f56309",
   "report_commit": "see remote HEAD after report commit",
   "provider_policy": {
     "image_model": "SHAPI",
@@ -35,6 +35,13 @@
     "planned_video_calls": 0,
     "production_writes": 0,
     "blocker_count": 10
+  },
+  "repository_preflight": {
+    "branch_matches": true,
+    "working_tree_clean_at_snapshot": true,
+    "observed_migration_head": "i0d1e2f3g4h5",
+    "expected_migration_head": "m4h5i6j7k8l9",
+    "migration_head_matches": false
   },
   "claims": {
     "real_vertical_slice_completed": false,
