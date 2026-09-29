@@ -35,6 +35,7 @@ export type ProductionUiReasonCode =
   | 'V3_CANONICAL_SOURCE_OFFICIAL_IMAGE_INVALID'
   | 'V3_UNKNOWN_EXECUTION_STATE'
   | 'V3_EXECUTION_CANDIDATE_MISSING'
+  | 'V3_EXECUTION_CANDIDATE_NOT_VISIBLE'
   | 'V3_CANDIDATE_NOT_REVIEWABLE'
   | 'V3_READINESS_CONTRACT_MISSING'
   | 'V3_READINESS_CONTRACT_INCONSISTENT'
@@ -173,6 +174,7 @@ export const PRODUCTION_UI_REASON_CODES = {
   CANONICAL_SOURCE_OFFICIAL_IMAGE_INVALID: 'V3_CANONICAL_SOURCE_OFFICIAL_IMAGE_INVALID',
   UNKNOWN_EXECUTION_STATE: 'V3_UNKNOWN_EXECUTION_STATE',
   EXECUTION_CANDIDATE_MISSING: 'V3_EXECUTION_CANDIDATE_MISSING',
+  EXECUTION_CANDIDATE_NOT_VISIBLE: 'V3_EXECUTION_CANDIDATE_NOT_VISIBLE',
   CANDIDATE_NOT_REVIEWABLE: 'V3_CANDIDATE_NOT_REVIEWABLE',
   READINESS_CONTRACT_MISSING: 'V3_READINESS_CONTRACT_MISSING',
   READINESS_CONTRACT_INCONSISTENT: 'V3_READINESS_CONTRACT_INCONSISTENT',
@@ -297,7 +299,11 @@ function normalizeExecution(execution: GenerationExecutionProjection | null | un
 }
 
 function laneCandidateSummary(lane: ProductionMediaLane, official: CanonicalOfficialMediaViewModel): CandidateReviewSummary {
-  const items = Array.isArray(lane.candidates?.items) ? lane.candidates.items : []
+  const projectedItems = Array.isArray(lane.candidates?.items) ? lane.candidates.items : []
+  const latest = lane.candidates?.latest ?? null
+  const items = latest && !projectedItems.some((candidate) => text(candidate.id) === text(latest.id))
+    ? [...projectedItems, latest]
+    : projectedItems
   const currentOfficialCandidateId = official.isCanonicalOfficial ? text(official.version?.candidate_id) : ''
   const reviewItems = items.filter((candidate) => text(candidate.id) !== currentOfficialCandidateId)
   const reviewable = reviewItems.filter((candidate) => {
@@ -364,7 +370,7 @@ function readinessContract(lane: ProductionMediaLane): {
 function isDependencyWaiting(target: ProductionLaneTarget, lane: ProductionMediaLane, readinessReasons: string[]): boolean {
   return target === 'VIDEO'
     && upper(lane.generation_mode) === 'IMAGE_TO_VIDEO'
-    && readinessReasons.includes('OFFICIAL_IMAGE_REQUIRED')
+    && readinessReasons.some((code) => upper(code) === 'OFFICIAL_IMAGE_REQUIRED')
     && !lane.source_official_image?.current
 }
 
@@ -372,6 +378,26 @@ function isSourceOfficialStale(lane: ProductionMediaLane): boolean {
   const currentness = upper(lane.source_official_image?.currentness)
   return Boolean(lane.source_official_image)
     && (currentness === 'STALE' || currentness === 'OBSOLETE' || currentness === 'HISTORICAL')
+}
+
+function isDownstreamDependencyView(view: ProductionMediaLaneViewModel): boolean {
+  return view.target === 'VIDEO'
+    && upper(view.generationMode) === 'IMAGE_TO_VIDEO'
+    && (view.state === 'waiting' || view.state === 'blocked')
+    && view.readinessReasons.some((code) => upper(code) === 'OFFICIAL_IMAGE_REQUIRED')
+    && !view.reasonCodes.some((code) => code.startsWith('V3_CANONICAL_'))
+}
+
+function isVideoDownstreamDependency(lane: ProductionMediaLane, view: ProductionMediaLaneViewModel): boolean {
+  return isDownstreamDependencyView(view) && upper(lane.generation_mode) === 'IMAGE_TO_VIDEO'
+}
+
+function hasVisibleExecutionCandidate(lane: ProductionMediaLane, execution: GenerationExecutionViewModel): boolean {
+  const candidateId = text(execution.raw?.candidate_id)
+  if (!candidateId) return false
+  const items = Array.isArray(lane.candidates?.items) ? lane.candidates.items : []
+  return items.some((candidate) => text(candidate.id) === candidateId)
+    || text(lane.candidates?.latest?.id) === candidateId
 }
 
 function laneState(
@@ -415,6 +441,9 @@ function laneState(
   if (execution.state === 'succeeded' && !execution.raw?.candidate_id && !official.isCanonicalOfficial) {
     return { state: 'failed', detail: '执行已结束但没有可审核的候选结果。', reasonCodes: unique([...reasonCodes, PRODUCTION_UI_REASON_CODES.EXECUTION_CANDIDATE_MISSING]) }
   }
+  if (execution.state === 'succeeded' && execution.raw?.candidate_id && !official.isCanonicalOfficial && !hasVisibleExecutionCandidate(lane, execution)) {
+    return { state: 'waiting', detail: '生成已完成，正在同步候选结果。', reasonCodes: unique([...reasonCodes, PRODUCTION_UI_REASON_CODES.EXECUTION_CANDIDATE_NOT_VISIBLE]) }
+  }
   if (candidate.reviewEligibility) {
     return { state: 'review', detail: candidate.reviewReason || '候选结果等待人工审核。', reasonCodes }
   }
@@ -427,11 +456,11 @@ function laneState(
   if (isDependencyWaiting(target, lane, readiness.reasonCodes)) {
     return { state: 'waiting', detail: '视频生成等待当前正式图片。', reasonCodes: unique([...reasonCodes, 'OFFICIAL_IMAGE_REQUIRED']) }
   }
-  if (!readiness.present || readiness.reasonCodes.includes(PRODUCTION_UI_REASON_CODES.READINESS_CONTRACT_INCONSISTENT)) {
-    return { state: 'blocked', detail: '生成就绪契约缺失或自相矛盾，不能安全提交生成。', reasonCodes }
-  }
   if (official.isCanonicalOfficial) {
     return { state: 'official', detail: '当前 lane 已建立正式版本。', reasonCodes: unique([...reasonCodes, 'OFFICIAL_MEDIA_CURRENT']) }
+  }
+  if (!readiness.present || readiness.reasonCodes.includes(PRODUCTION_UI_REASON_CODES.READINESS_CONTRACT_INCONSISTENT)) {
+    return { state: 'blocked', detail: '生成就绪契约缺失或自相矛盾，不能安全提交生成。', reasonCodes }
   }
   if (readiness.present && readiness.ready) {
     return { state: 'ready', detail: '上游条件已满足，可以提交生成。', reasonCodes }
@@ -551,6 +580,13 @@ function combineShotState(
   }
   if (blocker.state === 'blocked') return { state: 'blocked', detail: '当前镜头存在需要人工或数据修复的真实阻塞。', reasonCodes: reasons }
   if (blocker.state === 'stale') return { state: 'stale', detail: '镜头绑定或上游内容已更新，需要重新确认。', reasonCodes: reasons }
+  if (isVideoDownstreamDependency(shot.VIDEO, video) && image.state !== 'official') {
+    return {
+      state: image.state,
+      detail: image.detail,
+      reasonCodes: unique([...reasons, 'DOWNSTREAM_DEPENDENCY_WAIT']),
+    }
+  }
   const states = [image.state, video.state]
   if (states.includes('blocked')) return { state: 'blocked', detail: '当前镜头存在需要先处理的生成条件阻塞。', reasonCodes: reasons }
   if (states.includes('stale')) return { state: 'stale', detail: '当前镜头有上游内容已更新，需要重新确认。', reasonCodes: reasons }
@@ -568,8 +604,9 @@ function shotPrimaryAction(
   image: ProductionMediaLaneViewModel,
   video: ProductionMediaLaneViewModel,
 ): ProductionPrimaryAction {
-  if (state === 'blocked') return action('resolve_blocker', '处理阻塞', false, { reason: '请先处理当前镜头的真实阻塞。', reasonCodes: ['SHOT_BLOCKED'] })
-  if (state === 'stale') return action('refresh_stale_source', '查看上游变化', true, { reason: '上游内容已更新，需要重新确认。', reasonCodes: ['STALE_SOURCE'] })
+  const imageIsDependencySource = isDownstreamDependencyView(video) && image.state !== 'official'
+  if (state === 'blocked') return action('resolve_blocker', '处理阻塞', false, { lane: imageIsDependencySource ? 'IMAGE' : undefined, reason: '请先处理当前镜头的真实阻塞。', reasonCodes: ['SHOT_BLOCKED'] })
+  if (state === 'stale') return action('refresh_stale_source', '查看上游变化', true, { lane: imageIsDependencySource ? 'IMAGE' : undefined, reason: '上游内容已更新，需要重新确认。', reasonCodes: ['STALE_SOURCE'] })
   if (state === 'failed') {
     const failed = image.state === 'failed' ? image : video
     return action('retry_generation', '重新生成', failed.primaryAction.enabled, { lane: failed.target, reason: failed.primaryAction.reason, reasonCodes: failed.reasonCodes })

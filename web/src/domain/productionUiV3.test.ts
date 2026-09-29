@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type {
+  GenerationExecutionProjection,
   MediaCandidateProjection,
   ProductionMediaLane,
   ProductionShotV2,
@@ -90,6 +91,28 @@ function readyShot(overrides: Partial<ProductionShotV2> = {}): ProductionShotV2 
       model: { selected_profile_id: 'video-profile', provider: 'mock', model_name: 'fixture-video' },
     }),
     blockers: [],
+    ...overrides,
+  }
+}
+
+function execution(state: string, overrides: Partial<GenerationExecutionProjection> = {}): GenerationExecutionProjection {
+  return {
+    id: `exec-${state.toLowerCase()}`,
+    state,
+    target_media: 'IMAGE',
+    model_profile_id: 'image-profile',
+    provider: 'mock',
+    model: 'fixture',
+    adapter: 'mock',
+    adapter_version: '1',
+    transport_retry_count: 0,
+    provider_task_id: '',
+    provider_request_id: '',
+    request_fingerprint: 'fp',
+    candidate_id: null,
+    failure_code: null,
+    created_at: null,
+    completed_at: null,
     ...overrides,
   }
 }
@@ -232,7 +255,9 @@ describe('productionUiV3 canonical state adapters', () => {
     })
     const waitingView = toShotStudioViewModel(waiting)
     expect(waitingView.video.state).toBe('waiting')
-    expect(waitingView.state).toBe('waiting')
+    expect(waitingView.state).toBe('ready')
+    expect(waitingView.primaryAction.kind).toBe('generate_image')
+    expect(waitingView.primaryAction.lane).toBe('IMAGE')
   })
 
   it('requires canonical official image for IMAGE_TO_VIDEO and accepts it when valid', () => {
@@ -296,5 +321,111 @@ describe('productionUiV3 canonical state adapters', () => {
     const result = isCanonicalOfficialMedia(inconsistent)
     expect(result.isCanonicalOfficial).toBe(false)
     expect(result.reasonCodes).toContain(PRODUCTION_UI_REASON_CODES.CANONICAL_OFFICIAL_POINTER_MISMATCH)
+  })
+
+  it('resolves IMAGE_TO_VIDEO dependency waits from the actionable IMAGE lane', () => {
+    const dependentVideo = readyLane({
+      generation_mode: 'IMAGE_TO_VIDEO',
+      generation_readiness: { ready: false, reason_codes: ['OFFICIAL_IMAGE_REQUIRED'], primary_blocker: { code: 'OFFICIAL_IMAGE_REQUIRED', message: 'image' }, blockers: [{ code: 'OFFICIAL_IMAGE_REQUIRED', message: 'image' }] },
+      source_official_image: null,
+    })
+
+    const ready = toShotStudioViewModel(readyShot({ VIDEO: dependentVideo }))
+    expect(ready.state).toBe('ready')
+    expect(ready.primaryAction.kind).toBe('generate_image')
+    expect(ready.primaryAction.lane).toBe('IMAGE')
+
+    const review = toShotStudioViewModel(readyShot({
+      IMAGE: readyLane({ candidates: { count: 1, latest: validCandidate, items: [validCandidate] } }),
+      VIDEO: dependentVideo,
+    }))
+    expect(review.state).toBe('review')
+    expect(review.primaryAction.kind).toBe('review_candidate')
+    expect(review.primaryAction.lane).toBe('IMAGE')
+
+    const running = toShotStudioViewModel(readyShot({
+      IMAGE: readyLane({ latest_execution: execution('RUNNING') }),
+      VIDEO: dependentVideo,
+    }))
+    expect(running.state).toBe('running')
+    expect(running.primaryAction.kind).toBe('wait')
+    expect(running.primaryAction.lane).toBe('IMAGE')
+
+    const failed = toShotStudioViewModel(readyShot({
+      IMAGE: readyLane({ latest_execution: execution('FAILED', { failure_code: 'MODEL_ADAPTER_RESULT_FAILED' }) }),
+      VIDEO: dependentVideo,
+    }))
+    expect(failed.state).toBe('failed')
+    expect(failed.primaryAction.kind).toBe('retry_generation')
+    expect(failed.primaryAction.lane).toBe('IMAGE')
+
+    const blocked = toShotStudioViewModel(readyShot({
+      IMAGE: readyLane({ generation_readiness: { ready: false, reason_codes: ['ASSET_MEDIA_NOT_READY'], primary_blocker: { code: 'ASSET_MEDIA_NOT_READY', message: 'asset' }, blockers: [{ code: 'ASSET_MEDIA_NOT_READY', message: 'asset' }] } }),
+      VIDEO: dependentVideo,
+    }))
+    expect(blocked.state).toBe('blocked')
+    expect(blocked.primaryAction.kind).toBe('resolve_blocker')
+    expect(blocked.primaryAction.lane).toBe('IMAGE')
+
+    const stale = toShotStudioViewModel(readyShot({
+      IMAGE: readyLane({ prompt_ir: { current: false, version: 2, stale: true, state: 'stale', reason_codes: ['PROMPT_IR_STALE'] } }),
+      VIDEO: dependentVideo,
+    }))
+    expect(stale.state).toBe('stale')
+    expect(stale.primaryAction.kind).toBe('refresh_stale_source')
+    expect(stale.primaryAction.lane).toBe('IMAGE')
+
+    const independentTextVideo = toShotStudioViewModel(readyShot({
+      VIDEO: readyLane({
+        generation_mode: 'TEXT_TO_VIDEO',
+        generation_readiness: { ready: false, reason_codes: ['OFFICIAL_IMAGE_REQUIRED'], primary_blocker: { code: 'OFFICIAL_IMAGE_REQUIRED', message: 'unexpected text video dependency' }, blockers: [{ code: 'OFFICIAL_IMAGE_REQUIRED', message: 'unexpected text video dependency' }] },
+      }),
+    }))
+    expect(independentTextVideo.state).toBe('waiting')
+    expect(independentTextVideo.primaryAction.kind).toBe('wait')
+    expect(independentTextVideo.primaryAction.lane).toBe('VIDEO')
+  })
+
+  it('continues to VIDEO after canonical IMAGE official evidence is established', () => {
+    const officialImage = readyLane({ official: canonicalOfficial })
+    const videoReady = readyLane({ generation_mode: 'IMAGE_TO_VIDEO', source_official_image: canonicalOfficial })
+    const ready = toShotStudioViewModel(readyShot({ IMAGE: officialImage, VIDEO: videoReady }))
+    expect(ready.state).toBe('ready')
+    expect(ready.primaryAction.kind).toBe('generate_video')
+    expect(ready.primaryAction.lane).toBe('VIDEO')
+
+    const videoReview = toShotStudioViewModel(readyShot({
+      IMAGE: officialImage,
+      VIDEO: readyLane({ generation_mode: 'IMAGE_TO_VIDEO', source_official_image: canonicalOfficial, candidates: { count: 1, latest: validCandidate, items: [validCandidate] } }),
+    }))
+    expect(videoReview.state).toBe('review')
+    expect(videoReview.primaryAction.kind).toBe('review_candidate')
+    expect(videoReview.primaryAction.lane).toBe('VIDEO')
+
+    const videoOfficial = toShotStudioViewModel(readyShot({ IMAGE: officialImage, VIDEO: readyLane({ generation_mode: 'IMAGE_TO_VIDEO', source_official_image: canonicalOfficial, official: canonicalOfficial }) }))
+    expect(videoOfficial.state).toBe('official')
+    expect(videoOfficial.primaryAction.kind).toBe('view_official')
+  })
+
+  it('keeps canonical official state when generation readiness is unavailable', () => {
+    const view = toMediaLaneViewModel('IMAGE', readyLane({ official: canonicalOfficial, generation_readiness: undefined }))
+    expect(view.state).toBe('official')
+    expect(view.official.isCanonicalOfficial).toBe(true)
+    expect(view.generationAllowed).toBe(false)
+    expect(view.primaryAction.kind).toBe('view_official')
+  })
+
+  it('waits for a successful execution candidate to appear before allowing another generation', () => {
+    const projectionLag = toMediaLaneViewModel('IMAGE', readyLane({
+      latest_execution: execution('SUCCESS', { candidate_id: 'candidate-not-visible' }),
+    }))
+    expect(projectionLag.state).toBe('waiting')
+    expect(projectionLag.reasonCodes).toContain(PRODUCTION_UI_REASON_CODES.EXECUTION_CANDIDATE_NOT_VISIBLE)
+    expect(projectionLag.generationAllowed).toBe(false)
+    expect(projectionLag.primaryAction.kind).toBe('wait')
+
+    const anomalousSuccess = toMediaLaneViewModel('IMAGE', readyLane({ latest_execution: execution('SUCCESS') }))
+    expect(anomalousSuccess.state).toBe('failed')
+    expect(anomalousSuccess.reasonCodes).toContain(PRODUCTION_UI_REASON_CODES.EXECUTION_CANDIDATE_MISSING)
   })
 })

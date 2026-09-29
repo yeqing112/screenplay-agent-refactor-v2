@@ -6,7 +6,7 @@
 - **Scope**: pure domain adapters and tests for the future V3 Shot Studio surface.
 - **Completion marker**: `PRODUCTION_UI_V3_CANONICAL_STATE_ADAPTERS_COMPLETE`
 
-This adapter turns the production workspace V2 projection into a stable, read-only UI view model. It does not call providers, mutate production state, persist browser state, or run React state transitions. The adapter keeps the canonical authority evidence visible for professional inspection while providing one conservative state and one primary action for the standard UI.
+This adapter turns the production workspace V2 projection into a stable, read-only UI view model. It does not call providers, mutate production state, persist browser state, or run React state transitions. The adapter keeps the canonical authority evidence visible for professional inspection while providing one conservative state and one dependency-aware primary action for the standard UI.
 
 ## Canonical Inputs
 
@@ -61,6 +61,8 @@ Candidates never become official merely because they exist or are technically va
 
 Any failed condition is fail-closed. The adapter emits `V3_CANONICAL_OFFICIAL_POINTER_MISSING` or `V3_CANONICAL_OFFICIAL_POINTER_MISMATCH` and never upgrades the lane to `official`. The promoted candidate id is removed from the review queue when it matches the canonical official version's `candidate_id`.
 
+Canonical official evidence is independent of `generation_readiness`. A valid official lane remains `official` when the readiness contract is absent; the generation action remains unavailable because readiness is false. Stale prompt, asset, source, or authority context still takes precedence and can present that official result as `stale`.
+
 ## Execution Mapping
 
 | `GenerationExecutionProjection.state` | UI execution state | Lane behavior |
@@ -73,6 +75,8 @@ Any failed condition is fail-closed. The adapter emits `V3_CANONICAL_OFFICIAL_PO
 | Any other value | `unknown` | Lane is `blocked` with `V3_UNKNOWN_EXECUTION_STATE` |
 
 An execution that ends without a candidate and without canonical official media is treated as failed with `V3_EXECUTION_CANDIDATE_MISSING`.
+
+When execution is `SUCCESS` with a `candidate_id`, but neither `candidates.items` nor `candidates.latest` exposes that id yet, the lane is `waiting` with `V3_EXECUTION_CANDIDATE_NOT_VISIBLE`. This prevents a second generation submission while the read projection catches up.
 
 ## Review Mapping
 
@@ -96,9 +100,39 @@ Use `blocked` when the UI has a concrete condition that must be repaired or cann
 
 Use `waiting` when the chain is valid but work is pending: queued execution, pending candidate validation, or `IMAGE_TO_VIDEO` waiting for a canonical current official image. A missing readiness contract is never treated as waiting.
 
+## Pipeline Dependency Resolution
+
+Shot state and its primary action represent the next canonical production decision in dependency order. They are not calculated by taking the most severe state across the IMAGE and VIDEO lanes.
+
+For the current backend projection, `candidates.latest` is the first item in `candidates.items`. The adapter still accepts a latest-only response as a safe compatibility fallback and de-duplicates it by candidate id.
+
+## IMAGE_TO_VIDEO Upstream Priority
+
+When VIDEO uses `IMAGE_TO_VIDEO` and its readiness reasons contain `OFFICIAL_IMAGE_REQUIRED`, VIDEO is classified as a downstream dependency wait while the source image is not canonical. The adapter then resolves the Shot action from IMAGE first:
+
+- IMAGE blocked → resolve the IMAGE blocker;
+- IMAGE stale → refresh the IMAGE source;
+- IMAGE failed → retry or inspect IMAGE failure;
+- IMAGE running → show IMAGE progress;
+- IMAGE review → review the IMAGE candidate;
+- IMAGE ready → generate IMAGE;
+- IMAGE official → evaluate VIDEO.
+
+This dependency rule also applies when the backend represents `OFFICIAL_IMAGE_REQUIRED` as a blocker instead of a waiting state. A source image with contradictory canonical evidence still blocks the Shot at the canonical contradiction level.
+
+`TEXT_TO_VIDEO` remains independent of the IMAGE lane and does not inherit this dependency rule.
+
+## Successful Execution Projection Lag
+
+`SUCCESS + candidate_id + no matching visible candidate` is a projection synchronization wait. It never opens a new generation action and never becomes `ready`. `SUCCESS + no candidate_id + no official` remains the anomalous failed case.
+
+## Official vs Generation Readiness
+
+Official existence is established only by the authority/current pointer chain described above. Generation readiness answers whether a new provider submission is allowed. These contracts are intentionally independent: an official lane can remain official while its readiness is unavailable, and a lane can be ready only when the explicit readiness contract is true.
+
 ## Primary Action Priority
 
-Each lane and shot receives exactly one `primaryAction`. Resolution precedence is:
+Each lane and shot receives exactly one `primaryAction`. Lane precedence is:
 
 1. canonical evidence contradiction or other blocker;
 2. stale source;
@@ -108,6 +142,8 @@ Each lane and shot receives exactly one `primaryAction`. Resolution precedence i
 6. reviewable candidate;
 7. explicit readiness and generation;
 8. view the official version.
+
+At Shot level, canonical contradictions and real Shot blockers remain highest. A downstream VIDEO dependency wait is deliberately lower priority than any actionable IMAGE state, so `IMAGE ready + VIDEO waiting(OFFICIAL_IMAGE_REQUIRED)` produces `generate_image`, while `IMAGE official + VIDEO waiting` evaluates VIDEO normally.
 
 Actions that can invoke a provider are marked with `requiresProviderCall: true`; the adapter itself never invokes that action.
 
@@ -120,6 +156,7 @@ Stable adapter-owned codes use the `V3_` prefix:
 - `V3_CANONICAL_SOURCE_OFFICIAL_IMAGE_INVALID`
 - `V3_UNKNOWN_EXECUTION_STATE`
 - `V3_EXECUTION_CANDIDATE_MISSING`
+- `V3_EXECUTION_CANDIDATE_NOT_VISIBLE`
 - `V3_CANDIDATE_NOT_REVIEWABLE`
 - `V3_READINESS_CONTRACT_MISSING`
 - `V3_READINESS_CONTRACT_INCONSISTENT`
@@ -150,4 +187,7 @@ The adapter tests assert that:
 - promoted candidates leave the review queue;
 - input snapshots are not mutated;
 - each shot exposes one primary action;
+- a downstream `IMAGE_TO_VIDEO` wait cannot hide an actionable IMAGE lane;
+- canonical official state does not require generation readiness;
+- successful execution projection lag cannot open a second generation;
 - no test or adapter path calls a provider or performs a production write.
