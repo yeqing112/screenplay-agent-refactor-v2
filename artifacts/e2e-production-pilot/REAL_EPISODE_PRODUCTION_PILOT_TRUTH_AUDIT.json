@@ -3,16 +3,31 @@
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
   "schema_version": "real_episode_production_pilot_truth_audit_v1",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "implementation_commit": "a7fb192",
+  "implementation_commit": "507d17d",
+  "report_commit": "see remote HEAD after report commit",
   "migration_head": "m4h5i6j7k8l9",
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "pilot_scope_enforced": true,
+  "episode_count": 1,
+  "shot_count_max": 2,
+  "real_provider_gates_reused": true,
+  "exact_shot_allowlist_required": true,
+  "preflight_required": true,
+  "dry_run_required": true,
+  "human_review_never_bypassed": true,
+  "automatic_paid_retry_disabled": true,
+  "duplicate_paid_submission_guard": true,
+  "async_resume_verified": false,
+  "stale_promotion_guard": true,
   "pilot_scope": {
     "episode_id": 13,
     "shot_ids": [1, 2],
     "max_unique_shots": 2,
     "max_image_calls": 4,
     "max_video_calls": 2,
-    "one_operation_per_execute": true
+    "one_operation_per_execute": true,
+    "exact_episode_allowlist_required": true,
+    "stage_b_requires_stage_a_complete": true
   },
   "provider_policy": {
     "image_provider": "SHAPI",
@@ -51,7 +66,7 @@
     "human_review_required": true,
     "automatic_retry": false,
     "automatic_approval": false,
-    "pending_resume_without_resubmit": "delegated_to_existing_runtime; not_exercised_in_blocked_preflight",
+    "pending_resume_without_resubmit": "observed_inflight_state_does_not_resubmit; provider poll resume not exercised in blocked preflight",
     "no_second_queue_or_provider_system": true
   },
   "blockers": [
@@ -63,8 +78,8 @@
     "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
   ],
   "verification": {
-    "pilot_safety_tests": {"status": "PASS", "tests": 7},
-    "pytest_full": {"status": "PASS", "tests": 1940},
+    "pilot_safety_tests": {"status": "PASS", "tests": 10},
+    "pytest_full": {"status": "PASS", "tests": 1943},
     "golden": {"status": "PASS", "passed": 5, "failed": 0},
     "migration_chain": {"status": "PASS", "head": "m4h5i6j7k8l9", "fresh": "PASS", "repeat": "PASS", "legacy": "PASS", "drift": "PASS"},
     "compileall": "PASS",
