@@ -6,13 +6,13 @@
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)
-- Implementation commit: `8899019`
+- Implementation commit: `aea0d29`
 - Report commit: see the remote HEAD after this report commit is pushed
 - Migration head: `m4h5i6j7k8l9` (matches expected `m4h5i6j7k8l9`)
 - Pilot target: Episode `13`, requested shots `1`, `2`
 - Preflight evidence: [REAL_EPISODE_PRODUCTION_PREFLIGHT.json](REAL_EPISODE_PRODUCTION_PREFLIGHT.json)
-- Preflight snapshot HEAD: `88990198f24cd3c4e8027f1b8ad9a3be21ffcf66`
-- Preflight timestamp: `2026-09-29T03:18:29.306746+00:00`
+- Preflight snapshot HEAD: `aea0d2961fc6b5285f5c9fe80e6c882a7cc19645`
+- Preflight timestamp: `2026-09-29T03:55:13.096646+00:00`
 
 ## Result
 
@@ -25,7 +25,7 @@ The configured image provider is SHAPI ([https://www.shapi.vip/](https://www.sha
 | Check | Result |
 |---|---:|
 | Render plan for requested Episode | unavailable (`EpisodeRenderingError`) |
-| Prompt/source authority | unavailable (`OperationalError`), fail-closed |
+| Prompt/source authority | schema present; current source spine absent, fail-closed |
 | Preflight branch / working tree | correct / clean at snapshot |
 | Preflight migration head | `m4h5i6j7k8l9` |
 | Exact Episode allowlist | matched (`13`) |
@@ -41,7 +41,13 @@ The configured image provider is SHAPI ([https://www.shapi.vip/](https://www.sha
 | Human review decisions | 0 image, 0 video |
 | Secrets emitted | 0 |
 
-Blocking conditions include the missing Episode render plan, unavailable PromptIR/source authority schema for both requested shots, and unset `PHASE_F_PROVIDER_CANARY_REAL`, `MINIMAX_H3_GRAY_REAL`, `MINIMAX_H3_GRAY_CONFIRM`, and exact `MINIMAX_H3_GRAY_WHITELIST`.
+Blocking conditions include the missing Episode render plan, missing current materialization/ShotDirection/AutomaticKeyframePlan/KeyframeSequence authority for both requested shots, and unset `PHASE_F_PROVIDER_CANARY_REAL`, `MINIMAX_H3_GRAY_REAL`, `MINIMAX_H3_GRAY_CONFIRM`, and exact `MINIMAX_H3_GRAY_WHITELIST`.
+
+## Database schema repair
+
+- Replayed the existing migration chain on the local runtime database from the PromptIR parent revision to the existing `m4h5i6j7k8l9` head.
+- PromptIR version, authority, and media-scoped pointer tables are now present. No new migration was added.
+- Episode/Storyboard row counts were preserved; no Source Fact or ScriptIR rows were changed.
 
 ## Fail-closed change
 

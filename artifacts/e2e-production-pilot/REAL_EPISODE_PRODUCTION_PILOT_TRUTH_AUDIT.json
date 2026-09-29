@@ -3,7 +3,7 @@
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
   "schema_version": "real_episode_production_pilot_truth_audit_v2",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "implementation_commit": "8899019",
+  "implementation_commit": "aea0d29",
   "report_commit": "see remote HEAD after this report commit is pushed",
   "migration_head": "m4h5i6j7k8l9",
   "preflight_observed_migration_head": "m4h5i6j7k8l9",
@@ -82,13 +82,7 @@
     "MINIMAX_H3_GRAY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_CONFIRM_missing_or_invalid",
     "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots",
-    "source_authority_unavailable:OperationalError",
-    "prompt_authority_unavailable:OperationalError",
-    "prompt_authority_schema_unavailable:OperationalError",
     "shot_1_source_authority_not_current",
-    "source_authority_unavailable:OperationalError",
-    "prompt_authority_unavailable:OperationalError",
-    "prompt_authority_schema_unavailable:OperationalError",
     "shot_2_source_authority_not_current"
   ],
   "verification": {
@@ -118,6 +112,14 @@
     "diff_check": "PASS",
     "provider_calls": 0
   },
-  "preflight_head": "88990198f24cd3c4e8027f1b8ad9a3be21ffcf66",
-  "preflight_created_at": "2026-09-29T03:18:29.306746+00:00"
+  "preflight_head": "aea0d2961fc6b5285f5c9fe80e6c882a7cc19645",
+  "preflight_created_at": "2026-09-29T03:55:13.096646+00:00",
+  "schema_repair": {
+    "status": "PASS",
+    "method": "replayed existing migrations on the local runtime database from the PromptIR parent revision to the existing m4 head",
+    "new_migrations": 0,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0,
+    "prompt_authority_tables_present": true
+  }
 }

@@ -2,7 +2,7 @@
   "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
   "schema_version": "real_episode_production_pilot_vertical_slice_v2",
-  "implementation_commit": "8899019",
+  "implementation_commit": "aea0d29",
   "report_commit": "see remote HEAD after this report commit is pushed",
   "provider_policy": {
     "image_model": "SHAPI",
@@ -58,8 +58,8 @@
     "planned_image_calls": 0,
     "planned_video_calls": 0,
     "production_writes": 0,
-    "blocker_count": 15,
-    "created_at": "2026-09-29T03:18:29.306746+00:00"
+    "blocker_count": 9,
+    "created_at": "2026-09-29T03:55:13.096646+00:00"
   },
   "repository_preflight": {
     "branch_matches": true,
@@ -67,7 +67,7 @@
     "observed_migration_head": "m4h5i6j7k8l9",
     "expected_migration_head": "m4h5i6j7k8l9",
     "migration_head_matches": true,
-    "head": "88990198f24cd3c4e8027f1b8ad9a3be21ffcf66"
+    "head": "aea0d2961fc6b5285f5c9fe80e6c882a7cc19645"
   },
   "claims": {
     "real_vertical_slice_completed": false,
@@ -79,5 +79,5 @@
     "prompt_lineage_retained": true,
     "secrets_redacted": true
   },
-  "next_gate": "Provide a valid two-shot Episode render plan and repair or migrate the PromptIR authority schema before enabling separately controlled real-provider gates for exact allowlisted targets."
+  "next_gate": "Materialize and approve the exact two-shot Episode source spine (current materialization, ShotDirection, AutomaticKeyframePlan, KeyframeSequence, PromptIR pointers), then enable the separately controlled real-provider gates."
 }
