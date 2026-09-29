@@ -104,7 +104,7 @@ def _target_key(shot: StoryboardShot) -> str:
     return f"{int(shot.book_id)}:{int(shot.episode)}:{int(shot.id)}"
 
 
-def _gate_snapshot(shot_keys: list[str]) -> dict[str, Any]:
+def _gate_snapshot(shot_keys: list[str], *, episode_id: int = 0, allowed_episode_id: int | None = None) -> dict[str, Any]:
     whitelist = {item.strip() for item in _text(os.getenv("MINIMAX_H3_GRAY_WHITELIST")).split(",") if item.strip()}
     return {
         "image_canary_enabled": os.getenv("PHASE_F_PROVIDER_CANARY_REAL", "").strip() == "1",
@@ -112,6 +112,8 @@ def _gate_snapshot(shot_keys: list[str]) -> dict[str, Any]:
         "video_confirmation_matches": os.getenv("MINIMAX_H3_GRAY_CONFIRM", "").strip() == MINIMAX_CONFIRMATION_TOKEN,
         "video_whitelist": sorted(whitelist),
         "exact_shots_whitelisted": bool(shot_keys) and set(shot_keys) == whitelist,
+        "episode_allowlist_present": allowed_episode_id is not None,
+        "episode_allowlist_matches": allowed_episode_id is not None and int(allowed_episode_id) == int(episode_id),
         "consent_token_required": CONSENT_TOKEN,
         "secrets_redacted": True,
     }
@@ -144,7 +146,7 @@ def _current_authority_check(session: Any, shot: StoryboardShot) -> dict[str, An
     }
 
 
-def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image_profile_id: str, video_profile_id: str, allowed_image_calls: int = MAX_IMAGE_CALLS, allowed_video_calls: int = MAX_VIDEO_CALLS) -> dict[str, Any]:
+def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image_profile_id: str, video_profile_id: str, allowed_image_calls: int = MAX_IMAGE_CALLS, allowed_video_calls: int = MAX_VIDEO_CALLS, allowed_episode_id: int | None = None) -> dict[str, Any]:
     blockers: list[str] = []
     plan = None
     try:
@@ -154,6 +156,10 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
         items = []
         blockers.append(f"episode_render_plan_unavailable:{_short_exception(exc)}")
     requested = [int(value) for value in shot_ids]
+    if allowed_episode_id is None:
+        blockers.append("exact_episode_allowlist_required")
+    elif int(allowed_episode_id) != int(episode_id):
+        blockers.append("exact_episode_allowlist_does_not_match_episode")
     if len(requested) != MAX_SHOTS or len(set(requested)) != MAX_SHOTS:
         blockers.append("pilot_requires_exactly_two_unique_shots")
     plan_shot_ids = [int(item.shot_id) for item in items]
@@ -177,7 +183,7 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
     if not video_ready:
         blockers.append(f"video_profile:{video_profile_blocker}")
     keys = [_target_key(shot) for shot in shots]
-    gates = _gate_snapshot(keys)
+    gates = _gate_snapshot(keys, episode_id=int(episode_id), allowed_episode_id=allowed_episode_id)
     if not gates["image_canary_enabled"]:
         blockers.append("PHASE_F_PROVIDER_CANARY_REAL_not_enabled")
     if not gates["video_gray_enabled"]:
@@ -224,7 +230,8 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
         "allowed_image_calls": int(allowed_image_calls),
         "allowed_video_calls": int(allowed_video_calls),
         "all_gates_ready": not any(key.startswith("PHASE_") or key.startswith("MINIMAX_") for key in blockers),
-        "all_authorities_current": bool(authorities) and all(all(bool(row.get(key)) for key in ("materialization_current", "shot_direction_current", "automatic_keyframe_plan_approved", "start_end_keyframes_present")) for row in authorities),
+        "all_authorities_current": bool(authorities) and all(all(bool(row.get(key)) for key in ("materialization_current", "shot_direction_current", "automatic_keyframe_plan_approved", "start_end_keyframes_present", "image_prompt_authority_current", "video_prompt_authority_current")) for row in authorities),
+        "exact_episode_allowlist": {"requested_episode_id": int(episode_id), "allowed_episode_id": int(allowed_episode_id) if allowed_episode_id is not None else None, "matches": allowed_episode_id is not None and int(allowed_episode_id) == int(episode_id)},
         "secrets_redacted": True,
         "gates": gates,
         "authorities": authorities,
@@ -236,9 +243,15 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
 
 
 def _next_operation(session: Any, *, shot_ids: list[int], image_profile_id: str, video_profile_id: str) -> dict[str, Any] | None:
-    for shot_id in shot_ids:
+    for index, shot_id in enumerate(shot_ids):
         detail = resolve_shot_production_state(session, shot_id=int(shot_id))
         state = _text(detail.get("state")).upper()
+        # Stage B cannot spend money while Stage A is awaiting review,
+        # generating, failed, stale, or otherwise incomplete.
+        if index > 0:
+            previous = resolve_shot_production_state(session, shot_id=int(shot_ids[index - 1]))
+            if _text(previous.get("state")).upper() != "COMPLETE":
+                return None
         if state == "NEEDS_KEYFRAME_IMAGES":
             shot = session.query(StoryboardShot).filter_by(id=int(shot_id)).one()
             plan = _active_plan(session, shot)
@@ -276,6 +289,7 @@ def execute_one(session: Any, *, shot_ids: list[int], image_profile_id: str, vid
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--episode-id", type=int, required=True)
+    parser.add_argument("--allow-episode-id", type=int, default=None, help="Exact Episode allowlist entry required for pilot execution.")
     parser.add_argument("--shot-id", type=int, action="append", dest="shot_ids", required=True)
     parser.add_argument("--image-profile-id", default=os.getenv("REAL_EPISODE_IMAGE_PROFILE_ID", "local-image-mw4y52"))
     parser.add_argument("--video-profile-id", default=os.getenv("REAL_EPISODE_VIDEO_PROFILE_ID", "local-video-7deneh"))
@@ -291,12 +305,16 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     with Session() as session:
-        preflight = build_preflight(session, episode_id=args.episode_id, shot_ids=args.shot_ids, image_profile_id=args.image_profile_id, video_profile_id=args.video_profile_id, allowed_image_calls=args.allow_image_calls, allowed_video_calls=args.allow_video_calls)
-        if args.dry_run and preflight.get("render_plan_id") is not None:
-            try:
-                preflight["dry_run"] = run_episode_production(session, episode_id=args.episode_id, dry_run=True)
-            except Exception as exc:
-                preflight["dry_run"] = {"status": "BLOCKED", "error": _short_exception(exc)}
+        preflight = build_preflight(session, episode_id=args.episode_id, shot_ids=args.shot_ids, image_profile_id=args.image_profile_id, video_profile_id=args.video_profile_id, allowed_image_calls=args.allow_image_calls, allowed_video_calls=args.allow_video_calls, allowed_episode_id=args.allow_episode_id)
+        if args.dry_run:
+            if preflight.get("render_plan_id") is None:
+                preflight["dry_run"] = {"status": "BLOCKED", "planned_operations": [], "existing_assets": [], "new_executions_required": 0, "review_gates": [], "reason": "episode_render_plan_unavailable"}
+            else:
+                try:
+                    projection = run_episode_production(session, episode_id=args.episode_id, dry_run=True)
+                    preflight["dry_run"] = {"status": "PASS", "projection": projection, "planned_operations": projection.get("actions", []), "existing_assets": [item.get("official_media") for item in projection.get("shots", []) if item.get("official_media")], "new_executions_required": preflight.get("planned_real_image_calls", 0) + preflight.get("planned_real_video_calls", 0), "review_gates": [item.get("next_action") for item in projection.get("shots", []) if item.get("next_action")]}
+                except Exception as exc:
+                    preflight["dry_run"] = {"status": "BLOCKED", "planned_operations": [], "existing_assets": [], "new_executions_required": 0, "review_gates": [], "error": _short_exception(exc)}
             preflight["production_writes"] = 0
         if args.execute:
             if args.confirm_real_pilot != CONSENT_TOKEN:

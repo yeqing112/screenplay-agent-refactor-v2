@@ -36,6 +36,15 @@ def test_exact_shot_allowlist_is_required(monkeypatch):
     assert pilot._gate_snapshot(["77:1:101", "77:1:103"])["exact_shots_whitelisted"] is False
 
 
+def test_exact_episode_allowlist_is_required():
+    missing = pilot._gate_snapshot(["77:1:101", "77:1:102"], episode_id=77, allowed_episode_id=None)
+    wrong = pilot._gate_snapshot(["77:1:101", "77:1:102"], episode_id=77, allowed_episode_id=78)
+    current = pilot._gate_snapshot(["77:1:101", "77:1:102"], episode_id=77, allowed_episode_id=77)
+    assert missing["episode_allowlist_matches"] is False
+    assert wrong["episode_allowlist_matches"] is False
+    assert current["episode_allowlist_matches"] is True
+
+
 def test_profile_contract_rejects_wrong_provider_and_transport():
     profile = {"id": "wrong", "provider": "prototype-task-adapter", "capability": "image", "enabled": True, "transport_binding_id": "prototype-task-adapter.image.v1", "credential_configured": True}
     ok, reason = pilot._profile_ready(profile, provider=pilot.IMAGE_PROVIDER, capability="image", transport=pilot.IMAGE_TRANSPORT)
@@ -90,3 +99,14 @@ def test_blocker_serialization_does_not_leak_sql_or_paths():
     message = pilot._short_exception(RuntimeError("secret SQL text /tmp/private"))
     assert message == "RuntimeError"
     assert "/tmp/private" not in message
+
+
+def test_stage_b_cannot_start_before_stage_a_is_complete(monkeypatch):
+    states = {1: {"state": "VIDEO_REVIEW_REQUIRED"}, 2: {"state": "READY_FOR_VIDEO"}}
+    monkeypatch.setattr(pilot, "resolve_shot_production_state", lambda _session, *, shot_id: states[int(shot_id)])
+    assert pilot._next_operation(object(), shot_ids=[1, 2], image_profile_id="image", video_profile_id="video") is None
+
+
+def test_provider_inflight_state_never_resubmits(monkeypatch):
+    monkeypatch.setattr(pilot, "resolve_shot_production_state", lambda _session, *, shot_id: {"state": "VIDEO_GENERATING", "latest_execution": {"provider_task_id": "task-existing"}})
+    assert pilot._next_operation(object(), shot_ids=[1, 2], image_profile_id="image", video_profile_id="video") is None
