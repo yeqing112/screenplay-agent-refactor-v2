@@ -1,12 +1,12 @@
 {
   "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
-  "schema_version": "real_episode_production_pilot_truth_audit_v1",
+  "schema_version": "real_episode_production_pilot_truth_audit_v2",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "implementation_commit": "7f56309",
+  "implementation_commit": "8899019",
   "report_commit": "see remote HEAD after this report commit is pushed",
   "migration_head": "m4h5i6j7k8l9",
-  "preflight_observed_migration_head": "i0d1e2f3g4h5",
+  "preflight_observed_migration_head": "m4h5i6j7k8l9",
   "preflight_working_tree_clean": true,
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
   "pilot_scope_enforced": true,
@@ -75,42 +75,31 @@
     "no_second_queue_or_provider_system": true
   },
   "blockers": [
-    "migration_head_mismatch",
     "episode_render_plan_unavailable:EpisodeRenderingError",
     "episode_render_plan_must_contain_exactly_two_shots",
     "exact_shot_allowlist_does_not_match_episode_render_plan",
-    "storyboard_shot_unavailable:OperationalError",
-    "shot_allowlist_contains_missing_shot",
     "PHASE_F_PROVIDER_CANARY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_CONFIRM_missing_or_invalid",
-    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
+    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots",
+    "source_authority_unavailable:OperationalError",
+    "prompt_authority_unavailable:OperationalError",
+    "prompt_authority_schema_unavailable:OperationalError",
+    "shot_1_source_authority_not_current",
+    "source_authority_unavailable:OperationalError",
+    "prompt_authority_unavailable:OperationalError",
+    "prompt_authority_schema_unavailable:OperationalError",
+    "shot_2_source_authority_not_current"
   ],
   "verification": {
     "pilot_safety_tests": {
       "status": "PASS",
-      "tests": 11
-    },
-    "pytest_full": {
-      "status": "PASS",
-      "tests": 1944
-    },
-    "golden": {
-      "status": "PASS",
-      "passed": 5,
-      "failed": 0
-    },
-    "migration_chain": {
-      "status": "PASS",
-      "head": "m4h5i6j7k8l9",
-      "fresh": "PASS",
-      "repeat": "PASS",
-      "legacy": "PASS",
-      "drift": "PASS"
+      "tests": 12
     },
     "compileall": "PASS",
-    "diff_check": "PASS"
+    "diff_check": "PASS",
+    "provider_calls": 0
   },
-  "preflight_head": "5ae6632ac67737e40224497e868a54486ce2b053",
-  "preflight_created_at": "2026-09-29T03:09:23.487293+00:00"
+  "preflight_head": "88990198f24cd3c4e8027f1b8ad9a3be21ffcf66",
+  "preflight_created_at": "2026-09-29T03:18:29.306746+00:00"
 }
