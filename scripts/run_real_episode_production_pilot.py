@@ -272,6 +272,7 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
             reason = _short_exception(exc)
             blockers.append(f"source_authority_unavailable:{reason}")
             blockers.append(f"prompt_authority_unavailable:{reason}")
+            blockers.append(f"prompt_authority_schema_unavailable:{reason}")
             authority = _blocked_authority(shot, exc)
         authorities.append({"shot_id": int(shot.id), **authority})
         required_keys = ("materialization_current", "shot_direction_current", "automatic_keyframe_plan_approved", "start_end_keyframes_present", "image_prompt_authority_current", "video_prompt_authority_current")
