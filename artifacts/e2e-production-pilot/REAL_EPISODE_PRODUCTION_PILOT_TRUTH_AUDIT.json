@@ -1,0 +1,73 @@
+{
+  "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
+  "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
+  "schema_version": "real_episode_production_pilot_truth_audit_v1",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "implementation_commit": "a7fb192",
+  "migration_head": "m4h5i6j7k8l9",
+  "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "pilot_scope": {
+    "episode_id": 13,
+    "shot_ids": [1, 2],
+    "max_unique_shots": 2,
+    "max_image_calls": 4,
+    "max_video_calls": 2,
+    "one_operation_per_execute": true
+  },
+  "provider_policy": {
+    "image_provider": "SHAPI",
+    "image_provider_website": "https://www.shapi.vip/",
+    "image_profile_id": "local-image-mw4y52",
+    "image_transport": "shapi-openai-images.image.v1",
+    "video_provider": "MiniMax H3",
+    "video_profile_id": "local-video-7deneh",
+    "video_transport": "minimax-h3-async.video.v1",
+    "credentials_redacted": true
+  },
+  "gates": {
+    "PHASE_F_PROVIDER_CANARY_REAL": "unset",
+    "MINIMAX_H3_GRAY_REAL": "unset",
+    "MINIMAX_H3_GRAY_CONFIRM": "unset",
+    "MINIMAX_H3_GRAY_WHITELIST": "unset",
+    "real_execution_allowed": false
+  },
+  "observed": {
+    "render_plan_available": false,
+    "authorities_current": false,
+    "production_writes": 0,
+    "real_shapi_calls": 0,
+    "real_minimax_h3_submissions": 0,
+    "real_llm_calls": 0,
+    "official_real_videos": 0,
+    "source_fact_mutations": 0,
+    "script_ir_mutations": 0,
+    "secrets_emitted": 0
+  },
+  "guardrails": {
+    "exact_shot_allowlist": true,
+    "provider_transport_contract": true,
+    "budget_precheck": true,
+    "explicit_consent": true,
+    "human_review_required": true,
+    "automatic_retry": false,
+    "automatic_approval": false,
+    "pending_resume_without_resubmit": "delegated_to_existing_runtime; not_exercised_in_blocked_preflight",
+    "no_second_queue_or_provider_system": true
+  },
+  "blockers": [
+    "episode_render_plan_unavailable:EpisodeRenderingError",
+    "storyboard_shot_unavailable:OperationalError",
+    "PHASE_F_PROVIDER_CANARY_REAL_not_enabled",
+    "MINIMAX_H3_GRAY_REAL_not_enabled",
+    "MINIMAX_H3_GRAY_CONFIRM_missing_or_invalid",
+    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
+  ],
+  "verification": {
+    "pilot_safety_tests": {"status": "PASS", "tests": 7},
+    "pytest_full": {"status": "PASS", "tests": 1940},
+    "golden": {"status": "PASS", "passed": 5, "failed": 0},
+    "migration_chain": {"status": "PASS", "head": "m4h5i6j7k8l9", "fresh": "PASS", "repeat": "PASS", "legacy": "PASS", "drift": "PASS"},
+    "compileall": "PASS",
+    "diff_check": "PASS"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
+  "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
+  "schema_version": "real_episode_production_pilot_vertical_slice_v1",
+  "implementation_commit": "a7fb192",
+  "provider_policy": {
+    "image_model": "SHAPI",
+    "image_model_website": "https://www.shapi.vip/",
+    "video_model": "MiniMax H3",
+    "real_image_calls": 0,
+    "real_video_submissions": 0
+  },
+  "intended_chain": [
+    "Episode render plan",
+    "current materialization and ShotDirection",
+    "approved START/END keyframes",
+    "SHAPI image generation",
+    "human review",
+    "MiniMax H3 video generation",
+    "technical validation",
+    "human approval",
+    "OfficialMedia"
+  ],
+  "preflight_evidence": {
+    "episode_id": 13,
+    "shot_ids": [1, 2],
+    "render_plan_id": null,
+    "planned_image_calls": 0,
+    "planned_video_calls": 0,
+    "production_writes": 0,
+    "blocker_count": 10
+  },
+  "claims": {
+    "real_vertical_slice_completed": false,
+    "fixture_or_mock_substituted_for_real": false,
+    "no_source_fact_mutation": true,
+    "no_script_ir_mutation": true,
+    "human_review_retained": true,
+    "generation_versioning_retained": true,
+    "prompt_lineage_retained": true,
+    "secrets_redacted": true
+  },
+  "next_gate": "Provide a valid two-shot Episode render plan and enable the separately controlled real-provider gates only for the exact allowlisted targets."
+}
