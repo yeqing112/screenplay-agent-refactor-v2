@@ -7,7 +7,7 @@
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)
 - Implementation commit: `17f24a5ea1a78bf750101977e372ebbf57192bf4`
-- Report commit: `pending-report-commit`
+- Report commit: `eb4dc81`
 - Migration head: `m4h5i6j7k8l9`
 - Episode: `13` (`book_id=990402`, episode number `1`)
 - Provider policy: SHAPI ([https://www.shapi.vip/](https://www.shapi.vip/)) + MiniMax H3
