@@ -3,7 +3,7 @@
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
   "schema_version": "real_episode_production_pilot_vertical_slice_v4",
   "implementation_commit": "33d6037656bf716ad42447ec23524365fe70d4b4",
-  "report_commit": "pending-report-commit",
+  "report_commit": "33e340a",
   "provider_policy": {
     "image_provider": "SHAPI",
     "image_provider_website": "https://www.shapi.vip/",

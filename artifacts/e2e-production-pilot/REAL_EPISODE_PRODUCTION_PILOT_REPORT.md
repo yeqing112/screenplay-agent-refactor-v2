@@ -7,7 +7,7 @@ PHASE_REAL_EPISODE_PRODUCTION_PILOT
 - Branch: codex/visual-authoring-provider-canary-reconcile
 - Remote: https://github.com/yeqing112/screenplay-agent-refactor-v2
 - Implementation commit: 33d6037656bf716ad42447ec23524365fe70d4b4
-- Report commit: pending-report-commit
+- Report commit: 33e340a
 - Migration head: m4h5i6j7k8l9
 - Episode: 13 (book_id=990402, episode number 1)
 - Shot IDs: 214, 215
