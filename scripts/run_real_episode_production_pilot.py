@@ -278,6 +278,10 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
         required_keys = ("materialization_current", "shot_direction_current", "automatic_keyframe_plan_approved", "start_end_keyframes_present", "image_prompt_authority_current", "video_prompt_authority_current")
         if not all(bool(authority.get(key)) for key in required_keys):
             blockers.append(f"shot_{shot.id}_source_authority_not_current")
+            # Missing source authority means no paid operation can be
+            # projected safely.  Keep planned call counts at zero until the
+            # entire source spine is current.
+            continue
         if authority.get("authority_error"):
             # Unknown authority state cannot be converted into a paid
             # operation projection.  Keep planned call counts at zero.
