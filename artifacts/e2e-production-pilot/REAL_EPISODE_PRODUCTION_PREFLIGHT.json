@@ -1,12 +1,12 @@
 {
   "schema_version": "real_episode_production_pilot_v1",
   "status": "BLOCKED",
-  "created_at": "2026-09-29T03:55:13.096646+00:00",
+  "created_at": "2026-09-29T05:00:01.736117+00:00",
   "repository": {
     "branch": "codex/visual-authoring-provider-canary-reconcile",
     "expected_branch": "codex/visual-authoring-provider-canary-reconcile",
     "branch_matches": true,
-    "head": "aea0d2961fc6b5285f5c9fe80e6c882a7cc19645",
+    "head": "17f24a5ea1a78bf750101977e372ebbf57192bf4",
     "working_tree_clean": true,
     "migration_head": "m4h5i6j7k8l9",
     "expected_migration_head": "m4h5i6j7k8l9",
@@ -14,10 +14,7 @@
   },
   "episode_id": 13,
   "render_plan_id": null,
-  "shot_ids": [
-    1,
-    2
-  ],
+  "shot_ids": [],
   "image_profile_id": "local-image-mw4y52",
   "video_profile_id": "local-video-7deneh",
   "image_model_registry_profile": {
@@ -65,88 +62,25 @@
     "consent_token_required": "CONFIRM_REAL_EPISODE_PRODUCTION_PILOT",
     "secrets_redacted": true
   },
-  "authorities": [
-    {
-      "shot_id": 1,
-      "materialization_current": false,
-      "materialization_reason": "current storyboard materialization is required",
-      "materialization_set_id": null,
-      "shot_direction_current": false,
-      "automatic_keyframe_plan_approved": false,
-      "automatic_keyframe_plan_id": null,
-      "keyframe_sequence_id": null,
-      "start_end_keyframes_present": false,
-      "image_prompt_authority_current": false,
-      "video_prompt_authority_current": false,
-      "image_states": [],
-      "derived_state": {
-        "shot_id": 1,
-        "order": 1,
-        "state": "NOT_READY",
-        "blocking_reason": "current storyboard materialization is required",
-        "next_action": "WAIT_FOR_MATERIALIZATION",
-        "dependency_ready": true,
-        "source_fingerprint": null,
-        "current_authorities": {
-          "materialization_set_id": null,
-          "shot_direction_id": null,
-          "keyframe_plan_id": null,
-          "keyframe_sequence_id": null,
-          "video_intent_id": null
-        }
-      }
-    },
-    {
-      "shot_id": 2,
-      "materialization_current": false,
-      "materialization_reason": "current storyboard materialization is required",
-      "materialization_set_id": null,
-      "shot_direction_current": false,
-      "automatic_keyframe_plan_approved": false,
-      "automatic_keyframe_plan_id": null,
-      "keyframe_sequence_id": null,
-      "start_end_keyframes_present": false,
-      "image_prompt_authority_current": false,
-      "video_prompt_authority_current": false,
-      "image_states": [],
-      "derived_state": {
-        "shot_id": 2,
-        "order": 2,
-        "state": "NOT_READY",
-        "blocking_reason": "current storyboard materialization is required",
-        "next_action": "WAIT_FOR_MATERIALIZATION",
-        "dependency_ready": true,
-        "source_fingerprint": null,
-        "current_authorities": {
-          "materialization_set_id": null,
-          "shot_direction_id": null,
-          "keyframe_plan_id": null,
-          "keyframe_sequence_id": null,
-          "video_intent_id": null
-        }
-      }
-    }
-  ],
+  "authorities": [],
   "blockers": [
     "episode_render_plan_unavailable:EpisodeRenderingError",
+    "pilot_requires_exactly_two_unique_shots",
     "episode_render_plan_must_contain_exactly_two_shots",
-    "exact_shot_allowlist_does_not_match_episode_render_plan",
     "PHASE_F_PROVIDER_CANARY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_CONFIRM_missing_or_invalid",
-    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots",
-    "shot_1_source_authority_not_current",
-    "shot_2_source_authority_not_current"
+    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
   ],
   "production_writes": 0,
   "real_shapi_calls": 0,
   "real_minimax_h3_submissions": 0,
-  "dry_run": {
-    "status": "BLOCKED",
-    "planned_operations": [],
-    "existing_assets": [],
-    "new_executions_required": 0,
-    "review_gates": [],
-    "reason": "episode_render_plan_unavailable"
+  "pilot_source_fixture": {
+    "status": "STORYBOARD_REVIEW_REQUIRED",
+    "planned_shot_keys": [
+      "pilot-e13-shot-a",
+      "pilot-e13-shot-b"
+    ],
+    "human_review_required": true
   }
 }

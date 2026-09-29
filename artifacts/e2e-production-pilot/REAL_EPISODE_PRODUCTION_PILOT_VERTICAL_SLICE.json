@@ -1,27 +1,32 @@
 {
   "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
-  "schema_version": "real_episode_production_pilot_vertical_slice_v2",
-  "implementation_commit": "aea0d29",
-  "report_commit": "see remote HEAD after this report commit is pushed",
+  "schema_version": "real_episode_production_pilot_vertical_slice_v3",
+  "implementation_commit": "17f24a5ea1a78bf750101977e372ebbf57192bf4",
+  "report_commit": "pending-report-commit",
   "provider_policy": {
-    "image_model": "SHAPI",
-    "image_model_website": "https://www.shapi.vip/",
-    "video_model": "MiniMax H3",
-    "real_image_calls": 0,
-    "real_video_submissions": 0
+    "image_provider": "SHAPI",
+    "image_provider_website": "https://www.shapi.vip/",
+    "image_profile_id": "local-image-mw4y52",
+    "image_transport": "shapi-openai-images.image.v1",
+    "video_provider": "MiniMax H3",
+    "video_profile_id": "local-video-7deneh",
+    "video_transport": "minimax-h3-async.video.v1",
+    "credentials_redacted": true
   },
-  "intended_chain": [
-    "Episode render plan",
-    "current materialization and ShotDirection",
-    "approved START/END keyframes",
-    "SHAPI image generation",
-    "human review",
-    "MiniMax H3 video generation",
-    "technical validation",
-    "human approval",
-    "OfficialMedia"
-  ],
+  "pilot_scope": {
+    "episode_id": 13,
+    "shot_ids": [],
+    "planned_shot_keys": [
+      "pilot-e13-shot-a",
+      "pilot-e13-shot-b"
+    ],
+    "max_unique_shots": 2,
+    "max_image_calls": 4,
+    "max_video_calls": 2,
+    "one_operation_per_execute": true,
+    "stage_b_requires_stage_a_complete": true
+  },
   "events": [
     {
       "stage": "PREFLIGHT",
@@ -29,7 +34,21 @@
       "provider_calls": 0,
       "submitted_at": null,
       "provider_completed_at": null,
-      "candidate_created_at": null
+      "candidate_created_at": null,
+      "reason": "source fixture requires human storyboard review"
+    },
+    {
+      "stage": "SOURCE_FIXTURE",
+      "status": "COMPILED_REVIEW_REQUIRED",
+      "provider_calls": 0,
+      "submitted_at": null,
+      "provider_completed_at": null,
+      "candidate_created_at": null,
+      "storyboard_plan_id": 1,
+      "planned_shot_keys": [
+        "pilot-e13-shot-a",
+        "pilot-e13-shot-b"
+      ]
     },
     {
       "stage": "STAGE_A_SHOT_A",
@@ -48,27 +67,6 @@
       "candidate_created_at": null
     }
   ],
-  "preflight_evidence": {
-    "episode_id": 13,
-    "shot_ids": [
-      1,
-      2
-    ],
-    "render_plan_id": null,
-    "planned_image_calls": 0,
-    "planned_video_calls": 0,
-    "production_writes": 0,
-    "blocker_count": 9,
-    "created_at": "2026-09-29T03:55:13.096646+00:00"
-  },
-  "repository_preflight": {
-    "branch_matches": true,
-    "working_tree_clean_at_snapshot": true,
-    "observed_migration_head": "m4h5i6j7k8l9",
-    "expected_migration_head": "m4h5i6j7k8l9",
-    "migration_head_matches": true,
-    "head": "aea0d2961fc6b5285f5c9fe80e6c882a7cc19645"
-  },
   "claims": {
     "real_vertical_slice_completed": false,
     "fixture_or_mock_substituted_for_real": false,
@@ -79,5 +77,5 @@
     "prompt_lineage_retained": true,
     "secrets_redacted": true
   },
-  "next_gate": "Materialize and approve the exact two-shot Episode source spine (current materialization, ShotDirection, AutomaticKeyframePlan, KeyframeSequence, PromptIR pointers), then enable the separately controlled real-provider gates."
+  "next_gate": "Human review/approval of the two-shot StoryboardPlan; then create the exact render plan and approve/compile both AutomaticKeyframePlans before any provider gate can be considered."
 }

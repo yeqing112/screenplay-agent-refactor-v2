@@ -1,14 +1,12 @@
 {
   "phase": "PHASE_REAL_EPISODE_PRODUCTION_PILOT",
   "status": "REAL_EPISODE_PRODUCTION_PILOT_BLOCKED",
-  "schema_version": "real_episode_production_pilot_truth_audit_v2",
+  "schema_version": "real_episode_production_pilot_truth_audit_v3",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
-  "implementation_commit": "aea0d29",
-  "report_commit": "see remote HEAD after this report commit is pushed",
-  "migration_head": "m4h5i6j7k8l9",
-  "preflight_observed_migration_head": "m4h5i6j7k8l9",
-  "preflight_working_tree_clean": true,
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
+  "implementation_commit": "17f24a5ea1a78bf750101977e372ebbf57192bf4",
+  "report_commit": "pending-report-commit",
+  "migration_head": "m4h5i6j7k8l9",
   "pilot_scope_enforced": true,
   "episode_count": 1,
   "shot_count_max": 2,
@@ -21,17 +19,20 @@
   "duplicate_paid_submission_guard": true,
   "async_resume_verified": false,
   "stale_promotion_guard": true,
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "real_llm_calls": 0,
   "pilot_scope": {
     "episode_id": 13,
-    "shot_ids": [
-      1,
-      2
+    "shot_ids": [],
+    "planned_shot_keys": [
+      "pilot-e13-shot-a",
+      "pilot-e13-shot-b"
     ],
     "max_unique_shots": 2,
     "max_image_calls": 4,
     "max_video_calls": 2,
     "one_operation_per_execute": true,
-    "exact_episode_allowlist_required": true,
     "stage_b_requires_stage_a_complete": true
   },
   "provider_policy": {
@@ -43,6 +44,20 @@
     "video_profile_id": "local-video-7deneh",
     "video_transport": "minimax-h3-async.video.v1",
     "credentials_redacted": true
+  },
+  "source_fixture": {
+    "status": "STORYBOARD_REVIEW_REQUIRED",
+    "storyboard_plan_id": 1,
+    "storyboard_plan_version": 1,
+    "storyboard_status": "COMPILED",
+    "source_script_ir_version_id": 2,
+    "source_fact_snapshot_id": 1,
+    "human_review_required": true,
+    "provider_calls": {
+      "llm": 0,
+      "image": 0,
+      "video": 0
+    }
   },
   "gates": {
     "PHASE_F_PROVIDER_CANARY_REAL": "unset",
@@ -71,55 +86,35 @@
     "human_review_required": true,
     "automatic_retry": false,
     "automatic_approval": false,
-    "pending_resume_without_resubmit": "observed_inflight_state_does_not_resubmit; provider poll resume not exercised in blocked preflight",
+    "pending_resume_without_resubmit": "not exercised while blocked",
     "no_second_queue_or_provider_system": true
   },
   "blockers": [
-    "episode_render_plan_unavailable:EpisodeRenderingError",
-    "episode_render_plan_must_contain_exactly_two_shots",
-    "exact_shot_allowlist_does_not_match_episode_render_plan",
+    "PILOT_SOURCE_FIXTURE_STORYBOARD_REVIEW_REQUIRED",
+    "EPISODE_RENDER_PLAN_NOT_CREATED",
+    "EXACT_SHOT_ALLOWLIST_NOT_AVAILABLE_UNTIL_MATERIALIZATION",
     "PHASE_F_PROVIDER_CANARY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_CONFIRM_missing_or_invalid",
-    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots",
-    "shot_1_source_authority_not_current",
-    "shot_2_source_authority_not_current"
+    "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
   ],
   "verification": {
+    "pilot_source_tests": {
+      "status": "PASS",
+      "tests": 2
+    },
     "pilot_safety_tests": {
       "status": "PASS",
       "tests": 12
     },
-    "pytest_full": {
-      "status": "PASS",
-      "tests": 1945
-    },
-    "golden": {
-      "status": "PASS",
-      "passed": 5,
-      "failed": 0,
-      "evidence": "existing committed golden evidence"
-    },
-    "migration_chain": {
-      "status": "PASS",
-      "head": "m4h5i6j7k8l9",
-      "fresh": "PASS",
-      "repeat": "PASS",
-      "legacy": "PASS",
-      "drift": "PASS"
-    },
+    "provider_calls": 0,
     "compileall": "PASS",
-    "diff_check": "PASS",
-    "provider_calls": 0
+    "diff_check": "PASS"
   },
-  "preflight_head": "aea0d2961fc6b5285f5c9fe80e6c882a7cc19645",
-  "preflight_created_at": "2026-09-29T03:55:13.096646+00:00",
-  "schema_repair": {
-    "status": "PASS",
-    "method": "replayed existing migrations on the local runtime database from the PromptIR parent revision to the existing m4 head",
-    "new_migrations": 0,
-    "source_fact_mutations": 0,
-    "script_ir_mutations": 0,
-    "prompt_authority_tables_present": true
+  "source_lineage": {
+    "original_script_ir_untouched": true,
+    "original_fact_snapshot_untouched": true,
+    "source_script_ir_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+    "source_fact_snapshot_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
   }
 }

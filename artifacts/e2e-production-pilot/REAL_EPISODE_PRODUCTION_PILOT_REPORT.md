@@ -6,69 +6,54 @@
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)
-- Implementation commit: `aea0d29`
-- Report commit: see the remote HEAD after this report commit is pushed
-- Migration head: `m4h5i6j7k8l9` (matches expected `m4h5i6j7k8l9`)
-- Pilot target: Episode `13`, requested shots `1`, `2`
-- Preflight evidence: [REAL_EPISODE_PRODUCTION_PREFLIGHT.json](REAL_EPISODE_PRODUCTION_PREFLIGHT.json)
-- Preflight snapshot HEAD: `aea0d2961fc6b5285f5c9fe80e6c882a7cc19645`
-- Preflight timestamp: `2026-09-29T03:55:13.096646+00:00`
+- Implementation commit: `17f24a5ea1a78bf750101977e372ebbf57192bf4`
+- Report commit: `pending-report-commit`
+- Migration head: `m4h5i6j7k8l9`
+- Episode: `13` (`book_id=990402`, episode number `1`)
+- Provider policy: SHAPI ([https://www.shapi.vip/](https://www.shapi.vip/)) + MiniMax H3
 
-## Result
+## Current result
 
-The controlled two-shot real production pilot remains **BLOCKED**. The runner performed a read-only dry-run preflight and did not submit paid work. `production_writes = 0`, real SHAPI calls = `0`, real MiniMax H3 submissions = `0`, and real LLM calls = `0`.
+The pilot remains **BLOCKED** before paid execution. An idempotent source-preparation command now creates a deterministic two-shot StoryboardPlan candidate from the existing Episode 13 context while retaining the original ScriptIR and FactSnapshot hashes. The candidate is `COMPILED` and awaits an explicit human StoryboardPlan approval. No materialized shots, render plan, keyframe sequences, candidates, official media, or provider calls were created.
 
-The configured image provider is SHAPI ([https://www.shapi.vip/](https://www.shapi.vip/)); its registry profile is `local-image-mw4y52` with transport `shapi-openai-images.image.v1`. The video profile is the existing MiniMax H3 async profile. Credentials are represented only as `credential_present: true`; no secret is recorded.
+This run does not claim `REAL_EPISODE_PRODUCTION_PILOT_COMPLETE`.
 
-## Preflight facts
+## Source fixture
+
+- ScriptIR source: version `2`, hash `de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f`
+- FactSnapshot source: id `1`, hash `c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba`
+- Planned shot keys: `pilot-e13-shot-a` → `pilot-e13-shot-b`
+- StoryboardPlan: id `1`, version `1`, status `COMPILED`
+- Human review: required; no approval was fabricated
+- Original ScriptIR / FactSnapshot mutations: `0 / 0`
+
+## Pilot safety
 
 | Check | Result |
 |---|---:|
-| Render plan for requested Episode | unavailable (`EpisodeRenderingError`) |
-| Prompt/source authority | schema present; current source spine absent, fail-closed |
-| Preflight branch / working tree | correct / clean at snapshot |
-| Preflight migration head | `m4h5i6j7k8l9` |
-| Exact Episode allowlist | matched (`13`) |
-| Requested unique shots | 2 |
-| Planned real SHAPI calls | 0 |
-| Planned real MiniMax H3 submissions | 0 |
-| Production writes | 0 |
-| Real SHAPI calls | 0 |
-| Real MiniMax H3 submissions | 0 |
+| Preflight | BLOCKED |
+| Dry run production writes | 0 |
+| Planned SHAPI calls | 0 |
+| Actual SHAPI calls | 0 |
+| Planned MiniMax H3 submissions | 0 |
+| Actual MiniMax H3 submissions | 0 |
 | Real LLM calls | 0 |
-| Official real videos | 0 |
-| Provider task IDs | none |
-| Human review decisions | 0 image, 0 video |
+| Automatic paid retry | disabled |
+| Human approval bypass | disabled |
 | Secrets emitted | 0 |
 
-Blocking conditions include the missing Episode render plan, missing current materialization/ShotDirection/AutomaticKeyframePlan/KeyframeSequence authority for both requested shots, and unset `PHASE_F_PROVIDER_CANARY_REAL`, `MINIMAX_H3_GRAY_REAL`, `MINIMAX_H3_GRAY_CONFIRM`, and exact `MINIMAX_H3_GRAY_WHITELIST`.
-
-## Database schema repair
-
-- Replayed the existing migration chain on the local runtime database from the PromptIR parent revision to the existing `m4h5i6j7k8l9` head.
-- PromptIR version, authority, and media-scoped pointer tables are now present. No new migration was added.
-- Episode/Storyboard row counts were preserved; no Source Fact or ScriptIR rows were changed.
-
-## Fail-closed change
-
-- Preflight now converts schema drift, missing tables, and authority query failures into type-only blockers instead of traceback.
-- Unknown authority state cannot produce planned paid operations; planned image/video calls remain `0`.
-- Reports redact SQL, filesystem paths, credentials, bearer tokens, and provider task secrets.
+Provider gates remain unset: `PHASE_F_PROVIDER_CANARY_REAL`, `MINIMAX_H3_GRAY_REAL`, `MINIMAX_H3_GRAY_CONFIRM`, and the exact two-shot `MINIMAX_H3_GRAY_WHITELIST`.
 
 ## Verification
 
-| Check | Result |
-|---|---:|
-| Pilot safety tests | 12 passed |
-| Full regression | 1945 passed |
-| Golden fixtures | 5/5 (existing evidence) |
-| Migration CI | PASS: fresh/repeat/legacy/drift; head `m4h5i6j7k8l9` |
-| Compileall | PASS |
-| `git diff --check` | PASS |
-| Real provider calls | 0 |
+- Pilot source tests: **2 passed**
+- Pilot safety tests: **12 passed**
+- `python -m compileall -q scripts/prepare_real_episode_production_pilot_source.py`: **PASS**
+- `git diff --check`: **PASS**
+- Real provider calls: **0**
 
-## Completion status
+## Next required review gate
 
-`REAL_EPISODE_PRODUCTION_PILOT_COMPLETE` is not claimed because no real SHAPI request or MiniMax H3 submission occurred and no Official real video exists. No Source Fact or ScriptIR mutation occurred. Human review and versioned Prompt lineage gates remain required.
+An operator must review and approve the two-shot StoryboardPlan. After that, the existing deterministic materialization, ShotDirection, AutomaticKeyframePlan review/compile, and PromptIR paths can create the exact numeric shot allowlist. Only then can a separately controlled real-provider preflight be evaluated.
 
-See the machine-readable [Truth Audit](REAL_EPISODE_PRODUCTION_PILOT_TRUTH_AUDIT.json) and [Vertical Slice](REAL_EPISODE_PRODUCTION_PILOT_VERTICAL_SLICE.json).
+See [REAL_EPISODE_PRODUCTION_PREFLIGHT.json](REAL_EPISODE_PRODUCTION_PREFLIGHT.json), [Truth Audit](REAL_EPISODE_PRODUCTION_PILOT_TRUTH_AUDIT.json), and [Vertical Slice](REAL_EPISODE_PRODUCTION_PILOT_VERTICAL_SLICE.json).
