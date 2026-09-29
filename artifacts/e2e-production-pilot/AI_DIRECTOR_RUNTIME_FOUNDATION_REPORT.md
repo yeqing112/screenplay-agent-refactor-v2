@@ -4,11 +4,11 @@
 
 `PHASE_AI_DIRECTOR_RUNTIME_FOUNDATION` — `AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE`
 
-- Implementation commit: `931b666d04bc1d908abad8d0deff6b3c7edd11a2`
+- Implementation commit: `f0e12794524c8b617cf27fbff2f89171445f1a9c`
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Migration head: `m4h5i6j7k8l9` (includes Director Runtime revisions `g8b9c0d1e2f3` and `h9c0d1e2f3g4`)
 - Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2.git)
-- Remote HEAD verified before report commit: `921b5132108001fb0083526345b74fe6ed7baa2b`
+- Source/remote HEAD verified before report update: `f0e12794524c8b617cf27fbff2f89171445f1a9c`
 - Working tree state before report commit: clean
 
 ## Delivered
@@ -32,7 +32,7 @@
 
 ## Verification
 
-- `pytest -q` — **1929 passed** on the current branch (including downstream runtime migrations).
+- `pytest -q` — **1945 passed** on the current branch (including downstream runtime migrations).
 - Focused Director/production regression — **49 passed** (`test_ai_director_runtime_foundation`, migration hardening, keyframe image, automatic keyframe, asset promotion, model adapter, generation execution, and video runtime).
 - `npm run test:golden` — **5/5 passed**.
 - `python -m scripts.verify_migration_chain --ci` — **PASS**; fresh upgrade, repeat upgrade, legacy fixtures, schema, and metadata drift all passed (current repository head `m4h5i6j7k8l9`).
@@ -57,9 +57,9 @@ This foundation stops at a structured, versioned, human-reviewable production pl
 
 ## Final push reconciliation
 
-- Final implementation/push commit: `aeb0ec4a579e4c2930e1a32ace417b1775ec9fdf`
+- Final implementation/push commit: `f0e12794524c8b617cf27fbff2f89171445f1a9c`
 - Final remote branch: `codex/visual-authoring-provider-canary-reconcile`
-- Full regression after the runtime changes: `1932 passed`
+- Full regression after the runtime changes: `1945 passed`
 - Golden regression: `5/5 passed`
 - Migration CI, compileall, and diff check: `PASS`
 - Working tree after push: clean

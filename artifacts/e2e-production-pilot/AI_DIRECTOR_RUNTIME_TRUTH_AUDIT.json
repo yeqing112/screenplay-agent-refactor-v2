@@ -1,10 +1,10 @@
 {
   "phase": "PHASE_AI_DIRECTOR_RUNTIME_FOUNDATION",
   "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
-  "implementation_commit": "931b666d04bc1d908abad8d0deff6b3c7edd11a2",
+  "implementation_commit": "f0e12794524c8b617cf27fbff2f89171445f1a9c",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
-  "remote_head_verified_before_report_commit": "921b5132108001fb0083526345b74fe6ed7baa2b",
+  "remote_head_verified_before_report_commit": "f0e12794524c8b617cf27fbff2f89171445f1a9c",
   "working_tree_state_before_report_commit": "clean",
   "migration_head": "m4h5i6j7k8l9",
   "llm_called": false,
@@ -37,8 +37,7 @@
   "verification": {
     "pytest_full": {
       "status": "PASS",
-      "tests": 1929,
-      "scope": "current branch including downstream runtime migrations"
+      "tests": 1945
     },
     "director_runtime_tests": {
       "status": "PASS",
@@ -59,7 +58,7 @@
     "latest_guard_commit": "921b513",
     "pytest_full_final": {
       "status": "PASS",
-      "tests": 1932
+      "tests": 1945
     },
     "golden_final": {
       "status": "PASS",
@@ -73,7 +72,7 @@
     "MINIMAX_H3_GRAY_WHITELIST": "unset",
     "real_calls": 0
   },
-  "final_push_commit": "aeb0ec4a579e4c2930e1a32ace417b1775ec9fdf",
   "final_remote_branch": "codex/visual-authoring-provider-canary-reconcile",
-  "working_tree_after_push": "clean"
+  "working_tree_after_push": "clean",
+  "source_head_before_report_update": "f0e12794524c8b617cf27fbff2f89171445f1a9c"
 }

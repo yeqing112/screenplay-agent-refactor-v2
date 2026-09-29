@@ -2,7 +2,7 @@
   "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
   "schema_version": "ai_director_runtime_v1",
   "remote": "https://github.com/yeqing112/screenplay-agent-refactor-v2.git",
-  "remote_head_verified_before_report_commit": "921b5132108001fb0083526345b74fe6ed7baa2b",
+  "remote_head_verified_before_report_commit": "f0e12794524c8b617cf27fbff2f89171445f1a9c",
   "working_tree_state_before_report_commit": "clean",
   "vertical_slice": [
     "ScriptIR",
@@ -46,18 +46,23 @@
     "read": "GET /episodes/{id}/director-plan",
     "revise": "POST /shots/{id}/director-revise"
   },
-  "final_push_commit": "aeb0ec4a579e4c2930e1a32ace417b1775ec9fdf",
   "final_remote_branch": "codex/visual-authoring-provider-canary-reconcile",
   "working_tree_after_push": "clean",
   "verification": {
     "pytest_full_final": {
       "status": "PASS",
-      "tests": 1932
+      "tests": 1945
     },
     "golden_final": {
       "status": "PASS",
       "passed": 5,
       "failed": 0
+    },
+    "pytest_full": {
+      "status": "PASS",
+      "tests": 1945
     }
-  }
+  },
+  "implementation_commit": "f0e12794524c8b617cf27fbff2f89171445f1a9c",
+  "source_head_before_report_update": "f0e12794524c8b617cf27fbff2f89171445f1a9c"
 }
