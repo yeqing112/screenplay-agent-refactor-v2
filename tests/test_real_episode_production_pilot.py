@@ -113,6 +113,41 @@ def test_blocker_serialization_does_not_leak_sql_or_paths():
     assert "/tmp/private" not in message
 
 
+def test_authority_schema_failure_is_fail_closed_and_never_plans_paid_calls(tmp_path: Path, monkeypatch):
+    engine, session = _session(tmp_path)
+    try:
+        monkeypatch.setattr(pilot, "get_episode_render_plan", lambda *_args, **_kwargs: None)
+        monkeypatch.setattr(pilot, "_items", lambda *_args, **_kwargs: [])
+
+        class _Query:
+            def filter(self, *_args, **_kwargs):
+                return self
+
+            def order_by(self, *_args, **_kwargs):
+                return self
+
+            def all(self):
+                raise RuntimeError("schema SQL /tmp/private")
+
+        monkeypatch.setattr(session, "query", lambda *_args, **_kwargs: _Query())
+        result = pilot.build_preflight(
+            session,
+            episode_id=13,
+            shot_ids=[1, 2],
+            image_profile_id="local-image-mw4y52",
+            video_profile_id="local-video-7deneh",
+            allowed_episode_id=13,
+        )
+        assert result["status"] == "BLOCKED"
+        assert result["planned_real_image_calls"] == 0
+        assert result["planned_real_video_calls"] == 0
+        assert "source_authority_schema_unavailable:RuntimeError" in result["blockers"]
+        assert "prompt_authority_schema_unavailable:RuntimeError" in result["blockers"]
+    finally:
+        session.close()
+        engine.dispose()
+
+
 def test_stage_b_cannot_start_before_stage_a_is_complete(monkeypatch):
     states = {1: {"state": "VIDEO_REVIEW_REQUIRED"}, 2: {"state": "READY_FOR_VIDEO"}}
     monkeypatch.setattr(pilot, "resolve_shot_production_state", lambda _session, *, shot_id: states[int(shot_id)])

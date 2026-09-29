@@ -178,6 +178,32 @@ def _current_authority_check(session: Any, shot: StoryboardShot) -> dict[str, An
     }
 
 
+def _blocked_authority(shot: StoryboardShot, exc: BaseException) -> dict[str, Any]:
+    """Return a safe authority projection when the local schema is unavailable.
+
+    Preflight must remain observable and fail closed when a stale or partially
+    migrated database cannot answer an authority query.  Keep the exception
+    detail type-only so SQL, paths, and credentials never enter the report.
+    """
+    reason = _short_exception(exc)
+    return {
+        "materialization_current": False,
+        "materialization_reason": "authority_unavailable",
+        "materialization_set_id": None,
+        "shot_direction_current": False,
+        "automatic_keyframe_plan_approved": False,
+        "automatic_keyframe_plan_id": None,
+        "keyframe_sequence_id": None,
+        "start_end_keyframes_present": False,
+        "image_prompt_authority_current": False,
+        "video_prompt_authority_current": False,
+        "image_states": [],
+        "derived_state": {"state": "AUTHORITY_UNAVAILABLE"},
+        "authority_error": reason,
+        "shot_id": int(shot.id),
+    }
+
+
 def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image_profile_id: str, video_profile_id: str, allowed_image_calls: int = MAX_IMAGE_CALLS, allowed_video_calls: int = MAX_VIDEO_CALLS, allowed_episode_id: int | None = None) -> dict[str, Any]:
     blockers: list[str] = []
     repository = _repository_snapshot(session)
@@ -206,11 +232,15 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
         blockers.append("episode_render_plan_must_contain_exactly_two_shots")
     if set(plan_shot_ids) != set(requested):
         blockers.append("exact_shot_allowlist_does_not_match_episode_render_plan")
+    shot_query_error: str | None = None
     try:
         shots = session.query(StoryboardShot).filter(StoryboardShot.id.in_(requested)).order_by(StoryboardShot.id.asc()).all() if requested else []
     except Exception as exc:
         shots = []
-        blockers.append(f"storyboard_shot_unavailable:{_short_exception(exc)}")
+        shot_query_error = _short_exception(exc)
+        blockers.append(f"storyboard_shot_unavailable:{shot_query_error}")
+        blockers.append(f"source_authority_schema_unavailable:{shot_query_error}")
+        blockers.append(f"prompt_authority_schema_unavailable:{shot_query_error}")
     if len(shots) != len(requested):
         blockers.append("shot_allowlist_contains_missing_shot")
     image_profile = get_profile(image_profile_id)
@@ -236,11 +266,21 @@ def build_preflight(session: Any, *, episode_id: int, shot_ids: list[int], image
     planned_image_calls = 0
     planned_video_calls = 0
     for shot in shots:
-        authority = _current_authority_check(session, shot)
+        try:
+            authority = _current_authority_check(session, shot)
+        except Exception as exc:
+            reason = _short_exception(exc)
+            blockers.append(f"source_authority_unavailable:{reason}")
+            blockers.append(f"prompt_authority_unavailable:{reason}")
+            authority = _blocked_authority(shot, exc)
         authorities.append({"shot_id": int(shot.id), **authority})
         required_keys = ("materialization_current", "shot_direction_current", "automatic_keyframe_plan_approved", "start_end_keyframes_present", "image_prompt_authority_current", "video_prompt_authority_current")
         if not all(bool(authority.get(key)) for key in required_keys):
             blockers.append(f"shot_{shot.id}_source_authority_not_current")
+        if authority.get("authority_error"):
+            # Unknown authority state cannot be converted into a paid
+            # operation projection.  Keep planned call counts at zero.
+            continue
         planned_image_calls += sum(1 for row in authority["image_states"] if row.get("state") not in {"APPROVED", "REVIEW_REQUIRED"})
         state = _text(authority["derived_state"].get("state")).upper()
         if state not in {"COMPLETE", "VIDEO_REVIEW_REQUIRED", "VIDEO_GENERATING"}:
