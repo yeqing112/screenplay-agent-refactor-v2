@@ -1,0 +1,38 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_UX_ARCHITECTURE",
+  "project": {
+    "title": "潮汐回声",
+    "book_id": 990402,
+    "environment": "local Vite + API proxy",
+    "frontend_url": "http://10.126.126.2:5176",
+    "api_proxy": "http://127.0.0.1:18765"
+  },
+  "screenshots": [
+    {"file": "output/playwright/01-projects-empty.png", "screen": "项目列表空态"},
+    {"file": "output/playwright/02-projects-populated.png", "screen": "项目列表真实数据"},
+    {"file": "output/playwright/03-project-dashboard.png", "screen": "项目控制台"},
+    {"file": "output/playwright/04-shot-workspace.png", "screen": "镜头工作台"},
+    {"file": "output/playwright/05-task-center.png", "screen": "任务中心"},
+    {"file": "output/playwright/06-assets-center.png", "screen": "资产中心"},
+    {"file": "output/playwright/07-model-management.png", "screen": "模型管理"},
+    {"file": "output/playwright/08-script-workbench.png", "screen": "剧本工作台"},
+    {"file": "output/playwright/09-content-prep.png", "screen": "内容准备"}
+  ],
+  "observed_snapshot": {
+    "chapters": 10,
+    "word_count_approx": 3000,
+    "episodes": 3,
+    "shots": 42,
+    "production_workspace_percent": 9,
+    "task_center_total": 56,
+    "task_center_waiting_upstream": 50
+  },
+  "constraints": [
+    "UX/UI architecture and documentation only",
+    "no React implementation",
+    "no backend/API/database migration",
+    "no real provider call",
+    "reuse existing Runtime and API",
+    "preserve human review and versioning"
+  ]
+}
