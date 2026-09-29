@@ -105,7 +105,8 @@ V3 采用“项目 → 集 → 场 → 镜头 → 资产/提示词/媒体 → �
 ## Working tree state at publication
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Commit: `634b5cd`（文档和审计截图已推送）
+- Commit: `bc8c15a`（补充审计规格后的最终文档提交，已推送）
+- Working tree：已提交文档和截图与远程一致；`.playwright-cli/` 为本地浏览器临时日志，未纳入提交。
 - No React implementation, API rewrite, database migration or real provider call was made in this phase.
 - No backend mutation was performed; all runtime checks were read-only audits and browser evidence capture.
 - `git diff --check` passed before commit.
