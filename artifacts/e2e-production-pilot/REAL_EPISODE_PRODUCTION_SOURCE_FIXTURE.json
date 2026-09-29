@@ -1,0 +1,82 @@
+{
+  "schema_version": "real_episode_production_pilot_source_fixture_v1",
+  "pilot_marker": "REAL_EPISODE_PRODUCTION_PILOT_SOURCE_FIXTURE_V1",
+  "status": "SOURCE_SPINE_READY_FOR_HUMAN_REVIEW",
+  "episode_id": 13,
+  "book_id": 990402,
+  "episode": 1,
+  "shot_ids": [
+    214,
+    215
+  ],
+  "planned_shot_keys": [
+    "pilot-e13-shot-a",
+    "pilot-e13-shot-b"
+  ],
+  "shot_plan_ids": [
+    11
+  ],
+  "render_plan_id": 1,
+  "storyboard_plan_id": 1,
+  "storyboard_plan_version": 1,
+  "storyboard_status": "APPROVED",
+  "automatic_keyframe_plans": [
+    {
+      "shot_id": 214,
+      "id": 1,
+      "version": 1,
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "shot_id": 215,
+      "id": 2,
+      "version": 1,
+      "status": "REVIEW_REQUIRED"
+    }
+  ],
+  "prompt_ir_pointers": [
+    {
+      "shot_id": 214,
+      "target_media": "IMAGE",
+      "prompt_ir_version_id": 1
+    },
+    {
+      "shot_id": 215,
+      "target_media": "IMAGE",
+      "prompt_ir_version_id": 2
+    },
+    {
+      "shot_id": 214,
+      "target_media": "VIDEO",
+      "prompt_ir_version_id": 3
+    },
+    {
+      "shot_id": 215,
+      "target_media": "VIDEO",
+      "prompt_ir_version_id": 4
+    }
+  ],
+  "source_lineage": {
+    "pilot_marker": "REAL_EPISODE_PRODUCTION_PILOT_SOURCE_FIXTURE_V1",
+    "source_script_ir_version_id": 2,
+    "source_script_ir_revision": 2,
+    "source_script_ir_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+    "source_fact_snapshot_id": 1,
+    "source_fact_snapshot_revision": 1,
+    "source_fact_snapshot_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba",
+    "source_fact_mutated": false,
+    "script_ir_mutated": false,
+    "timeline_origin": "EXPLICIT_PILOT_AUTHORING_DECISION",
+    "production_eligible": true,
+    "source_outline_id": 13,
+    "source_script_id": 16,
+    "source_script_content_hash": "383a6b9329fc93066b8e003da18d33eef9035252c20468d8bfbb7c34cc62920b"
+  },
+  "human_review_required": true,
+  "provider_calls": {
+    "llm": 0,
+    "image": 0,
+    "video": 0
+  },
+  "created_at": "2026-09-29T04:57:04.054424+00:00"
+}
