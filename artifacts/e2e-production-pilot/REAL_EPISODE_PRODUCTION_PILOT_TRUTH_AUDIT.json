@@ -4,7 +4,7 @@
   "schema_version": "real_episode_production_pilot_truth_audit_v1",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "implementation_commit": "7f56309",
-  "report_commit": "see remote HEAD after report commit",
+  "report_commit": "see remote HEAD after this report commit is pushed",
   "migration_head": "m4h5i6j7k8l9",
   "preflight_observed_migration_head": "i0d1e2f3g4h5",
   "preflight_working_tree_clean": true,
@@ -23,7 +23,10 @@
   "stale_promotion_guard": true,
   "pilot_scope": {
     "episode_id": 13,
-    "shot_ids": [1, 2],
+    "shot_ids": [
+      1,
+      2
+    ],
     "max_unique_shots": 2,
     "max_image_calls": 4,
     "max_video_calls": 2,
@@ -74,18 +77,40 @@
   "blockers": [
     "migration_head_mismatch",
     "episode_render_plan_unavailable:EpisodeRenderingError",
+    "episode_render_plan_must_contain_exactly_two_shots",
+    "exact_shot_allowlist_does_not_match_episode_render_plan",
     "storyboard_shot_unavailable:OperationalError",
+    "shot_allowlist_contains_missing_shot",
     "PHASE_F_PROVIDER_CANARY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_REAL_not_enabled",
     "MINIMAX_H3_GRAY_CONFIRM_missing_or_invalid",
     "MINIMAX_H3_GRAY_WHITELIST_does_not_exactly_match_shots"
   ],
   "verification": {
-    "pilot_safety_tests": {"status": "PASS", "tests": 11},
-    "pytest_full": {"status": "PASS", "tests": 1944},
-    "golden": {"status": "PASS", "passed": 5, "failed": 0},
-    "migration_chain": {"status": "PASS", "head": "m4h5i6j7k8l9", "fresh": "PASS", "repeat": "PASS", "legacy": "PASS", "drift": "PASS"},
+    "pilot_safety_tests": {
+      "status": "PASS",
+      "tests": 11
+    },
+    "pytest_full": {
+      "status": "PASS",
+      "tests": 1944
+    },
+    "golden": {
+      "status": "PASS",
+      "passed": 5,
+      "failed": 0
+    },
+    "migration_chain": {
+      "status": "PASS",
+      "head": "m4h5i6j7k8l9",
+      "fresh": "PASS",
+      "repeat": "PASS",
+      "legacy": "PASS",
+      "drift": "PASS"
+    },
     "compileall": "PASS",
     "diff_check": "PASS"
-  }
+  },
+  "preflight_head": "5ae6632ac67737e40224497e868a54486ce2b053",
+  "preflight_created_at": "2026-09-29T03:09:23.487293+00:00"
 }

@@ -1,12 +1,12 @@
 {
   "schema_version": "real_episode_production_pilot_v1",
   "status": "BLOCKED",
-  "created_at": "2026-09-29T01:39:50.098168+00:00",
+  "created_at": "2026-09-29T03:09:23.487293+00:00",
   "repository": {
     "branch": "codex/visual-authoring-provider-canary-reconcile",
     "expected_branch": "codex/visual-authoring-provider-canary-reconcile",
     "branch_matches": true,
-    "head": "8aa65ba6e842540221bff41f86fdcc2f4f6b6f24",
+    "head": "5ae6632ac67737e40224497e868a54486ce2b053",
     "working_tree_clean": true,
     "migration_head": "i0d1e2f3g4h5",
     "expected_migration_head": "m4h5i6j7k8l9",

@@ -7,10 +7,12 @@
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
 - Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)
 - Implementation commit: `7f56309`
-- Report commit: see the remote HEAD after the report commit is pushed
+- Report commit: see the remote HEAD after this report commit is pushed
 - Migration head: `m4h5i6j7k8l9`
 - Pilot target: Episode `13`, requested shots `1`, `2`
 - Preflight evidence: [REAL_EPISODE_PRODUCTION_PREFLIGHT.json](REAL_EPISODE_PRODUCTION_PREFLIGHT.json)
+- Preflight snapshot HEAD: `5ae6632ac67737e40224497e868a54486ce2b053`
+- Preflight timestamp: `2026-09-29T03:09:23.487293+00:00`
 
 ## Result
 
@@ -61,7 +63,7 @@ Blocking conditions include migration head drift (`i0d1e2f3g4h5` vs expected `m4
 
 | Check | Result |
 |---|---:|
-| Pilot safety tests | 10 passed |
+| Pilot safety tests | 11 passed |
 | Full regression | 1944 passed |
 | Golden fixtures | 5/5 |
 | Migration CI | PASS: fresh/repeat/legacy/drift; head `m4h5i6j7k8l9` |
