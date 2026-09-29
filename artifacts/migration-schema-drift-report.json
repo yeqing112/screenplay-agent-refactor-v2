@@ -2,16 +2,16 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 351,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 359,
     "EXTRA_LEGACY_COLUMN": 1,
-    "INDEX_DRIFT": 96,
+    "INDEX_DRIFT": 106,
     "MISSING_MIGRATION": 0,
     "NULLABILITY_DRIFT": 0,
     "TYPE_DRIFT": 0
   },
   "counts": {
     "blocking": 0,
-    "total": 448
+    "total": 466
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -386,6 +386,186 @@
       "index": "ix_asset_semantic_governance_book_asset",
       "kind": "index",
       "table": "asset_semantic_governance_records"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "compiled_sequence_fingerprint"
+      ],
+      "index": "ix_automatic_keyframe_plans_compiled_sequence_fingerprint",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "compiled_sequence_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_compiled_sequence_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_episode_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "generation_intent_fingerprint"
+      ],
+      "index": "ix_automatic_keyframe_plans_generation_intent_fingerprint",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "generation_intent_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_generation_intent_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "materialization_set_fingerprint"
+      ],
+      "index": "ix_automatic_keyframe_plans_materialization_set_fingerprint",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "production_prompt_fingerprint"
+      ],
+      "index": "ix_automatic_keyframe_plans_production_prompt_fingerprint",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "production_prompt_version_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_production_prompt_version_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "shot_direction_fingerprint"
+      ],
+      "index": "ix_automatic_keyframe_plans_shot_direction_fingerprint",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "shot_direction_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_shot_direction_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "INDEX_DRIFT",
+      "columns": [
+        "shot_plan_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_shot_plan_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_fingerprint"
+      ],
+      "index": "ix_automatic_keyframe_plans_source_fingerprint",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_materialization_set_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_storyboard_materialization_set_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_storyboard_shot_id",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_episode",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_materialization_set_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_set",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_automatic_keyframe_plans_shot",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_fingerprint"
+      ],
+      "index": "ix_automatic_keyframe_plans_source",
+      "kind": "index",
+      "table": "automatic_keyframe_plans"
     },
     {
       "blocking": false,

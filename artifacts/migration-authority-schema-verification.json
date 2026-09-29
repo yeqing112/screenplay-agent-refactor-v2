@@ -1,5 +1,6 @@
 {
   "authority_tables_expected": [
+    "automatic_keyframe_plans",
     "character_asset_authorities",
     "character_asset_pointers",
     "character_asset_versions",
@@ -75,6 +76,7 @@
     "visual_style_profiles"
   ],
   "authority_tables_present": [
+    "automatic_keyframe_plans",
     "character_asset_authorities",
     "character_asset_pointers",
     "character_asset_versions",
