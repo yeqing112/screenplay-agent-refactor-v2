@@ -75,8 +75,15 @@ The Legacy storyboard caller now treats any response containing canonical `execu
 - `git diff --check`: passed.
 - Provider, LLM, SHAPI, MiniMax, image, and video call count in phase tests: `0`.
 
-Browser screenshots and live production-provider checks were intentionally not run because this phase forbids real generation and production writes. The canary route remains suitable for a later disposable-fixture browser pass.
+### Browser QA
+
+Disposable local fixtures were used; no production project was written and no generation CTA was submitted. The browser pass covered the blocked bridge, review-pending state, approval and activation gate, explicit binding requirement, ready state, missing model configuration, and capability-filtered model selection. Evidence is recorded in `PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_BROWSER_QA.json` and the six screenshots beside this report.
+
+- Browser QA: passed.
+- Responsive QA at 1280×900, 1440×900, and 1920×1080: passed with no horizontal overflow.
+- Network audit: passed. Canonical asset ingest, review decision, activation, V2 projection, and model registry reads were observed. Generation POSTs, provider/LLM requests, and legacy task recovery polling were not observed.
+- Machine-readable evidence: `PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_RESPONSIVE_QA.json` and `PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_NETWORK_AUDIT.json`.
 
 ## Remaining gaps and readiness
 
-Cross-shot Review Inbox, retry/regenerate, pagination, provider cancellation, and default V3 migration remain out of scope. The phase is complete for the Legacy capability bridge and canary validation. V3 is not promoted to default.
+Cross-shot Review Inbox, retry/regenerate, pagination, provider cancellation, and default V3 migration remain out of scope. The phase is ready for the eligible canary cohort after the documented disposable-fixture checks; V3 is not promoted to default.

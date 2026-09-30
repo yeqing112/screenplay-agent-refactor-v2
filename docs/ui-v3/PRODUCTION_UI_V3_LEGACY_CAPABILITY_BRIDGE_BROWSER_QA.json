@@ -1,0 +1,53 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE",
+  "environment": "local disposable DEV fixtures",
+  "date": "2026-09-30",
+  "route": "?workspace_fixture=populated&workspace_v2_fixture=blocked&ui_v3=shot-studio",
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "real_generation": false,
+  "real_production_writes": 0,
+  "scenarios": [
+    {
+      "id": "blocked-asset-bridge",
+      "result": "passed",
+      "assertions": [
+        "Production Asset Bridge is rendered",
+        "blocked copy states that canonical version, human approval, and explicit binding are required",
+        "IMAGE and VIDEO Generate actions remain disabled"
+      ],
+      "screenshot": "asset-bridge-blocked.png"
+    },
+    {
+      "id": "review-pending",
+      "result": "passed",
+      "assertions": ["disposable upload creates a version and shows human review pending"],
+      "screenshot": "asset-bridge-review-pending.png"
+    },
+    {
+      "id": "approved-binding-gate",
+      "result": "passed",
+      "assertions": ["approval and activation complete, then the UI requests explicit shot binding"],
+      "screenshot": "asset-bridge-approved-binding-needed.png"
+    },
+    {
+      "id": "asset-ready",
+      "result": "passed",
+      "assertions": ["after explicit binding, V2 asset_readiness.current=true and the bridge is absent"],
+      "screenshot": "asset-bridge-ready.png"
+    },
+    {
+      "id": "model-selection-missing",
+      "result": "passed",
+      "assertions": ["missing or disabled selected profile fails closed with re-selection copy"],
+      "screenshot": "shot-studio-model-missing.png"
+    },
+    {
+      "id": "model-selection-available",
+      "result": "passed",
+      "assertions": ["IMAGE and VIDEO selectors expose capability-filtered fixture profiles and enable Generate only when the rest of the contract is ready"],
+      "screenshot": "shot-studio-model-selected.png"
+    }
+  ],
+  "errors": []
+}

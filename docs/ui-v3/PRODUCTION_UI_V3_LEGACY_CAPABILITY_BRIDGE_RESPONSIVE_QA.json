@@ -1,0 +1,12 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE",
+  "environment": "local disposable DEV fixture",
+  "provider_calls": 0,
+  "results": [
+    {"width": 1280, "height": 900, "innerWidth": 1280, "scrollWidth": 1280, "overflow": false, "shotStudio": true, "assetBridge": true},
+    {"width": 1440, "height": 900, "innerWidth": 1440, "scrollWidth": 1440, "overflow": false, "shotStudio": true, "assetBridge": true},
+    {"width": 1920, "height": 1080, "innerWidth": 1920, "scrollWidth": 1920, "overflow": false, "shotStudio": true, "assetBridge": true}
+  ],
+  "result": "passed",
+  "errors": []
+}

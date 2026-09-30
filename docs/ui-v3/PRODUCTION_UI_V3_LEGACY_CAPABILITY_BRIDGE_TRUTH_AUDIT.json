@@ -4,6 +4,7 @@
   "branch": "codex/visual-authoring-provider-canary-reconcile",
   "completion_marker": "PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_COMPLETE",
   "status": "COMPLETE_FOR_CANARY_BRIDGE",
+  "readiness": "CONDITIONAL_GO_FOR_ELIGIBLE_COHORT",
   "default_v3_enabled": false,
   "provider_calls": 0,
   "llm_calls": 0,
@@ -40,7 +41,23 @@
     "existing_h2_and_runtime_suite": "43 passed",
     "web_tests": "386 passed",
     "web_build": "passed",
-    "git_diff_check": "pending_final_run"
+    "git_diff_check": "passed",
+    "browser_qa": "passed",
+    "responsive_qa": "passed",
+    "network_audit": "passed"
+  },
+  "evidence": {
+    "browser_qa": "docs/ui-v3/PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_BROWSER_QA.json",
+    "responsive_qa": "docs/ui-v3/PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_RESPONSIVE_QA.json",
+    "network_audit": "docs/ui-v3/PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_NETWORK_AUDIT.json",
+    "screenshots": [
+      "docs/ui-v3/asset-bridge-blocked.png",
+      "docs/ui-v3/asset-bridge-review-pending.png",
+      "docs/ui-v3/asset-bridge-approved-binding-needed.png",
+      "docs/ui-v3/asset-bridge-ready.png",
+      "docs/ui-v3/shot-studio-model-missing.png",
+      "docs/ui-v3/shot-studio-model-selected.png"
+    ]
   },
   "remaining_gaps": [
     "cross-shot review inbox",
