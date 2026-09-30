@@ -18,6 +18,8 @@ This is a read-only convergence audit. It inspected the current implementation a
 
 No real LLM, SHAPI, MiniMax, image provider, video provider, or production write was used. The requested SHAPI model remains a model-profile/provider configuration concern; this phase does not submit a provider request.
 
+**Delete-nothing rule:** this phase makes no deletion, deprecation implementation, default-surface switch, route change, migration, or production behavior change. Any dead-code or deprecation candidate below is documentation only.
+
 ## Executive decision
 
 - **V3 single-shot closed loop:** `COMPLETE_FOR_CANONICAL_SINGLE_SHOT`. `ProductWorkspaceShotStudioV3` reads the V2 projection, submits through `productionGeneration.ts`, observes the canonical V2 projection, and sends review through validation plus explicit promotion. IMAGE and VIDEO are separate lanes and are not chained automatically.
@@ -56,6 +58,101 @@ Legacy generation is partially converged, not a second canonical production serv
 - The Legacy caller retains a defensive `task_id` branch. It calls `upsertPendingStoryboardTask`, `waitForCreativeTask`, `/api/prototyping/tasks/{task_id}`, and `/reconcile` when a response is not canonical. The current bridge normally returns `execution`/`candidate` without `task_id`; the branch remains reachable for older creative-task routes and other Legacy tools.
 
 Generation can be shared now, but Legacy cannot be deleted because its surrounding capabilities are materially broader than V3 single-shot production.
+
+## Workspace integration audit
+
+| Concern | Current implementation | Evidence | Audit result |
+|---|---|---|---|
+| Legacy entry | `ProductWorkspaceSectionContent` renders `ProductionWorkspaceV2Panel` and `ProductWorkspaceStoryboardSection` when the flag is absent | `web/src/components/ProductWorkspaceSectionContent.tsx:263-310` | Legacy is the current default surface |
+| V3 entry | The same branch renders `ProductWorkspaceShotStudioV3` only when `isShotStudioCanaryEnabled(search)` sees `ui_v3=shot-studio` | `web/src/components/ProductWorkspaceSectionContent.tsx:23-24,124,263` | Reversible canary gate; not default |
+| Episode/shot URL | `ProductWorkspace.tsx:readUrlWorkspaceNavigation` reads `section`, `episode`, `shot`, and `step`; selected shot is held in `selectedStoryboardShotId` | `web/src/components/ProductWorkspace.tsx:81-106` | URL/deep-link state is shared at shell level |
+| Shot selection | `onSelectShot` is passed to both V3 and Legacy; Legacy also maintains `selectedEpisode` and picks a first shot when needed | `ProductWorkspace.tsx:318-341`; `ProductWorkspaceStoryboardSection.tsx:2050-2065` | Selection is shared, rendering semantics differ |
+| Mode | `workspaceViewMode` is owned by `ProductWorkspace` and passed to V3, V2 panel, Legacy, assets, tasks, and delivery | `ProductWorkspace.tsx:104,676-699`; `ProductWorkspaceSectionContent.tsx` | Shared standard/professional mode |
+| Refresh | `handleRefreshAll` refreshes legacy workspace, V2, and project data; V3 also receives `onRefreshProductionWorkspaceV2` | `ProductWorkspace.tsx:132-141,609`; `ProductWorkspaceSectionContent.tsx:272` | Refresh plumbing is shared, but Legacy local recovery can add a second source |
+| Model selection | Legacy storyboard and Canvas Beta write `production-generation-profile-selection-v1`; `useProductionWorkspaceV2` reads it only when refreshing; V3 only displays `lane.professional.model.selected_profile_id` and has no selector | `productWorkspaceGeneration.ts`; `ProductWorkspaceStoryboardSection.tsx:4296-4320`; `ProductWorkspaceShotStudioV3.tsx:272-282`; `useProductionWorkspaceV2.ts:47` | Model choice is not fully owned by V3; this is a default migration gate |
+
+## Capability matrix (required audit columns)
+
+The following matrix records the requested capability-level owner and write semantics. `CANONICAL`, `COMPATIBILITY`, `UX-ONLY`, `LEGACY`, and `NONCANONICAL` refer to the truth classification, not to the visual surface name.
+
+| Capability | Legacy UI owner | V3 UI owner | Canonical read source | Mutation endpoint | Canonical write authority | Provider risk | Legacy local state | V3 support | Duplicate? | Migration recommendation |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Shot navigation | `ProductWorkspaceStoryboardSection` | `ProductWorkspaceShotStudioV3` navigator | `shotsByEpisode` plus V2 shot identity | None | None | None | navigation state only | Supported | Intentional surface duplication | Share shell navigation |
+| Shot selection | Legacy selected episode/shot | `focusShotId`, `onSelectShot` | Workspace project/shot identity | None | None | None | URL/navigation state | Supported | Intentional | Keep shared shell |
+| Episode selection | Legacy `selectedEpisode` | V3 navigator derives episode from V2 shots | `ProductionWorkspaceV2Snapshot.episodes` plus legacy shot groups | None | None | None | URL `episode` | Supported | Yes | Normalize episode selector later |
+| Production state | `ProductionWorkspaceV2Panel` plus legacy aggregate | `productionUiV3.ts:toShotStudioViewModel` | `GET /production-workspace-v2` | None | V2 projection read-only | None | Legacy fields can be stale | Supported | Yes, two presentations | Make V2 the only production read model |
+| Next Best Action | `buildStoryboardCanvasPrimaryActionPlan` and Legacy gate helpers | `productionUiV3.ts:lanePrimaryAction/shotPrimaryAction` | V2 readiness and execution/candidate/official evidence | None | V2 readiness contract | None | Legacy gate booleans | Supported with stricter fail-closed semantics | Yes, conflicting semantics possible | Share action vocabulary, not a God service |
+| Model profile selection | Legacy storyboard selects profiles; Canvas Beta also writes selection | V3 has no selector; reads lane profile | V2 query selection + server profile resolver | Generation POST carries `modelProfileId` | `api/generation_canary_api.py` profile resolver | Cost/provider choice | `production-generation-profile-selection-v1` | Read-only display | Yes | Add V3/ shared selection UI before default |
+| Asset readiness | Legacy readiness summaries and asset center | `lane.professional.assetReadiness` | V2 production asset authority/pointer projection | No production ingestion route | Production asset authority | None | Legacy reference/adoption fields | Supported only for existing canonical assets | Yes | Build canonical asset ingestion bridge |
+| Prompt readiness | `buildShotReadiness`/Legacy compiler diagnostics | `productionUiV3.ts:isPromptStale` and V2 PromptIR | Current PromptIR pointer/version/hash | Prompt APIs below | PromptIR authority/version | LLM only on explicit compile | Legacy prompt metadata | Supported as read gate | Yes | Keep one explicit prompt boundary |
+| Prompt compile | `compileSelectedShotPrompts` | None in V3 CTA | PromptIR handoff/version state | `POST .../compile-prompts`, `/async` | Prompt Version/PromptIR compiler path | Real LLM possible | Pending prompt task and summary | Not supported | No semantic duplicate | Keep Legacy until V3 draft UX |
+| Prompt draft/review | `ProductWorkspacePromptDraftPanel` | None | Decision packet/prompt draft records | `POST .../prompt-drafts`, `/llm`, `/confirm`, diagnostics | Decision packet + Prompt Version | LLM only on confirmed `/llm` | React panel state | Not supported | No | Share later as Prompt domain |
+| IMAGE generation | `runStoryboardGeneration('frame')` | `createShotStudioGenerationController.start` | V2 execution/candidate/official | `POST .../generate-frame` | `GenerationExecutionRecord` → candidate | Provider possible after confirmation | Legacy task fallback | Supported | Same endpoint, different client | Share typed client |
+| VIDEO generation | `runStoryboardGeneration('video')` | Same controller | V2 execution/candidate/official | `POST .../generate-video` | Same canonical chain | Provider possible after confirmation | Adopted/reference fields and task fallback | Supported | Same endpoint, different inputs | Share typed client, retain Legacy inputs |
+| Execution state | Legacy task payload or canonical execution branch | V2 `latest_execution` | `GenerationExecutionRecord` | Generation POST | Generation execution service | Provider status may be async | `task_id` metadata | Supported | Yes | Build execution/task adapter |
+| Long-running observation | `waitForCreativeTask` and Task Center | bounded V2 refresh loop | V2 execution state | No mutation | None | Polling only | Pending task IDs | Supported for canonical execution | Different contracts | Keep separate until adapter |
+| Candidate projection | Legacy canonical panel plus legacy asset list | `productionUiV3.ts:laneCandidateSummary` | V2 `candidates` with validation | None | MediaCandidateRecord | None | Legacy `assets.images/videos` | Supported | Yes | V2 is canonical |
+| Candidate review | `ProductionWorkspaceV2Panel` can review; Legacy adopted panel is separate | `productWorkspaceShotReview.ts` | Candidate + technical validation | `/api/assets/candidates/{id}/validate` | `MediaValidationRecord` | None | Legacy selection/adoption state | Supported | Route facade only | Share authority route |
+| Candidate validation | V2 panel / V3 review controller | Same service | MediaCandidate lineage | `/api/media-authority/candidates/{id}/validate` or `/api/assets/candidates/{id}/validate` | `core.media_authority.validate_media_candidate` | None | None | Supported | Two API facades, one core | Normalize public facade |
+| Candidate promotion | V2 panel / V3 Review Desk | Same service | Candidate + validation + currentness | `/api/assets/candidates/{id}/promote` | OfficialMedia version/authority/pointer | None | Legacy adoption is separate | Supported | Two UI entry contexts | Share now |
+| Official media | Legacy displays both official and adopted | V3 only canonical official | OfficialMedia pointer/authority | Candidate promote | `OfficialMediaAuthority` chain | None | Adopted display fields | Supported | Display duplication | Never promote adoption implicitly |
+| IMAGE_TO_VIDEO source binding | Legacy adopted first-frame/reference resolver | V3 canonical official IMAGE gate | V2 `source_official_image` | Video generation | OfficialMedia pointer | Provider input risk | `asset_links` adopted image | Supported only canonical | Semantic divergence | Canonicalize manual source ingestion |
+| Manual media upload | `ProductWorkspaceStoryboardMediaPanel` | None | No V2 official source; legacy shot/reference rows | `POST .../manual-media-assets`; `POST .../manual-reference-assets` | `StoryboardShot.asset_links` / `VisualReferenceAsset`, not OfficialMedia | Can become provider input in Legacy | Legacy asset links | Not supported | No | Build canonical manual ingestion/promotion |
+| Reference image management | Media panel, assets section, binding helpers | V3 reads canonical bindings only | PromptIR bindings / production asset authority | Visual reference upload/patch routes | VisualReferenceAsset + asset links (non-OfficialMedia) | Provider URL/access risk | Legacy reference rows | Read-only at most | Yes | Define canonical reference authority |
+| Continuity | `ProductWorkspaceStoryboardContinuityPanel` | Neutral rail only | Transition contract/frame/review rows | `/transition-contract/*`, `/transition-frames/*`, `/transition-continuity-reviews/*` | Continuity tables and adopted video evidence | Provider only on explicit fixed retry | React state plus adopted links | Not supported | No | Keep Legacy until cross-shot contract |
+| Acceptance | `ProductWorkspaceStoryboardAcceptancePanel` | None | `StoryboardAcceptanceRecord` via shot output | `POST .../acceptance-records` | Acceptance record, not OfficialMedia | None | Legacy shot meta/acceptance | Not supported | Similar “approve” wording only | Keep separate |
+| Decision evidence | `ProductWorkspaceStoryboardDecisionPanel` | None | Decision packet | `POST .../decision-packet/draft`, `/llm-draft` | Decision packet proposal/review | LLM on confirmation | Panel state | Not supported | No | Share as Decision domain later |
+| QA | `ProductWorkspaceQaSection` and QA decision panels | None | QA workbench/readiness | QA issue/autofix endpoints | QA records | LLM/provider risk depends action | QA follow-up state | Not supported | No | Keep outside V3 generation |
+| Repair | `ProductWorkspaceStoryboardRepairPanel` and section | None | Production readiness repair plan/task | `/production-readiness/repair-plan*` | Repair task, prompt/readiness versions | Provider only if repair launches generation | `repairTask` state | Not supported | No | Keep Legacy compatibility |
+| Rollback | Legacy prompt and repair controls | None | Prompt version/repair baseline records | `prompt-versions/*/rollback`, repair task rollback | Version/baseline records | None | Local UI state only | Not supported | No | Keep separate from media promotion |
+| Task recovery | Legacy task center/recovery | None | Creative task status endpoints | `/api/prototyping/tasks/{id}`, `/reconcile`, `/restart` | Creative task persistence | Provider possible on restart | Three recovery localStorage families | Not supported by design | No | Server-backed adapter later |
+| Retry | Fixed continuity retry only in Legacy | Disabled `retry_generation` | Legacy retry attempt + frozen input | `/video-retry-attempts/{id}/confirm` or task restart | Retry attempt/task records | Provider possible, explicit confirmation | Task IDs and retry metadata | Deferred | Similar label, different contract | Specify canonical retry first |
+| Regenerate | No canonical generic regenerate; Legacy can launch new task paths | No CTA | None unified | No V3 endpoint | None | Provider/cost risk undefined | Legacy asset versioning | Deferred | No | Do not alias Generate |
+| Production details | Legacy raw shot/prompt panels | V3 professional read-only details | V2 evidence DTO | None | None | None | Legacy raw fields | Supported with different detail sets | Presentation duplication | Keep separate standard/professional views |
+| Delivery handoff | Legacy canvas/export/delivery flows | None | Delivery/export records and shot outputs | Delivery endpoints | Delivery records, not OfficialMedia promotion | Provider none | Legacy output/adoption data | Not supported | No | Keep Legacy until delivery parity |
+
+## Call graphs
+
+```mermaid
+flowchart LR
+  L[Legacy Storyboard runStoryboardGeneration] --> E[POST generate-frame / generate-video]
+  E --> B[_delegate_storyboard_generation_to_canonical]
+  B --> P[preview_canonical_generation]
+  B --> X[execute_canonical_generation]
+  X --> G[GenerationExecutionRecord]
+  X --> C[MediaCandidateRecord]
+  L --> T[task_id fallback]
+  T --> TS[/prototyping/tasks/{id}/status/reconcile/restart]
+
+  V[V3 Shot Studio controller] --> PG[submitCanonicalProductionGeneration]
+  PG --> E
+  V --> R[V2 refresh loop]
+  R --> G
+  R --> C
+  C --> RV[validate candidate]
+  RV --> PR[approve/promote]
+  PR --> O[OfficialMediaAuthority + Pointer + Version]
+```
+
+```mermaid
+flowchart LR
+  LA[Legacy adopted/acceptance UI] --> AL[StoryboardShot.asset_links / acceptance record]
+  LA --> CT[Continuity contract/frame/review tables]
+  VR[V3 Review Desk] --> MV[MediaValidationRecord]
+  MV --> OA[OfficialMediaAuthority]
+  OA --> OP[OfficialMediaPointer currentness]
+  OP --> V2[production-workspace-v2]
+```
+
+```mermaid
+flowchart LR
+  LR[Legacy page load/task center] --> LS[localStorage pending task IDs]
+  LS --> ST[/prototyping/tasks/{id}]
+  ST --> RC[/reconcile or /restart]
+  VR2[V3 generation controller] --> RF[bounded GET production-workspace-v2 refresh]
+  RF --> EX[durable execution state]
+  EX --> CP[candidate projection lag / running]
+```
 
 ## Full capability matrix
 
@@ -109,6 +206,100 @@ Generation can be shared now, but Legacy cannot be deleted because its surroundi
 | Readiness repair | None | repair-plan/task/rollback actions | `/production-readiness/repair-plan*` | Not generation | Keep Legacy-only |
 | Task restart/reconcile | None | `productWorkspaceRecovery.ts` | `/api/prototyping/tasks/{task}/reconcile`, `/restart` | Separate task protocol | Share later via adapter |
 
+## Endpoint ownership audit
+
+| Endpoint family | Actual frontend caller | Backend handler/owner | Writes | Provider risk | V3 / Legacy usage |
+|---|---|---|---|---|---|
+| `GET /api/books/{book}/production-workspace` | `useProductionWorkspace`, Legacy authority banner/panels | `api/server.py:get_book_production_workspace` → `build_production_workspace_projection` | No | 0 | Legacy and shell compatibility read |
+| `GET /api/books/{book}/production-workspace-v2` | `useProductionWorkspaceV2`, V3, V2 panel, assets/tasks/delivery bundles | `api/server.py:get_book_production_workspace_v2` → `build_production_workspace_projection_v2` | No | 0 | V3 canonical; shared Legacy read |
+| `POST .../generate-frame`, `POST .../generate-video` | V3 `submitCanonicalProductionGeneration`; Legacy `runStoryboardGeneration` | `api/server.py:generate_storyboard_frame/video` → canonical preview/execute bridge | Execution/candidate rows; provider only after confirmation | Yes | Both; same backend bridge |
+| `POST /api/media-authority/candidates/{id}/validate` | `validateProductionMediaCandidate`; V2 panel | `api/media_authority_api.py` → `validate_media_candidate` | Validation row | No | Legacy V2 panel and service alias |
+| `POST /api/assets/candidates/{id}/validate` | Available route facade; tests/tooling | `api/asset_promotion_api.py` → same core | Validation row | No | Compatibility alias; V3 currently calls media-authority route |
+| `POST /api/assets/candidates/{id}/promote` | V3 Review Desk and V2 panel | `api/asset_promotion_api.py` → `promote_media_candidate` | Promotion + OfficialMedia version/authority/pointer | No | Shared canonical review |
+| `GET/POST /api/prototyping/tasks/{id}`, `/reconcile`, `/restart` | `productWorkspaceRecovery.ts`, `ProductWorkspaceTasksSection`, Legacy fallback | `api/server.py` creative task handlers | Task/retry metadata; restart can enqueue provider work | Restart may call provider | Legacy only; V3 rejects task-only response |
+| `GET /api/books/{book}/creative-tasks` | Task Center | `api/server.py:get_creative_tasks` | No | No | Legacy task inventory |
+| `POST .../compile-prompts`, `/compile-prompts/async` | Legacy section, Canvas, batch actions, recovery | `api/server.py:compile_storyboard_prompts(_async)` | Prompt version/compile task; direct path blocked for production profile | Direct/async compile may call LLM | Legacy only |
+| `POST .../prompt-drafts`, `/prompt-drafts/{packet}/llm`, `/confirm`, `/diagnostics` | `ProductWorkspacePromptDraftPanel` | `api/server.py` prompt draft handlers | Decision packet and Prompt Version on confirm | LLM only on explicit `/llm` | Legacy only |
+| `POST .../manual-media-assets` | `ProductWorkspaceStoryboardMediaPanel` | `api/server.py:upload_storyboard_manual_media_asset` | File + `StoryboardShot.asset_links` or `VisualReferenceAsset` | No provider | Legacy only |
+| `POST .../visual-assets/{type}/{id}/manual-reference-assets` | Assets section/reference controls | `api/server.py:upload_visual_asset_manual_reference_asset` | File + `VisualReferenceAsset`, syncs legacy references | No provider | Legacy/assets only |
+| `GET/PATCH .../visual-assets/...` | Assets section and asset actions | `api/server.py` visual asset/reference handlers | Visual asset/reference rows | LLM/provider only for explicit asset generation | Legacy/assets; not OfficialMedia |
+| `POST /api/books/{book}/production-readiness/repair-plan/execute` | Legacy section repair action | `api/server.py` repair plan/task handlers | Repair task, readiness/version records | Depends on repair action; no automatic V3 call | Legacy only |
+| `GET/POST .../repair-tasks/{id}`, `/rollback` | Legacy section polling and rollback | `api/server.py:get_production_repair_task` and rollback handler | Repair result/rollback records | No provider for rollback | Legacy only |
+| `POST .../acceptance-records` | `ProductWorkspaceStoryboardSection:saveAcceptanceRecord` | `api/server.py:create_storyboard_acceptance_record` | `StoryboardAcceptanceRecord` and shot metadata | No | Legacy only |
+| `POST .../decision-packet/draft`, `/decision-packets/{id}/llm-draft` | `ProductWorkspaceStoryboardDecisionPanel` | `api/server.py` decision packet handlers | Decision packet/proposal | LLM only on explicit confirmation | Legacy only |
+| `/transition-contract/*`, `/transition-frames/*`, `/transition-continuity-reviews/*` | `ProductWorkspaceStoryboardContinuityPanel` | `api/server.py` transition handlers | Contract/frame/review/retry rows | Fixed retry can call provider | Legacy only |
+
+The two candidate validation facades are a route duplication, not two authorities: both call `core.media_authority.validate_media_candidate`. The `assets/candidates/{id}/promote` route is the V3 explicit APPROVE path and writes the canonical OfficialMedia chain; Legacy acceptance/adoption endpoints do not.
+
+## Polling and runtime duplication inventory
+
+| Loop | Polls | Owner | Canonical? | Provider call? | Writes? | Still needed? |
+|---|---|---|---|---|---|---|
+| `productWorkspaceShotGeneration.ts` bounded refresh | `GET /production-workspace-v2` | V3 controller | Yes | No | No; observes only | Yes |
+| `productWorkspaceShotReview.ts` post-promotion refresh | V2 refresh after validate/promote | V3 review controller | Yes | No | Promotion already done | Yes |
+| `productWorkspaceGeneration.ts:waitForCreativeTask` | `/api/prototyping/tasks/{id}` then optional `/reconcile` | Legacy generation/recovery/batch/canvas | No for canonical production; yes for creative task protocol | Reconcile/restart may write | Yes for Legacy task flows |
+| `ProductWorkspaceStoryboardSection` generation fallback | `waitForCreativeTask` after a noncanonical response | Legacy Storyboard | Compatibility | Possible through creative task | Pending task/summaries localStorage | Keep until telemetry proves unreachable |
+| `ProductWorkspaceStoryboardSection` repair interval | `GET .../production-readiness/repair-tasks/{id}` every 2.5s | Legacy repair panel | Legacy repair task | No during read | React state only | Yes while repair task runs |
+| `ProductWorkspaceTasksSection` interval | `loadPendingStoryboardTasks` and agent updates every 15s | Task Center | Legacy task center | Reconcile may call provider adapter | Removes local task metadata on completion | Yes for Legacy recovery |
+| `ProductWorkspace` script/storyboard polling | `/api/pipeline/task/{id}` and `/pipeline/storyboard/task/{id}` every 3s | Upstream generation, not shot media | Legacy pipeline | May invoke upstream generation | Pipeline rows | Outside V3 shot loop |
+| `ProductWorkspaceQaSection` bounded loop | QA workbench refresh up to 12 attempts / 1.5s | QA follow-up | QA domain | Depends on QA autofix | QA state | Outside shot generation |
+| Provider runtime polling | Provider adapter submit/poll | `core/model_adapter_runtime.py`, `core/video_generation_runtime.py` | Backend canonical/creative task dependent | Yes | Execution/task terminal state | Yes for async providers |
+
+There is no evidence that V3 and Legacy simultaneously poll the same canonical execution: V3 never reads `task_id`, and Legacy's task polling is entered only for task-shaped responses or Legacy task domains. The risk is future divergence if a compatibility response contains both execution and task IDs; the migration gate must instrument and reject duplicate observation.
+
+## Official truth audit
+
+| File/symbol | Current usage | Truth classification | Risk | Recommendation |
+|---|---|---|---|---|
+| `web/src/domain/productionUiV3.ts:isCanonicalOfficialMedia` | Requires currentness, version, authority, pointer, and matching IDs before `official` | `CANONICAL` | Low | Keep as presentation adapter |
+| `core/production_workspace_projection_v2.py:_official_projection` | Resolves `OfficialMediaPointer` and validates authority/version currentness | `CANONICAL` | Low | Keep sole production official source |
+| `web/src/components/ProductWorkspaceStoryboardSection.tsx:findLatestAdoptedAsset` | Chooses `assets.images/videos` item with `adopted=true` or latest item | `NONCANONICAL` legacy display/input | Can make adopted media look like an approval and drives Legacy VIDEO inputs | Label display-only; never feed V3 authority |
+| `ProductWorkspaceStoryboardContinuityPanel` | Uses `has_adopted_video` as continuity handoff readiness | `LEGACY` | Adopted video is not OfficialMedia currentness | Keep in Legacy continuity contract; do not reuse as V3 official |
+| `ProductWorkspaceStoryboardAcceptancePanel` | Displays `passed/approved` acceptance status | `LEGACY` | “通过采纳” can be mistaken for media promotion | Keep acceptance wording distinct from candidate promotion |
+| `ProductWorkspaceV2Panel` | Calls canonical validate/promote and displays official pointer | `CANONICAL` | Shares route with V3 but not authority | Share service |
+| `ProductionWorkspaceV2Snapshot.legacy_adopted_is_display_only` | Explicitly exposes boundary | `CANONICAL contract metadata` | Consumers could ignore flag | Add migration telemetry; do not remove Legacy rows |
+
+No inspected component treats a candidate count alone as official, and no V3 path uses a local approved boolean. The false-equivalence risk is confined to Legacy adopted/acceptance/continuity wording and `asset_links` consumers.
+
+## Generation readiness duplication
+
+Legacy readiness is split across `canGenerateFrameFromV2`, `canGenerateVideoFromV2`, `buildStoryboardGateSummary`, `buildShotReadiness`, `hasAdoptedFrame`, `hasAdoptedVideo`, provider preflight, and executability checks in `ProductWorkspaceStoryboardSection.tsx`. V3 uses `ProductionMediaLaneViewModel.generationAllowed`, `primaryAction`, `stale`, and canonical readiness blockers from `productionUiV3.ts`.
+
+- Obsolete for canonical V3 generation: Legacy `hasAdoptedFrame` as a proof of current IMAGE authority and any task/localStorage state as a proof of running execution.
+- Still needed in Legacy: adopted frame/reference payload assembly, H3 provider-public URL preflight, continuity strict-first-frame checks, executability warning/override, and prompt compiler diagnostics.
+- Conflict risk: Legacy can show “可生成” from adopted/reference state while V2 is blocked by `PRODUCTION_ASSET_INGESTION_API_AVAILABLE = False`, stale production binding, missing current PromptIR, or missing explicit profile. V3 correctly remains blocked; do not merge the booleans without a contract.
+
+## Repair and recovery boundary
+
+| Contract | Owner | Identity | Provider/write semantics | Must remain distinct from |
+|---|---|---|---|---|
+| Generation Retry | Not available in V3; fixed continuity retry in Legacy | Failed creative task + frozen input fingerprint/retry record | Explicit confirmation; may submit provider task | Task recovery and regenerate |
+| Task Recovery | `productWorkspaceRecovery.ts` and Task Center | `task_id`, external task ID | Read/reconcile/restart task protocol; localStorage metadata | Canonical execution observation |
+| Production Repair | Legacy readiness repair plan/task | Repair task + confirmation token + baseline version | Writes repair/readiness records; can affect many shots | Generation retry |
+| Prompt Repair | Legacy `compileSelectedShotPrompts` or prompt draft panel | Prompt task/decision packet/version | Explicit LLM or no-LLM draft; creates Prompt Version on confirm | Media generation |
+| QA Repair | `ProductWorkspaceQaSection` | QA issue/follow-up target | QA auto-fix/recheck contract | Production repair |
+| Rollback | Legacy prompt version and repair task rollback | Prompt version or baseline version | Restores version/repair state; does not undo OfficialMedia by editing source facts | Regenerate |
+
+## `ProductWorkspaceStoryboardSection` responsibility decomposition
+
+`ProductWorkspaceStoryboardSection.tsx` is currently a compatibility shell and orchestration boundary, not one semantic domain. Its responsibilities are:
+
+| Responsibility | Concrete symbols/imports | Future ownership |
+|---|---|---|
+| Navigation/selection | `selectedEpisode`, `selectedShotId`, `onSelectShot`, `STORYBOARD_STEPS` | Shared workspace shell; Legacy presentation |
+| Prompt | `compileSelectedShotPrompts`, prompt version fetch/rollback/lock, `ProductWorkspacePromptDraftPanel`, history/authority panels | Prompt domain shared later; compiler remains explicit |
+| Generation | `runStoryboardGeneration`, `canGenerateFrameFromV2`, `canGenerateVideoFromV2` | Canonical Generation service; Legacy compatibility wrapper until migrated |
+| Media | `adoptedImage`, `adoptedVideo`, `ProductWorkspaceStoryboardMediaPanel` | Legacy compatibility; manual ingestion shared later |
+| Recovery/runtime | `waitForCreativeTask`, recovery IDs, `persistShotExecutionSummary` | Legacy Task Recovery until execution adapter |
+| Repair/QA | repair plan/task polling, split-draft apply, executability panels | Legacy repair/QA domains |
+| Decision | `ProductWorkspaceStoryboardDecisionPanel` and evidence packets | Decision domain |
+| Acceptance | `saveAcceptanceRecord`, AcceptancePanel | Legacy acceptance domain |
+| Continuity | ContinuityPanel and transition state | Legacy continuity domain |
+| Model | profile loading/selectors and localStorage persistence | Shared Model Selection service/UI; V3 currently read-only |
+| Runtime/read | `productionWorkspace`, `productionWorkspaceV2`, authority banner | V2 canonical read adapter |
+
+The file should not be split into a `ProductionEverythingService`. The safe extraction seams are Generation, Media Authority, Canonical Refresh, Model Selection, Prompt, and Task Recovery; the Legacy shell can compose them until capability parity is proven.
+
 ## Duplication audit
 
 ### Generation duplication
@@ -144,13 +335,38 @@ V3 sends `compileIfMissing: false` through `productionGeneration.ts`; generation
 
 ## Manual media/reference boundary
 
-V3 reads canonical asset bindings and requires a current canonical official IMAGE for IMAGE_TO_VIDEO. It does not pass arbitrary `firstFrameAssetId` or `referenceAssetIds` to the production generation service. Legacy supports adopted first-frame media, reference payloads, provider-public URL resolution, and manual export drafts in `ProductWorkspaceStoryboardSection.tsx` and `productWorkspaceStoryboardReferencePayload.ts`. These inputs are not automatically OfficialMediaAuthority. Define canonical manual-ingestion before exposing them in V3.
+The current manual upload contracts are real writes, but they are not canonical production media writes:
+
+- `ProductWorkspaceStoryboardMediaPanel:ManualMediaUploadCard` posts multipart data to `POST /api/books/{book}/storyboard/{episode}/{shot}/manual-media-assets`.
+- For `targetKind=image`, `api/server.py:upload_storyboard_manual_media_asset` stores a file and appends an adopted item to `StoryboardShot.asset_links.images` through `_save_asset_to_storyboard`.
+- For `targetKind=reference-image`, it creates a `VisualReferenceAsset`, then `_sync_visual_reference_asset_to_storyboard` updates Legacy reference bindings.
+- The asset-center route `POST /api/books/{book}/visual-assets/{asset_type}/{asset_id}/manual-reference-assets` also creates `VisualReferenceAsset` and syncs Legacy bindings.
+- Neither route creates `GenerationExecutionRecord`, `MediaCandidateRecord`, `MediaValidationRecord`, `OfficialMediaVersion`, `OfficialMediaAuthority`, or `OfficialMediaPointer`.
+- `core/production_workspace_projection_v2.py` sets `PRODUCTION_ASSET_INGESTION_API_AVAILABLE = False`. When required entity media is missing, V2 emits `UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API` and sends the user to Assets; the manual Legacy upload does not satisfy the canonical Production Asset authority gate.
+
+Therefore V2 can display a canonical production asset only when an existing Production Asset authority/version/pointer is present. A Legacy manual IMAGE can be previewed/adopted and used by Legacy VIDEO/reference flows, but it cannot become a canonical official IMAGE through the manual upload route. A future canonical manual-ingestion/promotion path is a product-blocking bridge for projects with missing assets; it must define checksum/metadata, authority snapshot, candidate validation, and explicit promotion before V3 exposes upload controls.
 
 ## Legacy-only and V3-only capabilities
 
 **Legacy-only:** Prompt Compiler async task and prompt rollback; manual/adopted first-frame and multi-reference payloads; acceptance records; cross-shot continuity; production readiness repair and rollback; creative task recovery/reconcile/restart; machine prompt export and advanced tools.
 
 **V3-only:** Single Shot Studio lane model from `productionUiV3.ts`; canonical-only post-submit observation with `running`/`waiting_candidate`; `V3_LEGACY_GENERATION_TASK_RESPONSE_UNSUPPORTED` fail-closed guard; freshness and double-submit lock; review identity/currentness guard; no post-submit cancel CTA and no optimistic execution/candidate state.
+
+## Duplicate CTA audit
+
+| Visible CTA family | Surfaces | Same backend action? | Semantic difference | Audit decision |
+|---|---|---|---|---|
+| 生成图片 | Legacy Advanced Tools and V3 Generation Controls | Yes when both call `generate-frame` canonical bridge | Legacy may show readiness from adopted/legacy state and has task fallback; V3 requires canonical V2 `generate_image` | One canonical generation owner; preserve Legacy wrapper until converged |
+| 生成视频 | Legacy Advanced Tools and V3 Generation Controls | Yes for canonical bridge | Legacy can carry adopted first-frame/reference and executability override; V3 requires canonical IMAGE_TO_VIDEO source | Do not merge source semantics prematurely |
+| 批准 / 验证 / 提升 | V2 panel and V3 Review Desk | Validation/promote calls same authority core | V3 always binds candidate identity/currentness; Legacy acceptance/adopt is separate wording | Keep canonical promotion explicit; do not map acceptance to promote |
+| 采纳 | Legacy Media Panel / shot output | No canonical OfficialMedia mutation | Writes `asset_links` adopted flags and may feed Legacy video/reference | Legacy-only compatibility; label noncanonical |
+| 验收 | Legacy Acceptance Panel | No | Writes `StoryboardAcceptanceRecord` and feedback | Keep distinct from media promotion |
+| 重编提示词 | Legacy Repair Panel, Prompt Draft Panel, Canvas, batch | No | Creates Prompt Version or draft; can call LLM | Keep separate from Generate CTA |
+| 恢复任务 | Legacy Task Center/Recovery | No | Reads/reconciles/restarts creative task by `task_id` | Keep Legacy until execution adapter |
+| 重试 | Legacy fixed continuity retry and generic task restart | No single shared semantics | Frozen-input retry has lineage/confirmation; generic restart is task protocol | Do not expose V3 retry yet |
+| 修复 / 回滚 | Legacy repair and prompt history | No | Mutates readiness/version baselines | Keep separate from generation/review |
+
+The only confirmed duplicate mutation is the canonical generation bridge and candidate authority routes. Similar labels such as “采纳”, “验收”, and “批准” are intentionally different writes and must not be collapsed.
 
 ## Shared service candidates
 
@@ -160,6 +376,8 @@ V3 reads canonical asset bindings and requires a current canonical official IMAG
 | Canonical generation bridge | `SHARE_NOW` | `_delegate_storyboard_generation_to_canonical` | Keep one backend mutation |
 | Candidate validate/promote authority | `SHARE_NOW` | `core.media_authority`, `api/asset_promotion_api.py` | Keep one authority chain |
 | Model profile resolver | `SHARE_NOW` | `api/generation_canary_api.py`, `productWorkspaceGeneration.ts` | One typed selection object |
+| Canonical refresh/error normalization | `SHARE_NOW` | `productionWorkspace.ts:fetchProductionWorkspaceV2`, `ProductionWorkspaceServiceError`, V3 controller refresh/error helpers | One read/error contract; do not share Legacy task errors as execution truth |
+| Cost confirmation | `SHARE_NOW` | V3 controller `confirmCost`; Legacy explicit `window.confirm` before generation/compile | Preserve explicit user boundary, then pass only confirmed execution request |
 | Prompt Compiler | `SHARE_LATER` | Legacy compile actions and prompt APIs | Share after V3 draft/version UX |
 | Task/execution recovery adapter | `SHARE_LATER` | `productWorkspaceRecovery.ts` vs V2 projection | Server-backed adapter; no storage merge |
 | Manual media/reference ingestion | `SHARE_LATER` | Legacy reference payload code | Define authority and lineage first |
@@ -179,12 +397,24 @@ V3 reads canonical asset bindings and requires a current canonical official IMAG
 | Legacy acceptance/continuity/repair | `KEEP` | Replacement contracts and audit trails exist |
 | V3 canary query flag | `MIGRATION_CONTROL` | Rollout telemetry and rollback switch exist |
 | Legacy Storyboard deletion | `DO_NOT_DEPRECATE_NOW` | All Legacy-only capabilities have replacements |
+| `ProductWorkspaceStoryboardSection.tsx` orchestration shell | `KEEP_COMPATIBILITY` | It still hosts prompt, manual media, continuity, repair, QA, acceptance, delivery, and task recovery |
+| `productWorkspaceRecovery.ts` | `KEEP_COMPATIBILITY` | Active Legacy task recovery and Task Center depend on its local metadata |
+| `ProductWorkspaceStoryboardMediaPanel.tsx` | `DO_NOT_REMOVE_YET` | Manual upload/reference ingestion has no canonical Production Asset replacement |
+| `ProductWorkspaceStoryboardAcceptancePanel.tsx` | `KEEP` | Acceptance is a downstream editorial contract, not OfficialMedia promotion |
+| `ProductWorkspaceStoryboardContinuityPanel.tsx` | `KEEP` | Cross-shot continuity contract and fixed retry are absent from V3 |
+| `ProductWorkspaceStoryboardRepairPanel.tsx` | `KEEP` | Production readiness repair/rollback remains Legacy-only |
 
 ## Default surface readiness
 
-**Decision: `CONDITIONAL_GO`.** The V3 single-shot flow is safe enough for a gated default migration because it has canonical reads, explicit model selection, freshness/double-submit guards, durable candidate review, and refresh recovery. It is not ready for an unconditional switch because it remains canary-gated, Review Inbox has no backend contract, Retry/Regenerate is deferred, and Legacy-only prompt/reference/continuity/repair workflows are absent from V3.
+**Decision: `CONDITIONAL_GO`.** V3 is safe enough for a gated default migration only for projects that already have canonical Production Asset authority and a persisted explicit model profile. The single-shot loop has canonical reads, freshness/double-submit guards, durable candidate review, and refresh recovery. An unconditional switch is not ready because:
 
-Recommended rollout: make V3 default for eligible projects behind a reversible server/config flag, retain a visible Legacy fallback, and keep a kill switch. Do not delete Legacy or reinterpret its task/localStorage records in this phase.
+1. V3 remains canary-gated and has no in-surface model selector; model selection is written by Legacy/Canvas UI and read from `production-generation-profile-selection-v1`.
+2. `PRODUCTION_ASSET_INGESTION_API_AVAILABLE = False`; Legacy manual upload/reference writes do not establish canonical Production Asset or OfficialMedia authority.
+3. Review Inbox has no cross-shot backend contract.
+4. Retry/Regenerate is deferred.
+5. Legacy Prompt Compiler/draft, reference, continuity, repair/recovery, QA, and delivery workflows are absent from V3.
+
+Recommended rollout: use an eligibility gate for projects with current canonical assets and explicit profiles, make V3 default for that cohort behind a reversible server/config flag, and retain a visible Legacy fallback. Do not delete Legacy or reinterpret its task/localStorage records in this phase.
 
 ## Review Inbox readiness
 
@@ -196,13 +426,15 @@ Recommended rollout: make V3 default for eligible projects behind a reversible s
 
 ## Migration ladder and gates
 
-1. **Gate 0 — telemetry/read parity:** instrument V2 reads, canonical bridge responses, Legacy task fallback count, and adoption-versus-official display. Keep provider calls and source-fact mutation at zero in QA.
-2. **Gate 1 — default V3 with fallback:** route eligible projects to Shot Studio by default behind a reversible flag; retain a Legacy fallback link.
-3. **Gate 2 — caller convergence:** migrate Legacy production generation to the typed canonical client; remove only the unreachable task branch after telemetry is zero.
-4. **Gate 3 — capability replacement:** define Prompt Compiler handoff, canonical manual-media ingestion, and continuity/repair navigation contracts.
-5. **Gate 4 — cross-shot review:** implement server-side Review Inbox read/write semantics, pagination, conflict handling, and authority reuse.
-6. **Gate 5 — retry/regenerate:** specify and test canonical retry/regenerate semantics, then expose the CTA.
-7. **Gate 6 — deprecation decision:** only after Gates 2–5 and active-project migration evidence classify Legacy fallback for removal.
+1. **Gate 0 — telemetry/read parity:** instrument V2 reads, canonical bridge responses, Legacy task fallback count, adoption-versus-official display, and model-selection source. Keep provider calls and source-fact mutation at zero in QA.
+2. **Gate 1 — canonical asset bridge:** provide Production Asset ingestion/binding with authority snapshot, checksum/metadata validation, and explicit promotion; prove manual Legacy uploads cannot silently masquerade as canonical.
+3. **Gate 2 — shared model selection:** expose one explicit selector usable from V3 and Legacy/Canvas, refresh V2 after changes, and prove server profile identity matches the POST.
+4. **Gate 3 — eligible default V3 with fallback:** route only projects passing Gates 1–2 to Shot Studio by default behind a reversible flag; retain a Legacy fallback link.
+5. **Gate 4 — caller convergence:** migrate Legacy production generation to the typed canonical client; remove only the unreachable task branch after telemetry is zero.
+6. **Gate 5 — capability replacement:** define Prompt Compiler handoff, canonical manual-reference ingestion, and continuity/repair navigation contracts.
+7. **Gate 6 — cross-shot review:** implement server-side Review Inbox read/write semantics, pagination, conflict handling, and authority reuse.
+8. **Gate 7 — retry/regenerate:** specify and test canonical retry/regenerate semantics, then expose the CTA.
+9. **Gate 8 — deprecation decision:** only after Gates 4–7 and active-project migration evidence classify Legacy fallback for removal.
 
 ## Rollback strategy
 
@@ -216,19 +448,34 @@ Recommended rollout: make V3 default for eligible projects behind a reversible s
 
 | ID | Risk | Evidence | Impact | Mitigation |
 |---|---|---|---|---|
-| R1 | Legacy and V3 disagree on visible state | V2 projection vs Legacy task/localStorage/adopted fields | Confusion and duplicate action | V2 shared read model; display-only labels |
-| R2 | Legacy `compileIfMissing: true` implies prompt mutation | `ProductWorkspaceStoryboardSection.tsx:runStoryboardGeneration` | Prompt version drift | Explicit compiler CTA; typed caller migration |
-| R3 | Task fallback duplicates polling | `productWorkspaceRecovery.ts` | Stale status and duplicate retry | Execution/task adapter first |
-| R4 | Adopted/reference media bypasses authority | Legacy adopted/reference payloads | IMAGE_TO_VIDEO source drift | Official-source gate; canonical ingestion |
-| R5 | Review route facades drift | `/api/media-authority/*` and `/api/assets/candidates/*` call same core | Contract drift | One public facade plus alias tests |
-| R6 | Aggregate V2 view does not scale to 500/1000 shots | V2 DTO has shot arrays and no cross-shot pagination | Performance/staleness | Separate pagination phase |
+| R1 | Legacy and V3 disagree on visible state | V2 projection vs Legacy task/localStorage/adopted fields | High: duplicate action or false progress | V2 shared read model; display-only labels; Gate 0 |
+| R2 | Legacy `compileIfMissing: true` implies prompt mutation | `ProductWorkspaceStoryboardSection.tsx:runStoryboardGeneration` | High: Prompt Version drift before paid media call | Explicit compiler CTA; typed caller migration |
+| R3 | Task fallback duplicates polling | `productWorkspaceRecovery.ts`, Task Center 15s interval | High: stale status/duplicate restart | Execution/task adapter first; Gate 4 |
+| R4 | Adopted/reference media bypasses authority | `_save_asset_to_storyboard`, `VisualReferenceAsset`, Legacy adopted fields | High: IMAGE_TO_VIDEO source drift and noncanonical official claim | Official-source gate; canonical ingestion; Gate 1 |
+| R5 | Review route facades drift | `/api/media-authority/*` and `/api/assets/candidates/*` call same core | Medium: API contract drift | One public facade plus alias tests |
+| R6 | Aggregate V2 view does not scale to 500/1000 shots | V2 DTO has shot arrays and no cross-shot pagination | High at scale: performance/staleness | Separate pagination phase; BG-04 |
+| R7 | V3 has no model selector | Shot Studio only displays `selected_profile_id`; Legacy/Canvas own writes | High: blocked users or stale profile/cost drift | Shared selector and server identity check; BG-05 |
+| R8 | Manual upload looks like asset completion | V2 `asset_ingestion_api_available=false`; Legacy upload still returns ready/adopted | High: user believes production can continue when canonical gate is blocked | Label Legacy upload compatibility; Gate 1 |
+| R9 | Duplicate CTA wording hides different writes | Generate, adopt, acceptance, fixed retry, and prompt compile all appear in Legacy | Medium: wrong approval or retry semantics | Mutation inventory and distinct labels |
+| R10 | URL/fallback divergence | Shared URL selection plus query-only V3 gate | Medium: deep link opens a different surface after rollout | Preserve `section/episode/shot/step`, add fallback link/kill switch |
+
+## Blocking gaps
+
+| Gap | Evidence | Why it blocks an unconditional default | Required gate |
+|---|---|---|---|
+| BG-03 canonical Production Asset ingestion | `core/production_workspace_projection_v2.py:23,568-586`; manual upload handlers in `api/server.py:15201` and `15114` | Missing required entities leave V2 blocked; Legacy uploads do not create Production Asset authority | Canonical ingestion, binding, validation, and explicit promotion |
+| BG-05 V3 model selection UI | `ProductWorkspaceShotStudioV3.tsx:272-282` only reads profile; selectors exist in Legacy section `4296-4320` and Canvas Beta | New V3 users can be blocked or inherit stale localStorage choice | Shared selector with server/profile recheck |
+| BG-01 Unified Reviewable Read Model | V2 has per-shot arrays, no queue/cursor/assignment | Cannot build Inbox without a second client truth source | Server Review Inbox read model |
+| BG-02 Unified Review Decision Contract | V3 has one-candidate APPROVE only; no bulk/changes/conflict contract | Cross-shot review semantics are undefined | Server decision contract |
+| BG-06 canonical retry/regenerate semantics | `lanePrimaryAction` defers retry; Legacy restart/fixed continuity retry are different contracts | Generate cannot safely stand in for retry | Canonical execution lineage/fee/staleness contract |
+| BG-04 large-scale pagination | V2 returns aggregate `shots` array; no 500/1000-shot server pagination in inspected route | 100-shot render pass does not prove production scale | Server pagination/virtualized read phase |
 
 ## One recommended next phase
 
-`PHASE_PRODUCTION_UI_V3_DEFAULT_SURFACE_GATED_MIGRATION`
+`PHASE_PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE`
 
-Deliver only reversible rollout and caller-convergence gates: server/config default switch with Legacy fallback, shared V2 read contract, typed canonical generation/review client for both surfaces, and telemetry proving zero task fallback for canonical production generation. Do not bundle Review Inbox, Retry/Regenerate, provider changes, or Legacy deletion.
+Deliver only the highest product-blocking bridges required for a safe default cohort: canonical Production Asset ingestion/reference lineage, a shared explicit Model Selection surface consumed by V2 and V3, and telemetry/adapter work that proves Legacy canonical generation does not fall into task recovery. Keep Review Inbox, Retry/Regenerate, provider changes, and Legacy deletion as later separate phases.
 
 ## Verification baseline and audit limits
 
-The prior implementation phase recorded: Web 57 files / 385 tests passed; backend canonical/authority tests 32 passed; web build passed; browser console/page errors 0; responsive QA at 1280/1440/1920 had no horizontal overflow; provider calls, LLM/SHAPI/MiniMax/image/video submissions, and production writes were zero. This audit is documentation-only and final validation is rerun after report creation.
+The prior implementation phase recorded: Web 57 files / 385 tests passed; backend canonical/authority tests 32 passed; web build passed; browser console/page errors 0; responsive QA at 1280/1440/1920 had no horizontal overflow. This audit and its validation use no real LLM, SHAPI, MiniMax, image/video generation, provider submission, candidate validation write, candidate promotion write, or generation write. This audit is documentation-only and final validation is rerun after report creation.

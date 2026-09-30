@@ -40,7 +40,9 @@
       "cross-shot continuity",
       "production readiness repair and rollback",
       "creative task recovery/reconcile/restart",
-      "machine prompt export and advanced tools"
+      "machine prompt export and advanced tools",
+      "QA repair and recheck",
+      "delivery/export handoff"
     ]
   },
   "readiness": {
@@ -50,10 +52,30 @@
     "retry_regenerate": "NO_GO",
     "reason_codes": [
       "V3_REMAINS_CANARY_GATED",
+      "CANONICAL_PRODUCTION_ASSET_INGESTION_MISSING",
+      "V3_MODEL_SELECTOR_MISSING",
       "NO_CROSS_SHOT_REVIEW_INBOX_CONTRACT",
       "RETRY_REGENERATE_DEFERRED",
       "LEGACY_ONLY_CAPABILITIES_HAVE_NO_V3_REPLACEMENT"
     ]
+  },
+  "workspace_integration": {
+    "legacy_entry": "web/src/components/ProductWorkspaceSectionContent.tsx renders ProductionWorkspaceV2Panel + ProductWorkspaceStoryboardSection when ui_v3 is absent",
+    "v3_entry": "isShotStudioCanaryEnabled(search) requires ?ui_v3=shot-studio",
+    "url_state": "ProductWorkspace.tsx:readUrlWorkspaceNavigation reads section, episode, shot, step",
+    "shared_selection": "onSelectShot and selectedStoryboardShotId are passed to both surfaces",
+    "shared_mode": "workspaceViewMode is owned by ProductWorkspace and passed to V3, Legacy, assets, tasks, delivery",
+    "shared_refresh": "handleRefreshAll and onRefreshProductionWorkspaceV2 refresh the same shell/V2 hooks",
+    "model_selection_gap": "Legacy Storyboard and Canvas write localStorage profile selection; V3 only reads lane.professional.model.selected_profile_id and exposes no selector",
+    "evidence": ["web/src/components/ProductWorkspace.tsx", "web/src/components/ProductWorkspaceSectionContent.tsx", "web/src/hooks/useProductionWorkspaceV2.ts"]
+  },
+  "call_graphs": {
+    "legacy_generation": ["ProductWorkspaceStoryboardSection:runStoryboardGeneration", "POST generate-frame/generate-video", "api/server.py:_delegate_storyboard_generation_to_canonical", "preview_canonical_generation", "execute_canonical_generation", "GenerationExecutionRecord -> MediaCandidateRecord", "task_id fallback -> productWorkspaceRecovery"],
+    "v3_generation": ["ProductWorkspaceShotStudioV3", "createShotStudioGenerationController.start", "submitCanonicalProductionGeneration", "POST generate-frame/generate-video", "GET production-workspace-v2 refresh", "candidate review -> OfficialMedia authority"],
+    "legacy_media_decision": ["findLatestAdoptedAsset", "StoryboardShot.asset_links adopted item", "acceptance-records / continuity tables", "noncanonical legacy display/input"],
+    "v3_media_review": ["createShotStudioMediaReviewController", "candidate validate", "candidate promote", "OfficialMediaVersion + OfficialMediaAuthority + OfficialMediaPointer"],
+    "legacy_recovery": ["productWorkspaceRecovery localStorage", "GET /api/prototyping/tasks/{task_id}", "POST /reconcile or /restart", "Task Center polling"],
+    "v3_runtime_recovery": ["V2 production projection", "bounded GET refresh", "running/waiting_candidate/candidate_ready", "reload from durable projection"]
   },
   "truth_sources": [
     {"concern": "production_state", "canonical": "production-workspace-v2", "path": "core/production_workspace_projection_v2.py", "recommendation": "SHARE_NOW"},
@@ -73,6 +95,80 @@
     {"action": "acceptance", "v3": "none", "legacy": "saveAcceptanceRecord", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/acceptance-records", "owner": "Legacy acceptance", "classification": "DO_NOT_SHARE"},
     {"action": "repair_rollback", "v3": "none", "legacy": "repair and rollback handlers", "endpoint": "/api/books/{book_id}/production-readiness/repair-plan*", "owner": "Legacy readiness repair", "classification": "DO_NOT_SHARE"}
   ],
+  "capability_matrix": [
+    {"capability": "shot_navigation", "legacy_owner": "ProductWorkspaceStoryboardSection", "v3_owner": "ProductWorkspaceShotStudioV3", "read": "shotsByEpisode/V2 identity", "mutation": null, "authority": "none", "provider_risk": "none", "legacy_state": "navigation only", "v3_status": "supported", "duplicate": "intentional presentation", "recommendation": "share shell"},
+    {"capability": "production_state", "legacy_owner": "ProductionWorkspaceV2Panel + Legacy aggregate", "v3_owner": "productionUiV3", "read": "GET /api/books/{book}/production-workspace-v2", "mutation": null, "authority": "V2 read projection", "provider_risk": "none", "legacy_state": "legacy fields may be stale", "v3_status": "canonical", "duplicate": "two presentations", "recommendation": "make V2 sole production read"},
+    {"capability": "next_best_action", "legacy_owner": "buildStoryboardCanvasPrimaryActionPlan", "v3_owner": "lanePrimaryAction/shotPrimaryAction", "read": "V2 readiness + execution/candidate/official", "mutation": null, "authority": "read contract", "provider_risk": "none", "legacy_state": "legacy booleans", "v3_status": "fail_closed", "duplicate": "semantic overlap", "recommendation": "share vocabulary only"},
+    {"capability": "model_profile_selection", "legacy_owner": "StoryboardSection + Canvas Beta", "v3_owner": "none (read-only display)", "read": "V2 query selection and lane profile", "mutation": "generation POST modelProfileId", "authority": "server profile resolver", "provider_risk": "cost/provider choice", "legacy_state": "production-generation-profile-selection-v1", "v3_status": "blocked without persisted choice", "duplicate": "ownership drift", "recommendation": "shared selector before default"},
+    {"capability": "asset_readiness", "legacy_owner": "Legacy readiness + Assets section", "v3_owner": "ProductionMediaLaneViewModel.assetReadiness", "read": "production asset authority/pointer", "mutation": "no canonical ingestion", "authority": "Production Asset authority", "provider_risk": "none", "legacy_state": "reference/adoption fields", "v3_status": "existing authority only", "duplicate": "yes", "recommendation": "canonical asset bridge"},
+    {"capability": "prompt_compile", "legacy_owner": "compileSelectedShotPrompts", "v3_owner": "none", "read": "PromptIR handoff/version", "mutation": "POST .../compile-prompts and /async", "authority": "Prompt Version/PromptIR", "provider_risk": "LLM possible", "legacy_state": "pending prompt task", "v3_status": "explicitly absent", "duplicate": "no semantic duplicate", "recommendation": "keep separate"},
+    {"capability": "prompt_draft_review", "legacy_owner": "ProductWorkspacePromptDraftPanel", "v3_owner": "none", "read": "decision packet/prompt draft", "mutation": "POST .../prompt-drafts/{packet}/llm and /confirm", "authority": "decision packet + Prompt Version", "provider_risk": "LLM on confirmation", "legacy_state": "React panel", "v3_status": "absent", "duplicate": "no", "recommendation": "share later Prompt domain"},
+    {"capability": "image_generation", "legacy_owner": "runStoryboardGeneration(frame)", "v3_owner": "createShotStudioGenerationController", "read": "V2 execution/candidate/official", "mutation": "POST .../generate-frame", "authority": "GenerationExecutionRecord -> candidate", "provider_risk": "provider after confirmation", "legacy_state": "task fallback", "v3_status": "complete", "duplicate": "same bridge", "recommendation": "share typed client"},
+    {"capability": "video_generation", "legacy_owner": "runStoryboardGeneration(video)", "v3_owner": "createShotStudioGenerationController", "read": "V2 execution/candidate/official", "mutation": "POST .../generate-video", "authority": "same canonical chain", "provider_risk": "provider after confirmation", "legacy_state": "adopted/reference/task state", "v3_status": "complete with official source gate", "duplicate": "same bridge, different inputs", "recommendation": "share backend"},
+    {"capability": "execution_and_long_running_observation", "legacy_owner": "waitForCreativeTask + Task Center", "v3_owner": "bounded V2 refresh", "read": "task status vs V2 execution", "mutation": "reconcile/restart only Legacy", "authority": "execution record for V3", "provider_risk": "restart may call provider", "legacy_state": "pending task IDs", "v3_status": "canonical", "duplicate": "different protocols", "recommendation": "adapter later"},
+    {"capability": "candidate_review_validation_promotion", "legacy_owner": "V2 panel + authority tooling", "v3_owner": "Shot Studio Review Desk", "read": "candidate + validation + official pointer", "mutation": "validate and /api/assets/candidates/{id}/promote", "authority": "MediaValidationRecord + OfficialMedia chain", "provider_risk": "none", "legacy_state": "adoption separate", "v3_status": "complete per shot", "duplicate": "route facade/UI contexts", "recommendation": "share authority"},
+    {"capability": "official_media", "legacy_owner": "V2 panel plus adopted display", "v3_owner": "CanonicalOfficialMediaViewModel", "read": "OfficialMediaPointer/Version/Authority", "mutation": "candidate promote", "authority": "OfficialMediaAuthority", "provider_risk": "none", "legacy_state": "asset_links adopted", "v3_status": "canonical", "duplicate": "display only", "recommendation": "never equate adoption"},
+    {"capability": "image_to_video_source_binding", "legacy_owner": "adopted first-frame/reference resolver", "v3_owner": "V2 source_official_image gate", "read": "current OfficialMedia IMAGE", "mutation": "video generation", "authority": "OfficialMediaPointer", "provider_risk": "provider input", "legacy_state": "asset_links", "v3_status": "canonical", "duplicate": "semantic divergence", "recommendation": "manual ingestion bridge"},
+    {"capability": "manual_media_and_reference", "legacy_owner": "StoryboardMediaPanel + Assets section", "v3_owner": "none", "read": "Legacy asset_links/VisualReferenceAsset; V2 production authority does not ingest", "mutation": "manual-media-assets and manual-reference-assets", "authority": "noncanonical Legacy rows", "provider_risk": "URL/input risk", "legacy_state": "adopted/reference rows", "v3_status": "absent", "duplicate": "no", "recommendation": "canonical ingestion required"},
+    {"capability": "continuity_acceptance_decision", "legacy_owner": "ContinuityPanel, AcceptancePanel, DecisionPanel", "v3_owner": "none", "read": "transition/acceptance/decision records", "mutation": "transition-, acceptance-records, decision-packets endpoints", "authority": "separate domain records", "provider_risk": "LLM/fixed retry where explicit", "legacy_state": "panel state", "v3_status": "absent", "duplicate": "similar wording only", "recommendation": "keep separate"},
+    {"capability": "qa_repair_rollback_delivery", "legacy_owner": "QA, Repair, Canvas/Delivery flows", "v3_owner": "none", "read": "QA/readiness/delivery records", "mutation": "repair-plan, rollback, QA, delivery endpoints", "authority": "domain-specific records", "provider_risk": "action dependent", "legacy_state": "task and panel state", "v3_status": "absent", "duplicate": "no", "recommendation": "Legacy compatibility"},
+    {"capability": "retry_regenerate", "legacy_owner": "fixed continuity retry/task restart", "v3_owner": "disabled retry_generation", "read": "no unified canonical contract", "mutation": "Legacy retry/restart only", "authority": "retry/task records", "provider_risk": "provider/cost", "legacy_state": "task IDs", "v3_status": "deferred", "duplicate": "different semantics", "recommendation": "specify canonical contract"}
+  ],
+  "endpoint_ownership": [
+    {"family": "production-workspace", "caller": "useProductionWorkspace/useProductionWorkspaceV2", "handler": "api/server.py:get_book_production_workspace[_v2]", "writes": false, "provider_risk": 0, "v3": true, "legacy": true},
+    {"family": "generation", "caller": "V3 controller + Legacy runStoryboardGeneration", "handler": "api/server.py:generate_storyboard_frame/video -> canonical bridge", "writes": ["GenerationExecutionRecord", "MediaCandidateRecord"], "provider_risk": "confirmed execution only", "v3": true, "legacy": true},
+    {"family": "candidate authority", "caller": "V3 Review Desk + V2 panel", "handler": "api/asset_promotion_api.py and api/media_authority_api.py", "writes": ["MediaValidationRecord", "OfficialMedia*"], "provider_risk": 0, "v3": true, "legacy": true},
+    {"family": "creative tasks", "caller": "productWorkspaceRecovery/TasksSection", "handler": "api/server.py task status/reconcile/restart", "writes": "task metadata", "provider_risk": "restart may submit", "v3": false, "legacy": true},
+    {"family": "prompt compiler/draft", "caller": "StoryboardSection/PromptDraftPanel/Canvas/Batch", "handler": "api/server.py compile and prompt-draft handlers", "writes": ["PromptVersion", "DecisionPacket"], "provider_risk": "explicit LLM only", "v3": false, "legacy": true},
+    {"family": "manual media", "caller": "StoryboardMediaPanel/AssetsSection", "handler": "api/server.py manual-media-assets and manual-reference-assets", "writes": ["StoryboardShot.asset_links", "VisualReferenceAsset", "file"], "provider_risk": 0, "v3": false, "legacy": true},
+    {"family": "repair/rollback", "caller": "StoryboardSection/RepairPanel", "handler": "api/server.py production-readiness repair-plan/task/rollback", "writes": "repair/readiness/version records", "provider_risk": "action dependent", "v3": false, "legacy": true},
+    {"family": "acceptance/decision/continuity", "caller": "AcceptancePanel/DecisionPanel/ContinuityPanel", "handler": "api/server.py acceptance, decision-packet, transition handlers", "writes": "domain records", "provider_risk": "explicit LLM/fixed retry only", "v3": false, "legacy": true}
+  ],
+  "polling_inventory": [
+    {"owner": "V3 generation controller", "polls": "GET production-workspace-v2", "canonical": true, "provider": false, "writes": false, "needed": true},
+    {"owner": "Legacy waitForCreativeTask", "polls": "GET /api/prototyping/tasks/{id} + optional reconcile", "canonical": false, "provider": "reconcile/restart dependent", "writes": "task/localStorage", "needed": "Legacy only"},
+    {"owner": "Legacy repair task effect", "polls": "GET production-readiness/repair-tasks/{id} every 2.5s", "canonical": "repair domain", "provider": false, "writes": "React state", "needed": true},
+    {"owner": "Task Center", "polls": "pending tasks and agent updates every 15s", "canonical": false, "provider": "reconcile dependent", "writes": "local task metadata", "needed": "Legacy only"},
+    {"owner": "ProductWorkspace upstream", "polls": "pipeline script/storyboard task every 3s", "canonical": false, "provider": "upstream pipeline dependent", "writes": "pipeline records", "needed": "outside shot loop"},
+    {"owner": "QA follow-up", "polls": "QA workbench up to 12 x 1.5s", "canonical": "QA domain", "provider": "action dependent", "writes": "QA state", "needed": "outside shot loop"},
+    {"owner": "Provider runtime", "polls": "provider adapter submit/poll", "canonical": "backend execution/task dependent", "provider": true, "writes": "execution/task terminal state", "needed": true}
+  ],
+  "official_truth_audit": [
+    {"path": "web/src/domain/productionUiV3.ts:isCanonicalOfficialMedia", "classification": "CANONICAL", "finding": "requires currentness, version, authority, pointer and matching IDs"},
+    {"path": "core/production_workspace_projection_v2.py:_official_projection", "classification": "CANONICAL", "finding": "resolves current OfficialMediaPointer and authority/version"},
+    {"path": "web/src/components/ProductWorkspaceStoryboardSection.tsx:findLatestAdoptedAsset", "classification": "NONCANONICAL", "finding": "adopted asset_links item drives Legacy display/input"},
+    {"path": "web/src/components/ProductWorkspaceStoryboardContinuityPanel.tsx", "classification": "LEGACY", "finding": "has_adopted_video is continuity handoff state, not OfficialMedia currentness"},
+    {"path": "web/src/components/ProductWorkspaceStoryboardAcceptancePanel.tsx", "classification": "LEGACY", "finding": "approved/passed acceptance is not media promotion"}
+  ],
+  "readiness_duplication": {
+    "legacy": ["canGenerateFrameFromV2", "canGenerateVideoFromV2", "buildStoryboardGateSummary", "buildShotReadiness", "hasAdoptedFrame", "hasAdoptedVideo", "provider preflight", "executability checks"],
+    "v3": ["ProductionMediaLaneViewModel.generationAllowed", "primaryAction", "stale", "canonical generation_readiness blockers"],
+    "obsolete_for_v3": ["adopted frame as official authority", "task/localStorage as running truth"],
+    "legacy_only_needed": ["adopted/reference payloads", "H3 public URL preflight", "continuity strict-first-frame", "executability override", "prompt compiler diagnostics"],
+    "conflict": "Legacy may show ready from adopted/reference state while V2 blocks on missing Production Asset authority, stale binding, PromptIR, or model profile"
+  },
+  "repair_recovery_boundary": [
+    {"contract": "generation_retry", "owner": "Legacy fixed continuity retry only", "identity": "failed task + frozen input fingerprint", "provider": "explicit retry may submit", "distinct_from": ["task recovery", "regenerate"]},
+    {"contract": "task_recovery", "owner": "productWorkspaceRecovery/Task Center", "identity": "task_id/external task id", "provider": "reconcile/restart dependent", "distinct_from": ["canonical execution observation"]},
+    {"contract": "production_repair", "owner": "Legacy repair plan/task", "identity": "repair task + confirmation token + baseline", "provider": "action dependent", "distinct_from": ["generation retry"]},
+    {"contract": "prompt_repair", "owner": "Prompt Compiler/Prompt Draft", "identity": "prompt task/decision packet/version", "provider": "explicit LLM or no-LLM draft", "distinct_from": ["media generation"]},
+    {"contract": "rollback", "owner": "Legacy prompt/repair controls", "identity": "prompt version or baseline", "provider": false, "distinct_from": ["regenerate", "OfficialMedia pointer"]}
+  ],
+  "storyboard_section_responsibilities": {
+    "navigation": "selectedEpisode, selectedShotId, STORYBOARD_STEPS",
+    "prompt": "compileSelectedShotPrompts, prompt draft/history/authority panels",
+    "generation": "runStoryboardGeneration and V2 readiness gates",
+    "media": "adoptedImage/adoptedVideo and MediaPanel",
+    "recovery_runtime": "waitForCreativeTask, pending IDs, execution summaries",
+    "repair_qa": "repair plan/task polling, split-draft, executability and QA handoffs",
+    "decision": "DecisionPanel and evidence packets",
+    "acceptance": "saveAcceptanceRecord and AcceptancePanel",
+    "continuity": "ContinuityPanel and transition state",
+    "model": "profile loading/selectors/localStorage persistence",
+    "runtime_read": "productionWorkspace, productionWorkspaceV2 and authority banner",
+    "future_seams": ["Generation", "Media Authority", "Canonical Refresh", "Model Selection", "Prompt", "Task Recovery"],
+    "god_service_prohibited": true
+  },
   "duplication": {
     "generation": "one canonical backend bridge, two client controllers",
     "review_adoption": "canonical candidate promotion plus Legacy adopted/acceptance display semantics",
@@ -84,10 +180,12 @@
     {"key": "product-workspace.navigation-state.*", "classification": "UX_NAVIGATION", "authority": "none", "path": "web/src/components/productWorkspaceNavigationState.ts"},
     {"key": "product-workspace.pending-storyboard-tasks.*", "classification": "LEGACY_PRODUCTION_RECOVERY", "authority": "legacy_task_id_only", "path": "web/src/components/productWorkspaceRecovery.ts"},
     {"key": "product-workspace.shot-execution-summary.*", "classification": "LEGACY_DISPLAY_RECOVERY", "authority": "not_canonical", "path": "web/src/components/productWorkspaceRecovery.ts"},
-    {"key": "product-workspace.recovery-task-meta.*", "classification": "LEGACY_RESTART_METADATA", "authority": "not_canonical", "path": "web/src/components/productWorkspaceRecovery.ts"}
+    {"key": "product-workspace.recovery-task-meta.*", "classification": "LEGACY_RESTART_METADATA", "authority": "not_canonical", "path": "web/src/components/productWorkspaceRecovery.ts"},
+    {"key": "product-workspace.batch-task-runs.*", "classification": "UX_BATCH_BOOKKEEPING", "authority": "not_canonical", "path": "web/src/components/productWorkspaceBatchRuns.ts"},
+    {"key": "adaptation.* / production-skill.* / QA repair keys", "classification": "OTHER_WORKSPACE_UX_OR_REPAIR", "authority": "not_V3_media_authority", "path": "web/src/components/productWorkspaceUpstreamController.ts and ProductWorkspaceQaSection.tsx"}
   ],
   "shared_service_candidates": {
-    "SHARE_NOW": ["production-workspace-v2 projection", "canonical generation bridge", "candidate validate/promote authority", "model profile resolver"],
+    "SHARE_NOW": ["production-workspace-v2 projection", "canonical generation bridge", "candidate validate/promote authority", "model profile resolver", "canonical refresh and error normalization", "explicit cost confirmation"],
     "SHARE_LATER": ["Prompt Compiler", "execution/task recovery adapter", "manual media/reference ingestion"],
     "DO_NOT_SHARE": ["Legacy acceptance as OfficialMedia promotion", "continuity/repair as V3 generation service", "provider cancellation without backend contract"]
   },
@@ -95,25 +193,44 @@
     {"surface": "legacy generate-frame/generate-video names", "classification": "BRIDGE", "exit_gate": "all callers use typed canonical client and task fallback telemetry is zero"},
     {"surface": "legacy adopted media", "classification": "KEEP_DISPLAY_ONLY", "exit_gate": "all read/export consumers use OfficialMedia"},
     {"surface": "legacy Prompt Compiler", "classification": "KEEP", "exit_gate": "V3 prompt draft/version UX exists"},
-    {"surface": "Legacy Storyboard deletion", "classification": "DO_NOT_DEPRECATE_NOW", "exit_gate": "all Legacy-only capabilities have replacements"}
+    {"surface": "Legacy Storyboard deletion", "classification": "DO_NOT_DEPRECATE_NOW", "exit_gate": "all Legacy-only capabilities have replacements"},
+    {"surface": "ProductWorkspaceStoryboardSection orchestration shell", "classification": "KEEP_COMPATIBILITY", "exit_gate": "prompt/media/continuity/repair/recovery/delivery replacements exist"},
+    {"surface": "productWorkspaceRecovery.ts", "classification": "KEEP_COMPATIBILITY", "exit_gate": "server-backed execution recovery exists"},
+    {"surface": "StoryboardMediaPanel manual upload", "classification": "DO_NOT_REMOVE_YET", "exit_gate": "canonical Production Asset ingestion exists"},
+    {"surface": "StoryboardAcceptancePanel and ContinuityPanel", "classification": "KEEP", "exit_gate": "replacement editorial/cross-shot contracts exist"}
   ],
   "migration_ladder": [
-    {"gate": 0, "name": "telemetry_and_read_parity", "required": ["V2 read telemetry", "task fallback count", "official versus adopted display evidence"]},
-    {"gate": 1, "name": "default_v3_with_fallback", "required": ["reversible server/config switch", "Legacy fallback link"]},
-    {"gate": 2, "name": "caller_convergence", "required": ["typed canonical client for Legacy production generation", "zero canonical task fallback"]},
-    {"gate": 3, "name": "capability_replacement", "required": ["prompt compiler handoff", "canonical manual media ingestion", "continuity/repair contracts"]},
-    {"gate": 4, "name": "review_inbox", "required": ["server queue/read model", "pagination", "conflict/idempotency"]},
-    {"gate": 5, "name": "retry_regenerate", "required": ["canonical retry identity/lineage/fee/staleness contract"]}
+    {"gate": 0, "name": "telemetry_and_read_parity", "required": ["V2 read telemetry", "task fallback count", "official versus adopted display evidence", "model selection source"]},
+    {"gate": 1, "name": "canonical_asset_bridge", "required": ["Production Asset ingestion", "authority snapshot", "checksum/metadata validation", "binding and explicit promotion"]},
+    {"gate": 2, "name": "shared_model_selection", "required": ["V3 usable selector", "V2 refresh after change", "server profile identity match"]},
+    {"gate": 3, "name": "eligible_default_v3_with_fallback", "required": ["eligibility gate", "reversible server/config switch", "Legacy fallback link"]},
+    {"gate": 4, "name": "caller_convergence", "required": ["typed canonical client for Legacy production generation", "zero canonical task fallback"]},
+    {"gate": 5, "name": "capability_replacement", "required": ["prompt compiler handoff", "manual reference lineage", "continuity/repair contracts"]},
+    {"gate": 6, "name": "review_inbox", "required": ["server queue/read model", "pagination", "conflict/idempotency"]},
+    {"gate": 7, "name": "retry_regenerate", "required": ["canonical retry identity/lineage/fee/staleness contract"]}
   ],
   "rollback": ["retain canary selector and add server/config kill switch", "route affected cohorts back to Legacy without copying localStorage IDs into V3", "preserve execution/candidate/validation/OfficialMedia rows", "use existing prompt/version and repair rollback endpoints for those domains"],
-  "risks": [
-    {"id": "R1", "risk": "Legacy and V3 disagree on visible state", "mitigation": "V2 shared read model and display-only labeling"},
-    {"id": "R2", "risk": "Legacy compileIfMissing true causes prompt drift", "mitigation": "explicit compiler CTA and typed caller migration"},
-    {"id": "R3", "risk": "task fallback duplicates polling", "mitigation": "execution/task adapter before removal"},
-    {"id": "R4", "risk": "adopted/reference media bypasses authority", "mitigation": "canonical manual ingestion and official-source gate"},
-    {"id": "R5", "risk": "review route facades drift", "mitigation": "one public facade with alias contract tests"},
-    {"id": "R6", "risk": "aggregate V2 view does not scale to 500/1000 shots", "mitigation": "separate pagination/large-scale phase"}
+  "blocking_gaps": [
+    {"id": "BG-03", "gap": "canonical Production Asset ingestion", "evidence": ["core/production_workspace_projection_v2.py:PRODUCTION_ASSET_INGESTION_API_AVAILABLE=false", "api/server.py:upload_storyboard_manual_media_asset"], "gate": 1},
+    {"id": "BG-05", "gap": "V3 model selection UI", "evidence": ["ProductWorkspaceShotStudioV3.tsx:GenerationControls", "ProductWorkspaceStoryboardSection.tsx:4296-4320"], "gate": 2},
+    {"id": "BG-01", "gap": "Unified Reviewable Read Model", "evidence": ["production-workspace-v2 has per-shot arrays but no queue/cursor/assignment"], "gate": 6},
+    {"id": "BG-02", "gap": "Unified Review Decision Contract", "evidence": ["V3 single-candidate APPROVE only"], "gate": 6},
+    {"id": "BG-06", "gap": "canonical retry/regenerate semantics", "evidence": ["productionUiV3.ts:lanePrimaryAction defers retry", "Legacy restart/fixed retry differ"], "gate": 7},
+    {"id": "BG-04", "gap": "server-side shot pagination for 500/1000 scale", "evidence": ["V2 aggregate shots array without cross-shot pagination"], "gate": 6}
   ],
-  "recommended_next_phase": "PHASE_PRODUCTION_UI_V3_DEFAULT_SURFACE_GATED_MIGRATION",
-  "verification_baseline": {"web_tests": "57 files / 385 passed", "backend_canonical_authority_tests": "32 passed", "web_build": "PASS", "browser_console_errors": 0, "responsive_widths": [1280, 1440, 1920], "horizontal_overflow": false, "provider_calls": 0, "production_writes": 0, "real_llm_or_media_generation": 0}
+  "risks": [
+    {"id": "R1", "severity": "high", "risk": "Legacy and V3 disagree on visible state", "evidence": "V2 projection vs Legacy task/localStorage/adopted fields", "mitigation": "V2 shared read model and display-only labeling", "gate": 0},
+    {"id": "R2", "severity": "high", "risk": "Legacy compileIfMissing true causes prompt drift", "evidence": "ProductWorkspaceStoryboardSection:runStoryboardGeneration", "mitigation": "explicit compiler CTA and typed caller migration", "gate": 4},
+    {"id": "R3", "severity": "high", "risk": "task fallback duplicates polling", "evidence": "productWorkspaceRecovery + Task Center interval", "mitigation": "execution/task adapter before removal", "gate": 4},
+    {"id": "R4", "severity": "high", "risk": "adopted/reference media bypasses authority", "evidence": "_save_asset_to_storyboard and VisualReferenceAsset", "mitigation": "canonical manual ingestion and official-source gate", "gate": 1},
+    {"id": "R5", "severity": "medium", "risk": "review route facades drift", "evidence": "media-authority and assets candidate routes call same core", "mitigation": "one public facade with alias contract tests", "gate": 4},
+    {"id": "R6", "severity": "high", "risk": "aggregate V2 view does not scale to 500/1000 shots", "evidence": "V2 DTO has shot arrays and no cross-shot pagination", "mitigation": "separate pagination/large-scale phase", "gate": 6},
+    {"id": "R7", "severity": "high", "risk": "V3 has no model selector", "evidence": "Shot Studio only displays selected_profile_id", "mitigation": "shared selector and server identity check", "gate": 2},
+    {"id": "R8", "severity": "high", "risk": "manual upload looks like asset completion", "evidence": "V2 asset_ingestion_api_available=false while Legacy upload returns adopted/ready", "mitigation": "compatibility labeling and canonical asset bridge", "gate": 1},
+    {"id": "R9", "severity": "medium", "risk": "duplicate CTA wording hides different writes", "evidence": "generate/adopt/accept/fixed retry/prompt compile", "mitigation": "mutation inventory and distinct labels", "gate": 0},
+    {"id": "R10", "severity": "medium", "risk": "URL and fallback divergence", "evidence": "shared section/episode/shot/step plus query-only V3 gate", "mitigation": "kill switch and fallback link", "gate": 3}
+  ],
+  "recommended_next_phase": "PHASE_PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE",
+  "delete_nothing": true,
+  "verification_baseline": {"web_tests": "57 files / 385 passed", "backend_canonical_authority_tests": "32 passed", "web_build": "PASS", "browser_console_errors": 0, "responsive_widths": [1280, 1440, 1920], "horizontal_overflow": false, "provider_calls": 0, "candidate_validation_writes": 0, "candidate_promotion_writes": 0, "generation_writes": 0, "production_writes": 0, "real_llm_or_media_generation": 0}
 }
