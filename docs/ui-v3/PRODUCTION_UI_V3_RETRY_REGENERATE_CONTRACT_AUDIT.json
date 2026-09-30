@@ -1,0 +1,131 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_RETRY_REGENERATE_CONTRACT_AUDIT",
+  "status": "complete",
+  "completion_marker": "PRODUCTION_UI_V3_RETRY_REGENERATE_CONTRACT_AUDIT_COMPLETE",
+  "baseline_commit": "8a7c72bd94a4e8a7a85eac2e03331f0e0cb6656d",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "repository": "https://github.com/yeqing112/screenplay-agent-refactor-v2",
+  "scope": {
+    "audit_only": true,
+    "retry_implementation_added": false,
+    "regenerate_implementation_added": false,
+    "new_provider_calls": 0,
+    "real_production_writes": 0,
+    "db_migrations": 0
+  },
+  "mechanisms": {
+    "transport_retry": {
+      "canonical_submit_retry_implemented": false,
+      "status_polling_reuses_external_task": true,
+      "same_execution_semantics": "no canonical submit retry; polling remains attached to the existing task",
+      "transport_retry_count_field": true,
+      "foundation_retry_aliases_transport_count": true
+    },
+    "provider_reconcile": {
+      "uses_existing_provider_task_id": true,
+      "new_generation_submission": false,
+      "creates_generation_execution": false
+    },
+    "legacy_task_restart": {
+      "endpoint": "POST /api/prototyping/tasks/{task_id}/restart",
+      "copies_old_request_payload": true,
+      "fresh_confirmation_required": true,
+      "creates_new_creative_task": true,
+      "records_restarted_from_task_id": true,
+      "creates_generation_execution": false,
+      "classification": "LEGACY_COMPATIBILITY_ONLY"
+    },
+    "storyboard_video_retry_attempt": {
+      "table": "storyboard_video_retry_attempts",
+      "video_only": true,
+      "stores_frozen_input_snapshot": true,
+      "requires_human_confirmation": true,
+      "retry_task_id_is_generation_execution": false,
+      "creates_generation_execution": false,
+      "classification": "LEGACY_VIDEO_RETRY_COMPATIBILITY"
+    }
+  },
+  "current_contract": {
+    "generation_execution_fields": [
+      "execution_id",
+      "generation_payload_fingerprint",
+      "generation_policy_fingerprint",
+      "model_profile_fingerprint",
+      "provider_request_fingerprint",
+      "request_snapshot_json",
+      "confirmation_binding_hash",
+      "transport_retry_count",
+      "failure_code",
+      "failure_message",
+      "candidate_id"
+    ],
+    "business_retry_lineage_fields_present": false,
+    "regenerate_intent_lineage_fields_present": false,
+    "foundation_api": {
+      "create": "POST /generation/executions",
+      "get": "GET /generation/executions/{execution_id}",
+      "run": "POST /generation/executions/{execution_id}/run",
+      "retry": false,
+      "regenerate": false
+    },
+    "canonical_retry_api_exists": false,
+    "canonical_regenerate_api_exists": false
+  },
+  "fingerprint": {
+    "provider_request_fingerprint_unique": true,
+    "generation_payload_fingerprint_separate_field": true,
+    "content_and_attempt_identity_separated": false,
+    "ordinary_equivalent_request_reuses_execution": true,
+    "failed_same_preview_replay": "409 GENERATION_CANARY_FAILED_REQUIRES_NEW_CONFIRMATION",
+    "random_nonce_recommendation": false
+  },
+  "lineage": {
+    "business_retry_lineage_persisted": false,
+    "regenerate_intent_lineage_persisted": false,
+    "request_snapshot_json_sufficient_alone": false,
+    "legacy_video_table_suitable_for_v3": false,
+    "recommended_model": "GenerationExecutionAttemptLineage"
+  },
+  "official_pointer": {
+    "moves_on_generation_submission": false,
+    "moves_on_promotion": true,
+    "old_official_survives_failed_new_execution": true,
+    "candidate_history_supported": true,
+    "multiple_active_candidate_policy_explicit": false
+  },
+  "readiness": {
+    "image_retry": "NO_GO",
+    "video_retry": "NO_GO",
+    "image_regenerate": "NO_GO",
+    "video_regenerate": "NO_GO"
+  },
+  "schema_result": "DB_MIGRATION_REQUIRED",
+  "api_gap": [
+    "No canonical retry endpoint",
+    "No canonical regenerate endpoint",
+    "No shared operation intent facade"
+  ],
+  "idempotency_gap": [
+    "Canonical request fingerprint deduplicates ordinary generation but has no explicit business operation identity",
+    "Foundation fingerprint construction differs and same-row RETRYING is not a new attempt"
+  ],
+  "lineage_gap": [
+    "No parent/root execution relationship",
+    "No business attempt number or retry reason",
+    "No regenerate source candidate/Official version relationship",
+    "transport_retry_count is currently reused by the Foundation RETRYING transition"
+  ],
+  "recommended_next_phase": "PHASE_GENERATION_EXECUTION_ATTEMPT_LINEAGE_FOUNDATION",
+  "validation": {
+    "web_tests": "61 files / 435 tests baseline",
+    "backend_targeted_tests": 34,
+    "audit_tests": 7,
+    "directed_audit_tests": 74,
+    "build": "required and provider-free",
+    "provider_calls": 0,
+    "production_writes": 0,
+    "db_migrations": 0,
+    "worktree": "must be clean",
+    "remote_head": "must equal local HEAD"
+  }
+}
