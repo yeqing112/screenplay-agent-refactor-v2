@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 359,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 387,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 106,
     "MISSING_MIGRATION": 0,
@@ -11,7 +11,7 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 466
+    "total": 494
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -1339,6 +1339,286 @@
       "index": "ix_episode_render_plan_status",
       "kind": "index",
       "table": "episode_render_plans"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "attempt_lineage_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_attempt_lineage_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_book_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_episode",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "operation_identity_fingerprint"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_operation_identity_fingerprint",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "operation_kind"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_operation_kind",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "produced_execution_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_produced_execution_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "root_execution_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_root_execution_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_candidate_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_source_candidate_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_execution_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_source_execution_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_official_media_version_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_source_official_media_version_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_snapshot_fingerprint"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_source_snapshot_fingerprint",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_status",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_storyboard_shot_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "target_media"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_target_media",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "book_id"
+      ],
+      "index": "ix_generation_attempt_book",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "episode"
+      ],
+      "index": "ix_generation_attempt_episode",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "attempt_lineage_id"
+      ],
+      "index": "ix_generation_attempt_lineage_id",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "operation_identity_fingerprint"
+      ],
+      "index": "ix_generation_attempt_operation_identity",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "operation_kind"
+      ],
+      "index": "ix_generation_attempt_operation_kind",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "produced_execution_id"
+      ],
+      "index": "ix_generation_attempt_produced_execution",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "root_execution_id"
+      ],
+      "index": "ix_generation_attempt_root_execution",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "storyboard_shot_id"
+      ],
+      "index": "ix_generation_attempt_shot",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_candidate_id"
+      ],
+      "index": "ix_generation_attempt_source_candidate",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_execution_id"
+      ],
+      "index": "ix_generation_attempt_source_execution",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_official_media_version_id"
+      ],
+      "index": "ix_generation_attempt_source_official",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "source_snapshot_fingerprint"
+      ],
+      "index": "ix_generation_attempt_source_snapshot",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "status"
+      ],
+      "index": "ix_generation_attempt_status",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "target_media"
+      ],
+      "index": "ix_generation_attempt_target_media",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
     },
     {
       "blocking": false,

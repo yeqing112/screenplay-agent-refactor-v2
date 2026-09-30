@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "m4h5i6j7k8l9"
+HEAD = "n5i6j7k8l9m0"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -105,6 +105,7 @@ AUTHORITY_TABLES = {
     "director_storyboard_plans",
     "director_storyboard_shots",
     "automatic_keyframe_plans",
+    "generation_execution_attempt_lineages",
 }
 
 REQUIRED_COLUMNS = {
@@ -198,6 +199,13 @@ REQUIRED_COLUMNS = {
         "production_prompt_version_id", "production_prompt_fingerprint", "version", "status", "duration", "plan_json",
         "source_fingerprint", "source_lineage_json", "created_by", "reviewed_by", "reviewed_at", "review_lineage_json",
         "compiled_sequence_id", "compiled_sequence_fingerprint", "stale_reasons", "created_at", "updated_at",
+    },
+    "generation_execution_attempt_lineages": {
+        "attempt_lineage_id", "operation_idempotency_key", "operation_kind", "book_id", "episode",
+        "storyboard_shot_id", "target_media", "source_execution_id", "root_execution_id",
+        "produced_execution_id", "attempt_number", "variant_index", "reason", "source_candidate_id",
+        "source_official_media_version_id", "source_snapshot_fingerprint", "operation_identity_fingerprint",
+        "confirmation_binding_hash", "status", "created_at", "updated_at",
     },
 }
 

@@ -1,0 +1,24 @@
+{
+  "status": "GENERATION_EXECUTION_ATTEMPT_LINEAGE_FOUNDATION_COMPLETE",
+  "migration": {
+    "revision": "n5i6j7k8l9m0",
+    "down_revision": "m4h5i6j7k8l9",
+    "tables_added": ["generation_execution_attempt_lineages"],
+    "historical_backfill": false,
+    "generation_execution_records_unique_provider_fingerprint_unchanged": true
+  },
+  "runtime_boundary": {
+    "provider_calls": 0,
+    "execution_created": false,
+    "candidate_writes": false,
+    "official_media_writes": false,
+    "v3_retry_ui_changed": false,
+    "v3_regenerate_ui_changed": false
+  },
+  "checks": {
+    "alembic_heads": "PASS",
+    "migration_chain": "PASS",
+    "compileall": "PASS",
+    "git_diff_check": "PASS"
+  }
+}

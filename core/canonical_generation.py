@@ -79,4 +79,18 @@ def canonical_request_fingerprint(*, selection: ProductionGenerationSelection, p
     })
 
 
-__all__ = ["CanonicalGenerationContractError", "ProductionGenerationSelection", "canonical_request_fingerprint"]
+def derive_business_attempt_provider_request_fingerprint(base_provider_request_fingerprint: str, operation_identity_fingerprint: str) -> str:
+    """Derive a stable provider request identity for a business attempt.
+
+    The ordinary generation fingerprint remains unchanged.  Retry and
+    regenerate requests get a separate deterministic namespace keyed by the
+    durable business operation identity.
+    """
+    return fingerprint({
+        "schema_version": "generation_business_attempt_request_v1",
+        "base_provider_request_fingerprint": str(base_provider_request_fingerprint),
+        "operation_identity_fingerprint": str(operation_identity_fingerprint),
+    })
+
+
+__all__ = ["CanonicalGenerationContractError", "ProductionGenerationSelection", "canonical_request_fingerprint", "derive_business_attempt_provider_request_fingerprint"]

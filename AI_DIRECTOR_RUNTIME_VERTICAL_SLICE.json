@@ -1,0 +1,27 @@
+{
+  "status": "GENERATION_EXECUTION_ATTEMPT_LINEAGE_FOUNDATION_COMPLETE",
+  "vertical_slice": [
+    "source execution or current OfficialMediaVersion",
+    "GenerationAttemptLineageService",
+    "GenerationExecutionAttemptLineage",
+    "confirmation binding",
+    "provider-free intent projection"
+  ],
+  "retry": {
+    "source_status_required": "FAILED",
+    "new_execution": false,
+    "candidate_write": false,
+    "official_pointer_move": false
+  },
+  "regenerate": {
+    "source_required": "current OfficialMediaVersion",
+    "source_execution_trace": "OfficialMediaPointer -> OfficialMediaVersion -> MediaCandidateRecord -> GenerationExecutionRecord",
+    "new_execution": false,
+    "candidate_write": false,
+    "official_pointer_move": false
+  },
+  "api": [
+    "POST /generation/attempt-intents",
+    "GET /generation/attempt-intents/{attempt_lineage_id}"
+  ]
+}

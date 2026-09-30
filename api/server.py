@@ -98,6 +98,7 @@ from api.visual_asset_authority_api import router as visual_asset_authority_rout
 from api.visual_authoring_provider_api import router as visual_authoring_provider_router
 from api.generation_canary_api import router as generation_canary_router
 from api.generation_execution_api import router as generation_execution_router
+from api.generation_attempt_api import router as generation_attempt_router
 from api.media_authority_api import router as media_authority_router
 from api.asset_promotion_api import router as asset_promotion_router
 from api.production_batch_api import router as production_batch_router
@@ -157,6 +158,8 @@ app.include_router(generation_canary_router)
 # created.
 app.include_router(generation_execution_router, prefix="/api")
 app.include_router(generation_execution_router)
+app.include_router(generation_attempt_router, prefix="/api")
+app.include_router(generation_attempt_router)
 app.include_router(media_authority_router)
 # Asset promotion is mounted at both the stable /api path and the short
 # integration path; both share the same authority service and database rows.
