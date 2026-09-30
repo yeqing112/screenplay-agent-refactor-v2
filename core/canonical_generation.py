@@ -93,4 +93,9 @@ def derive_business_attempt_provider_request_fingerprint(base_provider_request_f
     })
 
 
-__all__ = ["CanonicalGenerationContractError", "ProductionGenerationSelection", "canonical_request_fingerprint", "derive_business_attempt_provider_request_fingerprint"]
+# Short spelling retained as a compatibility alias for phase contracts that
+# call the helper without the ``request`` qualifier.
+derive_business_attempt_provider_fingerprint = derive_business_attempt_provider_request_fingerprint
+
+
+__all__ = ["CanonicalGenerationContractError", "ProductionGenerationSelection", "canonical_request_fingerprint", "derive_business_attempt_provider_request_fingerprint", "derive_business_attempt_provider_fingerprint"]

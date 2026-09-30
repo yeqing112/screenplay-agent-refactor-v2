@@ -44,13 +44,19 @@ def test_retry_is_durable_idempotent_and_does_not_touch_transport_count(session)
     source = _execution()
     session.add(source)
     session.commit()
+    before_candidate_count = session.query(MediaCandidateRecord).count()
     service = GenerationAttemptLineageService(session)
     first = service.create_retry_intent(source_execution_id="exec-a", operation_idempotency_key="op-1", reason="provider timeout")
     session.commit()
     second = service.create_retry_intent(source_execution_id="exec-a", operation_idempotency_key="op-1", reason="provider timeout")
     assert first.attempt_lineage_id == second.attempt_lineage_id
+    with pytest.raises(GenerationAttemptLineageError) as error:
+        service.create_retry_intent(source_execution_id="exec-a", operation_idempotency_key="op-1", reason="operator requested another variant")
+    assert error.value.code == "GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT"
     assert first.operation_kind == "RETRY"
+    assert source.status == "FAILED"
     assert source.transport_retry_count == 4
+    assert session.query(MediaCandidateRecord).count() == before_candidate_count
     assert service.verify_confirmation(first.attempt_lineage_id, service.build_confirmation(first.attempt_lineage_id))
 
 
@@ -90,11 +96,15 @@ def test_regenerate_traces_current_official_to_candidate_and_execution(session):
     )
     session.add_all([execution, candidate, official, pointer])
     session.commit()
+    before_candidate_count = session.query(MediaCandidateRecord).count()
+    before_pointer_version = session.query(OfficialMediaPointer).one().official_media_version_id
     row = GenerationAttemptLineageService(session).create_regenerate_intent(source_official_media_version_id="official-image", operation_idempotency_key="reg-1")
     assert row.source_execution_id == "image-exec"
     assert row.source_candidate_id == "candidate-image"
     assert row.variant_index == 1
     assert row.target_media == "IMAGE"
+    assert session.query(MediaCandidateRecord).count() == before_candidate_count
+    assert session.query(OfficialMediaPointer).one().official_media_version_id == before_pointer_version
 
 
 def test_confirmation_and_attempt_fingerprint_are_operation_bound(session):
@@ -111,3 +121,55 @@ def test_confirmation_and_attempt_fingerprint_are_operation_bound(session):
     assert canonical_request_fingerprint(**kwargs) == base
     assert derive_business_attempt_provider_request_fingerprint(base, row.operation_identity_fingerprint) != base
 
+
+def test_regenerate_variant_two_and_idempotency_conflict(session):
+    execution = _execution("image-exec", "SUCCESS")
+    candidate = MediaCandidateRecord(
+        candidate_id="candidate-image", execution_id="image-exec", status="MEDIA_CANDIDATE", media_type="IMAGE",
+        storage_identity="fixture://image", storage_reference_json="{}", metadata_json="{}", checksum_sha256="checksum",
+        mime_type="image/png", byte_size=1, width=1, height=1, prompt_ir_version_id=1, prompt_ir_payload_hash="prompt",
+        generation_payload_fingerprint="payload", model_profile_id="model", model_profile_fingerprint="model-fp",
+        provider_request_fingerprint="image-exec-request", provider_response_hash="response",
+    )
+    official = OfficialMediaVersion(
+        official_media_version_id="official-image", book_id=1, episode=1, storyboard_shot_id=7, plan_shot_id="",
+        media_role="SHOT_PRIMARY_IMAGE", media_type="IMAGE", candidate_id="candidate-image", candidate_fingerprint="fp",
+        storage_identity="fixture://image", checksum_sha256="checksum", mime_type="image/png", byte_size=1,
+        width=1, height=1, prompt_ir_version_id=1, prompt_ir_payload_hash="prompt", generation_payload_fingerprint="payload",
+        provider_request_fingerprint="image-exec-request", provider_response_hash="response", validation_id="validation",
+        validation_fingerprint="validation-fp", revision=1, status="CURRENT", payload_hash="official-payload",
+    )
+    pointer = OfficialMediaPointer(book_id=1, episode=1, storyboard_shot_id=7, media_role="SHOT_PRIMARY_IMAGE", official_media_version_id="official-image", authority_id="authority", fingerprint="pointer-fp")
+    session.add_all([execution, candidate, official, pointer])
+    session.commit()
+    service = GenerationAttemptLineageService(session)
+    first = service.create_regenerate_intent(source_official_media_version_id="official-image", operation_idempotency_key="reg-a")
+    second = service.create_regenerate_intent(source_official_media_version_id="official-image", operation_idempotency_key="reg-b")
+    assert first.variant_index == 1
+    assert second.variant_index == 2
+    with pytest.raises(GenerationAttemptLineageError) as error:
+        service.create_retry_intent(source_execution_id="image-exec", operation_idempotency_key="reg-a")
+    assert error.value.code == "GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT"
+
+
+def test_produced_execution_binding_is_once_only_and_scope_checked(session):
+    source = _execution("source", "FAILED")
+    produced = _execution("produced", "CREATED")
+    other = _execution("other", "CREATED", shot=8)
+    session.add_all([source, produced, other])
+    session.commit()
+    service = GenerationAttemptLineageService(session)
+    row = service.create_retry_intent(source_execution_id="source", operation_idempotency_key="bind-1")
+    bound = service.bind_produced_execution(row.attempt_lineage_id, "produced")
+    assert bound.status == "BOUND"
+    assert service.bind_produced_execution(row.attempt_lineage_id, "produced").produced_execution_id == "produced"
+    with pytest.raises(GenerationAttemptLineageError) as error:
+        service.bind_produced_execution(row.attempt_lineage_id, "other")
+    assert error.value.code == "GENERATION_ATTEMPT_ALREADY_BOUND"
+    with pytest.raises(GenerationAttemptLineageError) as error:
+        service.bind_produced_execution(row.attempt_lineage_id, "source")
+    assert error.value.code == "GENERATION_ATTEMPT_ALREADY_BOUND"
+    fresh = service.create_retry_intent(source_execution_id="source", operation_idempotency_key="bind-2")
+    with pytest.raises(GenerationAttemptLineageError) as error:
+        service.bind_produced_execution(fresh.attempt_lineage_id, "source")
+    assert error.value.code == "GENERATION_ATTEMPT_SCOPE_MISMATCH"

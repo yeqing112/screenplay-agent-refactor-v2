@@ -39,12 +39,17 @@ def upgrade() -> None:
         sa.Column("status", sa.String(), nullable=False, server_default="PREVIEWED"),
         sa.Column("created_at", sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
         sa.Column("updated_at", sa.DateTime(), nullable=False, server_default=sa.text("CURRENT_TIMESTAMP")),
+        sa.ForeignKeyConstraint(["source_execution_id"], ["generation_execution_records.execution_id"], name="fk_generation_attempt_source_execution", ondelete="RESTRICT"),
+        sa.ForeignKeyConstraint(["root_execution_id"], ["generation_execution_records.execution_id"], name="fk_generation_attempt_root_execution", ondelete="RESTRICT"),
+        sa.ForeignKeyConstraint(["produced_execution_id"], ["generation_execution_records.execution_id"], name="fk_generation_attempt_produced_execution", ondelete="RESTRICT"),
         sa.UniqueConstraint("attempt_lineage_id", name="uq_generation_attempt_lineage_id"),
         sa.UniqueConstraint("book_id", "operation_idempotency_key", name="uq_generation_attempt_operation_key"),
+        sa.UniqueConstraint("produced_execution_id", name="uq_generation_attempt_produced_execution"),
         sa.CheckConstraint("operation_kind IN ('RETRY','REGENERATE')", name="ck_generation_attempt_operation_kind"),
+        sa.CheckConstraint("target_media IN ('IMAGE','VIDEO')", name="ck_generation_attempt_target_media"),
         sa.CheckConstraint("status IN ('PREVIEWED','BOUND','CANCELLED')", name="ck_generation_attempt_status"),
         sa.CheckConstraint("attempt_number >= 1", name="ck_generation_attempt_number"),
-        sa.CheckConstraint("variant_index >= 1", name="ck_generation_attempt_variant_index"),
+        sa.CheckConstraint("variant_index >= 0", name="ck_generation_attempt_variant_index"),
     )
     for name, columns in {
         "ix_generation_attempt_lineage_id": ["attempt_lineage_id"],
@@ -80,4 +85,3 @@ def downgrade() -> None:
     ):
         op.drop_index(name, table_name="generation_execution_attempt_lineages")
     op.drop_table("generation_execution_attempt_lineages")
-

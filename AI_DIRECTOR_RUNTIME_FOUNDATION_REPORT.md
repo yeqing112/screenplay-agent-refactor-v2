@@ -43,8 +43,13 @@ V3 UI mutation.
 - `alembic heads` → `n5i6j7k8l9m0 (head)`
 - `python -m scripts.verify_migration_chain` → `MIGRATION_CHAIN_HARDENING_READY`
   with fresh upgrade/downgrade and drift checks passing.
-- `python -m pytest -q tests/test_generation_execution_attempt_lineage.py` → 4 passed.
+- `python -m pytest -q tests/test_generation_execution_attempt_lineage.py` → 6 passed.
 - Existing generation foundation/canary audit suite → 37 passed.
+- Canonical/media/video/legacy retry regression slice → 83 passed.
 - Web tests → 61 files / 435 tests passed; production build passed.
 - `python -m compileall -q models core api scripts` passed.
 - `git diff --check` passed.
+
+The canonical report is also available at
+`docs/ui-v3/GENERATION_EXECUTION_ATTEMPT_LINEAGE_FOUNDATION_REPORT.md`, with
+the machine audit beside it.

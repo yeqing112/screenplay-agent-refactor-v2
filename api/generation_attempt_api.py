@@ -25,7 +25,7 @@ class CreateGenerationAttemptIntentRequest(BaseModel):
     operation_idempotency_key: str = Field(min_length=1, validation_alias=AliasChoices("operation_idempotency_key", "operationIdempotencyKey"))
     source_execution_id: str | None = Field(default=None, validation_alias=AliasChoices("source_execution_id", "sourceExecutionId"))
     source_official_media_version_id: str | None = Field(default=None, validation_alias=AliasChoices("source_official_media_version_id", "sourceOfficialMediaVersionId"))
-    reason: str = ""
+    reason: str = Field(default="", max_length=2000)
     book_id: int | None = Field(default=None, validation_alias=AliasChoices("book_id", "bookId"))
     episode: int | None = None
     storyboard_shot_id: int | None = Field(default=None, validation_alias=AliasChoices("storyboard_shot_id", "storyboardShotId"))
@@ -70,4 +70,3 @@ def get_attempt_intent(attempt_lineage_id: str):
 
 
 __all__ = ["router", "CreateGenerationAttemptIntentRequest"]
-
