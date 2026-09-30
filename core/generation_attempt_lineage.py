@@ -40,6 +40,15 @@ def _text(value: Any) -> str:
     return str(value or "").strip()
 
 
+def _json_load(value: Any) -> Any:
+    if isinstance(value, (dict, list)):
+        return value
+    try:
+        return json.loads(value or "{}")
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return {}
+
+
 def _reason(value: Any) -> str:
     return _text(value)[:2000]
 
@@ -77,6 +86,31 @@ def _scope_matches(row: GenerationExecutionRecord, *, book_id: Any = None, episo
     ) and (
         target_media is None or _media(target_media) == _media(row.target_media)
     )
+
+
+def resolve_execution_base_provider_request_fingerprint(session: Any, execution: GenerationExecutionRecord) -> str:
+    """Resolve the canonical base request identity for an execution lineage.
+
+    Ordinary executions use their own provider request fingerprint.  An
+    execution explicitly marked with ``_generation_attempt`` must carry a
+    valid produced Attempt row and a non-empty base fingerprint; silently
+    falling back to the attempt namespace would defeat freshness checks.
+    """
+    snapshot = _json_load(execution.request_snapshot_json)
+    has_lineage = isinstance(snapshot, dict) and "_generation_attempt" in snapshot
+    if not has_lineage:
+        value = _text(execution.provider_request_fingerprint)
+        if not value:
+            raise GenerationAttemptLineageError("execution has no provider request fingerprint", code="GENERATION_ATTEMPT_SOURCE_LINEAGE_INVALID")
+        return value
+    lineage = snapshot.get("_generation_attempt")
+    lineage_id = _text(lineage.get("attempt_lineage_id")) if isinstance(lineage, dict) else ""
+    row = session.query(GenerationExecutionAttemptLineage).filter_by(attempt_lineage_id=lineage_id).one_or_none() if lineage_id else None
+    base = _text(lineage.get("base_provider_request_fingerprint")) if isinstance(lineage, dict) else ""
+    operation = _text(lineage.get("operation_identity_fingerprint")) if isinstance(lineage, dict) else ""
+    if row is None or _text(row.produced_execution_id) != _text(execution.execution_id) or not base or not operation:
+        raise GenerationAttemptLineageError("attempt-produced execution has incomplete lineage metadata", code="GENERATION_ATTEMPT_SOURCE_LINEAGE_INVALID")
+    return base
 
 
 class GenerationAttemptLineageService:
@@ -311,4 +345,4 @@ def serialize_attempt_lineage(row: GenerationExecutionAttemptLineage, *, include
     return payload
 
 
-__all__ = ["GenerationAttemptLineageError", "GenerationAttemptLineageService", "serialize_attempt_lineage"]
+__all__ = ["GenerationAttemptLineageError", "GenerationAttemptLineageService", "resolve_execution_base_provider_request_fingerprint", "serialize_attempt_lineage"]

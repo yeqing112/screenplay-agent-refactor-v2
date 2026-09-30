@@ -1065,6 +1065,59 @@ def preview_generation_canary(book_id: int, episode: int, shot_id: int, req: Can
         }
 
 
+def _build_canonical_preview_execution(
+    *,
+    book_id: int,
+    episode: int,
+    target_media: str,
+    model_profile_id: str,
+    context: dict[str, Any],
+    provider_request_fingerprint: str | None = None,
+    request_snapshot: dict[str, Any] | None = None,
+) -> tuple[GenerationExecutionRecord, str]:
+    """Build the one canonical PREVIEWED execution shape used by all facades."""
+    execution_id = uuid.uuid4().hex
+    provider_fp = str(provider_request_fingerprint or context["provider_request_fingerprint"] or "")
+    payload = context["payload"]
+    token = _confirmation_token(
+        execution_id=execution_id,
+        prompt_ir_version_id=int(context["resolved"]["version"].id),
+        payload_fp=str(payload["generation_payload_fingerprint"]),
+        model_profile_id=str(model_profile_id),
+        provider_request_fp=provider_fp,
+    )
+    now = datetime.utcnow()
+    row = GenerationExecutionRecord(
+        execution_id=execution_id,
+        schema_version="generation_execution_request_v1",
+        book_id=book_id,
+        episode=episode,
+        storyboard_shot_id=int(context["row"].id),
+        plan_shot_id=str(payload.get("prompt_ir_ref", {}).get("plan_shot_id") or ""),
+        execution_mode="PREVIEW",
+        status="PREVIEWED",
+        target_media=str(target_media).upper(),
+        prompt_ir_version_id=int(context["resolved"]["version"].id),
+        prompt_ir_authority_id=int(context["resolved"]["authority"].id),
+        prompt_ir_payload_hash=str(context["resolved"]["version"].payload_hash or ""),
+        generation_payload_fingerprint=str(payload.get("generation_payload_fingerprint") or ""),
+        generation_policy_fingerprint=str(context["policy"].get("fingerprint") or ""),
+        model_profile_id=str(model_profile_id),
+        model_profile_fingerprint=context["profile_fingerprint"],
+        provider_adapter_id=str(context["adapter"].get("adapter_id") or ""),
+        provider_adapter_version=str(context["adapter"].get("adapter_version") or ""),
+        reference_bindings_fingerprint=context["reference_bindings_fingerprint"],
+        provider_request_fingerprint=provider_fp,
+        request_snapshot_json=json.dumps(_redact(request_snapshot if request_snapshot is not None else context["request_snapshot"]), ensure_ascii=False, sort_keys=True),
+        confirmation_binding_hash=hashlib.sha256(token.encode("utf-8")).hexdigest(),
+        provider=str(context["profile"].get("provider") or ""),
+        model=str(context["profile"].get("model_name") or ""),
+        created_at=now,
+        updated_at=now,
+    )
+    return row, token
+
+
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation/preview")
 def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: CanonicalPreviewRequest):
     """Preview the single production IMAGE/VIDEO generation path."""
@@ -1094,36 +1147,12 @@ def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: 
                 "reused": existing.status in {"SUCCEEDED", "REUSED"},
                 "media_generated": candidate is not None,
             }
-        execution_id = uuid.uuid4().hex
-        token = _confirmation_token(execution_id=execution_id, prompt_ir_version_id=int(context["resolved"]["version"].id), payload_fp=context["payload"]["generation_payload_fingerprint"], model_profile_id=req.model_profile_id, provider_request_fp=context["provider_request_fingerprint"])
-        now = datetime.utcnow()
-        row = GenerationExecutionRecord(
-            execution_id=execution_id,
-            schema_version="generation_execution_request_v1",
+        row, token = _build_canonical_preview_execution(
             book_id=book_id,
             episode=episode,
-            storyboard_shot_id=int(context["row"].id),
-            plan_shot_id=str(context["payload"].get("prompt_ir_ref", {}).get("plan_shot_id") or ""),
-            execution_mode="PREVIEW",
-            status="PREVIEWED",
             target_media=target_media,
-            prompt_ir_version_id=int(context["resolved"]["version"].id),
-            prompt_ir_authority_id=int(context["resolved"]["authority"].id),
-            prompt_ir_payload_hash=str(context["resolved"]["version"].payload_hash or ""),
-            generation_payload_fingerprint=str(context["payload"].get("generation_payload_fingerprint") or ""),
-            generation_policy_fingerprint=str(context["policy"].get("fingerprint") or ""),
             model_profile_id=req.model_profile_id,
-            model_profile_fingerprint=context["profile_fingerprint"],
-            provider_adapter_id=str(context["adapter"].get("adapter_id") or ""),
-            provider_adapter_version=str(context["adapter"].get("adapter_version") or ""),
-            reference_bindings_fingerprint=context["reference_bindings_fingerprint"],
-            provider_request_fingerprint=context["provider_request_fingerprint"],
-            request_snapshot_json=json.dumps(_redact(context["request_snapshot"]), ensure_ascii=False, sort_keys=True),
-            confirmation_binding_hash=hashlib.sha256(token.encode("utf-8")).hexdigest(),
-            provider=str(context["profile"].get("provider") or ""),
-            model=str(context["profile"].get("model_name") or ""),
-            created_at=now,
-            updated_at=now,
+            context=context,
         )
         session.add(row)
         try:
@@ -1271,6 +1300,9 @@ async def _execute_generation_canary_impl(
                 raise _error(409, "GENERATION_ATTEMPT_EXECUTION_MISMATCH", "Preview execution is not bound to the requested generation attempt.", provider_calls=0)
             if int(attempt.storyboard_shot_id) != int(context["row"].id) or str(attempt.target_media).upper() != str(context["target_media"]).upper():
                 raise _error(409, "GENERATION_ATTEMPT_SCOPE_MISMATCH", "Attempt execution scope no longer matches current canonical scope.", provider_calls=0)
+            # Keep the resolver result immutable for callers that may replay
+            # the same context object; the attempt namespace is executor-local.
+            context = dict(context)
             context["provider_request_fingerprint"] = str(row.provider_request_fingerprint or "")
         if int(row.storyboard_shot_id) != int(context["row"].id):
             row.status = "STALE"

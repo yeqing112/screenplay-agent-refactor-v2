@@ -60,7 +60,7 @@ IMAGE_TRANSPORT = "shapi-openai-images.image.v1"
 VIDEO_PROVIDER = "minimax-h3-async"
 VIDEO_TRANSPORT = "minimax-h3-async.video.v1"
 EXPECTED_BRANCH = "codex/visual-authoring-provider-canary-reconcile"
-EXPECTED_MIGRATION_HEAD = "m4h5i6j7k8l9"
+EXPECTED_MIGRATION_HEAD = "o6j7k8l9m0n1"
 
 
 def _text(value: Any) -> str:
