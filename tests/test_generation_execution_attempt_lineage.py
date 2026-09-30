@@ -122,6 +122,9 @@ def test_regenerate_traces_current_official_to_candidate_and_execution(session):
     assert row.target_media == "IMAGE"
     assert session.query(MediaCandidateRecord).count() == before_candidate_count
     assert session.query(OfficialMediaPointer).one().official_media_version_id == before_pointer_version
+    official.status = "SUPERSEDED"
+    pointer.official_media_version_id = "historical-pointer-target"
+    assert GenerationAttemptLineageService(session).create_regenerate_intent(source_official_media_version_id="official-image", operation_idempotency_key="reg-1").attempt_lineage_id == row.attempt_lineage_id
 
 
 def test_confirmation_and_attempt_fingerprint_are_operation_bound(session):

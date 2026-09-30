@@ -228,6 +228,20 @@ class GenerationAttemptLineageService:
         if official is None:
             raise GenerationAttemptLineageError("source OfficialMediaVersion does not exist", code="GENERATION_ATTEMPT_SOURCE_NOT_FOUND", status_code=404)
         media = _media(official.media_type)
+        existing = self._existing_by_key(operation_idempotency_key, int(official.book_id))
+        if existing is not None:
+            same_input = (
+                existing.operation_kind == "REGENERATE"
+                and _text(existing.source_official_media_version_id) == _text(source_official_media_version_id)
+                and _reason(existing.reason) == _reason(reason)
+                and (target_media is None or _media(target_media) == _media(existing.target_media))
+                and (book_id is None or int(book_id) == int(existing.book_id))
+                and (episode is None or int(episode) == int(existing.episode))
+                and (storyboard_shot_id is None or int(storyboard_shot_id) == int(existing.storyboard_shot_id))
+            )
+            if not same_input:
+                raise GenerationAttemptLineageError("idempotency key is bound to a different operation", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
+            return existing
         if target_media is not None and _media(target_media) != media:
             raise GenerationAttemptLineageError("source OfficialMediaVersion media does not match target_media", code="GENERATION_ATTEMPT_MEDIA_MISMATCH")
         if not _scope_matches(official, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id):
@@ -246,12 +260,6 @@ class GenerationAttemptLineageService:
             "pointer_fingerprint": _text(pointer.fingerprint), "candidate_id": _text(candidate.candidate_id),
             "execution": self._execution_snapshot(execution), "media_role": _text(official.media_role),
         }
-        existing = self._existing_by_key(operation_idempotency_key, int(official.book_id))
-        if existing is not None:
-            expected_identity = self._operation_identity(kind="REGENERATE", key=operation_idempotency_key, execution=execution, source_snapshot=snapshot, reason=reason, source_candidate_id=_text(candidate.candidate_id), source_official_media_version_id=_text(official.official_media_version_id), root_execution_id=_text(existing.root_execution_id), attempt_number=int(existing.attempt_number), variant_index=int(existing.variant_index))
-            if existing.operation_kind != "REGENERATE" or _text(existing.source_official_media_version_id) != _text(source_official_media_version_id) or _text(existing.operation_identity_fingerprint) != expected_identity:
-                raise GenerationAttemptLineageError("idempotency key is bound to a different operation", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
-            return existing
         for _ in range(3):
             max_variant = self.session.query(func.max(GenerationExecutionAttemptLineage.variant_index)).filter_by(
                 operation_kind="REGENERATE", book_id=int(official.book_id), episode=int(official.episode),
