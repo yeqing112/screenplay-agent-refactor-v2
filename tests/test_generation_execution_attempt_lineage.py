@@ -42,7 +42,9 @@ def _execution(execution_id="exec-a", status="FAILED", media="IMAGE", book=1, sh
 
 def test_retry_is_durable_idempotent_and_does_not_touch_transport_count(session):
     source = _execution()
-    session.add(source)
+    produced = _execution("exec-b", "FAILED")
+    other_root = _execution("exec-other-root", "FAILED", book=2, shot=8)
+    session.add_all([source, produced, other_root])
     session.commit()
     before_candidate_count = session.query(MediaCandidateRecord).count()
     service = GenerationAttemptLineageService(session)
@@ -55,9 +57,21 @@ def test_retry_is_durable_idempotent_and_does_not_touch_transport_count(session)
     assert error.value.code == "GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT"
     assert first.operation_kind == "RETRY"
     assert source.status == "FAILED"
+    assert first.attempt_number == 1
+    assert first.variant_index == 0
+    assert first.retry_attempt_key
     assert source.transport_retry_count == 4
     assert session.query(MediaCandidateRecord).count() == before_candidate_count
     assert service.verify_confirmation(first.attempt_lineage_id, service.build_confirmation(first.attempt_lineage_id))
+    sibling = service.create_retry_intent(source_execution_id="exec-a", operation_idempotency_key="op-2", reason="second explicit retry")
+    assert sibling.attempt_number == 2
+    service.bind_produced_execution(first.attempt_lineage_id, "exec-b")
+    chained = service.create_retry_intent(source_execution_id="exec-b", operation_idempotency_key="op-3")
+    assert chained.root_execution_id == "exec-a"
+    assert chained.attempt_number == 3
+    independent = service.create_retry_intent(source_execution_id="exec-other-root", operation_idempotency_key="op-other")
+    assert independent.attempt_number == 1
+    assert independent.variant_index == 0
 
 
 def test_retry_rejects_success_and_stale_sources(session):
@@ -102,6 +116,9 @@ def test_regenerate_traces_current_official_to_candidate_and_execution(session):
     assert row.source_execution_id == "image-exec"
     assert row.source_candidate_id == "candidate-image"
     assert row.variant_index == 1
+    assert row.attempt_number == 1
+    assert row.regenerate_variant_key
+    assert row.retry_attempt_key is None
     assert row.target_media == "IMAGE"
     assert session.query(MediaCandidateRecord).count() == before_candidate_count
     assert session.query(OfficialMediaPointer).one().official_media_version_id == before_pointer_version
@@ -147,6 +164,27 @@ def test_regenerate_variant_two_and_idempotency_conflict(session):
     second = service.create_regenerate_intent(source_official_media_version_id="official-image", operation_idempotency_key="reg-b")
     assert first.variant_index == 1
     assert second.variant_index == 2
+    video_execution = _execution("video-exec", "SUCCESS", media="VIDEO")
+    video_candidate = MediaCandidateRecord(
+        candidate_id="candidate-video", execution_id="video-exec", status="MEDIA_CANDIDATE", media_type="VIDEO",
+        storage_identity="fixture://video", storage_reference_json="{}", metadata_json="{}", checksum_sha256="video-checksum",
+        mime_type="video/mp4", byte_size=1, width=1, height=1, duration_ms=1000, prompt_ir_version_id=1,
+        prompt_ir_payload_hash="prompt", generation_payload_fingerprint="payload", model_profile_id="model",
+        model_profile_fingerprint="model-fp", provider_request_fingerprint="video-exec-request", provider_response_hash="response",
+    )
+    video_official = OfficialMediaVersion(
+        official_media_version_id="official-video", book_id=1, episode=1, storyboard_shot_id=7, plan_shot_id="",
+        media_role="SHOT_PRIMARY_VIDEO", media_type="VIDEO", candidate_id="candidate-video", candidate_fingerprint="video-fp",
+        storage_identity="fixture://video", checksum_sha256="video-checksum", mime_type="video/mp4", byte_size=1,
+        width=1, height=1, duration_ms=1000, prompt_ir_version_id=1, prompt_ir_payload_hash="prompt",
+        generation_payload_fingerprint="payload", provider_request_fingerprint="video-exec-request", provider_response_hash="response",
+        validation_id="video-validation", validation_fingerprint="video-validation-fp", revision=1, status="CURRENT", payload_hash="video-official-payload",
+    )
+    video_pointer = OfficialMediaPointer(book_id=1, episode=1, storyboard_shot_id=7, media_role="SHOT_PRIMARY_VIDEO", official_media_version_id="official-video", authority_id="video-authority", fingerprint="video-pointer-fp")
+    session.add_all([video_execution, video_candidate, video_official, video_pointer])
+    session.commit()
+    video_row = service.create_regenerate_intent(source_official_media_version_id="official-video", operation_idempotency_key="reg-video")
+    assert video_row.variant_index == 1
     with pytest.raises(GenerationAttemptLineageError) as error:
         service.create_retry_intent(source_execution_id="image-exec", operation_idempotency_key="reg-a")
     assert error.value.code == "GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT"

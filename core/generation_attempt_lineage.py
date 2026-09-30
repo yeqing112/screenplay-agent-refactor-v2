@@ -9,6 +9,7 @@ import json
 import uuid
 from typing import Any
 
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
 from models import (
@@ -50,13 +51,29 @@ def _media(value: Any) -> str:
     return result
 
 
+def _regenerate_variant_key(*, book_id: int, episode: int, storyboard_shot_id: int, target_media: str, variant_index: int) -> str:
+    return _fingerprint({
+        "schema_version": "regenerate_variant_key_v1",
+        "book_id": int(book_id), "episode": int(episode),
+        "storyboard_shot_id": int(storyboard_shot_id),
+        "target_media": _media(target_media), "variant_index": int(variant_index),
+    })
+
+
+def _retry_attempt_key(*, root_execution_id: str, attempt_number: int) -> str:
+    return _fingerprint({
+        "schema_version": "retry_attempt_key_v1",
+        "root_execution_id": _text(root_execution_id), "attempt_number": int(attempt_number),
+    })
+
+
 def _scope_matches(row: GenerationExecutionRecord, *, book_id: Any = None, episode: Any = None, storyboard_shot_id: Any = None, target_media: Any = None) -> bool:
     return (
         book_id is None or int(book_id) == int(row.book_id)
     ) and (
         episode is None or int(episode) == int(row.episode)
     ) and (
-        storyboard_shot_id is None or int(storyboard_shot_id) in {int(row.storyboard_shot_id), int(row.storyboard_shot_id)}
+        storyboard_shot_id is None or int(storyboard_shot_id) == int(row.storyboard_shot_id)
     ) and (
         target_media is None or _media(target_media) == _media(row.target_media)
     )
@@ -107,15 +124,17 @@ class GenerationAttemptLineageService:
             "source_snapshot_fingerprint": _text(row.source_snapshot_fingerprint),
             "book_id": int(row.book_id), "episode": int(row.episode),
             "storyboard_shot_id": int(row.storyboard_shot_id), "target_media": _media(row.target_media),
+            "attempt_number": int(row.attempt_number), "variant_index": int(row.variant_index),
         }
         return "gat_" + hashlib.sha256(_canonical(payload).encode("utf-8")).hexdigest()
 
     @staticmethod
-    def _operation_identity(*, kind: str, key: str, execution: GenerationExecutionRecord, source_snapshot: dict[str, Any], reason: str, source_candidate_id: str | None, source_official_media_version_id: str | None, root_execution_id: str) -> str:
+    def _operation_identity(*, kind: str, key: str, execution: GenerationExecutionRecord, source_snapshot: dict[str, Any], reason: str, source_candidate_id: str | None, source_official_media_version_id: str | None, root_execution_id: str, attempt_number: int, variant_index: int) -> str:
         return _fingerprint({
             "schema_version": "generation_attempt_operation_v1", "operation_kind": _text(kind).upper(),
             "operation_idempotency_key": _text(key), "source_execution_id": _text(execution.execution_id),
             "root_execution_id": _text(root_execution_id), "target_media": _media(execution.target_media),
+            "attempt_number": int(attempt_number), "variant_index": int(variant_index),
             "source_snapshot": source_snapshot, "reason": _reason(reason),
             "source_candidate_id": source_candidate_id, "source_official_media_version_id": source_official_media_version_id,
         })
@@ -131,14 +150,18 @@ class GenerationAttemptLineageService:
             raise GenerationAttemptLineageError("confirmation token is not bound to this attempt", code="GENERATION_ATTEMPT_CONFIRMATION_MISMATCH")
         return True
 
-    def _create(self, *, key: str, kind: str, execution: GenerationExecutionRecord, source_snapshot: dict[str, Any], reason: str, source_candidate_id: str | None = None, source_official_media_version_id: str | None = None, variant_index: int = 1, root_execution_id: str | None = None, attempt_number: int = 1) -> GenerationExecutionAttemptLineage:
+    def _create(self, *, key: str, kind: str, execution: GenerationExecutionRecord, source_snapshot: dict[str, Any], reason: str, source_candidate_id: str | None = None, source_official_media_version_id: str | None = None, variant_index: int = 0, root_execution_id: str | None = None, attempt_number: int = 1, regenerate_variant_key: str | None = None, retry_attempt_key: str | None = None) -> GenerationExecutionAttemptLineage:
         key = _text(key)
         if not key:
             raise GenerationAttemptLineageError("operation_idempotency_key is required", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
         kind = _text(kind).upper()
         if kind not in {"RETRY", "REGENERATE"}:
             raise GenerationAttemptLineageError("operation_kind must be RETRY or REGENERATE", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
-        identity = self._operation_identity(kind=kind, key=key, execution=execution, source_snapshot=source_snapshot, reason=reason, source_candidate_id=source_candidate_id, source_official_media_version_id=source_official_media_version_id, root_execution_id=_text(root_execution_id or execution.execution_id))
+        if kind == "RETRY" and int(variant_index) != 0:
+            raise GenerationAttemptLineageError("Retry variant_index must be zero", code="GENERATION_ATTEMPT_SCOPE_MISMATCH")
+        if kind == "REGENERATE" and int(variant_index) < 1:
+            raise GenerationAttemptLineageError("Regenerate variant_index must be positive", code="GENERATION_ATTEMPT_SCOPE_MISMATCH")
+        identity = self._operation_identity(kind=kind, key=key, execution=execution, source_snapshot=source_snapshot, reason=reason, source_candidate_id=source_candidate_id, source_official_media_version_id=source_official_media_version_id, root_execution_id=_text(root_execution_id or execution.execution_id), attempt_number=attempt_number, variant_index=variant_index)
         existing = self._existing_by_key(key, int(execution.book_id))
         if existing is not None:
             if _text(existing.operation_identity_fingerprint) != identity:
@@ -152,6 +175,7 @@ class GenerationAttemptLineageService:
             target_media=_media(execution.target_media), source_execution_id=_text(execution.execution_id),
             root_execution_id=_text(root_execution_id or execution.execution_id), produced_execution_id=None,
             attempt_number=int(attempt_number), variant_index=int(variant_index), reason=_reason(reason),
+            regenerate_variant_key=regenerate_variant_key, retry_attempt_key=retry_attempt_key,
             source_candidate_id=source_candidate_id, source_official_media_version_id=source_official_media_version_id,
             source_snapshot_fingerprint=_fingerprint(source_snapshot), operation_identity_fingerprint=identity,
             confirmation_binding_hash="", status="PREVIEWED", created_at=now, updated_at=now,
@@ -177,12 +201,9 @@ class GenerationAttemptLineageService:
     def create_retry_intent(self, *, source_execution_id: str, operation_idempotency_key: str, reason: str = "", book_id: Any = None, episode: Any = None, storyboard_shot_id: Any = None, target_media: Any = None) -> GenerationExecutionAttemptLineage:
         execution = self._execution(source_execution_id)
         snapshot = self._execution_snapshot(execution)
-        parent = self.session.query(GenerationExecutionAttemptLineage).filter_by(produced_execution_id=execution.execution_id).one_or_none()
-        root_id = parent.root_execution_id if parent else execution.execution_id
-        attempt_number = int(parent.attempt_number) + 1 if parent else 1
         existing = self._existing_by_key(operation_idempotency_key, int(execution.book_id))
         if existing is not None:
-            expected_identity = self._operation_identity(kind="RETRY", key=operation_idempotency_key, execution=execution, source_snapshot=snapshot, reason=reason, source_candidate_id=None, source_official_media_version_id=None, root_execution_id=_text(root_id))
+            expected_identity = self._operation_identity(kind="RETRY", key=operation_idempotency_key, execution=execution, source_snapshot=snapshot, reason=reason, source_candidate_id=None, source_official_media_version_id=None, root_execution_id=_text(existing.root_execution_id), attempt_number=int(existing.attempt_number), variant_index=0)
             if existing.operation_kind != "RETRY" or _text(existing.source_execution_id) != _text(source_execution_id) or _text(existing.operation_identity_fingerprint) != expected_identity:
                 raise GenerationAttemptLineageError("idempotency key is bound to a different operation", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
             return existing
@@ -190,7 +211,17 @@ class GenerationAttemptLineageService:
             raise GenerationAttemptLineageError("Retry requires a FAILED source execution", code="GENERATION_RETRY_SOURCE_NOT_FAILED")
         if not _scope_matches(execution, book_id=book_id, episode=episode, storyboard_shot_id=storyboard_shot_id, target_media=target_media):
             raise GenerationAttemptLineageError("source execution scope does not match the request", code="GENERATION_ATTEMPT_SCOPE_MISMATCH")
-        return self._create(key=operation_idempotency_key, kind="RETRY", execution=execution, source_snapshot=snapshot, reason=reason, root_execution_id=root_id, attempt_number=attempt_number)
+        parent = self.session.query(GenerationExecutionAttemptLineage).filter_by(produced_execution_id=execution.execution_id).one_or_none()
+        root_id = parent.root_execution_id if parent else execution.execution_id
+        for _ in range(3):
+            max_attempt = self.session.query(func.max(GenerationExecutionAttemptLineage.attempt_number)).filter_by(operation_kind="RETRY", root_execution_id=_text(root_id)).scalar() or 0
+            attempt_number = int(max_attempt) + 1
+            try:
+                return self._create(key=operation_idempotency_key, kind="RETRY", execution=execution, source_snapshot=snapshot, reason=reason, root_execution_id=root_id, attempt_number=attempt_number, variant_index=0, retry_attempt_key=_retry_attempt_key(root_execution_id=root_id, attempt_number=attempt_number))
+            except IntegrityError as exc:
+                if "retry_attempt_key" not in str(exc).lower():
+                    raise
+        raise GenerationAttemptLineageError("retry ordinal allocation conflicted repeatedly", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
 
     def create_regenerate_intent(self, *, source_official_media_version_id: str, operation_idempotency_key: str, reason: str = "", book_id: Any = None, episode: Any = None, storyboard_shot_id: Any = None, target_media: Any = None) -> GenerationExecutionAttemptLineage:
         official = self.session.query(OfficialMediaVersion).filter_by(official_media_version_id=_text(source_official_media_version_id)).one_or_none()
@@ -215,17 +246,24 @@ class GenerationAttemptLineageService:
             "pointer_fingerprint": _text(pointer.fingerprint), "candidate_id": _text(candidate.candidate_id),
             "execution": self._execution_snapshot(execution), "media_role": _text(official.media_role),
         }
-        variant_index = self.session.query(GenerationExecutionAttemptLineage).filter_by(
-            operation_kind="REGENERATE", book_id=int(official.book_id), episode=int(official.episode),
-            storyboard_shot_id=int(official.storyboard_shot_id), target_media=media,
-        ).count() + 1
         existing = self._existing_by_key(operation_idempotency_key, int(official.book_id))
         if existing is not None:
-            expected_identity = self._operation_identity(kind="REGENERATE", key=operation_idempotency_key, execution=execution, source_snapshot=snapshot, reason=reason, source_candidate_id=_text(candidate.candidate_id), source_official_media_version_id=_text(official.official_media_version_id), root_execution_id=_text(execution.execution_id))
+            expected_identity = self._operation_identity(kind="REGENERATE", key=operation_idempotency_key, execution=execution, source_snapshot=snapshot, reason=reason, source_candidate_id=_text(candidate.candidate_id), source_official_media_version_id=_text(official.official_media_version_id), root_execution_id=_text(existing.root_execution_id), attempt_number=int(existing.attempt_number), variant_index=int(existing.variant_index))
             if existing.operation_kind != "REGENERATE" or _text(existing.source_official_media_version_id) != _text(source_official_media_version_id) or _text(existing.operation_identity_fingerprint) != expected_identity:
                 raise GenerationAttemptLineageError("idempotency key is bound to a different operation", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
             return existing
-        return self._create(key=operation_idempotency_key, kind="REGENERATE", execution=execution, source_snapshot=snapshot, reason=reason, source_candidate_id=_text(candidate.candidate_id), source_official_media_version_id=_text(official.official_media_version_id), variant_index=variant_index)
+        for _ in range(3):
+            max_variant = self.session.query(func.max(GenerationExecutionAttemptLineage.variant_index)).filter_by(
+                operation_kind="REGENERATE", book_id=int(official.book_id), episode=int(official.episode),
+                storyboard_shot_id=int(official.storyboard_shot_id), target_media=media,
+            ).scalar() or 0
+            variant_index = int(max_variant) + 1
+            try:
+                return self._create(key=operation_idempotency_key, kind="REGENERATE", execution=execution, source_snapshot=snapshot, reason=reason, source_candidate_id=_text(candidate.candidate_id), source_official_media_version_id=_text(official.official_media_version_id), variant_index=variant_index, attempt_number=1, regenerate_variant_key=_regenerate_variant_key(book_id=official.book_id, episode=official.episode, storyboard_shot_id=official.storyboard_shot_id, target_media=media, variant_index=variant_index))
+            except IntegrityError as exc:
+                if "regenerate_variant_key" not in str(exc).lower():
+                    raise
+        raise GenerationAttemptLineageError("regenerate variant allocation conflicted repeatedly", code="GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT")
 
     def get_intent(self, attempt_lineage_id: str) -> GenerationExecutionAttemptLineage:
         row = self.session.query(GenerationExecutionAttemptLineage).filter_by(attempt_lineage_id=_text(attempt_lineage_id)).one_or_none()
@@ -254,7 +292,7 @@ class GenerationAttemptLineageService:
 
 def serialize_attempt_lineage(row: GenerationExecutionAttemptLineage, *, include_confirmation: bool = False, service: GenerationAttemptLineageService | None = None) -> dict[str, Any]:
     payload = {key: getattr(row, key) for key in (
-        "attempt_lineage_id", "operation_idempotency_key", "operation_kind", "book_id", "episode", "storyboard_shot_id", "target_media", "source_execution_id", "root_execution_id", "produced_execution_id", "attempt_number", "variant_index", "reason", "source_candidate_id", "source_official_media_version_id", "source_snapshot_fingerprint", "operation_identity_fingerprint", "status",
+        "attempt_lineage_id", "operation_idempotency_key", "operation_kind", "book_id", "episode", "storyboard_shot_id", "target_media", "source_execution_id", "root_execution_id", "produced_execution_id", "attempt_number", "variant_index", "regenerate_variant_key", "retry_attempt_key", "reason", "source_candidate_id", "source_official_media_version_id", "source_snapshot_fingerprint", "operation_identity_fingerprint", "status",
     )}
     payload["created_at"] = row.created_at.isoformat() if row.created_at else None
     payload["updated_at"] = row.updated_at.isoformat() if row.updated_at else None

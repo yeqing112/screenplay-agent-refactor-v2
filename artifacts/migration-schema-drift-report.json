@@ -2,7 +2,7 @@
   "alembic_check": "EQUIVALENT_METADATA_DIFF_RECORDED",
   "classification_summary": {
     "CONSTRAINT_DRIFT": 0,
-    "EXPECTED_COMPATIBILITY_DIFFERENCE": 387,
+    "EXPECTED_COMPATIBILITY_DIFFERENCE": 391,
     "EXTRA_LEGACY_COLUMN": 1,
     "INDEX_DRIFT": 106,
     "MISSING_MIGRATION": 0,
@@ -11,7 +11,7 @@
   },
   "counts": {
     "blocking": 0,
-    "total": 494
+    "total": 498
   },
   "database": "disposable temporary SQLite database",
   "entries": [
@@ -1404,6 +1404,26 @@
       "blocking": false,
       "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
       "columns": [
+        "regenerate_variant_key"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_regenerate_variant_key",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "retry_attempt_key"
+      ],
+      "index": "ix_generation_execution_attempt_lineages_retry_attempt_key",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
         "root_execution_id"
       ],
       "index": "ix_generation_execution_attempt_lineages_root_execution_id",
@@ -1617,6 +1637,26 @@
         "target_media"
       ],
       "index": "ix_generation_attempt_target_media",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "regenerate_variant_key"
+      ],
+      "index": "uq_generation_attempt_regenerate_variant_key",
+      "kind": "index",
+      "table": "generation_execution_attempt_lineages"
+    },
+    {
+      "blocking": false,
+      "category": "EXPECTED_COMPATIBILITY_DIFFERENCE",
+      "columns": [
+        "retry_attempt_key"
+      ],
+      "index": "uq_generation_attempt_retry_attempt_key",
       "kind": "index",
       "table": "generation_execution_attempt_lineages"
     },

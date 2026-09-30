@@ -28,7 +28,7 @@ from sqlalchemy import create_engine, inspect, text
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 ALEMBIC_VERSIONS = ROOT / "alembic" / "versions"
-HEAD = "n5i6j7k8l9m0"
+HEAD = "o6j7k8l9m0n1"
 
 AUTHORITY_TABLES = {
     "fact_snapshots",
@@ -205,7 +205,7 @@ REQUIRED_COLUMNS = {
         "storyboard_shot_id", "target_media", "source_execution_id", "root_execution_id",
         "produced_execution_id", "attempt_number", "variant_index", "reason", "source_candidate_id",
         "source_official_media_version_id", "source_snapshot_fingerprint", "operation_identity_fingerprint",
-        "confirmation_binding_hash", "status", "created_at", "updated_at",
+        "confirmation_binding_hash", "regenerate_variant_key", "retry_attempt_key", "status", "created_at", "updated_at",
     },
 }
 
