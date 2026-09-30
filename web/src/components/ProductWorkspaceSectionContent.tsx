@@ -331,6 +331,7 @@ export default function ProductWorkspaceSectionContent({
               productionWorkspaceState={storyboard.productionWorkspaceState}
               productionWorkspaceV2={storyboard.productionWorkspaceV2}
               productionWorkspaceV2State={storyboard.productionWorkspaceV2State}
+              onRefreshProductionWorkspaceV2={storyboard.onRefreshProductionWorkspaceV2}
               surfaceDecision={surfaceDecision}
             />
           </>

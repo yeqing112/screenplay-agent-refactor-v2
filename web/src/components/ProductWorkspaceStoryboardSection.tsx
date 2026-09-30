@@ -76,6 +76,9 @@ import {
 } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
 import ProductionGenerationProfileSelector from './ProductionGenerationProfileSelector'
+import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
+import { ProductionGenerationServiceError, submitCanonicalProductionGeneration } from '../services/productionGeneration'
+import { classifyGenerationResponse } from '../services/legacyProductionGenerationBridge'
 
 interface Props {
   bookId: number
@@ -103,6 +106,7 @@ interface Props {
   productionWorkspaceState?: ProductionWorkspaceLoadState
   productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
   productionWorkspaceV2State?: ProductionWorkspaceLoadState
+  onRefreshProductionWorkspaceV2?: () => Promise<void>
   surfaceDecision?: StoryboardSurfaceDecision
 }
 
@@ -1716,6 +1720,7 @@ export default function ProductWorkspaceStoryboardSection({
   productionWorkspaceState,
   productionWorkspaceV2 = null,
   productionWorkspaceV2State,
+  onRefreshProductionWorkspaceV2,
   surfaceDecision,
 }: Props) {
   const [promptVersions, setPromptVersions] = useState<PromptVersionRecord[]>([])
@@ -3075,6 +3080,80 @@ export default function ProductWorkspaceStoryboardSection({
       if (!selectedGenerationProfile?.id) {
         throw new Error(kind === 'frame' ? '请先选择 IMAGE 生成模型配置。' : '请先选择 VIDEO 生成模型配置。')
       }
+      if (productionMode) {
+        // Production mode has one canonical request contract. Re-read V2 at
+        // the submission boundary so the confirmation dialog cannot submit
+        // against a stale shot, lane, or model selection.
+        await onRefreshProductionWorkspaceV2?.()
+        const freshProjection = await fetchProductionWorkspaceV2(_bookId, {
+          imageModelProfileId: kind === 'frame' ? selectedGenerationProfile.id : imageModelProfile?.id ?? null,
+          videoModelProfileId: kind === 'video' ? selectedGenerationProfile.id : videoModelProfile?.id ?? null,
+        })
+        const freshShot = findProductionShotV2(freshProjection, selectedShot.episode, selectedShot.shot_id)
+        const freshLane = kind === 'frame' ? freshShot?.IMAGE : freshShot?.VIDEO
+        const freshReady = kind === 'frame' ? isProductionImageGenerationReady(freshShot) : isProductionVideoGenerationReady(freshShot)
+        const projectedModelId = String(freshLane?.model.selected_profile_id || '').trim()
+        if (!freshShot || !freshLane || !freshReady || projectedModelId !== selectedGenerationProfile.id) {
+          throw new Error('生产状态已经更新，请重新确认当前镜头和模型配置。')
+        }
+
+        const payload = await submitCanonicalProductionGeneration({
+          bookId: _bookId,
+          episode: selectedShot.episode,
+          shotId: selectedShot.shot_id,
+          target: kind === 'frame' ? 'IMAGE' : 'VIDEO',
+          modelProfileId: selectedGenerationProfile.id,
+          generationChain: chainMeta?.generationChain ?? (kind === 'frame' ? 'storyboard_generate_frame' : 'storyboard_generate_video'),
+        })
+        const responseClass = classifyGenerationResponse(payload)
+        if (responseClass === 'legacy_task') {
+          const taskId = String(payload.task_id || '').trim()
+          if (!taskId) throw new Error('兼容任务响应缺少 task_id，已安全停止。')
+          setGenerationMessage(`LEGACY_TASK_RECOVERY_COMPATIBILITY：${labels.pending} 任务 ID：${taskId}`)
+          upsertPendingStoryboardTask(_bookId, { taskId, episode: selectedShot.episode, shotId: String(selectedShot.shot_id), kind, updatedAt: new Date().toISOString() })
+          targetTaskSetter(taskId)
+          const settled = await waitForCreativeTask(taskId, fetchCreativeTaskStatus, { reconcileTask: reconcileCreativeTask, softTimeoutMs: 45000 })
+          if (settled.status === 'done') {
+            removePendingStoryboardTask(_bookId, taskId)
+            targetTaskSetter(null)
+            setGenerationState('success')
+            setGenerationMessage(`${labels.success}（LEGACY_TASK_RECOVERY_COMPATIBILITY）`)
+            persistShotExecutionSummary(kind, kind === 'frame' ? '兼容任务回收首帧' : '兼容任务回收视频', { generationChain: chainMeta?.generationChain ?? null, taskId })
+            await onRefresh()
+            return
+          }
+          if (settled.status === 'soft_timeout') {
+            setGenerationState('error')
+            setGenerationMessage(`${labels.pending} 任务 ID：${taskId}`)
+            return
+          }
+          const settledError = 'error' in settled ? String(settled.error || '') : ''
+          throw new Error(formatGenerationErrorMessage(settledError, `${labels.action}失败，任务 ID：${taskId}`))
+        }
+        if (responseClass === 'invalid_response' || !payload.execution) throw new Error('canonical 生成响应格式无效，已安全停止。')
+        const executionStatus = String(payload.execution.status || '').toUpperCase()
+        if (executionStatus === 'FAILED' || executionStatus === 'ERROR') {
+          throw new Error(String(payload.execution.failure_message || 'canonical 生成执行失败。'))
+        }
+        setGenerationState('success')
+        setGenerationMessage(payload.candidate
+          ? `${labels.success}（候选结果，待显式采纳）`
+          : '已提交 canonical 执行，正在由 Production Workspace V2 同步状态。')
+        persistShotExecutionSummary(kind, kind === 'frame'
+          ? chainMeta?.generationChain === 'recompile_then_frame' ? '重编后生成首帧' : '生成首帧'
+          : chainMeta?.generationChain === 'recompile_then_video' ? '重编后继续生成视频' : '生成视频', {
+          generationChain: chainMeta?.generationChain ?? (kind === 'frame' ? 'storyboard_generate_frame' : 'storyboard_generate_video'),
+          executionId: payload.execution.execution_id,
+          candidateId: payload.candidate?.candidate_id,
+          candidateStatus: payload.candidate?.status || 'MEDIA_CANDIDATE',
+        })
+        await onRefreshProductionWorkspaceV2?.()
+        await onRefresh()
+        return
+      }
+
+      // Non-production continues through the explicit legacy compatibility
+      // request and task recovery path below.
       const requestBody = kind === 'frame'
         ? {
             modelProfileId: selectedGenerationProfile.id,
@@ -3160,6 +3239,7 @@ export default function ProductWorkspaceStoryboardSection({
         throw new Error(`\u672a\u80fd\u83b7\u53d6${labels.noun}\u4efb\u52a1\u53f7\u3002`)
       }
 
+      setGenerationMessage(`LEGACY_TASK_RECOVERY_COMPATIBILITY：${labels.pending} 任务 ID：${taskId}`)
       upsertPendingStoryboardTask(_bookId, {
         taskId,
         episode: selectedShot.episode,
@@ -3201,7 +3281,15 @@ export default function ProductWorkspaceStoryboardSection({
     } catch (error) {
       const fallback = kind === 'frame' ? '\u9996\u5e27\u751f\u6210\u5931\u8d25\u3002' : '\u89c6\u9891\u751f\u6210\u5931\u8d25\u3002'
       setGenerationState('error')
-      setGenerationMessage(formatGenerationErrorMessage(error instanceof Error ? error.message : '', fallback))
+      const productionConfirmationRequired = error instanceof ProductionGenerationServiceError && error.status === 409 && (
+        error.code === 'EXECUTABILITY_REQUIRES_CONFIRMATION' ||
+        Boolean((error.details as { detail?: { requires_confirmation?: boolean } } | null)?.detail?.requires_confirmation)
+      )
+      if (productionMode && productionConfirmationRequired) {
+        setGenerationMessage('当前镜头存在可拍性告警，请先在兼容工作台高级工具中处理，或完成明确的可拍性确认流程。')
+      } else {
+        setGenerationMessage(formatGenerationErrorMessage(error instanceof Error ? error.message : '', fallback))
+      }
     } finally {
       syncRecoveryTaskIds()
     }

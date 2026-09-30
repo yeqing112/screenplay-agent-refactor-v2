@@ -1,0 +1,31 @@
+{
+  "canonical_routes": [
+    {
+      "target": "IMAGE",
+      "method": "POST",
+      "path": "/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame",
+      "body_contract": ["modelProfileId", "confirmed", "allowExternalCall", "compileIfMissing", "generationChain"],
+      "forbidden_production_fields": ["firstFrameAssetId", "referenceAssetIds"],
+      "observed_status": 200
+    },
+    {
+      "target": "VIDEO",
+      "method": "POST",
+      "path": "/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video",
+      "body_contract": ["modelProfileId", "confirmed", "allowExternalCall", "compileIfMissing", "generationChain"],
+      "forbidden_production_fields": ["firstFrameAssetId", "referenceAssetIds"],
+      "observed_status": 200
+    }
+  ],
+  "response_policy": {
+    "execution_or_candidate": "canonical",
+    "execution_plus_task_id": "canonical_with_diagnostic_task_id",
+    "task_id_only": "legacy_recovery",
+    "unknown_shape": "fail_closed"
+  },
+  "mount_audit": {
+    "agent_reconcile_post": true,
+    "generation_post_on_mount": false
+  },
+  "real_provider_call": false
+}

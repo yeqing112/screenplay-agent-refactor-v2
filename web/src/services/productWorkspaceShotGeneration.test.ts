@@ -314,7 +314,7 @@ describe('canonical generation service contract', () => {
   it('sends compileIfMissing=false and no legacy asset fields', async () => {
     const fetchMock = vi.fn(async (_url: string, init: RequestInit) => ({ ok: true, json: async () => ({ execution: { status: 'RUNNING' } }), init }))
     vi.stubGlobal('fetch', fetchMock)
-    await submitCanonicalProductionGeneration({ bookId: 1, episode: 1, shotId: 'S1', target: 'VIDEO', modelProfileId: 'video-profile', firstFrameAssetId: 'legacy', referenceAssetIds: ['legacy-ref'] })
+    await submitCanonicalProductionGeneration({ bookId: 1, episode: 1, shotId: 'S1', target: 'VIDEO', modelProfileId: 'video-profile' })
     const init = fetchMock.mock.calls[0][1] as RequestInit
     const body = JSON.parse(String(init.body))
     expect(body.compileIfMissing).toBe(false)
@@ -325,6 +325,15 @@ describe('canonical generation service contract', () => {
   it('preserves HTTP status and backend code', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 409, json: async () => ({ detail: { code: 'GENERATION_PREVIEW_STALE', message: 'stale' } }) })))
     await expect(submitCanonicalProductionGeneration({ bookId: 1, episode: 1, shotId: 'S1', target: 'IMAGE', modelProfileId: 'image-profile' })).rejects.toMatchObject({ status: 409, code: 'GENERATION_PREVIEW_STALE' } satisfies Partial<ProductionGenerationServiceError>)
+  })
+
+  it('forwards AbortSignal and preserves task_id for the compatibility classifier', async () => {
+    const controller = new AbortController()
+    const fetchMock = vi.fn(async (_url: string, init: RequestInit) => ({ ok: true, json: async () => ({ task_id: 'legacy-task-1' }), init }))
+    vi.stubGlobal('fetch', fetchMock)
+    const response = await submitCanonicalProductionGeneration({ bookId: 1, episode: 1, shotId: 'S1', target: 'IMAGE', modelProfileId: 'image-profile', signal: controller.signal })
+    expect(response.task_id).toBe('legacy-task-1')
+    expect((fetchMock.mock.calls[0][1] as RequestInit).signal).toBe(controller.signal)
   })
 })
 

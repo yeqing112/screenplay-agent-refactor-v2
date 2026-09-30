@@ -8,8 +8,6 @@ export interface SubmitProductionGenerationOptions {
   shotId: string | number
   target: ProductionGenerationTarget
   modelProfileId: string
-  firstFrameAssetId?: string | null
-  referenceAssetIds?: string[]
   generationChain?: string
   signal?: AbortSignal
 }

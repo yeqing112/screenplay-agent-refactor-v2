@@ -42,9 +42,9 @@ import {
   executeRecoveryTaskAction,
   type RecoveryTaskAction,
 } from './productWorkspaceTaskRecoveryActions'
-import { getShotReferenceAssetIds } from './productWorkspaceBatchActions'
 import { findProductionShotV2 } from '../domain/productionWorkspace'
 import { submitCanonicalProductionGeneration } from '../services/productionGeneration'
+import { classifyGenerationResponse } from '../services/legacyProductionGenerationBridge'
 import {
   buildBatchCounters as buildTaskCenterBatchCounters,
   inferEpisodeFromTask as inferEpisodeFromTaskCenterEntry,
@@ -740,9 +740,19 @@ export default function ProductWorkspaceTasksSection({
           shotId: selectedShotId,
           target: generationKind === 'frame' ? 'IMAGE' : 'VIDEO',
           modelProfileId,
-          referenceAssetIds: generationKind === 'video' ? getShotReferenceAssetIds(shot) : undefined,
           generationChain: generationKind === 'frame' ? 'task_center_regenerate_latest_frame' : 'task_center_regenerate_latest_video',
         })
+        const responseClass = classifyGenerationResponse(payload)
+        if (responseClass === 'canonical_execution' || responseClass === 'canonical_candidate' || responseClass === 'mixed_canonical_with_task_diagnostic') {
+          setTaskActionStateById((current) => ({
+            ...current,
+            [selectedTask.id]: { mode: 'success', action, message: 'canonical 执行已提交；不创建 Legacy Pending Task。' },
+          }))
+          setTaskOperationSummary({ title: '已提交 canonical 生成', detail: '生产状态将通过 Production Workspace V2 同步；task_id 仅作为兼容诊断。' })
+          loadPendingStoryboardTasks()
+          void loadCreativeTasks()
+          return
+        }
         const newTaskId = String(payload?.task_id || '').trim()
         if (!newTaskId) {
           throw new Error('按最新镜头状态重新生成失败：服务端未返回任务号。')

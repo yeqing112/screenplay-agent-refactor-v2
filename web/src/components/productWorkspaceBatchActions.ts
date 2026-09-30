@@ -10,9 +10,9 @@ import type { PendingStoryboardTask } from './productWorkspaceRecovery'
 import { upsertPendingStoryboardTask, removePendingStoryboardTask } from './productWorkspaceRecovery'
 import type { TaskCenterQaWorkbenchEpisodeSummary } from './productWorkspaceTasks'
 import type { CreativeTaskPayload } from './productWorkspaceGeneration'
-import { resolveEffectiveReferenceAssetIds } from './productWorkspaceStoryboardReferencePayload'
 import { readExplicitGenerationProfileSelection } from './productWorkspaceGeneration'
 import { submitCanonicalProductionGeneration } from '../services/productionGeneration'
+import { classifyGenerationResponse } from '../services/legacyProductionGenerationBridge'
 
 export type BatchTaskAction =
   | 'batch-compile-prompts'
@@ -87,10 +87,6 @@ export function findAdoptedMediaAsset(
 ) {
   if (!Array.isArray(items) || items.length === 0) return null
   return items.find((item) => item?.adopted) ?? items[items.length - 1] ?? null
-}
-
-export function getShotReferenceAssetIds(shot: StoryboardShotOutput) {
-  return resolveEffectiveReferenceAssetIds(shot).assetIds
 }
 
 export function isProductionBatchImageEligible(snapshot: ProductionWorkspaceV2Snapshot | null | undefined, episode: number, shotId: string | number) {
@@ -246,6 +242,11 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
         failedTargets.push(`第 ${target.episode} 集 / 镜头 ${target.shotId}`)
         continue
       }
+      const responseClass = classifyGenerationResponse(payload)
+      if (responseClass === 'canonical_execution' || responseClass === 'canonical_candidate' || responseClass === 'mixed_canonical_with_task_diagnostic') {
+        startedCount += 1
+        continue
+      }
       const taskId = String(payload.task_id || '').trim()
       if (payload?.execution && !taskId) {
         startedCount += 1
@@ -315,13 +316,9 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
       shots
         .map((shot) => {
           const projection = findProductionShotV2(options.productionWorkspaceV2, Number(episode), shot.shot_id)
-          const officialImage = projection?.IMAGE.official.current ? projection.IMAGE.official.version : null
           return {
             episode: Number(episode),
             shotId: String(shot.shot_id),
-            firstFrameAssetId: String(officialImage?.id || '').trim(),
-            firstFrameUrl: String(officialImage?.storage_identity || '').trim(),
-            referenceAssetIds: getShotReferenceAssetIds(shot),
             projection,
           }
         })
@@ -341,10 +338,15 @@ export async function executeBatchTaskAction(options: ExecuteBatchTaskActionOpti
     for (const target of executableShots) {
       let payload: Record<string, any>
       try {
-        payload = await submitCanonicalProductionGeneration({ bookId, episode: target.episode, shotId: target.shotId, target: 'VIDEO', modelProfileId: videoModelProfileId, firstFrameAssetId: target.firstFrameAssetId, referenceAssetIds: target.referenceAssetIds, generationChain: 'task_center_batch_video' })
+        payload = await submitCanonicalProductionGeneration({ bookId, episode: target.episode, shotId: target.shotId, target: 'VIDEO', modelProfileId: videoModelProfileId, generationChain: 'task_center_batch_video' })
       } catch {
         failedCount += 1
         failedTargets.push(`第 ${target.episode} 集 / 镜头 ${target.shotId}`)
+        continue
+      }
+      const responseClass = classifyGenerationResponse(payload)
+      if (responseClass === 'canonical_execution' || responseClass === 'canonical_candidate' || responseClass === 'mixed_canonical_with_task_diagnostic') {
+        startedCount += 1
         continue
       }
       const taskId = String(payload.task_id || '').trim()

@@ -1,0 +1,60 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_CANONICAL_MUTATION_CONVERGENCE",
+  "status": "complete",
+  "completion_marker": "PRODUCTION_UI_V3_LEGACY_CANONICAL_MUTATION_CONVERGENCE_COMPLETE",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "base_commit": "fccdfd63d60ec9ca0ff85004ea30d8ca2503d536",
+  "scope": {
+    "production_surface": "legacy storyboard with Production Workspace V2 projection",
+    "canonical_client": "web/src/services/productionGeneration.ts",
+    "response_classifier": "web/src/services/legacyProductionGenerationBridge.ts",
+    "backend_changed": false,
+    "real_provider_called": false
+  },
+  "invariants": {
+    "source_fact_mutation": false,
+    "script_ir_mutation": false,
+    "automatic_prompt_compile": false,
+    "automatic_candidate_promotion": false,
+    "human_review_removed": false,
+    "canonical_execution_priority": true,
+    "task_only_fallback_preserved": true,
+    "mixed_response_polling": false,
+    "production_compile_if_missing": false,
+    "production_legacy_source_fields": false,
+    "fresh_projection_guard": true
+  },
+  "tests": {
+    "web_test_files": 61,
+    "web_tests_passed": 412,
+    "backend_regression_tests_passed": 33,
+    "web_build": "passed",
+    "python_compileall": "passed",
+    "git_diff_check": "passed"
+  },
+  "browser_qa": {
+    "session": "legacy-canonical-mock",
+    "url_host": "http://127.0.0.1:5185",
+    "image": {
+      "request": "POST /api/books/998755/storyboard/1/1/generate-frame",
+      "status": 200,
+      "response_class": "mixed_canonical_with_task_diagnostic",
+      "task_polling_observed": false
+    },
+    "video": {
+      "request": "POST /api/books/998755/storyboard/1/1/generate-video",
+      "status": 200,
+      "response_class": "mixed_canonical_with_task_diagnostic",
+      "task_polling_observed": false
+    },
+    "task_only_fallback": {
+      "unit_classifier_covered": true,
+      "browser_panel_scope": "Production Workspace V2 panel exercised canonical client; legacy task-only recovery remains covered by code path and unit tests"
+    }
+  },
+  "provider": {
+    "configured_provider_reference": "https://www.shapi.vip/",
+    "real_call": false,
+    "credentials_changed": false
+  }
+}

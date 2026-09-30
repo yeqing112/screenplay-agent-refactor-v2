@@ -1,0 +1,53 @@
+{
+  "session": "legacy-canonical-mock",
+  "environment": {
+    "url": "http://127.0.0.1:5185",
+    "workspace_fixture": "populated",
+    "ui_v3": "legacy",
+    "book_id": 998755,
+    "episode": 1,
+    "shot": "A"
+  },
+  "flows": [
+    {
+      "target": "IMAGE",
+      "fixture": "ready-image",
+      "endpoint": "/api/books/998755/storyboard/1/1/generate-frame",
+      "http_status": 200,
+      "request_assertions": {
+        "compileIfMissing": false,
+        "firstFrameAssetId_absent": true,
+        "referenceAssetIds_absent": true,
+        "modelProfileId": "fixture-image-profile"
+      },
+      "response_assertions": {
+        "execution_present": true,
+        "candidate_present": true,
+        "task_id_present_as_diagnostic": true,
+        "task_polling": false
+      }
+    },
+    {
+      "target": "VIDEO",
+      "fixture": "official-image-ready-video",
+      "endpoint": "/api/books/998755/storyboard/1/1/generate-video",
+      "http_status": 200,
+      "request_assertions": {
+        "compileIfMissing": false,
+        "firstFrameAssetId_absent": true,
+        "referenceAssetIds_absent": true,
+        "modelProfileId": "fixture-video-profile"
+      },
+      "response_assertions": {
+        "execution_present": true,
+        "candidate_present": true,
+        "task_id_present_as_diagnostic": true,
+        "task_polling": false
+      }
+    }
+  ],
+  "known_fixture_noise": [
+    "prompt-versions endpoint returns 500 in disposable fixture",
+    "background agent reconcile POST occurs on mount"
+  ]
+}
