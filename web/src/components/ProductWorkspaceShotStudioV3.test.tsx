@@ -50,6 +50,9 @@ describe('ProductWorkspaceShotStudioV3', () => {
   it('renders the V2 snapshot as a canonical Shot Studio surface', () => {
     const html = renderSurface(productionWorkspaceV2Fixture)
     expect(html).toContain('Shot Navigator')
+    expect(html).toContain('Shot Studio · V3')
+    expect(html).not.toContain('V3 Canary')
+    expect(html).toContain('兼容工作台')
     expect(html).toContain('Media Canvas')
     expect(html).toContain('Shot Pipeline')
     expect(html).toContain('Shot Context')

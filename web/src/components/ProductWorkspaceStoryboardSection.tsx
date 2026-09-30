@@ -28,6 +28,7 @@ import {
   type ShotBindingSummary,
 } from './productWorkspaceStoryboardBindings'
 import type { CanvasHandoffTarget, StoryboardStep, TaskNavigateHandler } from './productWorkspaceSectionContracts'
+import { buildStoryboardSurfaceUrl, type StoryboardSurfaceDecision } from '../domain/productionUiV3SurfacePolicy'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildShotReadiness, buildStoryboardGateSummary, hasDegradedPromptVersion } from './productWorkspaceStoryboard'
 import {
@@ -102,6 +103,7 @@ interface Props {
   productionWorkspaceState?: ProductionWorkspaceLoadState
   productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
   productionWorkspaceV2State?: ProductionWorkspaceLoadState
+  surfaceDecision?: StoryboardSurfaceDecision
 }
 
 export function buildStoryboardCanvasHandoffSummary(input: {
@@ -1714,6 +1716,7 @@ export default function ProductWorkspaceStoryboardSection({
   productionWorkspaceState,
   productionWorkspaceV2 = null,
   productionWorkspaceV2State,
+  surfaceDecision,
 }: Props) {
   const [promptVersions, setPromptVersions] = useState<PromptVersionRecord[]>([])
   const [historyState, setHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
@@ -3470,8 +3473,13 @@ export default function ProductWorkspaceStoryboardSection({
     focusStoryboardStep(STORYBOARD_STEPS[nextIndex].id)
   }
 
+  const v3Url = typeof window !== 'undefined' ? buildStoryboardSurfaceUrl(window.location.search, 'v3') : '?ui_v3=shot-studio'
+  const showSurfaceNotice = Boolean(surfaceDecision)
+  const surfaceNoticeLabel = surfaceDecision?.reason === 'explicit_legacy' ? '兼容工作台 · 手动选择' : '当前项目使用兼容工作台'
+
   return (
-    <div>
+    <div data-storyboard-surface="legacy" data-storyboard-surface-reason={surfaceDecision?.reason ?? 'legacy'}>
+      {showSurfaceNotice ? <div data-testid="legacy-surface-notice" className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-xs text-slate-300"><span>{surfaceNoticeLabel}</span><a href={v3Url} data-testid="legacy-v3-link" className="text-sky-200 hover:text-white">使用新版镜头工坊</a></div> : null}
       <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} state={productionWorkspaceState} episode={selectedEpisode} title="镜头生产状态" />
       <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">

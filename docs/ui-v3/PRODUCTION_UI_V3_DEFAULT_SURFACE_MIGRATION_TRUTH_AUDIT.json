@@ -1,0 +1,39 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION",
+  "completion_marker": "PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION_COMPLETE",
+  "verification_date": "2026-09-30",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "baseline_commit": "3c8d91d7d71e7bcda708d5b8da6e3787cf373cd7",
+  "decision_contract": {
+    "default": "eligible V2 projection with 1..100 canonical shots -> v3",
+    "legacy_fallbacks": ["hard_disabled", "default_disabled", "v2_loading_pending", "v2_unavailable", "v2_contract_invalid", "no_canonical_shots", "rollout_shot_limit", "legacy_recovery_context", "legacy_step_deeplink", "storyboard_generation_running"],
+    "explicit_overrides": ["?ui_v3=shot-studio", "?ui_v3=legacy"],
+    "canonical_truth": "Production Workspace V2 read-only projection",
+    "source_fact_mutation": false,
+    "script_ir_mutation": false,
+    "provider_or_llm_call": false,
+    "generation_submission": false
+  },
+  "implementation_files": [
+    "web/src/domain/productionUiV3SurfacePolicy.ts",
+    "web/src/domain/productionUiV3SurfacePolicy.test.ts",
+    "web/src/components/ProductWorkspaceSectionContent.tsx",
+    "web/src/components/ProductWorkspaceShotStudioV3.tsx",
+    "web/src/components/ProductWorkspaceStoryboardSection.tsx",
+    "web/src/components/ProductWorkspaceShotStudioV3.test.tsx"
+  ],
+  "verification": {
+    "web_test_files": 60,
+    "web_tests": 403,
+    "web_build": "passed",
+    "asset_api_tests": 3,
+    "runtime_regression_tests": 33,
+    "python_compile": "passed",
+    "git_diff_check": "passed"
+  },
+  "evidence": {
+    "browser": "docs/ui-v3/PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION_BROWSER_QA.json",
+    "responsive": "docs/ui-v3/PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION_RESPONSIVE_QA.json",
+    "network": "docs/ui-v3/PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION_NETWORK_AUDIT.json"
+  }
+}

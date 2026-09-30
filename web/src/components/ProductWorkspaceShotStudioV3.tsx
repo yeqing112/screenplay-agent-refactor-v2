@@ -22,6 +22,7 @@ import {
   type ProductionUiState,
   type ShotStudioViewModel,
 } from '../domain/productionUiV3'
+import { buildStoryboardSurfaceUrl, type StoryboardSurfaceDecision } from '../domain/productionUiV3SurfacePolicy'
 import {
   createShotStudioMediaReviewController,
   type ShotReviewCandidateIdentity,
@@ -44,6 +45,7 @@ interface ProductWorkspaceShotStudioV3Props {
   onSelectShot: (shotId: string | null) => void
   onRefresh?: () => void
   onRefreshProductionWorkspaceV2?: () => Promise<void>
+  surfaceDecision?: StoryboardSurfaceDecision
 }
 
 type StateFilter = 'all' | ProductionUiState
@@ -386,7 +388,7 @@ function NextAction({ shot }: { shot: ShotStudioViewModel }) {
   return <div data-testid="shot-studio-next-action" className="mt-4 border border-[#8BC9D9]/40 bg-[#8BC9D9]/5 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-[0.16em] text-[#8BC9D9]">Canonical next action</div><div className="mt-1 text-base font-medium text-[#EDF1EF]">下一步 · {shot.primaryAction.label}</div></div><div className="flex items-center gap-2 text-[10px] text-[#A9B4B3]"><SlidersHorizontal className="h-3.5 w-3.5" />{nextActionCategory(shot)}</div></div><div className="mt-2 text-xs leading-6 text-[#A9B4B3]">{shot.primaryAction.reason || shot.detail}</div>{shot.primaryAction.requiresProviderCall ? <div className="mt-3 inline-flex items-center gap-2 border border-[#DBB36F]/30 bg-[#DBB36F]/5 px-2 py-1.5 text-[10px] text-[#DBB36F]"><CircleHelp className="h-3.5 w-3.5" />生成按钮会先请求费用确认，并由 canonical execution 记录真实状态。</div> : null}</div>
 }
 
-export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapshot ? 'ready' : 'loading', error, mode = 'standard', focusShotId = null, onSelectShot, onRefresh, onRefreshProductionWorkspaceV2 }: ProductWorkspaceShotStudioV3Props) {
+export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapshot ? 'ready' : 'loading', error, mode = 'standard', focusShotId = null, onSelectShot, onRefresh, onRefreshProductionWorkspaceV2, surfaceDecision }: ProductWorkspaceShotStudioV3Props) {
   const viewModels = useMemo(() => toShotStudioViewModels(snapshot?.shots ?? []), [snapshot])
   const selectedByFocus = viewModels.find((shot) => shot.shotId === String(focusShotId ?? '')) ?? null
   const selected = selectedByFocus ?? viewModels[0] ?? null
@@ -439,8 +441,9 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
   if (state === 'unavailable' || !snapshot) return <UnavailableSurface error={error} onRefresh={onRefresh} />
   if (snapshot.shots.length === 0) return <EmptySurface />
 
-  return <div data-testid="shot-studio-v3" className="min-w-0 space-y-4 bg-[#0E1214] text-[#EDF1EF]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
-    <Panel className="flex flex-wrap items-center justify-between gap-4 px-4 py-4"><div><div className="text-[10px] uppercase tracking-[0.2em] text-[#728082]">Shot Studio · V3 Canary</div><div className="mt-1 flex flex-wrap items-center gap-3"><h2 className="text-xl font-medium tracking-tight text-[#EDF1EF]">镜头工坊</h2>{selected ? <StatusBadge state={selected.state} /> : null}</div><div className="mt-2 text-xs text-[#A9B4B3]">Production Workspace V2 状态、canonical 执行与人工审核在此衔接</div></div><div className="flex items-center gap-2"><span className="border border-[#2A3437] px-2.5 py-1.5 text-[10px] text-[#728082]">{snapshot.shots.length} shots</span>{onRefresh ? <button type="button" onClick={onRefresh} aria-label="重新同步 Shot Studio" className="inline-flex items-center gap-2 border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC9D9]"><RefreshCw className="h-3.5 w-3.5" />重新同步</button> : null}</div></Panel>
+  const legacyUrl = typeof window !== 'undefined' ? buildStoryboardSurfaceUrl(window.location.search, 'legacy') : '?ui_v3=legacy'
+  return <div data-testid="shot-studio-v3" data-storyboard-surface="v3" data-storyboard-surface-reason={surfaceDecision?.reason ?? 'explicit_v3'} className="min-w-0 space-y-4 bg-[#0E1214] text-[#EDF1EF]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+    <Panel className="flex flex-wrap items-center justify-between gap-4 px-4 py-4"><div><div className="text-[10px] uppercase tracking-[0.2em] text-[#728082]">Shot Studio · V3</div><div className="mt-1 flex flex-wrap items-center gap-3"><h2 className="text-xl font-medium tracking-tight text-[#EDF1EF]">镜头工坊</h2>{selected ? <StatusBadge state={selected.state} /> : null}</div><div className="mt-2 text-xs text-[#A9B4B3]">Production Workspace V2 状态、canonical 执行与人工审核在此衔接</div></div><div className="flex items-center gap-2"><span className="border border-[#2A3437] px-2.5 py-1.5 text-[10px] text-[#728082]">{snapshot.shots.length} shots</span>{onRefresh ? <button type="button" onClick={onRefresh} aria-label="重新同步 Shot Studio" className="inline-flex items-center gap-2 border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC9D9]"><RefreshCw className="h-3.5 w-3.5" />重新同步</button> : null}<a href={legacyUrl} data-testid="shot-studio-legacy-link" className="border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9]">兼容工作台</a></div></Panel>
     {!selected ? <EmptySurface /> : <>
       <Panel className="grid gap-3 px-4 py-3 md:grid-cols-2" aria-label="Production model selection">
         <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={selected.image.professional.model.selected_profile_id} mutationBusy={Boolean(generationController.current?.isActive() || reviewController.current?.isActive())} onRefresh={onRefreshProductionWorkspaceV2} />

@@ -1,0 +1,10 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION",
+  "route": "?section=storyboard&episode=1&shot=1&workspace_fixture=populated&workspace_v2_fixture=review",
+  "fixture": {"book_id": 998755, "source": "development-only disposable fixture"},
+  "checks": [
+    {"viewport": "1280x900", "surface": "v3", "horizontal_overflow": false, "scroll_width": 1280, "client_width": 1280, "result": "pass"},
+    {"viewport": "1440x900", "surface": "v3", "horizontal_overflow": false, "scroll_width": 1440, "client_width": 1440, "result": "pass"},
+    {"viewport": "1920x1080", "surface": "v3", "horizontal_overflow": false, "scroll_width": 1920, "client_width": 1920, "result": "pass"}
+  ]
+}

@@ -6,6 +6,11 @@ import { ProductWorkspaceProjectStageStrip } from './ProductWorkspaceProjectStag
 import WorkspaceSectionErrorBoundary from './WorkspaceSectionErrorBoundary'
 import ProductionWorkspaceV2Panel from './ProductionWorkspaceV2Panel'
 import { readExplicitGenerationProfileSelection } from './productWorkspaceGeneration'
+import {
+  readProductionUiV3Flag,
+  resolveStoryboardSurface,
+  type StoryboardSurfaceDecision,
+} from '../domain/productionUiV3SurfacePolicy'
 
 const ProductWorkspaceAdaptationSection = lazy(() => import('./ProductWorkspaceAdaptationSection'))
 const ProductWorkspaceAssetsSection = lazy(() => import('./ProductWorkspaceAssetsSection'))
@@ -22,6 +27,14 @@ const ProductWorkspaceTasksSection = lazy(() => import('./ProductWorkspaceTasksS
 
 export function isShotStudioCanaryEnabled(search: string) {
   return new URLSearchParams(search).get('ui_v3') === 'shot-studio'
+}
+
+function StoryboardSurfaceLoading({ decision }: { decision: StoryboardSurfaceDecision }) {
+  return (
+    <div data-testid="storyboard-surface-loading" data-storyboard-surface="pending" data-storyboard-surface-reason={decision.reason} className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 text-sm text-slate-400">
+      正在读取当前镜头生产状态…
+    </div>
+  )
 }
 
 function toStoryboardRecoveryFocus(recoveryFocus: RecoveryFocusContext | null) {
@@ -121,7 +134,16 @@ export default function ProductWorkspaceSectionContent({
     ? buildProjectStageProjectionFromAction(dashboard.dashboardActions[0])
     : null
   const explicitGenerationSelection = readExplicitGenerationProfileSelection()
-  const shotStudioCanary = typeof window !== 'undefined' && isShotStudioCanaryEnabled(window.location.search)
+  const search = typeof window !== 'undefined' ? window.location.search : ''
+  const surfaceDecision = resolveStoryboardSurface({
+    search,
+    v2State: storyboard.productionWorkspaceV2State ?? 'loading',
+    snapshot: storyboard.productionWorkspaceV2,
+    recoveryTarget: storyboard.recoveryFocus?.target,
+    isGeneratingStoryboard: storyboard.isGeneratingStoryboard,
+    defaultEnabled: readProductionUiV3Flag(import.meta.env.VITE_PRODUCTION_UI_V3_DEFAULT_ENABLED, true),
+    hardDisabled: readProductionUiV3Flag(import.meta.env.VITE_PRODUCTION_UI_V3_HARD_DISABLED, false),
+  })
 
   return (
     <Suspense fallback={<SectionLoadingFallback />}>
@@ -260,7 +282,9 @@ export default function ProductWorkspaceSectionContent({
       ) : null}
 
       {section === 'storyboard' ? (
-        shotStudioCanary ? (
+        surfaceDecision.surface === 'pending' ? (
+          <StoryboardSurfaceLoading decision={surfaceDecision} />
+        ) : surfaceDecision.surface === 'v3' ? (
           <ProductWorkspaceShotStudioV3
             snapshot={storyboard.productionWorkspaceV2}
             state={storyboard.productionWorkspaceV2State}
@@ -270,6 +294,7 @@ export default function ProductWorkspaceSectionContent({
             onSelectShot={storyboard.onSelectShot}
             onRefresh={storyboard.onRefreshAll}
             onRefreshProductionWorkspaceV2={storyboard.onRefreshProductionWorkspaceV2}
+            surfaceDecision={surfaceDecision}
           />
         ) : (
           <>
@@ -306,6 +331,7 @@ export default function ProductWorkspaceSectionContent({
               productionWorkspaceState={storyboard.productionWorkspaceState}
               productionWorkspaceV2={storyboard.productionWorkspaceV2}
               productionWorkspaceV2State={storyboard.productionWorkspaceV2State}
+              surfaceDecision={surfaceDecision}
             />
           </>
         )

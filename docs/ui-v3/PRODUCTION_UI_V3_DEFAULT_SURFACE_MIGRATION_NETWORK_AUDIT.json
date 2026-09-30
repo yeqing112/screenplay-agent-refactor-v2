@@ -1,0 +1,18 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION",
+  "route": "?section=storyboard&episode=1&shot=1&workspace_fixture=populated&workspace_v2_fixture=blocked",
+  "fixture": {"book_id": 998755, "source": "development-only disposable fixture"},
+  "observed_requests": {
+    "read_only_gets": ["/api/books", "/api/agent/tools", "/api/agent/skills", "/api/agent/updates?bookId=998755", "/api/pipeline/book/998755/outputs", "/api/books/998755/adaptation-state", "/api/production-skills", "/api/books/998755/production-skill-state", "/api/books/998755/script-decisions", "/api/books/998755/qa/workbench", "/api/production-assets/shots/1/bridge-state", "/api/model-registry"],
+    "non_generation_post": ["/api/agent/updates/reconcile"],
+    "generation_posts": [],
+    "provider_calls": [],
+    "llm_calls": [],
+    "shapi_calls": [],
+    "minimax_calls": []
+  },
+  "fixture_responses": [
+    {"path": "/api/books/998755/production-assets/shots/1/bridge-state", "status": 404, "interpretation": "fixture has no persisted bridge row"}
+  ],
+  "conclusion": "Surface selection and rendering performed no generation or provider mutation."
+}

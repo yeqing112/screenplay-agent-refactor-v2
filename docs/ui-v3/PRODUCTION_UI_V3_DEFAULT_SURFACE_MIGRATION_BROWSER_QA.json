@@ -1,0 +1,17 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION",
+  "fixture": {"book_id": 998755, "source": "development-only disposable fixture"},
+  "cases": [
+    {"name": "eligible default", "route": "?section=storyboard&episode=1&shot=1&workspace_fixture=populated&workspace_v2_fixture=review", "observed_surface": "v3", "observed_reason": "eligible_default", "result": "pass"},
+    {"name": "asset blocked default", "route": "?section=storyboard&episode=1&shot=1&workspace_fixture=populated&workspace_v2_fixture=blocked", "observed_surface": "v3", "observed_reason": "eligible_default", "state_visible": "真正阻塞", "result": "pass"},
+    {"name": "model missing/review default", "route": "?section=storyboard&episode=1&shot=1&workspace_fixture=populated&workspace_v2_fixture=review", "observed_surface": "v3", "state_visible": "待审核", "model_state_visible": "当前模型配置已不可用，请重新选择。", "result": "pass"},
+    {"name": "explicit legacy", "route": "?section=storyboard&episode=1&shot=1&workspace_fixture=populated&workspace_v2_fixture=review&ui_v3=legacy", "observed_surface": "legacy", "url_after_mount_preserved": ["section", "episode", "shot", "ui_v3", "step=overview"], "result": "pass"},
+    {"name": "legacy to V3 link", "route": "legacy compatibility notice", "observed_surface": "v3", "url_context_preserved": true, "result": "pass"},
+    {"name": "step deep link fallback", "route": "?section=storyboard&episode=1&shot=1&workspace_fixture=populated&workspace_v2_fixture=review&step=frame", "observed_surface": "legacy", "observed_reason": "legacy_step_deeplink", "result": "pass"},
+    {"name": "V2 loading pending", "route": "policy unit fixture", "observed_surface": "pending", "observed_reason": "v2_loading", "result": "pass"},
+    {"name": "100/101 shot boundary", "route": "policy unit fixture", "observed": {"100": "v3", "101": "legacy/rollout_shot_limit", "101_explicit_v3": "v3"}, "result": "pass"}
+  ],
+  "generation_submitted": false,
+  "provider_calls_observed": false,
+  "notes": ["Fixture-only bridge-state 404 and prompt-version 500 responses are recorded in network evidence; no generation or provider request followed them."]
+}
