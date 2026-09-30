@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
-import { productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
+import { createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
 import ProductWorkspaceShotStudioV3 from './ProductWorkspaceShotStudioV3'
 
 function clone<T>(value: T): T {
@@ -95,5 +95,35 @@ describe('ProductWorkspaceShotStudioV3', () => {
     const stress = clone(productionWorkspaceV2Fixture)
     stress.shots = Array.from({ length: 100 }, (_, index) => ({ ...stress.shots[index % 2], identity: { ...stress.shots[index % 2].identity, episode: Math.floor(index / 20) + 1, shot_id: String(index + 1), storyboard_shot_id: index + 1 }, scene: { id: `SCENE_${Math.floor(index / 10)}`, name: `场景 ${Math.floor(index / 10)}` } }))
     expect(renderSurface(stress)).toContain('100 shots')
+  })
+
+  it('opens an IMAGE Review Desk with a real candidate evidence placeholder and locked unsupported decisions', () => {
+    const html = renderSurface(createProductionWorkspaceV2ReviewFixture({ lane: 'IMAGE' }))
+    expect(html).toContain('Review Desk')
+    expect(html).toContain('Candidate · 非正式版本')
+    expect(html).toContain('批准并继续')
+    expect(html).toContain('统一修改意见契约尚未接入')
+    expect(html).toContain('候选没有可预览 URL')
+    expect(html).not.toContain('已建立正式版本')
+    expect(html).not.toContain('撤销')
+    expect(html).not.toContain('驳回')
+    expect(html).not.toContain('生成图片</button>')
+  })
+
+  it('opens a VIDEO Review Desk only for the current VIDEO candidate', () => {
+    const html = renderSurface(createProductionWorkspaceV2ReviewFixture({ lane: 'VIDEO' }), { mode: 'professional' })
+    expect(html).toContain('· VIDEO')
+    expect(html).toContain('fixture-media-candidate-video')
+    expect(html).toContain('批准并继续')
+    expect(html).not.toContain('生成视频</button>')
+  })
+
+  it('keeps candidate identity professional-only while Standard stays focused on review evidence', () => {
+    const snapshot = createProductionWorkspaceV2ReviewFixture({ lane: 'IMAGE' })
+    const standard = renderSurface(snapshot, { mode: 'standard' })
+    const professional = renderSurface(snapshot, { mode: 'professional' })
+    expect(standard).not.toContain('fixture-media-candidate-image')
+    expect(professional).toContain('fixture-media-candidate-image')
+    expect(professional).toContain('Candidate ID')
   })
 })

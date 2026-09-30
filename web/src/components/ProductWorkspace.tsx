@@ -97,7 +97,7 @@ export default function ProductWorkspace({
   onRefresh,
   onBookChange,
 }: Props) {
-  const fixtureEnabled = import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('workspace_fixture') === 'populated'
+  const fixtureEnabled = import.meta.env.DEV && typeof window !== 'undefined' && ['populated', 'review'].includes(new URLSearchParams(window.location.search).get('workspace_fixture') || '')
   const persistedNavigationState = useMemo(() => readProductWorkspaceNavigationState(book.id), [book.id])
   const urlNavigation = useMemo(() => readUrlWorkspaceNavigation(), [])
   const [section, setSection] = useState<WorkspaceSection>(urlNavigation.section ?? persistedNavigationState?.section ?? 'dashboard')
@@ -137,6 +137,8 @@ export default function ProductWorkspace({
     void productionWorkspace.refresh()
     void productionWorkspaceV2.refresh()
   }, [onRefresh, refresh, productionWorkspace.refresh, productionWorkspaceV2.refresh])
+
+  const refreshProductionWorkspaceV2 = useCallback(() => productionWorkspaceV2.refresh(), [productionWorkspaceV2.refresh])
 
   const {
     firstScript,
@@ -604,6 +606,7 @@ export default function ProductWorkspace({
     setSelectedStoryboardShotId,
     recoveryFocus,
     onRefreshAll: handleRefreshAll,
+    onRefreshProductionWorkspaceV2: refreshProductionWorkspaceV2,
     onDismissStoryboardRecoveryFocus: dismissStoryboardRecoveryFocus,
     onGenerateScripts: handleGenerateScripts,
     isGeneratingScripts,

@@ -78,6 +78,7 @@ interface UseProductWorkspaceSectionBundlesParams {
   setSelectedStoryboardShotId: (shotId: string | null) => void
   recoveryFocus: RecoveryFocusContext | null
   onRefreshAll: () => void
+  onRefreshProductionWorkspaceV2: () => Promise<void>
   onDismissStoryboardRecoveryFocus: () => void
   onGenerateScripts: () => void
   isGeneratingScripts: boolean
@@ -269,6 +270,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         canvasHandoff: params.canvasHandoffTarget?.target === 'storyboard' ? params.canvasHandoffTarget : null,
         onSelectShot: params.setSelectedStoryboardShotId,
         onRefreshAll: params.onRefreshAll,
+        onRefreshProductionWorkspaceV2: params.onRefreshProductionWorkspaceV2,
         onDismissStoryboardRecoveryFocus: params.onDismissStoryboardRecoveryFocus,
         onNavigateSection: params.onNavigateSection,
         onNavigateTaskSection: params.onNavigateTaskSection,

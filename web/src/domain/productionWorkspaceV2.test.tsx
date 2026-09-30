@@ -6,7 +6,7 @@ import {
   normalizeProductionWorkspaceV2Snapshot,
   validateProductionWorkspaceV2Snapshot,
 } from './productionWorkspace'
-import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
+import { approveProductionMediaCandidate, fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -134,5 +134,16 @@ describe('production workspace V2 contract', () => {
     }
     const html = renderToStaticMarkup(<ProductionWorkspaceV2Panel snapshot={snapshot} state="ready" mode="standard" />)
     expect(html).toContain('需要更新')
+  })
+
+  it('uses the existing explicit human media promotion contract', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ official_media_version_id: 'omv-1' }) })
+    vi.stubGlobal('fetch', fetchMock)
+    await approveProductionMediaCandidate('candidate-1', 'validation-1')
+    expect(fetchMock).toHaveBeenCalledWith('/api/assets/candidates/candidate-1/promote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ validation_id: 'validation-1', promotion_id: undefined, reviewer: 'shot-studio-human', decision: 'APPROVE', review_notes: 'Approved from Shot Studio Review Desk.', confirmation: true }),
+    })
   })
 })

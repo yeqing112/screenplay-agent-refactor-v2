@@ -81,3 +81,91 @@ export const productionWorkspaceV2Fixture: ProductionWorkspaceV2Snapshot = {
   legacy_adopted_is_display_only: true,
   provider_calls: 0,
 }
+
+function cloneFixture<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T
+}
+
+const reviewCandidate = {
+  id: 'fixture-media-candidate-image',
+  state: 'MEDIA_CANDIDATE',
+  preview: null,
+  preview_url: null,
+  created_at: '2026-09-30T00:00:00Z',
+  model_profile_id: 'fixture-image-profile',
+  technical_validation: { status: 'TECHNICALLY_VALID', validation_id: 'fixture-validation-image', mime: 'image/png', width: 1024, height: 576, duration_ms: null, details: { fixture: true } },
+  checksum: 'fixture-candidate-checksum',
+  storage_identity: null,
+}
+
+const reviewVideoCandidate = {
+  ...reviewCandidate,
+  id: 'fixture-media-candidate-video',
+  model_profile_id: 'fixture-video-profile',
+  technical_validation: { ...reviewCandidate.technical_validation, validation_id: 'fixture-validation-video', mime: 'video/mp4', duration_ms: 4000 },
+}
+
+const fixtureOfficialImage = {
+  current: true,
+  currentness: 'current',
+  version: { id: 'fixture-official-image', revision: 1, media_type: 'IMAGE', storage_identity: null, checksum: 'fixture-official-image-checksum', mime: 'image/png', width: 1024, height: 576, duration_ms: null, candidate_id: 'fixture-media-candidate-image', validation_id: 'fixture-validation-image' },
+  authority: { id: 'fixture-authority-image', status: 'CURRENT', payload_hash: 'fixture-authority-payload', lineage_hash: 'fixture-authority-lineage' },
+  pointer: { id: 1, authority_id: 'fixture-authority-image', fingerprint: 'fixture-pointer-image' },
+  preview: null,
+  preview_url: null,
+} as const
+
+/**
+ * DEV-only disposable review fixture. It contains evidence placeholders and
+ * never creates or promotes a real candidate. The production hook gates this
+ * fixture behind import.meta.env.DEV and an explicit query parameter.
+ */
+export function createProductionWorkspaceV2ReviewFixture(options: { lane?: 'IMAGE' | 'VIDEO'; promoted?: boolean } = {}): ProductionWorkspaceV2Snapshot {
+  const lane = options.lane ?? 'IMAGE'
+  const promoted = options.promoted === true
+  const base = cloneFixture(productionWorkspaceV2Fixture)
+  const baseShot = base.shots[0]
+  const imageCandidate = lane === 'IMAGE' && !promoted ? reviewCandidate : null
+  const videoCandidate = lane === 'VIDEO' && !promoted ? reviewVideoCandidate : null
+  const imageOfficial = lane === 'VIDEO' || promoted ? fixtureOfficialImage : baseShot.IMAGE.official
+  const image = {
+    ...baseShot.IMAGE,
+    prompt_ir: { current: true, version: 1, stale: false, state: 'complete', reason_codes: [] },
+    model: { selected_profile_id: 'fixture-image-profile', provider: 'fixture', model_name: 'Fixture Image Review' },
+    generation_readiness: { ready: !promoted, reason_codes: promoted ? ['OFFICIAL_MEDIA_ALREADY_CURRENT'] : [], primary_blocker: null, blockers: [] },
+    candidates: { count: imageCandidate ? 1 : 1, latest: imageCandidate ?? { ...reviewCandidate, technical_validation: { ...reviewCandidate.technical_validation, validation_id: 'fixture-validation-image' } }, items: [imageCandidate ?? { ...reviewCandidate, technical_validation: { ...reviewCandidate.technical_validation, validation_id: 'fixture-validation-image' } }] },
+    official: imageOfficial,
+  }
+  const video = {
+    ...baseShot.VIDEO,
+    generation_mode: 'IMAGE_TO_VIDEO' as const,
+    prompt_ir: { current: true, version: 1, stale: false, state: 'complete', reason_codes: [] },
+    model: { selected_profile_id: 'fixture-video-profile', provider: 'fixture', model_name: 'Fixture Video Review' },
+    source_official_image: lane === 'IMAGE' && !promoted ? null : fixtureOfficialImage,
+    generation_readiness: ((lane === 'VIDEO' && !promoted) || (lane === 'IMAGE' && promoted))
+      ? { ready: true, reason_codes: [], primary_blocker: null, blockers: [] }
+      : { ready: false, reason_codes: ['OFFICIAL_IMAGE_REQUIRED'], primary_blocker: { code: 'OFFICIAL_IMAGE_REQUIRED', message: 'IMAGE_TO_VIDEO 需要先建立当前正式图片。' }, blockers: [{ code: 'OFFICIAL_IMAGE_REQUIRED', message: 'IMAGE_TO_VIDEO 需要先建立当前正式图片。' }] },
+    candidates: { count: videoCandidate ? 1 : 0, latest: videoCandidate, items: videoCandidate ? [videoCandidate] : [] },
+    official: promoted && lane === 'VIDEO'
+      ? { ...fixtureOfficialImage, version: { ...fixtureOfficialImage.version, id: 'fixture-official-video', media_type: 'VIDEO', candidate_id: 'fixture-media-candidate-video', validation_id: 'fixture-validation-video' }, authority: { ...fixtureOfficialImage.authority, id: 'fixture-authority-video' }, pointer: { ...fixtureOfficialImage.pointer, authority_id: 'fixture-authority-video' } }
+      : baseShot.VIDEO.official,
+  }
+  const shot = {
+    ...baseShot,
+    scene: { id: 'E01_SC001', name: '审核场景' },
+    action: lane === 'IMAGE' ? '审核图片候选' : '审核视频候选',
+    asset_readiness: { state: 'ready' as const, required: {}, missing: [], stale: [], current: true },
+    IMAGE: image,
+    VIDEO: video,
+    blockers: [],
+    next_action: promoted ? { key: 'GENERATE_VIDEO', label: '生成视频' } : { key: 'REVIEW_MEDIA_CANDIDATE', label: '审核候选媒体' },
+  }
+  return {
+    ...base,
+    project: { ...base.project, overall_state: 'ready', current_blockers: [], next_actions: [] },
+    shots: [shot],
+    assets: [],
+    asset_ingestion_api_available: true,
+    provider_calls: 0,
+  }
+}

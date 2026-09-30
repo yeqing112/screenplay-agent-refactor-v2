@@ -269,6 +269,7 @@ export default function ProductWorkspaceSectionContent({
             focusShotId={storyboard.selectedStoryboardShotId}
             onSelectShot={storyboard.onSelectShot}
             onRefresh={storyboard.onRefreshAll}
+            onRefreshProductionWorkspaceV2={storyboard.onRefreshProductionWorkspaceV2}
           />
         ) : (
           <>

@@ -29,6 +29,18 @@ export async function fetchProductionWorkspaceV2(bookId: number, selection?: { i
   return normalizeProductionWorkspaceV2Snapshot(payload, bookId)
 }
 
+export class ProductionWorkspaceServiceError extends Error {
+  readonly status: number
+  readonly code: string | null
+
+  constructor(message: string, status: number, code: string | null = null) {
+    super(message)
+    this.name = 'ProductionWorkspaceServiceError'
+    this.status = status
+    this.code = code
+  }
+}
+
 async function postProductionMediaAuthority(path: string, body?: Record<string, unknown>) {
   const response = await fetch(path, {
     method: 'POST',
@@ -37,13 +49,16 @@ async function postProductionMediaAuthority(path: string, body?: Record<string, 
   })
   if (!response.ok) {
     let detail = ''
+    let code: string | null = null
     try {
       const payload = await response.json()
-      detail = String(payload?.detail?.message || payload?.detail || payload?.message || '').trim()
+      const rawDetail = payload?.detail
+      code = typeof rawDetail?.code === 'string' ? rawDetail.code : typeof payload?.code === 'string' ? payload.code : null
+      detail = String(rawDetail?.message || rawDetail || payload?.message || '').trim()
     } catch {
       detail = await response.text()
     }
-    throw new Error(detail || `HTTP ${response.status}`)
+    throw new ProductionWorkspaceServiceError(detail || `HTTP ${response.status}`, response.status, code)
   }
   return response.json()
 }
@@ -58,6 +73,26 @@ export function promoteProductionMediaCandidate(candidateId: string, validationI
   return postProductionMediaAuthority('/api/media-authority/promote', {
     candidate_id: candidateId,
     validation_id: validationId,
+    confirmation: true,
+  })
+}
+
+/**
+ * Record an explicit human APPROVE decision through the existing asset
+ * promotion contract. This is intentionally separate from the legacy
+ * confirmation-only wrapper used by the older production panel.
+ */
+export function approveProductionMediaCandidate(
+  candidateId: string,
+  validationId: string,
+  options: { reviewer?: string; reviewNotes?: string; promotionId?: string } = {},
+) {
+  return postProductionMediaAuthority(`/api/assets/candidates/${encodeURIComponent(candidateId)}/promote`, {
+    validation_id: validationId,
+    promotion_id: options.promotionId,
+    reviewer: options.reviewer || 'shot-studio-human',
+    decision: 'APPROVE',
+    review_notes: options.reviewNotes || 'Approved from Shot Studio Review Desk.',
     confirmation: true,
   })
 }

@@ -231,6 +231,7 @@ export interface StoryboardBundle {
   canvasHandoff: CanvasHandoffTarget | null
   onSelectShot: (shotId: string | null) => void
   onRefreshAll: () => void
+  onRefreshProductionWorkspaceV2: () => Promise<void>
   onDismissStoryboardRecoveryFocus: () => void
   onNavigateSection: (section: WorkspaceSection) => void
   onNavigateTaskSection: TaskNavigateHandler
