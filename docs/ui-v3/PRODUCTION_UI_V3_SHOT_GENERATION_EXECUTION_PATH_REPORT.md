@@ -44,7 +44,7 @@ The backend resolver calls the current IMAGE_TO_VIDEO source binding path and va
 
 ## Generation Controller Architecture
 
-`createShotStudioGenerationController()` captures shot, episode, lane, model profile, and the current V2 identity. It owns confirmation, submission lock, abort cancellation, error normalization, 409 refresh, and bounded V2 observation. Review mutation activity is a submission gate, and the existing review controller remains the only promotion path.
+`createShotStudioGenerationController()` captures shot, episode, lane, model profile, and the current V2 identity. It owns confirmation, submission lock, abort cancellation, error normalization, 409 refresh, and bounded V2 observation. Review mutation activity is a submission gate, and the existing review controller remains the only promotion path. The controller re-reads the V2 projection after the fee confirmation resolves and fails closed if the executable state, model, prompt identity, generation mode, or canonical source identity changed while the dialog was open.
 
 ## Mutation State Machine
 
@@ -52,7 +52,7 @@ The backend resolver calls the current IMAGE_TO_VIDEO source binding path and va
 
 ## Freshness and Double Submit Guards
 
-At click time the controller re-reads the latest projected Shot Studio view model and requires the exact lane action. Stale, blocked, review, official, wrong lane, missing model, active review mutation, and active generation mutation all fail before POST. A second click while the controller is active returns `GENERATION_MUTATION_LOCKED`. A 409 causes one V2 refresh and never an automatic second POST.
+At click time and again immediately before POST (after fee confirmation), the controller re-reads the latest projected Shot Studio view model and requires the exact lane action and captured generation identity. Stale, blocked, review, official, wrong lane, missing model, active review mutation, changed prompt/model/source, and active generation mutation all fail before POST; a change during confirmation returns `GENERATION_FRESHNESS_CONFLICT` with no provider call. A second click while the controller is active returns `GENERATION_MUTATION_LOCKED`. A 409 causes one V2 refresh and never an automatic second POST.
 
 ## Canonical Refetch, Execution Projection, and Candidate Projection
 
@@ -106,7 +106,7 @@ No prompt compile, LLM, unexpected storyboard generation, prototyping task polli
 - DEV-only generation fixtures and query selector:
   `workspace_v2_generation_fixture=ready-image|running-image|review-image|official-image-ready-video|running-video|review-video|official-shot`.
 - `web/src/services/productWorkspaceShotGeneration.test.ts` covers gates, fee confirmation, double submit, V2 recovery, candidate lag, cancellation, legacy response and request contract.
-- The controller suite contains **20 tests**, including the full IMAGE→VIDEO loop, 409 refresh/no-retry, source-official gating, no optimistic state, no-localStorage boundary, and provider-call guards.
+- The controller suite contains **21 tests**, including the full IMAGE→VIDEO loop, post-confirmation freshness recheck, 409 refresh/no-retry, source-official gating, no optimistic state, no-localStorage boundary, and provider-call guards.
 
 ## Canonical contract evidence
 
@@ -115,14 +115,31 @@ No prompt compile, LLM, unexpected storyboard generation, prototyping task polli
 - The browser controller reads state only from `production-workspace-v2` after submission.
 - IMAGE_TO_VIDEO source authority remains the canonical official IMAGE projection; no legacy localStorage recovery is consulted.
 
+## Tests
+
+- Directed controller tests: **21 passed**, covering ready IMAGE/VIDEO, explicit model gate, stale/review/official/blocked gates, fee cancellation, post-confirmation freshness conflict, double-submit lock, abort cancellation, no optimistic state, V2 running/candidate projection, candidate lag, 409 no-retry, legacy `task_id` fail-closed, IMAGE_TO_VIDEO source authority, and the full IMAGE→VIDEO approval loop.
+- Directed Shot Studio, review, and `productionUiV3` tests are included in the full Web suite below.
+- Backend canonical tests: `tests/test_phase_j3_canonical_generation.py`, `tests/test_generation_execution_foundation.py`, and `tests/test_asset_promotion_runtime.py`.
+
+## Browser QA
+
+- DEV-only mocked fixtures mounted successfully for `ready-image`, `running-image`, `review-image`, `official-image-ready-video`, `running-video`, `review-video`, and `official-shot`.
+- Browser console/page errors: **0**. Evidence: `shot-generation-browser-qa.json`.
+
+## Responsive QA
+
+- Mocked Shot Studio checked at **1280×900**, **1440×900**, and **1920×1080**; `scrollWidth === innerWidth` at every width and console/page errors are **0**. Evidence: `shot-generation-responsive-qa.json`.
+
 ## Verification
 
-- Web tests: **57 files / 377 tests passed**.
+- Web tests: **57 files / 378 tests passed**.
 - Web build: **PASS** (`tsc && vite build`).
 - Backend canonical and authority regression: **32 passed**.
 - `git diff --check`: recorded before commit.
 - QA policy: no real LLM, SHAPI, MiniMax, provider submission, video/image generation, or production write was performed by this QA run.
 - Responsive mocked browser QA: **1280 / 1440 / 1920** widths, no horizontal overflow, Shot Studio mounted, console/page errors **0**. Evidence: `shot-generation-responsive-qa.json`.
+- Refresh recovery test restores a `running` lane from the V2 projection with no React runtime state or localStorage payload.
+- The controller performs one bounded V2 observation loop for the active mutation; it does not create a timer per shot, so the existing 100-shot stress surface remains a single aggregate projection.
 
 ## Visual evidence
 

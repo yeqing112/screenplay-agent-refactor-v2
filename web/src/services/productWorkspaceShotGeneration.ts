@@ -90,6 +90,23 @@ function initialSnapshot(): ShotGenerationMutationSnapshot {
   return { state: 'idle', shotId: null, target: null, message: '', errorCode: null, status: null, response: null }
 }
 
+function sourceIdentity(lane: ProductionMediaLaneViewModel) {
+  const source = lane.sourceOfficialImage
+  if (!source) return ''
+  return [
+    source.isCanonicalOfficial,
+    source.current,
+    source.currentness,
+    source.version?.id ?? '',
+    source.pointer?.id ?? '',
+  ].join('|')
+}
+
+function promptIdentity(lane: ProductionMediaLaneViewModel) {
+  const prompt = lane.prompt
+  return [prompt?.current, prompt?.stale, prompt?.state, prompt?.version ?? ''].join('|')
+}
+
 /**
  * Coordinates one canonical Shot Studio generation click. The controller never
  * fabricates running/candidate state: every post-submit state is projected by
@@ -133,6 +150,14 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
     const modelProfileId = text(lane.professional.model.selected_profile_id)
     if (!modelProfileId) return fail(shotId, target, '生成前必须选择明确的模型配置。', 'PRODUCTION_MODEL_SELECTION_REQUIRED')
 
+    const submissionIdentity = {
+      episode: shot.episode,
+      generationMode: lane.generationMode,
+      modelProfileId,
+      prompt: promptIdentity(lane),
+      source: sourceIdentity(lane),
+    }
+
     active = true
     abortController = new AbortController()
     const signal = abortController.signal
@@ -147,14 +172,40 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
         const snapshot = emit({ state: 'cancelled', shotId, target, message: '生成操作已取消。', errorCode: 'GENERATION_CANCELLED', status: null, response: null })
         return { ok: false, state: 'cancelled', snapshot }
       }
+
+      // The confirmation dialog can remain open while another mutation or a
+      // V2 refresh changes the selected shot. Re-read the projection at the
+      // exact submission boundary and fail closed if the captured identity is
+      // no longer the executable one.
+      const latestShot = dependencies.getViewModel(shotId)
+      const latestLane = latestShot ? laneFor(latestShot, target) : null
+      const latestModelProfileId = latestLane ? text(latestLane.professional.model.selected_profile_id) : ''
+      const latestIdentityChanged = !latestShot
+        || latestShot.episode !== submissionIdentity.episode
+        || latestShot.stale.isStale
+        || latestLane?.state !== 'ready'
+        || latestLane?.primaryAction.kind !== expectedKind
+        || latestLane?.primaryAction.lane !== target
+        || !latestLane?.generationAllowed
+        || !latestModelProfileId
+        || latestModelProfileId !== submissionIdentity.modelProfileId
+        || latestLane?.generationMode !== submissionIdentity.generationMode
+        || (latestLane ? promptIdentity(latestLane) !== submissionIdentity.prompt : true)
+        || (latestLane ? sourceIdentity(latestLane) !== submissionIdentity.source : true)
+        || (target === 'VIDEO' && latestLane?.generationMode === 'IMAGE_TO_VIDEO' && !latestLane.sourceOfficialImage?.isCanonicalOfficial)
+        || Boolean(dependencies.isReviewMutationActive?.())
+      if (latestIdentityChanged) {
+        return fail(shotId, target, '生产状态已经更新，请重新确认当前镜头。', 'GENERATION_FRESHNESS_CONFLICT')
+      }
+
       emit({ state: 'submitting', shotId, target, message: '正在提交 canonical 生成请求…', errorCode: null, status: null, response: null })
       const submit = dependencies.submit ?? submitCanonicalProductionGeneration
       const response = await submit({
         bookId: dependencies.bookId,
-        episode: shot.episode,
+        episode: latestShot!.episode,
         shotId,
         target,
-        modelProfileId,
+        modelProfileId: latestModelProfileId,
         generationChain: 'production_workspace_v2',
         signal,
       })

@@ -22,7 +22,7 @@
   "status_projection": "V2 refresh only",
   "qa": {
     "web_test_files": 57,
-    "web_tests": 377,
+    "web_tests": 378,
     "backend_tests": 32,
     "build": "pass",
     "responsive_widths": [1280, 1440, 1920],

@@ -89,6 +89,25 @@ describe('Shot Studio canonical generation controller', () => {
     expect(submit).not.toHaveBeenCalled()
   })
 
+  it('rechecks the latest V2 identity after confirmation and blocks a changed state', async () => {
+    let current = view()
+    const submit = vi.fn()
+    const generation = createShotStudioGenerationController({
+      bookId: 1,
+      getViewModel: () => current,
+      refreshCanonical: async () => undefined,
+      submit,
+      confirmCost: () => {
+        current = view({ image: lane('IMAGE', { state: 'running', generationAllowed: false, primaryAction: { kind: 'wait', lane: 'IMAGE' }, execution: { isActive: true } }) })
+        return true
+      },
+    })
+    const result = await generation.start('S1', 'IMAGE')
+    expect(result.snapshot.errorCode).toBe('GENERATION_FRESHNESS_CONFLICT')
+    expect(result.snapshot.message).toContain('生产状态已经更新')
+    expect(submit).not.toHaveBeenCalled()
+  })
+
   it('prevents double submit while the first canonical request is active', async () => {
     let release!: () => void
     const submit = vi.fn(() => new Promise((resolve) => { release = () => resolve({ execution: { status: 'RUNNING' } }) }))
