@@ -1,0 +1,22 @@
+{
+  "source": "mocked controller integration and browser fixture QA",
+  "provider_calls": 0,
+  "real_production_writes": 0,
+  "requests": [
+    {"method": "POST", "path": "/api/books/{bookId}/storyboard/{episode}/{shotId}/generate-frame", "purpose": "canonical IMAGE generation"},
+    {"method": "GET", "path": "/api/books/{bookId}/production-workspace-v2", "purpose": "observe IMAGE execution/candidate"},
+    {"method": "POST", "path": "/api/assets/candidates/{candidateId}/promote", "purpose": "explicit IMAGE APPROVE"},
+    {"method": "GET", "path": "/api/books/{bookId}/production-workspace-v2", "purpose": "observe official IMAGE and VIDEO readiness"},
+    {"method": "POST", "path": "/api/books/{bookId}/storyboard/{episode}/{shotId}/generate-video", "purpose": "canonical VIDEO generation"},
+    {"method": "GET", "path": "/api/books/{bookId}/production-workspace-v2", "purpose": "observe VIDEO execution/candidate"},
+    {"method": "POST", "path": "/api/assets/candidates/{candidateId}/promote", "purpose": "explicit VIDEO APPROVE"},
+    {"method": "GET", "path": "/api/books/{bookId}/production-workspace-v2", "purpose": "observe official VIDEO and Shot official"}
+  ],
+  "forbidden_requests": [
+    "prompt compile",
+    "LLM",
+    "unexpected storyboard generation",
+    "legacy prototyping task polling",
+    "provider endpoint during QA"
+  ]
+}

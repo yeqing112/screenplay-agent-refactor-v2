@@ -2,13 +2,14 @@ import { describe, expect, it, vi } from 'vitest'
 import type { ShotStudioViewModel } from '../domain/productionUiV3'
 import { createShotStudioGenerationController } from './productWorkspaceShotGeneration'
 import { submitCanonicalProductionGeneration, ProductionGenerationServiceError } from './productionGeneration'
+import { createShotStudioMediaReviewController } from './productWorkspaceShotReview'
 
 function lane(target: 'IMAGE' | 'VIDEO', overrides: Record<string, unknown> = {}) {
   return {
     target,
     state: 'ready',
     generationAllowed: true,
-    primaryAction: { kind: target === 'IMAGE' ? 'generate_image' : 'generate_video', enabled: true },
+    primaryAction: { kind: target === 'IMAGE' ? 'generate_image' : 'generate_video', lane: target, enabled: true },
     professional: { model: { selected_profile_id: `${target.toLowerCase()}-profile` } },
     execution: { isActive: false },
     candidate: { reviewEligibility: false },
@@ -51,12 +52,14 @@ describe('Shot Studio canonical generation controller', () => {
       { image: lane('IMAGE', { state: 'review' }) },
       { image: lane('IMAGE', { state: 'official' }) },
       { image: lane('IMAGE', { state: 'blocked' }) },
-      { image: lane('IMAGE', { primaryAction: { kind: 'inspect' } }) },
+      { image: lane('IMAGE', { primaryAction: { kind: 'inspect', lane: 'IMAGE' } }) },
     ]) {
-      const { instance } = controller({ current: view(patch) })
+      const submit = vi.fn()
+      const { instance } = controller({ current: view(patch), submit })
       const result = await instance.start('S1', 'IMAGE')
       expect(result.ok).toBe(false)
       expect(result.snapshot.errorCode).toBe('GENERATION_GATE_BLOCKED')
+      expect(submit).not.toHaveBeenCalled()
     }
   })
 
@@ -70,6 +73,18 @@ describe('Shot Studio canonical generation controller', () => {
     const submit = vi.fn()
     const { instance } = controller({ submit, confirmCost: () => false })
     const result = await instance.start('S1', 'IMAGE')
+    expect(result.state).toBe('cancelled')
+    expect(submit).not.toHaveBeenCalled()
+  })
+
+  it('does not submit when cancelled while the confirmation is pending', async () => {
+    let release!: (value: boolean) => void
+    const submit = vi.fn()
+    const { instance } = controller({ submit, confirmCost: () => new Promise<boolean>((resolve) => { release = resolve }) })
+    const pending = instance.start('S1', 'IMAGE')
+    instance.cancel()
+    release(true)
+    const result = await pending
     expect(result.state).toBe('cancelled')
     expect(submit).not.toHaveBeenCalled()
   })
@@ -114,7 +129,84 @@ describe('Shot Studio canonical generation controller', () => {
   it('fails closed on a legacy task_id response', async () => {
     const { instance } = controller({ submit: async () => ({ task_id: 'legacy-task' }) })
     const result = await instance.start('S1', 'IMAGE')
-    expect(result.snapshot.errorCode).toBe('GENERATION_LEGACY_TASK_RESPONSE')
+    expect(result.snapshot.errorCode).toBe('V3_LEGACY_GENERATION_TASK_RESPONSE_UNSUPPORTED')
+  })
+
+  it('refreshes once on a 409 and never retries the POST', async () => {
+    const submit = vi.fn(async () => { throw new ProductionGenerationServiceError('stale', 409, 'GENERATION_PREVIEW_STALE') })
+    const refresh = vi.fn(async () => undefined)
+    const { instance } = controller({ submit, refresh })
+    const result = await instance.start('S1', 'IMAGE')
+    expect(result.snapshot.status).toBe(409)
+    expect(submit).toHaveBeenCalledTimes(1)
+    expect(refresh).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps IMAGE_TO_VIDEO disabled without canonical official source', async () => {
+    const submit = vi.fn()
+    const { instance } = controller({ current: view({ video: lane('VIDEO', { generationMode: 'IMAGE_TO_VIDEO', generationAllowed: false, primaryAction: { kind: 'resolve_blocker', lane: 'VIDEO' }, sourceOfficialImage: { isCanonicalOfficial: false } }) }), submit })
+    const result = await instance.start('S1', 'VIDEO')
+    expect(result.snapshot.errorCode).toBe('OFFICIAL_IMAGE_REQUIRED')
+    expect(submit).not.toHaveBeenCalled()
+  })
+
+  it('allows VIDEO only after the V2 lane exposes a canonical source', async () => {
+    const submit = vi.fn(async () => ({ execution: { status: 'RUNNING' } }))
+    const { instance } = controller({ current: view({ video: lane('VIDEO', { generationMode: 'IMAGE_TO_VIDEO', sourceOfficialImage: { isCanonicalOfficial: true } }) }), submit })
+    const result = await instance.start('S1', 'VIDEO')
+    expect(submit).toHaveBeenCalledTimes(1)
+    expect(result.snapshot.state).toBe('failed')
+  })
+
+  it('allows a ready IMAGE lane to submit exactly once', async () => {
+    const submit = vi.fn(async () => ({ execution: { status: 'RUNNING' } }))
+    const { instance } = controller({ submit, refresh: async () => undefined })
+    await instance.start('S1', 'IMAGE')
+    expect(submit).toHaveBeenCalledTimes(1)
+  })
+
+  it('allows a ready VIDEO lane with canonical source to submit exactly once', async () => {
+    const submit = vi.fn(async () => ({ execution: { status: 'RUNNING' } }))
+    const { instance } = controller({ current: view({ image: lane('IMAGE', { state: 'official', primaryAction: { kind: 'view_official', lane: 'IMAGE' }, generationAllowed: false, official: { current: true, isCanonicalOfficial: true } }), video: lane('VIDEO', { sourceOfficialImage: { isCanonicalOfficial: true } }) }), submit })
+    await instance.start('S1', 'VIDEO')
+    expect(submit).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not optimistically expose running or candidate state', async () => {
+    const states: string[] = []
+    const { instance } = controller({ onState: (next: any) => states.push(next.state), submit: async () => ({ execution: { status: 'SUCCEEDED' }, candidate: { id: 'candidate' } }) })
+    const result = await instance.start('S1', 'IMAGE')
+    expect(result.snapshot.state).toBe('failed')
+    expect(states).not.toContain('candidate_ready')
+    expect(states).not.toContain('running')
+  })
+
+  it('blocks generation while review mutation is active', async () => {
+    const submit = vi.fn()
+    const { instance } = controller({ submit, onState: undefined })
+    const locked = createShotStudioGenerationController({ bookId: 1, getViewModel: () => view(), refreshCanonical: async () => undefined, submit, isReviewMutationActive: () => true })
+    const result = await locked.start('S1', 'IMAGE')
+    expect(result.snapshot.errorCode).toBe('GENERATION_REVIEW_MUTATION_LOCKED')
+    expect(submit).not.toHaveBeenCalled()
+    void instance
+  })
+
+  it('recovers a running state from a V2 refresh after reload without local storage', async () => {
+    const states: string[] = []
+    let current = view()
+    const { instance } = controller({ onState: (next: any) => states.push(next.state), refresh: async () => { current = view({ image: lane('IMAGE', { state: 'running', primaryAction: { kind: 'wait', lane: 'IMAGE' }, execution: { isActive: true } }) }) } })
+    const recovery = createShotStudioGenerationController({ bookId: 1, getViewModel: () => current, refreshCanonical: async () => { current = view({ image: lane('IMAGE', { state: 'running', primaryAction: { kind: 'wait', lane: 'IMAGE' }, execution: { isActive: true } }) }) }, submit: async () => ({ execution: { status: 'RUNNING' } }), onState: (next) => states.push(next.state), sleep: async () => undefined, maxRefreshAttempts: 1 })
+    await recovery.start('S1', 'IMAGE')
+    expect(states).toContain('running')
+    void instance
+  })
+
+  it('does not resubmit when execution succeeds before candidate projection appears', async () => {
+    const submit = vi.fn(async () => ({ execution: { status: 'SUCCEEDED' }, candidate: null }))
+    const { instance } = controller({ submit, current: view({ image: lane('IMAGE', { state: 'ready' }) }) })
+    const result = await instance.start('S1', 'IMAGE')
+    expect(result.snapshot.errorCode).toBe('V3_EXECUTION_CANDIDATE_NOT_VISIBLE')
+    expect(submit).toHaveBeenCalledTimes(1)
   })
 
   it('cancels an in-flight submission with AbortController', async () => {
@@ -142,5 +234,68 @@ describe('canonical generation service contract', () => {
   it('preserves HTTP status and backend code', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 409, json: async () => ({ detail: { code: 'GENERATION_PREVIEW_STALE', message: 'stale' } }) })))
     await expect(submitCanonicalProductionGeneration({ bookId: 1, episode: 1, shotId: 'S1', target: 'IMAGE', modelProfileId: 'image-profile' })).rejects.toMatchObject({ status: 409, code: 'GENERATION_PREVIEW_STALE' } satisfies Partial<ProductionGenerationServiceError>)
+  })
+})
+
+describe('full IMAGE -> VIDEO canonical loop', () => {
+  it('submits each lane once, promotes explicitly, and never auto-generates VIDEO', async () => {
+    let phase = 'image-ready'
+    let refreshCount = 0
+    const posts: string[] = []
+    const candidate = (id: string, lane: 'IMAGE' | 'VIDEO') => ({ id, state: 'MEDIA_CANDIDATE', preview: null, preview_url: null, model_profile_id: `${lane.toLowerCase()}-profile`, technical_validation: { status: 'TECHNICALLY_VALID', validation_id: `${id}-validation` } })
+    const makeView = (): any => {
+      const imageOfficial = ['image-approved', 'video-submitted', 'video-review', 'shot-official'].includes(phase)
+      const videoOfficial = phase === 'shot-official'
+      const imageReview = phase === 'image-review'
+      const videoReview = phase === 'video-review'
+      const imageRunning = phase === 'image-running'
+      const videoRunning = phase === 'video-running'
+      const image = imageOfficial
+        ? { target: 'IMAGE', state: 'official', generationAllowed: false, primaryAction: { kind: 'view_official', lane: 'IMAGE' }, professional: { model: { selected_profile_id: 'image-profile' } }, execution: { isActive: false }, candidate: { reviewEligibility: false, candidate: null }, official: { current: true, isCanonicalOfficial: true, version: { candidate_id: 'image-candidate' } } }
+        : imageReview
+          ? { target: 'IMAGE', state: 'review', generationAllowed: false, primaryAction: { kind: 'review_candidate', lane: 'IMAGE' }, professional: { model: { selected_profile_id: 'image-profile', candidateItems: [candidate('image-candidate', 'IMAGE')] } }, execution: { isActive: false }, candidate: { reviewEligibility: true, candidate: candidate('image-candidate', 'IMAGE') }, official: { current: false, isCanonicalOfficial: false, reasonCodes: [] } }
+          : { target: 'IMAGE', state: imageRunning ? 'running' : 'ready', generationAllowed: !imageRunning, primaryAction: { kind: imageRunning ? 'wait' : 'generate_image', lane: 'IMAGE' }, professional: { model: { selected_profile_id: 'image-profile' } }, execution: { isActive: imageRunning }, candidate: { reviewEligibility: false, candidate: null }, official: { current: false, isCanonicalOfficial: false, reasonCodes: [] } }
+      const video = videoOfficial
+        ? { target: 'VIDEO', state: 'official', generationAllowed: false, primaryAction: { kind: 'view_official', lane: 'VIDEO' }, professional: { model: { selected_profile_id: 'video-profile' } }, execution: { isActive: false }, candidate: { reviewEligibility: false, candidate: null }, official: { current: true, isCanonicalOfficial: true, version: { candidate_id: 'video-candidate' } }, sourceOfficialImage: { isCanonicalOfficial: true } }
+        : videoReview
+          ? { target: 'VIDEO', state: 'review', generationAllowed: false, primaryAction: { kind: 'review_candidate', lane: 'VIDEO' }, professional: { model: { selected_profile_id: 'video-profile', candidateItems: [candidate('video-candidate', 'VIDEO')] } }, execution: { isActive: false }, candidate: { reviewEligibility: true, candidate: candidate('video-candidate', 'VIDEO') }, official: { current: false, isCanonicalOfficial: false, reasonCodes: [] }, sourceOfficialImage: { isCanonicalOfficial: true } }
+          : { target: 'VIDEO', state: videoRunning ? 'running' : imageOfficial ? 'ready' : 'waiting', generationAllowed: imageOfficial && !videoRunning, primaryAction: { kind: videoRunning ? 'wait' : imageOfficial ? 'generate_video' : 'wait', lane: 'VIDEO' }, professional: { model: { selected_profile_id: 'video-profile' } }, execution: { isActive: videoRunning }, candidate: { reviewEligibility: false, candidate: null }, official: { current: false, isCanonicalOfficial: false, reasonCodes: [] }, sourceOfficialImage: { isCanonicalOfficial: imageOfficial } }
+      return { shotId: 'S1', episode: 1, stale: { isStale: false }, state: phase === 'shot-official' ? 'official' : 'ready', image, video }
+    }
+    let current = makeView()
+    const refreshCanonical = vi.fn(async () => {
+      refreshCount += 1
+      if (phase === 'image-submitted' && refreshCount === 1) phase = 'image-running'
+      else if (phase === 'image-running' && refreshCount >= 2) phase = 'image-review'
+      else if (phase === 'video-submitted' && refreshCount === 1) phase = 'video-running'
+      else if (phase === 'video-running' && refreshCount >= 2) phase = 'video-review'
+      current = makeView()
+    })
+    const submit = vi.fn(async ({ target }: { target: 'IMAGE' | 'VIDEO' }) => {
+      posts.push(target)
+      phase = target === 'IMAGE' ? 'image-submitted' : 'video-submitted'
+      refreshCount = 0
+      return { execution: { execution_id: `${target}-execution`, status: 'RUNNING' } }
+    })
+    const generation = createShotStudioGenerationController({ bookId: 1, getViewModel: () => current, refreshCanonical, submit, confirmCost: () => true, sleep: async () => undefined, maxRefreshAttempts: 3 })
+    const imageResult = await generation.start('S1', 'IMAGE')
+    expect(imageResult.ok).toBe(true)
+    expect(posts).toEqual(['IMAGE'])
+    expect(current.image.state).toBe('review')
+
+    const review = createShotStudioMediaReviewController({ getViewModel: () => current, validateCandidate: async (id) => ({ validation_id: `${id}-validation` }), promoteCandidate: async (id) => { posts.push(`PROMOTE_${id}`); phase = id.startsWith('image') ? 'image-approved' : 'shot-official'; current = makeView() }, refreshCanonical, sleep: async () => undefined })
+    const imageApproval = await review.approve({ shotId: 'S1', lane: 'IMAGE', candidateId: 'image-candidate', validationId: 'image-candidate-validation' })
+    expect(imageApproval.ok).toBe(true)
+    expect(current.video.primaryAction.kind).toBe('generate_video')
+    expect(posts).toEqual(['IMAGE', 'PROMOTE_image-candidate'])
+
+    const videoResult = await generation.start('S1', 'VIDEO')
+    expect(videoResult.ok).toBe(true)
+    expect(posts).toEqual(['IMAGE', 'PROMOTE_image-candidate', 'VIDEO'])
+    const videoApproval = await review.approve({ shotId: 'S1', lane: 'VIDEO', candidateId: 'video-candidate', validationId: 'video-candidate-validation' })
+    expect(videoApproval.ok).toBe(true)
+    expect(posts).toEqual(['IMAGE', 'PROMOTE_image-candidate', 'VIDEO', 'PROMOTE_video-candidate'])
+    expect(current.image.official.isCanonicalOfficial).toBe(true)
+    expect(current.video.official.isCanonicalOfficial).toBe(true)
   })
 })

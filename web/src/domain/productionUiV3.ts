@@ -499,7 +499,7 @@ function lanePrimaryAction(
 ): ProductionPrimaryAction {
   if (state === 'blocked') return action('resolve_blocker', '处理阻塞', false, { lane: target, reason: '当前状态需要先完成修复。', reasonCodes: readiness.reasonCodes })
   if (state === 'stale') return action('refresh_stale_source', '查看上游变化', true, { lane: target, reason: '上游内容已更新，需要重新确认。', reasonCodes: ['STALE_SOURCE'] })
-  if (state === 'failed') return action('retry_generation', '重新生成', execution.retryAllowed, { lane: target, reason: execution.retryAllowed ? undefined : '当前生成条件尚未满足，暂不能重试。', reasonCodes: execution.failureCode ? [execution.failureCode] : [] })
+  if (state === 'failed') return action('retry_generation', '重试生成尚未接入', false, { lane: target, reason: '本轮只接入首次生成；失败后的 retry 语义将在后续阶段定义。', reasonCodes: execution.failureCode ? [execution.failureCode, 'RETRY_DEFERRED'] : ['RETRY_DEFERRED'] })
   if (state === 'running') return action('wait', '查看生成进度', true, { lane: target, reason: '模型正在处理中。', reasonCodes: ['EXECUTION_RUNNING'] })
   if (state === 'waiting') return action('wait', '等待上游', false, { lane: target, reason: '当前结果依赖上游生产完成。', reasonCodes: ['WAITING_UPSTREAM'] })
   if (state === 'review') return action('review_candidate', '打开审核', candidate.reviewEligibility, { lane: target, reason: candidate.reviewReason ?? '候选尚未满足审核条件。', reasonCodes: candidate.reasonCodes })

@@ -1,0 +1,32 @@
+{
+  "provider_calls": 0,
+  "results": [
+    {
+      "width": 1280,
+      "metrics": {
+        "innerWidth": 1280,
+        "scrollWidth": 1280,
+        "shotStudio": true
+      },
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "metrics": {
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "shotStudio": true
+      },
+      "errors": []
+    },
+    {
+      "width": 1920,
+      "metrics": {
+        "innerWidth": 1920,
+        "scrollWidth": 1920,
+        "shotStudio": true
+      },
+      "errors": []
+    }
+  ]
+}

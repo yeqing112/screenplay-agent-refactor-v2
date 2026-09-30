@@ -1,5 +1,6 @@
 import type { ShotStudioViewModel, ProductionMediaLaneViewModel } from '../domain/productionUiV3'
 import {
+  ProductionGenerationServiceError,
   submitCanonicalProductionGeneration,
   type ProductionGenerationResponse,
   type ProductionGenerationTarget,
@@ -30,10 +31,11 @@ export interface ShotGenerationMutationSnapshot {
 export interface ShotGenerationControllerDependencies {
   bookId: number
   getViewModel: (shotId: string) => ShotStudioViewModel | null
-  refreshCanonical: () => Promise<void>
+  refreshCanonical: (signal?: AbortSignal) => Promise<void>
   submit?: (options: SubmitProductionGenerationOptions) => Promise<ProductionGenerationResponse>
   confirmCost?: (target: ProductionGenerationTarget, shot: ShotStudioViewModel) => boolean | Promise<boolean>
   onState?: (snapshot: ShotGenerationMutationSnapshot) => void
+  isReviewMutationActive?: () => boolean
   sleep?: (milliseconds: number, signal?: AbortSignal) => Promise<void>
   maxRefreshAttempts?: number
   refreshDelayMs?: number
@@ -121,7 +123,11 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
     if (!shot) return fail(shotId, target, '镜头已不在当前 V2 投影中，请重新同步。', 'V3_SHOT_NOT_VISIBLE')
     const lane = laneFor(shot, target)
     const expectedKind = target === 'IMAGE' ? 'generate_image' : 'generate_video'
-    if (shot.stale.isStale || ['blocked', 'stale', 'review', 'official'].includes(lane.state) || lane.primaryAction.kind !== expectedKind || !lane.generationAllowed) {
+    if (dependencies.isReviewMutationActive?.()) return fail(shotId, target, '当前审核操作仍在进行中，请等待审核完成。', 'GENERATION_REVIEW_MUTATION_LOCKED')
+    if (target === 'VIDEO' && lane.generationMode === 'IMAGE_TO_VIDEO' && !lane.sourceOfficialImage?.isCanonicalOfficial) {
+      return fail(shotId, target, 'IMAGE_TO_VIDEO 必须使用当前 canonical official IMAGE。', 'OFFICIAL_IMAGE_REQUIRED')
+    }
+    if (shot.stale.isStale || ['blocked', 'stale', 'review', 'official'].includes(lane.state) || lane.primaryAction.kind !== expectedKind || lane.primaryAction.lane !== target || !lane.generationAllowed) {
       return fail(shotId, target, '当前镜头状态不允许生成，请先处理阻塞、审核或上游更新。', 'GENERATION_GATE_BLOCKED')
     }
     const modelProfileId = text(lane.professional.model.selected_profile_id)
@@ -137,6 +143,10 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
         const snapshot = emit({ state: 'cancelled', shotId, target, message: '已取消生成。', errorCode: 'GENERATION_COST_CONFIRMATION_DECLINED', status: null, response: null })
         return { ok: false, state: 'cancelled', snapshot }
       }
+      if (signal.aborted) {
+        const snapshot = emit({ state: 'cancelled', shotId, target, message: '生成操作已取消。', errorCode: 'GENERATION_CANCELLED', status: null, response: null })
+        return { ok: false, state: 'cancelled', snapshot }
+      }
       emit({ state: 'submitting', shotId, target, message: '正在提交 canonical 生成请求…', errorCode: null, status: null, response: null })
       const submit = dependencies.submit ?? submitCanonicalProductionGeneration
       const response = await submit({
@@ -148,14 +158,18 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
         generationChain: 'production_workspace_v2',
         signal,
       })
-      if (text(response.task_id)) return fail(shotId, target, '收到旧式 task_id 响应，已安全停止；canonical execution 未确认。', 'GENERATION_LEGACY_TASK_RESPONSE', null, response)
+      if (text(response.task_id)) return fail(shotId, target, '当前生成返回了旧版任务协议，V3 无法安全跟踪 canonical production state。', 'V3_LEGACY_GENERATION_TASK_RESPONSE_UNSUPPORTED', null, response)
 
       const maxAttempts = Math.max(1, dependencies.maxRefreshAttempts ?? DEFAULT_REFRESH_ATTEMPTS)
       const sleep = dependencies.sleep ?? defaultSleep
       const delay = Math.max(0, dependencies.refreshDelayMs ?? DEFAULT_REFRESH_DELAY_MS)
       for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
         emit({ state: 'refreshing', shotId, target, message: attempt === 0 ? '正在同步 Production Workspace V2…' : `正在等待 canonical 投影同步（${attempt + 1}/${maxAttempts}）…`, errorCode: null, status: null, response })
-        await dependencies.refreshCanonical()
+        await dependencies.refreshCanonical(signal)
+        if (signal.aborted) {
+          const snapshot = emit({ state: 'cancelled', shotId, target, message: '生成操作已取消。', errorCode: 'GENERATION_CANCELLED', status: null, response })
+          return { ok: false, state: 'cancelled', snapshot }
+        }
         const refreshed = dependencies.getViewModel(shotId)
         const refreshedLane = refreshed ? laneFor(refreshed, target) : null
         if (refreshedLane?.candidate.reviewEligibility || refreshedLane?.official.isCanonicalOfficial) {
@@ -181,6 +195,14 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
         return { ok: false, state: 'cancelled', snapshot }
       }
       const details = errorDetails(error)
+      if ((error instanceof ProductionGenerationServiceError && error.status === 409) || details.status === 409) {
+        emit({ state: 'refreshing', shotId, target, message: '检测到生产状态冲突，正在同步 canonical 状态…', errorCode: details.code, status: details.status, response: null })
+        try {
+          await dependencies.refreshCanonical(signal)
+        } catch {
+          // Preserve the original 409 as the actionable error.
+        }
+      }
       return fail(shotId, target, details.message, details.code, details.status)
     } finally {
       active = false
@@ -191,6 +213,10 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
   return {
     start,
     cancel,
+    dispose: () => {
+      abortController?.abort()
+      active = false
+    },
     isActive: () => active,
     getSnapshot: () => current,
   }

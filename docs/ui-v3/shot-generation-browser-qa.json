@@ -1,0 +1,41 @@
+{
+  "provider_calls": 0,
+  "real_generation": false,
+  "audit": [
+    {
+      "kind": "ready-image",
+      "mounted": true,
+      "errors": []
+    },
+    {
+      "kind": "running-image",
+      "mounted": true,
+      "errors": []
+    },
+    {
+      "kind": "review-image",
+      "mounted": true,
+      "errors": []
+    },
+    {
+      "kind": "official-image-ready-video",
+      "mounted": true,
+      "errors": []
+    },
+    {
+      "kind": "running-video",
+      "mounted": true,
+      "errors": []
+    },
+    {
+      "kind": "review-video",
+      "mounted": true,
+      "errors": []
+    },
+    {
+      "kind": "official-shot",
+      "mounted": true,
+      "errors": []
+    }
+  ]
+}

@@ -46,7 +46,7 @@ function renderSurface(snapshot: ProductionWorkspaceV2Snapshot | null, props: Pa
 }
 
 describe('ProductWorkspaceShotStudioV3', () => {
-  it('renders the V2 snapshot as a read-only Shot Studio surface', () => {
+  it('renders the V2 snapshot as a canonical Shot Studio surface', () => {
     const html = renderSurface(productionWorkspaceV2Fixture)
     expect(html).toContain('Shot Navigator')
     expect(html).toContain('Media Canvas')
@@ -116,6 +116,16 @@ describe('ProductWorkspaceShotStudioV3', () => {
     expect(html).toContain('fixture-media-candidate-video')
     expect(html).toContain('批准并继续')
     expect(html).not.toContain('生成视频</button>')
+  })
+
+  it('uses video controls for VIDEO review evidence instead of an image element', () => {
+    const snapshot = createProductionWorkspaceV2ReviewFixture({ lane: 'VIDEO' })
+    const videoCandidate = snapshot.shots[0].VIDEO.candidates.items[0]
+    snapshot.shots[0].VIDEO.candidates.items = [{ ...videoCandidate, preview: 'https://cdn.example/candidate.mp4', preview_url: 'https://cdn.example/candidate.mp4' }]
+    snapshot.shots[0].VIDEO.candidates.latest = snapshot.shots[0].VIDEO.candidates.items[0]
+    const html = renderSurface(snapshot)
+    expect(html).toContain('<video controls')
+    expect(html).toContain('candidate.mp4')
   })
 
   it('keeps candidate identity professional-only while Standard stays focused on review evidence', () => {
