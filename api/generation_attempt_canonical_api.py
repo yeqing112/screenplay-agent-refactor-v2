@@ -282,7 +282,6 @@ def _pending_unpromoted_candidate(session: Any, *, shot: StoryboardShot, target_
     official = lane.get("official") if isinstance(lane.get("official"), dict) else {}
     official_version = official.get("version") if isinstance(official.get("version"), dict) else {}
     current_official_candidate_id = str(official_version.get("candidate_id") or "")
-    role = "SHOT_PRIMARY_IMAGE" if target_media == "IMAGE" else "SHOT_PRIMARY_VIDEO"
     candidates = session.query(MediaCandidateRecord).join(
         GenerationExecutionRecord,
         MediaCandidateRecord.execution_id == GenerationExecutionRecord.execution_id,
@@ -294,6 +293,11 @@ def _pending_unpromoted_candidate(session: Any, *, shot: StoryboardShot, target_
     ).all()
     for candidate in candidates:
         if str(candidate.candidate_id) == current_official_candidate_id:
+            continue
+        # A Candidate remains durable after its Official version is replaced.
+        # Any OfficialMediaVersion row is canonical evidence that it was
+        # promoted before, regardless of CURRENT or SUPERSEDED status.
+        if session.query(OfficialMediaVersion).filter_by(candidate_id=candidate.candidate_id).first() is not None:
             continue
         review = session.query(MediaPromotionRecord).filter_by(candidate_id=candidate.candidate_id).one_or_none()
         if review is not None and str(review.review_status).upper() in {"REJECTED", "REQUEST_CHANGE"}:
