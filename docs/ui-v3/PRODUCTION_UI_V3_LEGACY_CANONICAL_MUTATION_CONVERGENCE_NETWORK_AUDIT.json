@@ -23,6 +23,14 @@
     "task_id_only": "legacy_recovery",
     "unknown_shape": "fail_closed"
   },
+  "browser_observations": {
+    "default_v3_surface": "eligible_default",
+    "mixed_response_task_polling_requests": 0,
+    "task_only_task_polling_requests": 1,
+    "canonical_execution_polling_requests": 0,
+    "pending_task_created_for_mixed_response": false,
+    "pending_task_created_for_task_only_response": true
+  },
   "mount_audit": {
     "agent_reconcile_post": true,
     "generation_post_on_mount": false

@@ -9,7 +9,17 @@
     "canonical_client": "web/src/services/productionGeneration.ts",
     "response_classifier": "web/src/services/legacyProductionGenerationBridge.ts",
     "backend_changed": false,
+    "backend_routes_added": 0,
+    "db_migrations": 0,
     "real_provider_called": false
+  },
+  "surface_policy": {
+    "v3_default": true,
+    "eligible_default_reason": "eligible_default",
+    "explicit_legacy_fallback_preserved": true,
+    "rollout_shot_limit_unchanged": true,
+    "review_inbox_implemented": false,
+    "retry_regenerate_implemented": false
   },
   "invariants": {
     "source_fact_mutation": false,
@@ -20,14 +30,41 @@
     "canonical_execution_priority": true,
     "task_only_fallback_preserved": true,
     "mixed_response_polling": false,
+    "v3_uses_legacy_recovery": false,
+    "canonical_execution_wins_over_task_id": true,
+    "task_id_only_uses_legacy_recovery": true,
     "production_compile_if_missing": false,
     "production_legacy_source_fields": false,
+    "legacy_production_direct_fetch": false,
+    "legacy_production_compile_if_missing": false,
+    "legacy_production_uses_adopted_source": false,
+    "legacy_adoption_is_official_promotion": false,
+    "asset_bridge_regression": false,
+    "surface_fallback_regression": false,
+    "hundred_shot_gate_regression": false,
     "fresh_projection_guard": true
+  },
+  "telemetry": {
+    "real_endpoint_response_wiring": true,
+    "shape_only": true,
+    "prompt_or_business_payload_recorded": false,
+    "provider_calls": 0,
+    "llm_calls": 0
+  },
+  "writes": {
+    "surface_selection_writes": 0,
+    "generation_writes": 0,
+    "authority_writes": 0,
+    "background_reconcile_writes": "mount-time agent update reconcile only",
+    "legacy_recovery_writes": "mocked task-only fixture only",
+    "real_production_generation_writes": 0,
+    "real_media_promotion": 0,
+    "real_asset_writes": 0
   },
   "tests": {
     "web_test_files": 61,
-    "web_tests_passed": 412,
-    "backend_regression_tests_passed": 33,
+    "web_tests_passed": 413,
+    "backend_regression_tests_passed": 34,
     "web_build": "passed",
     "python_compileall": "passed",
     "git_diff_check": "passed"
@@ -48,13 +85,39 @@
       "task_polling_observed": false
     },
     "task_only_fallback": {
-      "unit_classifier_covered": true,
-      "browser_panel_scope": "Production Workspace V2 panel exercised canonical client; legacy task-only recovery remains covered by code path and unit tests"
+      "endpoint": "/api/books/998755/storyboard/1/1/generate-frame",
+      "response_class": "legacy_task",
+      "pending_record_created": true,
+      "task_polling_requests": 1,
+      "pending_record_removed_after_done": true
+    },
+    "default_v3": {
+      "query": "?section=storyboard&episode=1&shot=A&workspace_fixture=populated&workspace_v2_generation_fixture=ready-image",
+      "surface": "v3",
+      "reason": "eligible_default"
     }
   },
   "provider": {
     "configured_provider_reference": "https://www.shapi.vip/",
     "real_call": false,
     "credentials_changed": false
+  },
+  "completion_requirements": {
+    "legacy_production_image_shared_client": true,
+    "legacy_production_video_shared_client": true,
+    "production_video_no_compile_if_missing_true": true,
+    "production_video_no_adopted_image_id": true,
+    "production_video_no_legacy_reference_ids": true,
+    "typed_error_contract_shared": true,
+    "canonical_candidate_no_pending_task": true,
+    "mixed_execution_task_id_no_polling": true,
+    "task_only_legacy_recovery": true,
+    "prompt_compile_explicit": true,
+    "executability_override_not_in_shared_service": true,
+    "backend_behavior_change": false,
+    "database_migration": false,
+    "real_provider_calls": 0,
+    "worktree_clean": true,
+    "remote_head_synced": true
   }
 }

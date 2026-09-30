@@ -40,6 +40,10 @@ import {
   shouldShowCanvasNavigationRefocusAction,
 } from './productWorkspaceCanvasBeta'
 import { resolveEffectiveReferenceAssetIds } from './productWorkspaceStoryboardReferencePayload'
+import { classifyGenerationResponse } from '../services/legacyProductionGenerationBridge'
+import { submitCanonicalProductionGeneration } from '../services/productionGeneration'
+
+const LEGACY_COMPATIBILITY_ONLY = 'LEGACY_COMPATIBILITY_ONLY'
 
 interface Props {
   bookId: number
@@ -1373,38 +1377,19 @@ export default function ProductWorkspaceCanvasBetaSection({
     setFrameRecoveryTaskId(null)
 
     try {
-      const response = await fetch(
-        `/api/books/${bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/generate-frame`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            modelProfileId: imageModelProfileId,
-            confirmed: true,
-            allowExternalCall: true,
-            compileIfMissing: true,
-            generationChain: chainMeta?.generationChain ?? 'canvas_generate_frame',
-            triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
-            promptRecompileReason: chainMeta?.promptRecompileReason,
-            promptRecompileTaskId: chainMeta?.promptRecompileTaskId,
-            promptRecompileVersion: chainMeta?.promptRecompileVersion,
-          }),
-        },
-      )
-
-      if (!response.ok) {
-        let detail = ''
-        try {
-          const payload = await response.json()
-          detail = String(payload?.detail || payload?.error || '').trim()
-        } catch {
-          detail = await response.text()
-        }
-        throw new Error(detail || `HTTP ${response.status}`)
-      }
-
-      const payload = await response.json()
-      if (payload?.execution && !payload?.task_id) {
+      const payload = await submitCanonicalProductionGeneration({
+        bookId,
+        episode: selectedShot.episode,
+        shotId: selectedShot.shot_id,
+        target: 'IMAGE',
+        modelProfileId: imageModelProfileId,
+        generationChain: chainMeta?.generationChain ?? 'canvas_generate_frame',
+      })
+      const responseClass = classifyGenerationResponse(payload)
+      if (responseClass !== 'legacy_task') {
+        if (responseClass === 'invalid_response' || !payload.execution) throw new Error('canonical 生成响应格式无效，已安全停止。')
+        const executionStatus = String(payload.execution.status || '').toUpperCase()
+        if (executionStatus === 'FAILED' || executionStatus === 'ERROR') throw new Error(String(payload.execution.failure_message || '首帧生成执行失败。'))
         setGenerationState('success')
         setGenerationMessage(`${labels.success}（候选结果，待显式采纳）`)
         persistShotExecutionSummary('frame', getCanvasExecutionSummaryLabel('frame', chainMeta?.generationChain), {
@@ -1418,6 +1403,8 @@ export default function ProductWorkspaceCanvasBetaSection({
       }
       const taskId = String(payload?.task_id || '').trim()
       if (!taskId) throw new Error('未能获取首帧任务 ID。')
+
+      setGenerationMessage(`${LEGACY_COMPATIBILITY_ONLY}：LEGACY_TASK_RECOVERY_COMPATIBILITY：${labels.pending} 任务 ID：${taskId}`)
 
       upsertPendingStoryboardTask(bookId, {
         taskId,
@@ -1497,40 +1484,19 @@ export default function ProductWorkspaceCanvasBetaSection({
     setVideoRecoveryTaskId(null)
 
     try {
-      const response = await fetch(
-        `/api/books/${bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/generate-video`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            modelProfileId: videoModelProfileId,
-            confirmed: true,
-            allowExternalCall: true,
-            compileIfMissing: true,
-            ...(selectedProductionShot ? {} : { firstFrameAssetId: String(adoptedImage?.id || '').trim() }),
-            referenceAssetIds: effectiveReferenceAssetIds,
-            generationChain: chainMeta?.generationChain ?? 'canvas_generate_video',
-            triggeredByPromptRecompile: chainMeta?.triggeredByPromptRecompile,
-            promptRecompileReason: chainMeta?.promptRecompileReason,
-            promptRecompileTaskId: chainMeta?.promptRecompileTaskId,
-            promptRecompileVersion: chainMeta?.promptRecompileVersion,
-          }),
-        },
-      )
-
-      if (!response.ok) {
-        let detail = ''
-        try {
-          const payload = await response.json()
-          detail = String(payload?.detail || payload?.error || '').trim()
-        } catch {
-          detail = await response.text()
-        }
-        throw new Error(detail || `HTTP ${response.status}`)
-      }
-
-      const payload = await response.json()
-      if (payload?.execution && !payload?.task_id) {
+      const payload = await submitCanonicalProductionGeneration({
+        bookId,
+        episode: selectedShot.episode,
+        shotId: selectedShot.shot_id,
+        target: 'VIDEO',
+        modelProfileId: videoModelProfileId,
+        generationChain: chainMeta?.generationChain ?? 'canvas_generate_video',
+      })
+      const responseClass = classifyGenerationResponse(payload)
+      if (responseClass !== 'legacy_task') {
+        if (responseClass === 'invalid_response' || !payload.execution) throw new Error('canonical 生成响应格式无效，已安全停止。')
+        const executionStatus = String(payload.execution.status || '').toUpperCase()
+        if (executionStatus === 'FAILED' || executionStatus === 'ERROR') throw new Error(String(payload.execution.failure_message || '视频生成执行失败。'))
         setGenerationState('success')
         setGenerationMessage(`${labels.success}（候选结果，待显式采纳）`)
         persistShotExecutionSummary('video', getCanvasExecutionSummaryLabel('video', chainMeta?.generationChain), {
@@ -1544,6 +1510,8 @@ export default function ProductWorkspaceCanvasBetaSection({
       }
       const taskId = String(payload?.task_id || '').trim()
       if (!taskId) throw new Error('未能获取视频任务 ID。')
+
+      setGenerationMessage(`${LEGACY_COMPATIBILITY_ONLY}：LEGACY_TASK_RECOVERY_COMPATIBILITY：${labels.pending} 任务 ID：${taskId}`)
 
       upsertPendingStoryboardTask(bookId, {
         taskId,

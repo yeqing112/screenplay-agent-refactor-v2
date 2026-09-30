@@ -28,9 +28,13 @@ The service forwards an optional `AbortSignal` and preserves the response for ex
 
 When the V2 projection is present, the storyboard surface re-reads the projection at the submission boundary. It verifies the selected shot, lane readiness, and projected model profile identity before posting. IMAGE and VIDEO use the same canonical client. A successful execution stays in the canonical path and refreshes the V2 projection and storyboard data.
 
+The Legacy Production Workspace panel and the legacy canvas generation controls use the same client as well. The canvas keeps its historical task recovery UI, but its production POST no longer carries canvas adopted-media or reference fields.
+
 ## Legacy Compatibility Mode
 
 The non-production branch retains the previous compatibility request for older projects. Its task recovery behavior is unchanged except that the user-visible message is explicitly marked `LEGACY_TASK_RECOVERY_COMPATIBILITY`. This keeps old task-only providers recoverable while making the boundary observable.
+
+The explicit legacy compatibility request is marked `LEGACY_COMPATIBILITY_ONLY` in the phase audit. It is not used by V3 or by a V2 production mutation.
 
 ## Response Classification
 
@@ -95,12 +99,14 @@ The disposable browser fixture observed:
 - Both bodies contained `modelProfileId`, `confirmed`, `allowExternalCall`, `compileIfMissing:false`, and `generationChain`.
 - Neither body contained `firstFrameAssetId` or `referenceAssetIds`.
 - Both mocked responses contained canonical execution plus a diagnostic `task_id`; no task polling request was observed.
+- A task-only mocked response entered `LEGACY_TASK_RECOVERY_COMPATIBILITY`, created one pending recovery record, and issued one task status request before removing the record on completion.
+- Removing `ui_v3` from an eligible fixture selected `data-storyboard-surface="v3"` with reason `eligible_default`.
 
 The fixture also exposed unrelated disposable-environment failures for prompt-version loading (`500`) and bridge-state loading (`404` in earlier runs); these did not alter the canonical request assertions.
 
 ## Tests
 
-The phase adds response-classification coverage, canonical service contract assertions, AbortSignal forwarding, task-id preservation, and batch/task-center behavior. The final verification commands are recorded in the truth audit artifact.
+The phase adds response-classification coverage, IMAGE and VIDEO canonical service contract assertions, AbortSignal forwarding, task-id preservation, batch/task-center behavior, and a real storyboard alias test proving response-shape telemetry is recorded at the endpoint boundary. The final verification commands are recorded in the truth audit artifact.
 
 ## Provider Safety
 
@@ -112,7 +118,7 @@ The compatibility branch still supports task-only providers, legacy adopted-medi
 
 ## Next Deprecation Candidates
 
-The next candidates are the direct production generation mutations in `ProductWorkspaceCanvasBetaSection.tsx`, followed by removal of the legacy VIDEO source fields once all task-only providers have migrated. Both require a separate evidence pass.
+The next candidates are the remaining non-production compatibility request fields and the legacy task-only provider bridge. They require provider usage telemetry and a separate deprecation decision; no canonical production mutation remains in the canvas surface.
 
 ## Completion
 

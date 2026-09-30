@@ -305,6 +305,7 @@ export default function ProductWorkspaceSectionContent({
               mode={storyboard.workspaceViewMode}
               focusShotId={storyboard.selectedStoryboardShotId}
               onNavigateSection={storyboard.onNavigateSection}
+              onRefreshProductionWorkspaceV2={storyboard.onRefreshProductionWorkspaceV2}
               onRefresh={storyboard.onRefreshAll}
               imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
               videoModelProfileId={explicitGenerationSelection.videoModelProfileId}

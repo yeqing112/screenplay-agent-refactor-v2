@@ -8,6 +8,12 @@
     "episode": 1,
     "shot": "A"
   },
+  "default_surface_flow": {
+    "query_without_ui_v3_or_step": true,
+    "surface": "v3",
+    "reason": "eligible_default",
+    "generation_fixture": "ready-image"
+  },
   "flows": [
     {
       "target": "IMAGE",
@@ -43,6 +49,32 @@
         "candidate_present": true,
         "task_id_present_as_diagnostic": true,
         "task_polling": false
+      }
+    },
+    {
+      "target": "IMAGE",
+      "fixture": "task-only",
+      "endpoint": "/api/books/998755/storyboard/1/1/generate-frame",
+      "http_status": 200,
+      "response_assertions": {
+        "execution_present": false,
+        "task_id_only": true,
+        "legacy_recovery_label": "LEGACY_TASK_RECOVERY_COMPATIBILITY",
+        "pending_record_created": true,
+        "task_status_requests": 1,
+        "pending_record_removed_after_done": true
+      }
+    },
+    {
+      "target": "IMAGE",
+      "fixture": "mixed-execution-task-id",
+      "endpoint": "/api/books/998755/storyboard/1/1/generate-frame",
+      "http_status": 200,
+      "response_assertions": {
+        "execution_present": true,
+        "task_id_present_as_diagnostic": true,
+        "task_polling": false,
+        "pending_record_created": false
       }
     }
   ],

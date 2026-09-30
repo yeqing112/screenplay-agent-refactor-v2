@@ -19,8 +19,17 @@ import {
   type ProductionWorkspaceV2Snapshot,
   type ProductionWorkspaceViewMode,
 } from '../domain/productionWorkspace'
-import { promoteProductionMediaCandidate, validateProductionMediaCandidate } from '../services/productionWorkspace'
+import { findProductionShotV2, isProductionImageGenerationReady, isProductionVideoGenerationReady } from '../domain/productionWorkspace'
+import { fetchProductionWorkspaceV2, promoteProductionMediaCandidate, validateProductionMediaCandidate } from '../services/productionWorkspace'
 import { submitCanonicalProductionGeneration } from '../services/productionGeneration'
+import { classifyGenerationResponse } from '../services/legacyProductionGenerationBridge'
+import {
+  fetchCreativeTaskStatus,
+  reconcileCreativeTask,
+  removePendingStoryboardTask,
+  upsertPendingStoryboardTask,
+} from './productWorkspaceRecovery'
+import { waitForCreativeTask } from './productWorkspaceGeneration'
 import { readExplicitGenerationProfileSelection } from './productWorkspaceGeneration'
 
 interface Props {
@@ -33,6 +42,7 @@ interface Props {
   onSelectAssetContext?: (context: { entityId: string; assetType: string }) => void
   focusShotId?: string | null
   onRefresh?: () => void
+  onRefreshProductionWorkspaceV2?: () => Promise<void>
   imageModelProfileId?: string | null
   videoModelProfileId?: string | null
 }
@@ -64,7 +74,7 @@ function isPromotableValidationStatus(status: string) {
   return ['PASS', 'TECHNICALLY_VALID', 'REVIEW_REQUIRED'].includes(String(status || '').trim().toUpperCase())
 }
 
-function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, actionMessage }: { lane: ProductionMediaLane; target: 'IMAGE' | 'VIDEO'; mode: ProductionWorkspaceViewMode; onGenerate?: () => void; selectedProfileId?: string | null; actionMessage?: string }) {
+function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, actionMessage, busy = false }: { lane: ProductionMediaLane; target: 'IMAGE' | 'VIDEO'; mode: ProductionWorkspaceViewMode; onGenerate?: () => void; selectedProfileId?: string | null; actionMessage?: string; busy?: boolean }) {
   const Icon = target === 'IMAGE' ? ImageIcon : Video
   const official = lane.official.current
   const candidateCount = lane.candidates.count
@@ -83,7 +93,7 @@ function LaneSummary({ lane, target, mode, onGenerate, selectedProfileId, action
       {official && lane.official.preview_url ? <a className="mt-2 inline-block text-[11px] text-emerald-200 underline" href={lane.official.preview_url} target="_blank" rel="noreferrer">预览当前正式版本</a> : null}
       <div className="mt-3 flex items-center justify-between gap-2">
         <span className="text-[11px] text-slate-500">{selectedProfileId ? `本次选择：${selectedProfileId}` : '请选择已配置的生成模型'}{lane.model.last_execution_profile_id ? ` · 上次执行：${lane.model.last_execution_profile_id}` : ''}</span>
-        <button type="button" disabled={!onGenerate || !selectedProfileId || (lane.generation_readiness ? !lane.generation_readiness.ready : (!lane.prompt_ir.current || official))} onClick={onGenerate} className="rounded-md border border-slate-700 px-2.5 py-1.5 text-[11px] text-slate-300 disabled:cursor-not-allowed disabled:opacity-50">{target === 'IMAGE' ? '生成图片' : '生成视频'}</button>
+            <button type="button" disabled={busy || !onGenerate || !selectedProfileId || (lane.generation_readiness ? !lane.generation_readiness.ready : (!lane.prompt_ir.current || official))} onClick={onGenerate} className="rounded-md border border-slate-700 px-2.5 py-1.5 text-[11px] text-slate-300 disabled:cursor-not-allowed disabled:opacity-50">{busy ? '提交中…' : target === 'IMAGE' ? '生成图片' : '生成视频'}</button>
       </div>
       {lane.generation_readiness && !lane.generation_readiness.ready && lane.generation_readiness.primary_blocker ? <div className="mt-2 text-[11px] text-rose-200/80">{lane.generation_readiness.primary_blocker.message}</div> : null}
       {actionMessage ? <div className="mt-2 text-[11px] text-violet-200">{actionMessage}</div> : null}
@@ -158,7 +168,9 @@ function CandidateList({ lane, mode, onRefresh }: { lane: ProductionMediaLane; m
   )
 }
 
-function ShotCard({ shot, mode, focused, onRefresh, onGenerate, selectedImageProfileId, selectedVideoProfileId, actionMessages }: { shot: ProductionWorkspaceV2Snapshot['shots'][number]; mode: ProductionWorkspaceViewMode; focused: boolean; onRefresh?: () => void; onGenerate?: (target: 'IMAGE' | 'VIDEO') => void; selectedImageProfileId?: string | null; selectedVideoProfileId?: string | null; actionMessages?: Record<string, string> }) {
+function ShotCard({ shot, mode, focused, onRefresh, onGenerate, selectedImageProfileId, selectedVideoProfileId, actionMessages, generationBusyKey }: { shot: ProductionWorkspaceV2Snapshot['shots'][number]; mode: ProductionWorkspaceViewMode; focused: boolean; onRefresh?: () => void; onGenerate?: (target: 'IMAGE' | 'VIDEO') => void; selectedImageProfileId?: string | null; selectedVideoProfileId?: string | null; actionMessages?: Record<string, string>; generationBusyKey?: string | null }) {
+  const imageBusy = generationBusyKey === `${shot.identity.storyboard_shot_id}:IMAGE`
+  const videoBusy = generationBusyKey === `${shot.identity.storyboard_shot_id}:VIDEO`
   return (
     <article className={`rounded-xl border bg-slate-900 p-4 ${focused ? 'border-violet-400/60 ring-1 ring-violet-400/30' : 'border-slate-800'}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -170,8 +182,8 @@ function ShotCard({ shot, mode, focused, onRefresh, onGenerate, selectedImagePro
       </div>
       {shot.blockers.length > 0 ? <div className="mt-3 flex items-start gap-2 rounded-lg border border-rose-500/20 bg-rose-500/5 px-3 py-2 text-xs text-rose-100"><AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" /><span>{shot.blockers[0].code === 'UI_V2_BLOCKED_BY_PRODUCTION_ASSET_INGESTION_API' && shot.asset_readiness.missing[0] ? assetMissingEntityLabel(shot.asset_readiness.missing[0]) : shot.blockers[0].message}</span></div> : null}
       <div className="mt-4 grid gap-3 xl:grid-cols-2">
-        <LaneSummary lane={shot.IMAGE} target="IMAGE" mode={mode} selectedProfileId={selectedImageProfileId} actionMessage={actionMessages?.IMAGE} onGenerate={() => onGenerate?.('IMAGE')} />
-        <LaneSummary lane={shot.VIDEO} target="VIDEO" mode={mode} selectedProfileId={selectedVideoProfileId} actionMessage={actionMessages?.VIDEO} onGenerate={() => onGenerate?.('VIDEO')} />
+        <LaneSummary lane={shot.IMAGE} target="IMAGE" mode={mode} selectedProfileId={selectedImageProfileId} actionMessage={actionMessages?.IMAGE} busy={imageBusy} onGenerate={() => onGenerate?.('IMAGE')} />
+        <LaneSummary lane={shot.VIDEO} target="VIDEO" mode={mode} selectedProfileId={selectedVideoProfileId} actionMessage={actionMessages?.VIDEO} busy={videoBusy} onGenerate={() => onGenerate?.('VIDEO')} />
       </div>
       <div className="mt-3 grid gap-3 xl:grid-cols-2">
         <CandidateList lane={shot.IMAGE} mode={mode} onRefresh={onRefresh} />
@@ -182,9 +194,10 @@ function ShotCard({ shot, mode, focused, onRefresh, onGenerate, selectedImagePro
   )
 }
 
-export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mode, onNavigateSection, onSelectAsset, onSelectAssetContext, focusShotId, onRefresh, imageModelProfileId, videoModelProfileId }: Props) {
+export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mode, onNavigateSection, onSelectAsset, onSelectAssetContext, focusShotId, onRefresh, onRefreshProductionWorkspaceV2, imageModelProfileId, videoModelProfileId }: Props) {
   const [showAllAssets, setShowAllAssets] = useState(false)
   const [actionMessages, setActionMessages] = useState<Record<string, string>>({})
+  const [generationBusyKey, setGenerationBusyKey] = useState<string | null>(null)
   const assets = snapshot?.assets ?? []
   const missingAssets = useMemo(() => assets.filter((asset) => !asset.media.present), [assets])
   const visibleAssets = showAllAssets ? assets : (missingAssets.length > 0 ? missingAssets : assets).slice(0, 8)
@@ -195,14 +208,41 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
   const runGeneration = async (shot: ProductionWorkspaceV2Snapshot['shots'][number], target: 'IMAGE' | 'VIDEO') => {
     const modelProfileId = target === 'IMAGE' ? selectedImageProfileId : selectedVideoProfileId
     if (!modelProfileId) return
+    const operationKey = `${shot.identity.storyboard_shot_id}:${target}`
+    if (generationBusyKey) return
     const lane = shot[target]
     if (lane.generation_readiness && !lane.generation_readiness.ready) {
       setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: lane.generation_readiness?.primary_blocker?.message || '当前生产状态不允许生成。' }))
       return
     }
+    const confirmed = typeof window === 'undefined' || window.confirm(
+      target === 'IMAGE'
+        ? '确认提交分镜图生成？该操作可能产生平台费用。'
+        : '确认提交视频生成？该操作可能产生平台费用。',
+    )
+    if (!confirmed) {
+      setActionMessages((current) => ({ ...current, [operationKey]: '已取消生成提交。' }))
+      return
+    }
+    setGenerationBusyKey(operationKey)
     setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: '正在提交 canonical 生成任务…' }))
     try {
-      await submitCanonicalProductionGeneration({
+      await onRefreshProductionWorkspaceV2?.()
+      const fixtureMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('workspace_v2_generation_fixture')
+      const freshProjection = fixtureMode
+        ? snapshot!
+        : await fetchProductionWorkspaceV2(snapshot!.book_id, {
+            imageModelProfileId: target === 'IMAGE' ? modelProfileId : selectedImageProfileId,
+            videoModelProfileId: target === 'VIDEO' ? modelProfileId : selectedVideoProfileId,
+          })
+      const freshShot = findProductionShotV2(freshProjection, Number(shot.identity.episode), shot.identity.shot_id)
+      const freshLane = freshShot?.[target]
+      const freshReady = target === 'IMAGE' ? isProductionImageGenerationReady(freshShot) : isProductionVideoGenerationReady(freshShot)
+      const freshModelId = String(freshLane?.model.selected_profile_id || '').trim()
+      if (!freshShot || !freshLane || !freshReady || freshModelId !== modelProfileId) {
+        throw new Error('生产状态已经更新，请重新确认当前镜头和模型配置。')
+      }
+      const payload = await submitCanonicalProductionGeneration({
         bookId: snapshot!.book_id,
         episode: Number(shot.identity.episode),
         shotId: shot.identity.shot_id,
@@ -210,10 +250,55 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
         modelProfileId,
         generationChain: 'production_workspace_v2',
       })
+      const responseClass = classifyGenerationResponse(payload)
+      if (responseClass === 'legacy_task') {
+        const taskId = String(payload.task_id || '').trim()
+        if (!taskId) throw new Error('兼容任务响应缺少 task_id，已安全停止。')
+        const kind = target === 'IMAGE' ? 'frame' : 'video'
+        upsertPendingStoryboardTask(snapshot!.book_id, {
+          taskId,
+          episode: Number(shot.identity.episode),
+          shotId: String(shot.identity.shot_id),
+          kind,
+          updatedAt: new Date().toISOString(),
+        })
+        setActionMessages((current) => ({
+          ...current,
+          [`${shot.identity.storyboard_shot_id}:${target}`]: `LEGACY_TASK_RECOVERY_COMPATIBILITY：任务 ID：${taskId}`,
+        }))
+        const settled = await waitForCreativeTask(taskId, fetchCreativeTaskStatus, {
+          reconcileTask: reconcileCreativeTask,
+          softTimeoutMs: 45000,
+        })
+        if (settled.status === 'done') {
+          removePendingStoryboardTask(snapshot!.book_id, taskId)
+          setActionMessages((current) => ({
+            ...current,
+            [`${shot.identity.storyboard_shot_id}:${target}`]: '兼容任务已完成（LEGACY_TASK_RECOVERY_COMPATIBILITY）。',
+          }))
+          onRefresh?.()
+          return
+        }
+        if (settled.status === 'soft_timeout') {
+          setActionMessages((current) => ({
+            ...current,
+            [`${shot.identity.storyboard_shot_id}:${target}`]: `兼容任务仍在执行，任务 ID：${taskId}`,
+          }))
+          return
+        }
+        const settledError = 'error' in settled ? String(settled.error || '') : ''
+        throw new Error(settledError || `兼容任务失败，任务 ID：${taskId}`)
+      }
+      if (responseClass === 'invalid_response' || !payload.execution) {
+        throw new Error('canonical 生成响应格式无效，已安全停止。')
+      }
       setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: '已提交，候选结果生成后会出现在本工作区。' }))
+      await onRefreshProductionWorkspaceV2?.()
       onRefresh?.()
-    } catch (generationError) {
-      setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: generationError instanceof Error ? generationError.message : '生成提交失败。' }))
+      } catch (generationError) {
+        setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: generationError instanceof Error ? generationError.message : '生成提交失败。' }))
+    } finally {
+      setGenerationBusyKey((current) => current === operationKey ? null : current)
     }
   }
 
@@ -249,7 +334,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
         {((missingAssets.length > 8) || (missingAssets.length === 0 && assets.length > 8)) ? <button type="button" onClick={() => setShowAllAssets((value) => !value)} className="mt-3 text-xs text-violet-200 hover:text-white">{showAllAssets ? '收起资产' : missingAssets.length > 0 ? `查看全部 ${missingAssets.length} 个缺失资产` : `查看全部 ${assets.length} 个资产`}</button> : null}
       </div>
 
-      <div className="space-y-3"><div className="flex items-center justify-between gap-3"><div><div className="text-sm font-semibold text-white">镜头生产</div><div className="mt-1 text-xs text-slate-500">IMAGE 与 VIDEO 是两条独立泳道；候选结果不会自动成为正式版本。</div></div><CircleDashed className="h-4 w-4 text-slate-500" /></div>{snapshot.shots.length > 0 ? snapshot.shots.map((shot) => <ShotCard key={`${shot.identity.episode}-${shot.identity.storyboard_shot_id}`} shot={shot} mode={mode} focused={String(shot.identity.shot_id) === String(focusShotId ?? '')} onRefresh={onRefresh} onGenerate={(target) => { void runGeneration(shot, target) }} selectedImageProfileId={selectedImageProfileId} selectedVideoProfileId={selectedVideoProfileId} actionMessages={{ IMAGE: actionMessages[`${shot.identity.storyboard_shot_id}:IMAGE`], VIDEO: actionMessages[`${shot.identity.storyboard_shot_id}:VIDEO`] }} />) : <div className="rounded-xl border border-dashed border-slate-700 bg-slate-900 p-5 text-sm text-slate-400">当前投影还没有可展示的镜头。</div>}</div>
+      <div className="space-y-3"><div className="flex items-center justify-between gap-3"><div><div className="text-sm font-semibold text-white">镜头生产</div><div className="mt-1 text-xs text-slate-500">IMAGE 与 VIDEO 是两条独立泳道；候选结果不会自动成为正式版本。</div></div><CircleDashed className="h-4 w-4 text-slate-500" /></div>{snapshot.shots.length > 0 ? snapshot.shots.map((shot) => <ShotCard key={`${shot.identity.episode}-${shot.identity.storyboard_shot_id}`} shot={shot} mode={mode} focused={String(shot.identity.shot_id) === String(focusShotId ?? '')} onRefresh={onRefresh} onGenerate={(target) => { void runGeneration(shot, target) }} generationBusyKey={generationBusyKey} selectedImageProfileId={selectedImageProfileId} selectedVideoProfileId={selectedVideoProfileId} actionMessages={{ IMAGE: actionMessages[`${shot.identity.storyboard_shot_id}:IMAGE`], VIDEO: actionMessages[`${shot.identity.storyboard_shot_id}:VIDEO`] }} />) : <div className="rounded-xl border border-dashed border-slate-700 bg-slate-900 p-5 text-sm text-slate-400">当前投影还没有可展示的镜头。</div>}</div>
     </section>
   )
 }

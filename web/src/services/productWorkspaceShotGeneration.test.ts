@@ -311,6 +311,17 @@ describe('Shot Studio canonical generation controller', () => {
 })
 
 describe('canonical generation service contract', () => {
+  it('builds the IMAGE canonical route with the shared contract', async () => {
+    const fetchMock = vi.fn(async (_url: string, init: RequestInit) => ({ ok: true, json: async () => ({ execution: { status: 'RUNNING', target_media: 'IMAGE' } }), init }))
+    vi.stubGlobal('fetch', fetchMock)
+    await submitCanonicalProductionGeneration({ bookId: 1, episode: 2, shotId: 'S1', target: 'IMAGE', modelProfileId: 'image-profile', generationChain: 'recompile_then_frame' })
+    expect(fetchMock.mock.calls[0][0]).toBe('/api/books/1/storyboard/2/S1/generate-frame')
+    const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body))
+    expect(body).toMatchObject({ modelProfileId: 'image-profile', confirmed: true, allowExternalCall: true, compileIfMissing: false, generationChain: 'recompile_then_frame' })
+    expect(body.firstFrameAssetId).toBeUndefined()
+    expect(body.referenceAssetIds).toBeUndefined()
+  })
+
   it('sends compileIfMissing=false and no legacy asset fields', async () => {
     const fetchMock = vi.fn(async (_url: string, init: RequestInit) => ({ ok: true, json: async () => ({ execution: { status: 'RUNNING' } }), init }))
     vi.stubGlobal('fetch', fetchMock)

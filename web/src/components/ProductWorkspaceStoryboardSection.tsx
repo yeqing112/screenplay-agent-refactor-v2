@@ -80,6 +80,8 @@ import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
 import { ProductionGenerationServiceError, submitCanonicalProductionGeneration } from '../services/productionGeneration'
 import { classifyGenerationResponse } from '../services/legacyProductionGenerationBridge'
 
+const LEGACY_COMPATIBILITY_ONLY = 'LEGACY_COMPATIBILITY_ONLY'
+
 interface Props {
   bookId: number
   shotsByEpisode: Record<number, StoryboardShotOutput[]>
@@ -3075,7 +3077,6 @@ export default function ProductWorkspaceStoryboardSection({
     targetTaskSetter(null)
 
     try {
-      const endpoint = `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/${kind === 'frame' ? 'generate-frame' : 'generate-video'}`
       const selectedGenerationProfile = kind === 'frame' ? imageModelProfile : videoModelProfile
       if (!selectedGenerationProfile?.id) {
         throw new Error(kind === 'frame' ? '请先选择 IMAGE 生成模型配置。' : '请先选择 VIDEO 生成模型配置。')
@@ -3154,6 +3155,8 @@ export default function ProductWorkspaceStoryboardSection({
 
       // Non-production continues through the explicit legacy compatibility
       // request and task recovery path below.
+      const endpoint = `/api/books/${_bookId}/storyboard/${selectedShot.episode}/${selectedShot.shot_id}/${kind === 'frame' ? 'generate-frame' : 'generate-video'}`
+      setGenerationMessage(`${kind === 'frame' ? '正在提交首帧生成任务' : '正在提交视频生成任务'}（${LEGACY_COMPATIBILITY_ONLY}）`)
       const requestBody = kind === 'frame'
         ? {
             modelProfileId: selectedGenerationProfile.id,
@@ -3220,7 +3223,7 @@ export default function ProductWorkspaceStoryboardSection({
         const executionStatus = String(payload.execution.status || '').toUpperCase()
         if (executionStatus === 'SUCCEEDED' || payload.candidate) {
           setGenerationState('success')
-          setGenerationMessage(`${labels.success}（候选结果，待显式采纳）`)
+          setGenerationMessage(`${labels.success}（${LEGACY_COMPATIBILITY_ONLY}，候选结果，待显式采纳）`)
           persistShotExecutionSummary(kind, kind === 'frame'
             ? chainMeta?.generationChain === 'recompile_then_frame' ? '重编后生成首帧' : '生成首帧'
             : chainMeta?.generationChain === 'recompile_then_video' ? '重编后继续生成视频' : '生成视频', {
@@ -3239,7 +3242,7 @@ export default function ProductWorkspaceStoryboardSection({
         throw new Error(`\u672a\u80fd\u83b7\u53d6${labels.noun}\u4efb\u52a1\u53f7\u3002`)
       }
 
-      setGenerationMessage(`LEGACY_TASK_RECOVERY_COMPATIBILITY：${labels.pending} 任务 ID：${taskId}`)
+      setGenerationMessage(`${LEGACY_COMPATIBILITY_ONLY}：LEGACY_TASK_RECOVERY_COMPATIBILITY：${labels.pending} 任务 ID：${taskId}`)
       upsertPendingStoryboardTask(_bookId, {
         taskId,
         episode: selectedShot.episode,
@@ -3258,7 +3261,7 @@ export default function ProductWorkspaceStoryboardSection({
         removePendingStoryboardTask(_bookId, taskId)
         targetTaskSetter(null)
         setGenerationState('success')
-        setGenerationMessage(labels.success)
+        setGenerationMessage(`${labels.success}（${LEGACY_COMPATIBILITY_ONLY}，LEGACY_TASK_RECOVERY_COMPATIBILITY）`)
         persistShotExecutionSummary(kind, kind === 'frame'
           ? chainMeta?.generationChain === 'recompile_then_frame' ? '重编后生成首帧' : '生成首帧'
           : chainMeta?.generationChain === 'recompile_then_video' ? '重编后继续生成视频' : '生成视频', {
