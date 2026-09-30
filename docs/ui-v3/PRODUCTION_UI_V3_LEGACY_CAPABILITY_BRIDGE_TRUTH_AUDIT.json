@@ -1,0 +1,52 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE",
+  "baseline": "2d74e13243f3ca35b6ee108c5e4fa87409d63752",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "completion_marker": "PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE_COMPLETE",
+  "status": "COMPLETE_FOR_CANARY_BRIDGE",
+  "default_v3_enabled": false,
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "real_generation": false,
+  "source_fact_mutations": 0,
+  "script_ir_mutations": 0,
+  "bg03": {
+    "ingestion_api_available": true,
+    "authority_reused": true,
+    "immutable_versions": true,
+    "pointer_activation_requires_human_approval": true,
+    "binding_requires_formal_contract": true,
+    "v2_readiness_is_authoritative": true,
+    "windows_local_media_supported": true
+  },
+  "bg05": {
+    "shared_selection_service": true,
+    "legacy_selector_shared": true,
+    "v3_selector_shared": true,
+    "capability_filtered": true,
+    "missing_profile_fails_closed": true,
+    "v2_refresh_after_change": true
+  },
+  "legacy_compatibility_telemetry": {
+    "canonical_execution_count": true,
+    "canonical_candidate_count": true,
+    "task_id_only_fallback_count": true,
+    "mixed_response_count": true,
+    "provider_free": true
+  },
+  "tests": {
+    "production_asset_api": "passed",
+    "generation_compatibility_telemetry": "passed",
+    "existing_h2_and_runtime_suite": "43 passed",
+    "web_tests": "386 passed",
+    "web_build": "passed",
+    "git_diff_check": "pending_final_run"
+  },
+  "remaining_gaps": [
+    "cross-shot review inbox",
+    "retry and regenerate",
+    "pagination",
+    "provider cancellation",
+    "default V3 migration"
+  ]
+}

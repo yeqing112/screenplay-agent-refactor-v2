@@ -74,6 +74,7 @@ import {
   type ProductionWorkspaceV2Snapshot,
 } from '../domain/productionWorkspace'
 import ProductionWorkspaceAuthorityBanner from './ProductionWorkspaceAuthorityBanner'
+import ProductionGenerationProfileSelector from './ProductionGenerationProfileSelector'
 
 interface Props {
   bookId: number
@@ -3133,7 +3134,7 @@ export default function ProductWorkspaceStoryboardSection({
       // Candidate projection directly. It is not a legacy background task,
       // so keep the UI status bound to those records instead of inventing a
       // task id or reading legacy storyboard media fields.
-      if (payload?.execution && !payload?.task_id) {
+      if (payload?.execution) {
         const executionStatus = String(payload.execution.status || '').toUpperCase()
         if (executionStatus === 'SUCCEEDED' || payload.candidate) {
           setGenerationState('success')
@@ -4293,36 +4294,8 @@ export default function ProductWorkspaceStoryboardSection({
 
               {(activeStoryboardStep === 'frame' || activeStoryboardStep === 'video') ? <>
                 <div className="mb-3 grid gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 md:grid-cols-2">
-                  <label className="text-xs text-slate-300">
-                    IMAGE 生成模型（显式选择）
-                    <select
-                      value={imageModelProfile?.id || ''}
-                      onChange={(event) => {
-                        const next = generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'image') || null
-                        setImageModelProfile(next)
-                        persistExplicitGenerationProfileSelection({ imageModelProfileId: next?.id || null, videoModelProfileId: videoModelProfile?.id || null })
-                      }}
-                      className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
-                    >
-                      <option value="">请选择模型配置</option>
-                      {generationModelProfiles.filter((item) => item.capability === 'image').map((item) => <option key={item.id} value={item.id}>{item.name} · {item.id}</option>)}
-                    </select>
-                  </label>
-                  <label className="text-xs text-slate-300">
-                    VIDEO 生成模型（显式选择）
-                    <select
-                      value={videoModelProfile?.id || ''}
-                      onChange={(event) => {
-                        const next = generationModelProfiles.find((item) => item.id === event.target.value && item.capability === 'video') || null
-                        setVideoModelProfile(next)
-                        persistExplicitGenerationProfileSelection({ imageModelProfileId: imageModelProfile?.id || null, videoModelProfileId: next?.id || null })
-                      }}
-                      className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-white"
-                    >
-                      <option value="">请选择模型配置</option>
-                      {generationModelProfiles.filter((item) => item.capability === 'video').map((item) => <option key={item.id} value={item.id}>{item.name} · {item.id}</option>)}
-                    </select>
-                  </label>
+                  <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={imageModelProfile?.id || null} onChange={(id) => setImageModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh() }} />
+                  <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={videoModelProfile?.id || null} onChange={(id) => setVideoModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh() }} />
                 </div>
                 <ProductWorkspaceStoryboardAdvancedToolsPanel
                 episode={selectedShot.episode}

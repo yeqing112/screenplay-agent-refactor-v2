@@ -32,6 +32,8 @@ import {
   type ShotGenerationMutationSnapshot,
 } from '../services/productWorkspaceShotGeneration'
 import { approveProductionMediaCandidate, validateProductionMediaCandidate } from '../services/productionWorkspace'
+import ProductionGenerationProfileSelector from './ProductionGenerationProfileSelector'
+import ProductionAssetBridgePanel from './ProductionAssetBridgePanel'
 
 interface ProductWorkspaceShotStudioV3Props {
   snapshot: ProductionWorkspaceV2Snapshot | null
@@ -440,6 +442,11 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
   return <div data-testid="shot-studio-v3" className="min-w-0 space-y-4 bg-[#0E1214] text-[#EDF1EF]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
     <Panel className="flex flex-wrap items-center justify-between gap-4 px-4 py-4"><div><div className="text-[10px] uppercase tracking-[0.2em] text-[#728082]">Shot Studio · V3 Canary</div><div className="mt-1 flex flex-wrap items-center gap-3"><h2 className="text-xl font-medium tracking-tight text-[#EDF1EF]">镜头工坊</h2>{selected ? <StatusBadge state={selected.state} /> : null}</div><div className="mt-2 text-xs text-[#A9B4B3]">Production Workspace V2 状态、canonical 执行与人工审核在此衔接</div></div><div className="flex items-center gap-2"><span className="border border-[#2A3437] px-2.5 py-1.5 text-[10px] text-[#728082]">{snapshot.shots.length} shots</span>{onRefresh ? <button type="button" onClick={onRefresh} aria-label="重新同步 Shot Studio" className="inline-flex items-center gap-2 border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC9D9]"><RefreshCw className="h-3.5 w-3.5" />重新同步</button> : null}</div></Panel>
     {!selected ? <EmptySurface /> : <>
+      <Panel className="grid gap-3 px-4 py-3 md:grid-cols-2" aria-label="Production model selection">
+        <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={selected.image.professional.model.selected_profile_id} mutationBusy={Boolean(generationController.current?.isActive() || reviewController.current?.isActive())} onRefresh={onRefreshProductionWorkspaceV2} />
+        <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={selected.video.professional.model.selected_profile_id} mutationBusy={Boolean(generationController.current?.isActive() || reviewController.current?.isActive())} onRefresh={onRefreshProductionWorkspaceV2} />
+      </Panel>
+      {!selected.professional.assetReadiness.current ? <ProductionAssetBridgePanel bookId={snapshot.book_id} storyboardShotId={selected.storyboardShotId} readiness={selected.professional.assetReadiness} onRefresh={onRefreshProductionWorkspaceV2} /> : null}
       <div className="grid min-w-0 gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
         <ShotNavigator shots={viewModels} selectedId={selected.shotId} onSelect={onSelectShot} />
         <div className="min-w-0"><MediaCanvas shot={selected} lane={mediaLane} onLaneChange={setMediaLane} mutation={generationMutation} reviewBusy={reviewController.current?.isActive()} onGenerate={(target) => { void generationController.current?.start(selected.shotId, target) }} /><ReviewDesk shot={selected} lane={mediaLane} mode={mode} mutation={mutation} generationBusy={generationController.current?.isActive()} onApprove={(identity) => { if (!generationController.current?.isActive()) void reviewController.current?.approve(identity) }} /><ShotPipeline shot={selected} /></div>

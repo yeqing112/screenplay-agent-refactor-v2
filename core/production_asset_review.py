@@ -28,6 +28,7 @@ from core.production_asset_authority import (
     _typed_config,
     bind_shot_assets,
     ingest_production_asset,
+    production_asset_media_readiness,
     _switch_current_production_asset_version,
 )
 
@@ -81,6 +82,12 @@ class ProductionAssetReviewGateError(ProductionAssetReviewError):
         self.report = dict(report)
         failed = ", ".join(report.get("failed_checks") or []) or "review gate failed"
         super().__init__(f"production review gate blocked: {failed}", diagnostics=[dict(report)])
+
+
+class ProductionAssetValidationError(ProductionAssetReviewError):
+    """Raised when deterministic production media validation fails."""
+
+    code = "PRODUCTION_ASSET_VALIDATION_FAILED"
 
 
 def _canonical(value: Any) -> str:
@@ -201,6 +208,114 @@ def create_production_asset_review(
     session.add(history)
     session.flush()
     return _as_dict(review)
+
+
+def validate_production_asset_version(
+    session: Any,
+    *,
+    review_id: str,
+    metadata: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Run the real provider-free preparation steps for one asset version.
+
+    This is the production HTTP validation boundary.  It checks durable media
+    identity, checksum/metadata evidence, and declared media facts before
+    recording ``NORMALIZED -> AI_VALIDATED -> HUMAN_REVIEW_PENDING``.  The
+    ``AI_VALIDATED`` label is retained for the existing review contract, but
+    the validator is explicitly deterministic and never calls an AI/provider.
+    """
+    review = session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none()
+    if review is None:
+        raise ProductionAssetValidationError("review_id does not exist", diagnostics=[{"review_id": review_id}])
+    kind, _, version = _version_row(
+        session,
+        asset_type=review.asset_type,
+        asset_id=review.asset_id,
+        asset_version_id=review.asset_version_id,
+    )
+    facts = dict(metadata) if isinstance(metadata, Mapping) else {}
+    mime_type = str(facts.get("mime_type") or "").strip().lower()
+    if mime_type and not (mime_type.startswith("image/") or mime_type.startswith("video/")):
+        raise ProductionAssetValidationError(
+            "production asset media type is unsupported",
+            diagnostics=[{"code": "MEDIA_MIME_UNSUPPORTED", "mime_type": mime_type}],
+        )
+    width = facts.get("width")
+    height = facts.get("height")
+    if mime_type.startswith("image/") and (not isinstance(width, int) or width <= 0 or not isinstance(height, int) or height <= 0):
+        raise ProductionAssetValidationError(
+            "image dimensions are required for deterministic production validation",
+            diagnostics=[{"code": "MEDIA_DIMENSIONS_MISSING", "width": width, "height": height}],
+        )
+    media = production_asset_media_readiness(
+        storage_identity=version.storage_identity,
+        checksum=version.checksum,
+        metadata_hash=version.metadata_hash,
+        metadata=facts,
+    )
+    if not media.present:
+        raise ProductionAssetValidationError(
+            "production asset media is not readable or durable",
+            diagnostics=[{"code": code, "source_kind": media.source_kind} for code in media.reason_codes],
+        )
+
+    checks = {
+        "storage_identity": bool(str(version.storage_identity or "").strip()),
+        "checksum": bool(str(version.checksum or "").strip()),
+        "metadata_hash": bool(str(version.metadata_hash or "").strip()),
+        "media_readable": bool(media.present),
+        "mime_supported": not mime_type or mime_type.startswith(("image/", "video/")),
+        "dimensions_valid": not mime_type.startswith("image/") or (isinstance(width, int) and width > 0 and isinstance(height, int) and height > 0),
+    }
+    if not all(checks.values()):
+        raise ProductionAssetValidationError(
+            "deterministic production asset validation failed",
+            diagnostics=[{"code": key.upper() + "_INVALID"} for key, value in checks.items() if not value],
+        )
+
+    current = str(review.review_state or "")
+    if current == "GENERATED":
+        transition_production_asset_review(
+            session,
+            review_id=review.review_id,
+            to_state="NORMALIZED",
+            reviewer_type="SYSTEM",
+            comment="Deterministic storage, checksum, metadata, MIME, and readability checks passed.",
+        )
+        current = "NORMALIZED"
+    if current == "NORMALIZED":
+        transition_production_asset_review(
+            session,
+            review_id=review.review_id,
+            to_state="AI_VALIDATED",
+            reviewer_type="SYSTEM",
+            comment="AI_VALIDATED recorded by deterministic production-media validator v1; no AI/provider call was made.",
+        )
+        current = "AI_VALIDATED"
+    if current == "AI_VALIDATED":
+        transition_production_asset_review(
+            session,
+            review_id=review.review_id,
+            to_state="HUMAN_REVIEW_PENDING",
+            reviewer_type="SYSTEM",
+            comment="Deterministic validation passed; explicit human approval is still required.",
+        )
+    elif current != "HUMAN_REVIEW_PENDING":
+        raise ProductionAssetValidationError(
+            "review is not eligible for deterministic validation",
+            diagnostics=[{"review_id": review.review_id, "review_state": current}],
+        )
+    refreshed = session.query(ProductionAssetReview).filter_by(review_id=review.review_id).one()
+    return {
+        "review": _as_dict(refreshed),
+        "history": review_history(session, refreshed.review_id),
+        "checks": checks,
+        "validator_version": "deterministic-production-media-v1",
+        "provider_calls": 0,
+        "llm_calls": 0,
+        "image_calls": 0,
+        "video_calls": 0,
+    }
 
 
 def _version_fingerprint(version: Any) -> str:
@@ -428,7 +543,9 @@ __all__ = [
     "REVIEW_DECISIONS",
     "ProductionAssetReviewError",
     "ProductionAssetReviewGateError",
+    "ProductionAssetValidationError",
     "create_production_asset_review",
+    "validate_production_asset_version",
     "transition_production_asset_review",
     "review_history",
     "production_review_gate",

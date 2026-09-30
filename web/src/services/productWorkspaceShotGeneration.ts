@@ -247,7 +247,7 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
         generationChain: 'production_workspace_v2',
         signal,
       })
-      if (text(response.task_id)) return fail(shotId, target, '当前生成返回了旧版任务协议，V3 无法安全跟踪 canonical production state。', 'V3_LEGACY_GENERATION_TASK_RESPONSE_UNSUPPORTED', null, response)
+      if (text(response.task_id) && !(response as { execution?: unknown }).execution) return fail(shotId, target, '当前生成返回了旧版任务协议，V3 无法安全跟踪 canonical production state。', 'V3_LEGACY_GENERATION_TASK_RESPONSE_UNSUPPORTED', null, response)
       if (signal.aborted || stopRequested) return stoppedObservation(shotId, target, response)
 
       const maxAttempts = Math.max(1, dependencies.maxRefreshAttempts ?? DEFAULT_REFRESH_ATTEMPTS)

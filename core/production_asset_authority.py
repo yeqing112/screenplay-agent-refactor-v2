@@ -87,6 +87,11 @@ def production_asset_media_readiness(
     source_kind = str(meta.get("source_kind") or meta.get("media_source_kind") or "").strip().lower()
     parsed = urlparse(identity) if identity else None
     scheme = str(parsed.scheme or "").strip().lower() if parsed else ""
+    # ``urlparse`` treats a Windows drive letter (``C:\\...``) as a URI
+    # scheme.  It is still a local durable path and must follow the same
+    # readable-file branch as POSIX paths.
+    if len(scheme) == 1 and len(identity) >= 2 and identity[1] == ":" and identity[0].isalpha():
+        scheme = ""
     if not identity:
         return ProductionAssetMediaReadiness(False, ("MEDIA_STORAGE_IDENTITY_MISSING",), source_kind)
     if not digest:
@@ -315,12 +320,16 @@ def ingest_production_asset(
         raise ProductionAssetSchemaError("existing authority fingerprint/status does not match canonical identity")
 
     current = session.query(config["version"]).filter_by(version_id=authority.current_version_id).one_or_none() if authority.current_version_id else None
+    latest = session.query(config["version"]).filter_by(authority_id=authority_id).order_by(config["version"].revision.desc()).first()
     if current is not None and current.storage_identity == source["storage_identity"] and current.checksum == source["checksum"] and current.metadata_hash == source["metadata_hash"]:
         version_id = current.version_id
         revision = int(current.revision)
         version_fingerprint = _version_fingerprint(authority_id=authority_id, version_id=version_id, revision=revision, source=source)
     else:
-        revision = (int(current.revision) + 1) if current is not None else 1
+        # Review candidates are persisted without moving the Pointer, so the
+        # current pointer may be null or older than an existing candidate.
+        # Revision must always advance from the latest immutable Version.
+        revision = (int(latest.revision) + 1) if latest is not None else 1
         version_id = _version_id(authority_id=authority_id, revision=revision, source=source)
         version_fingerprint = _version_fingerprint(authority_id=authority_id, version_id=version_id, revision=revision, source=source)
         if current is not None and activate_pointer:
@@ -480,7 +489,7 @@ def switch_current_production_asset_version(
     return result["switch"]
 
 
-def _find_asset(session, *, asset_type: str, authority_id: str, version_id: str):
+def _find_asset(session, *, asset_type: str, authority_id: str, version_id: str, book_id: int = 990401):
     kind = _asset_type(asset_type)
     config = _typed_config(kind)
     authority = session.query(config["authority"]).filter_by(authority_id=authority_id).one_or_none()
@@ -492,7 +501,7 @@ def _find_asset(session, *, asset_type: str, authority_id: str, version_id: str)
     if pointer is None:
         raise AssetBindingInvalid("asset pointer does not exist", diagnostics=[{"asset_type": kind, "authority_id": authority_id}])
     source = {"storage_identity": version.storage_identity, "checksum": version.checksum, "metadata_hash": version.metadata_hash}
-    expected_authority_fp = _authority_fingerprint(book_id=990401, asset_type=kind, entity_id=entity_id, authority_id=authority_id)
+    expected_authority_fp = _authority_fingerprint(book_id=int(book_id), asset_type=kind, entity_id=entity_id, authority_id=authority_id)
     expected_version_fp = _version_fingerprint(authority_id=authority_id, version_id=version.version_id, revision=int(version.revision), source=source)
     expected_pointer_fp = _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=version.version_id)
     if authority.status != "ACTIVE" or version.status != "CURRENT" or authority.current_version_id != version.version_id or pointer.version_id != version.version_id or authority.fingerprint != expected_authority_fp or pointer.fingerprint != expected_pointer_fp:
@@ -500,14 +509,14 @@ def _find_asset(session, *, asset_type: str, authority_id: str, version_id: str)
     return {"asset_type": kind, "entity_id": entity_id, "authority_id": authority_id, "version_id": version.version_id, "authority_fingerprint": authority.fingerprint, "version_fingerprint": expected_version_fp, "pointer_fingerprint": pointer.fingerprint}
 
 
-def bind_shot_assets(session, *, storyboard_shot_id: int, characters: list[Mapping[str, Any]], scene: Mapping[str, Any], props: list[Mapping[str, Any]]):
+def bind_shot_assets(session, *, storyboard_shot_id: int, characters: list[Mapping[str, Any]], scene: Mapping[str, Any], props: list[Mapping[str, Any]], book_id: int = 990401):
     """Persist formal shot bindings using only authority/version IDs."""
     if not isinstance(scene, Mapping) or not scene.get("authority_id") or not scene.get("version_id"):
         raise AssetBindingInvalid("scene binding is required")
     requested = [("CHARACTER", item) for item in characters] + [("SCENE", scene)] + [("PROP", item) for item in props]
     resolved = []
     for kind, item in requested:
-        resolved.append(_find_asset(session, asset_type=kind, authority_id=str(item["authority_id"]), version_id=str(item["version_id"])))
+        resolved.append(_find_asset(session, asset_type=kind, authority_id=str(item["authority_id"]), version_id=str(item["version_id"]), book_id=book_id))
     for asset in resolved:
         binding_fp = _binding_fingerprint(storyboard_shot_id=storyboard_shot_id, asset_type=asset["asset_type"], authority_fingerprint=asset["authority_fingerprint"], version_fingerprint=asset["version_fingerprint"], pointer_fingerprint=asset["pointer_fingerprint"])
         existing = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=storyboard_shot_id, asset_type=asset["asset_type"], authority_id=asset["authority_id"], version_id=asset["version_id"]).one_or_none()

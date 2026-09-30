@@ -20,7 +20,7 @@ from .production_workspace_projection import build_production_workspace_projecti
 # and backfills, but no public entity-first ingestion HTTP contract yet.  The
 # projection must expose that boundary instead of presenting legacy upload
 # controls as a production path.
-PRODUCTION_ASSET_INGESTION_API_AVAILABLE = False
+PRODUCTION_ASSET_INGESTION_API_AVAILABLE = True
 
 
 def _text(value: Any) -> str:

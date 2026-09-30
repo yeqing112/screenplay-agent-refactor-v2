@@ -54,6 +54,7 @@ from core.decision_draft import build_decision_draft_prompt, validate_decision_d
 from core.production_policy import evaluate_production_boundary, resolve_workflow_profile
 from core.production_workspace_projection import build_production_workspace_projection
 from core.production_workspace_projection_v2 import build_production_workspace_projection_v2
+from core.generation_compatibility_telemetry import record_generation_compatibility_response, generation_compatibility_telemetry_snapshot
 from core.script_beat import build_script_beats, find_issue_beats, is_structural_beat
 from core.qa_resolution import build_resolution_criteria, evaluate_resolution_criteria, route_issue
 from core.script_edit import apply_edits, validate_edits
@@ -114,6 +115,7 @@ from api.director_benchmark_api import router as director_benchmark_router
 from api.director_runtime_api import router as director_runtime_router
 from api.director_reasoning_api import router as director_reasoning_router
 from api.automatic_storyboard_api import router as automatic_storyboard_router
+from api.production_asset_api import router as production_asset_router
 
 from nodes.registry import REGISTRY, get_handler
 from nodes.runner import NodeRunner, WORKFLOWS_DIR, RUNS_DIR
@@ -188,6 +190,7 @@ app.include_router(director_runtime_router, prefix="/api")
 app.include_router(director_reasoning_router)
 app.include_router(automatic_storyboard_router)
 app.include_router(director_reasoning_router, prefix="/api")
+app.include_router(production_asset_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft
 # compiled under an older delivery contract must never be deduplicated as if
@@ -19538,8 +19541,10 @@ async def _delegate_storyboard_generation_to_canonical(
         CanonicalPreviewRequest(model_profile_id=model_profile_id, target_media=target_media),
     )
     if not req.confirmed:
-        return {**preview, "legacy_endpoint_delegated": True, "requires_confirmation": True}
-    return await execute_canonical_generation(
+        response = {**preview, "legacy_endpoint_delegated": True, "requires_confirmation": True}
+        record_generation_compatibility_response(response)
+        return response
+    response = await execute_canonical_generation(
         book_id,
         episode,
         int(_coerce_storyboard_shot_id(shot_id)),
@@ -19549,6 +19554,8 @@ async def _delegate_storyboard_generation_to_canonical(
             preview_execution_id=preview["execution"]["execution_id"],
         ),
     )
+    record_generation_compatibility_response(response)
+    return response
 
 
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame")
@@ -19559,6 +19566,11 @@ async def generate_storyboard_frame(book_id: int, episode: int, shot_id: str, re
 @app.post("/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video")
 async def generate_storyboard_video(book_id: int, episode: int, shot_id: str, req: StoryboardGenerationRequest, bg: BackgroundTasks):
     return await _delegate_storyboard_generation_to_canonical(book_id, episode, shot_id, req, target_media="VIDEO", bg=bg)
+
+
+@app.get("/api/production/generation-compatibility-telemetry")
+def get_generation_compatibility_telemetry():
+    return generation_compatibility_telemetry_snapshot()
 
 
 @app.get("/api/books/{book_id}/storyboard/{episode}/{shot_id}/acceptance-records")
