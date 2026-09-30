@@ -1,0 +1,25 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_ASSET_BRIDGE_SCOPE_RECOVERY_RECONCILE",
+  "environment": "local backend + Vite + disposable fixture",
+  "route": "?section=storyboard&episode=1&shot=1&ui_v3=shot-studio",
+  "book_id": 998755,
+  "storyboard_shot_id": 216,
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "real_generation": false,
+  "scenarios": [
+    {"id": "reload-review-pending", "result": "passed", "assertion": "pending review state is restored after browser reload"},
+    {"id": "approved-activated-binding-gate", "result": "passed", "assertion": "approval and activation leave an explicit bind-current action"},
+    {"id": "bound-current-reload", "result": "passed", "assertion": "after bind-current and reload, bridge is absent and V2 readiness is current"},
+    {"id": "rollover-stale", "result": "passed", "assertion": "new active version is reported as BINDING_STALE after reload"},
+    {"id": "rebind-current", "result": "passed", "assertion": "rebind resolves the backend current pointer and restores current readiness"},
+    {"id": "generation-safety", "result": "passed", "assertion": "IMAGE and VIDEO generation controls remain disabled; no generation request was submitted"}
+  ],
+  "evidence_files": [
+    "asset-bridge-blocked.png",
+    "asset-bridge-review-pending.png",
+    "asset-bridge-approved-binding-needed.png",
+    "asset-bridge-ready.png"
+  ],
+  "errors": []
+}

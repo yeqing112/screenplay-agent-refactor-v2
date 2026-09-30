@@ -214,6 +214,18 @@ class AssetBindingInvalid(ProductionAssetSchemaError):
         self.diagnostics = diagnostics or []
 
 
+class ProductionAssetScopeError(ProductionAssetSchemaError):
+    """Raised when a typed Production Asset does not belong to a book."""
+
+    status_code = 404
+    code = "PRODUCTION_ASSET_SCOPE_MISMATCH"
+
+    def __init__(self, message: str, *, diagnostics: list[dict[str, Any]] | None = None):
+        super().__init__(message)
+        self.message = message
+        self.diagnostics = diagnostics or []
+
+
 def _canonical(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
 
@@ -280,6 +292,63 @@ def _entity_field(asset_type: str) -> str:
 
 def _typed_config(asset_type: str) -> dict[str, Any]:
     return _CONFIG[_asset_type(asset_type)]
+
+
+def resolve_production_asset_book_scope(
+    session: Any,
+    *,
+    book_id: int,
+    asset_type: str,
+    asset_id: str | None = None,
+    asset_version_id: str | None = None,
+) -> dict[str, Any]:
+    """Resolve a typed asset and prove that its authority belongs to ``book_id``.
+
+    Review rows intentionally do not carry a book column.  Their version and
+    authority graph is still book scoped because authority fingerprints are
+    derived from ``book_id + asset_type + entity_id + authority_id``.  Keeping
+    this check here avoids every HTTP route reimplementing that contract.
+    """
+    kind = _asset_type(asset_type)
+    config = _typed_config(kind)
+    requested_entity = str(asset_id or "").strip()
+    requested_version = str(asset_version_id or "").strip()
+    authority = None
+    version = None
+    if requested_entity:
+        authority_id = _authority_id(book_id=int(book_id), asset_type=kind, entity_id=requested_entity)
+        authority = session.query(config["authority"]).filter_by(authority_id=authority_id).one_or_none()
+    elif requested_version:
+        version = session.query(config["version"]).filter_by(version_id=requested_version).one_or_none()
+        if version is not None:
+            authority = session.query(config["authority"]).filter_by(authority_id=version.authority_id).one_or_none()
+    if authority is None:
+        raise ProductionAssetScopeError(
+            "production asset is outside the requested book scope",
+            diagnostics=[{"book_id": int(book_id), "asset_type": kind, "asset_id": requested_entity, "asset_version_id": requested_version}],
+        )
+    entity_field = config["entity"]
+    entity_id = str(getattr(authority, entity_field, "") or "")
+    authority_id = str(getattr(authority, "authority_id", "") or "")
+    expected_fingerprint = _authority_fingerprint(book_id=int(book_id), asset_type=kind, entity_id=entity_id, authority_id=authority_id)
+    if requested_entity and entity_id != requested_entity:
+        raise ProductionAssetScopeError("production asset entity does not match the requested book scope")
+    if str(getattr(authority, "fingerprint", "") or "") != expected_fingerprint:
+        raise ProductionAssetScopeError(
+            "production asset authority fingerprint does not match the requested book",
+            diagnostics=[{"book_id": int(book_id), "asset_type": kind, "entity_id": entity_id, "authority_id": authority_id}],
+        )
+    registry = session.query(ProductionAssetAuthorityRegistry).filter_by(authority_id=authority_id).one_or_none()
+    if registry is None or str(getattr(registry, "asset_type", "")).upper() != kind:
+        raise ProductionAssetScopeError("production asset authority registry is missing or typed differently")
+    if requested_version:
+        version = session.query(config["version"]).filter_by(authority_id=authority_id, version_id=requested_version).one_or_none()
+        if version is None:
+            raise ProductionAssetScopeError("production asset version does not belong to the requested authority")
+    elif version is None and authority.current_version_id:
+        version = session.query(config["version"]).filter_by(authority_id=authority_id, version_id=authority.current_version_id).one_or_none()
+    pointer = session.query(config["pointer"]).filter_by(**{entity_field: entity_id, "authority_id": authority_id}).one_or_none()
+    return {"asset_type": kind, "entity_id": entity_id, "authority": authority, "version": version, "pointer": pointer, "registry": registry}
 
 
 def ingest_production_asset(
@@ -805,7 +874,9 @@ __all__ = [
     "production_asset_media_readiness",
     "resolve_current_production_asset_binding",
     "ProductionAssetSchemaError",
+    "ProductionAssetScopeError",
     "AssetBindingInvalid",
+    "resolve_production_asset_book_scope",
     "ingest_production_asset",
     "switch_current_production_asset_version",
     "bind_shot_assets",

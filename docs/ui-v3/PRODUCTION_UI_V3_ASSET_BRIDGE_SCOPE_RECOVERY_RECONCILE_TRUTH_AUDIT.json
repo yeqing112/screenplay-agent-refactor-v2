@@ -1,0 +1,52 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_ASSET_BRIDGE_SCOPE_RECOVERY_RECONCILE",
+  "completion_marker": "PRODUCTION_UI_V3_ASSET_BRIDGE_SCOPE_RECOVERY_RECONCILE_COMPLETE",
+  "baseline": "a66902a73f4241c467901ee07c12545de3149510",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "date": "2026-09-30",
+  "scope": {
+    "book_id": 998755,
+    "storyboard_shot_id": 216,
+    "environment": "disposable local QA fixture",
+    "production_project_writes": 0
+  },
+  "authority": {
+    "source": "existing Production Asset Authority / Version / Pointer / Review / ReviewHistory / ShotAssetBinding graph",
+    "browser_identity_cache_used": false,
+    "current_pointer_is_backend_resolved": true,
+    "book_scope_checked": true,
+    "cross_book_access_rejected": true,
+    "storage_identity_client_path_read": false
+  },
+  "bridge_states_verified": [
+    "REVIEW_PENDING",
+    "HUMAN_APPROVED_NOT_ACTIVATED",
+    "CURRENT_NOT_BOUND",
+    "BOUND_CURRENT",
+    "BINDING_STALE"
+  ],
+  "readiness": {
+    "bind_requires_all_formal_requirements": true,
+    "v2_asset_readiness_current_after_bind": true,
+    "stale_rollover_requires_rebind": true,
+    "bridge_absent_after_current_rebind": true
+  },
+  "invariants": {
+    "source_fact_modified": false,
+    "script_ir_modified": false,
+    "migration_added": false,
+    "second_asset_authority_added": false,
+    "human_review_bypassed": false,
+    "automatic_generation_started": false,
+    "llm_calls": 0,
+    "provider_calls": 0,
+    "shapi_calls": 0,
+    "minimax_calls": 0
+  },
+  "regression_fixed": {
+    "name": "V2 projection binding resolver import",
+    "symptom": "GET /production-workspace-v2 returned HTTP 500 after a valid bind",
+    "result": "resolved; endpoint returns 200 and provider_calls=0"
+  },
+  "result": "passed"
+}

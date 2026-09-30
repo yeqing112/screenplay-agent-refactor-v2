@@ -476,6 +476,7 @@ def _lane(session: Any, *, shot: dict[str, Any], target_media: str, selected_pro
 
 def _asset_projection(session: Any, *, base_assets: list[dict[str, Any]], book_id: int) -> list[dict[str, Any]]:
     from models import CharacterAssetAuthority, CharacterAssetVersion, CharacterAssetPointer, SceneAssetAuthority, SceneAssetVersion, SceneAssetPointer, PropAssetAuthority, PropAssetVersion, PropAssetPointer, ShotAssetBinding, StoryboardShot
+    from core.production_asset_authority import resolve_current_production_asset_binding
 
     type_config = {"CHARACTER": (CharacterAssetAuthority, CharacterAssetVersion, CharacterAssetPointer, "character_id"), "SCENE": (SceneAssetAuthority, SceneAssetVersion, SceneAssetPointer, "scene_id"), "PROP": (PropAssetAuthority, PropAssetVersion, PropAssetPointer, "prop_id")}
     by_key: dict[tuple[str, str], dict[str, Any]] = {}

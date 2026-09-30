@@ -1,0 +1,15 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_ASSET_BRIDGE_SCOPE_RECOVERY_RECONCILE",
+  "environment": "local disposable V3 Shot Studio",
+  "view": "?section=storyboard&episode=1&shot=1&ui_v3=shot-studio",
+  "viewports": [
+    {"width": 1280, "height": 900, "result": "passed", "horizontal_overflow": false, "bridge_controls_visible": true},
+    {"width": 1440, "height": 900, "result": "passed", "horizontal_overflow": false, "bridge_controls_visible": true},
+    {"width": 1920, "height": 1080, "result": "passed", "horizontal_overflow": false, "bridge_controls_visible": true}
+  ],
+  "notes": [
+    "Shot Studio uses a three-column layout at wide widths and keeps the bridge action visible above the shot navigator.",
+    "This QA is local and disposable; no production project or external provider was used."
+  ],
+  "result": "passed"
+}

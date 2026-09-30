@@ -23,10 +23,13 @@ from pydantic import BaseModel, ConfigDict, Field
 from core.production_asset_authority import (
     AssetBindingInvalid,
     ProductionAssetSchemaError,
+    ProductionAssetScopeError,
     _asset_type,
     _typed_config,
     bind_shot_assets,
     ingest_production_asset,
+    production_asset_media_readiness,
+    resolve_production_asset_book_scope,
 )
 from core.production_asset_review import (
     ProductionAssetReviewError,
@@ -47,6 +50,7 @@ from models import (
     ProductionAssetVersionRegistry,
     Session,
     StoryboardShot,
+    ShotAssetBinding,
 )
 
 
@@ -196,14 +200,133 @@ def _raise_domain(exc: Exception) -> None:
     raise HTTPException(status_code=status, detail=detail) from exc
 
 
+def _scope_or_404(session: Any, *, book_id: int, asset_type: str, asset_id: str | None = None, asset_version_id: str | None = None) -> dict[str, Any]:
+    try:
+        return resolve_production_asset_book_scope(
+            session,
+            book_id=int(book_id),
+            asset_type=asset_type,
+            asset_id=asset_id,
+            asset_version_id=asset_version_id,
+        )
+    except ProductionAssetScopeError as exc:
+        raise HTTPException(
+            status_code=404,
+            detail={"code": exc.code, "message": str(exc), "diagnostics": getattr(exc, "diagnostics", [])},
+        ) from exc
+
+
+def _bridge_version_payload(book_id: int, scope: dict[str, Any], version: Any | None) -> dict[str, Any] | None:
+    if version is None:
+        return None
+    return {
+        "asset_type": scope["asset_type"],
+        "entity_id": scope["entity_id"],
+        "authority_id": str(scope["authority"].authority_id),
+        "version_id": str(version.version_id),
+        "revision": int(version.revision or 0),
+        "status": str(version.status or ""),
+        "storage_identity": str(version.storage_identity or ""),
+        "checksum": str(version.checksum or ""),
+        "metadata_hash": str(version.metadata_hash or ""),
+        "media": production_asset_media_readiness(
+            storage_identity=version.storage_identity,
+            checksum=version.checksum,
+            metadata_hash=version.metadata_hash,
+        ).to_dict(),
+        "preview_url": f"/api/books/{int(book_id)}/production-assets/versions/{version.version_id}/media",
+    }
+
+
+def _bridge_state(session: Any, *, book_id: int, storyboard_shot_id: int) -> dict[str, Any]:
+    shot = session.query(StoryboardShot).filter_by(book_id=int(book_id), id=int(storyboard_shot_id)).one_or_none()
+    if shot is None:
+        raise HTTPException(status_code=404, detail={"code": "STORYBOARD_SHOT_NOT_FOUND", "storyboard_shot_id": storyboard_shot_id})
+    formal = _required_asset_contract(session, shot_id=int(shot.id))
+    if not formal:
+        raise HTTPException(status_code=409, detail={"code": "PRODUCTION_ASSET_REQUIREMENT_MISSING", "message": "shot has no formal Production Asset requirement contract"})
+    requirements: list[dict[str, Any]] = []
+    for asset_type, entity_id in formal:
+        kind = _asset_type(asset_type)
+        scope = None
+        try:
+            scope = resolve_production_asset_book_scope(session, book_id=int(book_id), asset_type=kind, asset_id=entity_id)
+        except ProductionAssetScopeError:
+            scope = None
+        authority = scope.get("authority") if scope else None
+        pointer = scope.get("pointer") if scope else None
+        config = _typed_config(kind)
+        versions = session.query(config["version"]).filter_by(authority_id=authority.authority_id if authority else "").order_by(config["version"].revision.desc(), config["version"].id.desc()).all() if authority else []
+        current_version = None
+        if authority and authority.current_version_id:
+            current_version = session.query(config["version"]).filter_by(authority_id=authority.authority_id, version_id=authority.current_version_id).one_or_none()
+        latest_version = versions[0] if versions else None
+        version_ids = [str(item.version_id) for item in versions]
+        reviews = session.query(ProductionAssetReview).filter(ProductionAssetReview.asset_type == kind, ProductionAssetReview.asset_id == entity_id, ProductionAssetReview.asset_version_id.in_(version_ids or ["__none__"])).order_by(ProductionAssetReview.id.desc()).all()
+        latest_review = reviews[0] if reviews else None
+        review_for_latest = next((row for row in reviews if latest_version and str(row.asset_version_id) == str(latest_version.version_id)), latest_review)
+        binding_rows = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=int(shot.id), asset_type=kind).order_by(ShotAssetBinding.id.desc()).all()
+        binding = binding_rows[0] if binding_rows else None
+        binding_current = bool(binding and current_version and str(binding.authority_id) == str(authority.authority_id) and str(binding.version_id) == str(current_version.version_id) and str(binding.status).upper() == "ACTIVE")
+        if binding_current:
+            requirement_status = "BOUND_CURRENT"
+        elif binding and current_version:
+            requirement_status = "BINDING_STALE"
+        elif review_for_latest and review_for_latest.review_state == "HUMAN_REVIEW_PENDING":
+            requirement_status = "REVIEW_PENDING"
+        elif review_for_latest and review_for_latest.review_state == "HUMAN_APPROVED":
+            requirement_status = "HUMAN_APPROVED_NOT_ACTIVATED"
+        elif review_for_latest and review_for_latest.review_state == "REJECTED":
+            requirement_status = "REJECTED"
+        elif review_for_latest and review_for_latest.review_state == "REQUEST_CHANGE":
+            requirement_status = "REQUEST_CHANGE"
+        elif current_version:
+            requirement_status = "CURRENT_NOT_BOUND"
+        else:
+            requirement_status = "MISSING"
+        current_media = _bridge_version_payload(book_id, scope, current_version) if scope else None
+        pending_review = _as_dict(review_for_latest) if review_for_latest and review_for_latest.review_state in {"HUMAN_REVIEW_PENDING", "HUMAN_APPROVED"} else None
+        active_binding = None
+        if binding:
+            active_binding = {
+                "id": int(binding.id),
+                "asset_type": kind,
+                "authority_id": str(binding.authority_id),
+                "version_id": str(binding.version_id),
+                "status": str(binding.status),
+                "binding_fingerprint": str(binding.binding_fingerprint),
+            }
+        requirements.append({
+            "entity_key": f"{kind}:{entity_id}",
+            "asset_type": kind,
+            "entity_id": entity_id,
+            "requirement_status": requirement_status,
+            "current_authority_id": str(authority.authority_id) if authority else None,
+            "current_version_id": str(current_version.version_id) if current_version else None,
+            "current_pointer": ({"id": int(pointer.id), "authority_id": str(pointer.authority_id), "version_id": str(pointer.version_id), "fingerprint": str(pointer.fingerprint)} if pointer else None),
+            "current_media": current_media,
+            "active_binding": active_binding,
+            "binding_current": binding_current,
+            "latest_version": _bridge_version_payload(book_id, scope, latest_version) if scope else None,
+            "pending_review": pending_review,
+            "pending_review_id": str(pending_review["review_id"]) if pending_review else None,
+            "human_decision": str(review_for_latest.decision) if review_for_latest and review_for_latest.decision else None,
+            "can_upload": requirement_status in {"MISSING", "REJECTED", "REQUEST_CHANGE", "REVIEW_PENDING"},
+            "can_approve": bool(pending_review and pending_review["review_state"] == "HUMAN_REVIEW_PENDING"),
+            "can_activate": bool(pending_review and pending_review["review_state"] == "HUMAN_APPROVED"),
+            "can_bind": bool(current_version and scope and not binding_current),
+        })
+    all_current = all(item["requirement_status"] == "BOUND_CURRENT" for item in requirements)
+    return {"schema_version": "production_asset_bridge_state_v1", "book_id": int(book_id), "storyboard_shot_id": int(shot.id), "requirements": requirements, "binding_current": all_current, "can_bind": bool(requirements) and all(item["can_bind"] or item["binding_current"] for item in requirements) and not all_current, "provider_calls": 0, "llm_calls": 0}
+
+
 @router.post("/ingest", status_code=201)
 def ingest_canonical_production_asset(
     book_id: int,
     asset_type: str = Form(..., alias="assetType"),
     entity_id: str = Form(..., alias="entityId"),
     metadata: str = Form(default="{}"),
-    file: UploadFile | None = File(default=None),
-    storage_identity: str = Form(default="", alias="storageIdentity"),
+    file: UploadFile = File(...),
 ):
     """Persist a real media Version and open a review, without activating it."""
     try:
@@ -216,22 +339,14 @@ def ingest_canonical_production_asset(
     metadata_payload = _json_object(metadata)
     with Session() as session:
         _require_canonical_identity(session, book_id=book_id, asset_type=kind, entity_id=identity)
-        if file is None:
-            source_path = Path(str(storage_identity or "").strip())
-            if not source_path.is_absolute() or not source_path.is_file():
-                raise HTTPException(status_code=422, detail={"code": "MEDIA_UPLOAD_REQUIRED", "message": "multipart file is required for canonical ingestion"})
-            data = source_path.read_bytes()
-            filename = source_path.name
-            declared_mime = mimetypes.guess_type(filename)[0] or "application/octet-stream"
-        else:
-            data = file.file.read()
-            filename = str(file.filename or "asset")
-            upload = file
+        data = file.file.read()
+        filename = str(file.filename or "asset")
+        upload = file
         if not data:
             raise HTTPException(status_code=422, detail={"code": "MEDIA_EMPTY", "message": "uploaded media is empty"})
         if len(data) > int(config.UPLOAD_MAX_BYTES):
             raise HTTPException(status_code=413, detail={"code": "MEDIA_TOO_LARGE", "message": "uploaded media exceeds configured size limit"})
-        mime_type = _mime_type(upload if file is not None else None, data, filename=filename, declared_override=declared_mime if file is None else "")
+        mime_type = _mime_type(upload, data, filename=filename)
         width, height = _image_dimensions(data, mime_type)
         base_metadata = {key: value for key, value in metadata_payload.items() if key not in {"checksum", "metadata_hash", "storage_identity", "source_kind"}}
         base_metadata.update({
@@ -288,14 +403,17 @@ def get_production_asset_review(book_id: int, review_id: str):
         review = session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none()
         if review is None:
             raise HTTPException(status_code=404, detail={"code": "PRODUCTION_ASSET_REVIEW_NOT_FOUND", "review_id": review_id})
+        _scope_or_404(session, book_id=book_id, asset_type=review.asset_type, asset_id=review.asset_id, asset_version_id=review.asset_version_id)
         return _review_payload(session, review)
 
 
 @router.get("/reviews/{review_id}/history")
 def get_production_asset_review_history(book_id: int, review_id: str):
     with Session() as session:
-        if session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none() is None:
+        review = session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none()
+        if review is None:
             raise HTTPException(status_code=404, detail={"code": "PRODUCTION_ASSET_REVIEW_NOT_FOUND", "review_id": review_id})
+        _scope_or_404(session, book_id=book_id, asset_type=review.asset_type, asset_id=review.asset_id, asset_version_id=review.asset_version_id)
         return {"review_id": review_id, "history": review_history(session, review_id)}
 
 
@@ -304,6 +422,10 @@ def get_production_asset_review_history(book_id: int, review_id: str):
 def validate_production_asset_review(book_id: int, review_id: str):
     with Session() as session:
         try:
+            review = session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none()
+            if review is None:
+                raise HTTPException(status_code=404, detail={"code": "PRODUCTION_ASSET_REVIEW_NOT_FOUND", "review_id": review_id})
+            _scope_or_404(session, book_id=book_id, asset_type=review.asset_type, asset_id=review.asset_id, asset_version_id=review.asset_version_id)
             result = validate_production_asset_version(session, review_id=review_id)
             session.commit()
             return result
@@ -321,6 +443,10 @@ def decide_production_asset_review(book_id: int, review_id: str, req: AssetDecis
         raise HTTPException(status_code=422, detail={"code": "PRODUCTION_ASSET_DECISION_INVALID", "message": "decision must be APPROVE, REJECT, or REQUEST_CHANGE"})
     with Session() as session:
         try:
+            review = session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none()
+            if review is None:
+                raise HTTPException(status_code=404, detail={"code": "PRODUCTION_ASSET_REVIEW_NOT_FOUND", "review_id": review_id})
+            _scope_or_404(session, book_id=book_id, asset_type=review.asset_type, asset_id=review.asset_id, asset_version_id=review.asset_version_id)
             result = transition_production_asset_review(session, review_id=review_id, to_state=target, reviewer_type=req.reviewer_type, decision=decision, comment=req.comment)
             session.commit()
             review = session.query(ProductionAssetReview).filter_by(review_id=review_id).one()
@@ -334,6 +460,10 @@ def decide_production_asset_review(book_id: int, review_id: str, req: AssetDecis
 def activate_reviewed_production_asset(book_id: int, review_id: str):
     with Session() as session:
         try:
+            review = session.query(ProductionAssetReview).filter_by(review_id=str(review_id)).one_or_none()
+            if review is None:
+                raise HTTPException(status_code=404, detail={"code": "PRODUCTION_ASSET_REVIEW_NOT_FOUND", "review_id": review_id})
+            _scope_or_404(session, book_id=book_id, asset_type=review.asset_type, asset_id=review.asset_id, asset_version_id=review.asset_version_id)
             result = activate_production_asset_version_after_review(session, review_id=review_id, book_id=book_id)
             session.commit()
             review = session.query(ProductionAssetReview).filter_by(review_id=review_id).one()
@@ -365,6 +495,38 @@ def bind_production_asset_versions(book_id: int, req: AssetBindingRequest):
             _raise_domain(exc)
 
 
+@router.post("/shots/{storyboard_shot_id}/bind-current")
+def bind_current_production_asset_versions(book_id: int, storyboard_shot_id: int):
+    """Explicitly bind the exact current canonical Pointer versions for a shot."""
+    with Session() as session:
+        state = _bridge_state(session, book_id=book_id, storyboard_shot_id=storyboard_shot_id)
+        if not state["can_bind"]:
+            raise HTTPException(status_code=409, detail={"code": "PRODUCTION_ASSET_BINDING_NOT_READY", "message": "all formal requirements must resolve to current canonical pointers before binding", "bridge_state": state})
+        characters = [{"authority_id": item["current_authority_id"], "version_id": item["current_version_id"]} for item in state["requirements"] if item["asset_type"] == "CHARACTER"]
+        scene_items = [item for item in state["requirements"] if item["asset_type"] == "SCENE"]
+        props = [{"authority_id": item["current_authority_id"], "version_id": item["current_version_id"]} for item in state["requirements"] if item["asset_type"] == "PROP"]
+        if len(scene_items) != 1:
+            raise HTTPException(status_code=409, detail={"code": "PRODUCTION_ASSET_SCENE_REQUIREMENT_INVALID", "message": "exactly one current scene requirement is required"})
+        try:
+            resolved = bind_shot_assets(session, storyboard_shot_id=int(storyboard_shot_id), characters=characters, scene={"authority_id": scene_items[0]["current_authority_id"], "version_id": scene_items[0]["current_version_id"]}, props=props, book_id=int(book_id))
+            formal = set(_required_asset_contract(session, shot_id=int(storyboard_shot_id)))
+            actual = {(str(item.get("asset_type") or "").upper(), str(item.get("entity_id") or "")) for item in resolved}
+            if actual != formal:
+                raise AssetBindingInvalid("binding set does not exactly match the formal shot asset requirement")
+            session.commit()
+            readiness = _asset_readiness(session, shot_id=int(storyboard_shot_id), book_id=int(book_id))
+            return {"book_id": int(book_id), "storyboard_shot_id": int(storyboard_shot_id), "bindings": resolved, "asset_readiness": readiness, "current": bool(readiness.get("current")), "bridge_state": _bridge_state(session, book_id=book_id, storyboard_shot_id=storyboard_shot_id)}
+        except (AssetBindingInvalid, ProductionAssetSchemaError) as exc:
+            session.rollback()
+            _raise_domain(exc)
+
+
+@router.get("/shots/{storyboard_shot_id}/bridge-state")
+def get_production_asset_bridge_state(book_id: int, storyboard_shot_id: int):
+    with Session() as session:
+        return _bridge_state(session, book_id=book_id, storyboard_shot_id=storyboard_shot_id)
+
+
 @router.get("/shots/{storyboard_shot_id}/readiness")
 def get_production_asset_readiness(book_id: int, storyboard_shot_id: int):
     with Session() as session:
@@ -380,9 +542,10 @@ def get_production_asset_media(book_id: int, version_id: str):
         registry = session.query(ProductionAssetVersionRegistry).filter_by(version_id=str(version_id)).one_or_none()
         if registry is None:
             raise HTTPException(status_code=404, detail={"code": "PRODUCTION_ASSET_VERSION_NOT_FOUND", "version_id": version_id})
+        scope = _scope_or_404(session, book_id=book_id, asset_type=registry.asset_type, asset_version_id=version_id)
         payload = _version_payload(session, book_id=book_id, asset_type=registry.asset_type, version_id=version_id)
         path = Path(payload["storage_identity"]).resolve()
-        root = (config.UPLOAD_DIR / "production-assets").resolve()
+        root = (config.UPLOAD_DIR / "production-assets" / f"book-{int(book_id)}").resolve()
         try:
             path.relative_to(root)
         except ValueError as exc:

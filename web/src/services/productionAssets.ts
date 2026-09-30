@@ -1,5 +1,37 @@
 export type ProductionAssetDecision = 'APPROVE' | 'REJECT' | 'REQUEST_CHANGE'
 
+export type ProductionAssetBridgeRequirement = {
+  entity_key: string
+  asset_type: 'CHARACTER' | 'SCENE' | 'PROP'
+  entity_id: string
+  requirement_status: 'MISSING' | 'REVIEW_PENDING' | 'HUMAN_APPROVED_NOT_ACTIVATED' | 'CURRENT_NOT_BOUND' | 'BOUND_CURRENT' | 'BINDING_STALE' | 'REJECTED' | 'REQUEST_CHANGE'
+  current_authority_id: string | null
+  current_version_id: string | null
+  current_pointer: { id: number; authority_id: string; version_id: string; fingerprint: string } | null
+  current_media: Record<string, unknown> | null
+  active_binding: { id: number; asset_type: string; authority_id: string; version_id: string; status: string; binding_fingerprint: string } | null
+  binding_current: boolean
+  latest_version: Record<string, unknown> | null
+  pending_review: { review_id: string; review_state: string; decision?: string | null } | null
+  pending_review_id: string | null
+  human_decision: string | null
+  can_upload: boolean
+  can_approve: boolean
+  can_activate: boolean
+  can_bind: boolean
+}
+
+export type ProductionAssetBridgeState = {
+  schema_version: string
+  book_id: number
+  storyboard_shot_id: number
+  requirements: ProductionAssetBridgeRequirement[]
+  binding_current: boolean
+  can_bind: boolean
+  provider_calls: number
+  llm_calls: number
+}
+
 async function readJson(response: Response) {
   const payload = await response.json().catch(() => ({}))
   if (!response.ok) throw new Error(String(payload?.detail?.message || payload?.detail || `HTTP ${response.status}`))
@@ -25,6 +57,14 @@ export async function activateProductionAssetReview(bookId: number, reviewId: st
 
 export async function readProductionAssetReadiness(bookId: number, storyboardShotId: number) {
   return readJson(await fetch(`/api/books/${bookId}/production-assets/shots/${storyboardShotId}/readiness`, { cache: 'no-store' }))
+}
+
+export async function fetchProductionAssetBridgeState(bookId: number, storyboardShotId: number): Promise<ProductionAssetBridgeState> {
+  return readJson(await fetch(`/api/books/${bookId}/production-assets/shots/${storyboardShotId}/bridge-state`, { cache: 'no-store' }))
+}
+
+export async function bindCurrentProductionAssets(bookId: number, storyboardShotId: number) {
+  return readJson(await fetch(`/api/books/${bookId}/production-assets/shots/${storyboardShotId}/bind-current`, { method: 'POST' }))
 }
 
 export async function bindProductionAssets(bookId: number, storyboardShotId: number, versions: Record<string, { authority_id: string; version_id: string }>) {

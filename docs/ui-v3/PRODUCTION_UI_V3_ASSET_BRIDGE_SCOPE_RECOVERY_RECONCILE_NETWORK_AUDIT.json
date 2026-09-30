@@ -1,0 +1,31 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_ASSET_BRIDGE_SCOPE_RECOVERY_RECONCILE",
+  "environment": "local backend and disposable browser fixture",
+  "book_id": 998755,
+  "observed_canonical_flow": [
+    {"method": "GET", "path": "/api/books/998755/production-assets/shots/216/bridge-state", "purpose": "recover backend bridge state on mount and reload"},
+    {"method": "POST", "path": "/api/books/998755/production-assets/ingest", "purpose": "multipart disposable PNG ingestion", "status": 201},
+    {"method": "POST", "path": "/api/books/998755/production-assets/reviews/{review_id}/decision", "purpose": "human approval", "status": 200},
+    {"method": "POST", "path": "/api/books/998755/production-assets/reviews/{review_id}/activate", "purpose": "pointer activation", "status": 200},
+    {"method": "POST", "path": "/api/books/998755/production-assets/shots/216/bind-current", "purpose": "explicit current-pointer binding", "status": 200},
+    {"method": "GET", "path": "/api/books/998755/production-workspace-v2", "purpose": "verify V2 current readiness", "status": 200}
+  ],
+  "forbidden_request_patterns": [
+    "/generate-frame",
+    "/generate-video",
+    "LLM provider endpoint",
+    "SHAPI provider endpoint",
+    "MiniMax provider endpoint",
+    "legacy task recovery polling"
+  ],
+  "forbidden_requests_observed": [],
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "real_production_writes": 0,
+  "result": "passed",
+  "notes": [
+    "The browser route was reloaded between state transitions.",
+    "A character version rollover was approved and activated only in the disposable local book, then explicitly rebound.",
+    "No external image or video model was selected or called."
+  ]
+}
