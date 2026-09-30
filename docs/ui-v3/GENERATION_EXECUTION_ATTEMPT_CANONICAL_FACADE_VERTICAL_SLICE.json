@@ -1,0 +1,26 @@
+{
+  "phase": "PHASE_GENERATION_EXECUTION_ATTEMPT_CANONICAL_FACADE",
+  "slice": [
+    "StoryboardShot.shot_id",
+    "GenerationExecutionAttemptLineage",
+    "canonical authority resolver",
+    "GenerationExecutionRecord(PREVIEWED)",
+    "attempt-produced lineage binding",
+    "canonical executor",
+    "MediaCandidateRecord"
+  ],
+  "image": {
+    "preview": "provider_free_bound",
+    "execute": "mock_transport_candidate",
+    "official_promotion": 0
+  },
+  "video": {
+    "shared_canonical_path": true,
+    "real_provider_call": 0
+  },
+  "human_review": {
+    "attempt_confirmation": true,
+    "execution_confirmation": true,
+    "automatic_promotion": false
+  }
+}

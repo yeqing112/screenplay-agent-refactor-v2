@@ -1,0 +1,50 @@
+{
+  "phase": "PHASE_GENERATION_EXECUTION_ATTEMPT_CANONICAL_FACADE",
+  "status": "GENERATION_EXECUTION_ATTEMPT_CANONICAL_FACADE_COMPLETE",
+  "routes": {
+    "preview": "/api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation-attempts/{attempt_lineage_id}/preview",
+    "execute": "/api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation-attempts/{attempt_lineage_id}/execute"
+  },
+  "shot_scope": {
+    "url_identity": "StoryboardShot.shot_id",
+    "durable_identity": "StoryboardShot.id",
+    "attempt_scope_checked": true
+  },
+  "confirmation_layers": [
+    "attempt_confirmation_token",
+    "execution_confirmation_token"
+  ],
+  "preview": {
+    "status": "PREVIEWED",
+    "provider_calls": 0,
+    "candidate_writes": 0,
+    "official_writes": 0,
+    "binds_attempt_immediately": true
+  },
+  "execute": {
+    "requires": ["execute=true", "confirmed=true", "allowExternalCall=true"],
+    "uses_existing_canonical_executor": true,
+    "candidate_writes": "at_most_one",
+    "official_promotion_count": 0,
+    "real_provider_calls": 0
+  },
+  "fingerprint": {
+    "ordinary_generation_unchanged": true,
+    "attempt_derivation": "derive_business_attempt_provider_request_fingerprint(base_provider_request_fingerprint, operation_identity_fingerprint)",
+    "attempt_metadata_key": "_generation_attempt"
+  },
+  "migration": {
+    "added": false,
+    "head": "o6j7k8l9m0n1"
+  },
+  "verification": {
+    "tests_passed": 31,
+    "compileall": "passed",
+    "route_import": "passed",
+    "full_repository_run": {
+      "passed": 1962,
+      "pre_existing_failures": 6,
+      "failure_class": "tests assert historical migration head m4h5i6j7k8l9; branch head is o6j7k8l9m0n1"
+    }
+  }
+}

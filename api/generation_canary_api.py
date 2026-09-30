@@ -1147,7 +1147,15 @@ def preview_canonical_generation(book_id: int, episode: int, shot_id: int, req: 
         }
 
 
-async def _execute_generation_canary_impl(book_id: int, episode: int, shot_id: int, req: CanaryExecuteRequest, *, _canonical: bool = False):
+async def _execute_generation_canary_impl(
+    book_id: int,
+    episode: int,
+    shot_id: int,
+    req: CanaryExecuteRequest,
+    *,
+    _canonical: bool = False,
+    _attempt_lineage_id: str | None = None,
+):
     stale_code = "GENERATION_PREVIEW_STALE" if _canonical else "GENERATION_CANARY_STALE"
     if not req.execute:
         raise _error(409, "GENERATION_CANARY_EXECUTE_REQUIRED", "Canary execution requires execute=true.", provider_calls=0)
@@ -1215,12 +1223,24 @@ async def _execute_generation_canary_impl(book_id: int, episode: int, shot_id: i
             session.commit()
             diagnostics = exc.detail if isinstance(exc.detail, dict) else {"detail": str(exc.detail)}
             raise _error(409, stale_code, "Current authority could not be resolved from the preview snapshot.", diagnostics=diagnostics, provider_calls=0)
+        attempt_lineage_meta: dict[str, Any] = {}
+        if _attempt_lineage_id:
+            preview_snapshot = _json(row.request_snapshot_json, {})
+            attempt_lineage_meta = preview_snapshot.get("_generation_attempt") if isinstance(preview_snapshot, dict) else {}
+            if not isinstance(attempt_lineage_meta, dict) or str(attempt_lineage_meta.get("attempt_lineage_id") or "") != str(_attempt_lineage_id):
+                raise _error(409, "GENERATION_ATTEMPT_SOURCE_LINEAGE_INVALID", "Attempt execution is missing its lineage metadata.", provider_calls=0)
+            base_fp = str(attempt_lineage_meta.get("base_provider_request_fingerprint") or "")
+            if not base_fp or base_fp != str(context.get("provider_request_fingerprint") or ""):
+                raise _error(409, "GENERATION_ATTEMPT_SOURCE_STALE", "Current canonical authority no longer matches the attempt base fingerprint.", provider_calls=0)
         drift_fields = {
             "prompt_ir_payload_hash": (row.prompt_ir_payload_hash, str(context["resolved"]["version"].payload_hash or "")),
             "generation_payload_fingerprint": (row.generation_payload_fingerprint, str(context["payload"].get("generation_payload_fingerprint") or "")),
             "generation_policy_fingerprint": (row.generation_policy_fingerprint, str(context["policy"].get("fingerprint") or "")),
             "model_profile_fingerprint": (row.model_profile_fingerprint, context["profile_fingerprint"]),
-            "provider_request_fingerprint": (row.provider_request_fingerprint, context["provider_request_fingerprint"]),
+            "provider_request_fingerprint": (
+                row.provider_request_fingerprint,
+                row.provider_request_fingerprint if _attempt_lineage_id else context["provider_request_fingerprint"],
+            ),
             "reference_bindings_fingerprint": (row.reference_bindings_fingerprint, context["reference_bindings_fingerprint"]),
         }
         if _canonical or context.get("asset_bindings_fingerprint"):
@@ -1237,6 +1257,21 @@ async def _execute_generation_canary_impl(book_id: int, episode: int, shot_id: i
             row.updated_at = datetime.utcnow()
             session.commit()
             raise _error(409, stale_code, "Preview authority changed; create a new preview.", changed=changed, provider_calls=0)
+        # Attempt-produced executions live in a separate deterministic
+        # fingerprint namespace.  The canonical resolver still supplies all
+        # current authority facts above; only the request identity is replaced
+        # with the already-bound attempt identity after those checks pass.
+        if _attempt_lineage_id:
+            from core.generation_attempt_lineage import GenerationAttemptLineageService, GenerationAttemptLineageError
+            try:
+                attempt = GenerationAttemptLineageService(session).get_intent(_attempt_lineage_id)
+            except GenerationAttemptLineageError as exc:
+                raise _error(exc.status_code, exc.code, exc.message, provider_calls=0) from exc
+            if str(attempt.produced_execution_id or "") != str(row.execution_id):
+                raise _error(409, "GENERATION_ATTEMPT_EXECUTION_MISMATCH", "Preview execution is not bound to the requested generation attempt.", provider_calls=0)
+            if int(attempt.storyboard_shot_id) != int(context["row"].id) or str(attempt.target_media).upper() != str(context["target_media"]).upper():
+                raise _error(409, "GENERATION_ATTEMPT_SCOPE_MISMATCH", "Attempt execution scope no longer matches current canonical scope.", provider_calls=0)
+            context["provider_request_fingerprint"] = str(row.provider_request_fingerprint or "")
         if int(row.storyboard_shot_id) != int(context["row"].id):
             row.status = "STALE"
             row.failure_code = "GENERATION_CANARY_SHOT_MISMATCH"
