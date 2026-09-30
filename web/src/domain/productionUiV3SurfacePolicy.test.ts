@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildStoryboardSurfaceUrl, PRODUCTION_UI_V3_DEFAULT_MAX_SHOTS, readProductionUiV3Flag, resolveStoryboardSurface } from './productionUiV3SurfacePolicy'
+import { buildStoryboardReturnToV3Url, buildStoryboardSurfaceUrl, PRODUCTION_UI_V3_DEFAULT_MAX_SHOTS, readProductionUiV3Flag, resolveLegacyStoryboardMode, resolveStoryboardSurface } from './productionUiV3SurfacePolicy'
 import { productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
 
 function snapshotWithShots(count: number) {
@@ -67,6 +67,53 @@ describe('buildStoryboardSurfaceUrl', () => {
     const v3 = new URLSearchParams(buildStoryboardSurfaceUrl(legacy.toString(), 'v3'))
     expect(v3.get('ui_v3')).toBe('shot-studio')
     expect(v3.get('shot')).toBe('5')
+  })
+})
+
+describe('resolveLegacyStoryboardMode', () => {
+  it('narrows an explicitly selected eligible Legacy surface to advanced compatibility', () => {
+    expect(resolveLegacyStoryboardMode({ surfaceDecision: { ...resolveStoryboardSurface({ ...eligible, search: '?ui_v3=legacy' }) } })).toMatchObject({
+      mode: 'advanced_compatibility',
+      reason: 'explicit_legacy',
+      canonicalGenerationVisible: false,
+      canonicalStatusVisible: false,
+      advancedToolsVisible: true,
+      v3ReturnVisible: true,
+    })
+  })
+  it('keeps storyboard creation as the primary action when no canonical shots exist', () => {
+    const decision = resolveStoryboardSurface({ ...eligible, snapshot: snapshotWithShots(0) })
+    expect(resolveLegacyStoryboardMode({ surfaceDecision: decision })).toMatchObject({ mode: 'creation', creationVisible: true, v3ReturnVisible: false })
+  })
+  it.each([
+    'hard_disabled',
+    'default_disabled',
+    'v2_unavailable',
+    'v2_contract_invalid',
+    'rollout_shot_limit',
+    'storyboard_generation_running',
+  ] as const)('keeps %s as a complete fallback', (reason) => {
+    expect(resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason, overridden: false, shotCount: 2, maxShots: 100 } })).toMatchObject({ mode: 'full_fallback', reason })
+  })
+  it('does not mistake an unavailable V2 snapshot for a creation state', () => {
+    expect(resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason: 'v2_unavailable', overridden: false, shotCount: 0, maxShots: 100 } })).toMatchObject({ mode: 'full_fallback' })
+    expect(resolveLegacyStoryboardMode({})).toMatchObject({ mode: 'full_fallback' })
+  })
+  it('prioritizes recovery focus and recovery deep links', () => {
+    expect(resolveLegacyStoryboardMode({ surfaceDecision: resolveStoryboardSurface(eligible), recoveryTarget: 'storyboard' })).toMatchObject({ mode: 'recovery', reason: 'recovery_focus', recoveryVisible: true, v3ReturnVisible: true })
+    expect(resolveLegacyStoryboardMode({ surfaceDecision: resolveStoryboardSurface({ ...eligible, search: '?step=video' }), search: '?step=video' })).toMatchObject({ mode: 'recovery', reason: 'recovery_deeplink' })
+  })
+})
+
+describe('buildStoryboardReturnToV3Url', () => {
+  it('removes Legacy-only step while preserving storyboard context and unrelated query', () => {
+    const params = new URLSearchParams(buildStoryboardReturnToV3Url('?section=storyboard&episode=1&shot=5&step=video&foo=bar&ui_v3=legacy'))
+    expect(params.get('section')).toBe('storyboard')
+    expect(params.get('episode')).toBe('1')
+    expect(params.get('shot')).toBe('5')
+    expect(params.get('foo')).toBe('bar')
+    expect(params.get('step')).toBeNull()
+    expect(params.get('ui_v3')).toBe('shot-studio')
   })
 })
 

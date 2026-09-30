@@ -409,7 +409,7 @@ export default function TaskCenterSelectedTaskPanel({
                   detail={
                     selectedShotRuntimeSummary.latestExecutionAt
                       ? `更新于 ${new Date(selectedShotRuntimeSummary.latestExecutionAt).toLocaleString('zh-CN', { hour12: false })}`
-                      : '当前镜头还没有本地执行摘要'
+                      : '当前镜头还没有本地执行记录'
                   }
                 />
                 <PanelMetricCard

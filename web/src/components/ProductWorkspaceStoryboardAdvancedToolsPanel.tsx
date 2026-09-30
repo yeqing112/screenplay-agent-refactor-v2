@@ -84,6 +84,7 @@ interface StoryboardAdvancedToolsPanelProps {
   onGenerateFrame: () => void | Promise<void>
   onGenerateVideo: () => void | Promise<void>
   activeStep?: StoryboardGenerationStep
+  defaultOpen?: boolean
 }
 
 export function ProductWorkspaceStoryboardAdvancedToolsPanel({
@@ -117,12 +118,13 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
   onGenerateFrame,
   onGenerateVideo,
   activeStep = 'frame',
+  defaultOpen = true,
 }: StoryboardAdvancedToolsPanelProps) {
   return (
     <CollapsiblePanel
       title="生成与恢复"
       description="先完成当前步骤动作；任务回收和视频输入详情按需查看。"
-      defaultOpen
+      defaultOpen={defaultOpen}
       className="mt-4"
     >
       <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
@@ -164,7 +166,7 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
         </div>
         <div className={`rounded-xl border p-4 ${activeStep === 'video' ? 'border-fuchsia-400/40 bg-fuchsia-500/10' : 'border-slate-800 bg-slate-950/50'}`}>
           <div className="text-sm font-medium text-white">生成视频</div>
-          <div className="mt-1 text-xs leading-5 text-slate-400">{productionMode ? '按钮状态由 Production Workspace V2 的 VIDEO 泳道决定。' : '需要先有一张已采纳分镜图，系统会使用当前镜头的多参考输入。'}</div>
+          <div className="mt-1 text-xs leading-5 text-slate-400">{productionMode ? '按钮状态由 Production Workspace V2 的 VIDEO 泳道决定。' : '需要先有一张兼容采纳分镜图，系统会使用当前镜头的多参考输入。'}</div>
           <button
             type="button"
             disabled={!canGenerateVideo || (!productionMode && !hasAdoptedFrame) || isGenerationBusy}
@@ -173,12 +175,12 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
           >
             {generationState === 'video' ? '正在生成视频…' : '生成视频'}
           </button>
-          {!productionMode && !hasAdoptedFrame ? <div className="mt-2 text-[11px] text-amber-200/80">请先在“生成分镜图”步骤采纳一张分镜图。</div> : null}
+          {!productionMode && !hasAdoptedFrame ? <div className="mt-2 text-[11px] text-amber-200/80">请先在“生成分镜图”步骤完成兼容采纳。</div> : null}
         </div>
       </div>
 
       <div className="mt-3 grid gap-3 md:grid-cols-3">
-        <MiniMetric label={'首帧状态'} value={hasAdoptedFrame ? '已有采纳首帧' : '缺采纳首帧'} />
+        <MiniMetric label={'首帧状态'} value={hasAdoptedFrame ? '已有兼容采纳首帧' : '缺兼容采纳首帧'} />
         <MiniMetric label={'待恢复任务'} value={`${Number(Boolean(frameRecoveryTaskId)) + Number(Boolean(videoRecoveryTaskId))} 个`} />
         <MiniMetric label={'当前资产状态'} value={getStoryboardAssetStatusLabel(assetStatus)} />
       </div>
@@ -272,7 +274,7 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
           <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
             <div className="text-[11px] text-slate-500">{'首帧来源'}</div>
             <div className="mt-1 text-sm font-medium text-slate-100 break-all">
-              {hasAdoptedFrame ? adoptedFrameLabel : '未采纳首帧'}
+              {hasAdoptedFrame ? adoptedFrameLabel : '未兼容采纳首帧'}
             </div>
             <div className="mt-2 break-all text-[11px] text-slate-500">
               {hasAdoptedFrame ? `资产 ID：${adoptedFrameAssetId || '未记录'}` : productionMode ? 'Legacy 采纳状态仅作兼容展示；生产输入由 V2 投影决定。' : '没有首帧时视频生成保持禁用'}

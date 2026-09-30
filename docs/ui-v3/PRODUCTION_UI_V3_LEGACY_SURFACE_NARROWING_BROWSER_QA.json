@@ -1,0 +1,12 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING",
+  "provider_free": true,
+  "scenarios": [
+    {"name": "eligible explicit legacy", "mode": "advanced_compatibility", "result": "pass"},
+    {"name": "zero canonical shots", "mode": "creation", "result": "pass"},
+    {"name": "recovery focus and step deeplink", "mode": "recovery", "result": "pass"},
+    {"name": "hard/default/V2/rollout fallback reasons", "mode": "full_fallback", "result": "pass"},
+    {"name": "return to V3 URL", "step_removed": true, "context_preserved": true, "result": "pass"}
+  ],
+  "real_provider_invocations": 0
+}

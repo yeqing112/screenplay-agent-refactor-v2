@@ -8,6 +8,7 @@ import ProductionWorkspaceV2Panel from './ProductionWorkspaceV2Panel'
 import { readExplicitGenerationProfileSelection } from './productWorkspaceGeneration'
 import {
   readProductionUiV3Flag,
+  resolveLegacyStoryboardMode,
   resolveStoryboardSurface,
   type StoryboardSurfaceDecision,
 } from '../domain/productionUiV3SurfacePolicy'
@@ -143,6 +144,12 @@ export default function ProductWorkspaceSectionContent({
     isGeneratingStoryboard: storyboard.isGeneratingStoryboard,
     defaultEnabled: readProductionUiV3Flag(import.meta.env.VITE_PRODUCTION_UI_V3_DEFAULT_ENABLED, true),
     hardDisabled: readProductionUiV3Flag(import.meta.env.VITE_PRODUCTION_UI_V3_HARD_DISABLED, false),
+  })
+  const legacyMode = resolveLegacyStoryboardMode({
+    surfaceDecision,
+    search,
+    recoveryTarget: storyboard.recoveryFocus?.target,
+    snapshot: storyboard.productionWorkspaceV2,
   })
 
   return (
@@ -298,7 +305,7 @@ export default function ProductWorkspaceSectionContent({
           />
         ) : (
           <>
-            <ProductionWorkspaceV2Panel
+            {legacyMode.canonicalStatusVisible ? <ProductionWorkspaceV2Panel
               snapshot={storyboard.productionWorkspaceV2}
               state={storyboard.productionWorkspaceV2State}
               error={storyboard.productionWorkspaceV2Error}
@@ -309,7 +316,7 @@ export default function ProductWorkspaceSectionContent({
               onRefresh={storyboard.onRefreshAll}
               imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
               videoModelProfileId={explicitGenerationSelection.videoModelProfileId}
-            />
+            /> : null}
             <CanvasHandoffBanner handoff={storyboard.canvasHandoff} />
             <ProductWorkspaceStoryboardSection
               bookId={storyboard.bookId}
@@ -334,6 +341,7 @@ export default function ProductWorkspaceSectionContent({
               productionWorkspaceV2State={storyboard.productionWorkspaceV2State}
               onRefreshProductionWorkspaceV2={storyboard.onRefreshProductionWorkspaceV2}
               surfaceDecision={surfaceDecision}
+              legacyMode={legacyMode}
             />
           </>
         )

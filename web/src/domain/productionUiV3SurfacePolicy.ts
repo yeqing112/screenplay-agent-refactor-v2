@@ -38,6 +38,30 @@ export interface StoryboardSurfaceInputs {
   maxShots?: number
 }
 
+export type LegacyStoryboardMode = 'advanced_compatibility' | 'creation' | 'recovery' | 'full_fallback'
+
+export interface LegacyStoryboardModeDecision {
+  mode: LegacyStoryboardMode
+  reason: StoryboardSurfaceReason | 'recovery_focus' | 'recovery_deeplink'
+  canonicalGenerationVisible: boolean
+  canonicalStatusVisible: boolean
+  creationVisible: boolean
+  recoveryVisible: boolean
+  advancedToolsVisible: boolean
+  v3ReturnVisible: boolean
+}
+
+export interface LegacyStoryboardModeInputs {
+  /** The already resolved surface decision. Supplying it keeps this policy pure and deterministic. */
+  surfaceDecision?: StoryboardSurfaceDecision | null
+  /** Alias accepted for callers that use the shorter decision name. */
+  decision?: StoryboardSurfaceDecision | null
+  search?: string
+  recoveryTarget?: string | null
+  recoveryFocus?: { target?: string | null } | null
+  snapshot?: ProductionWorkspaceV2Snapshot | null
+}
+
 function hasQuery(search: string, key: string, value: string) {
   return new URLSearchParams(search || '').get(key) === value
 }
@@ -94,6 +118,83 @@ export function buildStoryboardSurfaceUrl(search: string, surface: 'v3' | 'legac
   params.set('ui_v3', surface === 'v3' ? 'shot-studio' : 'legacy')
   const serialized = params.toString()
   return serialized ? `?${serialized}` : '?ui_v3=shot-studio'
+}
+
+/**
+ * Build the explicit return link from a Legacy recovery/compatibility surface.
+ * Legacy-only step state must not leak into the Shot Studio deep link, while
+ * episode/shot and unrelated query context remain intact.
+ */
+export function buildStoryboardReturnToV3Url(search: string) {
+  const params = new URLSearchParams(search || '')
+  params.delete('step')
+  params.set('ui_v3', 'shot-studio')
+  const serialized = params.toString()
+  return serialized ? `?${serialized}` : '?ui_v3=shot-studio'
+}
+
+function hasRecoveryDeepLink(search: string) {
+  const params = new URLSearchParams(search || '')
+  const step = params.get('step')
+  if (step === 'frame' || step === 'video' || step === 'review') return true
+  return ['recovery', 'recovery_task', 'recovery_task_id', 'task_id', 'focus'].some((key) => {
+    const value = params.get(key)
+    return Boolean(value && value !== 'false' && value !== '0')
+  })
+}
+
+function legacyModeDecision(mode: LegacyStoryboardMode, reason: LegacyStoryboardModeDecision['reason']): LegacyStoryboardModeDecision {
+  return {
+    mode,
+    reason,
+    canonicalGenerationVisible: mode === 'full_fallback',
+    canonicalStatusVisible: mode === 'full_fallback',
+    creationVisible: mode === 'creation',
+    recoveryVisible: mode === 'recovery' || mode === 'full_fallback',
+    advancedToolsVisible: mode !== 'creation',
+    v3ReturnVisible: mode === 'advanced_compatibility' || mode === 'recovery',
+  }
+}
+
+/**
+ * Decide how much of the Legacy storyboard surface should be exposed.
+ * This is presentation policy only: it never changes generation capability,
+ * source facts, recovery state, or the canonical production contract.
+ */
+export function resolveLegacyStoryboardMode({
+  surfaceDecision: suppliedDecision,
+  decision,
+  search = '',
+  recoveryTarget = null,
+  recoveryFocus = null,
+  snapshot = null,
+}: LegacyStoryboardModeInputs): LegacyStoryboardModeDecision {
+  const resolved = suppliedDecision ?? decision ?? null
+  const shotCount = resolved?.shotCount ?? (snapshot ? (Array.isArray(snapshot.shots) ? snapshot.shots.length : 0) : null)
+  const reason = resolved?.reason
+  const hasRecoveryFocus = recoveryTarget === 'storyboard' || recoveryFocus?.target === 'storyboard'
+  if (hasRecoveryFocus) return legacyModeDecision('recovery', 'recovery_focus')
+  if (hasRecoveryDeepLink(search)) {
+    const step = new URLSearchParams(search || '').get('step')
+    return legacyModeDecision('recovery', step ? 'recovery_deeplink' : 'recovery_deeplink')
+  }
+  if (
+    reason === 'hard_disabled' ||
+    reason === 'default_disabled' ||
+    reason === 'v2_unavailable' ||
+    reason === 'v2_contract_invalid' ||
+    reason === 'rollout_shot_limit' ||
+    reason === 'storyboard_generation_running'
+  ) {
+    return legacyModeDecision('full_fallback', reason)
+  }
+  if (reason === 'no_canonical_shots' || shotCount === 0) return legacyModeDecision('creation', 'no_canonical_shots')
+  if (reason === 'explicit_legacy' && resolved?.surface === 'legacy') {
+    return legacyModeDecision('advanced_compatibility', reason)
+  }
+  // A standalone Legacy section or an unknown future reason should remain
+  // operationally safe and expose the complete fallback surface.
+  return legacyModeDecision('full_fallback', reason || 'v2_unavailable')
 }
 
 export function readProductionUiV3Flag(value: unknown, fallback: boolean) {

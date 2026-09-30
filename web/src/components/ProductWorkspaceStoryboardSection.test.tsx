@@ -9,6 +9,7 @@ import ProductWorkspaceStoryboardSection, {
   getShotPlanningAction,
 } from './ProductWorkspaceStoryboardSection'
 import { getStoryboardAssetStatusLabel } from './ProductWorkspaceStoryboardAdvancedToolsPanel'
+import { resolveLegacyStoryboardMode, resolveStoryboardSurface } from '../domain/productionUiV3SurfacePolicy'
 
 function makeShot(overrides: Record<string, unknown> = {}) {
   return {
@@ -73,6 +74,42 @@ describe('storyboard media preflight messaging', () => {
 })
 
 describe('ProductWorkspaceStoryboardSection', () => {
+  it('renders the advanced compatibility mode with a collapsed compatibility generation entry', () => {
+    const mode = resolveLegacyStoryboardMode({
+      surfaceDecision: resolveStoryboardSurface({
+        v2State: 'ready',
+        snapshot: { schema_version: 'production_workspace_projection_v2', read_only: true, authority_source: 'current_authority_pointers_only', shots: [{} as any] } as any,
+        search: '?section=storyboard&episode=1&shot=1-01&step=video&ui_v3=legacy',
+      }),
+      search: '?section=storyboard&episode=1&shot=1-01&step=video&ui_v3=legacy',
+    })
+    const html = renderStoryboard([makeShot()], { legacyMode: mode, initialStoryboardStep: 'video' })
+    expect(html).toContain('data-legacy-mode="recovery"')
+    expect(html).toContain('返回新版镜头工坊')
+  })
+
+  it('renders the explicit Legacy compatibility mode and preserves a step-free V3 return URL', () => {
+    const mode = resolveLegacyStoryboardMode({
+      surfaceDecision: resolveStoryboardSurface({
+        v2State: 'ready',
+        snapshot: { schema_version: 'production_workspace_projection_v2', read_only: true, authority_source: 'current_authority_pointers_only', shots: [{} as any] } as any,
+        search: '?section=storyboard&episode=1&shot=1-01&ui_v3=legacy',
+      }),
+    })
+    const html = renderStoryboard([makeShot()], { legacyMode: mode, initialStoryboardStep: 'frame' })
+    expect(html).toContain('data-legacy-mode="advanced_compatibility"')
+    expect(html).toContain('使用兼容生产入口')
+    expect(html).toContain('ui_v3=shot-studio')
+    expect(html).not.toContain('step=frame')
+  })
+
+  it('renders creation and complete fallback banners', () => {
+    const creation = resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason: 'no_canonical_shots', overridden: false, shotCount: 0, maxShots: 100 } })
+    const fallback = resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason: 'rollout_shot_limit', overridden: false, shotCount: 101, maxShots: 100 } })
+    expect(renderStoryboard([], { legacyMode: creation })).toContain('data-legacy-mode="creation"')
+    expect(renderStoryboard([makeShot()], { legacyMode: fallback })).toContain('data-legacy-mode="full_fallback"')
+  })
+
   it('turns planner conflicts into a plain-language next action', () => {
     expect(getShotPlanningAction({ timingStatus: 'conflict' })).toEqual({
       label: '先调整动作时长',

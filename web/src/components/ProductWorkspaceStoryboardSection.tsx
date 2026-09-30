@@ -28,7 +28,12 @@ import {
   type ShotBindingSummary,
 } from './productWorkspaceStoryboardBindings'
 import type { CanvasHandoffTarget, StoryboardStep, TaskNavigateHandler } from './productWorkspaceSectionContracts'
-import { buildStoryboardSurfaceUrl, type StoryboardSurfaceDecision } from '../domain/productionUiV3SurfacePolicy'
+import {
+  buildStoryboardReturnToV3Url,
+  resolveLegacyStoryboardMode,
+  type LegacyStoryboardModeDecision,
+  type StoryboardSurfaceDecision,
+} from '../domain/productionUiV3SurfacePolicy'
 import { getScriptDecision, type ScriptDecisionMap } from './productWorkspaceScriptDecisions'
 import { buildShotReadiness, buildStoryboardGateSummary, hasDegradedPromptVersion } from './productWorkspaceStoryboard'
 import {
@@ -110,6 +115,75 @@ interface Props {
   productionWorkspaceV2State?: ProductionWorkspaceLoadState
   onRefreshProductionWorkspaceV2?: () => Promise<void>
   surfaceDecision?: StoryboardSurfaceDecision
+  legacyMode?: LegacyStoryboardModeDecision
+}
+
+export function buildLegacyStoryboardSurfaceBanner(input: {
+  mode: LegacyStoryboardModeDecision['mode']
+  reason?: string | null
+  recoveryFocus?: Props['recoveryFocus']
+  v3Url: string
+}) {
+  const recoveryLabel = input.recoveryFocus?.recoveryKind === 'video' ? '视频' : input.recoveryFocus?.recoveryKind === 'frame' ? '首帧' : '当前任务'
+  if (input.mode === 'creation') {
+    return {
+      eyebrow: '分镜创建入口',
+      title: '先完成分镜创建，再进入新版镜头工坊',
+      detail: '当前还没有 canonical 镜头。完成一键生成分镜后，新版镜头工坊会成为默认生产入口。',
+      returnLabel: null,
+    }
+  }
+  if (input.mode === 'recovery') {
+    const context = input.recoveryFocus?.taskId ? `任务 ${input.recoveryFocus.taskId}` : recoveryLabel
+    return {
+      eyebrow: '恢复工作台',
+      title: `优先处理${context}恢复链路`,
+      detail: '当前页面保留恢复所需的兼容工具；请先确认任务和镜头状态，再决定回收、采纳或返回新版镜头工坊。',
+      returnLabel: '返回新版镜头工坊',
+    }
+  }
+  if (input.mode === 'advanced_compatibility') {
+    return {
+      eyebrow: '兼容工作台 · 手动选择',
+      title: '提示词、诊断和恢复工具优先',
+      detail: '新版镜头工坊负责默认生产状态。兼容生成入口已收进高级区域，仅用于新版工作台异常时的兼容操作；生产状态仍以 Production Workspace V2 为准。',
+      returnLabel: '返回新版镜头工坊',
+    }
+  }
+  return {
+    eyebrow: '完整兼容工作台',
+    title: '当前项目使用完整兼容生产入口',
+    detail: input.reason === 'rollout_shot_limit'
+      ? '当前镜头数超过新版工坊灰度上限，完整兼容能力保持可用。'
+      : '新版工坊当前不可用或正在生成分镜，已保留完整生产、状态和恢复能力。',
+    returnLabel: null,
+  }
+}
+
+function LegacyStoryboardSurfaceBanner({
+  mode,
+  reason,
+  recoveryFocus,
+  v3Url,
+}: {
+  mode: LegacyStoryboardModeDecision['mode']
+  reason?: string | null
+  recoveryFocus?: Props['recoveryFocus']
+  v3Url: string
+}) {
+  const content = buildLegacyStoryboardSurfaceBanner({ mode, reason, recoveryFocus, v3Url })
+  return (
+    <div data-testid="legacy-surface-banner" data-legacy-mode={mode} className="mb-5 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-xs font-medium tracking-wide text-slate-400">{content.eyebrow}</div>
+          <div className="mt-1 text-sm font-medium text-white">{content.title}</div>
+          <div className="mt-1 max-w-3xl text-xs leading-5 text-slate-400">{content.detail}</div>
+        </div>
+        {content.returnLabel ? <a href={v3Url} data-testid="legacy-v3-link" className="shrink-0 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-xs font-medium text-sky-100 hover:border-sky-400 hover:text-white">{content.returnLabel}</a> : null}
+      </div>
+    </div>
+  )
 }
 
 export function buildStoryboardCanvasHandoffSummary(input: {
@@ -1767,7 +1841,9 @@ export default function ProductWorkspaceStoryboardSection({
   productionWorkspaceV2State,
   onRefreshProductionWorkspaceV2,
   surfaceDecision,
+  legacyMode: providedLegacyMode,
 }: Props) {
+  const legacyMode = providedLegacyMode ?? resolveLegacyStoryboardMode({ surfaceDecision })
   const [promptVersions, setPromptVersions] = useState<PromptVersionRecord[]>([])
   const [historyState, setHistoryState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [historyActionState, setHistoryActionState] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
@@ -3620,14 +3696,12 @@ export default function ProductWorkspaceStoryboardSection({
     focusStoryboardStep(STORYBOARD_STEPS[nextIndex].id)
   }
 
-  const v3Url = typeof window !== 'undefined' ? buildStoryboardSurfaceUrl(window.location.search, 'v3') : '?ui_v3=shot-studio'
-  const showSurfaceNotice = Boolean(surfaceDecision)
-  const surfaceNoticeLabel = surfaceDecision?.reason === 'explicit_legacy' ? '兼容工作台 · 手动选择' : '当前项目使用兼容工作台'
+  const v3Url = typeof window !== 'undefined' ? buildStoryboardReturnToV3Url(window.location.search) : '?ui_v3=shot-studio'
 
   return (
     <div data-storyboard-surface="legacy" data-storyboard-surface-reason={surfaceDecision?.reason ?? 'legacy'}>
-      {showSurfaceNotice ? <div data-testid="legacy-surface-notice" className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 text-xs text-slate-300"><span>{surfaceNoticeLabel}</span><a href={v3Url} data-testid="legacy-v3-link" className="text-sky-200 hover:text-white">使用新版镜头工坊</a></div> : null}
-      <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} state={productionWorkspaceState} episode={selectedEpisode} title="镜头生产状态" />
+      <LegacyStoryboardSurfaceBanner mode={legacyMode.mode} reason={legacyMode.reason} recoveryFocus={recoveryFocus} v3Url={v3Url} />
+      {legacyMode.canonicalStatusVisible ? <ProductionWorkspaceAuthorityBanner snapshot={productionWorkspace} state={productionWorkspaceState} episode={selectedEpisode} title="镜头生产状态" /> : null}
       <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">
@@ -4427,7 +4501,7 @@ export default function ProductWorkspaceStoryboardSection({
                   <div className="text-xs text-slate-500">当前分镜图结论</div>
                   {adoptedImage ? (
                     <div className="mt-2 text-sm text-slate-200">
-                      已有当前采纳分镜图：<span className="text-white">{adoptedImage.title || adoptedImage.label || adoptedImage.id}</span>
+                      已有当前兼容采纳分镜图：<span className="text-white">{adoptedImage.title || adoptedImage.label || adoptedImage.id}</span>
                     </div>
                   ) : (
                     <div className="mt-2 text-sm text-slate-400">当前还没有采纳的分镜图版本。</div>
@@ -4437,7 +4511,7 @@ export default function ProductWorkspaceStoryboardSection({
                   <div className="text-xs text-slate-500">当前视频结论</div>
                   {adoptedVideo ? (
                     <div className="mt-2 text-sm text-slate-200">
-                      已有当前镜头采纳视频：<span className="text-white">{adoptedVideo.title || adoptedVideo.label || adoptedVideo.id}</span>
+                      已有当前镜头兼容采纳视频：<span className="text-white">{adoptedVideo.title || adoptedVideo.label || adoptedVideo.id}</span>
                       <span className="ml-1 text-xs text-slate-400">（标题保留原始生成审计）</span>
                     </div>
                   ) : (
@@ -4448,10 +4522,17 @@ export default function ProductWorkspaceStoryboardSection({
             </div>
 
               {(activeStoryboardStep === 'frame' || activeStoryboardStep === 'video') ? <>
-                <div className="mb-3 grid gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 md:grid-cols-2">
+                {legacyMode.mode === 'advanced_compatibility' ? <details data-testid="legacy-compatibility-generation" className="mb-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
+                  <summary className="cursor-pointer text-sm font-medium text-amber-100">使用兼容生产入口</summary>
+                  <div className="mt-2 text-xs leading-5 text-amber-100/80">仅用于新版工作台异常时的兼容操作；生产状态仍以 Production Workspace V2 为准。</div>
+                  <div className="mt-3 grid gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 md:grid-cols-2">
+                    <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={imageModelProfile?.id || null} onChange={(id) => setImageModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh(); await onRefreshProductionWorkspaceV2?.() }} />
+                    <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={videoModelProfile?.id || null} onChange={(id) => setVideoModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh(); await onRefreshProductionWorkspaceV2?.() }} />
+                  </div>
+                </details> : <div className="mb-3 grid gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 md:grid-cols-2">
                   <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={imageModelProfile?.id || null} onChange={(id) => setImageModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh(); await onRefreshProductionWorkspaceV2?.() }} />
                   <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={videoModelProfile?.id || null} onChange={(id) => setVideoModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh(); await onRefreshProductionWorkspaceV2?.() }} />
-                </div>
+                </div>}
                 <ProductWorkspaceStoryboardAdvancedToolsPanel
                 episode={selectedShot.episode}
                 shotId={String(selectedShot.shot_id)}
@@ -4491,6 +4572,7 @@ export default function ProductWorkspaceStoryboardSection({
                 onGenerateFrame={() => runStoryboardGeneration('frame')}
                 onGenerateVideo={() => runStoryboardGeneration('video')}
                 activeStep={activeStoryboardStep === 'video' ? 'video' : 'frame'}
+                defaultOpen={legacyMode.mode !== 'advanced_compatibility'}
                 />
               </> : null}
 

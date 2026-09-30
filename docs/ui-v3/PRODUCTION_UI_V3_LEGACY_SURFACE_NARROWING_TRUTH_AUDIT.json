@@ -1,0 +1,38 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING",
+  "completion_marker": "PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING_COMPLETE",
+  "baseline_commit": "faf88a53d1d6ecea1d6612c7ed77cb69bfc34edf",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "repository": "https://github.com/yeqing112/screenplay-agent-refactor-v2",
+  "policy": {
+    "resolver": "resolveLegacyStoryboardMode",
+    "modes": ["advanced_compatibility", "creation", "recovery", "full_fallback"],
+    "pure": true,
+    "mutates_source_fact": false,
+    "mutates_script_ir": false,
+    "adds_backend_route": false,
+    "calls_real_provider": false
+  },
+  "url": {
+    "helper": "buildStoryboardReturnToV3Url",
+    "sets": {"ui_v3": "shot-studio"},
+    "deletes": ["step"],
+    "preserves": ["section", "episode", "shot", "unrelated_query_parameters"]
+  },
+  "compatibility_boundary": {
+    "legacy_generation_code_retained": true,
+    "recovery_code_retained": true,
+    "production_workspace_v2_retained": true,
+    "canonical_mutation_contract_changed": false,
+    "canvas_surface_changed": false
+  },
+  "validation": {
+    "web_test_files": 61,
+    "web_tests_passed": 431,
+    "web_build": "passed",
+    "backend_targeted_tests_passed": 21,
+    "python_compileall": "passed",
+    "git_diff_check": "passed",
+    "provider_calls": 0
+  }
+}

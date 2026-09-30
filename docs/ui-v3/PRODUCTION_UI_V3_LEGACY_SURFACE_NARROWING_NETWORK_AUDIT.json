@@ -1,0 +1,15 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING",
+  "provider_free": true,
+  "observations": [
+    "The narrowing policy is pure presentation policy.",
+    "No new backend route or provider request was introduced.",
+    "Legacy generation and recovery remain available behind the compatibility disclosure or fallback mode.",
+    "The V3 return link removes only the Legacy step query parameter and preserves storyboard context."
+  ],
+  "shapi_url_reference": "https://www.shapi.vip/",
+  "shapi_requests": 0,
+  "minimax_requests": 0,
+  "image_requests": 0,
+  "video_requests": 0
+}
