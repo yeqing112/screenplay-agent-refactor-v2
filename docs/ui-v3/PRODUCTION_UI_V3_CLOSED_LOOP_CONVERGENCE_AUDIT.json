@@ -1,0 +1,119 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_CLOSED_LOOP_CONVERGENCE_AUDIT",
+  "final_marker": "PRODUCTION_UI_V3_CLOSED_LOOP_CONVERGENCE_AUDIT_COMPLETE",
+  "baseline": "29b2708f2f6f721dabf59df60e610308d5e0cae8",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "audit_date": "2026-09-30",
+  "scope": "read_only_documentation_audit",
+  "provider_calls": 0,
+  "llm_calls": 0,
+  "shapi_calls": 0,
+  "minimax_calls": 0,
+  "image_generation_calls": 0,
+  "video_generation_calls": 0,
+  "production_writes": 0,
+  "v3_closed_loop": {
+    "status": "COMPLETE_FOR_CANONICAL_SINGLE_SHOT",
+    "read_endpoint": "GET /api/books/{book_id}/production-workspace-v2",
+    "image_endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame",
+    "video_endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video",
+    "review_validate_endpoint": "POST /api/assets/candidates/{candidate_id}/validate",
+    "review_promote_endpoint": "POST /api/assets/candidates/{candidate_id}/promote",
+    "truth_source": "ProductionWorkspaceV2Snapshot projected from execution, candidate, PromptIR, and OfficialMedia authority rows",
+    "evidence": [
+      "web/src/services/productWorkspaceShotGeneration.ts:createShotStudioGenerationController",
+      "web/src/services/productWorkspaceShotReview.ts:createShotStudioMediaReviewController",
+      "core/production_workspace_projection_v2.py:build_production_workspace_projection_v2",
+      "api/server.py:_delegate_storyboard_generation_to_canonical"
+    ]
+  },
+  "legacy_storyboard": {
+    "status": "KEEP_AS_FALLBACK_WITH_EXPLICIT_LEGACY_BOUNDARIES",
+    "canary_selector": "web/src/components/ProductWorkspaceSectionContent.tsx:isShotStudioCanaryEnabled",
+    "selector": "?ui_v3=shot-studio",
+    "canonical_generation_bridge": true,
+    "legacy_task_fallback_remains": true,
+    "legacy_only_capabilities": [
+      "Prompt Compiler async task and prompt version rollback",
+      "manual/adopted reference and first-frame payloads",
+      "acceptance records",
+      "cross-shot continuity",
+      "production readiness repair and rollback",
+      "creative task recovery/reconcile/restart",
+      "machine prompt export and advanced tools"
+    ]
+  },
+  "readiness": {
+    "default_surface": "CONDITIONAL_GO",
+    "immediate_unconditional_switch": "NO_GO",
+    "review_inbox": "NO_GO",
+    "retry_regenerate": "NO_GO",
+    "reason_codes": [
+      "V3_REMAINS_CANARY_GATED",
+      "NO_CROSS_SHOT_REVIEW_INBOX_CONTRACT",
+      "RETRY_REGENERATE_DEFERRED",
+      "LEGACY_ONLY_CAPABILITIES_HAVE_NO_V3_REPLACEMENT"
+    ]
+  },
+  "truth_sources": [
+    {"concern": "production_state", "canonical": "production-workspace-v2", "path": "core/production_workspace_projection_v2.py", "recommendation": "SHARE_NOW"},
+    {"concern": "execution", "canonical": "GenerationExecutionRecord.execution_id", "path": "core/production_workspace_projection_v2.py", "recommendation": "SHARE_NOW"},
+    {"concern": "candidate", "canonical": "MediaCandidateRecord.candidate_id", "path": "core/media_authority.py", "recommendation": "SHARE_NOW"},
+    {"concern": "official", "canonical": "OfficialMediaPointer -> OfficialMediaVersion -> OfficialMediaAuthority", "path": "api/asset_promotion_api.py", "recommendation": "SHARE_NOW"},
+    {"concern": "prompt", "canonical": "current PromptIR pointer/version", "path": "web/src/domain/productionWorkspace.ts", "recommendation": "KEEP_EXPLICIT_COMPILE_BOUNDARY"},
+    {"concern": "model", "canonical": "explicit model_profile_id resolved server-side", "path": "api/generation_canary_api.py", "recommendation": "SHARE_NOW"},
+    {"concern": "legacy_recovery", "canonical": "server task status only for Legacy", "path": "web/src/components/productWorkspaceRecovery.ts", "recommendation": "DO_NOT_SHARE_LOCAL_STORAGE"}
+  ],
+  "mutation_entry_points": [
+    {"action": "generate_image", "v3": "createShotStudioGenerationController.start", "legacy": "runStoryboardGeneration('frame')", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame", "owner": "canonical_generation", "classification": "SHARE_NOW"},
+    {"action": "generate_video", "v3": "createShotStudioGenerationController.start", "legacy": "runStoryboardGeneration('video')", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video", "owner": "canonical_generation", "classification": "SHARE_NOW"},
+    {"action": "validate_candidate", "v3": "createShotStudioMediaReviewController", "legacy": "authority tooling", "endpoint": "POST /api/assets/candidates/{candidate_id}/validate", "owner": "core.media_authority.validate_media_candidate", "classification": "SHARE_NOW"},
+    {"action": "promote_candidate", "v3": "approveProductionMediaCandidate", "legacy": "asset promotion tooling", "endpoint": "POST /api/assets/candidates/{candidate_id}/promote", "owner": "core.media_authority.promote_media_candidate", "classification": "SHARE_NOW"},
+    {"action": "compile_prompt", "v3": "not exposed by generation CTA", "legacy": "compileSelectedShotPrompts", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/compile-prompts/async", "owner": "Legacy Prompt Compiler", "classification": "SHARE_LATER"},
+    {"action": "acceptance", "v3": "none", "legacy": "saveAcceptanceRecord", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/acceptance-records", "owner": "Legacy acceptance", "classification": "DO_NOT_SHARE"},
+    {"action": "repair_rollback", "v3": "none", "legacy": "repair and rollback handlers", "endpoint": "/api/books/{book_id}/production-readiness/repair-plan*", "owner": "Legacy readiness repair", "classification": "DO_NOT_SHARE"}
+  ],
+  "duplication": {
+    "generation": "one canonical backend bridge, two client controllers",
+    "review_adoption": "canonical candidate promotion plus Legacy adopted/acceptance display semantics",
+    "polling_recovery": "V3 V2 bounded refresh versus Legacy prototyping task polling/reconcile/restart",
+    "recommendation": "share canonical mutation and read contracts first; do not merge Legacy localStorage recovery into V3"
+  },
+  "local_storage": [
+    {"key": "production-generation-profile-selection-v1", "classification": "UX_PREFERENCE", "authority": "none", "path": "web/src/components/productWorkspaceGeneration.ts"},
+    {"key": "product-workspace.navigation-state.*", "classification": "UX_NAVIGATION", "authority": "none", "path": "web/src/components/productWorkspaceNavigationState.ts"},
+    {"key": "product-workspace.pending-storyboard-tasks.*", "classification": "LEGACY_PRODUCTION_RECOVERY", "authority": "legacy_task_id_only", "path": "web/src/components/productWorkspaceRecovery.ts"},
+    {"key": "product-workspace.shot-execution-summary.*", "classification": "LEGACY_DISPLAY_RECOVERY", "authority": "not_canonical", "path": "web/src/components/productWorkspaceRecovery.ts"},
+    {"key": "product-workspace.recovery-task-meta.*", "classification": "LEGACY_RESTART_METADATA", "authority": "not_canonical", "path": "web/src/components/productWorkspaceRecovery.ts"}
+  ],
+  "shared_service_candidates": {
+    "SHARE_NOW": ["production-workspace-v2 projection", "canonical generation bridge", "candidate validate/promote authority", "model profile resolver"],
+    "SHARE_LATER": ["Prompt Compiler", "execution/task recovery adapter", "manual media/reference ingestion"],
+    "DO_NOT_SHARE": ["Legacy acceptance as OfficialMedia promotion", "continuity/repair as V3 generation service", "provider cancellation without backend contract"]
+  },
+  "deprecation": [
+    {"surface": "legacy generate-frame/generate-video names", "classification": "BRIDGE", "exit_gate": "all callers use typed canonical client and task fallback telemetry is zero"},
+    {"surface": "legacy adopted media", "classification": "KEEP_DISPLAY_ONLY", "exit_gate": "all read/export consumers use OfficialMedia"},
+    {"surface": "legacy Prompt Compiler", "classification": "KEEP", "exit_gate": "V3 prompt draft/version UX exists"},
+    {"surface": "Legacy Storyboard deletion", "classification": "DO_NOT_DEPRECATE_NOW", "exit_gate": "all Legacy-only capabilities have replacements"}
+  ],
+  "migration_ladder": [
+    {"gate": 0, "name": "telemetry_and_read_parity", "required": ["V2 read telemetry", "task fallback count", "official versus adopted display evidence"]},
+    {"gate": 1, "name": "default_v3_with_fallback", "required": ["reversible server/config switch", "Legacy fallback link"]},
+    {"gate": 2, "name": "caller_convergence", "required": ["typed canonical client for Legacy production generation", "zero canonical task fallback"]},
+    {"gate": 3, "name": "capability_replacement", "required": ["prompt compiler handoff", "canonical manual media ingestion", "continuity/repair contracts"]},
+    {"gate": 4, "name": "review_inbox", "required": ["server queue/read model", "pagination", "conflict/idempotency"]},
+    {"gate": 5, "name": "retry_regenerate", "required": ["canonical retry identity/lineage/fee/staleness contract"]}
+  ],
+  "rollback": ["retain canary selector and add server/config kill switch", "route affected cohorts back to Legacy without copying localStorage IDs into V3", "preserve execution/candidate/validation/OfficialMedia rows", "use existing prompt/version and repair rollback endpoints for those domains"],
+  "risks": [
+    {"id": "R1", "risk": "Legacy and V3 disagree on visible state", "mitigation": "V2 shared read model and display-only labeling"},
+    {"id": "R2", "risk": "Legacy compileIfMissing true causes prompt drift", "mitigation": "explicit compiler CTA and typed caller migration"},
+    {"id": "R3", "risk": "task fallback duplicates polling", "mitigation": "execution/task adapter before removal"},
+    {"id": "R4", "risk": "adopted/reference media bypasses authority", "mitigation": "canonical manual ingestion and official-source gate"},
+    {"id": "R5", "risk": "review route facades drift", "mitigation": "one public facade with alias contract tests"},
+    {"id": "R6", "risk": "aggregate V2 view does not scale to 500/1000 shots", "mitigation": "separate pagination/large-scale phase"}
+  ],
+  "recommended_next_phase": "PHASE_PRODUCTION_UI_V3_DEFAULT_SURFACE_GATED_MIGRATION",
+  "verification_baseline": {"web_tests": "57 files / 385 passed", "backend_canonical_authority_tests": "32 passed", "web_build": "PASS", "browser_console_errors": 0, "responsive_widths": [1280, 1440, 1920], "horizontal_overflow": false, "provider_calls": 0, "production_writes": 0, "real_llm_or_media_generation": 0}
+}
