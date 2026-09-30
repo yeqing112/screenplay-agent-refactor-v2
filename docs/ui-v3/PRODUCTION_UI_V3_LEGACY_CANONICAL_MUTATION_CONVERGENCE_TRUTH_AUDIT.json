@@ -7,6 +7,7 @@
   "scope": {
     "production_surface": "legacy storyboard with Production Workspace V2 projection",
     "canonical_client": "web/src/services/productionGeneration.ts",
+    "shared_canonical_generation_client": true,
     "response_classifier": "web/src/services/legacyProductionGenerationBridge.ts",
     "backend_changed": false,
     "backend_routes_added": 0,
@@ -120,6 +121,7 @@
   "completion_requirements": {
     "legacy_production_image_shared_client": true,
     "legacy_production_video_shared_client": true,
+    "shared_canonical_generation_client": true,
     "production_video_no_compile_if_missing_true": true,
     "production_video_no_adopted_image_id": true,
     "production_video_no_legacy_reference_ids": true,

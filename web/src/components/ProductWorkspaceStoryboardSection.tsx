@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import type { MediaAssetOutput, StoryboardShotOutput } from '../domain/bookOutputs'
 import {
   fetchCreativeTaskStatus,
@@ -1775,6 +1775,10 @@ export default function ProductWorkspaceStoryboardSection({
   const [compileActionState, setCompileActionState] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
   const [compileActionMessage, setCompileActionMessage] = useState('')
   const [generationState, setGenerationState] = useState<GenerationUiState>('idle')
+  // React state disables the button after a render, but a second click can
+  // arrive before that render. Keep a synchronous lock at the mutation
+  // boundary so one Legacy generation action can create at most one POST.
+  const generationInFlightRef = useRef(false)
   const [generationMessage, setGenerationMessage] = useState('')
   const [frameRecoveryTaskId, setFrameRecoveryTaskId] = useState<string | null>(null)
   const [videoRecoveryTaskId, setVideoRecoveryTaskId] = useState<string | null>(null)
@@ -3090,6 +3094,7 @@ export default function ProductWorkspaceStoryboardSection({
     },
   ) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (generationInFlightRef.current) return
     if (productionMode) {
       const laneReady = kind === 'frame' ? canGenerateFrameFromV2 : canGenerateVideoFromV2
       if (!laneReady) {
@@ -3113,6 +3118,7 @@ export default function ProductWorkspaceStoryboardSection({
       setGenerationMessage(`已取消${labels.noun}生成。`)
       return
     }
+    generationInFlightRef.current = true
     const targetTaskSetter = kind === 'frame' ? setFrameRecoveryTaskId : setVideoRecoveryTaskId
     setGenerationState(kind)
     setGenerationMessage(
@@ -3343,6 +3349,7 @@ export default function ProductWorkspaceStoryboardSection({
         setGenerationMessage(formatGenerationErrorMessage(error instanceof Error ? error.message : '', fallback))
       }
     } finally {
+      generationInFlightRef.current = false
       syncRecoveryTaskIds()
     }
   }

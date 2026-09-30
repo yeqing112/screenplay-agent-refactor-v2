@@ -20,6 +20,7 @@ export type RecoveryTaskLocalMeta = {
 }
 
 export type ShotExecutionSummary = {
+  /** NONCANONICAL browser diagnostics only; eligibility and authority come from V2. */
   episode: number
   shotId: string
   action: 'compile' | 'frame' | 'video'

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -799,6 +799,9 @@ export default function ProductWorkspaceCanvasBetaSection({
   const [compileMessage, setCompileMessage] = useState('')
   const [promptRecoveryTaskId, setPromptRecoveryTaskId] = useState<string | null>(null)
   const [generationState, setGenerationState] = useState<GenerationState>('idle')
+  // Keep the double-submit guard synchronous; button disabled state only
+  // takes effect after React renders the submitting state.
+  const generationInFlightRef = useRef(false)
   const [generationMessage, setGenerationMessage] = useState('')
   const [frameRecoveryTaskId, setFrameRecoveryTaskId] = useState<string | null>(null)
   const [videoRecoveryTaskId, setVideoRecoveryTaskId] = useState<string | null>(null)
@@ -1382,6 +1385,7 @@ export default function ProductWorkspaceCanvasBetaSection({
     promptRecompileVersion?: number
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id) return
+    if (generationInFlightRef.current) return
     if (productionWorkspaceV2State !== 'ready' || !selectedProductionShot || !selectedProductionShot.IMAGE.generation_readiness?.ready) {
       setGenerationState('error')
       setGenerationMessage('Production Workspace V2 状态不可用或当前镜头尚未满足 IMAGE 生成条件。')
@@ -1401,6 +1405,7 @@ export default function ProductWorkspaceCanvasBetaSection({
       setGenerationMessage('已取消分镜图生成。')
       return
     }
+    generationInFlightRef.current = true
     setGenerationState('submitting')
     setGenerationMessage('正在从创作画布提交首帧生成任务，请不要重复点击。')
     setFrameRecoveryTaskId(null)
@@ -1489,6 +1494,8 @@ export default function ProductWorkspaceCanvasBetaSection({
       setGenerationMessage(
         formatGenerationErrorMessage(error instanceof Error ? error.message : '', '首帧生成失败。'),
       )
+    } finally {
+      generationInFlightRef.current = false
     }
   }
 
@@ -1500,6 +1507,7 @@ export default function ProductWorkspaceCanvasBetaSection({
     promptRecompileVersion?: number
   }) => {
     if (!selectedShot?.episode || !selectedShot?.shot_id || !hasCurrentOfficialImage) return
+    if (generationInFlightRef.current) return
     if (productionWorkspaceV2State !== 'ready' || !selectedProductionShot || !selectedProductionShot.VIDEO.generation_readiness?.ready) {
       setGenerationState('error')
       setGenerationMessage('Production Workspace V2 状态不可用或当前镜头尚未满足 VIDEO 生成条件。')
@@ -1519,6 +1527,7 @@ export default function ProductWorkspaceCanvasBetaSection({
       setGenerationMessage('已取消视频生成。')
       return
     }
+    generationInFlightRef.current = true
     setGenerationState('submitting')
     setGenerationMessage('正在从创作画布提交视频生成任务，请不要重复点击。')
     setVideoRecoveryTaskId(null)
@@ -1607,6 +1616,8 @@ export default function ProductWorkspaceCanvasBetaSection({
       setGenerationMessage(
         formatGenerationErrorMessage(error instanceof Error ? error.message : '', '视频生成失败。'),
       )
+    } finally {
+      generationInFlightRef.current = false
     }
   }
 

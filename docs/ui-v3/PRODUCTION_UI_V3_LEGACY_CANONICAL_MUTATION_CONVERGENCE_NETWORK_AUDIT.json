@@ -67,5 +67,15 @@
       268,
       269
     ]
+  },
+  "revalidation_2026_09_30": {
+    "default_surface": "eligible_default -> v3",
+    "legacy_image_request_id": 218,
+    "legacy_image_compileIfMissing": false,
+    "legacy_image_forbidden_fields_absent": true,
+    "legacy_image_response": "mixed_canonical_with_task_diagnostic",
+    "legacy_image_task_polling_requests": 0,
+    "provider_call": false,
+    "fixture_noise": ["prompt-versions HTTP 500", "mount-time agent reconcile POST"]
   }
 }

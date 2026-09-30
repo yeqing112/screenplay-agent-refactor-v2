@@ -125,5 +125,29 @@
     "prompt-versions endpoint returns 500 in disposable fixture",
     "background agent reconcile POST occurs on mount",
     "prompt compiler UI repair CTA requires diagnostic fixture; explicit chain was exercised through mocked browser endpoint flow and contract test"
-  ]
+  ],
+  "revalidation_2026_09_30": {
+    "default_surface": {
+      "query": "?section=storyboard&episode=1&shot=A&workspace_fixture=populated&workspace_v2_generation_fixture=ready-image",
+      "surface": "v3",
+      "reason": "eligible_default"
+    },
+    "legacy_production_image_mock": {
+      "query_suffix": "&ui_v3=legacy&step=frame",
+      "endpoint": "/api/books/998755/storyboard/1/A/generate-frame",
+      "request_id": 218,
+      "request_body": {
+        "modelProfileId": "builtin-mock-image",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "compileIfMissing": false,
+        "generationChain": "storyboard_generate_frame"
+      },
+      "forbidden_fields_absent": ["firstFrameAssetId", "referenceAssetIds"],
+      "response_class": "mixed_canonical_with_task_diagnostic",
+      "task_polling": false,
+      "provider_call": false,
+      "console_errors": "fixture-only prompt-versions HTTP 500"
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   AlertTriangle,
   ArrowRight,
@@ -198,6 +198,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
   const [showAllAssets, setShowAllAssets] = useState(false)
   const [actionMessages, setActionMessages] = useState<Record<string, string>>({})
   const [generationBusyKey, setGenerationBusyKey] = useState<string | null>(null)
+  const generationInFlightRef = useRef(false)
   const assets = snapshot?.assets ?? []
   const missingAssets = useMemo(() => assets.filter((asset) => !asset.media.present), [assets])
   const visibleAssets = showAllAssets ? assets : (missingAssets.length > 0 ? missingAssets : assets).slice(0, 8)
@@ -209,7 +210,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
     const modelProfileId = target === 'IMAGE' ? selectedImageProfileId : selectedVideoProfileId
     if (!modelProfileId) return
     const operationKey = `${shot.identity.storyboard_shot_id}:${target}`
-    if (generationBusyKey) return
+    if (generationInFlightRef.current || generationBusyKey) return
     const lane = shot[target]
     if (lane.generation_readiness && !lane.generation_readiness.ready) {
       setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: lane.generation_readiness?.primary_blocker?.message || '当前生产状态不允许生成。' }))
@@ -224,6 +225,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
       setActionMessages((current) => ({ ...current, [operationKey]: '已取消生成提交。' }))
       return
     }
+    generationInFlightRef.current = true
     setGenerationBusyKey(operationKey)
     setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: '正在提交 canonical 生成任务…' }))
     try {
@@ -298,6 +300,7 @@ export default function ProductionWorkspaceV2Panel({ snapshot, state, error, mod
       } catch (generationError) {
         setActionMessages((current) => ({ ...current, [`${shot.identity.storyboard_shot_id}:${target}`]: generationError instanceof Error ? generationError.message : '生成提交失败。' }))
     } finally {
+      generationInFlightRef.current = false
       setGenerationBusyKey((current) => current === operationKey ? null : current)
     }
   }

@@ -80,11 +80,11 @@ The confirmation dialog is not the final authority. The fresh projection check p
 
 ## Double Submit
 
-The existing generation state disables repeated user actions during submission. Canonical completion refreshes the V2 projection once and then refreshes the storyboard data. No retry loop or automatic second POST was added.
+The existing generation state disables repeated user actions during submission, and the Legacy storyboard, Canvas, and V2 panel now also hold a synchronous mutation lock so a second click arriving before React re-renders cannot create a second POST. Canonical completion refreshes the V2 projection and then refreshes the storyboard data. No retry loop or automatic second POST was added.
 
 ## LocalStorage Diagnostic Boundary
 
-Canonical executions persist only the existing execution summary. Pending storyboard task storage is reserved for task-only recovery. Mixed canonical responses therefore do not leave diagnostic `task_id` values in localStorage.
+Canonical executions persist only the existing `NONCANONICAL` execution summary for compatibility UX and diagnostics. Pending storyboard task storage is reserved for task-only recovery. Mixed canonical responses therefore do not leave diagnostic `task_id` values in localStorage. Neither summary is read by `canGenerate`, official-media, or review-eligibility logic; those remain V2 projections.
 
 ## Legacy Adoption vs Canonical Promotion
 
