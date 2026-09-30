@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildCanvasHandoffSummary } from './ProductWorkspaceSectionContent'
+import { buildCanvasHandoffSummary, isShotStudioCanaryEnabled } from './ProductWorkspaceSectionContent'
 
 describe('buildCanvasHandoffSummary', () => {
   it('prefers canvas-provided handoff copy for asset continuation', () => {
@@ -30,5 +30,13 @@ describe('buildCanvasHandoffSummary', () => {
       title: '当前承接：第 2 集',
       label: '前往导出中心确认当前集交付状态',
     })
+  })
+})
+
+describe('isShotStudioCanaryEnabled', () => {
+  it('only switches the storyboard presentation surface for the explicit canary flag', () => {
+    expect(isShotStudioCanaryEnabled('?section=storyboard&ui_v3=shot-studio')).toBe(true)
+    expect(isShotStudioCanaryEnabled('?section=storyboard')).toBe(false)
+    expect(isShotStudioCanaryEnabled('?section=storyboard&ui_v3=other')).toBe(false)
   })
 })

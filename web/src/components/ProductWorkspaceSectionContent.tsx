@@ -17,7 +17,12 @@ const ProductWorkspaceModelsSection = lazy(() => import('./ProductWorkspaceModel
 const ProductWorkspaceQaSection = lazy(() => import('./ProductWorkspaceQaSection'))
 const ProductWorkspaceScriptsSection = lazy(() => import('./ProductWorkspaceScriptsSection'))
 const ProductWorkspaceStoryboardSection = lazy(() => import('./ProductWorkspaceStoryboardSection'))
+const ProductWorkspaceShotStudioV3 = lazy(() => import('./ProductWorkspaceShotStudioV3'))
 const ProductWorkspaceTasksSection = lazy(() => import('./ProductWorkspaceTasksSection'))
+
+export function isShotStudioCanaryEnabled(search: string) {
+  return new URLSearchParams(search).get('ui_v3') === 'shot-studio'
+}
 
 function toStoryboardRecoveryFocus(recoveryFocus: RecoveryFocusContext | null) {
   if (recoveryFocus?.target !== 'storyboard') return null
@@ -116,6 +121,7 @@ export default function ProductWorkspaceSectionContent({
     ? buildProjectStageProjectionFromAction(dashboard.dashboardActions[0])
     : null
   const explicitGenerationSelection = readExplicitGenerationProfileSelection()
+  const shotStudioCanary = typeof window !== 'undefined' && isShotStudioCanaryEnabled(window.location.search)
 
   return (
     <Suspense fallback={<SectionLoadingFallback />}>
@@ -254,42 +260,54 @@ export default function ProductWorkspaceSectionContent({
       ) : null}
 
       {section === 'storyboard' ? (
-        <>
-          <ProductionWorkspaceV2Panel
+        shotStudioCanary ? (
+          <ProductWorkspaceShotStudioV3
             snapshot={storyboard.productionWorkspaceV2}
             state={storyboard.productionWorkspaceV2State}
             error={storyboard.productionWorkspaceV2Error}
             mode={storyboard.workspaceViewMode}
             focusShotId={storyboard.selectedStoryboardShotId}
-            onNavigateSection={storyboard.onNavigateSection}
-            onRefresh={storyboard.onRefreshAll}
-            imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
-            videoModelProfileId={explicitGenerationSelection.videoModelProfileId}
-          />
-          <CanvasHandoffBanner handoff={storyboard.canvasHandoff} />
-          <ProductWorkspaceStoryboardSection
-            bookId={storyboard.bookId}
-            shotsByEpisode={storyboard.shotsByEpisode}
-            scriptDecisionState={storyboard.scriptDecisionState}
-            hasExplicitLockedAdaptation={storyboard.hasExplicitLockedAdaptation}
-            selectedShotId={storyboard.selectedStoryboardShotId}
             onSelectShot={storyboard.onSelectShot}
             onRefresh={storyboard.onRefreshAll}
-            canvasHandoff={storyboard.canvasHandoff}
-            recoveryFocus={toStoryboardRecoveryFocus(storyboard.recoveryFocus)}
-            onDismissRecoveryFocus={storyboard.onDismissStoryboardRecoveryFocus}
-            onNavigateSection={storyboard.onNavigateSection}
-            onNavigateTaskSection={storyboard.onNavigateTaskSection}
-            onGenerateStoryboard={storyboard.onGenerateStoryboard}
-            isGeneratingStoryboard={storyboard.isGeneratingStoryboard}
-            initialStoryboardEpisode={storyboard.initialStoryboardEpisode}
-          initialStoryboardStep={storyboard.initialStoryboardStep}
-            productionWorkspace={storyboard.productionWorkspace}
-            productionWorkspaceState={storyboard.productionWorkspaceState}
-            productionWorkspaceV2={storyboard.productionWorkspaceV2}
-            productionWorkspaceV2State={storyboard.productionWorkspaceV2State}
           />
-        </>
+        ) : (
+          <>
+            <ProductionWorkspaceV2Panel
+              snapshot={storyboard.productionWorkspaceV2}
+              state={storyboard.productionWorkspaceV2State}
+              error={storyboard.productionWorkspaceV2Error}
+              mode={storyboard.workspaceViewMode}
+              focusShotId={storyboard.selectedStoryboardShotId}
+              onNavigateSection={storyboard.onNavigateSection}
+              onRefresh={storyboard.onRefreshAll}
+              imageModelProfileId={explicitGenerationSelection.imageModelProfileId}
+              videoModelProfileId={explicitGenerationSelection.videoModelProfileId}
+            />
+            <CanvasHandoffBanner handoff={storyboard.canvasHandoff} />
+            <ProductWorkspaceStoryboardSection
+              bookId={storyboard.bookId}
+              shotsByEpisode={storyboard.shotsByEpisode}
+              scriptDecisionState={storyboard.scriptDecisionState}
+              hasExplicitLockedAdaptation={storyboard.hasExplicitLockedAdaptation}
+              selectedShotId={storyboard.selectedStoryboardShotId}
+              onSelectShot={storyboard.onSelectShot}
+              onRefresh={storyboard.onRefreshAll}
+              canvasHandoff={storyboard.canvasHandoff}
+              recoveryFocus={toStoryboardRecoveryFocus(storyboard.recoveryFocus)}
+              onDismissRecoveryFocus={storyboard.onDismissStoryboardRecoveryFocus}
+              onNavigateSection={storyboard.onNavigateSection}
+              onNavigateTaskSection={storyboard.onNavigateTaskSection}
+              onGenerateStoryboard={storyboard.onGenerateStoryboard}
+              isGeneratingStoryboard={storyboard.isGeneratingStoryboard}
+              initialStoryboardEpisode={storyboard.initialStoryboardEpisode}
+              initialStoryboardStep={storyboard.initialStoryboardStep}
+              productionWorkspace={storyboard.productionWorkspace}
+              productionWorkspaceState={storyboard.productionWorkspaceState}
+              productionWorkspaceV2={storyboard.productionWorkspaceV2}
+              productionWorkspaceV2State={storyboard.productionWorkspaceV2State}
+            />
+          </>
+        )
       ) : null}
 
       {section === 'canvas' ? (
