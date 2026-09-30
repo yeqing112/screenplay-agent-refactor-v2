@@ -106,8 +106,63 @@ describe('ProductWorkspaceStoryboardSection', () => {
   it('renders creation and complete fallback banners', () => {
     const creation = resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason: 'no_canonical_shots', overridden: false, shotCount: 0, maxShots: 100 } })
     const fallback = resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason: 'rollout_shot_limit', overridden: false, shotCount: 101, maxShots: 100 } })
-    expect(renderStoryboard([], { legacyMode: creation })).toContain('data-legacy-mode="creation"')
+    const creationHtml = renderStoryboard([], { legacyMode: creation })
+    expect(creationHtml).toContain('data-legacy-mode="creation"')
+    expect(creationHtml).toContain('一键生成分镜')
+    expect(creationHtml).not.toContain('返回新版镜头工坊')
     expect(renderStoryboard([makeShot()], { legacyMode: fallback })).toContain('data-legacy-mode="full_fallback"')
+  })
+
+  it('keeps full fallback generation and selectors visible', () => {
+    const fallback = resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason: 'rollout_shot_limit', overridden: false, shotCount: 101, maxShots: 100 } })
+    const html = renderStoryboard([makeShot()], { legacyMode: fallback, initialStoryboardStep: 'video' })
+    expect(html).toContain('data-legacy-mode="full_fallback"')
+    expect(html).toContain('兼容生产操作')
+    expect(html).toContain('生成分镜图')
+    expect(html).toContain('生成视频')
+    expect(html).toContain('production-model-selector-image')
+    expect(html).toContain('production-model-selector-video')
+  })
+
+  it('prioritizes recovery context and keeps return navigation user controlled', () => {
+    const recovery = resolveLegacyStoryboardMode({ recoveryTarget: 'storyboard', surfaceDecision: { surface: 'legacy', reason: 'legacy_recovery_context', overridden: false, shotCount: 2, maxShots: 100 } })
+    const html = renderStoryboard([makeShot()], {
+      legacyMode: recovery,
+      recoveryFocus: { taskId: 'compat-task-7', recoveryKind: 'video', episode: 1, shotId: '1-01' },
+      initialStoryboardStep: 'video',
+    })
+    expect(html).toContain('data-legacy-mode="recovery"')
+    expect(html).toContain('任务 compat-task-7')
+    expect(html).toContain('第 1 集 / 镜头 1-01')
+    expect(html).toContain('先处理当前恢复任务')
+    expect(html).toContain('返回新版镜头工坊')
+  })
+
+  it('shows the compact canonical strip while keeping production status out of advanced duplicate panels', () => {
+    const v2Shot = {
+      identity: { episode: 1, shot_id: '1-01', storyboard_shot_id: 1, plan_shot_id: '1-01' },
+      scene: { id: 'scene-1', name: '寺庙后院' },
+      duration: 4,
+      camera: { angle: '中景', movement: '固定', speed: 'normal' },
+      action: '站定',
+      asset_readiness: { state: 'ready', required: {}, missing: [], stale: [], current: true },
+      IMAGE: { prompt_ir: { current: true, version: 1, stale: false, state: 'ready' }, generation_mode: 'TEXT_TO_IMAGE', source_official_image: null, model: { selected_profile_id: null, provider: null, model_name: null }, latest_execution: null, candidates: { count: 0, latest: null, items: [] }, official: { current: false, currentness: 'missing', version: null, authority: { id: null, status: null, payload_hash: null, lineage_hash: null }, pointer: { id: null, authority_id: null, fingerprint: null }, preview: null }, generation_readiness: { ready: true, reason_codes: [], primary_blocker: null } },
+      VIDEO: { prompt_ir: { current: false, version: null, stale: false, state: 'not_started' }, generation_mode: 'IMAGE_TO_VIDEO', source_official_image: null, model: { selected_profile_id: null, provider: null, model_name: null }, latest_execution: null, candidates: { count: 0, latest: null, items: [] }, official: { current: false, currentness: 'missing', version: null, authority: { id: null, status: null, payload_hash: null, lineage_hash: null }, pointer: { id: null, authority_id: null, fingerprint: null }, preview: null }, generation_readiness: { ready: false, reason_codes: ['missing_first_frame'], primary_blocker: { code: 'missing_first_frame', message: '缺首帧' } } },
+      next_action: { key: 'generate_image', label: '生成首帧' },
+      blockers: [],
+    }
+    const mode = resolveLegacyStoryboardMode({
+      surfaceDecision: resolveStoryboardSurface({ v2State: 'ready', snapshot: { schema_version: 'production_workspace_projection_v2', read_only: true, authority_source: 'current_authority_pointers_only', shots: [v2Shot] } as any, search: '?ui_v3=legacy' }),
+    })
+    const html = renderStoryboard([makeShot()], {
+      legacyMode: mode,
+      initialStoryboardStep: 'overview',
+      productionWorkspaceV2: { schema_version: 'production_workspace_projection_v2', read_only: true, authority_source: 'current_authority_pointers_only', shots: [v2Shot] } as any,
+      productionWorkspaceV2State: 'ready',
+    })
+    expect(html).toContain('legacy-canonical-status-strip')
+    expect(html).toContain('IMAGE：可以继续')
+    expect(html).toContain('打开新版镜头工坊')
   })
 
   it('turns planner conflicts into a plain-language next action', () => {

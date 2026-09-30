@@ -148,7 +148,9 @@ function legacyModeDecision(mode: LegacyStoryboardMode, reason: LegacyStoryboard
     mode,
     reason,
     canonicalGenerationVisible: mode === 'full_fallback',
-    canonicalStatusVisible: mode === 'full_fallback',
+    // Advanced and recovery surfaces keep one compact canonical status strip;
+    // only the complete V2 panel is controlled by the caller's fallback mode.
+    canonicalStatusVisible: mode !== 'creation',
     creationVisible: mode === 'creation',
     recoveryVisible: mode === 'recovery' || mode === 'full_fallback',
     advancedToolsVisible: mode !== 'creation',
@@ -188,10 +190,16 @@ export function resolveLegacyStoryboardMode({
   ) {
     return legacyModeDecision('full_fallback', reason)
   }
-  if (reason === 'no_canonical_shots' || shotCount === 0) return legacyModeDecision('creation', 'no_canonical_shots')
   if (reason === 'explicit_legacy' && resolved?.surface === 'legacy') {
-    return legacyModeDecision('advanced_compatibility', reason)
+    if (snapshot == null && shotCount === 0) return legacyModeDecision('full_fallback', 'v2_unavailable')
+    if (shotCount === 0) return legacyModeDecision('creation', 'no_canonical_shots')
+    const withinRollout = shotCount !== null && shotCount >= 1 && shotCount <= resolved.maxShots
+    const validV2 = snapshot == null || isProductionWorkspaceV2ContractValid(snapshot)
+    return withinRollout && validV2
+      ? legacyModeDecision('advanced_compatibility', reason)
+      : legacyModeDecision('full_fallback', snapshot && !validV2 ? 'v2_contract_invalid' : 'rollout_shot_limit')
   }
+  if (reason === 'no_canonical_shots' || shotCount === 0) return legacyModeDecision('creation', 'no_canonical_shots')
   // A standalone Legacy section or an unknown future reason should remain
   // operationally safe and expose the complete fallback surface.
   return legacyModeDecision('full_fallback', reason || 'v2_unavailable')

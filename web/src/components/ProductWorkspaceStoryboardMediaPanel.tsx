@@ -134,7 +134,7 @@ function ManualMediaUploadCard({
       form.append('referenceToken', referenceToken.trim())
       form.append('status', kind === 'reference-image' ? 'locked' : 'selected')
       form.append('adopted', 'true')
-      form.append('notes', '正式工作台手动上传资产。')
+      form.append('notes', '兼容工作台手动上传资产。')
       const response = await fetch(`/api/books/${bookId}/storyboard/${shot.episode}/${shot.shot_id}/manual-media-assets`, {
         method: 'POST',
         body: form,
@@ -150,7 +150,7 @@ function ManualMediaUploadCard({
         throw new Error(detail || `HTTP ${response.status}`)
       }
       setState('done')
-      setMessage(kind === 'image' ? '手动分镜图已上传并采纳。' : '手动参考图已上传、锁定，并进入多参考资产。')
+      setMessage(kind === 'image' ? '兼容分镜图已上传并采纳。' : '兼容参考图已上传、锁定，并进入多参考资产。')
       setFile(null)
       onUploaded?.()
     } catch (error) {
@@ -296,8 +296,8 @@ export function ProductWorkspaceStoryboardMediaPanel({
       )}
 
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-        <div className="text-sm font-medium text-white">历史镜头媒体（只读）</div>
-        <div className="mt-1 text-xs text-slate-500">这里仅保留旧版镜头媒体记录；当前正式版本以 Production Workspace 的 OfficialMedia 投影为准。</div>
+        <div className="text-sm font-medium text-white">兼容媒体工具（只读）</div>
+        <div className="mt-1 text-xs text-slate-500">这里保留兼容工作台媒体记录；兼容采纳不等于 canonical Official Media，当前正式版本仍以 Production Workspace 的 OfficialMedia 投影为准。</div>
         {imageAssets.length > 0 ? (
           <div className="mt-3 space-y-3">
             {imageAssets.map((item) => <MediaAssetCard key={item.id} item={item} />)}

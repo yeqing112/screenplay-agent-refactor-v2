@@ -1,6 +1,9 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING",
   "provider_free": true,
+  "surface_mode_evidence": {"mode_reason_only": true, "business_payload_recorded": false},
+  "browser_session": "legacy-surface-audit",
+  "mount_reconcile_post": 1,
   "observations": [
     "The narrowing policy is pure presentation policy.",
     "No new backend route or provider request was introduced.",
@@ -11,5 +14,13 @@
   "shapi_requests": 0,
   "minimax_requests": 0,
   "image_requests": 0,
-  "video_requests": 0
+  "video_requests": 0,
+  "generation_post_on_mount": 0,
+  "generation_post_before_compatibility_click": 0,
+  "generation_post_after_toggle_without_submit": 0,
+  "canonical_generation_writes": 0,
+  "media_authority_writes": 0,
+  "asset_writes": 0,
+  "backend_routes_added": 0,
+  "db_migrations": 0
 }

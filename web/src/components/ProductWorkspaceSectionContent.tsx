@@ -305,7 +305,7 @@ export default function ProductWorkspaceSectionContent({
           />
         ) : (
           <>
-            {legacyMode.canonicalStatusVisible ? <ProductionWorkspaceV2Panel
+            {legacyMode.mode === 'full_fallback' ? <ProductionWorkspaceV2Panel
               snapshot={storyboard.productionWorkspaceV2}
               state={storyboard.productionWorkspaceV2State}
               error={storyboard.productionWorkspaceV2Error}

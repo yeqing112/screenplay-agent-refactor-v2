@@ -142,6 +142,7 @@ export function CurrentShotActionHeader({
   primaryActionLabel,
   primaryActionDetail,
   primaryActionIsExecutable,
+  primaryActionHref,
   onPrimaryAction,
 }: {
   shotId: string
@@ -151,6 +152,7 @@ export function CurrentShotActionHeader({
   primaryActionLabel: string
   primaryActionDetail: string
   primaryActionIsExecutable: boolean
+  primaryActionHref?: string | null
   onPrimaryAction: () => void
 }) {
   return (
@@ -164,7 +166,14 @@ export function CurrentShotActionHeader({
         <span className={`rounded-full border px-2.5 py-1 text-xs ${diagnosticToneClass}`}>
           {diagnosticLabel}
         </span>
-        {primaryActionIsExecutable ? (
+        {primaryActionHref ? (
+          <a
+            href={primaryActionHref}
+            className="rounded-lg bg-sky-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-sky-500"
+          >
+            {primaryActionLabel}
+          </a>
+        ) : primaryActionIsExecutable ? (
           <button
             type="button"
             onClick={onPrimaryAction}

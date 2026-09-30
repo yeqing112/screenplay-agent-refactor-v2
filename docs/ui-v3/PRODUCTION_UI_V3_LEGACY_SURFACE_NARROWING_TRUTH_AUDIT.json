@@ -1,5 +1,6 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING",
+  "status": "complete",
   "completion_marker": "PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING_COMPLETE",
   "baseline_commit": "faf88a53d1d6ecea1d6612c7ed77cb69bfc34edf",
   "branch": "codex/visual-authoring-provider-canary-reconcile",
@@ -7,6 +8,16 @@
   "policy": {
     "resolver": "resolveLegacyStoryboardMode",
     "modes": ["advanced_compatibility", "creation", "recovery", "full_fallback"],
+    "v3_default": true,
+    "eligible_explicit_legacy_mode": "advanced_compatibility",
+    "canonical_generation_primary_owner": "v3",
+    "legacy_compat_generation_available": true,
+    "legacy_compat_generation_default_visible": false,
+    "rollout_limit_full_fallback": true,
+    "hard_disable_full_fallback": true,
+    "storyboard_creation_legacy_owned": true,
+    "task_recovery_legacy_owned": true,
+    "prompt_tools_legacy_owned": true,
     "pure": true,
     "mutates_source_fact": false,
     "mutates_script_ir": false,
@@ -26,11 +37,29 @@
     "canonical_mutation_contract_changed": false,
     "canvas_surface_changed": false
   },
+  "ownership": {
+    "still_legacy_only": [
+      "Prompt Compiler",
+      "Prompt Repair",
+      "Task Recovery",
+      "Manual Media Compatibility",
+      "Continuity",
+      "Acceptance/Decision",
+      "Advanced Executability Tools",
+      "Storyboard Creation",
+      ">100 shot fallback"
+    ],
+    "legacy_deleted": false,
+    "backend_changed": false,
+    "db_migrations": 0,
+    "review_inbox_implemented": false,
+    "retry_regenerate_implemented": false
+  },
   "validation": {
     "web_test_files": 61,
-    "web_tests_passed": 431,
+    "web_tests_passed": 435,
     "web_build": "passed",
-    "backend_targeted_tests_passed": 21,
+    "backend_targeted_tests_passed": 34,
     "python_compileall": "passed",
     "git_diff_check": "passed",
     "provider_calls": 0

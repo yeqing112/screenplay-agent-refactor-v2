@@ -1,12 +1,29 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_LEGACY_SURFACE_NARROWING",
   "provider_free": true,
+  "session": "legacy-surface-audit",
+  "url_host": "http://127.0.0.1:5185",
+  "fixture": "workspace_fixture=populated + workspace_v2_generation_fixture=ready-image",
+  "viewports": ["1280x900", "1440x900", "1920x1080"],
   "scenarios": [
+    {"name": "eligible default", "surface": "v3", "result": "pass"},
     {"name": "eligible explicit legacy", "mode": "advanced_compatibility", "result": "pass"},
+    {"name": "advanced compatibility primary CTA", "prompt_tools_visible": true, "canonical_generation_primary_hidden": true, "result": "pass"},
+    {"name": "expand compatibility production", "selectors_visible": true, "generation_visible": true, "result": "pass"},
     {"name": "zero canonical shots", "mode": "creation", "result": "pass"},
     {"name": "recovery focus and step deeplink", "mode": "recovery", "result": "pass"},
     {"name": "hard/default/V2/rollout fallback reasons", "mode": "full_fallback", "result": "pass"},
     {"name": "return to V3 URL", "step_removed": true, "context_preserved": true, "result": "pass"}
+  ],
+  "responsive_horizontal_overflow": "not introduced by this phase",
+  "observed_viewport_metrics": [
+    {"viewport": "1280x900", "scrollWidth": 1280, "noHorizontalOverflow": true},
+    {"viewport": "1440x900", "scrollWidth": 1440, "noHorizontalOverflow": true},
+    {"viewport": "1920x1080", "scrollWidth": 1920, "noHorizontalOverflow": true}
+  ],
+  "screenshots": [
+    "output/playwright/legacy-surface-advanced-1920.png",
+    "output/playwright/legacy-surface-recovery-1920.png"
   ],
   "real_provider_invocations": 0
 }

@@ -76,7 +76,7 @@ describe('resolveLegacyStoryboardMode', () => {
       mode: 'advanced_compatibility',
       reason: 'explicit_legacy',
       canonicalGenerationVisible: false,
-      canonicalStatusVisible: false,
+      canonicalStatusVisible: true,
       advancedToolsVisible: true,
       v3ReturnVisible: true,
     })
@@ -98,6 +98,17 @@ describe('resolveLegacyStoryboardMode', () => {
   it('does not mistake an unavailable V2 snapshot for a creation state', () => {
     expect(resolveLegacyStoryboardMode({ surfaceDecision: { surface: 'legacy', reason: 'v2_unavailable', overridden: false, shotCount: 0, maxShots: 100 } })).toMatchObject({ mode: 'full_fallback' })
     expect(resolveLegacyStoryboardMode({})).toMatchObject({ mode: 'full_fallback' })
+    expect(resolveLegacyStoryboardMode({ surfaceDecision: resolveStoryboardSurface({ ...eligible, v2State: 'loading', snapshot: null, search: '?ui_v3=legacy' }) })).toMatchObject({ mode: 'full_fallback', reason: 'v2_unavailable' })
+  })
+  it('does not narrow explicit Legacy when the project is outside V3 eligibility', () => {
+    expect(resolveLegacyStoryboardMode({
+      surfaceDecision: resolveStoryboardSurface({ ...eligible, snapshot: snapshotWithShots(101), search: '?ui_v3=legacy' }),
+      snapshot: snapshotWithShots(101),
+    })).toMatchObject({ mode: 'full_fallback', reason: 'rollout_shot_limit' })
+    expect(resolveLegacyStoryboardMode({
+      surfaceDecision: resolveStoryboardSurface({ ...eligible, snapshot: { ...eligible.snapshot, schema_version: 'wrong' }, search: '?ui_v3=legacy' }),
+      snapshot: { ...eligible.snapshot, schema_version: 'wrong' },
+    })).toMatchObject({ mode: 'full_fallback', reason: 'v2_contract_invalid' })
   })
   it('prioritizes recovery focus and recovery deep links', () => {
     expect(resolveLegacyStoryboardMode({ surfaceDecision: resolveStoryboardSurface(eligible), recoveryTarget: 'storyboard' })).toMatchObject({ mode: 'recovery', reason: 'recovery_focus', recoveryVisible: true, v3ReturnVisible: true })
