@@ -59,6 +59,9 @@
       "LEGACY_ONLY_CAPABILITIES_HAVE_NO_V3_REPLACEMENT"
     ]
   },
+  "default_surface_readiness": "CONDITIONAL_GO",
+  "review_inbox_readiness": "NO_GO",
+  "retry_regenerate_readiness": "NO_GO",
   "workspace_integration": {
     "legacy_entry": "web/src/components/ProductWorkspaceSectionContent.tsx renders ProductionWorkspaceV2Panel + ProductWorkspaceStoryboardSection when ui_v3 is absent",
     "v3_entry": "isShotStudioCanaryEnabled(search) requires ?ui_v3=shot-studio",
@@ -79,21 +82,26 @@
   },
   "truth_sources": [
     {"concern": "production_state", "canonical": "production-workspace-v2", "path": "core/production_workspace_projection_v2.py", "recommendation": "SHARE_NOW"},
+    {"concern": "generation_eligibility", "canonical": "V2 generation_readiness blockers plus PromptIR/asset/source/model evidence", "path": "web/src/domain/productionUiV3.ts", "recommendation": "SHARE_NOW"},
+    {"concern": "generation_running_state", "canonical": "latest_execution status and execution_id", "path": "core/production_workspace_projection_v2.py", "recommendation": "DO_NOT_USE_TASK_ID_IN_V3"},
     {"concern": "execution", "canonical": "GenerationExecutionRecord.execution_id", "path": "core/production_workspace_projection_v2.py", "recommendation": "SHARE_NOW"},
     {"concern": "candidate", "canonical": "MediaCandidateRecord.candidate_id", "path": "core/media_authority.py", "recommendation": "SHARE_NOW"},
+    {"concern": "review_eligibility", "canonical": "current candidate plus validation/currentness/authority context", "path": "web/src/services/productWorkspaceShotReview.ts", "recommendation": "SHARE_NOW"},
     {"concern": "official", "canonical": "OfficialMediaPointer -> OfficialMediaVersion -> OfficialMediaAuthority", "path": "api/asset_promotion_api.py", "recommendation": "SHARE_NOW"},
-    {"concern": "prompt", "canonical": "current PromptIR pointer/version", "path": "web/src/domain/productionWorkspace.ts", "recommendation": "KEEP_EXPLICIT_COMPILE_BOUNDARY"},
+    {"concern": "prompt_version", "canonical": "current PromptIR pointer/version/hash", "path": "web/src/domain/productionWorkspace.ts", "recommendation": "KEEP_EXPLICIT_COMPILE_BOUNDARY"},
     {"concern": "model", "canonical": "explicit model_profile_id resolved server-side", "path": "api/generation_canary_api.py", "recommendation": "SHARE_NOW"},
+    {"concern": "asset_readiness", "canonical": "Production Asset authority/version/binding projection", "path": "core/production_workspace_projection_v2.py", "recommendation": "CANONICAL_INGESTION_REQUIRED"},
+    {"concern": "retry_eligibility", "canonical": "none; no unified canonical retry/regenerate contract", "path": "web/src/domain/productionUiV3.ts", "recommendation": "DEFER"},
     {"concern": "legacy_recovery", "canonical": "server task status only for Legacy", "path": "web/src/components/productWorkspaceRecovery.ts", "recommendation": "DO_NOT_SHARE_LOCAL_STORAGE"}
   ],
   "mutation_entry_points": [
-    {"action": "generate_image", "v3": "createShotStudioGenerationController.start", "legacy": "runStoryboardGeneration('frame')", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame", "owner": "canonical_generation", "classification": "SHARE_NOW"},
-    {"action": "generate_video", "v3": "createShotStudioGenerationController.start", "legacy": "runStoryboardGeneration('video')", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video", "owner": "canonical_generation", "classification": "SHARE_NOW"},
-    {"action": "validate_candidate", "v3": "createShotStudioMediaReviewController", "legacy": "authority tooling", "endpoint": "POST /api/assets/candidates/{candidate_id}/validate", "owner": "core.media_authority.validate_media_candidate", "classification": "SHARE_NOW"},
-    {"action": "promote_candidate", "v3": "approveProductionMediaCandidate", "legacy": "asset promotion tooling", "endpoint": "POST /api/assets/candidates/{candidate_id}/promote", "owner": "core.media_authority.promote_media_candidate", "classification": "SHARE_NOW"},
-    {"action": "compile_prompt", "v3": "not exposed by generation CTA", "legacy": "compileSelectedShotPrompts", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/compile-prompts/async", "owner": "Legacy Prompt Compiler", "classification": "SHARE_LATER"},
-    {"action": "acceptance", "v3": "none", "legacy": "saveAcceptanceRecord", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/acceptance-records", "owner": "Legacy acceptance", "classification": "DO_NOT_SHARE"},
-    {"action": "repair_rollback", "v3": "none", "legacy": "repair and rollback handlers", "endpoint": "/api/books/{book_id}/production-readiness/repair-plan*", "owner": "Legacy readiness repair", "classification": "DO_NOT_SHARE"}
+    {"action": "generate_image", "v3": "createShotStudioGenerationController.start", "legacy": "runStoryboardGeneration('frame')", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame", "writes": ["GenerationExecutionRecord", "MediaCandidateRecord"], "provider_call_possible": true, "canonical_authority_affected": "execution/candidate", "legacy_only": false, "v3_only": false, "shared": true, "owner": "canonical_generation", "classification": "SHARE_NOW"},
+    {"action": "generate_video", "v3": "createShotStudioGenerationController.start", "legacy": "runStoryboardGeneration('video')", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video", "writes": ["GenerationExecutionRecord", "MediaCandidateRecord"], "provider_call_possible": true, "canonical_authority_affected": "execution/candidate", "legacy_only": false, "v3_only": false, "shared": true, "owner": "canonical_generation", "classification": "SHARE_NOW"},
+    {"action": "validate_candidate", "v3": "createShotStudioMediaReviewController", "legacy": "authority tooling", "endpoint": "POST /api/assets/candidates/{candidate_id}/validate", "writes": ["MediaValidationRecord"], "provider_call_possible": false, "canonical_authority_affected": "candidate validation", "legacy_only": false, "v3_only": false, "shared": true, "owner": "core.media_authority.validate_media_candidate", "classification": "SHARE_NOW"},
+    {"action": "promote_candidate", "v3": "approveProductionMediaCandidate", "legacy": "asset promotion tooling", "endpoint": "POST /api/assets/candidates/{candidate_id}/promote", "writes": ["OfficialMediaVersion", "OfficialMediaAuthority", "OfficialMediaPointer"], "provider_call_possible": false, "canonical_authority_affected": "OfficialMedia authority", "legacy_only": false, "v3_only": false, "shared": true, "owner": "core.media_authority.promote_media_candidate", "classification": "SHARE_NOW"},
+    {"action": "compile_prompt", "v3": "not exposed by generation CTA", "legacy": "compileSelectedShotPrompts", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/compile-prompts/async", "writes": ["PromptVersion", "compile task"], "provider_call_possible": true, "canonical_authority_affected": "PromptIR/Prompt Version", "legacy_only": true, "v3_only": false, "shared": false, "owner": "Legacy Prompt Compiler", "classification": "SHARE_LATER"},
+    {"action": "acceptance", "v3": "none", "legacy": "saveAcceptanceRecord", "endpoint": "POST /api/books/{book_id}/storyboard/{episode}/{shot_id}/acceptance-records", "writes": ["StoryboardAcceptanceRecord", "shot metadata"], "provider_call_possible": false, "canonical_authority_affected": "acceptance record only", "legacy_only": true, "v3_only": false, "shared": false, "owner": "Legacy acceptance", "classification": "DO_NOT_SHARE"},
+    {"action": "repair_rollback", "v3": "none", "legacy": "repair and rollback handlers", "endpoint": "/api/books/{book_id}/production-readiness/repair-plan*", "writes": ["repair task", "readiness/version records"], "provider_call_possible": "action dependent", "canonical_authority_affected": "repair/readiness records", "legacy_only": true, "v3_only": false, "shared": false, "owner": "Legacy readiness repair", "classification": "DO_NOT_SHARE"}
   ],
   "capability_matrix": [
     {"capability": "shot_navigation", "legacy_owner": "ProductWorkspaceStoryboardSection", "v3_owner": "ProductWorkspaceShotStudioV3", "read": "shotsByEpisode/V2 identity", "mutation": null, "authority": "none", "provider_risk": "none", "legacy_state": "navigation only", "v3_status": "supported", "duplicate": "intentional presentation", "recommendation": "share shell"},
@@ -228,7 +236,8 @@
     {"id": "R7", "severity": "high", "risk": "V3 has no model selector", "evidence": "Shot Studio only displays selected_profile_id", "mitigation": "shared selector and server identity check", "gate": 2},
     {"id": "R8", "severity": "high", "risk": "manual upload looks like asset completion", "evidence": "V2 asset_ingestion_api_available=false while Legacy upload returns adopted/ready", "mitigation": "compatibility labeling and canonical asset bridge", "gate": 1},
     {"id": "R9", "severity": "medium", "risk": "duplicate CTA wording hides different writes", "evidence": "generate/adopt/accept/fixed retry/prompt compile", "mitigation": "mutation inventory and distinct labels", "gate": 0},
-    {"id": "R10", "severity": "medium", "risk": "URL and fallback divergence", "evidence": "shared section/episode/shot/step plus query-only V3 gate", "mitigation": "kill switch and fallback link", "gate": 3}
+    {"id": "R10", "severity": "medium", "risk": "URL and fallback divergence", "evidence": "shared section/episode/shot/step plus query-only V3 gate", "mitigation": "kill switch and fallback link", "gate": 3},
+    {"id": "R11", "severity": "high", "risk": "provider cost double submit", "evidence": "V3 freshness/double-submit guards plus Legacy compatibility caller", "mitigation": "typed request, idempotency/telemetry, and caller convergence", "gate": 4}
   ],
   "recommended_next_phase": "PHASE_PRODUCTION_UI_V3_LEGACY_CAPABILITY_BRIDGE",
   "delete_nothing": true,

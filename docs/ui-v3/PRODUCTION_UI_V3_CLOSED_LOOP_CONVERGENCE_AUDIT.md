@@ -183,28 +183,33 @@ flowchart LR
 | Concern | Canonical source | V3 use | Legacy use | Recommendation |
 |---|---|---|---|---|
 | Current production state | `production-workspace-v2` from authority pointers, execution, candidates, PromptIR | Sole truth after mutation | Read beside legacy aggregate/task state | Share V2; remove inference after Legacy migration |
+| Generation eligibility | V2 `generation_readiness` blockers plus current PromptIR, asset authority, source binding, and model profile | `ProductionMediaLaneViewModel.generationAllowed` / `lanePrimaryAction` | Legacy gate helpers, adopted/reference checks, and provider preflight | V2 is canonical for V3; Legacy checks remain compatibility-only |
+| Generation running state | V2 `latest_execution` status and execution identity | `running` / `waiting_candidate` lane state | `task_id` status for creative-task workflows | Do not merge task IDs into V3 execution truth |
 | Execution identity | `GenerationExecutionRecord.execution_id` and V2 `latest_execution` | Required; rejects legacy-only `task_id` | Canonical when bridge response is present, task ID elsewhere | Add one execution/task adapter later |
 | Candidate identity | `MediaCandidateRecord.candidate_id` plus validation | Review identity guard | Canonical promotion or legacy adoption | Keep candidate binding |
+| Review eligibility | Current candidate, technical validation, freshness, and authority context in V2 | Review action is enabled only for the current candidate | Legacy acceptance/adoption panels use separate records | Keep candidate review separate from acceptance/adoption |
 | Official truth | `OfficialMediaPointer` → version → authority | Rendered as official | Adopted assets may be display-only | Never treat adoption as authority |
-| Prompt | PromptIR current pointer/version/hash | Readiness gate; no implicit compile | Async compiler can write version | Keep compile boundary explicit |
+| Prompt version | PromptIR current pointer/version/hash | Read-only freshness gate; no implicit compile | Async compiler/draft flow can create a version | Keep compile boundary explicit |
 | Model | Explicit profile ID and server resolver | Rechecked before POST | Sent by caller; frozen for task/bridge | One resolver |
+| Asset readiness | Production Asset authority/version/binding projection | `assetReadiness` and source binding gate | Legacy asset links/reference/adoption summaries | Build canonical ingestion before exposing upload in V3 |
 | Reference/source | Canonical bindings and current official IMAGE | Does not pass arbitrary first-frame/reference IDs | Legacy exposes adopted/reference payloads | Canonicalize manual ingestion before sharing |
+| Retry eligibility | No unified canonical retry/regenerate contract | `retry_generation` is deferred/disabled | Fixed continuity retry and task restart have separate contracts | Specify canonical lineage, fee, freshness, and stale-source policy first |
 | Recovery | Server projection | No local recovery | localStorage task IDs and task APIs | Do not merge storage schemas |
 | Source fact / ScriptIR | Existing source rows | V3 read-only | Repair/split tools controlled writes | No V3 source mutation |
 
 ## Mutation entry points and endpoint ownership
 
-| Mutation | V3 caller | Legacy caller | Endpoint owner | Duplicate action? | Recommendation |
-|---|---|---|---|---|---|
-| Submit IMAGE | `createShotStudioGenerationController.start` | `runStoryboardGeneration('frame')` | `POST .../generate-frame` → canonical execution | Same backend action, different gates | Share typed contract later |
-| Submit VIDEO | Same controller | `runStoryboardGeneration('video')` | `POST .../generate-video` → canonical execution | Same action; Legacy compatibility fields | Share backend |
-| Validate candidate | `createShotStudioMediaReviewController` | Authority tooling | `POST /api/assets/candidates/{candidate}/validate` | Two route facades call same core | Converge public facade |
-| Approve candidate | `approveProductionMediaCandidate` | Asset promotion panels | `POST /api/assets/candidates/{candidate}/promote` | Same authority mutation | Share now |
-| Prompt compile | Not exposed | `compileSelectedShotPrompts` | `POST .../compile-prompts/async` | Separate Prompt Version mutation | Keep separate CTA |
-| Acceptance | None | `saveAcceptanceRecord` | `POST .../acceptance-records` | Not candidate promotion | Keep Legacy-only |
-| Continuity | None | `ProductWorkspaceStoryboardContinuityPanel` | `/transition-contract`, `/transition-frames`, `/transition-continuity-reviews` | Cross-shot family absent in V3 | Keep Legacy-only |
-| Readiness repair | None | repair-plan/task/rollback actions | `/production-readiness/repair-plan*` | Not generation | Keep Legacy-only |
-| Task restart/reconcile | None | `productWorkspaceRecovery.ts` | `/api/prototyping/tasks/{task}/reconcile`, `/restart` | Separate task protocol | Share later via adapter |
+| Mutation | UI entry | Frontend function | Endpoint | Writes | Provider call possible? | Canonical authority affected? | Legacy-only? | V3-only? | Shared? | Recommended owner |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Submit IMAGE | V3 Generation Controls; Legacy Advanced Tools | `createShotStudioGenerationController.start`; `runStoryboardGeneration('frame')` | `POST .../generate-frame` | `GenerationExecutionRecord`, candidate | Yes after confirmation | Canonical execution/candidate | No | No | Yes, same bridge | `productionGeneration.ts` typed client |
+| Submit VIDEO | V3 Generation Controls; Legacy Advanced Tools | Same controller; `runStoryboardGeneration('video')` | `POST .../generate-video` | `GenerationExecutionRecord`, candidate | Yes after confirmation | Canonical execution/candidate | No | No | Yes, same bridge | `productionGeneration.ts` plus explicit source contract |
+| Validate candidate | V3 Review Desk; V2 authority panel | `createShotStudioMediaReviewController`; `validateProductionMediaCandidate` | `POST /api/assets/candidates/{candidate}/validate` (or media-authority facade) | `MediaValidationRecord` | No | Candidate validation authority | No | No | Yes | `core.media_authority.validate_media_candidate` |
+| Approve candidate | V3 Review Desk; V2/asset promotion panels | `approveProductionMediaCandidate` | `POST /api/assets/candidates/{candidate}/promote` | OfficialMedia version/authority/pointer | No | OfficialMedia authority | No | No | Yes | `core.media_authority.promote_media_candidate` |
+| Prompt compile | Legacy Prompt/Canvas/Batch panels | `compileSelectedShotPrompts` | `POST .../compile-prompts/async` | Prompt Version and compile task | Yes, explicit LLM | PromptIR/Prompt Version | Yes | No | Later | Prompt domain/compiler |
+| Acceptance | Legacy Acceptance panel | `saveAcceptanceRecord` | `POST .../acceptance-records` | `StoryboardAcceptanceRecord`, shot metadata | No | Acceptance record only | Yes | No | No | Legacy acceptance contract |
+| Continuity | Legacy Continuity panel | transition action helpers | `/transition-contract`, `/transition-frames`, `/transition-continuity-reviews` | Transition/review/retry rows | Fixed retry may call provider | Continuity domain, not OfficialMedia | Yes | No | No | Legacy continuity contract |
+| Readiness repair | Legacy Repair panel | repair-plan/task/rollback actions | `/production-readiness/repair-plan*` | Repair task/readiness/version records | Depends on action | Repair/readiness authority | Yes | No | No | Legacy repair contract |
+| Task restart/reconcile | Legacy Recovery/Task Center | `productWorkspaceRecovery.ts` | `/api/prototyping/tasks/{task}/reconcile`, `/restart` | Task/retry metadata | Restart may call provider | Creative-task protocol, not V2 execution truth | Yes | No | Later adapter | Server-backed execution/task adapter |
 
 ## Endpoint ownership audit
 
@@ -458,6 +463,7 @@ Recommended rollout: use an eligibility gate for projects with current canonical
 | R8 | Manual upload looks like asset completion | V2 `asset_ingestion_api_available=false`; Legacy upload still returns ready/adopted | High: user believes production can continue when canonical gate is blocked | Label Legacy upload compatibility; Gate 1 |
 | R9 | Duplicate CTA wording hides different writes | Generate, adopt, acceptance, fixed retry, and prompt compile all appear in Legacy | Medium: wrong approval or retry semantics | Mutation inventory and distinct labels |
 | R10 | URL/fallback divergence | Shared URL selection plus query-only V3 gate | Medium: deep link opens a different surface after rollout | Preserve `section/episode/shot/step`, add fallback link/kill switch |
+| R11 | Provider cost double submit | Generation has explicit confirmation and freshness/double-submit guards, while Legacy retains a compatibility caller | High: duplicate paid execution if callers diverge | One typed generation request, idempotency/telemetry, and Gate 4 caller convergence |
 
 ## Blocking gaps
 
