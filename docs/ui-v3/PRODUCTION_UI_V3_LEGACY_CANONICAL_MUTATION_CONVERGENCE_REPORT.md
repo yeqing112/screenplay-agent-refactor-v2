@@ -30,6 +30,8 @@ When the V2 projection is present, the storyboard surface re-reads the projectio
 
 The Legacy Production Workspace panel and the legacy canvas generation controls use the same client as well. The canvas keeps its historical task recovery UI, but its production POST no longer carries canvas adopted-media or reference fields.
 
+Production-mode action planning and the advanced generation controls now use V2 lane readiness directly. Legacy adopted-media values remain visible as compatibility evidence and cannot enable or disable a canonical production lane. The canvas also performs a fresh V2 shot and model check immediately before its canonical POST.
+
 ## Legacy Compatibility Mode
 
 The non-production branch retains the previous compatibility request for older projects. Its task recovery behavior is unchanged except that the user-visible message is explicitly marked `LEGACY_TASK_RECOVERY_COMPATIBILITY`. This keeps old task-only providers recoverable while making the boundary observable.
@@ -61,6 +63,8 @@ Production generation always sends `compileIfMissing:false`. Prompt compilation 
 ## Prompt Compile Boundary
 
 Prompt recompile metadata is carried only when the user explicitly ran the recompile flow. Generation does not silently mutate prompt versions or Source Fact records.
+
+The `recompile_then_frame` and `recompile_then_video` chains are evidence of a completed explicit compile step; the shared generation body still sends `compileIfMissing:false`. Contract tests cover both targets.
 
 ## Executability Override Boundary
 
@@ -101,12 +105,13 @@ The disposable browser fixture observed:
 - Both mocked responses contained canonical execution plus a diagnostic `task_id`; no task polling request was observed.
 - A task-only mocked response entered `LEGACY_TASK_RECOVERY_COMPATIBILITY`, created one pending recovery record, and issued one task status request before removing the record on completion.
 - Removing `ui_v3` from an eligible fixture selected `data-storyboard-surface="v3"` with reason `eligible_default`.
+- An explicit mocked prompt compile completed before a `recompile_then_video` generation POST; the generation body contained `compileIfMissing:false` and no legacy source fields.
 
 The fixture also exposed unrelated disposable-environment failures for prompt-version loading (`500`) and bridge-state loading (`404` in earlier runs); these did not alter the canonical request assertions.
 
 ## Tests
 
-The phase adds response-classification coverage, IMAGE and VIDEO canonical service contract assertions, AbortSignal forwarding, task-id preservation, batch/task-center behavior, and a real storyboard alias test proving response-shape telemetry is recorded at the endpoint boundary. The final verification commands are recorded in the truth audit artifact.
+The phase adds response-classification coverage, IMAGE and VIDEO canonical service contract assertions, AbortSignal forwarding, task-id preservation, explicit recompile-chain coverage, V2-only production action gating, canvas freshness coverage, batch/task-center behavior, and a real storyboard alias test proving response-shape telemetry is recorded at the endpoint boundary. The final verification commands are recorded in the truth audit artifact. The final Web suite has 61 files and 417 passing tests; the required backend regression set has 34 passing tests.
 
 ## Provider Safety
 

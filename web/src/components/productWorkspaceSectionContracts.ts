@@ -320,6 +320,7 @@ export interface CanvasBundle {
   qaEntries: Array<{ id?: number; episode: number; result: unknown; error_count?: number }>
   navigationTarget: CanvasNavigationTarget | null
   onRefreshAll: () => void
+  onRefreshProductionWorkspaceV2: () => Promise<void>
   onNavigateTaskSection: TaskNavigateHandler
   productionWorkspaceV2: ProductionWorkspaceV2Snapshot | null
   productionWorkspaceV2State?: ProductionWorkspaceLoadState

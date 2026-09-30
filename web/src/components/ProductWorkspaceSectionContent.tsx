@@ -350,6 +350,7 @@ export default function ProductWorkspaceSectionContent({
           qaEntries={canvas.qaEntries}
           navigationTarget={canvas.navigationTarget}
           onRefreshAll={canvas.onRefreshAll}
+          onRefreshProductionWorkspaceV2={canvas.onRefreshProductionWorkspaceV2}
           onNavigateTaskSection={canvas.onNavigateTaskSection}
           productionWorkspaceV2={canvas.productionWorkspaceV2}
           productionWorkspaceV2State={canvas.productionWorkspaceV2State}

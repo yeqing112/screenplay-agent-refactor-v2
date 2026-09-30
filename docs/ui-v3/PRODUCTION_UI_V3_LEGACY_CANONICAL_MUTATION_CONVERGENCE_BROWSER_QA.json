@@ -76,10 +76,54 @@
         "task_polling": false,
         "pending_record_created": false
       }
+    },
+    {
+      "target": "VIDEO",
+      "fixture": "explicit-recompile-then-video-mock",
+      "compile_endpoint": "/api/books/998755/storyboard/1/A/compile-prompts/async",
+      "compile_step": {
+        "explicit_user_action": true,
+        "mock_task_status": "done",
+        "provider_call": false
+      },
+      "generation_endpoint": "/api/books/998755/storyboard/1/A/generate-video",
+      "generation_chain": "recompile_then_video",
+      "request_assertions": {
+        "compileIfMissing": false,
+        "firstFrameAssetId_absent": true,
+        "referenceAssetIds_absent": true
+      },
+      "response_assertions": {
+        "execution_present": true,
+        "candidate_present": true,
+        "task_polling": false
+      },
+      "evidence": "browser mock network simulation plus Web contract test; no real provider call",
+      "network_request_ids": [
+        267,
+        268,
+        269
+      ],
+      "observed_request_bodies": {
+        "compile": {
+          "compileReason": "manual-recompile-before-video",
+          "force": false,
+          "confirmed": true,
+          "allowExternalCall": true
+        },
+        "generation": {
+          "modelProfileId": "builtin-mock-video",
+          "confirmed": true,
+          "allowExternalCall": true,
+          "compileIfMissing": false,
+          "generationChain": "recompile_then_video"
+        }
+      }
     }
   ],
   "known_fixture_noise": [
     "prompt-versions endpoint returns 500 in disposable fixture",
-    "background agent reconcile POST occurs on mount"
+    "background agent reconcile POST occurs on mount",
+    "prompt compiler UI repair CTA requires diagnostic fixture; explicit chain was exercised through mocked browser endpoint flow and contract test"
   ]
 }

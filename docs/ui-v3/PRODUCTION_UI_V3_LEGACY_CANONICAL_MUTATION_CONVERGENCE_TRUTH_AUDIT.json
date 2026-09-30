@@ -42,7 +42,10 @@
     "asset_bridge_regression": false,
     "surface_fallback_regression": false,
     "hundred_shot_gate_regression": false,
-    "fresh_projection_guard": true
+    "fresh_projection_guard": true,
+    "production_eligibility_uses_v2": true,
+    "canvas_freshness_guard": true,
+    "explicit_recompile_chain_preserved": true
   },
   "telemetry": {
     "real_endpoint_response_wiring": true,
@@ -63,11 +66,16 @@
   },
   "tests": {
     "web_test_files": 61,
-    "web_tests_passed": 413,
+    "web_tests_passed": 417,
     "backend_regression_tests_passed": 34,
     "web_build": "passed",
     "python_compileall": "passed",
-    "git_diff_check": "passed"
+    "git_diff_check": "passed",
+    "web_targeted_new_coverage": [
+      "production-mode V2 lane action selection ignores legacy adopted media",
+      "canvas freshness guard fails closed before canonical mutation",
+      "explicit recompile_then_video keeps compileIfMissing=false"
+    ]
   },
   "browser_qa": {
     "session": "legacy-canonical-mock",
@@ -95,6 +103,13 @@
       "query": "?section=storyboard&episode=1&shot=A&workspace_fixture=populated&workspace_v2_generation_fixture=ready-image",
       "surface": "v3",
       "reason": "eligible_default"
+    },
+    "prompt_recompile_chain": {
+      "compile_step_is_explicit": true,
+      "generation_chain": "recompile_then_video",
+      "compileIfMissing": false,
+      "provider_call": false,
+      "evidence": "web contract test; browser network simulation uses mocked endpoints only"
     }
   },
   "provider": {
@@ -118,6 +133,9 @@
     "database_migration": false,
     "real_provider_calls": 0,
     "worktree_clean": true,
-    "remote_head_synced": true
+    "remote_head_synced": true,
+    "production_eligibility_uses_v2": true,
+    "canvas_freshness_guard": true,
+    "explicit_recompile_then_generate": true
   }
 }

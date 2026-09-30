@@ -25,7 +25,8 @@ import {
   upsertPendingStoryboardTask,
 } from './productWorkspaceRecovery'
 import type { CanvasNavigationTarget, TaskNavigateHandler } from './productWorkspaceSectionContracts'
-import { findProductionShotV2, type ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
+import { findProductionShotV2, isProductionImageGenerationReady, isProductionVideoGenerationReady, type ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
+import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
 import {
   buildCanvasRecoveryActionLabel,
   buildCanvasRecoveryContinueActionPlan,
@@ -55,6 +56,7 @@ interface Props {
   qaEntries: Array<{ id?: number; episode: number; result: unknown; error_count?: number }>
   navigationTarget: CanvasNavigationTarget | null
   onRefreshAll: () => void
+  onRefreshProductionWorkspaceV2: () => Promise<void>
   onNavigateTaskSection: TaskNavigateHandler
   productionWorkspaceV2?: ProductionWorkspaceV2Snapshot | null
   productionWorkspaceV2State?: 'loading' | 'ready' | 'unavailable'
@@ -94,6 +96,32 @@ type CanvasShotRuntimeSummaryCard = {
   pendingTaskLabel: string
   suggestedActionLabel: string
   latestSourceLine: string | null
+}
+
+export async function assertCanvasGenerationFreshness(input: {
+  bookId: number
+  episode: number
+  shotId: string | number
+  target: 'IMAGE' | 'VIDEO'
+  imageModelProfileId: string | null
+  videoModelProfileId: string | null
+  currentProjection: ProductionWorkspaceV2Snapshot | null | undefined
+}) {
+  const fixtureMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('workspace_v2_generation_fixture')
+  const projection = fixtureMode
+    ? input.currentProjection
+    : await fetchProductionWorkspaceV2(input.bookId, {
+        imageModelProfileId: input.imageModelProfileId,
+        videoModelProfileId: input.videoModelProfileId,
+      })
+  const shot = findProductionShotV2(projection, input.episode, input.shotId)
+  const lane = input.target === 'IMAGE' ? shot?.IMAGE : shot?.VIDEO
+  const ready = input.target === 'IMAGE' ? isProductionImageGenerationReady(shot) : isProductionVideoGenerationReady(shot)
+  const selectedProfileId = input.target === 'IMAGE' ? input.imageModelProfileId : input.videoModelProfileId
+  const projectedProfileId = String(lane?.model.selected_profile_id || '').trim()
+  if (!shot || !lane || !ready || !selectedProfileId || projectedProfileId !== selectedProfileId) {
+    throw new Error('生产状态已经更新，请重新确认当前镜头和模型配置。')
+  }
 }
 
 export function shouldShowCanvasShotPrimaryAction(input: {
@@ -755,6 +783,7 @@ export default function ProductWorkspaceCanvasBetaSection({
   qaEntries,
   navigationTarget,
   onRefreshAll,
+  onRefreshProductionWorkspaceV2,
   onNavigateTaskSection,
   productionWorkspaceV2 = null,
   productionWorkspaceV2State = 'unavailable',
@@ -1377,6 +1406,15 @@ export default function ProductWorkspaceCanvasBetaSection({
     setFrameRecoveryTaskId(null)
 
     try {
+      await assertCanvasGenerationFreshness({
+        bookId,
+        episode: selectedShot.episode,
+        shotId: selectedShot.shot_id,
+        target: 'IMAGE',
+        imageModelProfileId,
+        videoModelProfileId,
+        currentProjection: productionWorkspaceV2,
+      })
       const payload = await submitCanonicalProductionGeneration({
         bookId,
         episode: selectedShot.episode,
@@ -1398,6 +1436,7 @@ export default function ProductWorkspaceCanvasBetaSection({
           candidateId: payload.candidate?.candidate_id,
           candidateStatus: payload.candidate?.status || 'MEDIA_CANDIDATE',
         })
+        await onRefreshProductionWorkspaceV2()
         onRefreshAll()
         return
       }
@@ -1431,6 +1470,7 @@ export default function ProductWorkspaceCanvasBetaSection({
           generationChain: chainMeta?.generationChain ?? 'canvas_generate_frame',
           taskId,
         })
+        await onRefreshProductionWorkspaceV2()
         onRefreshAll()
         return
       }
@@ -1484,6 +1524,15 @@ export default function ProductWorkspaceCanvasBetaSection({
     setVideoRecoveryTaskId(null)
 
     try {
+      await assertCanvasGenerationFreshness({
+        bookId,
+        episode: selectedShot.episode,
+        shotId: selectedShot.shot_id,
+        target: 'VIDEO',
+        imageModelProfileId,
+        videoModelProfileId,
+        currentProjection: productionWorkspaceV2,
+      })
       const payload = await submitCanonicalProductionGeneration({
         bookId,
         episode: selectedShot.episode,
@@ -1505,6 +1554,7 @@ export default function ProductWorkspaceCanvasBetaSection({
           candidateId: payload.candidate?.candidate_id,
           candidateStatus: payload.candidate?.status || 'MEDIA_CANDIDATE',
         })
+        await onRefreshProductionWorkspaceV2()
         onRefreshAll()
         return
       }
@@ -1538,6 +1588,7 @@ export default function ProductWorkspaceCanvasBetaSection({
           generationChain: chainMeta?.generationChain ?? 'canvas_generate_video',
           taskId,
         })
+        await onRefreshProductionWorkspaceV2()
         onRefreshAll()
         return
       }

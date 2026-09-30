@@ -52,6 +52,7 @@ interface StoryboardAdvancedToolsPanelProps {
   episode?: number | null
   shotId: string
   assetStatus?: string | null
+  productionMode?: boolean
   canGenerateFromGate: boolean
   canGenerateFrame?: boolean
   canGenerateVideo?: boolean
@@ -89,6 +90,7 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
   episode,
   shotId,
   assetStatus,
+  productionMode = false,
   canGenerateFromGate,
   canGenerateFrame = canGenerateFromGate,
   canGenerateVideo = canGenerateFromGate,
@@ -162,16 +164,16 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
         </div>
         <div className={`rounded-xl border p-4 ${activeStep === 'video' ? 'border-fuchsia-400/40 bg-fuchsia-500/10' : 'border-slate-800 bg-slate-950/50'}`}>
           <div className="text-sm font-medium text-white">生成视频</div>
-          <div className="mt-1 text-xs leading-5 text-slate-400">需要先有一张已采纳分镜图，系统会使用当前镜头的多参考输入。</div>
+          <div className="mt-1 text-xs leading-5 text-slate-400">{productionMode ? '按钮状态由 Production Workspace V2 的 VIDEO 泳道决定。' : '需要先有一张已采纳分镜图，系统会使用当前镜头的多参考输入。'}</div>
           <button
             type="button"
-            disabled={!canGenerateVideo || !hasAdoptedFrame || isGenerationBusy}
+            disabled={!canGenerateVideo || (!productionMode && !hasAdoptedFrame) || isGenerationBusy}
             onClick={() => { void onGenerateVideo() }}
-            className={`mt-3 rounded-lg px-3 py-2 text-xs font-medium transition ${!canGenerateVideo || !hasAdoptedFrame || isGenerationBusy ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500' : 'bg-fuchsia-600 text-white hover:bg-fuchsia-500'}`}
+            className={`mt-3 rounded-lg px-3 py-2 text-xs font-medium transition ${!canGenerateVideo || (!productionMode && !hasAdoptedFrame) || isGenerationBusy ? 'cursor-not-allowed border border-slate-800 bg-slate-900 text-slate-500' : 'bg-fuchsia-600 text-white hover:bg-fuchsia-500'}`}
           >
             {generationState === 'video' ? '正在生成视频…' : '生成视频'}
           </button>
-          {!hasAdoptedFrame ? <div className="mt-2 text-[11px] text-amber-200/80">请先在“生成分镜图”步骤采纳一张分镜图。</div> : null}
+          {!productionMode && !hasAdoptedFrame ? <div className="mt-2 text-[11px] text-amber-200/80">请先在“生成分镜图”步骤采纳一张分镜图。</div> : null}
         </div>
       </div>
 
@@ -273,7 +275,7 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
               {hasAdoptedFrame ? adoptedFrameLabel : '未采纳首帧'}
             </div>
             <div className="mt-2 break-all text-[11px] text-slate-500">
-              {hasAdoptedFrame ? `资产 ID：${adoptedFrameAssetId || '未记录'}` : '没有首帧时视频生成保持禁用'}
+              {hasAdoptedFrame ? `资产 ID：${adoptedFrameAssetId || '未记录'}` : productionMode ? 'Legacy 采纳状态仅作兼容展示；生产输入由 V2 投影决定。' : '没有首帧时视频生成保持禁用'}
             </div>
           </div>
           <div className="rounded-lg border border-slate-800 bg-slate-950/70 p-3">
@@ -316,6 +318,8 @@ export function ProductWorkspaceStoryboardAdvancedToolsPanel({
       <div className="mt-3 text-sm text-slate-300">
         {!canGenerateFromGate
           ? '当前镜头仍受上游锁稿/放行约束，暂不建议直接出图或出视频。'
+          : productionMode
+            ? '当前生产模式的生成资格由 Production Workspace V2 泳道决定；Legacy 采纳状态不会改变 canonical 生产门槛。'
           : hasAdoptedFrame
             ? '当前镜头已具备采纳首帧，视频会显式使用这张首帧与当前结构化参考图继续生成。'
             : '当前镜头还没有采纳首帧，视频生成按钮会保持禁用。'}

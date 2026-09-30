@@ -333,6 +333,15 @@ describe('canonical generation service contract', () => {
     expect(body.referenceAssetIds).toBeUndefined()
   })
 
+  it('keeps an explicit recompile_then_video chain separate from canonical compilation', async () => {
+    const fetchMock = vi.fn(async (_url: string, init: RequestInit) => ({ ok: true, json: async () => ({ execution: { status: 'RUNNING', target_media: 'VIDEO' } }), init }))
+    vi.stubGlobal('fetch', fetchMock)
+    await submitCanonicalProductionGeneration({ bookId: 1, episode: 1, shotId: 'S1', target: 'VIDEO', modelProfileId: 'video-profile', generationChain: 'recompile_then_video' })
+    const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body))
+    expect(body.generationChain).toBe('recompile_then_video')
+    expect(body.compileIfMissing).toBe(false)
+  })
+
   it('preserves HTTP status and backend code', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 409, json: async () => ({ detail: { code: 'GENERATION_PREVIEW_STALE', message: 'stale' } }) })))
     await expect(submitCanonicalProductionGeneration({ bookId: 1, episode: 1, shotId: 'S1', target: 'IMAGE', modelProfileId: 'image-profile' })).rejects.toMatchObject({ status: 409, code: 'GENERATION_PREVIEW_STALE' } satisfies Partial<ProductionGenerationServiceError>)

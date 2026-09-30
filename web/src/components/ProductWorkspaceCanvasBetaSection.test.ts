@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import {
   buildCanvasShotRuntimeSummaryCard,
@@ -6,6 +6,7 @@ import {
   buildCanvasShotPrimaryActionPlan,
   buildNavigationContinueChainMeta,
   getCanvasExecutionSummaryLabel,
+  assertCanvasGenerationFreshness,
   shouldShowCanvasShotPrimaryAction,
 } from './ProductWorkspaceCanvasBetaSection'
 
@@ -114,6 +115,28 @@ describe('ProductWorkspaceCanvasBetaSection helpers', () => {
     expect(shouldShowCanvasShotPrimaryAction({ productionWorkspaceV2State: 'unavailable', hasSelectedProductionShot: false, hasReadyLane: true, hasPendingRecovery: false })).toBe(false)
     expect(shouldShowCanvasShotPrimaryAction({ productionWorkspaceV2State: 'ready', hasSelectedProductionShot: true, hasReadyLane: false, hasPendingRecovery: false })).toBe(false)
     expect(shouldShowCanvasShotPrimaryAction({ productionWorkspaceV2State: 'ready', hasSelectedProductionShot: true, hasReadyLane: true, hasPendingRecovery: false })).toBe(true)
+  })
+
+  it('rechecks the V2 projection before a canvas canonical mutation', async () => {
+    vi.stubGlobal('window', { location: { search: '?workspace_v2_generation_fixture=ready-image' } })
+    await expect(
+      assertCanvasGenerationFreshness({
+        bookId: 1,
+        episode: 1,
+        shotId: 'S1',
+        target: 'IMAGE',
+        imageModelProfileId: 'image-profile',
+        videoModelProfileId: 'video-profile',
+        currentProjection: {
+          shots: [{
+            identity: { episode: 1, shot_id: 'S1' },
+            IMAGE: { generation_readiness: { ready: false }, model: { selected_profile_id: 'image-profile' } },
+            VIDEO: { generation_readiness: { ready: false }, model: { selected_profile_id: 'video-profile' } },
+          }],
+        } as any,
+      }),
+    ).rejects.toThrow('生产状态已经更新')
+    vi.unstubAllGlobals()
   })
 
   it('prioritizes task recovery over new generation when pending tasks still exist', () => {

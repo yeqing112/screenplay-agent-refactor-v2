@@ -295,6 +295,7 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         qaEntries: params.qaEntries,
         navigationTarget: params.canvasNavigationTarget,
         onRefreshAll: params.onRefreshAll,
+        onRefreshProductionWorkspaceV2: params.onRefreshProductionWorkspaceV2,
         onNavigateTaskSection: params.onNavigateTaskSection,
         productionWorkspaceV2: params.productionWorkspaceV2,
         productionWorkspaceV2State: params.productionWorkspaceV2State,

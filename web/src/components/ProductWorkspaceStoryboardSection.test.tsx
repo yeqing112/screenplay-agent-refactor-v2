@@ -517,6 +517,51 @@ describe('ProductWorkspaceStoryboardSection', () => {
     })
   })
 
+  it('uses V2 lane readiness instead of legacy adopted media in production mode', () => {
+    expect(
+      buildStoryboardCanvasPrimaryActionPlan({
+        canGenerateFromGate: true,
+        canGenerateFrame: false,
+        canGenerateVideo: true,
+        productionMode: true,
+        hasCompiledPrompt: true,
+        hasAdoptedFrame: false,
+        hasAdoptedVideo: false,
+      }),
+    ).toEqual({
+      action: 'generate_video',
+      label: '生成视频',
+      detail: '当前 VIDEO 泳道已满足 V2 生产条件，可以提交 canonical 视频生成。',
+    })
+  })
+
+  it('offers production repair generation without a legacy adopted frame', () => {
+    const onGenerateVideo = () => {}
+    const actions = buildStoryboardRepairActions({
+      selectedShot: makeShot(),
+      storyboardGateStatus: 'ready',
+      productionMode: true,
+      canGenerateFrame: false,
+      canGenerateVideo: true,
+      hasAdoptedFrame: false,
+      hasAdoptedVideo: false,
+      compilerWarnings: [],
+      missingReferenceBindings: [],
+      characterBindings: [],
+      promptQualityRepair: { hasIssue: false, issueLabels: [] },
+      hasCompilerWarnings: false,
+      hasBlockingIssues: false,
+      compilerChecks: [],
+      hasRecoveryTask: false,
+      onGenerateVideo,
+    } as any)
+
+    expect(actions.find((action) => action.key === 'generate-video')).toMatchObject({
+      title: '生成视频',
+      onClick: onGenerateVideo,
+    })
+  })
+
   it('renders canvas handoff state inside the storyboard detail panel', () => {
     const html = renderStoryboard([makeShot({ shot_id: '1-01', scene_name: '寺庙后院' })], {
       canvasHandoff: {

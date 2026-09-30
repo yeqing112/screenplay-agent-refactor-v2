@@ -4,16 +4,34 @@
       "target": "IMAGE",
       "method": "POST",
       "path": "/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-frame",
-      "body_contract": ["modelProfileId", "confirmed", "allowExternalCall", "compileIfMissing", "generationChain"],
-      "forbidden_production_fields": ["firstFrameAssetId", "referenceAssetIds"],
+      "body_contract": [
+        "modelProfileId",
+        "confirmed",
+        "allowExternalCall",
+        "compileIfMissing",
+        "generationChain"
+      ],
+      "forbidden_production_fields": [
+        "firstFrameAssetId",
+        "referenceAssetIds"
+      ],
       "observed_status": 200
     },
     {
       "target": "VIDEO",
       "method": "POST",
       "path": "/api/books/{book_id}/storyboard/{episode}/{shot_id}/generate-video",
-      "body_contract": ["modelProfileId", "confirmed", "allowExternalCall", "compileIfMissing", "generationChain"],
-      "forbidden_production_fields": ["firstFrameAssetId", "referenceAssetIds"],
+      "body_contract": [
+        "modelProfileId",
+        "confirmed",
+        "allowExternalCall",
+        "compileIfMissing",
+        "generationChain"
+      ],
+      "forbidden_production_fields": [
+        "firstFrameAssetId",
+        "referenceAssetIds"
+      ],
       "observed_status": 200
     }
   ],
@@ -35,5 +53,19 @@
     "agent_reconcile_post": true,
     "generation_post_on_mount": false
   },
-  "real_provider_call": false
+  "real_provider_call": false,
+  "prompt_recompile_audit": {
+    "compile_post": "/api/books/998755/storyboard/1/A/compile-prompts/async",
+    "compile_status_get": "/api/storyboard-prompt-compile-tasks/browser-prompt-compile-1",
+    "generation_post": "/api/books/998755/storyboard/1/A/generate-video",
+    "generation_chain": "recompile_then_video",
+    "compileIfMissing": false,
+    "task_polling_requests": 0,
+    "provider_call": false,
+    "network_request_ids": [
+      267,
+      268,
+      269
+    ]
+  }
 }

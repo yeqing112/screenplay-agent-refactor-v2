@@ -28,7 +28,29 @@ export function useProductionWorkspaceV2(bookId?: number) {
       const fixtureEnabled = import.meta.env.DEV && params && (fixtureName === 'blocked' || params.get('workspace_fixture') === 'populated')
       const generationFixtureEnabled = import.meta.env.DEV && Boolean(generationFixture) && ['ready-image', 'running-image', 'review-image', 'official-image-ready-video', 'running-video', 'review-video', 'official-shot'].includes(generationFixture || '')
       if (generationFixtureEnabled && generationFixture) {
-        setData({ ...createProductionWorkspaceV2GenerationFixture(generationFixture), book_id: bookId })
+        const fixture = createProductionWorkspaceV2GenerationFixture(generationFixture)
+        const requestedShotId = params?.get('shot')
+        const selection = readExplicitGenerationProfileSelection()
+        const fixtureShots = fixture.shots.map((shot, index) => {
+          if (index !== 0) return shot
+          return {
+            ...shot,
+            ...(requestedShotId ? { identity: { ...shot.identity, shot_id: requestedShotId } } : {}),
+            IMAGE: selection.imageModelProfileId
+              ? { ...shot.IMAGE, model: { ...shot.IMAGE.model, selected_profile_id: selection.imageModelProfileId } }
+              : shot.IMAGE,
+            VIDEO: selection.videoModelProfileId
+              ? { ...shot.VIDEO, model: { ...shot.VIDEO.model, selected_profile_id: selection.videoModelProfileId } }
+              : shot.VIDEO,
+          }
+        })
+        setData({
+          ...fixture,
+          book_id: bookId,
+          // Disposable generation fixtures must follow the storyboard shot
+          // selected in the URL; real API projections remain untouched.
+          shots: fixtureShots,
+        })
         setState('ready')
         return
       }

@@ -287,6 +287,32 @@ export function buildStoryboardCanvasPrimaryActionPlan(input: {
     } satisfies StoryboardCanvasPrimaryActionPlan
   }
 
+  // Production mode is governed entirely by the V2 projection. Legacy
+  // adopted-media flags remain display-only compatibility evidence and must
+  // not decide which canonical lane can run.
+  if (input.productionMode) {
+    if (canGenerateFrame) {
+      return {
+        action: 'generate_frame',
+        label: '生成首帧',
+        detail: '当前 IMAGE 泳道已满足 V2 生产条件，可以提交 canonical 首帧生成。',
+      } satisfies StoryboardCanvasPrimaryActionPlan
+    }
+    if (canGenerateVideo) {
+      return {
+        action: 'generate_video',
+        label: '生成视频',
+        detail: '当前 VIDEO 泳道已满足 V2 生产条件，可以提交 canonical 视频生成。',
+      } satisfies StoryboardCanvasPrimaryActionPlan
+    }
+    return {
+      action: 'production_blocked',
+      label: input.productionBlocker?.recommended_action || '先处理生产阻塞',
+      detail: input.productionBlocker?.description || '当前镜头的 V2 生产泳道尚未满足执行条件。',
+      targetSection: input.productionBlocker?.target_section,
+    } satisfies StoryboardCanvasPrimaryActionPlan
+  }
+
   if (!input.hasAdoptedFrame && !input.hasReferenceImages) {
     if (!canGenerateFrame && input.productionMode) {
       return {
@@ -1407,6 +1433,9 @@ function buildCompilerDiagnosticFocusCards(
 export function buildStoryboardRepairActions(input: {
   selectedShot: StoryboardShotOutput | null
   storyboardGateStatus: 'ready' | 'blocked'
+  productionMode?: boolean
+  canGenerateFrame?: boolean
+  canGenerateVideo?: boolean
   hasAdoptedFrame: boolean
   hasAdoptedVideo: boolean
   compilerWarnings: string[]
@@ -1499,8 +1528,12 @@ export function buildStoryboardRepairActions(input: {
   const hasHighImportancePropGap = Boolean(findFailedCompilerCheck(input.compilerChecks, 'high_importance_prop_presence'))
   if (promptRepairCheck || input.promptQualityRepair.hasIssue) {
     const assetNames = extractAssetNamesFromCheckDetails(promptRepairCheck?.details)
-    const canContinueVideo = input.storyboardGateStatus === 'ready' && input.hasAdoptedFrame && !input.hasAdoptedVideo && input.onCompilePromptsAndContinueVideo
-    const canContinueFrame = input.storyboardGateStatus === 'ready' && !input.hasAdoptedFrame && input.onCompilePromptsAndContinueFrame
+    const canContinueVideo = input.productionMode
+      ? input.canGenerateVideo && input.onCompilePromptsAndContinueVideo
+      : input.storyboardGateStatus === 'ready' && input.hasAdoptedFrame && !input.hasAdoptedVideo && input.onCompilePromptsAndContinueVideo
+    const canContinueFrame = input.productionMode
+      ? input.canGenerateFrame && input.onCompilePromptsAndContinueFrame
+      : input.storyboardGateStatus === 'ready' && !input.hasAdoptedFrame && input.onCompilePromptsAndContinueFrame
     const repairActionTitle = hasScreenplayResidue
       ? '重编提示词并清理对白稿残留'
       : assetNames.length > 0
@@ -1545,22 +1578,32 @@ export function buildStoryboardRepairActions(input: {
   // H3 can use locked multi-reference images without a storyboard first
   // frame.  Once a video already exists, suggesting a frame as the next
   // production action is both redundant and misleading.
-  if (input.storyboardGateStatus === 'ready' && !input.hasAdoptedFrame && !input.hasAdoptedVideo) {
+  const shouldOfferFrame = input.productionMode
+    ? Boolean(input.canGenerateFrame && input.onGenerateFrame)
+    : input.storyboardGateStatus === 'ready' && !input.hasAdoptedFrame && !input.hasAdoptedVideo
+  if (shouldOfferFrame) {
     actions.push({
       key: 'generate-frame',
-      title: '先生成首帧',
-      detail: '当前镜头还没有采纳首帧，后续视频生成也无法继续，建议先补齐分镜图版本。',
+      title: input.productionMode ? '生成首帧' : '先生成首帧',
+      detail: input.productionMode
+        ? '当前 IMAGE 泳道已满足 V2 生产条件，可以提交 canonical 首帧生成。'
+        : '当前镜头还没有采纳首帧，后续视频生成也无法继续，建议先补齐分镜图版本。',
       cta: '生成首帧',
       onClick: input.onGenerateFrame,
       disabled: !input.onGenerateFrame,
     })
   }
 
-  if (input.storyboardGateStatus === 'ready' && input.hasAdoptedFrame && !input.hasAdoptedVideo) {
+  const shouldOfferVideo = input.productionMode
+    ? Boolean(input.canGenerateVideo && input.onGenerateVideo)
+    : input.storyboardGateStatus === 'ready' && input.hasAdoptedFrame && !input.hasAdoptedVideo
+  if (shouldOfferVideo) {
     actions.push({
       key: 'generate-video',
-      title: '继续生成视频',
-      detail: '当前镜头已有采纳首帧，但还没有采纳视频，可以直接继续当前镜头的视频生成。',
+      title: input.productionMode ? '生成视频' : '继续生成视频',
+      detail: input.productionMode
+        ? '当前 VIDEO 泳道已满足 V2 生产条件，可以提交 canonical 视频生成。'
+        : '当前镜头已有采纳首帧，但还没有采纳视频，可以直接继续当前镜头的视频生成。',
       cta: '生成视频',
       onClick: input.onGenerateVideo,
       disabled: !input.onGenerateVideo,
@@ -2402,6 +2445,9 @@ export default function ProductWorkspaceStoryboardSection({
       buildStoryboardRepairActions({
         selectedShot,
         storyboardGateStatus: storyboardGate.status,
+        productionMode,
+        canGenerateFrame: canGenerateFrameFromV2,
+        canGenerateVideo: canGenerateVideoFromV2,
         hasAdoptedFrame,
         hasAdoptedVideo: Boolean(adoptedVideo),
         compilerWarnings,
@@ -2419,17 +2465,17 @@ export default function ProductWorkspaceStoryboardSection({
             ? () => { void compileSelectedShotPrompts() }
             : undefined,
         onCompilePromptsAndContinueFrame:
-          canGenerateFromGate && compileActionState !== 'saving' && !isGenerationBusy
+          (productionMode ? canGenerateFrameFromV2 : canGenerateFromGate) && compileActionState !== 'saving' && !isGenerationBusy
             ? () => { void runPromptRepairAndContinue('frame') }
             : undefined,
         onCompilePromptsAndContinueVideo:
-          canGenerateFromGate && hasAdoptedFrame && !isGenerationBusy
+          (productionMode ? canGenerateVideoFromV2 : canGenerateFromGate && hasAdoptedFrame) && !isGenerationBusy
             ? () => { void runPromptRepairAndContinue('video') }
             : undefined,
         onGenerateFrame:
           canGenerateFrameFromV2 && !isGenerationBusy ? () => { void runStoryboardGeneration('frame') } : undefined,
         onGenerateVideo:
-          canGenerateVideoFromV2 && hasAdoptedFrame && !isGenerationBusy ? () => { void runStoryboardGeneration('video') } : undefined,
+          canGenerateVideoFromV2 && !isGenerationBusy ? () => { void runStoryboardGeneration('video') } : undefined,
       }),
     [
       adoptedVideo,
@@ -3086,10 +3132,13 @@ export default function ProductWorkspaceStoryboardSection({
         // the submission boundary so the confirmation dialog cannot submit
         // against a stale shot, lane, or model selection.
         await onRefreshProductionWorkspaceV2?.()
-        const freshProjection = await fetchProductionWorkspaceV2(_bookId, {
-          imageModelProfileId: kind === 'frame' ? selectedGenerationProfile.id : imageModelProfile?.id ?? null,
-          videoModelProfileId: kind === 'video' ? selectedGenerationProfile.id : videoModelProfile?.id ?? null,
-        })
+        const fixtureMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('workspace_v2_generation_fixture')
+        const freshProjection = fixtureMode
+          ? productionWorkspaceV2
+          : await fetchProductionWorkspaceV2(_bookId, {
+              imageModelProfileId: kind === 'frame' ? selectedGenerationProfile.id : imageModelProfile?.id ?? null,
+              videoModelProfileId: kind === 'video' ? selectedGenerationProfile.id : videoModelProfile?.id ?? null,
+            })
         const freshShot = findProductionShotV2(freshProjection, selectedShot.episode, selectedShot.shot_id)
         const freshLane = kind === 'frame' ? freshShot?.IMAGE : freshShot?.VIDEO
         const freshReady = kind === 'frame' ? isProductionImageGenerationReady(freshShot) : isProductionVideoGenerationReady(freshShot)
@@ -4393,13 +4442,14 @@ export default function ProductWorkspaceStoryboardSection({
 
               {(activeStoryboardStep === 'frame' || activeStoryboardStep === 'video') ? <>
                 <div className="mb-3 grid gap-3 rounded-xl border border-slate-800 bg-slate-950/60 p-3 md:grid-cols-2">
-                  <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={imageModelProfile?.id || null} onChange={(id) => setImageModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh() }} />
-                  <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={videoModelProfile?.id || null} onChange={(id) => setVideoModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh() }} />
+                  <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={imageModelProfile?.id || null} onChange={(id) => setImageModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh(); await onRefreshProductionWorkspaceV2?.() }} />
+                  <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={videoModelProfile?.id || null} onChange={(id) => setVideoModelProfile(generationModelProfiles.find((item) => item.id === id) || null)} onRefresh={async () => { onRefresh(); await onRefreshProductionWorkspaceV2?.() }} />
                 </div>
                 <ProductWorkspaceStoryboardAdvancedToolsPanel
                 episode={selectedShot.episode}
                 shotId={String(selectedShot.shot_id)}
                 assetStatus={selectedShot.asset_status}
+                productionMode={productionMode}
                 canGenerateFromGate={canGenerateFromGate}
                 canGenerateFrame={canGenerateFrameFromV2}
                 canGenerateVideo={canGenerateVideoFromV2}
