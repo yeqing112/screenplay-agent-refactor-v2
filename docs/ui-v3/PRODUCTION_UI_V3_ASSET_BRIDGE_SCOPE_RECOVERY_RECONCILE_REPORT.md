@@ -71,8 +71,10 @@ Screenshots from the disposable bridge pass are retained beside the earlier brid
 - `pytest -q tests/test_production_asset_api.py`: 3 passed.
 - `pytest -q tests/test_h2_asset_authority_schema.py tests/test_production_asset_graph_canary.py`: passed.
 - `npm --prefix web test -- --run src/services/productionAssets.test.ts`: 2 passed.
+- `npm --prefix web test`: 59 files, 388 tests passed.
+- `npm --prefix web run build`: passed.
+- Runtime regression (`test_generation_compatibility_telemetry.py`, `test_phase_j3_canonical_generation.py`, `test_generation_execution_foundation.py`, `test_asset_promotion_runtime.py`): 33 passed.
 - `python -m py_compile core/production_asset_authority.py api/production_asset_api.py core/production_workspace_projection_v2.py`: passed.
-- Full web test suite and production build are recorded in the final push verification.
 - `git diff --check`: passed before commit.
 
 ## Machine-readable evidence
