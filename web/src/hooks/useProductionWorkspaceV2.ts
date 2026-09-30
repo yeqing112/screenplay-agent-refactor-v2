@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
+import { createProductionWorkspaceV2GenerationFixture, createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture, type ProductionWorkspaceV2GenerationFixtureKind } from '../fixtures/productionWorkspaceV2'
 import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
 import type { ProductionWorkspaceLoadState, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 import { readExplicitGenerationProfileSelection } from '../components/productWorkspaceGeneration'
@@ -23,8 +23,15 @@ export function useProductionWorkspaceV2(bookId?: number) {
     try {
       const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
       const fixtureName = params?.get('workspace_v2_fixture')
+      const generationFixture = params?.get('workspace_v2_generation_fixture') as ProductionWorkspaceV2GenerationFixtureKind | null
       const reviewFixtureEnabled = import.meta.env.DEV && fixtureName === 'review'
       const fixtureEnabled = import.meta.env.DEV && params && (fixtureName === 'blocked' || params.get('workspace_fixture') === 'populated')
+      const generationFixtureEnabled = import.meta.env.DEV && Boolean(generationFixture) && ['ready-image', 'running-image', 'review-image', 'official-image-ready-video', 'running-video', 'review-video', 'official-shot'].includes(generationFixture || '')
+      if (generationFixtureEnabled && generationFixture) {
+        setData({ ...createProductionWorkspaceV2GenerationFixture(generationFixture), book_id: bookId })
+        setState('ready')
+        return
+      }
       if (reviewFixtureEnabled) {
         const lane = params?.get('review_lane') === 'VIDEO' ? 'VIDEO' : 'IMAGE'
         const promoted = params?.get('review_mutation_fixture') === 'success' && reviewFixtureRefreshCount > 0

@@ -169,3 +169,51 @@ export function createProductionWorkspaceV2ReviewFixture(options: { lane?: 'IMAG
     provider_calls: 0,
   }
 }
+
+export type ProductionWorkspaceV2GenerationFixtureKind =
+  | 'ready-image'
+  | 'running-image'
+  | 'review-image'
+  | 'official-image-ready-video'
+  | 'running-video'
+  | 'review-video'
+  | 'official-shot'
+
+/** Disposable DEV-only states used by Shot Studio generation QA. */
+export function createProductionWorkspaceV2GenerationFixture(kind: ProductionWorkspaceV2GenerationFixtureKind): ProductionWorkspaceV2Snapshot {
+  const base = createProductionWorkspaceV2ReviewFixture({ lane: kind.includes('video') ? 'VIDEO' : 'IMAGE', promoted: false })
+  const shot = base.shots[0]
+  const cleanImage: any = {
+    ...shot.IMAGE,
+    candidates: { count: 0, latest: null, items: [] },
+    generation_readiness: { ready: true, reason_codes: [], primary_blocker: null, blockers: [] },
+    official: { current: false, currentness: 'missing', version: null, authority: null, pointer: null, preview: null },
+    model: { selected_profile_id: 'fixture-image-profile', provider: 'fixture', model_name: 'Fixture Image Generation' },
+  }
+  const cleanVideo: any = {
+    ...shot.VIDEO,
+    candidates: { count: 0, latest: null, items: [] },
+    generation_readiness: { ready: false, reason_codes: ['OFFICIAL_IMAGE_REQUIRED'], primary_blocker: { code: 'OFFICIAL_IMAGE_REQUIRED', message: 'IMAGE_TO_VIDEO 需要先建立当前正式图片。' }, blockers: [{ code: 'OFFICIAL_IMAGE_REQUIRED', message: 'IMAGE_TO_VIDEO 需要先建立当前正式图片。' }] },
+    official: { current: false, currentness: 'missing', version: null, authority: null, pointer: null, preview: null },
+    model: { selected_profile_id: 'fixture-video-profile', provider: 'fixture', model_name: 'Fixture Video Generation' },
+  }
+  const runningExecution: any = { execution_id: `fixture-${kind}`, status: 'RUNNING', provider: 'fixture', model: 'Fixture' }
+  let nextShot: any = { ...shot, IMAGE: cleanImage, VIDEO: cleanVideo, blockers: [], asset_readiness: { state: 'ready' as const, required: {}, missing: [], stale: [], current: true }, next_action: { key: 'GENERATE_IMAGE', label: '生成图片' } }
+  if (kind === 'running-image') nextShot = { ...nextShot, IMAGE: { ...cleanImage, latest_execution: runningExecution, generation_readiness: { ...cleanImage.generation_readiness, ready: false, reason_codes: ['EXECUTION_RUNNING'] } } }
+  if (kind === 'review-image') nextShot = { ...createProductionWorkspaceV2ReviewFixture({ lane: 'IMAGE' }).shots[0], blockers: [] }
+  if (kind === 'official-image-ready-video') nextShot = { ...nextShot, IMAGE: { ...cleanImage, official: fixtureOfficialImage }, VIDEO: { ...cleanVideo, source_official_image: fixtureOfficialImage, generation_readiness: { ready: true, reason_codes: [], primary_blocker: null, blockers: [] } }, next_action: { key: 'GENERATE_VIDEO', label: '生成视频' } }
+  if (kind === 'running-video') nextShot = { ...nextShot, IMAGE: { ...cleanImage, official: fixtureOfficialImage }, VIDEO: { ...cleanVideo, source_official_image: fixtureOfficialImage, latest_execution: runningExecution, generation_readiness: { ready: false, reason_codes: ['EXECUTION_RUNNING'], primary_blocker: null, blockers: [] } }, next_action: { key: 'WAIT_FOR_VIDEO', label: '等待视频' } }
+  if (kind === 'review-video') nextShot = { ...createProductionWorkspaceV2ReviewFixture({ lane: 'VIDEO' }).shots[0], blockers: [] }
+  if (kind === 'official-shot') nextShot = { ...createProductionWorkspaceV2ReviewFixture({ lane: 'VIDEO', promoted: true }).shots[0], blockers: [] }
+  return { ...base, project: { ...base.project, overall_state: 'ready', current_blockers: [] }, shots: [nextShot], assets: [], asset_ingestion_api_available: true, provider_calls: 0 }
+}
+
+export const productionWorkspaceV2GenerationFixtures: Record<ProductionWorkspaceV2GenerationFixtureKind, ProductionWorkspaceV2Snapshot> = {
+  'ready-image': createProductionWorkspaceV2GenerationFixture('ready-image'),
+  'running-image': createProductionWorkspaceV2GenerationFixture('running-image'),
+  'review-image': createProductionWorkspaceV2GenerationFixture('review-image'),
+  'official-image-ready-video': createProductionWorkspaceV2GenerationFixture('official-image-ready-video'),
+  'running-video': createProductionWorkspaceV2GenerationFixture('running-video'),
+  'review-video': createProductionWorkspaceV2GenerationFixture('review-video'),
+  'official-shot': createProductionWorkspaceV2GenerationFixture('official-shot'),
+}

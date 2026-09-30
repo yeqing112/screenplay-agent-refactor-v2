@@ -1,0 +1,26 @@
+{
+  "slice": "IMAGE -> REVIEW -> APPROVE -> OFFICIAL IMAGE -> VIDEO -> REVIEW -> APPROVE -> OFFICIAL SHOT",
+  "entry": "Shot Studio V3 canary (?section=storyboard&ui_v3=shot-studio)",
+  "image": {
+    "ready": "generation CTA enabled only for primaryAction.kind=generate_image",
+    "running": "canonical execution is observed through V2 refresh",
+    "review": "candidate is displayed as non-official and requires human approval"
+  },
+  "video": {
+    "ready": "enabled only after canonical official IMAGE source is current",
+    "running": "canonical execution is observed through V2 refresh",
+    "review": "candidate is displayed as non-official and requires human approval"
+  },
+  "guards": [
+    "explicit model profile",
+    "fee confirmation",
+    "stale/review/official/blocked gate",
+    "double submit lock",
+    "AbortController cancellation",
+    "legacy task_id fail closed",
+    "bounded V2 polling",
+    "candidate visibility lag handling"
+  ],
+  "provider_calls": 0,
+  "production_writes": 0
+}

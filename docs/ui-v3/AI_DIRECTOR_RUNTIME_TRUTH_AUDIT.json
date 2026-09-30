@@ -1,0 +1,29 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_SHOT_GENERATION_EXECUTION_PATH",
+  "status": "complete",
+  "completion_marker": "PRODUCTION_UI_V3_SHOT_GENERATION_EXECUTION_PATH_COMPLETE",
+  "source_of_truth": "ProductionWorkspaceV2Snapshot -> productionUiV3 adapter",
+  "forbidden_sources": [
+    "legacy adopted",
+    "legacy asset links",
+    "localStorage pending task",
+    "productWorkspaceRecovery",
+    "PendingStoryboardTask"
+  ],
+  "provider_calls": 0,
+  "real_generation": false,
+  "real_production_writes": false,
+  "compile_if_missing": false,
+  "canonical_routes": [
+    "/api/books/{bookId}/storyboard/{episode}/{shotId}/generate-frame",
+    "/api/books/{bookId}/storyboard/{episode}/{shotId}/generate-video"
+  ],
+  "review_gate": "explicit APPROVE promotion remains required",
+  "status_projection": "V2 refresh only",
+  "qa": {
+    "web_test_files": 57,
+    "web_tests": 365,
+    "backend_tests": 32,
+    "build": "pass"
+  }
+}

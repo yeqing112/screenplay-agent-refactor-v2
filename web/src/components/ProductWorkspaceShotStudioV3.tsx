@@ -27,6 +27,10 @@ import {
   type ShotReviewCandidateIdentity,
   type ShotReviewMutationSnapshot,
 } from '../services/productWorkspaceShotReview'
+import {
+  createShotStudioGenerationController,
+  type ShotGenerationMutationSnapshot,
+} from '../services/productWorkspaceShotGeneration'
 import { approveProductionMediaCandidate, validateProductionMediaCandidate } from '../services/productionWorkspace'
 
 interface ProductWorkspaceShotStudioV3Props {
@@ -250,7 +254,36 @@ function ShotNavigator({
   )
 }
 
-function MediaCanvas({ shot, lane, onLaneChange }: { shot: ShotStudioViewModel; lane: MediaLane; onLaneChange: (lane: MediaLane) => void }) {
+function generationStateLabel(state: ShotGenerationMutationSnapshot['state']) {
+  if (state === 'confirming') return '等待费用确认'
+  if (state === 'submitting') return '提交中'
+  if (state === 'refreshing') return '同步中'
+  if (state === 'running') return '系统处理中'
+  if (state === 'waiting_candidate') return '等待候选'
+  if (state === 'candidate_ready') return '候选已就绪'
+  if (state === 'failed') return '生成失败'
+  if (state === 'cancelled') return '已取消'
+  return ''
+}
+
+function GenerationControls({ shot, lane, mutation, onGenerate, onCancel }: { shot: ShotStudioViewModel; lane: MediaLane; mutation: ShotGenerationMutationSnapshot; onGenerate: (target: MediaLane) => void; onCancel: () => void }) {
+  const selected = lane === 'VIDEO' ? shot.video : shot.image
+  const expectedKind = lane === 'IMAGE' ? 'generate_image' : 'generate_video'
+  const canGenerate = selected.primaryAction.kind === expectedKind && selected.generationAllowed && !shot.stale.isStale
+  const isCurrent = mutation.shotId === shot.shotId && mutation.target === lane
+  const mutating = isCurrent && ['confirming', 'submitting', 'refreshing', 'running'].includes(mutation.state)
+  const model = selected.professional.model.selected_profile_id
+  return <div data-testid="shot-studio-generation-controls" className="border-t border-[#2A3437] bg-[#1A2225] px-4 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <div><div className="text-[10px] uppercase tracking-[0.16em] text-[#D8A47C]">Generation Action</div><div className="mt-1 text-xs text-[#A9B4B3]">{canGenerate ? `模型配置：${model || '未选择'}` : selected.state === 'review' ? '当前候选需要人工审核。' : selected.state === 'official' ? '当前 lane 已是正式版本。' : selected.detail}</div></div>
+      <div className="flex flex-wrap items-center gap-2"><button type="button" data-testid={`shot-studio-generate-${lane.toLowerCase()}`} disabled={!canGenerate || mutating} onClick={() => onGenerate(lane)} className="border border-[#D8A47C]/70 bg-[#D8A47C]/15 px-3 py-2 text-xs font-medium text-[#F0C6A4] disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8A47C]">{lane === 'IMAGE' ? '生成 IMAGE' : '生成 VIDEO'}</button>{mutating ? <button type="button" onClick={onCancel} className="border border-[#DF8E8C]/50 px-3 py-2 text-xs text-[#DF8E8C]">取消</button> : null}</div>
+    </div>
+    {isCurrent && mutation.state !== 'idle' ? <div className={`mt-2 text-[11px] ${mutation.state === 'failed' ? 'text-[#DF8E8C]' : mutation.state === 'candidate_ready' ? 'text-[#9FCBAB]' : 'text-[#8BC9D9]'}`} role={mutation.state === 'failed' ? 'alert' : 'status'}>{generationStateLabel(mutation.state)} · {mutation.message}</div> : null}
+    {canGenerate ? <div className="mt-2 text-[10px] text-[#DBB36F]">该操作可能调用外部模型并产生费用。</div> : null}
+  </div>
+}
+
+function MediaCanvas({ shot, lane, onLaneChange, mutation, onGenerate, onCancel }: { shot: ShotStudioViewModel; lane: MediaLane; onLaneChange: (lane: MediaLane) => void; mutation: ShotGenerationMutationSnapshot; onGenerate: (target: MediaLane) => void; onCancel: () => void }) {
   const selectedLane = lane === 'VIDEO' ? shot.video : shot.image
   const preview = lanePreview(selectedLane)
   const isVideo = lane === 'VIDEO'
@@ -270,6 +303,7 @@ function MediaCanvas({ shot, lane, onLaneChange }: { shot: ShotStudioViewModel; 
         <div><div className="text-[10px] uppercase tracking-[0.12em] text-[#728082]">Evidence</div><div className="mt-2 truncate text-xs text-[#A9B4B3]">{laneEvidenceLabel(selectedLane)}</div></div>
         <div><div className="text-[10px] uppercase tracking-[0.12em] text-[#728082]">Prompt</div><div className="mt-2 text-xs text-[#A9B4B3]">v{selectedLane.prompt.version ?? '—'} · {selectedLane.prompt.current ? '当前' : '待更新'}</div></div>
       </div>
+      <GenerationControls shot={shot} lane={lane} mutation={mutation} onGenerate={onGenerate} onCancel={onCancel} />
     </Panel>
   )
 }
@@ -293,7 +327,7 @@ function ReviewEvidence({ label, preview, emptyLabel }: { label: string; preview
   return <div className="border border-[#2A3437] bg-[#0E1214] p-3"><div className="text-[10px] uppercase tracking-[0.12em] text-[#728082]">{label}</div>{preview ? <img src={preview} alt={label} className="mt-2 max-h-36 w-full object-contain" /> : <div className="mt-2 flex min-h-20 items-center justify-center border border-dashed border-[#2A3437] text-center text-[11px] text-[#728082]">{emptyLabel}</div>}</div>
 }
 
-function ReviewDesk({ shot, lane, mode, mutation, onApprove }: { shot: ShotStudioViewModel; lane: MediaLane; mode: ProductionWorkspaceViewMode; mutation: ShotReviewMutationSnapshot; onApprove: (identity: ShotReviewCandidateIdentity) => void }) {
+function ReviewDesk({ shot, lane, mode, mutation, generationBusy, onApprove }: { shot: ShotStudioViewModel; lane: MediaLane; mode: ProductionWorkspaceViewMode; mutation: ShotReviewMutationSnapshot; generationBusy?: boolean; onApprove: (identity: ShotReviewCandidateIdentity) => void }) {
   const selectedLane = lane === 'VIDEO' ? shot.video : shot.image
   const candidate = reviewCandidateForLane(shot, lane)
   const identity = candidate ? { shotId: shot.shotId, lane: selectedLane.target, candidateId: candidate.id, validationId: candidate.technical_validation.validation_id } satisfies ShotReviewCandidateIdentity : null
@@ -304,7 +338,7 @@ function ReviewDesk({ shot, lane, mode, mutation, onApprove }: { shot: ShotStudi
   const official = selectedLane.official.isCanonicalOfficial ? selectedLane.official : null
   const confirmed = isMutationForCurrent && mutation.state === 'confirmed'
   const mutating = isMutationForCurrent && ['confirming', 'validating', 'promoting', 'refreshing'].includes(mutation.state)
-  const approveEnabled = isCurrentReview && !mutating && mutation.state !== 'confirmed' && !selectedLane.official.current && selectedLane.official.reasonCodes.length === 0 && !shot.stale.isStale
+  const approveEnabled = isCurrentReview && !generationBusy && !mutating && mutation.state !== 'confirmed' && !selectedLane.official.current && selectedLane.official.reasonCodes.length === 0 && !shot.stale.isStale
   return <div data-testid="shot-studio-review-desk"><Panel className="mt-4 overflow-hidden" aria-label="Review Desk">
     <div className="border-b border-[#2A3437] px-4 py-3"><div className="text-xs uppercase tracking-[0.16em] text-[#C4B5E5]">Review Desk</div><div className="mt-1 text-sm font-medium text-[#EDF1EF]">{confirmed ? '正式状态确认' : '候选媒体审核'}</div><div className="mt-1 text-xs text-[#A9B4B3]">{shot.shotId} · {shot.scene.name} · {selectedLane.target}</div></div>
     <div className="grid gap-3 p-4 md:grid-cols-2">
@@ -336,7 +370,7 @@ function ShotContext({ shot, mode, detailsOpen, onToggleDetails }: { shot: ShotS
 }
 
 function NextAction({ shot }: { shot: ShotStudioViewModel }) {
-  return <div data-testid="shot-studio-next-action" className="mt-4 border border-[#8BC9D9]/40 bg-[#8BC9D9]/5 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-[0.16em] text-[#8BC9D9]">Canonical next action</div><div className="mt-1 text-base font-medium text-[#EDF1EF]">下一步 · {shot.primaryAction.label}</div></div><div className="flex items-center gap-2 text-[10px] text-[#A9B4B3]"><SlidersHorizontal className="h-3.5 w-3.5" />只读状态</div></div><div className="mt-2 text-xs leading-6 text-[#A9B4B3]">{shot.primaryAction.reason || shot.detail}</div>{shot.primaryAction.requiresProviderCall ? <div className="mt-3 inline-flex items-center gap-2 border border-[#DBB36F]/30 bg-[#DBB36F]/5 px-2 py-1.5 text-[10px] text-[#DBB36F]"><CircleHelp className="h-3.5 w-3.5" />生产操作将在下一阶段接入，本轮不会调用 Provider。</div> : null}</div>
+  return <div data-testid="shot-studio-next-action" className="mt-4 border border-[#8BC9D9]/40 bg-[#8BC9D9]/5 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-[0.16em] text-[#8BC9D9]">Canonical next action</div><div className="mt-1 text-base font-medium text-[#EDF1EF]">下一步 · {shot.primaryAction.label}</div></div><div className="flex items-center gap-2 text-[10px] text-[#A9B4B3]"><SlidersHorizontal className="h-3.5 w-3.5" />状态与执行证据</div></div><div className="mt-2 text-xs leading-6 text-[#A9B4B3]">{shot.primaryAction.reason || shot.detail}</div>{shot.primaryAction.requiresProviderCall ? <div className="mt-3 inline-flex items-center gap-2 border border-[#DBB36F]/30 bg-[#DBB36F]/5 px-2 py-1.5 text-[10px] text-[#DBB36F]"><CircleHelp className="h-3.5 w-3.5" />生成按钮会先请求费用确认，并由 canonical execution 记录真实状态。</div> : null}</div>
 }
 
 export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapshot ? 'ready' : 'loading', error, mode = 'standard', focusShotId = null, onSelectShot, onRefresh, onRefreshProductionWorkspaceV2 }: ProductWorkspaceShotStudioV3Props) {
@@ -346,11 +380,13 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
   const [detailsOpen, setDetailsOpen] = useState(mode === 'professional')
   const [mediaLane, setMediaLane] = useState<MediaLane>(() => selected ? preferredMediaLane(selected) : 'IMAGE')
   const [mutation, setMutation] = useState<ShotReviewMutationSnapshot>({ state: 'idle', identity: null, message: '', errorCode: null })
+  const [generationMutation, setGenerationMutation] = useState<ShotGenerationMutationSnapshot>({ state: 'idle', shotId: null, target: null, message: '', errorCode: null, status: null, response: null })
   const latestViewModels = useRef(viewModels)
   latestViewModels.current = viewModels
   const refreshCanonical = useRef(onRefreshProductionWorkspaceV2)
   refreshCanonical.current = onRefreshProductionWorkspaceV2
   const reviewController = useRef<ReturnType<typeof createShotStudioMediaReviewController> | null>(null)
+  const generationController = useRef<ReturnType<typeof createShotStudioGenerationController> | null>(null)
   if (!reviewController.current) {
     reviewController.current = createShotStudioMediaReviewController({
       getViewModel: (shotId) => latestViewModels.current.find((item) => item.shotId === shotId) ?? null,
@@ -358,6 +394,15 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
       promoteCandidate: (candidateId, validationId) => approveProductionMediaCandidate(candidateId, validationId),
       refreshCanonical: async () => { await refreshCanonical.current?.() },
       onState: setMutation,
+    })
+  }
+  if (!generationController.current && snapshot) {
+    generationController.current = createShotStudioGenerationController({
+      bookId: snapshot?.book_id ?? 0,
+      getViewModel: (shotId) => latestViewModels.current.find((item) => item.shotId === shotId) ?? null,
+      refreshCanonical: async () => { await refreshCanonical.current?.() },
+      confirmCost: async () => typeof window === 'undefined' ? true : window.confirm('该操作可能调用外部模型并产生费用。是否继续？'),
+      onState: setGenerationMutation,
     })
   }
 
@@ -380,11 +425,11 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
   if (snapshot.shots.length === 0) return <EmptySurface />
 
   return <div data-testid="shot-studio-v3" className="min-w-0 space-y-4 bg-[#0E1214] text-[#EDF1EF]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
-    <Panel className="flex flex-wrap items-center justify-between gap-4 px-4 py-4"><div><div className="text-[10px] uppercase tracking-[0.2em] text-[#728082]">Shot Studio · V3 Canary</div><div className="mt-1 flex flex-wrap items-center gap-3"><h2 className="text-xl font-medium tracking-tight text-[#EDF1EF]">镜头工坊</h2>{selected ? <StatusBadge state={selected.state} /> : null}</div><div className="mt-2 text-xs text-[#A9B4B3]">只读生产观察面 · 数据源：Production Workspace V2 + Canonical Adapter</div></div><div className="flex items-center gap-2"><span className="border border-[#2A3437] px-2.5 py-1.5 text-[10px] text-[#728082]">{snapshot.shots.length} shots</span>{onRefresh ? <button type="button" onClick={onRefresh} aria-label="重新同步 Shot Studio" className="inline-flex items-center gap-2 border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC9D9]"><RefreshCw className="h-3.5 w-3.5" />重新同步</button> : null}</div></Panel>
+    <Panel className="flex flex-wrap items-center justify-between gap-4 px-4 py-4"><div><div className="text-[10px] uppercase tracking-[0.2em] text-[#728082]">Shot Studio · V3 Canary</div><div className="mt-1 flex flex-wrap items-center gap-3"><h2 className="text-xl font-medium tracking-tight text-[#EDF1EF]">镜头工坊</h2>{selected ? <StatusBadge state={selected.state} /> : null}</div><div className="mt-2 text-xs text-[#A9B4B3]">Production Workspace V2 状态、canonical 执行与人工审核在此衔接</div></div><div className="flex items-center gap-2"><span className="border border-[#2A3437] px-2.5 py-1.5 text-[10px] text-[#728082]">{snapshot.shots.length} shots</span>{onRefresh ? <button type="button" onClick={onRefresh} aria-label="重新同步 Shot Studio" className="inline-flex items-center gap-2 border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC9D9]"><RefreshCw className="h-3.5 w-3.5" />重新同步</button> : null}</div></Panel>
     {!selected ? <EmptySurface /> : <>
       <div className="grid min-w-0 gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
         <ShotNavigator shots={viewModels} selectedId={selected.shotId} onSelect={onSelectShot} />
-        <div className="min-w-0"><MediaCanvas shot={selected} lane={mediaLane} onLaneChange={setMediaLane} /><ReviewDesk shot={selected} lane={mediaLane} mode={mode} mutation={mutation} onApprove={(identity) => { void reviewController.current?.approve(identity) }} /><ShotPipeline shot={selected} /></div>
+        <div className="min-w-0"><MediaCanvas shot={selected} lane={mediaLane} onLaneChange={setMediaLane} mutation={generationMutation} onGenerate={(target) => { void generationController.current?.start(selected.shotId, target) }} onCancel={() => { generationController.current?.cancel() }} /><ReviewDesk shot={selected} lane={mediaLane} mode={mode} mutation={mutation} generationBusy={generationController.current?.isActive()} onApprove={(identity) => { if (!generationController.current?.isActive()) void reviewController.current?.approve(identity) }} /><ShotPipeline shot={selected} /></div>
         <ShotContext shot={selected} mode={mode} detailsOpen={detailsOpen} onToggleDetails={() => setDetailsOpen((current) => !current)} />
       </div>
       <NextAction shot={selected} />
