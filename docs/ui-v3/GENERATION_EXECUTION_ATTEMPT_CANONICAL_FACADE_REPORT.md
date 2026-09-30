@@ -57,6 +57,7 @@ source freshness and canonical drift, then delegates to
 
 - `api/generation_attempt_canonical_api.py`
 - `api/generation_canary_api.py`
+- `api/server.py`
 - `core/generation_attempt_lineage.py`
 - `scripts/run_real_episode_production_pilot.py`
 - `tests/test_generation_attempt_canonical_facade.py`
@@ -65,15 +66,18 @@ source freshness and canonical drift, then delegates to
 - `tests/test_migration_chain_hardening.py`
 - `docs/ui-v3/GENERATION_EXECUTION_ATTEMPT_CANONICAL_FACADE_REPORT.md`
 - `docs/ui-v3/GENERATION_EXECUTION_ATTEMPT_CANONICAL_FACADE_TRUTH_AUDIT.json`
+- `docs/ui-v3/GENERATION_EXECUTION_ATTEMPT_CANONICAL_FACADE_VERTICAL_SLICE.json`
 
 ## Verification
 
 ```text
-42 targeted tests passed
+44 targeted tests passed
   - Attempt lineage foundation: 6 tests
   - Canonical IMAGE/VIDEO regression: 22 tests
-  - Canonical Attempt facade: 14 tests
+  - Canonical Attempt facade: 16 tests
 41 migration and production-pilot gate tests passed
+Web regression: 61 files / 435 tests passed
+Web build: passed
 compileall: passed
 server route import: passed
 Alembic heads: o6j7k8l9m0n1
@@ -83,7 +87,7 @@ The facade remains provider-free by default. A mock transport is available to
 exercise the existing executor; no automatic promotion or human-review bypass
 was introduced.
 
-The full repository run completed with `1979 passed` and no failures. The
+The full repository run completed with `1981 passed` and no failures. The
 migration-head expectations were reconciled to the branch's existing
 `o6j7k8l9m0n1` head; no migration or facade test was skipped.
 
@@ -219,6 +223,10 @@ selects the appropriate review action.
 Preview idempotency uses the deterministic attempt fingerprint and existing
 unique constraints. Execute reuses the canonical claim/state machine, so a
 successful replay returns the same Candidate without another provider call.
+Independent-session concurrency tests verify that two Preview requests create
+one Execution and two Execute requests dispatch one mock provider call and
+persist one Candidate; the losing Execute observes the existing in-progress
+claim.
 
 ## Error Contract
 

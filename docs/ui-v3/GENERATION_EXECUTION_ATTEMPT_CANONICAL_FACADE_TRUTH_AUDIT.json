@@ -12,6 +12,9 @@
   "attempt_lineage_bound_to_execution": true,
   "execution_confirmation_fresh": true,
   "shared_canonical_executor_reused": true,
+  "concurrent_preview_single_execution": true,
+  "concurrent_execute_single_provider_call": true,
+  "concurrent_execute_single_candidate": true,
   "retry_mock_execution_candidate": true,
   "regenerate_mock_execution_candidate": true,
   "official_pointer_moves_on_generation": false,
@@ -66,12 +69,15 @@
     "head": "o6j7k8l9m0n1"
   },
   "verification": {
-    "targeted_facade_and_regression_tests_passed": 42,
+    "targeted_facade_and_regression_tests_passed": 44,
     "migration_and_production_pilot_gate_tests_passed": 41,
+    "web_test_files": 61,
+    "web_tests_passed": 435,
+    "web_build": "passed",
     "compileall": "passed",
     "route_import": "passed",
     "full_repository_run": {
-      "passed": 1979,
+      "passed": 1981,
       "failed": 0,
       "failure_class": null
     }

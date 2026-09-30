@@ -22,5 +22,10 @@
     "attempt_confirmation": true,
     "execution_confirmation": true,
     "automatic_promotion": false
+  },
+  "concurrency": {
+    "preview_single_execution": true,
+    "execute_single_provider_call": true,
+    "execute_single_candidate": true
   }
 }

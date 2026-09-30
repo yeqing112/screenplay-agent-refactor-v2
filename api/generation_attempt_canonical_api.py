@@ -265,6 +265,7 @@ def preview_generation_attempt(book_id: int, episode: int, shot_id: int, attempt
             request_snapshot=snapshot,
         )
         session.add(execution)
+        reused = False
         try:
             session.flush()
             service.bind_produced_execution(attempt.attempt_lineage_id, execution.execution_id)
@@ -280,7 +281,8 @@ def preview_generation_attempt(book_id: int, episode: int, shot_id: int, attempt
             service.bind_produced_execution(attempt.attempt_lineage_id, existing.execution_id)
             session.commit()
             execution = existing
-        return _attempt_response(session, attempt=attempt, service=service, execution=execution, candidate=None, context=context)
+            reused = True
+        return _attempt_response(session, attempt=attempt, service=service, execution=execution, candidate=None, context=context, reused=reused)
 
 
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-attempts/{attempt_lineage_id}/execute")

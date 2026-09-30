@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import json
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier
 from types import SimpleNamespace
 
 import pytest
@@ -251,6 +253,133 @@ def test_retry_preview_is_idempotent_and_bound_replay_does_not_require_source_fr
     assert second["execution"]["execution_id"] == first["execution"]["execution_id"]
     assert second["execution_created"] is False
     assert db.query(GenerationExecutionRecord).count() == 2
+
+
+def test_concurrent_preview_same_attempt_creates_one_execution(tmp_path, monkeypatch):
+    """Two independent request sessions recover the same unique-fingerprint winner."""
+    engine = create_engine(
+        f"sqlite:///{tmp_path / 'attempt-preview-concurrency.db'}",
+        connect_args={"check_same_thread": False},
+    )
+    Base.metadata.create_all(engine)
+    factory = sessionmaker(bind=engine)
+    seed = factory()
+    shot = StoryboardShot(book_id=1, episode=1, shot_id=101, scene_name="scene")
+    seed.add(shot)
+    seed.flush()
+    durable_shot_id = shot.id
+    _source(seed, durable_shot_id)
+    service = GenerationAttemptLineageService(seed)
+    attempt = service.create_retry_intent(source_execution_id="failed-source", operation_idempotency_key="retry-concurrent")
+    attempt_id = attempt.attempt_lineage_id
+    confirmation = service.build_confirmation(attempt_id)
+    seed.commit()
+    seed.close()
+
+    monkeypatch.setattr(facade, "Session", factory)
+    monkeypatch.setattr(canary, "Session", factory)
+    context = _context(durable_shot_id)
+    resolver_barrier = Barrier(2)
+
+    def synchronized_resolver(*args, **kwargs):
+        resolver_barrier.wait(timeout=5)
+        return context
+
+    monkeypatch.setattr(facade, "_resolve_canonical_execution_inputs", synchronized_resolver)
+
+    request = facade.AttemptPreviewRequest(attempt_confirmation_token=confirmation)
+
+    def submit_preview():
+        return facade.preview_generation_attempt(1, 1, 101, attempt_id, request)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(lambda _item: submit_preview(), (1, 2)))
+
+    assert len({item["execution"]["execution_id"] for item in results}) == 1
+    assert sorted(item["reused"] for item in results) == [False, True]
+    check = factory()
+    try:
+        assert check.query(GenerationExecutionRecord).count() == 2
+        bound = check.query(GenerationExecutionAttemptLineage).filter_by(attempt_lineage_id=attempt_id).one()
+        assert bound.produced_execution_id == results[0]["execution"]["execution_id"]
+        assert bound.status == "BOUND"
+    finally:
+        check.close()
+        engine.dispose()
+
+
+def test_concurrent_execute_same_preview_claims_once_and_writes_one_candidate(tmp_path, monkeypatch):
+    """Canonical claim state prevents a double POST from dispatching twice."""
+    engine = create_engine(
+        f"sqlite:///{tmp_path / 'attempt-execute-concurrency.db'}",
+        connect_args={"check_same_thread": False},
+    )
+    Base.metadata.create_all(engine)
+    factory = sessionmaker(bind=engine)
+    seed = factory()
+    shot = StoryboardShot(book_id=1, episode=1, shot_id=101, scene_name="scene")
+    seed.add(shot)
+    seed.flush()
+    durable_shot_id = shot.id
+    _source(seed, durable_shot_id)
+    service = GenerationAttemptLineageService(seed)
+    attempt = service.create_retry_intent(source_execution_id="failed-source", operation_idempotency_key="execute-concurrent")
+    attempt_id = attempt.attempt_lineage_id
+    confirmation = service.build_confirmation(attempt_id)
+    seed.commit()
+    seed.close()
+
+    monkeypatch.setattr(facade, "Session", factory)
+    monkeypatch.setattr(canary, "Session", factory)
+    context = _context(durable_shot_id)
+    _patch_execution_runtime(monkeypatch, context, media="IMAGE")
+    preview = facade.preview_generation_attempt(
+        1, 1, 101, attempt_id,
+        facade.AttemptPreviewRequest(attempt_confirmation_token=confirmation),
+    )
+    request = facade.AttemptExecuteRequest(
+        execute=True, confirmed=True, allowExternalCall=True,
+        attemptConfirmationToken=confirmation,
+        previewExecutionId=preview["execution"]["execution_id"],
+        executionConfirmationToken=preview["execution_confirmation_token"],
+    )
+    calls = []
+    original_provider = canary._call_provider
+
+    async def counting_provider(**kwargs):
+        calls.append(1)
+        await asyncio.sleep(0.05)
+        return await original_provider(**kwargs)
+
+    monkeypatch.setattr(canary, "_call_provider", counting_provider)
+
+    def submit_execute():
+        return asyncio.run(facade.execute_generation_attempt(1, 1, 101, attempt_id, request))
+
+    outcomes = []
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(submit_execute) for _ in range(2)]
+        for future in futures:
+            try:
+                outcomes.append(("ok", future.result()))
+            except HTTPException as exc:
+                outcomes.append(("error", exc.detail["code"]))
+
+    assert len(calls) == 1
+    assert sum(kind == "ok" for kind, _value in outcomes) == 1
+    assert all(
+        kind == "ok" or value == "GENERATION_CANARY_IN_PROGRESS"
+        for kind, value in outcomes
+    )
+    check = factory()
+    try:
+        assert check.query(GenerationExecutionRecord).count() == 2
+        assert check.query(MediaCandidateRecord).count() == 1
+        produced = check.query(GenerationExecutionRecord).filter_by(execution_id=preview["execution"]["execution_id"]).one()
+        assert produced.status == "SUCCEEDED"
+    finally:
+        check.close()
+        engine.dispose()
 
 
 def test_source_stale_and_cancelled_attempt_create_no_execution(db, monkeypatch):
