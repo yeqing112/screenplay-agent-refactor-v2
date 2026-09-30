@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
-import { createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture } from '../fixtures/productionWorkspaceV2'
-import ProductWorkspaceShotStudioV3 from './ProductWorkspaceShotStudioV3'
+import { toShotStudioViewModels } from '../domain/productionUiV3'
+import { createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture, productionWorkspaceV2GenerationFixtures } from '../fixtures/productionWorkspaceV2'
+import ProductWorkspaceShotStudioV3, { GenerationControls } from './ProductWorkspaceShotStudioV3'
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -126,6 +127,21 @@ describe('ProductWorkspaceShotStudioV3', () => {
     const html = renderSurface(snapshot)
     expect(html).toContain('<video controls')
     expect(html).toContain('candidate.mp4')
+  })
+
+  it('does not render a misleading cancel action while foreground observation is running', () => {
+    const shot = toShotStudioViewModels(readySnapshot().shots)[0]
+    const html = renderToStaticMarkup(<GenerationControls shot={shot} lane="IMAGE" mutation={{ state: 'running', shotId: shot.shotId, target: 'IMAGE', message: '生成任务仍在后台进行；重新进入时会恢复。', errorCode: null, status: null, response: null }} onGenerate={() => undefined} />)
+    expect(html).toContain('生成任务仍在后台进行')
+    expect(html).not.toContain('取消生成')
+    expect(html).not.toMatch(/>取消<\/button>/)
+  })
+
+  it('maps the DEV long-running fixture to canonical running state', () => {
+    const html = renderSurface(productionWorkspaceV2GenerationFixtures['running-image'])
+    expect(html).toContain('生成中')
+    expect(html).not.toContain('真正阻塞')
+    expect(html).not.toMatch(/>取消<\/button>/)
   })
 
   it('keeps candidate identity professional-only while Standard stays focused on review evidence', () => {

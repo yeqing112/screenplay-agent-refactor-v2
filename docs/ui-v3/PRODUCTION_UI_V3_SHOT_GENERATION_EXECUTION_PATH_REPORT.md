@@ -1,8 +1,16 @@
 # Production UI V3 · Shot Generation Execution Path
 
-## Completion marker
+## Previous phase completion marker
 
 `PRODUCTION_UI_V3_SHOT_GENERATION_EXECUTION_PATH_COMPLETE`
+
+## Current phase
+
+`PHASE_PRODUCTION_UI_V3_GENERATION_RUNTIME_RECONCILE`
+
+Baseline: `87d35d610d25b57b21ac7014fbddcb1e5bc64413`
+
+Current completion marker: `PRODUCTION_UI_V3_GENERATION_RUNTIME_RECONCILE_COMPLETE`
 
 ## Scope
 
@@ -44,7 +52,7 @@ The backend resolver calls the current IMAGE_TO_VIDEO source binding path and va
 
 ## Generation Controller Architecture
 
-`createShotStudioGenerationController()` captures shot, episode, lane, model profile, and the current V2 identity. It owns confirmation, submission lock, abort cancellation, error normalization, 409 refresh, and bounded V2 observation. Review mutation activity is a submission gate, and the existing review controller remains the only promotion path. The controller re-reads the V2 projection after the fee confirmation resolves and fails closed if the executable state, model, prompt identity, generation mode, or canonical source identity changed while the dialog was open.
+`createShotStudioGenerationController()` captures shot, episode, lane, model profile, and the current V2 identity. It owns confirmation, submission lock, lifecycle-safe observation abort, error normalization, 409 refresh, and bounded V2 observation. Review mutation activity is a submission gate, and the existing review controller remains the only promotion path. The controller re-reads the V2 projection after the fee confirmation resolves and fails closed if the executable state, model, prompt identity, generation mode, or canonical source identity changed while the dialog was open. Observation abort is not backend/provider cancellation.
 
 ## Mutation State Machine
 
@@ -56,7 +64,7 @@ At click time and again immediately before POST (after fee confirmation), the co
 
 ## Canonical Refetch, Execution Projection, and Candidate Projection
 
-POST success always enters the V2 refresh loop, including a response containing `execution` or `candidate`. The aggregate `production-workspace-v2` projection determines running, waiting, review, failed, and official UI states. If execution success is visible before its candidate, the bounded loop reports candidate synchronization and then fails closed with `V3_EXECUTION_CANDIDATE_NOT_VISIBLE`; it never re-submits.
+POST success always enters the V2 refresh loop, including a response containing `execution` or `candidate`. The aggregate `production-workspace-v2` projection determines running, waiting, review, failed, and official UI states. If execution success is visible before its candidate, the bounded loop reports candidate synchronization and returns `in_progress` / `waiting_candidate` when the observation window ends; it never re-submits. If no execution, candidate, or official projection becomes visible, the controller fails closed with the separate `V3_GENERATION_PROJECTION_NOT_VISIBLE` anomaly.
 
 ## Legacy task_id and No-Legacy-Recovery Boundary
 
@@ -93,11 +101,13 @@ No prompt compile, LLM, unexpected storyboard generation, prototyping task polli
   - HTTP status and backend error code are preserved.
 - `web/src/services/productWorkspaceShotGeneration.ts`
   - controller states: `idle`, `confirming`, `submitting`, `refreshing`, `running`, `waiting_candidate`, `candidate_ready`, `failed`, `cancelled`;
+  - result outcomes: `candidate_ready`, `in_progress`, `failed`, `cancelled`; `ok=true` means the submission/observation contract stayed safe, not that media is complete;
   - exact `generate_image` / `generate_video` action gate;
   - stale, blocked, review, official, missing-model and double-submit guards;
   - explicit fee confirmation: “该操作可能调用外部模型并产生费用。”;
-  - abort-safe cancellation and legacy `task_id` fail closed;
-  - bounded V2-only refresh loop. No optimistic running or candidate state is written.
+  - lifecycle-safe `AbortController` observation cleanup and legacy `task_id` fail closed;
+  - bounded V2-only refresh loop that preserves long-running/candidate-pending states. No optimistic running or candidate state is written;
+  - no post-submit cancel CTA; internal `stopObserving()` never claims backend/provider cancellation.
 - `web/src/components/ProductWorkspaceShotStudioV3.tsx`
   - IMAGE and VIDEO generation controls;
   - canonical status evidence and review controls remain separate;
@@ -105,8 +115,9 @@ No prompt compile, LLM, unexpected storyboard generation, prototyping task polli
   - next action text now distinguishes executable production work, review, processing and blocked states.
 - DEV-only generation fixtures and query selector:
   `workspace_v2_generation_fixture=ready-image|running-image|review-image|official-image-ready-video|running-video|review-video|official-shot`.
+- Running DEV fixtures now use the canonical V2 `latest_execution.id/state` projection shape, so the browser running surface proves `生成中` instead of an unknown execution state.
 - `web/src/services/productWorkspaceShotGeneration.test.ts` covers gates, fee confirmation, double submit, V2 recovery, candidate lag, cancellation, legacy response and request contract.
-- The controller suite contains **21 tests**, including the full IMAGE→VIDEO loop, post-confirmation freshness recheck, 409 refresh/no-retry, source-official gating, no optimistic state, no-localStorage boundary, and provider-call guards.
+- The controller suite contains **26 tests**, including the full IMAGE→VIDEO loop, persistent running, candidate projection lag, projection anomaly, immediate canonical failure, stale/blocked observation, post-confirmation freshness recheck, 409 refresh/no-retry, source-official gating, no optimistic state, no-localStorage boundary, and provider-call guards.
 
 ## Canonical contract evidence
 
@@ -115,15 +126,40 @@ No prompt compile, LLM, unexpected storyboard generation, prototyping task polli
 - The browser controller reads state only from `production-workspace-v2` after submission.
 - IMAGE_TO_VIDEO source authority remains the canonical official IMAGE projection; no legacy localStorage recovery is consulted.
 
+## Long-running Execution Semantics
+
+`maxRefreshAttempts` bounds only foreground observation. If the latest canonical V2 projection still reports an active/running execution when the window ends, the controller returns `ok=true`, outcome `in_progress`, mutation state `running`, and a message that the backend task continues in the background. Foreground timeout is not generation failure, and the local mutation lock is released; the next page load reads the same state from `ProductionWorkspaceV2Snapshot`.
+
+## Foreground Observation Boundary
+
+The controller makes one bounded V2 refresh loop for the active mutation. It does not create a timer per shot or persist runtime state in React/localStorage. After the loop returns `in_progress`, the canonical lane remains responsible for preventing a duplicate generation action.
+
+## Candidate Projection Pending Semantics
+
+When V2 proves `SUCCESS` and exposes an execution `candidate_id` but the candidate projection is still absent, the mutation state is `waiting_candidate` and the result is `ok=true`, outcome `in_progress` after the observation window. The UI says `生成已完成，正在同步候选结果` and does not reopen Generate. A POST with no execution, candidate, or official projection produces the independent `V3_GENERATION_PROJECTION_NOT_VISIBLE` sync anomaly.
+
+## True Failure Contract
+
+Canonical `failed` / `ERROR` execution evidence fails immediately with the adapter/backend reason code. `stale` and `blocked` V2 states also stop observation and fail closed with their canonical reason. They are not converted into a generic candidate visibility timeout.
+
+## Generation Cancellation Semantics
+
+Before POST, the fee confirmation dialog can decline and the generation request count remains zero. After POST, Shot Studio renders no `取消生成` button. Internal `stopObserving()` and lifecycle `dispose()` only abort the foreground fetch/sleep/observation; they may return `in_progress` with `已停止前台等待；后台生成任务可能仍在运行。` and never mark the canonical lane cancelled.
+
+## Backend Cancel Capability
+
+`GenerationExecution`, canonical generation routes, and provider runtime expose no verified cancel contract in this phase. Backend/provider cancellation is **NOT_SUPPORTED**. No cancel endpoint, DELETE execution call, or provider cancel request was added. `AbortController != backend generation cancellation`.
+
 ## Tests
 
-- Directed controller tests: **21 passed**, covering ready IMAGE/VIDEO, explicit model gate, stale/review/official/blocked gates, fee cancellation, post-confirmation freshness conflict, double-submit lock, abort cancellation, no optimistic state, V2 running/candidate projection, candidate lag, 409 no-retry, legacy `task_id` fail-closed, IMAGE_TO_VIDEO source authority, and the full IMAGE→VIDEO approval loop.
+- Directed controller tests: **26 passed**, covering ready IMAGE/VIDEO, explicit model gate, stale/review/official/blocked gates, fee cancellation, post-confirmation freshness conflict, double-submit lock, persistent running, candidate projection pending, projection anomaly, immediate canonical failure, stale/blocked observation, stop-observing semantics, abort cleanup, no optimistic state, V2 recovery, 409 no-retry, legacy `task_id` fail-closed, IMAGE_TO_VIDEO source authority, and the full IMAGE→VIDEO approval loop.
 - Directed Shot Studio, review, and `productionUiV3` tests are included in the full Web suite below.
 - Backend canonical tests: `tests/test_phase_j3_canonical_generation.py`, `tests/test_generation_execution_foundation.py`, and `tests/test_asset_promotion_runtime.py`.
 
 ## Browser QA
 
 - DEV-only mocked fixtures mounted successfully for `ready-image`, `running-image`, `review-image`, `official-image-ready-video`, `running-video`, `review-video`, and `official-shot`.
+- Long-running mocked observation sequence `ready-image → submit → running-image → running-image → running-image` remains `running` after the foreground window and renders the background-progress message; no cancel request is emitted. Evidence: `shot-generation-browser-qa.json` and the persistent-running controller test.
 - Browser console/page errors: **0**. Evidence: `shot-generation-browser-qa.json`.
 
 ## Responsive QA
@@ -132,12 +168,12 @@ No prompt compile, LLM, unexpected storyboard generation, prototyping task polli
 
 ## Verification
 
-- Web tests: **57 files / 378 tests passed**.
+- Web tests: **57 files / 385 tests passed**.
 - Web build: **PASS** (`tsc && vite build`).
 - Backend canonical and authority regression: **32 passed**.
 - `git diff --check`: recorded before commit.
-- QA policy: no real LLM, SHAPI, MiniMax, provider submission, video/image generation, or production write was performed by this QA run.
-- Responsive mocked browser QA: **1280 / 1440 / 1920** widths, no horizontal overflow, Shot Studio mounted, console/page errors **0**. Evidence: `shot-generation-responsive-qa.json`.
+- QA policy: no real LLM, SHAPI, MiniMax, provider submission, video/image generation, provider cancellation, or production write was performed by this QA run.
+- Responsive mocked browser QA: **1280 / 1440 / 1920** widths, no horizontal overflow, Shot Studio mounted, running state visible, cancel CTA absent, console/page errors **0**. Evidence: `shot-generation-responsive-qa.json`.
 - Refresh recovery test restores a `running` lane from the V2 projection with no React runtime state or localStorage payload.
 - The controller performs one bounded V2 observation loop for the active mutation; it does not create a timer per shot, so the existing 100-shot stress surface remains a single aggregate projection.
 
@@ -168,7 +204,7 @@ The existing explicit APPROVE path remains unchanged: validation and promotion a
 
 ## Production Safety
 
-All browser and unit QA uses disposable fixtures or mocked service responses. Real LLM calls, SHAPI calls, MiniMax calls, image/video generation, provider submissions, validation writes, promotion writes, and generation writes are zero. No backend routes or DB migrations were added. `allowExternalCall: true` and `confirmed: true` are only sent by the post-confirmation generation service call; refresh, navigation, filters, and review reads do not submit generation.
+All browser and unit QA uses disposable fixtures or mocked service responses. Real LLM calls, SHAPI calls, MiniMax calls, image/video generation, provider submissions, provider cancellation, validation writes, promotion writes, and generation writes are zero. No backend routes or DB migrations were added. `allowExternalCall: true` and `confirmed: true` are only sent by the post-confirmation generation service call; refresh, navigation, filters, review reads, and stop-observing cleanup do not submit generation or cancellation requests.
 
 ## Deferred Retry / Regenerate
 
@@ -176,4 +212,4 @@ All browser and unit QA uses disposable fixtures or mocked service responses. Re
 
 ## Completion Status
 
-`PRODUCTION_UI_V3_SHOT_GENERATION_EXECUTION_PATH_COMPLETE`
+`PRODUCTION_UI_V3_GENERATION_RUNTIME_RECONCILE_COMPLETE`

@@ -6,7 +6,9 @@
       "metrics": {
         "innerWidth": 1280,
         "scrollWidth": 1280,
-        "shotStudio": true
+        "shotStudio": true,
+        "runningStateVisible": true,
+        "cancelCtaVisible": false
       },
       "errors": []
     },
@@ -15,7 +17,9 @@
       "metrics": {
         "innerWidth": 1440,
         "scrollWidth": 1440,
-        "shotStudio": true
+        "shotStudio": true,
+        "runningStateVisible": true,
+        "cancelCtaVisible": false
       },
       "errors": []
     },
@@ -24,7 +28,9 @@
       "metrics": {
         "innerWidth": 1920,
         "scrollWidth": 1920,
-        "shotStudio": true
+        "shotStudio": true,
+        "runningStateVisible": true,
+        "cancelCtaVisible": false
       },
       "errors": []
     }

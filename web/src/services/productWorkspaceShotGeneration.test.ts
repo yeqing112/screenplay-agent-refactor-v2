@@ -215,17 +215,89 @@ describe('Shot Studio canonical generation controller', () => {
     let current = view()
     const { instance } = controller({ onState: (next: any) => states.push(next.state), refresh: async () => { current = view({ image: lane('IMAGE', { state: 'running', primaryAction: { kind: 'wait', lane: 'IMAGE' }, execution: { isActive: true } }) }) } })
     const recovery = createShotStudioGenerationController({ bookId: 1, getViewModel: () => current, refreshCanonical: async () => { current = view({ image: lane('IMAGE', { state: 'running', primaryAction: { kind: 'wait', lane: 'IMAGE' }, execution: { isActive: true } }) }) }, submit: async () => ({ execution: { status: 'RUNNING' } }), onState: (next) => states.push(next.state), sleep: async () => undefined, maxRefreshAttempts: 1 })
-    await recovery.start('S1', 'IMAGE')
+    const result = await recovery.start('S1', 'IMAGE')
     expect(states).toContain('running')
+    expect(result.ok).toBe(true)
+    expect(result.state).toBe('in_progress')
+    expect(result.snapshot.state).toBe('running')
+    expect(result.snapshot.errorCode).toBeNull()
     void instance
   })
 
-  it('does not resubmit when execution succeeds before candidate projection appears', async () => {
+  it('keeps a persistent canonical running execution in progress after the observation window', async () => {
+    const submit = vi.fn(async () => ({ execution: { execution_id: 'exec-running', status: 'RUNNING' } }))
+    let current = view()
+    const instance = createShotStudioGenerationController({ bookId: 1, getViewModel: () => current, refreshCanonical: async () => { current = view({ image: lane('IMAGE', { state: 'running', generationAllowed: false, primaryAction: { kind: 'wait', lane: 'IMAGE' }, execution: { id: 'exec-running', state: 'running', isActive: true } }) }) }, submit, sleep: async () => undefined, maxRefreshAttempts: 2 })
+    const result = await instance.start('S1', 'IMAGE')
+    expect(result.ok).toBe(true)
+    expect(result.state).toBe('in_progress')
+    expect(result.snapshot.state).toBe('running')
+    expect(result.snapshot.errorCode).toBeNull()
+  })
+
+  it('keeps a succeeded execution with a pending candidate projection in progress', async () => {
+    const submit = vi.fn(async () => ({ execution: { execution_id: 'exec-succeeded', status: 'SUCCEEDED' } }))
+    let current = view()
+    const instance = createShotStudioGenerationController({ bookId: 1, getViewModel: () => current, refreshCanonical: async () => { current = view({ image: lane('IMAGE', {
+      state: 'waiting',
+      generationAllowed: false,
+      primaryAction: { kind: 'wait', lane: 'IMAGE' },
+      execution: { id: 'exec-succeeded', state: 'succeeded', isActive: false, raw: { candidate_id: 'candidate-pending' } },
+    }) }) }, submit, sleep: async () => undefined, maxRefreshAttempts: 2 })
+    const result = await instance.start('S1', 'IMAGE')
+    expect(result.ok).toBe(true)
+    expect(result.state).toBe('in_progress')
+    expect(result.snapshot.state).toBe('waiting_candidate')
+    expect(result.snapshot.errorCode).toBeNull()
+    expect(submit).toHaveBeenCalledTimes(1)
+  })
+
+  it('fails with an independent projection anomaly when V2 never exposes execution evidence', async () => {
     const submit = vi.fn(async () => ({ execution: { status: 'SUCCEEDED' }, candidate: null }))
     const { instance } = controller({ submit, current: view({ image: lane('IMAGE', { state: 'ready' }) }) })
     const result = await instance.start('S1', 'IMAGE')
-    expect(result.snapshot.errorCode).toBe('V3_EXECUTION_CANDIDATE_NOT_VISIBLE')
+    expect(result.snapshot.errorCode).toBe('V3_GENERATION_PROJECTION_NOT_VISIBLE')
     expect(submit).toHaveBeenCalledTimes(1)
+  })
+
+  it('stops immediately on canonical failure and preserves its reason', async () => {
+    let refreshCount = 0
+    const submit = vi.fn(async () => ({ execution: { execution_id: 'exec-failed', status: 'RUNNING' } }))
+    let current = view()
+    const instance = createShotStudioGenerationController({ bookId: 1, getViewModel: () => current, refreshCanonical: async () => { refreshCount += 1; current = view({ image: lane('IMAGE', { state: 'failed', generationAllowed: false, primaryAction: { kind: 'retry_generation', lane: 'IMAGE', enabled: false }, execution: { id: 'exec-failed', state: 'failed', failureCode: 'PROVIDER_ERROR', isActive: false } }) }) }, submit, sleep: async () => undefined, maxRefreshAttempts: 2 })
+    const result = await instance.start('S1', 'IMAGE')
+    expect(result.ok).toBe(false)
+    expect(result.state).toBe('failed')
+    expect(result.snapshot.errorCode).toBe('PROVIDER_ERROR')
+    expect(refreshCount).toBe(1)
+  })
+
+  it('fails closed when observation becomes stale or blocked', async () => {
+    for (const state of ['stale', 'blocked'] as const) {
+      const submit = vi.fn(async () => ({ execution: { execution_id: `exec-${state}`, status: 'RUNNING' } }))
+      let current = view()
+      const instance = createShotStudioGenerationController({ bookId: 1, getViewModel: () => current, refreshCanonical: async () => { current = view({ image: lane('IMAGE', { state, generationAllowed: false, primaryAction: { kind: state === 'stale' ? 'refresh_stale_source' : 'resolve_blocker', lane: 'IMAGE' }, reasonCodes: [state === 'stale' ? 'PROMPT_IR_STALE' : 'MODEL_PROFILE_REQUIRED'], execution: { id: `exec-${state}`, state: state === 'stale' ? 'stale' : 'running', isActive: false } }) }) }, submit, sleep: async () => undefined, maxRefreshAttempts: 2 })
+      const result = await instance.start('S1', 'IMAGE')
+      expect(result.ok).toBe(false)
+      expect(result.snapshot.errorCode).toBe(state === 'stale' ? 'PROMPT_IR_STALE' : 'MODEL_PROFILE_REQUIRED')
+    }
+  })
+
+  it('stops foreground observation without claiming backend cancellation after submit', async () => {
+    let releaseSubmit!: (value: any) => void
+    const submit = vi.fn(() => new Promise((resolve) => { releaseSubmit = resolve }))
+    const { instance } = controller({ submit })
+    const pending = instance.start('S1', 'IMAGE')
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(submit).toHaveBeenCalledTimes(1)
+    instance.stopObserving()
+    releaseSubmit({ execution: { execution_id: 'exec-running', status: 'RUNNING' } })
+    const result = await pending
+    expect(result.ok).toBe(true)
+    expect(result.state).toBe('in_progress')
+    expect(result.snapshot.errorCode).toBeNull()
+    expect(result.snapshot.message).toContain('后台生成任务可能仍在运行')
   })
 
   it('cancels an in-flight submission with AbortController', async () => {

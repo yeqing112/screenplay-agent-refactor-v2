@@ -266,24 +266,24 @@ function generationStateLabel(state: ShotGenerationMutationSnapshot['state']) {
   return ''
 }
 
-function GenerationControls({ shot, lane, mutation, reviewBusy, onGenerate, onCancel }: { shot: ShotStudioViewModel; lane: MediaLane; mutation: ShotGenerationMutationSnapshot; reviewBusy?: boolean; onGenerate: (target: MediaLane) => void; onCancel: () => void }) {
+export function GenerationControls({ shot, lane, mutation, reviewBusy, onGenerate }: { shot: ShotStudioViewModel; lane: MediaLane; mutation: ShotGenerationMutationSnapshot; reviewBusy?: boolean; onGenerate: (target: MediaLane) => void }) {
   const selected = lane === 'VIDEO' ? shot.video : shot.image
   const expectedKind = lane === 'IMAGE' ? 'generate_image' : 'generate_video'
   const canGenerate = selected.primaryAction.kind === expectedKind && selected.primaryAction.lane === lane && selected.generationAllowed && Boolean(selected.professional.model.selected_profile_id) && !shot.stale.isStale && !reviewBusy
   const isCurrent = mutation.shotId === shot.shotId && mutation.target === lane
-  const mutating = isCurrent && ['confirming', 'submitting', 'refreshing', 'running'].includes(mutation.state)
+  const mutating = isCurrent && ['confirming', 'submitting', 'refreshing', 'running', 'waiting_candidate'].includes(mutation.state)
   const model = selected.professional.model.selected_profile_id
   return <div data-testid="shot-studio-generation-controls" className="border-t border-[#2A3437] bg-[#1A2225] px-4 py-3">
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div><div className="text-[10px] uppercase tracking-[0.16em] text-[#D8A47C]">Generation Action</div><div className="mt-1 text-xs text-[#A9B4B3]">{canGenerate ? `模型配置：${model || '未选择'}` : selected.state === 'review' ? '当前候选需要人工审核。' : selected.state === 'official' ? '当前 lane 已是正式版本。' : selected.detail}</div></div>
-      <div className="flex flex-wrap items-center gap-2"><button type="button" data-testid={`shot-studio-generate-${lane.toLowerCase()}`} disabled={!canGenerate || mutating} onClick={() => onGenerate(lane)} className="border border-[#D8A47C]/70 bg-[#D8A47C]/15 px-3 py-2 text-xs font-medium text-[#F0C6A4] disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8A47C]">{lane === 'IMAGE' ? '生成 IMAGE' : '生成 VIDEO'}</button>{mutating ? <button type="button" onClick={onCancel} className="border border-[#DF8E8C]/50 px-3 py-2 text-xs text-[#DF8E8C]">取消</button> : null}</div>
+      <div className="flex flex-wrap items-center gap-2"><button type="button" data-testid={`shot-studio-generate-${lane.toLowerCase()}`} disabled={!canGenerate || mutating} onClick={() => onGenerate(lane)} className="border border-[#D8A47C]/70 bg-[#D8A47C]/15 px-3 py-2 text-xs font-medium text-[#F0C6A4] disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8A47C]">{lane === 'IMAGE' ? '生成 IMAGE' : '生成 VIDEO'}</button></div>
     </div>
     {isCurrent && mutation.state !== 'idle' ? <div className={`mt-2 text-[11px] ${mutation.state === 'failed' ? 'text-[#DF8E8C]' : mutation.state === 'candidate_ready' ? 'text-[#9FCBAB]' : 'text-[#8BC9D9]'}`} role={mutation.state === 'failed' ? 'alert' : 'status'}>{generationStateLabel(mutation.state)} · {mutation.message}</div> : null}
     {canGenerate ? <div className="mt-2 text-[10px] text-[#DBB36F]">该操作可能调用外部模型并产生费用。</div> : null}
   </div>
 }
 
-function MediaCanvas({ shot, lane, onLaneChange, mutation, reviewBusy, onGenerate, onCancel }: { shot: ShotStudioViewModel; lane: MediaLane; onLaneChange: (lane: MediaLane) => void; mutation: ShotGenerationMutationSnapshot; reviewBusy?: boolean; onGenerate: (target: MediaLane) => void; onCancel: () => void }) {
+function MediaCanvas({ shot, lane, onLaneChange, mutation, reviewBusy, onGenerate }: { shot: ShotStudioViewModel; lane: MediaLane; onLaneChange: (lane: MediaLane) => void; mutation: ShotGenerationMutationSnapshot; reviewBusy?: boolean; onGenerate: (target: MediaLane) => void }) {
   const selectedLane = lane === 'VIDEO' ? shot.video : shot.image
   const preview = lanePreview(selectedLane)
   const isVideo = lane === 'VIDEO'
@@ -303,7 +303,7 @@ function MediaCanvas({ shot, lane, onLaneChange, mutation, reviewBusy, onGenerat
         <div><div className="text-[10px] uppercase tracking-[0.12em] text-[#728082]">Evidence</div><div className="mt-2 truncate text-xs text-[#A9B4B3]">{laneEvidenceLabel(selectedLane)}</div></div>
         <div><div className="text-[10px] uppercase tracking-[0.12em] text-[#728082]">Prompt</div><div className="mt-2 text-xs text-[#A9B4B3]">v{selectedLane.prompt.version ?? '—'} · {selectedLane.prompt.current ? '当前' : '待更新'}</div></div>
       </div>
-      <GenerationControls shot={shot} lane={lane} mutation={mutation} reviewBusy={reviewBusy} onGenerate={onGenerate} onCancel={onCancel} />
+      <GenerationControls shot={shot} lane={lane} mutation={mutation} reviewBusy={reviewBusy} onGenerate={onGenerate} />
     </Panel>
   )
 }
@@ -442,7 +442,7 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
     {!selected ? <EmptySurface /> : <>
       <div className="grid min-w-0 gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
         <ShotNavigator shots={viewModels} selectedId={selected.shotId} onSelect={onSelectShot} />
-        <div className="min-w-0"><MediaCanvas shot={selected} lane={mediaLane} onLaneChange={setMediaLane} mutation={generationMutation} reviewBusy={reviewController.current?.isActive()} onGenerate={(target) => { void generationController.current?.start(selected.shotId, target) }} onCancel={() => { generationController.current?.cancel() }} /><ReviewDesk shot={selected} lane={mediaLane} mode={mode} mutation={mutation} generationBusy={generationController.current?.isActive()} onApprove={(identity) => { if (!generationController.current?.isActive()) void reviewController.current?.approve(identity) }} /><ShotPipeline shot={selected} /></div>
+        <div className="min-w-0"><MediaCanvas shot={selected} lane={mediaLane} onLaneChange={setMediaLane} mutation={generationMutation} reviewBusy={reviewController.current?.isActive()} onGenerate={(target) => { void generationController.current?.start(selected.shotId, target) }} /><ReviewDesk shot={selected} lane={mediaLane} mode={mode} mutation={mutation} generationBusy={generationController.current?.isActive()} onApprove={(identity) => { if (!generationController.current?.isActive()) void reviewController.current?.approve(identity) }} /><ShotPipeline shot={selected} /></div>
         <ShotContext shot={selected} mode={mode} detailsOpen={detailsOpen} onToggleDetails={() => setDetailsOpen((current) => !current)} />
       </div>
       <NextAction shot={selected} />

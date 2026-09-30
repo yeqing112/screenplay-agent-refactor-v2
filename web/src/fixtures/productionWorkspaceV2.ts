@@ -197,7 +197,8 @@ export function createProductionWorkspaceV2GenerationFixture(kind: ProductionWor
     official: { current: false, currentness: 'missing', version: null, authority: null, pointer: null, preview: null },
     model: { selected_profile_id: 'fixture-video-profile', provider: 'fixture', model_name: 'Fixture Video Generation' },
   }
-  const runningExecution: any = { execution_id: `fixture-${kind}`, status: 'RUNNING', provider: 'fixture', model: 'Fixture' }
+  // Match the canonical V2 projection shape consumed by productionUiV3.
+  const runningExecution: any = { id: `fixture-${kind}`, state: 'RUNNING', provider: 'fixture', model: 'Fixture' }
   let nextShot: any = { ...shot, IMAGE: cleanImage, VIDEO: cleanVideo, blockers: [], asset_readiness: { state: 'ready' as const, required: {}, missing: [], stale: [], current: true }, next_action: { key: 'GENERATE_IMAGE', label: '生成图片' } }
   if (kind === 'running-image') nextShot = { ...nextShot, IMAGE: { ...cleanImage, latest_execution: runningExecution, generation_readiness: { ...cleanImage.generation_readiness, ready: false, reason_codes: ['EXECUTION_RUNNING'] } } }
   if (kind === 'review-image') nextShot = { ...createProductionWorkspaceV2ReviewFixture({ lane: 'IMAGE' }).shots[0], blockers: [] }

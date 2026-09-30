@@ -1,6 +1,14 @@
 {
   "provider_calls": 0,
   "real_generation": false,
+  "long_running_observation": {
+    "sequence": ["ready-image", "submit:generate-frame", "running-image", "running-image", "running-image"],
+    "foreground_observation_exhausted_state": "running",
+    "ui_message": "生成任务仍在后台进行",
+    "cancel_cta_rendered": false,
+    "backend_cancel_requests": 0,
+    "errors": []
+  },
   "audit": [
     {
       "kind": "ready-image",
@@ -10,6 +18,8 @@
     {
       "kind": "running-image",
       "mounted": true,
+      "state": "running",
+      "cancel_cta": false,
       "errors": []
     },
     {
