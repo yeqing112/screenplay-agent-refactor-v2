@@ -457,9 +457,23 @@ def _generation_readiness(*, target_media: str, asset: dict[str, Any], lane: dic
     return {"ready": not reasons, "reason_codes": reasons, "primary_blocker": blockers[0] if blockers else None, "blockers": blockers}
 
 
-def _lane(session: Any, *, shot: dict[str, Any], target_media: str, selected_profile_id: str | None = None) -> dict[str, Any]:
+def resolve_current_production_lane(
+    session: Any,
+    *,
+    shot: dict[str, Any],
+    target_media: str,
+    selected_profile_id: str | None = None,
+) -> dict[str, Any]:
+    """Resolve one media lane using the exact V2 projection ordering.
+
+    Production mutations use this read-only helper for source guards so they
+    cannot create a second interpretation of ``latest_execution`` or the
+    current Official/candidate lane.  The helper intentionally returns the
+    same lane shape consumed by ``build_production_workspace_projection_v2``.
+    """
     from models import GenerationExecutionRecord, MediaCandidateRecord, MediaValidationRecord
 
+    target_media = _text(target_media).upper()
     book_id = int(shot.get("book_id") or 0)
     episode = int(shot.get("episode") or 0)
     shot_id = int(shot.get("storyboard_shot_id") or 0)
@@ -472,6 +486,11 @@ def _lane(session: Any, *, shot: dict[str, Any], target_media: str, selected_pro
     latest_execution = _execution_projection(executions[0] if executions else None)
     candidate_items = [_candidate_projection(item, _validation_for_candidate(validations, _text(item.candidate_id))) for item in candidates[:8]]
     return {"prompt_ir": prompt, "generation_mode": None, "source_official_image": None, "model": {"selected_profile_id": selected_profile_id, "provider": None, "model_name": None, "last_execution_profile_id": latest_execution.get("model_profile_id") if latest_execution else None, "last_execution_model": latest_execution.get("model") if latest_execution else None}, "latest_execution": latest_execution, "candidates": {"count": len(candidates), "latest": candidate_items[0] if candidate_items else None, "items": candidate_items}, "official": official}
+
+
+# Compatibility alias for internal callers that still use the old private
+# name.  All production source guards should import the named helper above.
+_lane = resolve_current_production_lane
 
 
 def _asset_projection(session: Any, *, base_assets: list[dict[str, Any]], book_id: int) -> list[dict[str, Any]]:
@@ -554,6 +573,8 @@ def build_production_workspace_projection_v2(session: Any, *, book_id: int, gene
         raw = dict(raw_base)
         raw["book_id"] = book_id
         readiness = _asset_readiness(session, shot_id=int(raw.get("storyboard_shot_id") or 0), book_id=book_id)
+        # Keep the private alias as the projection seam so existing callers
+        # and tests that patch `_lane` retain their deterministic behavior.
         image = _lane(session, shot=raw, target_media="IMAGE", selected_profile_id=image_profile)
         video = _lane(session, shot=raw, target_media="VIDEO", selected_profile_id=video_profile)
         image["generation_mode"] = "TEXT_TO_IMAGE"
@@ -587,4 +608,4 @@ def build_production_workspace_projection_v2(session: Any, *, book_id: int, gene
     return {"schema_version": "production_workspace_projection_v2", "book_id": int(book_id), "workflow_profile": "production", "read_only": True, "authority_source": "current_authority_pointers_only", "project": project, "stages": base.get("stages", {}), "episodes": base.get("episodes", []), "shots": shots, "assets": assets, "asset_ingestion_api_available": PRODUCTION_ASSET_INGESTION_API_AVAILABLE, "view_contract": {"standard": "state,next_action,blockers,official_media", "professional": "authority,pointer,prompt_ir,model,adapter,transport,execution,candidate,validation,official,history"}, "legacy_adopted_is_display_only": True, "provider_calls": 0}
 
 
-__all__ = ["build_production_workspace_projection_v2"]
+__all__ = ["build_production_workspace_projection_v2", "resolve_current_production_lane"]

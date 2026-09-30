@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { toShotStudioViewModels, type ShotStudioViewModel } from '../domain/productionUiV3'
-import { createProductionWorkspaceV2ReviewFixture } from '../fixtures/productionWorkspaceV2'
+import { createProductionWorkspaceV2OfficialCandidateCoexistenceFixture, createProductionWorkspaceV2ReviewFixture } from '../fixtures/productionWorkspaceV2'
 import {
   createShotStudioMediaReviewController,
   isCanonicalConfirmationCurrent,
@@ -166,5 +166,36 @@ describe('Shot Studio media review mutation controller', () => {
     expect(view.image.candidate.validationStatus).toBe('TECHNICALLY_VALID')
     expect(view.image.candidate.reviewEligibility).toBe(true)
     expect(isReviewCandidateCurrent(view, identityFor(view))).toBe(true)
+  })
+
+  it('allows a newer candidate to enter review while an older Official remains current', () => {
+    const view = toShotStudioViewModels([createProductionWorkspaceV2OfficialCandidateCoexistenceFixture().shots[0]])[0]
+    const candidate = view.image.candidate.candidate
+    expect(view.image.state).toBe('review')
+    expect(view.image.primaryAction.kind).toBe('review_candidate')
+    expect(view.image.official.version?.candidate_id).toBe('fixture-candidate-c1')
+    expect(candidate?.id).toBe('fixture-candidate-c2')
+    expect(isReviewCandidateCurrent(view, { shotId: view.shotId, lane: 'IMAGE', candidateId: 'fixture-candidate-c2', validationId: 'fixture-validation-c2' })).toBe(true)
+    expect(isReviewCandidateCurrent(view, { shotId: view.shotId, lane: 'IMAGE', candidateId: 'fixture-candidate-c1', validationId: 'fixture-validation-image' })).toBe(false)
+  })
+
+  it('fails closed when the Official pointer is broken even with a valid candidate', () => {
+    const snapshot = createProductionWorkspaceV2OfficialCandidateCoexistenceFixture()
+    snapshot.shots[0].IMAGE.official = { ...snapshot.shots[0].IMAGE.official, current: true, pointer: null }
+    const view = toShotStudioViewModels([snapshot.shots[0]])[0]
+    expect(view.image.official.reasonCodes.length).toBeGreaterThan(0)
+    expect(isReviewCandidateCurrent(view, { shotId: view.shotId, lane: 'IMAGE', candidateId: 'fixture-candidate-c2', validationId: 'fixture-validation-c2' })).toBe(false)
+  })
+
+  it('marks the replacement candidate as canonical after promotion refresh', () => {
+    const snapshot = createProductionWorkspaceV2OfficialCandidateCoexistenceFixture()
+    const before = toShotStudioViewModels([snapshot.shots[0]])[0]
+    expect(isCanonicalConfirmationCurrent(before, { shotId: before.shotId, lane: 'IMAGE', candidateId: 'fixture-candidate-c2', validationId: 'fixture-validation-c2' })).toBe(false)
+    snapshot.shots[0].IMAGE.official = {
+      ...snapshot.shots[0].IMAGE.official,
+      version: { ...snapshot.shots[0].IMAGE.official.version!, id: 'fixture-official-c2', candidate_id: 'fixture-candidate-c2' },
+    }
+    const after = toShotStudioViewModels([snapshot.shots[0]])[0]
+    expect(isCanonicalConfirmationCurrent(after, { shotId: after.shotId, lane: 'IMAGE', candidateId: 'fixture-candidate-c2', validationId: 'fixture-validation-c2' })).toBe(true)
   })
 })

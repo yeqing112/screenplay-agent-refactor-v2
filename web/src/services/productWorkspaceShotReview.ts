@@ -75,7 +75,11 @@ export function isReviewCandidateCurrent(view: ShotStudioViewModel | null, ident
   const candidate = lane.candidate.candidate
   if (lane.state !== 'review' || !lane.candidate.reviewEligibility || !candidate) return false
   if (text(candidate.id) !== identity.candidateId) return false
-  if (lane.official.current || lane.official.isCanonicalOfficial || lane.official.reasonCodes.length > 0) return false
+  // A current Official may coexist with a newer candidate during review.
+  // Only malformed Official evidence must fail closed here.  The candidate
+  // that already backs the current Official remains non-reviewable below.
+  if (lane.official.reasonCodes.length > 0) return false
+  if (text(candidate.id) === text(lane.official.version?.candidate_id)) return false
   return true
 }
 

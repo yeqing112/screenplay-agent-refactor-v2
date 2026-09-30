@@ -170,6 +170,54 @@ export function createProductionWorkspaceV2ReviewFixture(options: { lane?: 'IMAG
   }
 }
 
+/**
+ * Canonical coexistence fixture: the current Official remains C1 while a
+ * newer, technically valid C2 waits for human review in the same lane.
+ */
+export function createProductionWorkspaceV2OfficialCandidateCoexistenceFixture(): ProductionWorkspaceV2Snapshot {
+  const base = createProductionWorkspaceV2ReviewFixture({ lane: 'IMAGE', promoted: false })
+  const shot = base.shots[0]
+  const candidateC1 = { ...reviewCandidate, id: 'fixture-candidate-c1' }
+  const candidateC2 = {
+    ...reviewCandidate,
+    id: 'fixture-candidate-c2',
+    created_at: '2026-09-30T00:00:00Z',
+    checksum: 'fixture-candidate-c2-checksum',
+    technical_validation: { ...reviewCandidate.technical_validation, validation_id: 'fixture-validation-c2' },
+  }
+  const official = {
+    ...fixtureOfficialImage,
+    version: { ...fixtureOfficialImage.version, candidate_id: candidateC1.id },
+  }
+  const image = {
+    ...shot.IMAGE,
+    official,
+    latest_execution: {
+      id: 'fixture-execution-c2',
+      state: 'SUCCESS',
+      target_media: 'IMAGE',
+      model_profile_id: 'fixture-image-profile',
+      provider: 'fixture',
+      model: 'Fixture Image Review',
+      adapter: 'fixture',
+      adapter_version: '1',
+      transport_retry_count: 0,
+      provider_task_id: '',
+      provider_request_id: '',
+      request_fingerprint: 'fixture-c2-fingerprint',
+      candidate_id: candidateC2.id,
+      failure_code: null,
+      created_at: '2026-09-30T00:00:00Z',
+      completed_at: '2026-09-30T00:01:00Z',
+    },
+    candidates: { count: 2, latest: candidateC2, items: [candidateC1, candidateC2] },
+  }
+  return {
+    ...base,
+    shots: [{ ...shot, IMAGE: image, next_action: { key: 'REVIEW_MEDIA_CANDIDATE', label: '审核候选媒体' } }],
+  }
+}
+
 export type ProductionWorkspaceV2GenerationFixtureKind =
   | 'ready-image'
   | 'running-image'

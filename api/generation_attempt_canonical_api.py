@@ -34,6 +34,7 @@ from core.generation_attempt_lineage import (
     resolve_execution_base_provider_request_fingerprint,
     serialize_attempt_lineage,
 )
+from core.production_workspace_projection_v2 import resolve_current_production_lane
 from core.canonical_generation import derive_business_attempt_provider_request_fingerprint
 from models import (
     GenerationExecutionAttemptLineage,
@@ -43,10 +44,26 @@ from models import (
     Session,
     StoryboardShot,
     MediaCandidateRecord,
+    MediaPromotionRecord,
 )
 
 
 router = APIRouter(prefix="/api/books", tags=["generation-attempt-canonical"])
+
+
+class CreateShotGenerationAttemptRequest(BaseModel):
+    """Shot-level business intent contract for future production UI callers."""
+
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    operation_kind: str = Field(min_length=1, validation_alias=AliasChoices("operationKind", "operation_kind"))
+    target_media: str = Field(min_length=1, validation_alias=AliasChoices("targetMedia", "target_media"))
+    operation_idempotency_key: str = Field(min_length=1, validation_alias=AliasChoices("operationIdempotencyKey", "operation_idempotency_key"))
+    source_execution_id: str | None = Field(default=None, validation_alias=AliasChoices("sourceExecutionId", "source_execution_id"))
+    # Accepted only so the facade can return a precise contract error.  The
+    # client is never allowed to choose a Regenerate Official source.
+    source_official_media_version_id: str | None = Field(default=None, validation_alias=AliasChoices("sourceOfficialMediaVersionId", "source_official_media_version_id"))
+    reason: str = Field(default="", max_length=2000)
 
 
 class AttemptPreviewRequest(BaseModel):
@@ -208,6 +225,178 @@ def _attempt_response(session: Any, *, attempt: GenerationExecutionAttemptLineag
     return payload
 
 
+def _intent_response(*, attempt: GenerationExecutionAttemptLineage, service: GenerationAttemptLineageService, reused: bool = False) -> dict[str, Any]:
+    serialized = serialize_attempt_lineage(attempt, include_confirmation=True, service=service)
+    token = serialized.get("confirmation_token")
+    return {
+        "attempt": serialized,
+        "attemptConfirmationToken": token,
+        "attempt_confirmation_token": token,
+        "providerCalls": 0,
+        "provider_calls": 0,
+        "executionCreated": False,
+        "execution_created": False,
+        "mediaGenerated": False,
+        "media_generated": False,
+        "reused": bool(reused),
+    }
+
+
+def _shot_lane_payload(shot: StoryboardShot) -> dict[str, Any]:
+    return {
+        "book_id": int(shot.book_id),
+        "episode": int(shot.episode),
+        "storyboard_shot_id": int(shot.id),
+        "shot_id": int(shot.shot_id),
+    }
+
+
+def _existing_intent_for_key(
+    session: Any,
+    *,
+    shot: StoryboardShot,
+    kind: str,
+    target_media: str,
+    req: CreateShotGenerationAttemptRequest,
+) -> GenerationExecutionAttemptLineage | None:
+    existing = session.query(GenerationExecutionAttemptLineage).filter_by(
+        book_id=int(shot.book_id), operation_idempotency_key=req.operation_idempotency_key,
+    ).one_or_none()
+    if existing is None:
+        return None
+    if int(existing.episode) != int(shot.episode) or int(existing.storyboard_shot_id) != int(shot.id):
+        raise _error(409, "GENERATION_ATTEMPT_SCOPE_MISMATCH", "The idempotency key is already bound to another shot scope.", provider_calls=0)
+    same_semantics = (
+        str(existing.operation_kind).upper() == kind
+        and str(existing.target_media).upper() == target_media
+        and str(existing.reason or "") == str(req.reason or "")
+    )
+    if kind == "RETRY":
+        same_semantics = same_semantics and str(existing.source_execution_id) == str(req.source_execution_id)
+    if not same_semantics:
+        raise _error(409, "GENERATION_ATTEMPT_IDEMPOTENCY_CONFLICT", "The idempotency key is bound to different operation semantics.", provider_calls=0)
+    return existing
+
+
+def _pending_unpromoted_candidate(session: Any, *, shot: StoryboardShot, target_media: str, lane: dict[str, Any]) -> MediaCandidateRecord | None:
+    official = lane.get("official") if isinstance(lane.get("official"), dict) else {}
+    official_version = official.get("version") if isinstance(official.get("version"), dict) else {}
+    current_official_candidate_id = str(official_version.get("candidate_id") or "")
+    role = "SHOT_PRIMARY_IMAGE" if target_media == "IMAGE" else "SHOT_PRIMARY_VIDEO"
+    candidates = session.query(MediaCandidateRecord).join(
+        GenerationExecutionRecord,
+        MediaCandidateRecord.execution_id == GenerationExecutionRecord.execution_id,
+    ).filter(
+        GenerationExecutionRecord.book_id == int(shot.book_id),
+        GenerationExecutionRecord.episode == int(shot.episode),
+        GenerationExecutionRecord.storyboard_shot_id == int(shot.id),
+        GenerationExecutionRecord.target_media == target_media,
+    ).all()
+    for candidate in candidates:
+        if str(candidate.candidate_id) == current_official_candidate_id:
+            continue
+        review = session.query(MediaPromotionRecord).filter_by(candidate_id=candidate.candidate_id).one_or_none()
+        if review is not None and str(review.review_status).upper() in {"REJECTED", "REQUEST_CHANGE"}:
+            continue
+        return candidate
+    return None
+
+
+def _active_lane_execution(lane: dict[str, Any]) -> bool:
+    latest = lane.get("latest_execution") if isinstance(lane.get("latest_execution"), dict) else None
+    state = str((latest or {}).get("state") or "").upper()
+    return state in {"CREATED", "QUEUED", "RUNNING", "PROVIDER_PENDING", "PROVIDER_CALLED", "RETRYING", "PREVIEWED", "AUTHORIZED"}
+
+
+def _create_shot_attempt_intent(session: Any, *, shot: StoryboardShot, req: CreateShotGenerationAttemptRequest) -> dict[str, Any]:
+    kind = str(req.operation_kind or "").strip().upper()
+    target_media = str(req.target_media or "").strip().upper()
+    if kind not in {"RETRY", "REGENERATE"}:
+        raise _error(400, "GENERATION_ATTEMPT_OPERATION_INVALID", "operationKind must be RETRY or REGENERATE.", provider_calls=0)
+    if target_media not in {"IMAGE", "VIDEO"}:
+        raise _error(400, "GENERATION_ATTEMPT_TARGET_MEDIA_INVALID", "targetMedia must be IMAGE or VIDEO.", provider_calls=0)
+    if kind == "RETRY":
+        if not req.source_execution_id:
+            raise _error(400, "GENERATION_RETRY_SOURCE_REQUIRED", "Retry requires sourceExecutionId.", provider_calls=0)
+        if req.source_official_media_version_id:
+            raise _error(400, "GENERATION_RETRY_SOURCE_CLIENT_FORBIDDEN", "Retry cannot accept sourceOfficialMediaVersionId.", provider_calls=0)
+    else:
+        if req.source_execution_id:
+            raise _error(400, "GENERATION_REGENERATE_SOURCE_CLIENT_FORBIDDEN", "Regenerate cannot accept sourceExecutionId.", provider_calls=0)
+        if req.source_official_media_version_id:
+            raise _error(400, "GENERATION_REGENERATE_SOURCE_CLIENT_FORBIDDEN", "Regenerate source OfficialMedia is resolved from the current pointer.", provider_calls=0)
+
+    service = GenerationAttemptLineageService(session)
+    existing = _existing_intent_for_key(session, shot=shot, kind=kind, target_media=target_media, req=req)
+    if existing is not None:
+        return _intent_response(attempt=existing, service=service, reused=True)
+
+    lane = resolve_current_production_lane(
+        session,
+        shot=_shot_lane_payload(shot),
+        target_media=target_media,
+    )
+    latest = lane.get("latest_execution") if isinstance(lane.get("latest_execution"), dict) else None
+    if kind == "RETRY":
+        source = session.query(GenerationExecutionRecord).filter_by(execution_id=req.source_execution_id).one_or_none()
+        if source is None or int(source.book_id) != int(shot.book_id) or int(source.episode) != int(shot.episode) or int(source.storyboard_shot_id) != int(shot.id) or str(source.target_media).upper() != target_media:
+            raise _error(409, "GENERATION_ATTEMPT_SCOPE_MISMATCH", "Retry source does not match the business shot and target lane.", provider_calls=0)
+        if latest is None or str(latest.get("id") or "") != str(req.source_execution_id):
+            raise _error(409, "GENERATION_RETRY_SOURCE_NOT_CURRENT_LANE_EXECUTION", "Retry source is not the current Production Workspace lane execution.", provider_calls=0)
+        if str(source.status).upper() != "FAILED":
+            raise _error(409, "GENERATION_RETRY_SOURCE_NOT_FAILED", "Retry requires the current lane execution to be FAILED.", provider_calls=0)
+        try:
+            attempt = service.create_retry_intent(
+                source_execution_id=req.source_execution_id,
+                operation_idempotency_key=req.operation_idempotency_key,
+                reason=req.reason,
+                book_id=shot.book_id,
+                episode=shot.episode,
+                storyboard_shot_id=shot.id,
+                target_media=target_media,
+            )
+        except GenerationAttemptLineageError as exc:
+            _raise_lineage(exc)
+        session.commit()
+        return _intent_response(attempt=attempt, service=service)
+
+    if _pending_unpromoted_candidate(session, shot=shot, target_media=target_media, lane=lane) is not None:
+        raise _error(409, "GENERATION_REGENERATE_PENDING_CANDIDATE_EXISTS", "A newer unpromoted candidate already exists; review it before creating another Regenerate intent.", provider_calls=0)
+    if _active_lane_execution(lane):
+        raise _error(409, "GENERATION_REGENERATE_ACTIVE_EXECUTION", "The current lane has an active execution; wait for it to settle before Regenerate.", provider_calls=0)
+    official = lane.get("official") if isinstance(lane.get("official"), dict) else {}
+    official_version = official.get("version") if isinstance(official.get("version"), dict) else {}
+    if official.get("current") is not True or str(official.get("currentness") or "").lower() != "current" or not official_version.get("id"):
+        raise _error(409, "GENERATION_REGENERATE_SOURCE_NOT_CURRENT", "Regenerate requires the current OfficialMedia pointer for this lane.", provider_calls=0)
+    try:
+        attempt = service.create_regenerate_intent(
+            source_official_media_version_id=str(official_version["id"]),
+            operation_idempotency_key=req.operation_idempotency_key,
+            reason=req.reason,
+            book_id=shot.book_id,
+            episode=shot.episode,
+            storyboard_shot_id=shot.id,
+            target_media=target_media,
+        )
+    except GenerationAttemptLineageError as exc:
+        _raise_lineage(exc)
+    session.commit()
+    return _intent_response(attempt=attempt, service=service)
+
+
+@router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-attempts", status_code=201)
+def create_shot_generation_attempt(book_id: int, episode: int, shot_id: int, req: CreateShotGenerationAttemptRequest):
+    """Create a provider-free business Attempt for a production Shot.
+
+    This is the future UI contract.  The Foundation ``/generation`` route
+    remains available for internal callers, but it is never needed to resolve
+    the business shot or choose a Regenerate Official source here.
+    """
+    with Session() as session:
+        shot = _business_shot(session, book_id=book_id, episode=episode, shot_id=shot_id)
+        return _create_shot_attempt_intent(session, shot=shot, req=req)
+
+
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-attempts/{attempt_lineage_id}/preview")
 def preview_generation_attempt(book_id: int, episode: int, shot_id: int, attempt_lineage_id: str, req: AttemptPreviewRequest):
     with Session() as session:
@@ -323,4 +512,4 @@ async def execute_generation_attempt(book_id: int, episode: int, shot_id: int, a
     )
 
 
-__all__ = ["router", "AttemptPreviewRequest", "AttemptExecuteRequest", "preview_generation_attempt", "execute_generation_attempt"]
+__all__ = ["router", "CreateShotGenerationAttemptRequest", "AttemptPreviewRequest", "AttemptExecuteRequest", "create_shot_generation_attempt", "preview_generation_attempt", "execute_generation_attempt"]
