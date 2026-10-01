@@ -118,6 +118,7 @@ from api.director_runtime_api import router as director_runtime_router
 from api.director_reasoning_api import router as director_reasoning_router
 from api.automatic_storyboard_api import router as automatic_storyboard_router
 from api.production_asset_api import router as production_asset_router
+from api.book_lifecycle_api import router as book_lifecycle_router
 
 from nodes.registry import REGISTRY, get_handler
 from nodes.runner import NodeRunner, WORKFLOWS_DIR, RUNS_DIR
@@ -196,6 +197,7 @@ app.include_router(director_reasoning_router)
 app.include_router(automatic_storyboard_router)
 app.include_router(director_reasoning_router, prefix="/api")
 app.include_router(production_asset_router)
+app.include_router(book_lifecycle_router)
 
 # Any change here changes the DecisionPacket evidence fingerprint.  A draft
 # compiled under an older delivery contract must never be deduplicated as if
@@ -20631,35 +20633,14 @@ def get_book_outputs(book_id: int, genre: str = "short_drama"):
 
 @app.delete("/api/books/{book_id}")
 def delete_book(book_id: int):
-    """Delete a book and all associated data."""
-    from models import Session, Book, BookBible, Chapter, EpisodeOutline, Script, \
-        CharacterProfile, CharacterStage, SceneCharacter, SceneProp, StoryboardAcceptanceRecord, StoryboardPromptVersion, StoryboardShot, VisualEraSpec, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset, KV, QAIssue, ScriptVersion
+    """Delete a Book through the explicit canonical lifecycle cleanup plan."""
+    from core.book_lifecycle import BookLifecycleError, delete_book_scope
     with Session() as s:
-        book = s.get(Book, book_id)
-        if not book:
-            raise HTTPException(status_code=404, detail="Book not found")
-
-        title = book.title
-
-        # Cascade delete all related data
-        for model in [ScriptVersion, QAIssue, Script, EpisodeOutline, CharacterStage, CharacterProfile,
-                      SceneCharacter, SceneProp, StoryboardAcceptanceRecord, StoryboardPromptVersion, StoryboardShot,
-                      VisualEraSpec, VisualLocation, VisualMakeup, VisualProp, VisualReferenceAsset,
-                      Chapter, BookBible]:
-            s.query(model).filter(model.book_id == book_id).delete()
-
-        # Delete the book itself
-        s.delete(book)
-        s.commit()
-
-        # Also clean up ingestion file
-        import config
-        ingest_dir = config.BOOKS_DIR / title
-        if ingest_dir.exists():
-            import shutil
-            shutil.rmtree(ingest_dir, ignore_errors=True)
-
-    return {"ok": True, "deleted": title}
+        try:
+            return delete_book_scope(s, book_id=int(book_id))
+        except BookLifecycleError as exc:
+            s.rollback()
+            raise HTTPException(status_code=exc.status_code, detail={"code": exc.code, "message": exc.message, **exc.details}) from exc
 
 
 def _qa_fix_mode_for_issue(issue_type: str) -> str:

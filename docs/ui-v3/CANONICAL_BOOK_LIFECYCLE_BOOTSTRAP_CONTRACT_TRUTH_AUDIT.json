@@ -1,0 +1,48 @@
+{
+  "phase": "PHASE_CANONICAL_BOOK_LIFECYCLE_BOOTSTRAP_CONTRACT",
+  "status": "complete",
+  "completion_marker": "CANONICAL_BOOK_LIFECYCLE_BOOTSTRAP_CONTRACT_COMPLETE",
+  "baseline_commit": "a7c93fd510640a9d2e36c07add3c253599637389",
+  "provider_calls": {
+    "image": 0,
+    "video": 0,
+    "llm": 0
+  },
+  "forbidden_bootstrap_paths": [
+    "/api/pipeline/script",
+    "legacy node ingest"
+  ],
+  "direct_book_scope_inventory_complete": true,
+  "alembic_head": "o6j7k8l9m0n1",
+  "source_fact_mutation": false,
+  "historical_books": {
+    "990400": "preserved",
+    "998755": "not revived"
+  },
+  "disposable_canary": {
+    "title": "V3-CANARY-DISPOSABLE-20261001-R2",
+    "book_id": 990403,
+    "created_via": "POST /api/books",
+    "script_created_via": "POST /api/books/{book_id}/scripts",
+    "deleted_via": "DELETE /api/books/{book_id}",
+    "orphan_rows": 0,
+    "final_book_exists": false
+  },
+  "tests": {
+    "tests/test_book_lifecycle_api.py": {
+      "passed": 7,
+      "failed": 0
+    },
+    "backend_full_suite": {
+      "passed": 2002,
+      "failed": 0
+    },
+    "web": {
+      "test_files": 63,
+      "passed": 445,
+      "build": "pass"
+    },
+    "compileall": "pass",
+    "git_diff_check": "pass"
+  }
+}
