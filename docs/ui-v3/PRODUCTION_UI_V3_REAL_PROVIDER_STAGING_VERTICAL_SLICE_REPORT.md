@@ -2,19 +2,21 @@
 
 ## 状态
 
-本轮状态：`BLOCKED_STAGING_DATA_READINESS_UNVERIFIED`
+本轮状态：`BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING`
 
-基线提交：`f1db1ad`
+基线提交：`798d5702c21d62ae7b33b49f23d1a80e3774ace1`
 
 目标阶段：`PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE`
 
 ## Environment Gate
 
-本次执行显式设置 `APP_ENV=staging`、`DEPLOYMENT_ENV=staging`、`REAL_PROVIDER_STAGING_CONFIRMED=1`、`STAGING_CANARY_BOOK_ID=998755`、`REAL_PROVIDER_STAGING_MAX_CALLS=6`。数据库是本地 SQLite staging 运行库，生产数据库未使用。隔离门禁通过。
+本次执行显式设置 `APP_ENV=staging`、`DEPLOYMENT_ENV=staging`、`STAGING_ALLOW_CANARY_BOOK_CREATE=1`、`REAL_PROVIDER_STAGING_CONFIRMED=1`、`REAL_PROVIDER_STAGING_MAX_CALLS=6`。数据库是本地 SQLite staging 运行库，生产数据库未使用。990400 在执行前后均存在且保持 3 个镜头。
 
 ## Authorization Gate
 
 授权结论为 **PASS**，预算硬上限为 6。媒体 Provider profile 解析通过：IMAGE 使用 SHAPI (`local-image-mw4y52`)，VIDEO 使用 MiniMax H3 (`local-video-7deneh`)；仅记录 host 与 credential presence，不记录 secret。真实 Provider 调用仍为 **0**。
+
+但 `/openapi.json` 仅暴露 `GET /api/books`，没有 `POST /api/books` 正式 Book Create contract。虽然存在 `/api/pipeline/script`，它会进入 Reader/Bible 等可能调用 LLM 的长流程，不满足本轮“数据准备 LLM calls = 0”与独立 Book Create 要求，因此没有调用它。
 
 ## Provider Profiles and Credentials
 
@@ -26,15 +28,15 @@ Provider profile resolver 通过，但没有进入 adapter execution。没有记
 
 ## Staging Book and Data Isolation
 
-选择丢弃的项目为 `998755`，因为仓库已有证据将其标记为 development-only disposable fixture；990400 保留为 active 生产样本。通过正式 `DELETE /api/books/998755` contract 删除并验证 not found。canary 删除前存在 1 个 storyboard shot，删除后 book、shot、execution、candidate、official 均为 0；生产数据库写入：`0`；其它 book 写入：`0`。本地 staging 隔离结论：**PASS**。
+998755 已在上一轮通过正式 DELETE contract 删除并验证不存在；990400 保留为 active 生产样本。本轮请求创建 `V3-CANARY-DISPOSABLE-20261001-R2`，但由于没有正式 Book Create contract，未创建新 Book，未写入任何 Book 或 authority row。生产数据库写入：`0`；990400 writes：`0`；Provider 数据准备写入：`0`。
 
 ## IMAGE Initial / Review / Official / Regenerate
 
-未执行。V2 投影没有可执行 canonical PromptIR shot，且 `compileIfMissing=false`；没有 IMAGE execution、candidate、media storage、checksum、review 或 official promotion 证据。IMAGE initial 与 regenerate 均为 `NO_GO / BLOCKED_BEFORE_PROVIDER`。
+未执行。新 canary 尚未创建，故没有 canonical PromptIR 或 V2 shot。IMAGE initial 与 regenerate 均为 `NO_GO / NOT_RUN`。
 
 ## VIDEO Dependency / Initial / Long-running / Reload / Review / Official / Regenerate
 
-未执行。没有 VIDEO dependency、异步 task、reload recovery、candidate、duration 或 official promotion 证据。VIDEO initial、long-running recovery 与 regenerate 均为 `NO_GO / BLOCKED_BEFORE_PROVIDER`。
+未执行。没有 VIDEO dependency、异步 task、reload recovery、candidate、duration 或 official promotion 证据。VIDEO initial、long-running recovery 与 regenerate 均为 `NO_GO / NOT_RUN`。
 
 ## Retry Real Evidence
 
@@ -65,21 +67,21 @@ Provider profile resolver 通过，但没有进入 adapter execution。没有记
 
 | Gate | Verdict |
 |---|---|
-| IMAGE initial | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| IMAGE regenerate | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| VIDEO initial | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| VIDEO regenerate | NO_GO / BLOCKED_BEFORE_PROVIDER |
+| IMAGE initial | NO_GO / NOT_RUN |
+| IMAGE regenerate | NO_GO / NOT_RUN |
+| VIDEO initial | NO_GO / NOT_RUN |
+| VIDEO regenerate | NO_GO / NOT_RUN |
 | REAL RETRY | CONDITIONAL / NOT_EXERCISED |
-| VIDEO long-running and reload | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| Media storage | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| Candidate review / promotion | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| Old official preservation | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| Official replacement | NO_GO / BLOCKED_BEFORE_PROVIDER |
-| Staging data isolation | PASS / LOCAL_STAGING_SCOPE |
+| VIDEO long-running and reload | NO_GO / NOT_RUN |
+| Media storage | NO_GO / NOT_RUN |
+| Candidate review / promotion | NO_GO / NOT_RUN |
+| Old official preservation | NO_GO / NOT_RUN |
+| Official replacement | NO_GO / NOT_RUN |
+| Staging data isolation | PASS / PROTECTED_SAMPLE_UNCHANGED |
 
 ## Release Recommendation
 
-保持真实 Provider 执行冻结。需要先为一个 staging book 补齐当前 V2 所需的 ScriptIR / PromptIR / asset authority，并重新通过 readiness；不得开启 `compileIfMissing`，不得把 mock 结果标记为真实 Provider 通过。
+保持真实 Provider 执行冻结。需要先补充正式 `POST /api/books` Book Create contract（或提供等价的、明确 provider-free 的正式创建 contract），再按本报告列出的 canonical authority 顺序创建 disposable canary。不得直接 ORM/SQL 写入，不得开启 `compileIfMissing`，不得把 mock 结果标记为真实 Provider 通过。
 
 ## 配套证据
 

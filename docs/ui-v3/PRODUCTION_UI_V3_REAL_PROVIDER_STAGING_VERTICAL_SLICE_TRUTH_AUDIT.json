@@ -1,21 +1,21 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "baseline_commit": "f1db1ad",
-  "final_status": "BLOCKED_STAGING_DATA_READINESS_UNVERIFIED",
+  "baseline_commit": "798d5702c21d62ae7b33b49f23d1a80e3774ace1",
+  "final_status": "BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING",
   "preflight": {
     "app_env": "staging",
     "real_provider_staging_confirmed": true,
-    "staging_canary_book_id_present": true,
+    "staging_canary_book_id_present": false,
     "provider_call_budget_present": true,
     "provider_call_budget": 6,
-    "staging_canary_book_id": 998755,
+    "staging_canary_book_id": null,
     "production_environment_detected": false,
-    "reason": "Authorization and isolation passed; execution stopped because V2 had no executable canonical PromptIR shot and compileIfMissing=false was preserved."
+    "reason": "OpenAPI exposes no formal POST /api/books Book Create contract. No new canary was created; execution stopped before data preparation and Provider calls."
   },
   "environment": "staging",
   "explicit_real_provider_authorization": true,
   "production_database_used": false,
-  "staging_canary_book_scoped": true,
+  "staging_canary_book_scoped": false,
   "staging_data_isolation_verifiable": true,
   "real_image_provider_calls": 0,
   "real_video_provider_calls": 0,
@@ -45,7 +45,8 @@
     "video_provider": "minimax-h3-async",
     "video_host": "https://metaso.cn/api/minimax",
     "video_credential_present": true,
-    "real_provider_execution": "NOT_STARTED"
+    "real_provider_execution": "NOT_STARTED",
+    "data_readiness_gate": "NOT_REACHED"
   },
   "disposal": {
     "selected_disposable_book_id": 998755,
@@ -54,7 +55,14 @@
     "delete_verified": true,
     "remaining_990400": true
   },
-  "blocked_reason": "V2_PROJECTION_NO_EXECUTABLE_CANONICAL_SHOT",
+  "blocked_reason": "CANARY_BOOK_CREATION_CONTRACT_MISSING",
+  "canary_creation": {
+    "requested_name": "V3-CANARY-DISPOSABLE-20261001-R2",
+    "allow_canary_book_create": true,
+    "formal_book_create_contract": false,
+    "openapi_books_post": false,
+    "result": "BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING"
+  },
   "evidence": {
     "web_tests": "PASS",
     "web_build": "PASS",
@@ -62,7 +70,8 @@
     "python_compile": "PASS",
     "git_diff_check": "PASS",
     "alembic_head": "o6j7k8l9m0n1",
-    "startup_migrations_applied_before_slice": 2,
+    "startup_existing_migrations_applied": 2,
+    "db_migration_files_added": 0,
     "working_tree_before_evidence": "CLEAN"
   },
   "resume_phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",

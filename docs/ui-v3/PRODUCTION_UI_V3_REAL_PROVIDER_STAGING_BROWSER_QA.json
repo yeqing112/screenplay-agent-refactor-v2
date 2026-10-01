@@ -1,8 +1,8 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_STAGING_DATA_READINESS_UNVERIFIED",
+  "status": "BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING",
   "environment": "staging",
-  "canary_book_id": 998755,
+  "canary_book_id": null,
   "disposable_book_deleted": true,
   "default_v3_surface": true,
   "provider_execution_started": false,
@@ -23,5 +23,5 @@
     "ordinary_generate_fallback_calls": 0,
     "provider_submission_calls": 0
   },
-  "reason": "Authorization passed, but the canonical V2 projection had no executable shot; browser Provider flow was not started."
+  "reason": "No new canary Book could be created through a formal API; browser flow was not started."
 }
