@@ -1,0 +1,26 @@
+{
+  "browser_session": "v3qa",
+  "provider_mode": "mock",
+  "allowed_routes": [
+    "POST /api/books/{book}/episodes/{episode}/shots/{shot}/generation-attempts",
+    "POST /api/books/{book}/episodes/{episode}/shots/{shot}/generation-attempts/{attempt}/preview",
+    "POST /api/books/{book}/episodes/{episode}/shots/{shot}/generation-attempts/{attempt}/execute",
+    "GET /api/books/{book}/production-workspace-v2"
+  ],
+  "image_retry": {
+    "create": "POST /api/books/1/episodes/1/shots/1/generation-attempts",
+    "preview": "POST /api/books/1/episodes/1/shots/1/generation-attempts/attempt-browser-retry/preview",
+    "execute": "POST /api/books/1/episodes/1/shots/1/generation-attempts/attempt-browser-retry/execute"
+  },
+  "image_regenerate": {
+    "create": "POST /api/books/1/episodes/1/shots/1/generation-attempts",
+    "preview": "POST /api/books/1/episodes/1/shots/1/generation-attempts/attempt-browser-regenerate/preview",
+    "execute": "POST /api/books/1/episodes/1/shots/1/generation-attempts/attempt-browser-regenerate/execute"
+  },
+  "foundation_attempt_intents_calls": 0,
+  "ordinary_generate_endpoint_calls": 0,
+  "legacy_recovery_calls": 0,
+  "real_provider_calls": 0,
+  "real_production_writes": 0,
+  "result": "PASS"
+}

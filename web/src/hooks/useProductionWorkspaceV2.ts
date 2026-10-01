@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { createProductionWorkspaceV2GenerationFixture, createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture, type ProductionWorkspaceV2GenerationFixtureKind } from '../fixtures/productionWorkspaceV2'
+import { createProductionWorkspaceV2GenerationFixture, createProductionWorkspaceV2OfficialCandidateCoexistenceFixture, createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture, type ProductionWorkspaceV2GenerationFixtureKind } from '../fixtures/productionWorkspaceV2'
 import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
 import type { ProductionWorkspaceLoadState, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 import { readExplicitGenerationProfileSelection } from '../components/productWorkspaceGeneration'
@@ -25,8 +25,9 @@ export function useProductionWorkspaceV2(bookId?: number) {
       const fixtureName = params?.get('workspace_v2_fixture')
       const generationFixture = params?.get('workspace_v2_generation_fixture') as ProductionWorkspaceV2GenerationFixtureKind | null
       const reviewFixtureEnabled = import.meta.env.DEV && fixtureName === 'review'
+      const coexistenceFixtureEnabled = import.meta.env.DEV && fixtureName === 'official-candidate'
       const fixtureEnabled = import.meta.env.DEV && params && (fixtureName === 'blocked' || params.get('workspace_fixture') === 'populated')
-      const generationFixtureEnabled = import.meta.env.DEV && Boolean(generationFixture) && ['ready-image', 'running-image', 'review-image', 'official-image-ready-video', 'running-video', 'review-video', 'official-shot'].includes(generationFixture || '')
+      const generationFixtureEnabled = import.meta.env.DEV && Boolean(generationFixture) && ['ready-image', 'failed-image', 'failed-video', 'official-image', 'running-image', 'review-image', 'official-image-ready-video', 'running-video', 'review-video', 'official-shot'].includes(generationFixture || '')
       if (generationFixtureEnabled && generationFixture) {
         const fixture = createProductionWorkspaceV2GenerationFixture(generationFixture)
         const requestedShotId = params?.get('shot')
@@ -58,6 +59,11 @@ export function useProductionWorkspaceV2(bookId?: number) {
         const lane = params?.get('review_lane') === 'VIDEO' ? 'VIDEO' : 'IMAGE'
         const promoted = params?.get('review_mutation_fixture') === 'success' && reviewFixtureRefreshCount > 0
         setData({ ...createProductionWorkspaceV2ReviewFixture({ lane, promoted }), book_id: bookId })
+        setState('ready')
+        return
+      }
+      if (coexistenceFixtureEnabled) {
+        setData({ ...createProductionWorkspaceV2OfficialCandidateCoexistenceFixture(), book_id: bookId })
         setState('ready')
         return
       }

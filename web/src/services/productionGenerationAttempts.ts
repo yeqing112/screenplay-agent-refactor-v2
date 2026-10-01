@@ -26,6 +26,7 @@ export interface GenerationAttemptRecord {
   status?: string
   confirmation_token?: string
   confirmationToken?: string
+  attempt_confirmation_token?: string
   [key: string]: unknown
 }
 

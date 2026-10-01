@@ -220,6 +220,9 @@ export function createProductionWorkspaceV2OfficialCandidateCoexistenceFixture()
 
 export type ProductionWorkspaceV2GenerationFixtureKind =
   | 'ready-image'
+  | 'failed-image'
+  | 'failed-video'
+  | 'official-image'
   | 'running-image'
   | 'review-image'
   | 'official-image-ready-video'
@@ -247,7 +250,28 @@ export function createProductionWorkspaceV2GenerationFixture(kind: ProductionWor
   }
   // Match the canonical V2 projection shape consumed by productionUiV3.
   const runningExecution: any = { id: `fixture-${kind}`, state: 'RUNNING', provider: 'fixture', model: 'Fixture' }
+  const failedExecution = (target: 'IMAGE' | 'VIDEO') => ({
+    id: `fixture-failed-${target.toLowerCase()}`,
+    state: 'FAILED',
+    target_media: target,
+    model_profile_id: target === 'IMAGE' ? 'fixture-image-profile' : 'fixture-video-profile',
+    provider: 'fixture',
+    model: 'Fixture',
+    adapter: 'fixture',
+    adapter_version: '1',
+    transport_retry_count: 0,
+    provider_task_id: '',
+    provider_request_id: '',
+    request_fingerprint: `fixture-failed-${target.toLowerCase()}-fingerprint`,
+    candidate_id: null,
+    failure_code: 'FIXTURE_PROVIDER_FAILURE',
+    created_at: '2026-09-30T00:00:00Z',
+    completed_at: '2026-09-30T00:01:00Z',
+  })
   let nextShot: any = { ...shot, IMAGE: cleanImage, VIDEO: cleanVideo, blockers: [], asset_readiness: { state: 'ready' as const, required: {}, missing: [], stale: [], current: true }, next_action: { key: 'GENERATE_IMAGE', label: '生成图片' } }
+  if (kind === 'failed-image') nextShot = { ...nextShot, IMAGE: { ...cleanImage, latest_execution: failedExecution('IMAGE') }, next_action: { key: 'RETRY_IMAGE', label: '重试本次生成' } }
+  if (kind === 'failed-video') nextShot = { ...nextShot, IMAGE: { ...cleanImage, official: fixtureOfficialImage }, VIDEO: { ...cleanVideo, source_official_image: fixtureOfficialImage, generation_readiness: { ready: true, reason_codes: [], primary_blocker: null, blockers: [] }, latest_execution: failedExecution('VIDEO') }, next_action: { key: 'RETRY_VIDEO', label: '重试本次生成' } }
+  if (kind === 'official-image') nextShot = { ...nextShot, IMAGE: { ...cleanImage, official: fixtureOfficialImage }, next_action: { key: 'REGENERATE_IMAGE', label: '生成新版本' } }
   if (kind === 'running-image') nextShot = { ...nextShot, IMAGE: { ...cleanImage, latest_execution: runningExecution, generation_readiness: { ...cleanImage.generation_readiness, ready: false, reason_codes: ['EXECUTION_RUNNING'] } } }
   if (kind === 'review-image') nextShot = { ...createProductionWorkspaceV2ReviewFixture({ lane: 'IMAGE' }).shots[0], blockers: [] }
   if (kind === 'official-image-ready-video') nextShot = { ...nextShot, IMAGE: { ...cleanImage, official: fixtureOfficialImage }, VIDEO: { ...cleanVideo, source_official_image: fixtureOfficialImage, generation_readiness: { ready: true, reason_codes: [], primary_blocker: null, blockers: [] } }, next_action: { key: 'GENERATE_VIDEO', label: '生成视频' } }
@@ -259,6 +283,9 @@ export function createProductionWorkspaceV2GenerationFixture(kind: ProductionWor
 
 export const productionWorkspaceV2GenerationFixtures: Record<ProductionWorkspaceV2GenerationFixtureKind, ProductionWorkspaceV2Snapshot> = {
   'ready-image': createProductionWorkspaceV2GenerationFixture('ready-image'),
+  'failed-image': createProductionWorkspaceV2GenerationFixture('failed-image'),
+  'failed-video': createProductionWorkspaceV2GenerationFixture('failed-video'),
+  'official-image': createProductionWorkspaceV2GenerationFixture('official-image'),
   'running-image': createProductionWorkspaceV2GenerationFixture('running-image'),
   'review-image': createProductionWorkspaceV2GenerationFixture('review-image'),
   'official-image-ready-video': createProductionWorkspaceV2GenerationFixture('official-image-ready-video'),

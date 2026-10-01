@@ -440,7 +440,7 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
       refreshCanonical: async () => { await refreshCanonical.current?.() },
       confirmCost: async (operation, target) => typeof window === 'undefined' ? true : window.confirm(operation === 'RETRY'
         ? '重试本次生成会保留失败记录，并再次调用外部模型，可能产生费用。\n\n是否继续？'
-        : '生成新版本会保留当前正式版本。\n\n只有新候选审核通过后，才会替换当前正式版本。\n此次操作可能调用外部模型并产生费用。\n\n是否继续?'),
+        : '生成新版本会保留当前正式版本。\n\n只有新候选审核通过后，才会替换当前正式版本。\n此次操作可能调用外部模型并产生费用。\n\n是否继续？'),
       isReviewMutationActive: () => reviewController.current?.isActive() ?? false,
       isOrdinaryGenerationActive: () => generationController.current?.isActive() ?? false,
       onState: setAttemptMutation,

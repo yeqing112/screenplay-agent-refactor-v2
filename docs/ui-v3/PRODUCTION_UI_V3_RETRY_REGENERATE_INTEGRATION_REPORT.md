@@ -40,7 +40,7 @@ Retry and Regenerate Candidates reuse the existing Review Desk. Regenerate keeps
 
 ## Verification
 
-- Web: `63` test files, `443` tests passed.
+- Web: `63` test files, `445` tests passed.
 - Web build: `npm --prefix web run build` passed.
 - Backend Attempt regression: `43 passed` across the canonical Attempt, lineage, and contract suites.
 - Backend full suite: `1995 passed`.
@@ -51,7 +51,9 @@ Retry and Regenerate Candidates reuse the existing Review Desk. Regenerate keeps
 
 ## Browser / responsive QA
 
-The component render suite covers default V3, Official plus Candidate coexistence, failed state, review state, and 100-shot rendering. Network contract tests assert shot-level routes and the absence of Foundation routes. A real-provider browser run is intentionally outside this phase and remains deferred to the explicitly authorized staging vertical slice.
+Playwright browser QA ran against the disposable DEV fixtures with mock responses for the Attempt facade. IMAGE Retry, VIDEO Retry, IMAGE Regenerate, and VIDEO Regenerate displayed the correct buttons and confirmation copy, then issued exactly one shot-level create, preview, and execute request per flow. No Foundation, ordinary Generate, Legacy recovery, provider, or production write request was observed. Horizontal overflow was false at 1280×900, 1440×900, and 1920×1080. Native buttons, disabled locks, `aria-busy`, focus-visible styles, and the keyboard-capable native confirmation dialog were verified. The browser console was clean after the unrelated agent reconcile endpoint was mocked to 200.
+
+Evidence packets: `PRODUCTION_UI_V3_RETRY_REGENERATE_INTEGRATION_BROWSER_QA.json` and `PRODUCTION_UI_V3_RETRY_REGENERATE_INTEGRATION_NETWORK_AUDIT.json`.
 
 ## Remaining production gaps
 

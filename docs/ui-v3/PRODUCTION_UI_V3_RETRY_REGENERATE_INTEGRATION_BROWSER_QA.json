@@ -1,0 +1,77 @@
+{
+  "mode": "mock_provider_only",
+  "base_url": "http://127.0.0.1:5181",
+  "fixture_project": "workspace_fixture=populated",
+  "flows": {
+    "image_retry": {
+      "fixture": "workspace_v2_generation_fixture=failed-image",
+      "button_visible": true,
+      "confirmation_copy_verified": "重试本次生成会保留失败记录，并再次调用外部模型，可能产生费用。\n\n是否继续？",
+      "shot_level_create": 1,
+      "preview": 1,
+      "execute": 1,
+      "foundation_attempt_intents": 0,
+      "ordinary_generate_fallback": 0
+    },
+    "image_regenerate": {
+      "fixture": "workspace_v2_generation_fixture=official-image",
+      "button_visible": true,
+      "primary_action_remains": "查看正式版本",
+      "confirmation_copy_verified": "生成新版本会保留当前正式版本。\n\n只有新候选审核通过后，才会替换当前正式版本。\n此次操作可能调用外部模型并产生费用。\n\n是否继续？",
+      "shot_level_create": 1,
+      "preview": 1,
+      "execute": 1,
+      "foundation_attempt_intents": 0,
+      "ordinary_generate_fallback": 0
+    },
+    "video_retry": {
+      "fixture": "workspace_v2_generation_fixture=failed-video",
+      "button_visible": true,
+      "confirmation_copy_verified": "重试本次生成会保留失败记录，并再次调用外部模型，可能产生费用。\n\n是否继续？",
+      "shot_level_create": 1,
+      "preview": 1,
+      "execute": 1,
+      "foundation_attempt_intents": 0,
+      "ordinary_generate_fallback": 0
+    },
+    "video_regenerate": {
+      "fixture": "workspace_v2_generation_fixture=official-shot",
+      "button_visible": true,
+      "primary_action_remains": "查看正式版本",
+      "confirmation_copy_verified": "生成新版本会保留当前正式版本。\n\n只有新候选审核通过后，才会替换当前正式版本。\n此次操作可能调用外部模型并产生费用。\n\n是否继续？",
+      "shot_level_create": 1,
+      "preview": 1,
+      "execute": 1,
+      "foundation_attempt_intents": 0,
+      "ordinary_generate_fallback": 0
+    }
+  },
+  "responsive": {
+    "1280x900": { "horizontal_overflow": false, "screenshot": ".playwright-cli/page-2026-10-01T09-36-15-023Z.png" },
+    "1440x900": { "horizontal_overflow": false, "screenshot": ".playwright-cli/page-2026-10-01T09-36-20-830Z.png" },
+    "1920x1080": { "horizontal_overflow": false, "screenshot": ".playwright-cli/page-2026-10-01T09-36-26-569Z.png" }
+  },
+  "state_recovery": {
+    "running_reload": { "fixture": "running-image", "projected_state": "running", "provider_calls": 0 },
+    "candidate_reload": { "fixture": "review", "projected_state": "review", "provider_calls": 0 },
+    "old_official_plus_candidate": { "fixture": "official-candidate", "official_visible": true, "candidate_reviewable": true, "provider_calls": 0 },
+    "candidate_review_and_approval": { "fixture": "review", "review_desk_visible": true, "promotion_route_mocked": true, "provider_calls": 0 }
+  },
+  "guard_flows": {
+    "confirmation_cancel": { "fixture": "failed-image", "attempt_create": 0, "preview": 0, "execute": 0 },
+    "409_source_stale": { "fixture": "failed-image", "attempt_create_status": 409, "automatic_second_attempt": false },
+    "double_click": { "controller_lock_test": "PASS", "idempotency_keys": 1 },
+    "foreground_stop": { "controller_test": "PASS", "provider_cancellation_claimed": false }
+  },
+  "accessibility": {
+    "retry_button_is_native_button": true,
+    "regenerate_button_is_native_button": true,
+    "disabled_attribute_used_for_locks": true,
+    "aria_busy_used_for_mutations": true,
+    "focus_visible_class_present": true,
+    "confirmation_is_native_keyboard_dialog": true
+  },
+  "console_errors": 0,
+  "real_provider_calls": 0,
+  "real_production_writes": 0
+}

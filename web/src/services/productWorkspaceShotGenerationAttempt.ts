@@ -67,7 +67,16 @@ function sleepDefault(milliseconds: number, signal?: AbortSignal) {
 function errorDetails(error: unknown) {
   const value = error as { status?: unknown; code?: unknown; message?: unknown }
   const status = Number(value?.status || 0) || null
-  return { status, code: text(value?.code) || (status === 409 ? 'GENERATION_ATTEMPT_CONFLICT' : 'GENERATION_ATTEMPT_FAILED'), message: text(value?.message) || '生成操作失败，请重新同步当前镜头。' }
+  const code = text(value?.code) || (status === 409 ? 'GENERATION_ATTEMPT_CONFLICT' : 'GENERATION_ATTEMPT_FAILED')
+  const messages: Record<string, string> = {
+    GENERATION_ATTEMPT_SOURCE_STALE: '当前生产输入已经变化，请重新检查当前镜头。',
+    GENERATION_RETRY_SOURCE_NOT_CURRENT_LANE_EXECUTION: '当前失败执行已经不是最新生产状态。',
+    GENERATION_REGENERATE_PENDING_CANDIDATE_EXISTS: '已有新候选等待审核，请先处理当前候选。',
+    GENERATION_REGENERATE_ACTIVE_EXECUTION: '当前生成任务尚未结束。',
+    GENERATION_ATTEMPT_CONFIRMATION_MISMATCH: '本次操作确认已失效，请重新发起。',
+    GENERATION_ATTEMPT_EXECUTE_CONFIRMATION_REQUIRED: '本次操作确认已失效，请重新发起。',
+  }
+  return { status, code, message: messages[code] || text(value?.message) || '生成操作失败，请重新同步当前镜头。' }
 }
 function initialSnapshot(): ShotGenerationAttemptMutationSnapshot {
   return { state: 'idle', operation: null, shotId: null, target: null, attemptLineageId: null, producedExecutionId: null, message: '', errorCode: null, status: null }
@@ -78,6 +87,7 @@ export function createShotStudioGenerationAttemptController(dependencies: ShotGe
   let disposed = false
   let abortController: AbortController | null = null
   let stopRequested = false
+  let submitted = false
   let current = initialSnapshot()
 
   const emit = (snapshot: ShotGenerationAttemptMutationSnapshot) => { current = snapshot; if (!disposed) dependencies.onState?.(snapshot); return snapshot }
@@ -87,7 +97,7 @@ export function createShotStudioGenerationAttemptController(dependencies: ShotGe
   }
 
   const start = async (operation: GenerationAttemptOperation, shotId: string, target: ProductionLaneTarget): Promise<ShotGenerationAttemptResult> => {
-    if (active) return fail({ operation, shotId, target }, '当前已有生成操作进行中，请等待当前操作完成。', 'GENERATION_ATTEMPT_MUTATION_LOCKED')
+    if (active) return { ok: false, state: 'failed', snapshot: { ...current, operation, shotId, target, message: '当前已有生成操作进行中，请等待当前操作完成。', errorCode: 'GENERATION_ATTEMPT_MUTATION_LOCKED' } }
     const shot = dependencies.getViewModel(shotId)
     if (!shot) return fail({ operation, shotId, target }, '镜头已不在当前 V2 投影中，请重新同步。', 'V3_SHOT_NOT_VISIBLE')
     if (dependencies.isReviewMutationActive?.()) return fail({ operation, shotId, target }, '当前审核操作仍在进行中，请等待审核完成。', 'GENERATION_ATTEMPT_REVIEW_MUTATION_LOCKED')
@@ -103,6 +113,7 @@ export function createShotStudioGenerationAttemptController(dependencies: ShotGe
     active = true
     abortController = new AbortController()
     stopRequested = false
+    submitted = false
     const signal = abortController.signal
     const operationIdempotencyKey = dependencies.randomUUID?.() ?? (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `v3-attempt-${Date.now()}-${Math.random().toString(16).slice(2)}`)
     const base = { operation, shotId, target, attemptLineageId: null, producedExecutionId: null }
@@ -121,9 +132,11 @@ export function createShotStudioGenerationAttemptController(dependencies: ShotGe
 
       emit({ ...current, ...base, state: 'preparing', message: '正在创建 Attempt Intent…', errorCode: null, status: null })
       const create = dependencies.create ?? createGenerationAttempt
-      const created = await create({ bookId: dependencies.bookId, episode: captured.episode, shotId, operation, target, operationIdempotencyKey, sourceExecutionId: retry ? captured.sourceExecutionId : undefined, reason: retry ? `Retry ${captured.failureCode}` : 'Regenerate current official', signal })
+      const createOptions = { bookId: dependencies.bookId, episode: captured.episode, shotId, operation, target, operationIdempotencyKey, reason: retry ? `Retry ${captured.failureCode}` : 'Regenerate current official', signal } as Parameters<typeof createGenerationAttempt>[0]
+      if (retry) createOptions.sourceExecutionId = captured.sourceExecutionId
+      const created = await create(createOptions)
       const attemptLineageId = text(created.attempt?.attempt_lineage_id || created.attempt?.attemptLineageId)
-      const attemptToken = text(created.attemptConfirmationToken || created.attempt?.confirmation_token || created.attempt?.confirmationToken)
+      const attemptToken = text(created.attemptConfirmationToken || created.attempt?.confirmation_token || created.attempt?.confirmationToken || created.attempt?.attempt_confirmation_token)
       if (!attemptLineageId || !attemptToken) return fail({ ...base, attemptLineageId }, 'Attempt Intent 响应缺少确认信息。', 'GENERATION_ATTEMPT_CONFIRMATION_MISSING')
       emit({ ...current, ...base, attemptLineageId, state: 'submitting', message: '正在预览 canonical execution…', errorCode: null, status: null })
       const preview = dependencies.preview ?? previewGenerationAttempt
@@ -133,6 +146,7 @@ export function createShotStudioGenerationAttemptController(dependencies: ShotGe
       if (!producedExecutionId || !executionToken) return fail({ ...base, attemptLineageId }, 'Attempt Preview 响应缺少 execution 确认信息。', 'GENERATION_ATTEMPT_EXECUTION_CONFIRMATION_MISSING')
       emit({ ...current, ...base, attemptLineageId, producedExecutionId, state: 'submitting', message: '正在提交 canonical execution…', errorCode: null, status: null })
       const execute = dependencies.execute ?? executeGenerationAttempt
+      submitted = true
       await execute({ bookId: dependencies.bookId, episode: captured.episode, shotId, attemptLineageId, attemptConfirmationToken: attemptToken, previewExecutionId: producedExecutionId, executionConfirmationToken: executionToken, signal })
       if (signal.aborted || stopRequested) {
         const snapshot = emit({ ...current, state: 'running', message: '已停止前台等待；后台生成任务可能仍在运行。', errorCode: null })
@@ -175,11 +189,11 @@ export function createShotStudioGenerationAttemptController(dependencies: ShotGe
       return { ok: true, state: 'in_progress', snapshot }
     } catch (error) {
       if (isAbortError(error)) {
-        if (stopRequested) {
+        if (stopRequested && submitted) {
           const snapshot = emit({ ...current, state: current.state === 'waiting_candidate' ? 'waiting_candidate' : 'running', message: '已停止前台等待；后台生成任务可能仍在运行。', errorCode: null, status: null })
           return { ok: true, state: 'in_progress', snapshot }
         }
-        const snapshot = emit({ ...current, state: 'cancelled', message: '已停止前台等待。', errorCode: 'GENERATION_ATTEMPT_OBSERVATION_STOPPED', status: null })
+        const snapshot = emit({ ...current, state: 'cancelled', message: '已取消生成操作。', errorCode: 'GENERATION_CANCELLED', status: null })
         return { ok: false, state: 'cancelled', snapshot }
       }
       const details = errorDetails(error)
@@ -197,6 +211,7 @@ export function createShotStudioGenerationAttemptController(dependencies: ShotGe
     if (!active) return current
     stopRequested = true
     abortController?.abort()
+    if (!submitted) return emit({ ...current, state: 'cancelled', message: '已取消生成操作。', errorCode: 'GENERATION_CANCELLED' })
     return emit({ ...current, state: current.state === 'running' ? 'running' : 'waiting_candidate', message: '已停止前台等待；后台生成任务可能仍在运行。', errorCode: null })
   }
   return {
