@@ -1,7 +1,7 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING",
-  "environment": "staging",
+  "status": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED",
+  "environment": null,
   "canary_book_id": null,
   "requests": [],
   "provider_submission_count": 0,
@@ -10,5 +10,5 @@
   "legacy_recovery_calls": 0,
   "ordinary_generate_fallback_calls": 0,
   "secret_redaction": "PASS",
-  "reason": "OpenAPI has no POST /api/books Book Create contract; no data-preparation or provider network activity occurred."
+  "reason": "Execution stopped before canary creation and before any provider network activity because staging isolation was not confirmed."
 }

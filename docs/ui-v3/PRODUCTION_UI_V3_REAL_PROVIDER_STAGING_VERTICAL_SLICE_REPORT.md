@@ -2,86 +2,64 @@
 
 ## 状态
 
-本轮状态：`BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING`
-
-基线提交：`798d5702c21d62ae7b33b49f23d1a80e3774ace1`
+本轮状态：`BLOCKED_STAGING_ISOLATION_UNCONFIRMED`
 
 目标阶段：`PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE`
 
+正式基线：`bb0f5373c8e356b74ba7958570cfe42611e26c20`
+
+本报告按 R3 disposable canary 规则重新核对。旧报告基于更早提交和已修复的 Book Create 结论，已被本报告替换；Git 历史仍保留旧证据。
+
 ## Environment Gate
 
-本次执行显式设置 `APP_ENV=staging`、`DEPLOYMENT_ENV=staging`、`STAGING_ALLOW_CANARY_BOOK_CREATE=1`、`REAL_PROVIDER_STAGING_CONFIRMED=1`、`REAL_PROVIDER_STAGING_MAX_CALLS=6`。数据库是本地 SQLite staging 运行库，生产数据库未使用。990400 在执行前后均存在且保持 3 个镜头。
+执行前读取以下权威环境变量，结果全部为空：
 
-## Authorization Gate
+```text
+APP_ENV=
+DEPLOYMENT_ENV=
+REAL_PROVIDER_STAGING_CONFIRMED=
+STAGING_ALLOW_CANARY_BOOK_CREATE=
+REAL_PROVIDER_STAGING_MAX_CALLS=
+```
 
-授权结论为 **PASS**，预算硬上限为 6。媒体 Provider profile 解析通过：IMAGE 使用 SHAPI (`local-image-mw4y52`)，VIDEO 使用 MiniMax H3 (`local-video-7deneh`)；仅记录 host 与 credential presence，不记录 secret。真实 Provider 调用仍为 **0**。
+因此无法确认 staging isolation、canary 创建授权或 Provider 预算。阶段规则要求在任一条件不成立时停止，不能创建 canary，也不能调用 Provider、LLM、SHAPI 或 MiniMax。
 
-但 `/openapi.json` 仅暴露 `GET /api/books`，没有 `POST /api/books` 正式 Book Create contract。虽然存在 `/api/pipeline/script`，它会进入 Reader/Bible 等可能调用 LLM 的长流程，不满足本轮“数据准备 LLM calls = 0”与独立 Book Create 要求，因此没有调用它。
+## Staging Book and Isolation
 
-## Provider Profiles and Credentials
+本轮未调用 `POST /api/books`，未创建 `V3-CANARY-DISPOSABLE-REAL-PROVIDER-R3`，没有 `STAGING_CANARY_BOOK_ID`。没有写入任何 Book、Script、authority、execution、candidate 或 official row。
 
-Provider profile resolver 通过，但没有进入 adapter execution。没有记录任何 credential、Authorization header、secret、confirmation token 或 raw provider response。
+保护对象 `990400` 不变；已删除的 `998755` 和旧 canary `990403` 不恢复、不复用。由于没有 canary，本轮不能宣称可验证的 staging 写入隔离，只能记录为未启动。
 
-## Call Budget
+## Provider and Data Readiness
 
-预算硬上限：`6`。有意真实 Provider 调用：`0`。Transport retry：`0`。预算未超限。
+真实 Provider 调用：`0`；真实 LLM 调用：`0`。Script、ScriptIR、Treatment、SceneBlocking、ShotPlan、Storyboard Materialization、资产 authority、PromptIR 和 V2 readiness 均为 `NOT_RUN`，因为 environment gate 未通过。
 
-## Staging Book and Data Isolation
+Provider profile 不进入执行；没有提交 SHAPI image 或 MiniMax video 请求，没有 transport retry，没有保存任何第三方任务 ID、凭证或 raw response。
 
-998755 已在上一轮通过正式 DELETE contract 删除并验证不存在；990400 保留为 active 生产样本。本轮请求创建 `V3-CANARY-DISPOSABLE-20261001-R2`，但由于没有正式 Book Create contract，未创建新 Book，未写入任何 Book 或 authority row。生产数据库写入：`0`；990400 writes：`0`；Provider 数据准备写入：`0`。
+## Baseline Verification
 
-## IMAGE Initial / Review / Official / Regenerate
-
-未执行。新 canary 尚未创建，故没有 canonical PromptIR 或 V2 shot。IMAGE initial 与 regenerate 均为 `NO_GO / NOT_RUN`。
-
-## VIDEO Dependency / Initial / Long-running / Reload / Review / Official / Regenerate
-
-未执行。没有 VIDEO dependency、异步 task、reload recovery、candidate、duration 或 official promotion 证据。VIDEO initial、long-running recovery 与 regenerate 均为 `NO_GO / NOT_RUN`。
-
-## Retry Real Evidence
-
-未进入真实执行，因而没有自然 FAILED execution，也没有真实 Retry evidence。结论：`NOT_EXERCISED_BLOCKED_BEFORE_PROVIDER`。上一阶段 mock/provider-free Retry 回归仍由既有报告覆盖，不能替代本轮真实证据。
-
-## Attempt Lineage and UI Contract
-
-本轮没有浏览器提交。Foundation API calls：`0`；Legacy recovery calls：`0`；ordinary Generate fallback calls：`0`。没有产生新的 attempt lineage、execution 或 candidate。
-
-## Browser QA and Network Audit
-
-没有启动真实浏览器流程，因此没有截图或 provider 网络请求。网络审计中 provider submission、transport retry、foundation API、legacy recovery 和 fallback 均为 `0`。详见配套 Browser QA 与 Network Audit JSON。
-
-## Media Storage and Credential Redaction
-
-未生成媒体文件，因而没有 storage identity、checksum、mime、size、尺寸或 duration 可验证。Secret audit：**PASS**（没有 secrets 写入证据文件或日志）。
-
-## Verification Before Gate
-
-- Web tests：**PASS**（Vitest 全量运行通过；基线输出为 63 files / 445 tests）。
-- Web build：**PASS**（TypeScript 与 Vite build 完成）。
-- Backend relevant suites：**73 passed**。
-- Python compile：**PASS**。
-- `alembic heads`：`o6j7k8l9m0n1 (head)`；服务启动前补齐了 2 个既有迁移，未新增迁移文件。
-- `git diff --check`：**PASS**。
-
+本轮只更新证据文档，没有修改 production code；沿用正式基线验证结果：Backend `2006 passed`，Web `63 files / 445 tests passed`，Web build `PASS`，Python `compileall PASS`，Alembic head `o6j7k8l9m0n1`。本轮新增 JSON 解析校验和 `git diff --check` 均为 `PASS`。
 ## Final Verdict
 
 | Gate | Verdict |
 |---|---|
-| IMAGE initial | NO_GO / NOT_RUN |
-| IMAGE regenerate | NO_GO / NOT_RUN |
-| VIDEO initial | NO_GO / NOT_RUN |
-| VIDEO regenerate | NO_GO / NOT_RUN |
-| REAL RETRY | CONDITIONAL / NOT_EXERCISED |
-| VIDEO long-running and reload | NO_GO / NOT_RUN |
-| Media storage | NO_GO / NOT_RUN |
-| Candidate review / promotion | NO_GO / NOT_RUN |
-| Old official preservation | NO_GO / NOT_RUN |
-| Official replacement | NO_GO / NOT_RUN |
-| Staging data isolation | PASS / PROTECTED_SAMPLE_UNCHANGED |
+| Staging isolation authorization | BLOCKED |
+| New R3 disposable canary | NOT_RUN |
+| ScriptIR / treatment / blocking / shot plan | NOT_RUN |
+| Storyboard materialization / assets / PromptIR | NOT_RUN |
+| V2 IMAGE readiness | NOT_RUN |
+| IMAGE initial / regenerate | NO_GO / NOT_RUN |
+| VIDEO initial / regenerate / reload | NO_GO / NOT_RUN |
+| REAL RETRY | CONDITIONAL_NOT_EXERCISED |
+| Provider calls | 0 / 6 |
+| Writes outside canary | 0 |
+| Protected 990400 writes | 0 |
+| Production database writes | 0 |
+| Secret audit | PASS |
 
 ## Release Recommendation
 
-保持真实 Provider 执行冻结。需要先补充正式 `POST /api/books` Book Create contract（或提供等价的、明确 provider-free 的正式创建 contract），再按本报告列出的 canonical authority 顺序创建 disposable canary。不得直接 ORM/SQL 写入，不得开启 `compileIfMissing`，不得把 mock 结果标记为真实 Provider 通过。
+保持真实 Provider 执行冻结。先在受控 staging 进程中显式确认全部五个环境变量，再从 `POST /api/books` 创建新的 R3 canary，并按阶段顺序继续。不得用旧 canary、直接 ORM/SQL 写入、mock 结果或旧 R2 报告替代本轮证据。
 
 ## 配套证据
 

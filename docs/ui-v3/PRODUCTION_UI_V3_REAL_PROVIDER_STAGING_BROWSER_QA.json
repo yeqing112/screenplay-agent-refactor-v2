@@ -1,27 +1,11 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING",
-  "environment": "staging",
+  "status": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED",
+  "browser_started": false,
   "canary_book_id": null,
-  "disposable_book_deleted": true,
-  "default_v3_surface": true,
-  "provider_execution_started": false,
   "screenshots": [],
-  "flows": {
-    "image_initial": "NOT_RUN",
-    "image_review_official": "NOT_RUN",
-    "image_regenerate": "NOT_RUN",
-    "video_initial": "NOT_RUN",
-    "video_reload_recovery": "NOT_RUN",
-    "video_review_official": "NOT_RUN",
-    "video_regenerate": "NOT_RUN",
-    "cancel_confirmation_no_write": "NOT_RUN"
-  },
-  "network_contract": {
-    "foundation_api_calls": 0,
-    "legacy_recovery_calls": 0,
-    "ordinary_generate_fallback_calls": 0,
-    "provider_submission_calls": 0
-  },
-  "reason": "No new canary Book could be created through a formal API; browser flow was not started."
+  "provider_submissions": 0,
+  "foundation_api_calls": 0,
+  "legacy_retry_calls": 0,
+  "reason": "Browser execution was intentionally not started because staging isolation and Provider authorization were not confirmed by the process environment."
 }

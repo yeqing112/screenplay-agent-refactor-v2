@@ -1,12 +1,9 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_CANARY_BOOK_CREATION_CONTRACT_MISSING",
-  "environment": "staging",
+  "status": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED",
+  "environment": null,
   "canary_book_id": null,
-  "provider_profiles_preflight": {
-    "image": {"profile_id": "local-image-mw4y52", "provider": "shapi-openai-images", "host": "https://shapi.vip/v1", "credential_present": true},
-    "video": {"profile_id": "local-video-7deneh", "provider": "minimax-h3-async", "host": "https://metaso.cn/api/minimax", "credential_present": true}
-  },
+  "provider_profiles_preflight": null,
   "real_provider_calls": 0,
   "real_llm_calls": 0,
   "executions": [],
@@ -16,5 +13,5 @@
     "raw_provider_responses_logged": false,
     "third_party_ids_logged": false
   },
-  "reason": "No formal Book Create contract exists in OpenAPI (POST /api/books absent). Data preparation and Provider execution did not start."
+  "reason": "Staging isolation and real-provider authorization were not confirmed by the process environment; no provider or LLM execution started."
 }
