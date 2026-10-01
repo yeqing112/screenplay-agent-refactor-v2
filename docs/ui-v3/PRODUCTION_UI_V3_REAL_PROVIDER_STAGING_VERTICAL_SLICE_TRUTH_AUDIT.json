@@ -43,6 +43,7 @@
     "alembic_head": "o6j7k8l9m0n1",
     "working_tree_before_evidence": "CLEAN"
   },
-  "next_phase": "PHASE_PRODUCTION_UI_V3_RELEASE_CANDIDATE_READINESS_AUDIT",
+  "resume_phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
+  "next_phase": null,
   "release_recommendation": "HOLD_REAL_PROVIDER_EXECUTION_UNTIL_EXPLICIT_STAGING_AUTHORIZATION"
 }
