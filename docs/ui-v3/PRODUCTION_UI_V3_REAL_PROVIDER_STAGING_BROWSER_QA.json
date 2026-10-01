@@ -1,6 +1,9 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "status": "BLOCKED_STAGING_DATA_READINESS_UNVERIFIED",
+  "environment": "staging",
+  "canary_book_id": 998755,
+  "disposable_book_deleted": true,
   "default_v3_surface": true,
   "provider_execution_started": false,
   "screenshots": [],
@@ -20,5 +23,5 @@
     "ordinary_generate_fallback_calls": 0,
     "provider_submission_calls": 0
   },
-  "reason": "Browser execution is not authorized without an explicit disposable staging canary."
+  "reason": "Authorization passed, but the canonical V2 projection had no executable shot; browser Provider flow was not started."
 }

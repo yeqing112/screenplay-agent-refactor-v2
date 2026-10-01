@@ -1,6 +1,12 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "status": "BLOCKED_STAGING_DATA_READINESS_UNVERIFIED",
+  "environment": "staging",
+  "canary_book_id": 998755,
+  "provider_profiles_preflight": {
+    "image": {"profile_id": "local-image-mw4y52", "provider": "shapi-openai-images", "host": "https://shapi.vip/v1", "credential_present": true},
+    "video": {"profile_id": "local-video-7deneh", "provider": "minimax-h3-async", "host": "https://metaso.cn/api/minimax", "credential_present": true}
+  },
   "real_provider_calls": 0,
   "real_llm_calls": 0,
   "executions": [],
@@ -10,5 +16,5 @@
     "raw_provider_responses_logged": false,
     "third_party_ids_logged": false
   },
-  "reason": "No explicit APP_ENV=staging, confirmation flag, canary book id, or call budget was supplied. Provider execution was stopped at preflight."
+  "reason": "Provider preflight passed, but V2 exposed no executable canonical PromptIR shot; compileIfMissing=false was preserved and no provider execution started."
 }

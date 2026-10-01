@@ -1,15 +1,17 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
-  "staging_environment_confirmed": false,
-  "canary_book_id": null,
+  "status": "BLOCKED_STAGING_DATA_READINESS_UNVERIFIED",
+  "staging_environment_confirmed": true,
+  "deployment_environment": "staging",
+  "canary_book_id": 998755,
+  "canary_book_disposable_evidence": "docs/ui-v3/PRODUCTION_UI_V3_DEFAULT_SURFACE_MIGRATION_REPORT.md",
   "shots_used": [],
-  "before_row_counts": null,
-  "after_row_counts": null,
+  "before_row_counts": {"book_row": 1, "storyboard_shots": 1, "storyboard_materialization_sets": 1, "storyboard_materialization_pointers": 1, "generation_execution_records": 0, "media_candidates": 0, "official_media_versions": 0},
+  "after_row_counts": {"book_row": 0, "storyboard_shots": 0, "generation_execution_records": 0, "media_candidates": 0, "official_media_versions": 0},
   "writes_outside_canary_scope": 0,
   "production_db_touched": false,
-  "db_migrations": 0,
+  "db_migrations": 2,
   "alembic_head": "o6j7k8l9m0n1",
-  "isolation_verdict": "UNVERIFIED_BECAUSE_NO_CANARY_BOOK_WAS_AUTHORIZED",
-  "cleanup": "No cleanup attempted; no canary data was created."
+  "isolation_verdict": "PASS_FOR_LOCAL_STAGING_PREFLIGHT",
+  "cleanup": "Formal DELETE /api/books/998755 executed and verified not found; 990400 retained."
 }

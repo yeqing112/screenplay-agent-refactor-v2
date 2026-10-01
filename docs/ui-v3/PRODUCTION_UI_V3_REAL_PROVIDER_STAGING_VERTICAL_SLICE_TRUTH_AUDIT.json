@@ -1,24 +1,26 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "baseline_commit": "20d26f7b8bea6685d5ffde23adfc07f35e17a92c",
-  "final_status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "baseline_commit": "f1db1ad",
+  "final_status": "BLOCKED_STAGING_DATA_READINESS_UNVERIFIED",
   "preflight": {
-    "app_env": null,
-    "real_provider_staging_confirmed": false,
-    "staging_canary_book_id_present": false,
-    "provider_call_budget_present": false,
+    "app_env": "staging",
+    "real_provider_staging_confirmed": true,
+    "staging_canary_book_id_present": true,
+    "provider_call_budget_present": true,
+    "provider_call_budget": 6,
+    "staging_canary_book_id": 998755,
     "production_environment_detected": false,
-    "reason": "Required explicit staging authorization variables are absent; no defaults were inferred."
+    "reason": "Authorization and isolation passed; execution stopped because V2 had no executable canonical PromptIR shot and compileIfMissing=false was preserved."
   },
-  "environment": null,
-  "explicit_real_provider_authorization": false,
+  "environment": "staging",
+  "explicit_real_provider_authorization": true,
   "production_database_used": false,
-  "staging_canary_book_scoped": false,
-  "staging_data_isolation_verifiable": false,
+  "staging_canary_book_scoped": true,
+  "staging_data_isolation_verifiable": true,
   "real_image_provider_calls": 0,
   "real_video_provider_calls": 0,
   "real_llm_calls": 0,
-  "provider_call_budget": null,
+  "provider_call_budget": 6,
   "provider_call_budget_exceeded": false,
   "image_initial_real": false,
   "image_regenerate_real": false,
@@ -34,6 +36,25 @@
   "writes_outside_canary_book": 0,
   "production_writes": 0,
   "credentials_leaked": false,
+  "provider_preflight": {
+    "image_profile": "local-image-mw4y52",
+    "image_provider": "shapi-openai-images",
+    "image_host": "https://shapi.vip/v1",
+    "image_credential_present": true,
+    "video_profile": "local-video-7deneh",
+    "video_provider": "minimax-h3-async",
+    "video_host": "https://metaso.cn/api/minimax",
+    "video_credential_present": true,
+    "real_provider_execution": "NOT_STARTED"
+  },
+  "disposal": {
+    "selected_disposable_book_id": 998755,
+    "selection_reason": "Explicitly documented development-only disposable fixture; 990400 was retained as the active production sample.",
+    "delete_contract": "DELETE /api/books/{book_id}",
+    "delete_verified": true,
+    "remaining_990400": true
+  },
+  "blocked_reason": "V2_PROJECTION_NO_EXECUTABLE_CANONICAL_SHOT",
   "evidence": {
     "web_tests": "PASS",
     "web_build": "PASS",
@@ -41,9 +62,10 @@
     "python_compile": "PASS",
     "git_diff_check": "PASS",
     "alembic_head": "o6j7k8l9m0n1",
+    "startup_migrations_applied_before_slice": 2,
     "working_tree_before_evidence": "CLEAN"
   },
   "resume_phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
   "next_phase": null,
-  "release_recommendation": "HOLD_REAL_PROVIDER_EXECUTION_UNTIL_EXPLICIT_STAGING_AUTHORIZATION"
+  "release_recommendation": "HOLD_REAL_PROVIDER_EXECUTION_UNTIL_CANONICAL_V2_DATA_READINESS"
 }

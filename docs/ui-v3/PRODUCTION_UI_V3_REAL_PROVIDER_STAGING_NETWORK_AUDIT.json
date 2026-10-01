@@ -1,6 +1,8 @@
 {
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "status": "BLOCKED_STAGING_DATA_READINESS_UNVERIFIED",
+  "environment": "staging",
+  "canary_book_id": 998755,
   "requests": [],
   "provider_submission_count": 0,
   "transport_retry_count": 0,
@@ -8,5 +10,5 @@
   "legacy_recovery_calls": 0,
   "ordinary_generate_fallback_calls": 0,
   "secret_redaction": "PASS",
-  "reason": "Preflight stopped before browser or provider network activity."
+  "reason": "Authorization and provider profile preflight completed; V2 readiness stopped the flow before browser or provider network activity."
 }
