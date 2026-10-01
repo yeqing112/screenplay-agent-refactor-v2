@@ -17,7 +17,7 @@ from typing import Any, Mapping
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import desc
 
-from models import DirectorPlan, ScenePlan, ShotPlan
+from models import DirectorPlan, ScenePlan, ShotPlan, ScriptIRVersion
 
 
 RUNTIME_SCHEMA_VERSION = "ai_director_runtime_v1"
@@ -196,6 +196,15 @@ def director_plan(script_ir: Mapping[str, Any] | None, episode_context: Mapping[
                 source_lineage={"source_script_ir_hash": source_script_hash, "scene_id": scene_id, "shot_id": shot_id, "prompt_lineage_id": _hash({"shot_id": shot_id, "intent_id": intent_id})},
             ).model_dump())
     reasoning = {"mode": "deterministic_adapter", "provider": None, "llm_called": False, "llm_generated": False, "human_review_required": True, "source_fact_mutated": False}
+    lineage = {
+        "schema_version": RUNTIME_SCHEMA_VERSION,
+        "source_script_ir_hash": source_script_hash,
+        "source_fact_mutated": False,
+        "script_ir_mutated": False,
+    }
+    for key in ("book_id", "source_script_ir_version_id", "source_script_ir_hash"):
+        if context.get(key) not in {None, ""}:
+            lineage[key] = context[key]
     payload = DirectorPlanPayload(
         episode_id=episode_id,
         reasoning_trace=reasoning,
@@ -203,7 +212,7 @@ def director_plan(script_ir: Mapping[str, Any] | None, episode_context: Mapping[
         shot_plans=shot_plans,
         shot_directions=shot_directions,
         generation_intents=intents,
-        lineage={"schema_version": RUNTIME_SCHEMA_VERSION, "source_script_ir_hash": source_script_hash, "source_fact_mutated": False, "script_ir_mutated": False},
+        lineage=lineage,
     ).model_dump()
     payload["payload_hash"] = _hash(payload)
     return payload
@@ -237,16 +246,35 @@ def persist_director_plan(session: Any, payload: Mapping[str, Any], *, created_b
     latest = session.query(DirectorPlan).filter_by(episode_id=episode_id).order_by(desc(DirectorPlan.version)).first()
     version = (int(latest.version) + 1) if latest else 1
     data = candidate.model_dump()
+    lineage = {**data.get("lineage", {})}
+    canonical_source_id = source_script_ir_version_id or lineage.get("source_script_ir_version_id")
+    source_ir = None
+    if canonical_source_id not in {None, ""}:
+        try:
+            source_ir = session.get(ScriptIRVersion, int(canonical_source_id))
+        except (TypeError, ValueError):
+            source_ir = None
+        if source_ir is None:
+            raise ValueError("source_script_ir_version_id does not resolve to ScriptIRVersion")
+        canonical_source_id = int(source_ir.id)
+        lineage["book_id"] = int(source_ir.book_id)
+        lineage["source_script_ir_version_id"] = canonical_source_id
+        lineage["source_script_ir_hash"] = str(source_ir.payload_hash or "")
+    elif lineage.get("book_id") not in {None, ""}:
+        try:
+            lineage["book_id"] = int(lineage["book_id"])
+        except (TypeError, ValueError):
+            raise ValueError("lineage.book_id must be an integer")
     data["version"] = version
     data["created_by"] = created_by or candidate.created_by
-    data["lineage"] = {**data.get("lineage", {}), "director_plan_version": version, "human_review_required": True}
+    data["lineage"] = {**lineage, "director_plan_version": version, "human_review_required": True}
     data["payload_hash"] = _hash(data)
     if latest is not None and latest.status not in {"SUPERSEDED", "REJECTED"}:
         latest.status = "SUPERSEDED"
     row = DirectorPlan(
         episode_id=episode_id, version=version, status=data["status"], created_by=data["created_by"],
         reasoning_trace=_json(data["reasoning_trace"]), scene_plans=_json(data["scene_plans"]), shot_plans=_json(data["shot_plans"]), shot_directions=_json(data["shot_directions"]),
-        generation_intents=_json(data["generation_intents"]), source_script_ir_version_id=source_script_ir_version_id,
+        generation_intents=_json(data["generation_intents"]), source_script_ir_version_id=canonical_source_id,
         source_script_ir_hash=str(data["lineage"].get("source_script_ir_hash") or ""), source_fact_snapshot_hash=source_fact_snapshot_hash,
         source_immutable_raw_hash=str(data["lineage"].get("source_immutable_raw_hash") or ""), payload_hash=data["payload_hash"], lineage_json=_json(data["lineage"]),
     )

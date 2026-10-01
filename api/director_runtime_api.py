@@ -60,6 +60,13 @@ def _load_context(session: Any, episode_id: str) -> tuple[dict[str, Any], int | 
         payload = _decode(ir.payload_json, {})
         if not isinstance(payload, dict):
             payload = {}
+        payload = {
+            **payload,
+            "book_id": int(ir.book_id),
+            "episode": int(ir.episode),
+            "source_script_ir_version_id": int(ir.id),
+            "source_script_ir_hash": str(ir.payload_hash or ""),
+        }
         return payload, ir.id
     outline = None
     try:
@@ -67,7 +74,7 @@ def _load_context(session: Any, episode_id: str) -> tuple[dict[str, Any], int | 
     except (TypeError, ValueError):
         pass
     if outline is not None:
-        return {"episode_id": str(episode_id), "episode": outline.episode, "title": outline.title, "scenes": _decode(outline.scenes, [])}, None
+        return {"episode_id": str(episode_id), "book_id": int(outline.book_id), "episode": outline.episode, "title": outline.title, "scenes": _decode(outline.scenes, [])}, None
     return {"episode_id": str(episode_id), "scenes": []}, None
 
 
@@ -77,6 +84,13 @@ def create_director_plan(episode_id: str, req: DirectorPlanRequest):
         persisted_ir, ir_id = _load_context(session, episode_id)
         script_ir = req.script_ir or persisted_ir
         context = {"episode_id": str(episode_id), **persisted_ir, **req.episode_context}
+        # Persisted ScriptIR identity is authoritative; caller context cannot
+        # move a DirectorPlan to another Book.
+        for key in ("book_id", "episode", "source_script_ir_version_id", "source_script_ir_hash"):
+            if key in persisted_ir:
+                context[key] = persisted_ir[key]
+            else:
+                context.pop(key, None)
         context["source_script_ir_hash"] = context.get("source_script_ir_hash") or (str(getattr(session.get(ScriptIRVersion, ir_id), "payload_hash", "")) if ir_id else "")
         payload = director_plan(script_ir, context, req.character_profiles, req.scene_profiles)
         payload["episode_id"] = str(episode_id)

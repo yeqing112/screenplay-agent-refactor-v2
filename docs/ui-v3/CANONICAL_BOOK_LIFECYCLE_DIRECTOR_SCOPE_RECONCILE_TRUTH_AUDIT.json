@@ -1,0 +1,56 @@
+{
+  "phase": "PHASE_CANONICAL_BOOK_LIFECYCLE_DIRECTOR_SCOPE_RECONCILE",
+  "status": "complete",
+  "completion_marker": "CANONICAL_BOOK_LIFECYCLE_DIRECTOR_SCOPE_RECONCILE_COMPLETE",
+  "baseline_commit": "26666cd3500d86d5e897e7fee0f146bc25c1cd03",
+  "raw_episode_number_used_as_book_ownership": false,
+  "director_plan_source_ir_scoped": true,
+  "director_reasoning_lineage_scoped": true,
+  "reasoning_generation_parent_scoped": true,
+  "future_director_lineage_contains_book_id": true,
+  "future_director_lineage_contains_source_script_ir_version_id": true,
+  "future_director_lineage_contains_source_script_ir_hash": true,
+  "same_episode_neighbor_preserved": true,
+  "same_hash_neighbor_preserved": true,
+  "hash_only_same_hash_is_ambiguous": true,
+  "ambiguous_legacy_rows_fail_closed": true,
+  "partial_delete_on_ambiguity": false,
+  "delete_response_ambiguous_rows_field": true,
+  "book_bootstrap_regression": "PASS",
+  "script_bootstrap_regression": "PASS",
+  "protected_book_990400_exists": true,
+  "protected_book_990400_writes": 0,
+  "book_998755_revived": false,
+  "disposable_canary_990403": {
+    "deleted": true,
+    "orphan_rows": 0
+  },
+  "tests": {
+    "lifecycle_focused": {
+      "passed": 11,
+      "failed": 0
+    },
+    "backend_full": {
+      "passed": 2006,
+      "failed": 0
+    },
+    "web": {
+      "test_files": 63,
+      "passed": 445,
+      "failed": 0,
+      "build": "PASS"
+    },
+    "migration_chain": "PASS",
+    "compileall": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "db_migration_files_added": 0,
+  "alembic_head": "o6j7k8l9m0n1",
+  "real_provider_calls": 0,
+  "real_llm_calls": 0,
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "shapi_calls": 0,
+  "minimax_calls": 0,
+  "resume_phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE"
+}

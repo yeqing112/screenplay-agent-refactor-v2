@@ -89,7 +89,9 @@ def _load_script_context(session: Any, episode_id: str) -> tuple[dict[str, Any],
         numeric = 0
     if ir is not None:
         payload = _decode(ir.payload_json, {})
-        return (payload if isinstance(payload, dict) else {}), ir.id, int(getattr(ir, "book_id", 0) or 0), int(getattr(ir, "episode", 0) or 0)
+        payload = payload if isinstance(payload, dict) else {}
+        payload.update({"book_id": int(ir.book_id), "episode": int(ir.episode), "source_script_ir_version_id": int(ir.id), "source_script_ir_hash": str(ir.payload_hash or "")})
+        return payload, ir.id, int(getattr(ir, "book_id", 0) or 0), int(getattr(ir, "episode", 0) or 0)
     outline = None
     try:
         outline = session.query(EpisodeOutline).filter_by(id=int(episode_id)).one_or_none()
@@ -97,7 +99,7 @@ def _load_script_context(session: Any, episode_id: str) -> tuple[dict[str, Any],
         pass
     if outline is not None:
         scenes = _decode(outline.scenes, [])
-        return {"episode_id": str(episode_id), "episode": outline.episode, "scenes": scenes if isinstance(scenes, list) else []}, None, int(outline.book_id or 0), int(outline.episode or 0)
+        return {"episode_id": str(episode_id), "book_id": int(outline.book_id or 0), "episode": outline.episode, "scenes": scenes if isinstance(scenes, list) else []}, None, int(outline.book_id or 0), int(outline.episode or 0)
     return {"episode_id": str(episode_id), "scenes": []}, None, 0, numeric if isinstance(numeric, int) else 0
 
 
@@ -172,7 +174,19 @@ def create_director_reasoning(episode_id: str, req: DirectorReasoningRequest):
     with Session() as session:
         persisted_script, ir_id, book_id, episode_number = _load_script_context(session, episode_id)
         script_ir = req.script_ir or persisted_script
-        episode_context = {"episode_id": str(episode_id), "book_id": book_id, "episode": episode_number, **persisted_script, **req.episode_context}
+        episode_context = {"episode_id": str(episode_id), **persisted_script, **req.episode_context}
+        if book_id:
+            episode_context["book_id"] = book_id
+        else:
+            episode_context.pop("book_id", None)
+        if episode_number:
+            episode_context["episode"] = episode_number
+        if ir_id:
+            episode_context["source_script_ir_version_id"] = ir_id
+            episode_context["source_script_ir_hash"] = str(persisted_script.get("source_script_ir_hash") or "")
+        else:
+            episode_context.pop("source_script_ir_version_id", None)
+            episode_context.pop("source_script_ir_hash", None)
         payload = director_reason(episode_context, script_ir, req.scene_context)
         payload["episode_id"] = str(episode_id)
         if not req.persist:
@@ -199,15 +213,21 @@ def read_director_reasoning(episode_id: str, version: int | None = None):
 def generate_director_reasoning(episode_id: str, req: DirectorReasoningGenerateRequest):
     """Generate a reviewable IR draft; the adapter has no database access."""
     with Session() as session:
-        persisted_script, _ir_id, book_id, episode_number = _load_script_context(session, episode_id)
+        persisted_script, ir_id, book_id, episode_number = _load_script_context(session, episode_id)
         script_ir = req.script_ir or persisted_script
-        episode_context = {
-            "episode_id": str(episode_id),
-            "book_id": book_id,
-            "episode": episode_number,
-            **persisted_script,
-            **req.episode_context,
-        }
+        episode_context = {"episode_id": str(episode_id), **persisted_script, **req.episode_context}
+        if book_id:
+            episode_context["book_id"] = book_id
+        else:
+            episode_context.pop("book_id", None)
+        if episode_number:
+            episode_context["episode"] = episode_number
+        if ir_id:
+            episode_context["source_script_ir_version_id"] = ir_id
+            episode_context["source_script_ir_hash"] = str(persisted_script.get("source_script_ir_hash") or "")
+        else:
+            episode_context.pop("source_script_ir_version_id", None)
+            episode_context.pop("source_script_ir_hash", None)
         context = DirectorContextBuilder().build(
             episode=episode_context,
             script_ir=script_ir,
@@ -311,11 +331,18 @@ def compile_director_reasoning(episode_id: str, req: DirectorReasoningCompileReq
         row = session.query(DirectorReasoning).filter_by(episode_id=str(episode_id), version=req.version).one_or_none() if req.version is not None else session.query(DirectorReasoning).filter_by(episode_id=str(episode_id)).order_by(DirectorReasoning.version.desc()).first()
         if row is None:
             raise HTTPException(status_code=404, detail={"code": "DIRECTOR_REASONING_NOT_FOUND", "episode_id": str(episode_id), "version": req.version})
-        persisted_script, _ir_id, default_book_id, default_episode_number = _load_script_context(session, episode_id)
+        persisted_script, ir_id, default_book_id, default_episode_number = _load_script_context(session, episode_id)
         script_ir = req.script_ir or persisted_script
-        episode_context = {"episode_id": str(episode_id), "book_id": default_book_id, "episode": default_episode_number, **persisted_script, **req.episode_context}
+        episode_context = {"episode_id": str(episode_id), **persisted_script, **req.episode_context}
+        if default_book_id:
+            episode_context["book_id"] = default_book_id
+        if default_episode_number:
+            episode_context["episode"] = default_episode_number
+        if ir_id:
+            episode_context["source_script_ir_version_id"] = ir_id
+            episode_context["source_script_ir_hash"] = str(persisted_script.get("source_script_ir_hash") or "")
         try:
-            result = compile_reasoning(session, row, episode_context=episode_context, script_ir=script_ir, scene_context=req.scene_context, book_id=req.book_id or default_book_id, episode_number=req.episode_number or default_episode_number)
+            result = compile_reasoning(session, row, episode_context=episode_context, script_ir=script_ir, scene_context=req.scene_context, book_id=default_book_id or req.book_id, episode_number=default_episode_number or req.episode_number)
             session.commit()
             return result
         except DirectorReasoningCompileError as exc:

@@ -26,6 +26,7 @@ from models import (
     Session,
     ShotAssetBinding,
     StoryboardShot,
+    StoryboardPlan,
     init_db,
 )
 
@@ -46,6 +47,24 @@ class BookLifecycleApiTests(unittest.TestCase):
         response = self.client.delete(f"/api/books/{book_id}")
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json().get("orphan_rows"), 0, response.text)
+
+    def _create_script_ir(self, book_id, script_id, *, episode=1, payload_hash=None):
+        payload_hash = payload_hash or f"sha256:ir-{book_id}"
+        with Session() as session:
+            ir = ScriptIRVersion(
+                book_id=book_id,
+                episode=episode,
+                revision=1,
+                payload_json=json.dumps({"episode": episode, "scenes": []}, ensure_ascii=False),
+                payload_hash=payload_hash,
+                validation_status="valid",
+            )
+            session.add(ir)
+            session.flush()
+            source = session.get(Script, script_id)
+            source.current_script_ir_version_id = ir.id
+            session.commit()
+            return ir.id
 
     def test_create_book_is_provider_free_and_server_owned(self):
         payload = self._create_book("  Lifecycle Book  ")
@@ -193,8 +212,8 @@ class BookLifecycleApiTests(unittest.TestCase):
         self.assertGreaterEqual(payload["deleted_rows"].get("fact_records", 0), 1)
         self.assertGreaterEqual(payload["deleted_rows"].get("shot_asset_bindings", 0), 1)
 
-    def test_delete_cleans_episode_keyed_director_runtime_without_outline(self):
-        """Script bootstrap must scope episode-keyed draft rows before outlines exist."""
+    def test_delete_cleans_canonical_director_runtime_without_outline(self):
+        """Canonical source IR ownership cleans runtime rows before outlines exist."""
         book = self._create_book()
         book_id = book["id"]
         script = self.client.post(
@@ -202,13 +221,39 @@ class BookLifecycleApiTests(unittest.TestCase):
             json={"episode": 1, "content": {"scenes": []}, "workflowProfile": "production"},
         )
         self.assertEqual(script.status_code, 201, script.text)
+        ir_id = self._create_script_ir(book_id, script.json()["id"])
+        generated_plan = self.client.post(
+            f"/episodes/{ir_id}/director-plan",
+            json={"episode_context": {"book_id": 999999, "source_script_ir_hash": "sha256:caller-forged"}},
+        )
+        self.assertEqual(generated_plan.status_code, 201, generated_plan.text)
+        generated_lineage = generated_plan.json()["plan"]["lineage"]
+        self.assertEqual(generated_lineage["book_id"], book_id)
+        self.assertEqual(generated_lineage["source_script_ir_version_id"], ir_id)
+        self.assertEqual(generated_lineage["source_script_ir_hash"], f"sha256:ir-{book_id}")
+        generated_reasoning = self.client.post(
+            f"/episodes/{ir_id}/director-reasoning",
+            json={"episode_context": {"book_id": 999999, "source_script_ir_hash": "sha256:caller-forged"}},
+        )
+        self.assertEqual(generated_reasoning.status_code, 201, generated_reasoning.text)
+        reasoning_lineage = generated_reasoning.json()["reasoning"]["lineage"]
+        self.assertEqual(reasoning_lineage["book_id"], book_id)
+        self.assertEqual(reasoning_lineage["source_script_ir_version_id"], ir_id)
+        self.assertEqual(reasoning_lineage["source_script_ir_hash"], f"sha256:ir-{book_id}")
+        # Remove the API-created empty runtime rows before adding the richer
+        # canonical graph below; the lineage assertions above are the contract
+        # under test and the rows are all in the same disposable Book scope.
         with Session() as session:
-            plan = DirectorPlan(episode_id="1")
+            session.query(DirectorPlan).filter_by(episode_id=str(ir_id)).delete(synchronize_session=False)
+            session.query(DirectorReasoning).filter_by(episode_id=str(ir_id)).delete(synchronize_session=False)
+            session.commit()
+        with Session() as session:
+            plan = DirectorPlan(episode_id="1", version=1, source_script_ir_version_id=ir_id, source_script_ir_hash=f"sha256:ir-{book_id}", lineage_json=json.dumps({"book_id": book_id, "source_script_ir_version_id": ir_id, "source_script_ir_hash": f"sha256:ir-{book_id}"}))
             session.add(plan)
             session.flush()
             scene_plan = ScenePlan(director_plan_id=plan.id, episode_id="1", scene_id=f"S-{book_id}")
             session.add(scene_plan)
-            reasoning = DirectorReasoning(episode_id="1")
+            reasoning = DirectorReasoning(episode_id="1", version=1, source_script_ir_hash=f"sha256:ir-{book_id}", lineage_json=json.dumps({"book_id": book_id, "source_script_ir_version_id": ir_id, "source_script_ir_hash": f"sha256:ir-{book_id}"}))
             session.add(reasoning)
             session.flush()
             beat = StoryBeat(director_reasoning_id=reasoning.id, sequence=1)
@@ -229,6 +274,113 @@ class BookLifecycleApiTests(unittest.TestCase):
             self.assertIsNone(session.get(StoryBeat, beat_id))
             self.assertIsNone(session.get(VisualDecision, decision_id))
             self.assertIsNone(session.get(DirectorReasoningGeneration, generation_id))
+
+    def test_delete_isolates_same_episode_neighbor_runtime(self):
+        left = self._create_book("Director Neighbor A")
+        right = self._create_book("Director Neighbor B")
+        left_script = self.client.post(f"/api/books/{left['id']}/scripts", json={"episode": 1, "content": {"scenes": []}}).json()
+        right_script = self.client.post(f"/api/books/{right['id']}/scripts", json={"episode": 1, "content": {"scenes": []}}).json()
+        shared_hash = "sha256:identical-source-payload"
+        left_ir = self._create_script_ir(left["id"], left_script["id"], payload_hash=shared_hash)
+        right_ir = self._create_script_ir(right["id"], right_script["id"], payload_hash=shared_hash)
+        with Session() as session:
+            left_plan = DirectorPlan(episode_id="1", version=1, source_script_ir_version_id=left_ir, source_script_ir_hash=shared_hash, lineage_json=json.dumps({"book_id": left["id"], "source_script_ir_version_id": left_ir, "source_script_ir_hash": shared_hash}))
+            right_plan = DirectorPlan(episode_id="1", version=2, source_script_ir_version_id=right_ir, source_script_ir_hash=shared_hash, lineage_json=json.dumps({"book_id": right["id"], "source_script_ir_version_id": right_ir, "source_script_ir_hash": shared_hash}))
+            session.add_all([left_plan, right_plan])
+            session.flush()
+            left_reasoning = DirectorReasoning(episode_id="1", version=1, source_script_ir_hash=shared_hash, lineage_json=json.dumps({"book_id": left["id"], "source_script_ir_version_id": left_ir, "source_script_ir_hash": shared_hash}))
+            right_reasoning = DirectorReasoning(episode_id="1", version=2, source_script_ir_hash=shared_hash, lineage_json=json.dumps({"book_id": right["id"], "source_script_ir_version_id": right_ir, "source_script_ir_hash": shared_hash}))
+            session.add_all([left_reasoning, right_reasoning])
+            session.flush()
+            left_storyboard = StoryboardPlan(episode_id="1", version=1, director_reasoning_id=left_reasoning.id, lineage_json=json.dumps({"director_reasoning_id": left_reasoning.id}))
+            right_storyboard = StoryboardPlan(episode_id="1", version=2, director_reasoning_id=right_reasoning.id, lineage_json=json.dumps({"director_reasoning_id": right_reasoning.id}))
+            session.add_all([left_storyboard, right_storyboard])
+            session.flush()
+            rows = [
+                ScenePlan(director_plan_id=left_plan.id, episode_id="1", scene_id="left-scene"),
+                ScenePlan(director_plan_id=right_plan.id, episode_id="1", scene_id="right-scene"),
+                StoryBeat(director_reasoning_id=left_reasoning.id, sequence=1),
+                StoryBeat(director_reasoning_id=right_reasoning.id, sequence=1),
+                VisualDecision(director_reasoning_id=left_reasoning.id, story_beat_sequence=1),
+                VisualDecision(director_reasoning_id=right_reasoning.id, story_beat_sequence=1),
+                DirectorReasoningGeneration(generation_id=f"left-{left['id']}", episode_id="1", director_reasoning_id=left_reasoning.id),
+                DirectorReasoningGeneration(generation_id=f"right-{right['id']}", episode_id="1", director_reasoning_id=right_reasoning.id),
+            ]
+            session.add_all(rows)
+            session.flush()
+            right_ids = {"plan": right_plan.id, "reasoning": right_reasoning.id, "storyboard": right_storyboard.id, "scene": rows[1].id, "beat": rows[3].id, "decision": rows[5].id, "generation": rows[7].id}
+            session.commit()
+        try:
+            self._delete(left["id"])
+            with Session() as session:
+                self.assertIsNotNone(session.get(Book, right["id"]))
+                self.assertIsNotNone(session.get(Script, right_script["id"]))
+                self.assertIsNotNone(session.get(ScriptIRVersion, right_ir))
+                self.assertIsNotNone(session.get(DirectorPlan, right_ids["plan"]))
+                self.assertIsNotNone(session.get(DirectorReasoning, right_ids["reasoning"]))
+                self.assertIsNotNone(session.get(StoryboardPlan, right_ids["storyboard"]))
+                self.assertIsNotNone(session.get(ScenePlan, right_ids["scene"]))
+                self.assertIsNotNone(session.get(StoryBeat, right_ids["beat"]))
+                self.assertIsNotNone(session.get(VisualDecision, right_ids["decision"]))
+                self.assertIsNotNone(session.get(DirectorReasoningGeneration, right_ids["generation"]))
+        finally:
+            with Session() as session:
+                right_exists = session.get(Book, right["id"]) is not None
+            if right_exists:
+                self._delete(right["id"])
+
+    def test_ambiguous_legacy_director_row_fails_closed_without_partial_delete(self):
+        book = self._create_book()
+        script = self.client.post(f"/api/books/{book['id']}/scripts", json={"episode": 1, "content": {"scenes": []}}).json()
+        with Session() as session:
+            row = DirectorPlan(episode_id="1", version=1)
+            session.add(row)
+            session.commit()
+            row_id = row.id
+        try:
+            response = self.client.delete(f"/api/books/{book['id']}")
+            self.assertEqual(response.status_code, 409, response.text)
+            detail = response.json()["detail"]
+            self.assertEqual(detail["code"], "BOOK_DELETE_DIRECTOR_SCOPE_AMBIGUOUS")
+            self.assertEqual(detail["ambiguous_rows"], 1)
+            with Session() as session:
+                self.assertIsNotNone(session.get(Book, book["id"]))
+                self.assertIsNotNone(session.get(Script, script["id"]))
+                self.assertIsNotNone(session.get(DirectorPlan, row_id))
+        finally:
+            with Session() as session:
+                session.query(DirectorPlan).filter_by(id=row_id).delete(synchronize_session=False)
+                session.query(Script).filter_by(book_id=book["id"]).delete(synchronize_session=False)
+                session.query(Book).filter_by(id=book["id"]).delete(synchronize_session=False)
+                session.commit()
+
+    def test_same_hash_without_source_id_is_ambiguous(self):
+        left = self._create_book("Hash Ambiguous A")
+        right = self._create_book("Hash Ambiguous B")
+        left_script = self.client.post(f"/api/books/{left['id']}/scripts", json={"episode": 1, "content": {"same": True}}).json()
+        right_script = self.client.post(f"/api/books/{right['id']}/scripts", json={"episode": 1, "content": {"same": True}}).json()
+        shared_hash = "sha256:ambiguous-hash"
+        self._create_script_ir(left["id"], left_script["id"], payload_hash=shared_hash)
+        self._create_script_ir(right["id"], right_script["id"], payload_hash=shared_hash)
+        with Session() as session:
+            row = DirectorPlan(episode_id="1", version=1, source_script_ir_hash=shared_hash, lineage_json="{}")
+            session.add(row)
+            session.commit()
+            row_id = row.id
+        try:
+            response = self.client.delete(f"/api/books/{left['id']}")
+            self.assertEqual(response.status_code, 409, response.text)
+            self.assertEqual(response.json()["detail"]["code"], "BOOK_DELETE_DIRECTOR_SCOPE_AMBIGUOUS")
+            with Session() as session:
+                self.assertIsNotNone(session.get(Book, left["id"]))
+                self.assertIsNotNone(session.get(Book, right["id"]))
+                self.assertIsNotNone(session.get(DirectorPlan, row_id))
+        finally:
+            with Session() as session:
+                session.query(DirectorPlan).filter_by(id=row_id).delete(synchronize_session=False)
+                session.commit()
+            self._delete(left["id"])
+            self._delete(right["id"])
 
     def test_new_write_routes_remain_under_api_auth_middleware(self):
         original_enabled = server.config.API_AUTH_ENABLED

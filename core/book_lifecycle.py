@@ -273,6 +273,29 @@ def _json_mentions_book(value: Any, book_id: int) -> bool:
     return False
 
 
+def _lineage_values(value: Any, key: str) -> list[Any]:
+    """Collect canonical lineage values without treating episode ids as scope."""
+
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            return []
+    if isinstance(value, Mapping):
+        values: list[Any] = []
+        if key in value and value[key] not in {None, ""}:
+            values.append(value[key])
+        for child in value.values():
+            values.extend(_lineage_values(child, key))
+        return values
+    if isinstance(value, list):
+        values: list[Any] = []
+        for child in value:
+            values.extend(_lineage_values(child, key))
+        return values
+    return []
+
+
 def _delete_rows(session: Any, model: Any, criterion: Any) -> int:
     return int(session.query(model).filter(criterion).delete(synchronize_session=False) or 0)
 
@@ -333,6 +356,17 @@ def _remove_scoped_files(book_id: int, title: str, *, has_same_title_neighbor: b
     return {"removed": removed, "skipped": skipped}
 
 
+def _script_ir_hash_books(session: Any) -> dict[str, set[int]]:
+    from models import ScriptIRVersion
+
+    result: dict[str, set[int]] = defaultdict(set)
+    for row in session.query(ScriptIRVersion).all():
+        payload_hash = str(row.payload_hash or "")
+        if payload_hash:
+            result[payload_hash].add(int(row.book_id))
+    return result
+
+
 def _scope_context(session: Any, book_id: int) -> dict[str, Any]:
     """Collect all explicit IDs needed for indirect child cleanup."""
 
@@ -362,11 +396,13 @@ def _scope_context(session: Any, book_id: int) -> dict[str, Any]:
         DirectorTreatment,
         ShotPlan,
         StoryboardMaterializationSet,
+        ScriptIRVersion,
     )
 
     shots = session.query(StoryboardShot).filter_by(book_id=book_id).all()
     outlines = session.query(EpisodeOutline).filter_by(book_id=book_id).all()
     source_scripts = session.query(Script).filter_by(book_id=book_id).all()
+    source_irs = session.query(ScriptIRVersion).filter_by(book_id=book_id).all()
     executions = session.query(GenerationExecutionRecord).filter_by(book_id=book_id).all()
     candidates = session.query(MediaCandidateRecord).filter(
         MediaCandidateRecord.execution_id.in_([row.execution_id for row in executions])
@@ -383,10 +419,9 @@ def _scope_context(session: Any, book_id: int) -> dict[str, Any]:
     fact_snapshots = session.query(FactSnapshot).filter_by(book_id=book_id).all()
     shot_ids = {int(row.id) for row in shots}
     outline_ids = {int(row.id) for row in outlines}
-    # Episode-keyed draft/runtime tables do not carry ``book_id``.  Include
-    # source Script episodes as an identity anchor so a provider-free
-    # Book+Script bootstrap can still clean DirectorPlan/DirectorReasoning
-    # rows before an EpisodeOutline exists.
+    # Episode values are candidate keys only.  They are never ownership
+    # evidence for Director runtime rows; canonical ownership comes from the
+    # source IR, lineage, or a canonical parent row.
     episode_numbers = {int(row.episode) for row in outlines}
     episode_numbers.update(int(row.episode) for row in source_scripts)
     episode_keys = {str(value) for value in outline_ids | episode_numbers}
@@ -433,6 +468,9 @@ def _scope_context(session: Any, book_id: int) -> dict[str, Any]:
         "outline_ids": outline_ids,
         "episode_keys": episode_keys,
         "episode_numbers": episode_numbers,
+        "source_script_ir_ids": {int(row.id) for row in source_irs},
+        "source_script_ir_hashes": {str(row.payload_hash) for row in source_irs if str(row.payload_hash or "")},
+        "source_script_ir_hash_books": _script_ir_hash_books(session),
         "execution_ids": execution_ids,
         "candidate_ids": candidate_ids,
         "official_version_ids": official_version_ids,
@@ -450,6 +488,144 @@ def _scope_context(session: Any, book_id: int) -> dict[str, Any]:
         "treatment_ids": treatment_ids,
         "blocking_ids": blocking_ids,
         "shot_plan_ids": shot_plan_ids,
+    }
+
+
+def _int_values(values: Iterable[Any]) -> set[int]:
+    result: set[int] = set()
+    for value in values:
+        try:
+            result.add(int(value))
+        except (TypeError, ValueError):
+            continue
+    return result
+
+
+def _director_row_scope(
+    session: Any,
+    row: Any,
+    ctx: Mapping[str, Any],
+    *,
+    table: str,
+    parent_scope: str | None = None,
+) -> str:
+    """Resolve one Director row using canonical evidence only.
+
+    ``episode_id`` is used solely to decide whether an evidence-free legacy
+    row could be related to the target.  It never returns ``owned`` by itself.
+    """
+
+    if parent_scope in {"owned", "foreign", "ambiguous"}:
+        return str(parent_scope)
+
+    target_book_id = int(ctx["book_id"])
+    potential = str(getattr(row, "episode_id", "")) in set(ctx.get("episode_keys", set()))
+    lineage = getattr(row, "lineage_json", "")
+    lineage_books = _int_values(_lineage_values(lineage, "book_id"))
+    source_ids = _int_values(
+        [getattr(row, "source_script_ir_version_id", None)]
+        + _lineage_values(lineage, "source_script_ir_version_id")
+    )
+    source_hashes = {str(value) for value in _lineage_values(lineage, "source_script_ir_hash") if str(value or "")}
+    direct_hash = str(getattr(row, "source_script_ir_hash", "") or "")
+    if direct_hash:
+        source_hashes.add(direct_hash)
+
+    # An explicit source IR id is first-class evidence.  A dangling id is
+    # ambiguous when the raw episode key could point at this Book.
+    if source_ids:
+        from models import ScriptIRVersion
+
+        ir_rows = session.query(ScriptIRVersion).filter(ScriptIRVersion.id.in_(source_ids)).all()
+        known_ids = {int(ir.id) for ir in ir_rows}
+        ir_books = {int(ir.book_id) for ir in ir_rows}
+        if known_ids != source_ids or len(ir_books) != 1:
+            return "ambiguous" if potential else "unrelated"
+        source_book = next(iter(ir_books))
+        if lineage_books and lineage_books != {source_book}:
+            return "ambiguous" if potential else "unrelated"
+        if source_book == target_book_id:
+            return "owned"
+        return "foreign"
+
+    # A canonical book_id in lineage is valid ownership evidence when no
+    # contradictory source IR id exists.
+    if lineage_books:
+        if len(lineage_books) != 1:
+            return "ambiguous" if potential else "unrelated"
+        return "owned" if target_book_id in lineage_books else "foreign"
+
+    # Hash evidence is valid only when every matching ScriptIR row belongs to
+    # this Book.  A shared hash is explicitly ambiguous.
+    if source_hashes:
+        hash_books: set[int] = set()
+        matched = False
+        for payload_hash in source_hashes:
+            books = set(ctx.get("source_script_ir_hash_books", {}).get(payload_hash, set()))
+            if books:
+                matched = True
+                hash_books.update(books)
+        if matched:
+            if len(hash_books) == 1 and target_book_id in hash_books:
+                return "owned"
+            if target_book_id in hash_books or len(hash_books) > 1:
+                return "ambiguous" if potential else "unrelated"
+            return "foreign"
+        return "ambiguous" if potential else "unrelated"
+
+    # Raw episode numbers are deliberately never ownership evidence.
+    return "ambiguous" if potential else "unrelated"
+
+
+def _resolve_director_runtime_scope(session: Any, ctx: Mapping[str, Any]) -> dict[str, Any]:
+    """Resolve Director ownership once for delete, audit, and preflight."""
+
+    from models import DirectorPlan, DirectorReasoning, DirectorReasoningGeneration, StoryboardPlan
+
+    plans: dict[int, str] = {}
+    reasonings: dict[int, str] = {}
+    storyboards: dict[int, str] = {}
+    generations: dict[int, str] = {}
+    ambiguous_rows: list[dict[str, Any]] = []
+
+    def record(table: str, row: Any, scope: str) -> None:
+        if scope == "ambiguous":
+            ambiguous_rows.append({
+                "table": table,
+                "row_id": int(row.id),
+                "episode_id": str(getattr(row, "episode_id", "")),
+                "reason": "missing canonical Book ownership evidence; raw episode_id is not sufficient",
+            })
+
+    for row in session.query(DirectorPlan).all():
+        scope = _director_row_scope(session, row, ctx, table="director_plans")
+        plans[int(row.id)] = scope
+        record("director_plans", row, scope)
+    for row in session.query(DirectorReasoning).all():
+        scope = _director_row_scope(session, row, ctx, table="director_reasonings")
+        reasonings[int(row.id)] = scope
+        record("director_reasonings", row, scope)
+    for row in session.query(StoryboardPlan).all():
+        parent_scope = reasonings.get(int(row.director_reasoning_id)) if row.director_reasoning_id is not None else None
+        scope = _director_row_scope(session, row, ctx, table="director_storyboard_plans", parent_scope=parent_scope)
+        storyboards[int(row.id)] = scope
+        record("director_storyboard_plans", row, scope)
+    for row in session.query(DirectorReasoningGeneration).all():
+        parent_scope = reasonings.get(int(row.director_reasoning_id)) if row.director_reasoning_id is not None else None
+        scope = _director_row_scope(session, row, ctx, table="director_reasoning_generations", parent_scope=parent_scope)
+        generations[int(row.id)] = scope
+        record("director_reasoning_generations", row, scope)
+
+    return {
+        "plan_ids": {row_id for row_id, scope in plans.items() if scope == "owned"},
+        "reasoning_ids": {row_id for row_id, scope in reasonings.items() if scope == "owned"},
+        "storyboard_plan_ids": {row_id for row_id, scope in storyboards.items() if scope == "owned"},
+        "generation_ids": {row_id for row_id, scope in generations.items() if scope == "owned"},
+        "plan_scopes": plans,
+        "reasoning_scopes": reasonings,
+        "storyboard_scopes": storyboards,
+        "generation_scopes": generations,
+        "ambiguous_rows": ambiguous_rows,
     }
 
 
@@ -528,19 +704,11 @@ def _delete_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
         if count:
             counts[name] = counts.get(name, 0) + count
 
-    # Resolve plan/episode identities before deleting their children.
-    plan_ids: set[int] = set()
-    reasoning_ids: set[int] = set()
-    storyboard_plan_ids: set[int] = set()
-    for row in session.query(DirectorPlan).all():
-        if str(row.episode_id) in ctx["episode_keys"] or _json_mentions_book(row.lineage_json, ctx["book_id"]):
-            plan_ids.add(int(row.id))
-    for row in session.query(DirectorReasoning).all():
-        if str(row.episode_id) in ctx["episode_keys"] or _json_mentions_book(row.lineage_json, ctx["book_id"]):
-            reasoning_ids.add(int(row.id))
-    for row in session.query(StoryboardPlan).all():
-        if str(row.episode_id) in ctx["episode_keys"] or _json_mentions_book(row.lineage_json, ctx["book_id"]):
-            storyboard_plan_ids.add(int(row.id))
+    # Resolve Director ownership once.  Raw episode keys are never enough.
+    director_scope = _resolve_director_runtime_scope(session, ctx)
+    plan_ids = set(director_scope["plan_ids"])
+    reasoning_ids = set(director_scope["reasoning_ids"])
+    storyboard_plan_ids = set(director_scope["storyboard_plan_ids"])
 
     render_plans = session.query(EpisodeRenderPlan).filter(
         or_(
@@ -592,7 +760,7 @@ def _delete_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     delete("director_scene_plans", ScenePlan, ScenePlan.director_plan_id.in_(plan_ids) if plan_ids else False)
     delete("director_story_beats", StoryBeat, StoryBeat.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False)
     delete("director_visual_decisions", VisualDecision, VisualDecision.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False)
-    delete("director_reasoning_generations", DirectorReasoningGeneration, or_(DirectorReasoningGeneration.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False, DirectorReasoningGeneration.episode_id.in_(ctx["episode_keys"]) if ctx["episode_keys"] else False))
+    delete("director_reasoning_generations", DirectorReasoningGeneration, DirectorReasoningGeneration.id.in_(director_scope["generation_ids"]) if director_scope["generation_ids"] else False)
     delete("director_storyboard_plans", StoryboardPlan, StoryboardPlan.id.in_(storyboard_plan_ids) if storyboard_plan_ids else False)
     delete("director_reasonings", DirectorReasoning, DirectorReasoning.id.in_(reasoning_ids) if reasoning_ids else False)
     delete("director_plans", DirectorPlan, DirectorPlan.id.in_(plan_ids) if plan_ids else False)
@@ -705,10 +873,8 @@ def _audit_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     episode_keys = ctx["episode_keys"]
     agent_session_ids = ctx.get("agent_session_ids", set())
     fact_snapshot_ids = ctx.get("fact_snapshot_ids", set())
-    reasoning_ids: set[int] = set()
-    for row in session.query(DirectorReasoning).all():
-        if str(row.episode_id) in episode_keys or _json_mentions_book(row.lineage_json, ctx["book_id"]):
-            reasoning_ids.add(int(row.id))
+    director_scope = _resolve_director_runtime_scope(session, ctx)
+    reasoning_ids = set(director_scope["reasoning_ids"])
 
     def count(name: str, model: Any, criterion: Any) -> None:
         value = int(session.query(model).filter(criterion).count())
@@ -746,7 +912,7 @@ def _audit_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     count("visual_reference_generation_requests", VisualReferenceGenerationRequest, VisualReferenceGenerationRequest.asset_version_id.in_(visual_version_ids) if visual_version_ids else False)
     count("production_asset_reviews", ProductionAssetReview, ProductionAssetReview.asset_version_id.in_(version_ids) if version_ids else False)
     count("production_asset_review_history", ProductionAssetReviewHistory, ProductionAssetReviewHistory.asset_version_id.in_(version_ids) if version_ids else False)
-    count("director_reasoning_generations", DirectorReasoningGeneration, or_(DirectorReasoningGeneration.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False, DirectorReasoningGeneration.episode_id.in_(episode_keys) if episode_keys else False))
+    count("director_reasoning_generations", DirectorReasoningGeneration, DirectorReasoningGeneration.id.in_(director_scope["generation_ids"]) if director_scope["generation_ids"] else False)
     for name, model in (("character_asset_authorities", CharacterAssetAuthority), ("scene_asset_authorities", SceneAssetAuthority), ("prop_asset_authorities", PropAssetAuthority), ("character_asset_pointers", CharacterAssetPointer), ("scene_asset_pointers", SceneAssetPointer), ("prop_asset_pointers", PropAssetPointer)):
         count(name, model, model.authority_id.in_(authority_ids) if authority_ids else False)
     for name, model in (("character_asset_versions", CharacterAssetVersion), ("scene_asset_versions", SceneAssetVersion), ("prop_asset_versions", PropAssetVersion)):
@@ -757,15 +923,9 @@ def _audit_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     count("agent_messages", AgentMessage, AgentMessage.session_id.in_(agent_session_ids) if agent_session_ids else False)
     count("agent_plans", AgentPlan, AgentPlan.session_id.in_(agent_session_ids) if agent_session_ids else False)
     count("fact_records", FactRecord, FactRecord.snapshot_id.in_(fact_snapshot_ids) if fact_snapshot_ids else False)
-    # Episode-keyed director drafts have no book_id.  They are only considered
-    # in scope when their lineage carries this Book or the key is an outline id.
-    for name, model, field in (("director_plans", DirectorPlan, "lineage_json"), ("director_reasonings", DirectorReasoning, "lineage_json"), ("director_storyboard_plans", StoryboardPlan, "lineage_json")):
-        matched = 0
-        for row in session.query(model).all():
-            if str(getattr(row, "episode_id", "")) in episode_keys or _json_mentions_book(getattr(row, field, ""), ctx["book_id"]):
-                matched += 1
-        if matched:
-            rows[name] = matched
+    for name, ids in (("director_plans", director_scope["plan_ids"]), ("director_reasonings", director_scope["reasoning_ids"]), ("director_storyboard_plans", director_scope["storyboard_plan_ids"])):
+        if ids:
+            rows[name] = len(ids)
     if rows:
         rows["total"] = sum(rows.values())
     return rows
@@ -780,6 +940,14 @@ def delete_book_scope(session: Any, *, book_id: int) -> dict[str, Any]:
         raise BookLifecycleError("BOOK_NOT_FOUND", "Book not found", status_code=404)
     title = str(book.title or "")
     ctx = _scope_context(session, int(book_id))
+    director_scope = _resolve_director_runtime_scope(session, ctx)
+    if director_scope["ambiguous_rows"]:
+        raise BookLifecycleError(
+            "BOOK_DELETE_DIRECTOR_SCOPE_AMBIGUOUS",
+            "Director runtime ownership is ambiguous; no rows were deleted",
+            status_code=409,
+            details={"rows": director_scope["ambiguous_rows"], "ambiguous_rows": len(director_scope["ambiguous_rows"])},
+        )
     counts = _delete_indirect_scope(session, ctx)
 
     models = _model_by_table()
@@ -832,6 +1000,7 @@ def delete_book_scope(session: Any, *, book_id: int) -> dict[str, Any]:
         "deleted_rows": counts,
         "filesystem": filesystem,
         "orphan_rows": int(remaining.get("orphan_rows", 0)),
+        "ambiguous_rows": 0,
         "orphan_audit": remaining,
     }
 

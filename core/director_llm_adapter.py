@@ -365,6 +365,10 @@ def add_adapter_lineage(payload: Mapping[str, Any], *, context: DirectorContext,
         "human_review_required": True,
         "direct_database_write": False,
     }
+    for key in ("book_id", "source_script_ir_version_id"):
+        value = context.episode.get(key) if isinstance(context.episode, Mapping) else None
+        if value not in {None, ""}:
+            data["lineage"][key] = value
     data.pop("payload_hash", None)
     return data
 

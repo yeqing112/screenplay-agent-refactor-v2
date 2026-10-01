@@ -10,7 +10,7 @@ from typing import Any, Mapping
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import desc
 
-from models import DirectorReasoning, ScenePlan, ShotPlan, StoryBeat, VisualDecision
+from models import DirectorReasoning, ScenePlan, ShotPlan, StoryBeat, VisualDecision, ScriptIRVersion
 
 
 REASONING_SCHEMA_VERSION = "director_reasoning_ir_v1"
@@ -203,7 +203,11 @@ def director_reason(episode_context: Mapping[str, Any] | None, script_ir: Mappin
     for beat in beats:
         source_decision = next((item for item in scenes_context.get("visual_decisions", []) if isinstance(item, Mapping) and int(item.get("story_beat_sequence") or item.get("sequence") or 0) == beat["sequence"]), {}) if isinstance(scenes_context.get("visual_decisions"), list) else {}
         visual_decisions.append(VisualDecisionPayload(story_beat_sequence=beat["sequence"], visual_style_id=str(source_decision.get("visual_style_id") or source_decision.get("style_id") or (style_ids[0] if style_ids else "")), camera_strategy=str(source_decision.get("camera_strategy") or ""), lighting_strategy=str(source_decision.get("lighting_strategy") or ""), color_strategy=str(source_decision.get("color_strategy") or ""), composition_strategy=str(source_decision.get("composition_strategy") or "")).model_dump())
-    payload = DirectorReasoningPayload(episode_id=episode_id, reasoning_trace={"mode": "deterministic_adapter", "provider": None, "llm_called": False, "human_review_required": True, "source_fact_mutated": False, "script_ir_mutated": False}, beats=beats, visual_decisions=visual_decisions, lineage={"schema_version": REASONING_SCHEMA_VERSION, "source_script_ir_hash": source_hash, "source_fact_mutated": False, "script_ir_mutated": False}).model_dump()
+    lineage = {"schema_version": REASONING_SCHEMA_VERSION, "source_script_ir_hash": source_hash, "source_fact_mutated": False, "script_ir_mutated": False}
+    for key in ("book_id", "source_script_ir_version_id", "source_script_ir_hash"):
+        if episode.get(key) not in {None, ""}:
+            lineage[key] = episode[key]
+    payload = DirectorReasoningPayload(episode_id=episode_id, reasoning_trace={"mode": "deterministic_adapter", "provider": None, "llm_called": False, "human_review_required": True, "source_fact_mutated": False, "script_ir_mutated": False}, beats=beats, visual_decisions=visual_decisions, lineage=lineage).model_dump()
     payload["payload_hash"] = _hash(payload)
     return payload
 
@@ -265,8 +269,25 @@ def persist_reasoning(session: Any, payload: Mapping[str, Any], *, source_fact_s
     latest = session.query(DirectorReasoning).filter_by(episode_id=candidate.episode_id).order_by(desc(DirectorReasoning.version)).first()
     version = int(latest.version) + 1 if latest else 1
     data = candidate.model_dump()
+    lineage = {**data.get("lineage", {})}
+    canonical_source_id = lineage.get("source_script_ir_version_id")
+    if canonical_source_id not in {None, ""}:
+        try:
+            source_ir = session.get(ScriptIRVersion, int(canonical_source_id))
+        except (TypeError, ValueError):
+            source_ir = None
+        if source_ir is None:
+            raise ValueError("source_script_ir_version_id does not resolve to ScriptIRVersion")
+        lineage["book_id"] = int(source_ir.book_id)
+        lineage["source_script_ir_version_id"] = int(source_ir.id)
+        lineage["source_script_ir_hash"] = str(source_ir.payload_hash or "")
+    elif lineage.get("book_id") not in {None, ""}:
+        try:
+            lineage["book_id"] = int(lineage["book_id"])
+        except (TypeError, ValueError):
+            raise ValueError("lineage.book_id must be an integer")
     data["version"] = version
-    data["lineage"] = {**data.get("lineage", {}), "director_reasoning_version": version, "human_review_required": True}
+    data["lineage"] = {**lineage, "director_reasoning_version": version, "human_review_required": True}
     data["payload_hash"] = _hash(data)
     if latest is not None and latest.status not in {"SUPERSEDED", "REJECTED", "ROLLED_BACK"}:
         latest.status = "SUPERSEDED"
