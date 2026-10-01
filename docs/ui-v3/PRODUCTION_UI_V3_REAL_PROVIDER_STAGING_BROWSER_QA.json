@@ -1,0 +1,24 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
+  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "default_v3_surface": true,
+  "provider_execution_started": false,
+  "screenshots": [],
+  "flows": {
+    "image_initial": "NOT_RUN",
+    "image_review_official": "NOT_RUN",
+    "image_regenerate": "NOT_RUN",
+    "video_initial": "NOT_RUN",
+    "video_reload_recovery": "NOT_RUN",
+    "video_review_official": "NOT_RUN",
+    "video_regenerate": "NOT_RUN",
+    "cancel_confirmation_no_write": "NOT_RUN"
+  },
+  "network_contract": {
+    "foundation_api_calls": 0,
+    "legacy_recovery_calls": 0,
+    "ordinary_generate_fallback_calls": 0,
+    "provider_submission_calls": 0
+  },
+  "reason": "Browser execution is not authorized without an explicit disposable staging canary."
+}

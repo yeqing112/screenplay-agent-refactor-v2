@@ -1,0 +1,15 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
+  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "staging_environment_confirmed": false,
+  "canary_book_id": null,
+  "shots_used": [],
+  "before_row_counts": null,
+  "after_row_counts": null,
+  "writes_outside_canary_scope": 0,
+  "production_db_touched": false,
+  "db_migrations": 0,
+  "alembic_head": "o6j7k8l9m0n1",
+  "isolation_verdict": "UNVERIFIED_BECAUSE_NO_CANARY_BOOK_WAS_AUTHORIZED",
+  "cleanup": "No cleanup attempted; no canary data was created."
+}

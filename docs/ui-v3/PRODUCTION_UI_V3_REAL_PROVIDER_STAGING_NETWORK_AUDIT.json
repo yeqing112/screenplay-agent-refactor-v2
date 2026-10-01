@@ -1,0 +1,12 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
+  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "requests": [],
+  "provider_submission_count": 0,
+  "transport_retry_count": 0,
+  "foundation_api_calls": 0,
+  "legacy_recovery_calls": 0,
+  "ordinary_generate_fallback_calls": 0,
+  "secret_redaction": "PASS",
+  "reason": "Preflight stopped before browser or provider network activity."
+}

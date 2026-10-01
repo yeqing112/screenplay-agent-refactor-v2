@@ -1,0 +1,14 @@
+{
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
+  "status": "BLOCKED_AWAITING_STAGING_AUTHORIZATION",
+  "real_provider_calls": 0,
+  "real_llm_calls": 0,
+  "executions": [],
+  "redaction": {
+    "credentials_logged": false,
+    "authorization_headers_logged": false,
+    "raw_provider_responses_logged": false,
+    "third_party_ids_logged": false
+  },
+  "reason": "No explicit APP_ENV=staging, confirmation flag, canary book id, or call budget was supplied. Provider execution was stopped at preflight."
+}
