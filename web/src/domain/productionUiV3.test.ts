@@ -194,7 +194,7 @@ describe('productionUiV3 canonical state adapters', () => {
     }))
     expect(failed.state).toBe('failed')
     expect(failed.primaryAction.kind).toBe('retry_generation')
-    expect(failed.primaryAction.enabled).toBe(false)
+    expect(failed.primaryAction.enabled).toBe(true)
 
     const notReady = toMediaLaneViewModel('IMAGE', readyLane({
       generation_readiness: { ready: false, reason_codes: ['ASSET_MEDIA_NOT_READY'], primary_blocker: { code: 'ASSET_MEDIA_NOT_READY', message: 'asset' }, blockers: [{ code: 'ASSET_MEDIA_NOT_READY', message: 'asset' }] },

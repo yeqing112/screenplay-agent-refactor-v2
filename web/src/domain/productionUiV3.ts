@@ -29,6 +29,8 @@ export type ProductionPrimaryActionKind =
   | 'view_official'
   | 'inspect'
 
+export type ProductionSecondaryActionKind = 'regenerate_media'
+
 export type ProductionUiReasonCode =
   | 'V3_CANONICAL_OFFICIAL_POINTER_MISSING'
   | 'V3_CANONICAL_OFFICIAL_POINTER_MISMATCH'
@@ -46,6 +48,16 @@ export interface ProductionPrimaryAction {
   kind: ProductionPrimaryActionKind
   label: string
   lane?: ProductionLaneTarget
+  enabled: boolean
+  reason?: string
+  reasonCodes: string[]
+  requiresProviderCall: boolean
+}
+
+export interface ProductionSecondaryAction {
+  kind: ProductionSecondaryActionKind
+  label: string
+  lane: ProductionLaneTarget
   enabled: boolean
   reason?: string
   reasonCodes: string[]
@@ -114,6 +126,7 @@ export interface ProductionMediaLaneViewModel {
   execution: GenerationExecutionViewModel
   candidate: CandidateReviewSummary
   primaryAction: ProductionPrimaryAction
+  regenerateAction: ProductionSecondaryAction
   professional: {
     model: ProductionMediaLane['model']
     generationModeSource: string | null
@@ -499,12 +512,33 @@ function lanePrimaryAction(
 ): ProductionPrimaryAction {
   if (state === 'blocked') return action('resolve_blocker', '处理阻塞', false, { lane: target, reason: '当前状态需要先完成修复。', reasonCodes: readiness.reasonCodes })
   if (state === 'stale') return action('refresh_stale_source', '查看上游变化', true, { lane: target, reason: '上游内容已更新，需要重新确认。', reasonCodes: ['STALE_SOURCE'] })
-  if (state === 'failed') return action('retry_generation', '重试生成尚未接入', false, { lane: target, reason: '本轮只接入首次生成；失败后的 retry 语义将在后续阶段定义。', reasonCodes: execution.failureCode ? [execution.failureCode, 'RETRY_DEFERRED'] : ['RETRY_DEFERRED'] })
+  if (state === 'failed') {
+    const retryable = execution.rawState === 'FAILED' && Boolean(execution.id) && readiness.ready
+    return action('retry_generation', '重试本次生成', retryable, {
+      lane: target,
+      reason: retryable ? '保留失败记录并重新执行当前失败任务。' : '只有当前 FAILED execution 才允许重试。',
+      reasonCodes: execution.failureCode ? [execution.failureCode] : ['RETRY_SOURCE_NOT_EXECUTABLE'],
+      requiresProviderCall: retryable,
+    })
+  }
   if (state === 'running') return action('wait', '查看生成进度', true, { lane: target, reason: '模型正在处理中。', reasonCodes: ['EXECUTION_RUNNING'] })
   if (state === 'waiting') return action('wait', '等待上游', false, { lane: target, reason: '当前结果依赖上游生产完成。', reasonCodes: ['WAITING_UPSTREAM'] })
   if (state === 'review') return action('review_candidate', '打开审核', candidate.reviewEligibility, { lane: target, reason: candidate.reviewReason ?? '候选尚未满足审核条件。', reasonCodes: candidate.reasonCodes })
   if (state === 'ready') return action(target === 'IMAGE' ? 'generate_image' : 'generate_video', target === 'IMAGE' ? '生成图片' : '生成视频', readiness.ready, { lane: target, reason: readiness.ready ? undefined : 'generation_readiness 未允许生成。', reasonCodes: readiness.reasonCodes, requiresProviderCall: true })
   return action('view_official', '查看正式版本', true, { lane: target, reason: '当前 lane 已有正式版本。', reasonCodes: ['OFFICIAL_MEDIA_CURRENT'] })
+}
+
+function laneRegenerateAction(target: ProductionLaneTarget, state: ProductionUiState, official: CanonicalOfficialMediaViewModel, candidate: CandidateReviewSummary, stale: boolean): ProductionSecondaryAction {
+  const enabled = state === 'official' && official.isCanonicalOfficial && !stale && !candidate.reviewEligibility && candidate.reasonCodes.length === 0
+  return {
+    kind: 'regenerate_media',
+    label: '生成新版本',
+    lane: target,
+    enabled,
+    reason: enabled ? '当前正式版本会继续保留，新候选审核通过后才会替换。' : '当前状态已有候选、任务进行中或正式版本证据不完整。',
+    reasonCodes: enabled ? ['OFFICIAL_MEDIA_CURRENT'] : ['REGENERATE_NOT_AVAILABLE'],
+    requiresProviderCall: enabled,
+  }
 }
 
 export function toMediaLaneViewModel(target: ProductionLaneTarget, lane: ProductionMediaLane): ProductionMediaLaneViewModel {
@@ -541,6 +575,7 @@ export function toMediaLaneViewModel(target: ProductionLaneTarget, lane: Product
     execution,
     candidate,
     primaryAction: lanePrimaryAction(target, state, execution, candidate, readiness),
+    regenerateAction: laneRegenerateAction(target, state, official, candidate, state === 'stale' || sourceOfficialImage?.currentness === 'STALE'),
     professional: {
       model: lane.model,
       generationModeSource: lane.generation_mode_source ?? null,
