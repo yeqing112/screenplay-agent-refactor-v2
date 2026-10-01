@@ -20,5 +20,11 @@
   "retired": [
     "Book 998755 was not revived"
   ],
+  "cleanup_boundaries": [
+    "episode-keyed DirectorPlan/ScenePlan/DirectorReasoning runtime rows anchored by source Script episodes",
+    "project-keyed EpisodeRenderPlan rows",
+    "materialization-set-keyed AutomaticKeyframePlan rows",
+    "episode-keyed DirectorReasoningGeneration rows"
+  ],
   "result": "CANONICAL_BOOK_LIFECYCLE_BOOTSTRAP_CONTRACT_COMPLETE"
 }

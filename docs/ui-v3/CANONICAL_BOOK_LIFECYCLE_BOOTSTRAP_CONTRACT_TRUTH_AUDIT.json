@@ -30,11 +30,11 @@
   },
   "tests": {
     "tests/test_book_lifecycle_api.py": {
-      "passed": 7,
+      "passed": 8,
       "failed": 0
     },
     "backend_full_suite": {
-      "passed": 2002,
+      "passed": 2003,
       "failed": 0
     },
     "web": {

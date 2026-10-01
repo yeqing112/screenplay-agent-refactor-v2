@@ -13,10 +13,16 @@ from models import (
     AgentPlan,
     AgentSession,
     Book,
+    DirectorPlan,
+    DirectorReasoning,
+    DirectorReasoningGeneration,
     FactRecord,
     FactSnapshot,
     Script,
     ScriptIRVersion,
+    ScenePlan,
+    StoryBeat,
+    VisualDecision,
     Session,
     ShotAssetBinding,
     StoryboardShot,
@@ -186,6 +192,43 @@ class BookLifecycleApiTests(unittest.TestCase):
         self.assertGreaterEqual(payload["deleted_rows"].get("agent_audit_logs", 0), 1)
         self.assertGreaterEqual(payload["deleted_rows"].get("fact_records", 0), 1)
         self.assertGreaterEqual(payload["deleted_rows"].get("shot_asset_bindings", 0), 1)
+
+    def test_delete_cleans_episode_keyed_director_runtime_without_outline(self):
+        """Script bootstrap must scope episode-keyed draft rows before outlines exist."""
+        book = self._create_book()
+        book_id = book["id"]
+        script = self.client.post(
+            f"/api/books/{book_id}/scripts",
+            json={"episode": 1, "content": {"scenes": []}, "workflowProfile": "production"},
+        )
+        self.assertEqual(script.status_code, 201, script.text)
+        with Session() as session:
+            plan = DirectorPlan(episode_id="1")
+            session.add(plan)
+            session.flush()
+            scene_plan = ScenePlan(director_plan_id=plan.id, episode_id="1", scene_id=f"S-{book_id}")
+            session.add(scene_plan)
+            reasoning = DirectorReasoning(episode_id="1")
+            session.add(reasoning)
+            session.flush()
+            beat = StoryBeat(director_reasoning_id=reasoning.id, sequence=1)
+            decision = VisualDecision(director_reasoning_id=reasoning.id, story_beat_sequence=1)
+            generation = DirectorReasoningGeneration(generation_id=f"gen-{book_id}", episode_id="1", director_reasoning_id=reasoning.id)
+            session.add_all([beat, decision, generation])
+            session.flush()
+            plan_id, scene_plan_id, reasoning_id, beat_id, decision_id, generation_id = plan.id, scene_plan.id, reasoning.id, beat.id, decision.id, generation.id
+            session.commit()
+
+        response = self.client.delete(f"/api/books/{book_id}")
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["orphan_rows"], 0, response.text)
+        with Session() as session:
+            self.assertIsNone(session.get(DirectorPlan, plan_id))
+            self.assertIsNone(session.get(ScenePlan, scene_plan_id))
+            self.assertIsNone(session.get(DirectorReasoning, reasoning_id))
+            self.assertIsNone(session.get(StoryBeat, beat_id))
+            self.assertIsNone(session.get(VisualDecision, decision_id))
+            self.assertIsNone(session.get(DirectorReasoningGeneration, generation_id))
 
     def test_new_write_routes_remain_under_api_auth_middleware(self):
         original_enabled = server.config.API_AUTH_ENABLED

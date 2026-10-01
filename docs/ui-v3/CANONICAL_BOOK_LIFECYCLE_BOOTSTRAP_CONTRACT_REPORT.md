@@ -67,11 +67,18 @@ The inventory fails closed when a new direct `book_id` table is not reviewed.
 Filesystem cleanup is scoped by book id; title directories are retained when
 another Book shares the same title.
 
+The lifecycle also cleans episode-keyed runtime rows when a bootstrap Script
+exists before an `EpisodeOutline` is materialized. This includes DirectorPlan,
+ScenePlan, DirectorReasoning, StoryBeat, VisualDecision, and
+DirectorReasoningGeneration rows. Render plans keyed by `project_id` and
+automatic keyframe plans keyed by materialization set are included in the same
+fail-closed scope.
+
 ## Verification
 
 ```text
-7 lifecycle API tests passed
-2002 backend tests passed in the full repository run
+8 lifecycle API tests passed
+2003 backend tests passed in the full repository run
 63 web test files / 445 tests passed
 web build passed
 compileall passed

@@ -366,6 +366,7 @@ def _scope_context(session: Any, book_id: int) -> dict[str, Any]:
 
     shots = session.query(StoryboardShot).filter_by(book_id=book_id).all()
     outlines = session.query(EpisodeOutline).filter_by(book_id=book_id).all()
+    source_scripts = session.query(Script).filter_by(book_id=book_id).all()
     executions = session.query(GenerationExecutionRecord).filter_by(book_id=book_id).all()
     candidates = session.query(MediaCandidateRecord).filter(
         MediaCandidateRecord.execution_id.in_([row.execution_id for row in executions])
@@ -382,7 +383,12 @@ def _scope_context(session: Any, book_id: int) -> dict[str, Any]:
     fact_snapshots = session.query(FactSnapshot).filter_by(book_id=book_id).all()
     shot_ids = {int(row.id) for row in shots}
     outline_ids = {int(row.id) for row in outlines}
+    # Episode-keyed draft/runtime tables do not carry ``book_id``.  Include
+    # source Script episodes as an identity anchor so a provider-free
+    # Book+Script bootstrap can still clean DirectorPlan/DirectorReasoning
+    # rows before an EpisodeOutline exists.
     episode_numbers = {int(row.episode) for row in outlines}
+    episode_numbers.update(int(row.episode) for row in source_scripts)
     episode_keys = {str(value) for value in outline_ids | episode_numbers}
     execution_ids = {str(row.execution_id) for row in executions}
     candidate_ids = {str(row.candidate_id) for row in candidates}
@@ -536,7 +542,12 @@ def _delete_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
         if str(row.episode_id) in ctx["episode_keys"] or _json_mentions_book(row.lineage_json, ctx["book_id"]):
             storyboard_plan_ids.add(int(row.id))
 
-    render_plans = session.query(EpisodeRenderPlan).filter(EpisodeRenderPlan.episode_id.in_(ctx["outline_ids"])).all() if ctx["outline_ids"] else []
+    render_plans = session.query(EpisodeRenderPlan).filter(
+        or_(
+            EpisodeRenderPlan.project_id == ctx["book_id"],
+            EpisodeRenderPlan.episode_id.in_(ctx["outline_ids"]) if ctx["outline_ids"] else False,
+        )
+    ).all()
     render_plan_ids = {int(row.id) for row in render_plans}
     batch_rows = session.query(ProductionBatch).filter(
         or_(ProductionBatch.project_id == ctx["book_id"], ProductionBatch.episode_id.in_(ctx["outline_ids"]) if ctx["outline_ids"] else False)
@@ -564,7 +575,8 @@ def _delete_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     delete("keyframe_asset_bindings", KeyframeAssetBinding, KeyframeAssetBinding.keyframe_id.in_(keyframe_ids) if keyframe_ids else False)
     delete("keyframes", Keyframe, Keyframe.keyframe_sequence_id.in_(keyframe_sequence_ids) if keyframe_sequence_ids else False)
     delete("keyframe_sequences", KeyframeSequence, KeyframeSequence.storyboard_shot_id.in_(shots) if shots else False)
-    delete("automatic_keyframe_plans", AutomaticKeyframePlan, or_(AutomaticKeyframePlan.storyboard_shot_id.in_(shots), AutomaticKeyframePlan.storyboard_materialization_set_id.in_(ctx.get("materialization_set_ids", set()))) if shots else False)
+    materialization_set_ids = ctx.get("materialization_set_ids", set())
+    delete("automatic_keyframe_plans", AutomaticKeyframePlan, or_(AutomaticKeyframePlan.storyboard_shot_id.in_(shots) if shots else False, AutomaticKeyframePlan.storyboard_materialization_set_id.in_(materialization_set_ids) if materialization_set_ids else False) if shots or materialization_set_ids else False)
     delete("shot_character_bindings", ShotCharacterBinding, ShotCharacterBinding.storyboard_shot_id.in_(shots) if shots else False)
     delete("shot_scene_bindings", ShotSceneBinding, ShotSceneBinding.storyboard_shot_id.in_(shots) if shots else False)
     delete("shot_style_bindings", ShotStyleBinding, ShotStyleBinding.storyboard_shot_id.in_(shots) if shots else False)
@@ -580,7 +592,7 @@ def _delete_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     delete("director_scene_plans", ScenePlan, ScenePlan.director_plan_id.in_(plan_ids) if plan_ids else False)
     delete("director_story_beats", StoryBeat, StoryBeat.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False)
     delete("director_visual_decisions", VisualDecision, VisualDecision.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False)
-    delete("director_reasoning_generations", DirectorReasoningGeneration, DirectorReasoningGeneration.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False)
+    delete("director_reasoning_generations", DirectorReasoningGeneration, or_(DirectorReasoningGeneration.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False, DirectorReasoningGeneration.episode_id.in_(ctx["episode_keys"]) if ctx["episode_keys"] else False))
     delete("director_storyboard_plans", StoryboardPlan, StoryboardPlan.id.in_(storyboard_plan_ids) if storyboard_plan_ids else False)
     delete("director_reasonings", DirectorReasoning, DirectorReasoning.id.in_(reasoning_ids) if reasoning_ids else False)
     delete("director_plans", DirectorPlan, DirectorPlan.id.in_(plan_ids) if plan_ids else False)
@@ -693,6 +705,10 @@ def _audit_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     episode_keys = ctx["episode_keys"]
     agent_session_ids = ctx.get("agent_session_ids", set())
     fact_snapshot_ids = ctx.get("fact_snapshot_ids", set())
+    reasoning_ids: set[int] = set()
+    for row in session.query(DirectorReasoning).all():
+        if str(row.episode_id) in episode_keys or _json_mentions_book(row.lineage_json, ctx["book_id"]):
+            reasoning_ids.add(int(row.id))
 
     def count(name: str, model: Any, criterion: Any) -> None:
         value = int(session.query(model).filter(criterion).count())
@@ -719,7 +735,7 @@ def _audit_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     count("media_candidates", MediaCandidateRecord, MediaCandidateRecord.execution_id.in_(execution_ids) if execution_ids else False)
     count("official_media_authorities", OfficialMediaAuthority, OfficialMediaAuthority.official_media_version_id.in_(official_version_ids) if official_version_ids else False)
     count("episode_render_items", EpisodeRenderItem, EpisodeRenderItem.shot_id.in_(shots) if shots else False)
-    count("episode_render_plans", EpisodeRenderPlan, EpisodeRenderPlan.episode_id.in_(outline_ids) if outline_ids else False)
+    count("episode_render_plans", EpisodeRenderPlan, or_(EpisodeRenderPlan.project_id == ctx["book_id"], EpisodeRenderPlan.episode_id.in_(outline_ids) if outline_ids else False))
     count("production_batch_items", ProductionBatchItem, ProductionBatchItem.execution_id.in_(execution_ids) if execution_ids else False)
     count("production_batches", ProductionBatch, or_(ProductionBatch.project_id == ctx["book_id"], ProductionBatch.episode_id.in_(outline_ids) if outline_ids else False))
     count("character_reference_assets", CharacterReferenceAsset, CharacterReferenceAsset.character_id.in_(ctx["character_ids"]) if ctx["character_ids"] else False)
@@ -730,6 +746,7 @@ def _audit_indirect_scope(session: Any, ctx: dict[str, Any]) -> dict[str, int]:
     count("visual_reference_generation_requests", VisualReferenceGenerationRequest, VisualReferenceGenerationRequest.asset_version_id.in_(visual_version_ids) if visual_version_ids else False)
     count("production_asset_reviews", ProductionAssetReview, ProductionAssetReview.asset_version_id.in_(version_ids) if version_ids else False)
     count("production_asset_review_history", ProductionAssetReviewHistory, ProductionAssetReviewHistory.asset_version_id.in_(version_ids) if version_ids else False)
+    count("director_reasoning_generations", DirectorReasoningGeneration, or_(DirectorReasoningGeneration.director_reasoning_id.in_(reasoning_ids) if reasoning_ids else False, DirectorReasoningGeneration.episode_id.in_(episode_keys) if episode_keys else False))
     for name, model in (("character_asset_authorities", CharacterAssetAuthority), ("scene_asset_authorities", SceneAssetAuthority), ("prop_asset_authorities", PropAssetAuthority), ("character_asset_pointers", CharacterAssetPointer), ("scene_asset_pointers", SceneAssetPointer), ("prop_asset_pointers", PropAssetPointer)):
         count(name, model, model.authority_id.in_(authority_ids) if authority_ids else False)
     for name, model in (("character_asset_versions", CharacterAssetVersion), ("scene_asset_versions", SceneAssetVersion), ("prop_asset_versions", PropAssetVersion)):
