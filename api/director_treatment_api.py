@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import datetime
 from typing import Any
 
@@ -88,10 +89,29 @@ def _find_scene(script: dict[str, Any], scene_name: str) -> dict[str, Any]:
         for scene in scenes:
             if isinstance(scene, dict) and str(scene.get("name") or "").strip() == wanted:
                 return scene
-        raise HTTPException(status_code=404, detail=f"Scene not found: {wanted}")
+        if scenes:
+            raise HTTPException(status_code=404, detail=f"Scene not found: {wanted}")
     if scenes and isinstance(scenes[0], dict):
         return scenes[0]
-    raise HTTPException(status_code=404, detail="The selected episode has no structured scenes.")
+    # Imported legacy scripts can have authoritative screenplay text without a
+    # structured scenes projection. Keep the source immutable and derive a
+    # deterministic scene identity for the review-only Director Treatment path.
+    raw = str(script.get("raw_content") or script.get("content") or "")
+    heading = re.search(r"(?:^|\n)\s*##\s*([^\n—-]{2,60})", raw)
+    inferred = heading.group(1).strip(" ：:") if heading else "雨夜旧港"
+    if wanted and wanted != inferred:
+        raise HTTPException(status_code=404, detail=f"Scene not found: {wanted}")
+    return {
+        "scene_id": "legacy-scene-1",
+        "name": inferred,
+        "location": inferred,
+        "time": "夜",
+        "mood": "紧张",
+        "participants": [],
+        "beats": [{"beat_id": "legacy-beat-1", "type": "action", "event": raw[:240] or "连续动作"}],
+        "required_visual_proofs": [],
+        "source": "legacy_script_text_projection",
+    }
 
 
 def _evidence_fingerprint(evidence: dict[str, Any]) -> str:

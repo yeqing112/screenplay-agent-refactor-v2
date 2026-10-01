@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import uuid
 from copy import deepcopy
 from typing import Any
@@ -91,6 +92,24 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "uses_mock": False,
         },
         {
+            "id": "builtin-mock-llm",
+            "name": "Mock LLM（用户旅程）",
+            "capability": "llm",
+            "provider": MOCK_PROVIDER,
+            "base_url": "",
+            "model_name": "mock-llm-v1",
+            "default_params": {"temperature": 0.0, "max_tokens": 8192},
+            "enabled": True,
+            "is_default": False,
+            "key_configured": True,
+            "builtin": True,
+            "source": "builtin",
+            "uses_mock": True,
+            "credential_ref": "builtin:mock-llm",
+            "credential_configured": True,
+            "runtime_binding_id": "builtin:mock-llm",
+        },
+        {
             "id": "builtin-mock-image",
             "name": "Mock 图片模型",
             "capability": "image",
@@ -143,7 +162,7 @@ def _builtin_profiles() -> list[dict[str, Any]]:
 
 def _builtin_default_map() -> dict[str, str]:
     return {
-        "llm": "builtin-llm-env",
+        "llm": "builtin-mock-llm" if str(os.environ.get("E2E_EXTERNAL_RUNTIME") or "").strip().lower() == "mock" else "builtin-llm-env",
         "embedding": "builtin-embedding-env",
         "image": "builtin-mock-image",
         "video": "builtin-mock-video",

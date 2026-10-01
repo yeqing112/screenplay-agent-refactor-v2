@@ -249,8 +249,21 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
                 raise HTTPException(status_code=409, detail={"code": "BLOCKING_SEMANTIC_CONTRACT_REQUIRED", "message": "Current SceneBlocking is not Phase B semantic-ready."})
         else:
             scene_id = str(scene.get("scene_id") or "").strip() if scene else ""
-            treatment = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
-            blocking = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, status="approved").order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+            treatment_query = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, status="approved")
+            if scene_name:
+                treatment_query = treatment_query.filter_by(scene_name=scene_name)
+            treatment = treatment_query.order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
+            if treatment is not None and not scene_name:
+                scene_name = str(treatment.scene_name or "雨夜旧港").strip()
+            blocking_query = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, status="approved")
+            if scene_name:
+                blocking_query = blocking_query.filter_by(scene_name=scene_name)
+            blocking = blocking_query.order_by(SceneBlocking.revision.desc(), SceneBlocking.id.desc()).first()
+            if scene is None and treatment is not None:
+                # Preserve legacy screenplay text while allowing the creative
+                # ShotPlan review surface to consume the approved scene identity.
+                scene = {"scene_id": str(getattr(treatment, "scene_id", "") or "legacy-scene-1"), "name": scene_name or treatment.scene_name, "location": scene_name or treatment.scene_name, "props": [], "participants": []}
+                scene_id = str(scene.get("scene_id") or "")
         if not treatment or not blocking:
             raise HTTPException(status_code=409, detail=f"ShotPlan requires approved DirectorTreatment and SceneBlocking for scene: {scene_name or '未命名场景'}")
         if str(req.workflow_profile or "creative_draft").strip().lower() == "production" and (blocking.production_status != "ready" or blocking.qualification_state != "PRODUCTION_QUALIFIED"):
@@ -820,6 +833,11 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             candidate["phase_c_semantic_ready"] = False
             confirmed_phase_c_plan = candidate["phase_c_contract"]
         else:
+            # UI submits the complete preview projection. Strip derived
+            # evidence and lifecycle metadata before candidate validation;
+            # only scene_name, shots and unknowns are human-editable.
+            if isinstance(raw_candidate, dict):
+                raw_candidate = {field: raw_candidate.get(field, baseline.get(field)) for field in ("scene_name", "shots", "unknowns")}
             candidate = _validate_plan_candidate(raw_candidate, baseline)
             continuity = {"status": "pass", "errors": [], "warnings": [], "fingerprint": ""}
             executability = preflight_shot_plan(candidate["shots"])

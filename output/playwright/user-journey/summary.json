@@ -1,0 +1,314 @@
+{
+  "schema_version": "production-ui-v3-browser-user-journey-mock-v1",
+  "generated_at": "2026-10-01T23:45:48.933Z",
+  "runs": [
+    {
+      "run": 1,
+      "started_at": "2026-10-01T23:45:16.729Z",
+      "steps": [
+        {
+          "name": "project-list",
+          "status": "passed"
+        },
+        {
+          "name": "create-project-through-ui",
+          "status": "passed"
+        },
+        {
+          "name": "content-preparation",
+          "status": "passed"
+        },
+        {
+          "name": "director-and-shot-workbench-observation",
+          "status": "blocked",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"
+        },
+        {
+          "name": "asset-blocker-evidence",
+          "status": "blocked",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        },
+        {
+          "name": "return-and-dispose-project-through-ui",
+          "status": "passed"
+        }
+      ],
+      "blockers": [
+        {
+          "step": "director-and-shot-workbench-observation",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"
+        },
+        {
+          "step": "asset-blocker-evidence",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        }
+      ],
+      "screenshot_paths": [
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-project-list.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-created-project.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-content-preparation.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-project-cleanup.png"
+      ],
+      "mutations": [
+        {
+          "method": "POST",
+          "path": "/api/books",
+          "host": "127.0.0.1:5176"
+        },
+        {
+          "method": "POST",
+          "path": "/api/agent/updates/reconcile",
+          "host": "127.0.0.1:5176"
+        }
+      ],
+      "external_hosts": [],
+      "console_errors": [],
+      "disposable_project_id": null,
+      "finished_at": "2026-10-01T23:45:32.811Z"
+    },
+    {
+      "run": 2,
+      "started_at": "2026-10-01T23:45:32.879Z",
+      "steps": [
+        {
+          "name": "project-list",
+          "status": "passed"
+        },
+        {
+          "name": "create-project-through-ui",
+          "status": "passed"
+        },
+        {
+          "name": "content-preparation",
+          "status": "passed"
+        },
+        {
+          "name": "director-and-shot-workbench-observation",
+          "status": "blocked",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n"
+        },
+        {
+          "name": "asset-blocker-evidence",
+          "status": "blocked",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        },
+        {
+          "name": "return-and-dispose-project-through-ui",
+          "status": "passed"
+        }
+      ],
+      "blockers": [
+        {
+          "step": "director-and-shot-workbench-observation",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n"
+        },
+        {
+          "step": "asset-blocker-evidence",
+          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        }
+      ],
+      "screenshot_paths": [
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-project-list.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-created-project.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-content-preparation.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-project-cleanup.png"
+      ],
+      "mutations": [
+        {
+          "method": "POST",
+          "path": "/api/books",
+          "host": "127.0.0.1:5176"
+        },
+        {
+          "method": "POST",
+          "path": "/api/agent/updates/reconcile",
+          "host": "127.0.0.1:5176"
+        }
+      ],
+      "external_hosts": [],
+      "console_errors": [],
+      "disposable_project_id": null,
+      "finished_at": "2026-10-01T23:45:48.877Z"
+    }
+  ],
+  "ledger": {
+    "entries": [
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:20:31.805063+00:00",
+        "prompt_sha256": "057b6250367df7190ff4f4fbf59b159d"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:20:31.847751+00:00",
+        "prompt_sha256": "80d37341b5801e9c7f0ae7e6e0c553e5"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:32.977308+00:00",
+        "prompt_sha256": "80d37341b5801e9c7f0ae7e6e0c553e5"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.044099+00:00",
+        "prompt_sha256": "a3f592fadadef18345416c17d68881f3"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.071123+00:00",
+        "prompt_sha256": "8cce9e78b87cb22426d10370ffe5a464"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.072774+00:00",
+        "prompt_sha256": "2dbe0f789ce7ca19feec216b5521d8a9"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.106194+00:00",
+        "prompt_sha256": "827bcac3c1e5594cad61fda65d6499c0"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.108549+00:00",
+        "prompt_sha256": "17e59ef31f2cb132242ba37674ca8cb6"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.109631+00:00",
+        "prompt_sha256": "8b78a4ea1b0f811850ece5332d8ae48b"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.114177+00:00",
+        "prompt_sha256": "bf54a2c22f2517a8a43eace11fd5ad42"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:21:33.147939+00:00",
+        "prompt_sha256": "2b404831d531e5b44619c782c2b8bbad"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:22:37.782284+00:00",
+        "prompt_sha256": "74c215203ffcb3933c470340ddb3b15b"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:22:59.073935+00:00",
+        "prompt_sha256": "74c215203ffcb3933c470340ddb3b15b"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:23:42.769835+00:00",
+        "prompt_sha256": "74c215203ffcb3933c470340ddb3b15b"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:24:00.870096+00:00",
+        "prompt_sha256": "2e9c7cea7e762d402b8d361b611d88c0"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:24:56.584226+00:00",
+        "prompt_sha256": "74c215203ffcb3933c470340ddb3b15b"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:25:17.747318+00:00",
+        "prompt_sha256": "74c215203ffcb3933c470340ddb3b15b"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:25:17.772546+00:00",
+        "prompt_sha256": "529b32c4e3f922d397fc9c693c1ce7f9"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:32:27.503823+00:00",
+        "prompt_sha256": "b22fe4ede4e1989b4b9c58d26b379712"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:32:27.505365+00:00",
+        "prompt_sha256": "bba23736ae5aa0cedf0f0cf010a4c0da"
+      },
+      {
+        "kind": "llm",
+        "operation": "chat_completion",
+        "result": "success",
+        "execution_id": "",
+        "at": "2026-10-01T23:34:01.763498+00:00",
+        "prompt_sha256": "b22fe4ede4e1989b4b9c58d26b379712"
+      }
+    ],
+    "mock_llm_calls": 21,
+    "mock_image_calls": 0,
+    "mock_video_calls": 0
+  },
+  "policy": {
+    "mutations_via_visible_ui_only": true,
+    "real_external_hosts_allowed": [],
+    "mock_runtime_only": true
+  }
+}

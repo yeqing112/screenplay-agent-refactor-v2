@@ -1,0 +1,29 @@
+{
+  "schema_version": "production-ui-v3-browser-user-journey-mock-network-audit-v1",
+  "real_external_hosts": [],
+  "runner_mutations": [
+    [
+      "POST",
+      "/api/agent/updates/reconcile"
+    ],
+    [
+      "POST",
+      "/api/books"
+    ]
+  ],
+  "manual_checkpoint_mutations": [
+    "POST /api/books/2/episodes/1/director-treatment/preview",
+    "POST /api/books/2/episodes/1/director-treatment/llm-draft",
+    "POST /api/books/2/episodes/1/director-treatment/confirm",
+    "POST /api/books/2/episodes/1/scene-blocking/preview",
+    "POST /api/books/2/episodes/1/scene-blocking/confirm",
+    "POST /api/books/2/episodes/1/shot-plan/preview",
+    "POST /api/books/2/episodes/1/shot-plan/confirm"
+  ],
+  "mock_ledger_counts": {
+    "mock_llm_calls": 21,
+    "mock_image_calls": 0,
+    "mock_video_calls": 0
+  },
+  "forbidden_real_provider_calls": 0
+}

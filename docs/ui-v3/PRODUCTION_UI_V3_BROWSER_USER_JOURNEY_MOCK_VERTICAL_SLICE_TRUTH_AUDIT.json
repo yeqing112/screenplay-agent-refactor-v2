@@ -1,0 +1,52 @@
+{
+  "schema_version": "production-ui-v3-browser-user-journey-mock-truth-v1",
+  "status": "partial_asset_blocked",
+  "manual_completed_through": [
+    "project_list",
+    "new_project",
+    "director_treatment_preview",
+    "director_treatment_human_confirm",
+    "scene_blocking_preview",
+    "scene_blocking_human_confirm",
+    "shot_plan_preview",
+    "shot_plan_human_confirm",
+    "shot_workbench"
+  ],
+  "blocked_at": [
+    "production_script_ir_authority",
+    "production_assets",
+    "prompt_ir",
+    "image_generation",
+    "video_generation",
+    "delivery_export"
+  ],
+  "book_id": 2,
+  "episode": 1,
+  "scene_name": "雨夜旧港",
+  "shot_plan_status": "approved",
+  "shot_plan_workflow_profile": "creative_draft",
+  "shot_plan_production_status": "blocked",
+  "source_fact_mutation": false,
+  "real_llm_calls": 0,
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "real_external_hosts": 0,
+  "writes_to_990400": 0,
+  "revived_998755": false,
+  "mock_ledger_counts": {
+    "mock_llm_calls": 21,
+    "mock_image_calls": 0,
+    "mock_video_calls": 0
+  },
+  "two_runs": {
+    "count": 2,
+    "started_from_project_list": true,
+    "mutations_via_visible_ui_only": true,
+    "disposable_projects_deleted_via_ui": true
+  },
+  "evidence_files": [
+    "output/playwright/phase-director-shotplan.png",
+    "output/playwright/phase-assets-blocker.png",
+    "output/playwright/user-journey/summary.json"
+  ]
+}

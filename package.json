@@ -50,7 +50,8 @@
     "preview:book75-h3-export": "python scripts/preview-storyboard-machine-prompt-export.py --book-id 75 --target-model minimax-h3 --out artifacts/book75-machine-prompt-export-preview.json --summary-md artifacts/book75-machine-prompt-export-preview.md",
     "plan:book75-scene-references": "python scripts/plan-storyboard-scene-reference-assets.py --book-id 75 --out artifacts/book75-scene-reference-plan.json --summary-md artifacts/book75-scene-reference-plan.md",
     "enqueue:book75-scene-references": "python scripts/enqueue-storyboard-scene-reference-generation.py --plan artifacts/book75-scene-reference-plan.json",
-    "apply:book75-scene-reference-plan": "python scripts/apply-storyboard-scene-reference-plan.py --plan artifacts/book75-scene-reference-plan.json"
+    "apply:book75-scene-reference-plan": "python scripts/apply-storyboard-scene-reference-plan.py --plan artifacts/book75-scene-reference-plan.json",
+    "e2e:user-journey": "node scripts/e2e-production-ui-v3-user-journey.js"
   },
   "dependencies": {
     "playwright": "^1.62.1"

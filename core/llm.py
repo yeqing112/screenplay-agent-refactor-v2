@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 logger = logging.getLogger(__name__)
 import config
 from core.prompt_cache import cache_metrics, prompt_fingerprint
+from core import mock_runtime
 
 SYSTEM_PROMPT = '你是一个专业的编剧助手。请严格按照要求的JSON格式输出，不要添加额外解释。\n\n输出格式要求：\n```json\n{\n  "summary": "章节摘要",\n  "characters": [{"name": "姓名", "aliases": ["别名"], "personality": "性格特征", "relationships": {"与其他人物关系": "描述"}}],\n  "events": [{"seq": 1, "description": "事件描述", "importance": "high/medium/low", "characters_involved": ["涉及人物"]}],\n  "scenes": [{"location": "地点", "time": "时间", "mood": "氛围", "description": "场景描述"}],\n  "foreshadowing": ["伏笔1", "伏笔2"]\n}\n```'
 
@@ -329,6 +330,21 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
     reasoning_tokens. We set max_tokens high enough and use actual usage
     for rate tracking.
     """
+    if str(__import__("os").environ.get("E2E_EXTERNAL_RUNTIME") or "").strip().lower() == "mock":
+        if not mock_runtime.enabled():
+            raise RuntimeError("Deterministic mock runtime is disabled in production.")
+        mock_runtime.record("llm", "chat_completion", result="success", prompt_sha256=_audit_safe_hash(str(prompt or "")))
+        if callable(audit_callback):
+            audit_callback({
+                "vendor_model": "builtin-mock-llm",
+                "vendor_host": "mock://runtime",
+                "profile_id": "builtin-mock-llm",
+                "http_status": 200,
+                "parse_ok": True,
+                "extra": {"mock": True, "transport_retry": False},
+            })
+        return mock_runtime.response(str(prompt or ""), json_mode=bool(response_format) or str(__import__("os").environ.get("LLM_JSON_RESPONSE_FORMAT") or "") == "1")
+
     profile = _resolve_llm_profile(model_profile)
     api_key = profile.get("api_key") or config.OPENAI_API_KEY
     base_url = str(profile.get("base_url") or config.OPENAI_BASE_URL).rstrip("/")

@@ -1,0 +1,23 @@
+{
+  "schema_version": "production-ui-v3-browser-user-journey-ux-friction-v1",
+  "items": [
+    {
+      "severity": "high",
+      "area": "asset_center",
+      "finding": "无 Production Asset 时没有从当前状态直接进入上传/审核/激活/绑定的可见入口。",
+      "impact": "IMAGE/VIDEO 和 Delivery 无法从普通用户旅程继续。"
+    },
+    {
+      "severity": "medium",
+      "area": "navigation_gates",
+      "finding": "新项目创建后内容准备门禁会禁用后续导航。",
+      "impact": "用户需要理解门禁，而不是把禁用当作创建失败。"
+    },
+    {
+      "severity": "medium",
+      "area": "encoding",
+      "finding": "隔离旅程的中文输入曾出现乱码。",
+      "impact": "场景名和脚本可读性下降。"
+    }
+  ]
+}

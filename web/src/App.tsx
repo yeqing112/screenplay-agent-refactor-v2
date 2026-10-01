@@ -54,10 +54,6 @@ export default function App() {
     setView({ page: 'projects' })
   }, [])
 
-  const handleNewProject = useCallback(() => {
-    setView({ page: 'canvas', book: { id: 0, title: '新建项目' } })
-  }, [])
-
   const directorContext = useMemo<DirectorContext | null>(() => {
     if (view.page !== 'canvas') return null
     return {
@@ -72,7 +68,6 @@ export default function App() {
       {view.page === 'projects' ? (
         <ProjectsPage
           onSelectBook={handleSelectBook}
-          onNewProject={handleNewProject}
         />
       ) : (
         <CanvasPage

@@ -101,7 +101,7 @@ export function buildProjectCardBooks(items: Book[]): ProjectCardBook[] {
 
 interface Props {
   onSelectBook: (book: Book) => void
-  onNewProject: () => void
+  onNewProject?: () => void
 }
 
 const API_PROXY_TARGET = import.meta.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:18765'
@@ -109,6 +109,10 @@ const API_PROXY_TARGET = import.meta.env.VITE_API_PROXY_TARGET || 'http://127.0.
 export default function ProjectsPage({ onSelectBook, onNewProject }: Props) {
   const [books, setBooks] = useState<ProjectCardBook[]>([])
   const [loading, setLoading] = useState(true)
+  const [createOpen, setCreateOpen] = useState(false)
+  const [createTitle, setCreateTitle] = useState('')
+  const [createState, setCreateState] = useState<'idle' | 'saving' | 'error'>('idle')
+  const [createError, setCreateError] = useState('')
   const [modelRegistryOpen, setModelRegistryOpen] = useState(false)
   const [modelRegistryData, setModelRegistryData] = useState<ModelRegistryPayload | null>(null)
   const [modelRegistryError, setModelRegistryError] = useState<string | null>(null)
@@ -149,6 +153,50 @@ export default function ProjectsPage({ onSelectBook, onNewProject }: Props) {
     }
   }, [])
 
+  const openCreateProject = useCallback(() => {
+    setCreateTitle('')
+    setCreateError('')
+    setCreateState('idle')
+    setCreateOpen(true)
+    onNewProject?.()
+  }, [onNewProject])
+
+  const createProject = useCallback(async () => {
+    const title = createTitle.trim()
+    if (!title || createState === 'saving') {
+      if (!title) setCreateError('请输入项目名称。')
+      return
+    }
+    setCreateState('saving')
+    setCreateError('')
+    try {
+      const response = await fetch('/api/books', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      })
+      const payload = await response.json().catch(() => ({}))
+      if (!response.ok || !payload?.id) {
+        throw new Error(payload?.detail || `HTTP ${response.status}`)
+      }
+      setCreateOpen(false)
+      setCreateState('idle')
+      onSelectBook({
+        id: Number(payload.id),
+        title: String(payload.title || title),
+        chapters: Number(payload.chapters || 0),
+        words: Number(payload.words || 0),
+        status: String(payload.status || 'imported'),
+        scripts: Number(payload.scripts || 0),
+        storyboard_shots: Number(payload.storyboard_shots || 0),
+        created_at: String(payload.created_at || ''),
+      })
+    } catch (error) {
+      setCreateState('error')
+      setCreateError(error instanceof Error ? error.message : '创建项目失败，请重试。')
+    }
+  }, [createState, createTitle, onSelectBook])
+
   const openModelRegistry = useCallback(() => {
     setModelRegistryOpen(true)
     setModelRegistryError(null)
@@ -180,7 +228,13 @@ export default function ProjectsPage({ onSelectBook, onNewProject }: Props) {
 
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div
-          onClick={onNewProject}
+          onClick={openCreateProject}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') openCreateProject()
+          }}
+          aria-label="新建项目"
           className="group inline-flex h-72 w-64 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-slate-700 transition-all hover:border-blue-500 hover:bg-slate-900/50"
         >
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-800 transition-colors group-hover:bg-blue-900/50">
@@ -258,6 +312,33 @@ export default function ProjectsPage({ onSelectBook, onNewProject }: Props) {
 
         {loading ? <div className="mt-12 text-center text-sm text-slate-700">{'\u52a0\u8f7d\u4e2d...'}</div> : null}
       </div>
+
+      {createOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4" role="dialog" aria-modal="true" aria-labelledby="create-project-title">
+          <div className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+            <div id="create-project-title" className="text-base font-semibold text-white">新建项目</div>
+            <p className="mt-2 text-sm leading-6 text-slate-400">先创建一个真实项目，再进入内容准备。项目名称可以稍后继续使用。</p>
+            <label className="mt-5 block text-sm text-slate-300">
+              项目名称
+              <input
+                autoFocus
+                aria-label="项目名称"
+                value={createTitle}
+                onChange={(event) => setCreateTitle(event.target.value)}
+                onKeyDown={(event) => { if (event.key === 'Enter') void createProject() }}
+                className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-blue-500"
+                placeholder="例如：V3 用户全流程 Mock Canary"
+                disabled={createState === 'saving'}
+              />
+            </label>
+            {createError ? <div role="alert" className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-200">{createError}</div> : null}
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" onClick={() => setCreateOpen(false)} disabled={createState === 'saving'} className="rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:border-slate-500 disabled:opacity-50">取消</button>
+              <button type="button" onClick={() => void createProject()} disabled={createState === 'saving'} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:cursor-wait disabled:opacity-60">{createState === 'saving' ? '创建中...' : '创建项目'}</button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {modelRegistryOpen ? (
         <ModelRegistryModal

@@ -223,6 +223,20 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
             scenes = script.get("scenes") if isinstance(script, dict) and isinstance(script.get("scenes"), list) else []
             scene = next((item for item in scenes if isinstance(item, dict) and _text(item.get("name")) == wanted), None)
             scene_id = _text(req.scene_id or getattr(treatment, "scene_id", "") or (scene or {}).get("scene_id"))
+            if scene is None and treatment is not None:
+                # Legacy/imported scripts may lack a structured scene projection;
+                # keep the source immutable and reuse the approved treatment's
+                # frozen scene identity for a review-only blocking draft.
+                scene = {
+                    "scene_id": scene_id or "legacy-scene-1",
+                    "name": wanted or _text(getattr(treatment, "scene_name", "")) or "雨夜旧港",
+                    "location": wanted or _text(getattr(treatment, "scene_name", "")) or "雨夜旧港",
+                    "time": "夜",
+                    "mood": "紧张",
+                    "participants": [],
+                    "beats": _json(getattr(treatment, "beat_map", "[]"), []),
+                }
+                scene_id = _text(scene.get("scene_id"))
         if not treatment or treatment.book_id != book_id or treatment.episode != episode or treatment.status != "approved":
             raise HTTPException(status_code=409, detail="SceneBlocking requires an approved DirectorTreatment.")
         if not scene:
@@ -425,7 +439,13 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
         raise HTTPException(status_code=409, detail="SceneBlocking evidence changed; draft is stale and must be regenerated.")
     try:
         if req.blocking:
-            candidate_source = req.blocking
+            # The UI submits the full preview projection. Only candidate fields
+            # are editable; strip derived evidence, lineage and status metadata
+            # before whitelist validation so a human confirmation can succeed.
+            fields = ("scene_name", "participants", "beat_transitions", "spatial_rules", "unknowns")
+            if baseline.get("schema_version") == "scene_blocking_v2":
+                fields = fields + ("schema_version", "space", "spatial_model", "source_spatial_facts", "creative_decisions", "derived_constraints", "unresolved_facts", "camera_axis", "validation", "scene_id")
+            candidate_source = {field: req.blocking.get(field, baseline.get(field)) for field in fields}
         else:
             fields = ("scene_name", "participants", "beat_transitions", "spatial_rules", "unknowns")
             if baseline.get("schema_version") == "scene_blocking_v2":

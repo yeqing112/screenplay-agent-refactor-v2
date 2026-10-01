@@ -2952,6 +2952,17 @@ def get_registry():
     } for spec in REGISTRY.values()]
 
 
+@app.get("/api/e2e/mock-ledger")
+def get_e2e_mock_ledger():
+    """Read-only evidence for the deterministic external runtime.
+
+    The route is intentionally unavailable as a mutation surface; the ledger
+    is written only by the normal LLM and creative adapter boundaries.
+    """
+    from core import mock_runtime
+    return mock_runtime.snapshot()
+
+
 def _safe_upload_filename(filename: str | None) -> str:
     raw_name = str(filename or "").replace("\\", "/").split("/")[-1].strip()
     safe_name = config.sanitize_filename(raw_name)
@@ -4785,6 +4796,15 @@ class AdoptVersionRequest(BaseModel):
 
 
 def _make_asset_preview(kind: str, title: str, subtitle: str) -> str:
+    # The browser journey must exercise the normal creative task adapter while
+    # still producing decodable media. Reuse the small canonical PNG/MP4
+    # fixtures instead of an SVG or a text placeholder.
+    if kind == "image":
+        from api.generation_canary_api import _FAKE_PNG
+        return "data:image/png;base64," + base64.b64encode(_FAKE_PNG).decode("ascii")
+    if kind == "video":
+        from api.generation_canary_api import _FAKE_MP4
+        return "data:video/mp4;base64," + base64.b64encode(_FAKE_MP4).decode("ascii")
     accent = "#eab308" if kind == "image" else "#22c55e" if kind == "video" else "#ec4899"
     svg = f"""
     <svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
@@ -13646,6 +13666,14 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
 
         generated: dict[str, Any] = {}
         if provider == "prototype-task-adapter":
+            from core import mock_runtime
+            mock_runtime.record(
+                "video" if asset_kind == "video" else "image",
+                "creative_generation",
+                execution_id=task_id,
+                target_kind=asset_kind,
+                result="success",
+            )
             preview_url = _make_asset_preview(asset_kind, title, model_name)
             asset = build_task_adapter_asset(
                 kind=kind,
@@ -14001,6 +14029,8 @@ def _ensure_external_generation_confirmation(profile: dict[str, Any], req: Any, 
     adapter remain available without confirmation.
     """
     provider = str(profile.get("provider") or "").strip()
+    if provider == "prototype-task-adapter" and str(config.DEPLOYMENT_ENV or "").strip().lower() == "production":
+        raise HTTPException(status_code=409, detail={"code": "MOCK_RUNTIME_DISABLED_IN_PRODUCTION", "message": "模拟外部服务只允许在 development/test/isolated staging 使用。"})
     if not provider or provider == "prototype-task-adapter":
         return
     confirmed = bool(getattr(req, "confirmed", False))
