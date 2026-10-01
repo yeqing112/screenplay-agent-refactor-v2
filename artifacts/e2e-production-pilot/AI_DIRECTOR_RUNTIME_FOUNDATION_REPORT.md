@@ -1,65 +1,59 @@
-# AI Director Runtime Foundation Report
+# AI Director Runtime Foundation 最终报告
 
-## Phase
+## 结果
 
-`PHASE_AI_DIRECTOR_RUNTIME_FOUNDATION` — `AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE`
+`AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE`
 
-- Implementation commit: `f0e12794524c8b617cf27fbff2f89171445f1a9c`
-- Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Migration head: `m4h5i6j7k8l9` (includes Director Runtime revisions `g8b9c0d1e2f3` and `h9c0d1e2f3g4`)
-- Remote: [screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2.git)
-- Source/remote HEAD verified before report update: `f0e12794524c8b617cf27fbff2f89171445f1a9c`
-- Working tree state before report commit: clean
+本阶段已经在现有 ScriptIR、Episode、Scene、Shot、CharacterProfile、SceneIdentity、VisualStyleProfile、ShotDirection、PromptLineage 和 GenerationExecution 之上建立 provider-free 的 AI Director Runtime 基础层：
 
-## Delivered
+```text
+ScriptIR → DirectorPlan → ScenePlan → ShotPlan → ShotDirection → GenerationIntent
+```
 
-- Added provider-free `director_plan(script_ir, episode_context, character_profiles, scene_profiles)` adapter.
-- Added versioned `DirectorPlan` and `ScenePlan` persistence. Existing scene-level `ShotPlan` remains the canonical shot-plan table and now records Director lineage.
-- Added explicit structured `ShotDirection` candidates and `GenerationIntent` candidates with source hashes and prompt-lineage identifiers.
-- Added API routes:
-  - `POST /episodes/{id}/director-plan` (also mounted under `/api`)
+## 已交付
+
+- `director_plan(script_ir, episode_context, character_profiles, scene_profiles)` 确定性 Adapter，返回结构化 JSON。
+- 版本化 `DirectorPlan` 与 `ScenePlan` 持久化；ShotPlan 继续复用现有 canonical 表。
+- ShotDirection 与 GenerationIntent 候选包含 source hash、direction fingerprint 和 prompt lineage。
+- API：
+  - `POST /episodes/{id}/director-plan`
   - `GET /episodes/{id}/director-plan`
   - `POST /shots/{id}/director-revise`
-- Added additive Alembic revisions `g8b9c0d1e2f3` and `h9c0d1e2f3g4`.
+- 生成结果默认 `DRAFT` / `REVIEW_REQUIRED`，人工审核后才可进入后续 authority 与媒体流程。
+- 生产图像 provider registry 保持 SHAPI：`https://www.shapi.vip/`；本阶段未调用 provider。
 
-## Contract and truth boundary
+## 事实与安全边界
 
-- No real LLM is imported or called by the runtime adapter.
-- No image/video generation is submitted. The existing image provider remains SHAPI (`https://www.shapi.vip/`) in the provider registry; this phase only emits reviewable intent.
-- Source Fact and ScriptIR inputs are deep-copied, hashed, and carried as immutable lineage references. The adapter marks `source_fact_mutated=false` and `script_ir_mutated=false`.
-- POST creates a `DRAFT` version; a newer version supersedes the prior draft. Shot revision is whitelist-limited and creates a new version, preserving the prior version.
-- Human review remains required before authority activation or downstream generation.
+- LLM 调用：`0`
+- Image 调用：`0`
+- Video 调用：`0`
+- 不自动生成视频或图片。
+- 不修改 Source Fact 或 ScriptIR 原始事实。
+- 所有计划和修订均版本化，旧版本保留。
+- 人工修改仅允许白名单 shot 字段，且会生成新的 DirectorPlan 版本。
 
-## Verification
+## 本轮 canary 决策
 
-- `pytest -q` — **1945 passed** on the current branch (including downstream runtime migrations).
-- Focused Director/production regression — **49 passed** (`test_ai_director_runtime_foundation`, migration hardening, keyframe image, automatic keyframe, asset promotion, model adapter, generation execution, and video runtime).
-- `npm run test:golden` — **5/5 passed**.
-- `python -m scripts.verify_migration_chain --ci` — **PASS**; fresh upgrade, repeat upgrade, legacy fixtures, schema, and metadata drift all passed (current repository head `m4h5i6j7k8l9`).
-- `git diff --check` — **PASS**.
-- `python -m compileall -q core api models scripts tests` — **PASS**.
+丢弃：`V3-CANARY-DISPOSABLE-20261001-R2`（Book `990403`）。它是通过正式 Book/Script bootstrap API 创建的 disposable canary，最适合作为清理对象。
 
-## MiniMax H3 gray gate
+- 删除方式：`DELETE /api/books/990403`
+- 删除结果：`orphan_rows=0`
+- `990400`：保留，未修改
+- `998755`：未恢复
 
-- `MINIMAX_H3_GRAY_REAL`: unset (`real calls blocked`)
-- `MINIMAX_H3_GRAY_CONFIRM`: unset (`submission confirmation absent`)
-- `MINIMAX_H3_GRAY_WHITELIST`: unset (`no shot whitelist supplied`)
+## 验证记录
 
-The latest guard and evidence implementation is commit `0e17e6e` (`feat: harden keyframe image lineage guards`). It adds the GenerationIntent eligibility check, optional MIDDLE production, START/END video-intent compatibility, prompt-lineage binding, and a default-disabled real-provider canary gate.
+- Director Runtime focused regression：`49 passed`
+- 全后端回归：`2002 passed`
+- Web：`63 files / 445 tests passed`
+- Web build：`PASS`
+- migration chain：`PASS`
+- compileall：`PASS`
+- `git diff --check`：`PASS`
+- 真实 LLM、图片、视频 provider：均未调用
 
-## Migration and lineage
+## 远程提交
 
-`DirectorPlan` stores episode/version/status/creator/reasoning trace plus source ScriptIR hash, scene plans, shot plans, shot-direction candidates, generation intents, and payload hash. `ScenePlan` rows retain location/time/mood/characters/visual requirements and source lineage. Each shot carries a direction fingerprint, generation-intent ID, and prompt-lineage ID. No automatic authority pointer or media promotion is created.
-
-## Known scope boundary
-
-This foundation stops at a structured, versioned, human-reviewable production plan. It intentionally does not bind an LLM, call SHAPI, create media, mutate scripts, or remove review gates.
-
-## Final push reconciliation
-
-- Final implementation/push commit: `f0e12794524c8b617cf27fbff2f89171445f1a9c`
-- Final remote branch: `codex/visual-authoring-provider-canary-reconcile`
-- Full regression after the runtime changes: `1945 passed`
-- Golden regression: `5/5 passed`
-- Migration CI, compileall, and diff check: `PASS`
-- Working tree after push: clean
+- 分支：`codex/visual-authoring-provider-canary-reconcile`
+- 当前远程提交：`ad115cb9236b2ad814d34b8cf4196d2dcb5e768e`
+- 远程仓库：[yeqing112/screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)

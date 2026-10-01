@@ -1,22 +1,45 @@
 {
-  "status": "GENERATION_EXECUTION_ATTEMPT_LINEAGE_FOUNDATION_COMPLETE",
-  "migration": {
-    "revision": "n5i6j7k8l9m0",
-    "down_revision": "m4h5i6j7k8l9",
-    "tables_added": ["generation_execution_attempt_lineages"],
-    "historical_backfill": false,
-    "generation_execution_records_unique_provider_fingerprint_unchanged": true
+  "phase": "PHASE_AI_DIRECTOR_RUNTIME_FOUNDATION",
+  "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
+  "schema_version": "ai_director_runtime_v1",
+  "provider": {
+    "name": "SHAPI",
+    "base_url": "https://www.shapi.vip/",
+    "used": false
   },
   "runtime_boundary": {
-    "provider_calls": 0,
-    "execution_created": false,
-    "candidate_writes": false,
-    "official_media_writes": false,
-    "v3_retry_ui_changed": false,
-    "v3_regenerate_ui_changed": false
+    "llm_calls": 0,
+    "image_calls": 0,
+    "video_calls": 0,
+    "source_fact_mutated": false,
+    "script_ir_mutated": false,
+    "human_review_required": true
   },
-  "checks": {
-    "alembic_heads": "PASS",
+  "versioning": {
+    "director_plan": "append_only_episode_version",
+    "scene_plan": "director_plan_child_version",
+    "shot_revision": "new_director_plan_version",
+    "prior_versions_preserved": true
+  },
+  "api": [
+    "POST /episodes/{id}/director-plan",
+    "GET /episodes/{id}/director-plan",
+    "POST /shots/{id}/director-revise"
+  ],
+  "canary_disposal": {
+    "book_id": 990403,
+    "title": "V3-CANARY-DISPOSABLE-20261001-R2",
+    "delete_route": "DELETE /api/books/990403",
+    "orphan_rows": 0,
+    "book_exists_after_delete": false,
+    "protected_book_id": 990400,
+    "unrevived_book_id": 998755
+  },
+  "verification": {
+    "director_runtime_focused": "49 passed",
+    "backend_full": "2002 passed",
+    "web": "63 files / 445 tests",
+    "web_build": "PASS",
     "migration_chain": "PASS",
     "compileall": "PASS",
     "git_diff_check": "PASS"

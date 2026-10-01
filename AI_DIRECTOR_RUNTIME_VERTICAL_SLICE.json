@@ -1,27 +1,43 @@
 {
-  "status": "GENERATION_EXECUTION_ATTEMPT_LINEAGE_FOUNDATION_COMPLETE",
+  "status": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE",
+  "schema_version": "ai_director_runtime_v1",
   "vertical_slice": [
-    "source execution or current OfficialMediaVersion",
-    "GenerationAttemptLineageService",
-    "GenerationExecutionAttemptLineage",
-    "confirmation binding",
-    "provider-free intent projection"
+    "ScriptIR",
+    "DirectorPlan",
+    "ScenePlan",
+    "ShotPlan",
+    "ShotDirection",
+    "GenerationIntent"
   ],
-  "retry": {
-    "source_status_required": "FAILED",
-    "new_execution": false,
-    "candidate_write": false,
-    "official_pointer_move": false
+  "api": {
+    "create": "POST /episodes/{id}/director-plan",
+    "read": "GET /episodes/{id}/director-plan",
+    "revise": "POST /shots/{id}/director-revise"
   },
-  "regenerate": {
-    "source_required": "current OfficialMediaVersion",
-    "source_execution_trace": "OfficialMediaPointer -> OfficialMediaVersion -> MediaCandidateRecord -> GenerationExecutionRecord",
-    "new_execution": false,
-    "candidate_write": false,
-    "official_pointer_move": false
+  "lineage_assertions": {
+    "source_script_ir_hash_present": true,
+    "scene_lineage_present": true,
+    "shot_direction_fingerprint_present": true,
+    "prompt_lineage_id_present": true,
+    "source_fact_immutable": true,
+    "script_ir_immutable": true
   },
-  "api": [
-    "POST /generation/attempt-intents",
-    "GET /generation/attempt-intents/{attempt_lineage_id}"
-  ]
+  "execution_assertions": {
+    "llm_called": false,
+    "provider_called": false,
+    "media_created": false,
+    "human_review_required": true
+  },
+  "canary_cleanup": {
+    "book_id": 990403,
+    "delete_status": 200,
+    "orphan_rows": 0,
+    "retained": [
+      990400
+    ],
+    "not_revived": [
+      998755
+    ]
+  },
+  "completion_marker": "AI_DIRECTOR_RUNTIME_FOUNDATION_COMPLETE"
 }
