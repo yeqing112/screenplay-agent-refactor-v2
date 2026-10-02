@@ -310,7 +310,15 @@ def _find_builtin_profile(capability: str) -> dict[str, Any] | None:
 
 def _all_profiles_raw() -> list[dict[str, Any]]:
     profiles = [_clone_profile(profile) for profile in _builtin_profiles()]
-    profiles.extend(_clone_profile(profile) for profile in _load_saved_profiles())
+    builtin_ids = {str(profile.get("id") or "") for profile in profiles}
+    # Builtins are canonical.  A stale KV snapshot may still contain an old
+    # user copy of a builtin id; suppress that copy instead of exposing two
+    # rows with the same identity to API clients.
+    profiles.extend(
+        _clone_profile(profile)
+        for profile in _load_saved_profiles()
+        if str(profile.get("id") or "") not in builtin_ids
+    )
     return profiles
 
 
@@ -488,9 +496,14 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
 
 def save_registry(*, profiles: list[dict[str, Any]], defaults: dict[str, str]) -> dict[str, Any]:
     existing_saved_profiles = {profile["id"]: profile for profile in _load_saved_profiles()}
+    builtin_ids = {str(profile.get("id") or "") for profile in _builtin_profiles()}
     normalized_profiles: list[dict[str, Any]] = []
     for item in profiles:
         normalized = _validate_profile(item)
+        if normalized["id"] in builtin_ids:
+            # Builtin rows are derived from runtime configuration and cannot
+            # be shadowed by a persisted user row with the same id.
+            continue
         existing = existing_saved_profiles.get(normalized["id"])
         if (
             not normalized.get("api_key")

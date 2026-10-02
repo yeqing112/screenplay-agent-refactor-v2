@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import hashlib
 import json
 import os
@@ -8,21 +9,34 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 from fastapi import HTTPException
 
 import api.generation_canary_api as canary
 import models
-from models import GenerationExecutionRecord, MediaCandidateRecord
+from models import (
+    GenerationExecutionRecord,
+    MediaCandidateRecord,
+    MediaPromotionRecord,
+    MediaValidationRecord,
+    OfficialMediaAuthority,
+    OfficialMediaPointer,
+    OfficialMediaVersion,
+)
 
 
 @pytest.fixture(autouse=True)
 def _mock_runtime_test_environment(monkeypatch):
+    import core.media_authority as media_authority
+
     monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
     monkeypatch.delenv("DEPLOYMENT_ENV", raising=False)
     monkeypatch.setenv("APP_ENV", "test")
-    monkeypatch.setattr("core.media_authority.validate_media_candidate", lambda *_args, **_kwargs: {"status": "valid"})
+    original_validator = media_authority.validate_media_candidate
+    monkeypatch.setattr(media_authority, "validate_media_candidate", lambda *_args, **_kwargs: {"status": "valid"})
+    return original_validator
 
 
 class _Query:
@@ -36,6 +50,9 @@ class _Query:
 
     def first(self):
         return next((row for row in self.rows if all(getattr(row, k, None) == v for k, v in self.filters.items())), None)
+
+    def all(self):
+        return [row for row in self.rows if all(getattr(row, k, None) == v for k, v in self.filters.items())]
 
     def update(self, values, synchronize_session=False):
         del synchronize_session
@@ -168,6 +185,97 @@ def test_canonical_image_mock_submit_and_candidate(monkeypatch):
     assert result["candidate"]["media_type"] == "IMAGE"
     assert result["execution"]["logical_provider_calls"] == 1
     assert result["execution"]["official_promotion_count"] == 0
+
+
+def test_canonical_shapi_image_provider_free_projection_persists_candidate_and_review(tmp_path, monkeypatch, _mock_runtime_test_environment):
+    """Exercise the real canonical transport and authority spine with mocked HTTP only."""
+    import httpx
+    import api.server as server
+
+    session = _Session()
+    context = _image_context()
+    context["profile"] = {
+        "id": "local-shapi-image",
+        "provider": "shapi-openai-images",
+        "model_name": "grok-imagine-image-quality",
+        "capability": "image",
+        "base_url": "https://shapi.vip/v1",
+        "default_params": {"n": 1, "size": "auto", "response_format": "b64_json"},
+        "phase_j3_canonical": True,
+        "transport_binding_id": "shapi-openai-images.image.v1",
+        "credential_ref": "env:SHAPI_API_KEY",
+        "credential_configured": True,
+    }
+    context["runtime_credential_value"] = "provider-free-secret"
+    context["phase_profile"] = {"model_family": "GENERIC_IMAGE", "adapter_id": "image_generic"}
+    context["adapter"] = {"adapter_id": "image_generic", "adapter_version": "image_generic_adapter_v1", "target_media": "IMAGE"}
+
+    class _FakeClient:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_args):
+            return False
+
+        async def post(self, *_args, **_kwargs):
+            response = Mock()
+            response.raise_for_status = Mock()
+            response.json.return_value = {"data": [{"b64_json": base64.b64encode(canary._FAKE_PNG).decode("ascii")}]}
+            return response
+
+    monkeypatch.setattr(canary, "Session", lambda: session)
+    monkeypatch.setattr(canary, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
+    monkeypatch.setattr(canary, "_validate_real_provider_opt_in", lambda _context: None)
+    monkeypatch.setattr(httpx, "AsyncClient", _FakeClient)
+    monkeypatch.setattr(server.config, "UPLOAD_DIR", tmp_path)
+    monkeypatch.setattr(
+        "core.media_authority._current_authority_snapshot",
+        lambda *_args, **_kwargs: {"schema_version": "media_authority_snapshot_v1", "currentness_valid": True, "prompt_ir": {}, "asset": {}, "asset_authority": {}, "reference": {}, "production_asset_binding": {}},
+    )
+    # The autouse fixture makes other tests provider-free by replacing the
+    # validator; this test intentionally restores the actual validator.
+    import core.media_authority as media_authority
+    monkeypatch.setattr(
+        media_authority,
+        "_current_authority_snapshot",
+        lambda *_args, **_kwargs: {"schema_version": "media_authority_snapshot_v1", "currentness_valid": True, "prompt_ir": {}, "asset": {}, "asset_authority": {}, "reference": {}, "production_asset_binding": {}},
+    )
+    monkeypatch.setattr(media_authority, "validate_media_candidate", _mock_runtime_test_environment)
+
+    preview = canary.preview_canonical_generation(
+        990499,
+        1,
+        101,
+        canary.CanonicalPreviewRequest(model_profile_id="local-shapi-image", target_media="IMAGE", generation_mode="TEXT_TO_IMAGE"),
+    )
+    request = canary.CanonicalExecuteRequest(
+        execute=True,
+        confirmation_token=preview["confirmation_token"],
+        preview_execution_id=preview["execution"]["execution_id"],
+    )
+    result = asyncio.run(canary.execute_canonical_generation(990499, 1, 101, request))
+
+    execution = result["execution"]
+    candidate = result["candidate"]
+    assert execution["status"] == "SUCCEEDED"
+    assert execution["logical_provider_calls"] == 1
+    assert execution["provider"] == "shapi-openai-images"
+    assert execution["provider_request_id"].startswith("shapi-response-")
+    assert execution["provider_task_id"] == execution["provider_request_id"]
+    assert execution["provider_response_hash"]
+    assert candidate["status"] == "MEDIA_CANDIDATE"
+    assert candidate["validation_status"] == "REVIEW_REQUIRED"
+    assert candidate["provider_response_hash"] == execution["provider_response_hash"]
+    assert candidate["provider_task_id"] == execution["provider_task_id"]
+    assert len([row for row in session.rows if isinstance(row, MediaValidationRecord) and row.status == "TECHNICALLY_VALID"]) == 1
+    assert len([row for row in session.rows if isinstance(row, MediaPromotionRecord) and row.review_status == "REVIEW_REQUIRED"]) == 1
+    assert not [row for row in session.rows if isinstance(row, (OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion))]
+    persisted = list((tmp_path / "manual-media").glob("*.png"))
+    assert persisted and persisted[0].read_bytes() == canary._FAKE_PNG
+    assert "provider-free-secret" not in json.dumps(result, ensure_ascii=False)
 
 
 def test_canonical_execute_profile_drift_is_preview_stale_without_provider(monkeypatch):

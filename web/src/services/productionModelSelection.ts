@@ -50,6 +50,11 @@ export function selectedProfileIdForTarget(selection: SharedProductionModelSelec
 
 export async function fetchProductionGenerationProfiles() {
   const payload = await fetchModelRegistry()
-  return payload.profiles.filter((profile) => profile.enabled && (profile.capability === 'image' || profile.capability === 'video'))
+  const seen = new Set<string>()
+  return payload.profiles.filter((profile) => {
+    if (!profile.enabled || (profile.capability !== 'image' && profile.capability !== 'video')) return false
+    if (seen.has(profile.id)) return false
+    seen.add(profile.id)
+    return true
+  })
 }
-

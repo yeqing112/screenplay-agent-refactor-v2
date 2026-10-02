@@ -1,0 +1,50 @@
+{
+  "schema_version": "real-image-response-projection-reconcile-truth-audit-v1",
+  "phase": "PHASE_REAL_IMAGE_RESPONSE_PROJECTION_RECONCILE",
+  "status": "BLOCKED_REAL_IMAGE_RESPONSE_PROJECTION",
+  "baseline_commit": "ba386243a9bf18a934c3baeb5b2a86de7758f964",
+  "provider": "shapi-openai-images",
+  "provider_host": "shapi.vip",
+  "historical_real_shapi_image_calls": 3,
+  "new_real_shapi_image_calls": 1,
+  "new_real_image_initial_call": {
+    "attempt": 4,
+    "status": "FAILED",
+    "error_code": "GENERATION_EXECUTION_FAILED",
+    "error_summary": "Candidate must retain a complete, traceable Provider response projection.",
+    "stopped_immediately": true
+  },
+  "new_real_image_regenerate_calls": 0,
+  "cumulative_real_shapi_image_calls": 4,
+  "hard_cap": 6,
+  "real_video_calls": 0,
+  "provider_free_gate": {
+    "status": "PASS",
+    "adapter_identity_tests": "PASS",
+    "upstream_id_preservation": "PASS",
+    "canonical_transport_to_review_chain": "PASS",
+    "technical_validation": "PASS",
+    "response_hash_match": "PASS",
+    "secret_free_projection": "PASS",
+    "official_media_writes": 0
+  },
+  "browser_evidence": "output/playwright/real-image-reconcile-final/summary.json",
+  "browser_external_hosts": [],
+  "browser_direct_shapi_calls": 0,
+  "disposable_book_id": 990453,
+  "disposable_book_deleted_through_ui": true,
+  "orphan_rows": 0,
+  "ambiguous_rows": 0,
+  "protected_book_990400_writes": 0,
+  "official_media_writes_for_reconcile": 0,
+  "secret_value_leaks": 0,
+  "checks": {
+    "backend_relevant_tests": "129 passed",
+    "frontend_build": "passed",
+    "compileall": "passed",
+    "alembic_head": "p1q2r3s4t5u6",
+    "git_diff_check": "passed"
+  },
+  "video_status": "FROZEN_NO_CALL",
+  "next_action": "Restart backend with current source and obtain fresh approval before any further real Provider call."
+}

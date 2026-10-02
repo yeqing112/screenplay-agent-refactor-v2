@@ -53,6 +53,88 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Negative constraints", payload["prompt"])
         self.assertTrue(result["previewUrl"].startswith("data:image/png;base64,"))
 
+    async def test_shapi_openai_images_derives_deterministic_identity_without_upstream_id(self):
+        tiny_png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAwUBAScY42YAAAAASUVORK5CYII="
+
+        def client_for(payload):
+            response = Mock()
+            response.raise_for_status.return_value = None
+            response.json.return_value = payload
+            client = AsyncMock()
+            client.__aenter__.return_value = client
+            client.post.return_value = response
+            return client
+
+        payload = {"data": [{"b64_json": tiny_png}]}
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=client_for(payload)):
+            first = await generate_image_asset(
+                {
+                    "provider": "shapi-openai-images",
+                    "base_url": "https://shapi.vip/v1",
+                    "model_name": "grok-imagine-image-quality",
+                    "api_key": "secret-test-key",
+                    "default_params": {"response_format": "b64_json"},
+                },
+                prompt="镜头提示词",
+                aspect_ratio="16:9",
+            )
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=client_for(payload)):
+            second = await generate_image_asset(
+                {
+                    "provider": "shapi-openai-images",
+                    "base_url": "https://shapi.vip/v1",
+                    "model_name": "grok-imagine-image-quality",
+                    "api_key": "secret-test-key",
+                    "default_params": {"response_format": "b64_json"},
+                },
+                prompt="镜头提示词",
+                aspect_ratio="16:9",
+            )
+        assert first["previewUrl"]
+        assert first["uri"]
+        assert first["providerResponse"] == payload
+        assert first["providerRequestId"]
+        assert first["providerTaskId"] == first["providerRequestId"]
+        assert first["providerRequestId"].startswith("shapi-response-")
+        assert first["providerRequestId"] == second["providerRequestId"]
+        assert "secret-test-key" not in first["providerRequestId"]
+
+        changed_payload = {"data": [{"b64_json": tiny_png, "revised_prompt": "changed"}]}
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=client_for(changed_payload)):
+            changed = await generate_image_asset(
+                {
+                    "provider": "shapi-openai-images",
+                    "base_url": "https://shapi.vip/v1",
+                    "model_name": "grok-imagine-image-quality",
+                    "api_key": "secret-test-key",
+                    "default_params": {"response_format": "b64_json"},
+                },
+                prompt="镜头提示词",
+                aspect_ratio="16:9",
+            )
+        assert changed["providerRequestId"] != first["providerRequestId"]
+
+    async def test_shapi_openai_images_prefers_upstream_id_for_identity(self):
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {"id": "provider-real-id-123", "data": [{"b64_json": "ZmFrZS1pbWFnZQ=="}]}
+        client = AsyncMock()
+        client.__aenter__.return_value = client
+        client.post.return_value = response
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=client):
+            result = await generate_image_asset(
+                {
+                    "provider": "shapi-openai-images",
+                    "base_url": "https://shapi.vip/v1",
+                    "model_name": "grok-imagine-image-quality",
+                    "api_key": "secret-test-key",
+                },
+                prompt="镜头提示词",
+                aspect_ratio="16:9",
+            )
+        assert result["providerRequestId"] == "provider-real-id-123"
+        assert result["providerTaskId"] == "provider-real-id-123"
+
     async def test_shapi_openai_images_rejects_reference_images_instead_of_dropping_them(self):
         with self.assertRaises(ModelProfileError) as ctx:
             await generate_image_asset(

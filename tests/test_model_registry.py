@@ -50,6 +50,35 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["default_profiles"]["image"]["provider"], "prototype-task-adapter")
         self.assertEqual(payload["default_profiles"]["video"]["provider"], "prototype-task-adapter")
 
+    def test_saved_builtin_shadow_is_suppressed_from_public_registry(self):
+        set_kv(
+            MODEL_REGISTRY_PROFILES_KEY,
+            __import__("json").dumps([
+                {
+                    "id": "builtin-mock-image",
+                    "name": "stale shadow",
+                    "capability": "image",
+                    "provider": "prototype-task-adapter",
+                    "model_name": "stale",
+                    "enabled": True,
+                },
+                {
+                    "id": "custom-image",
+                    "name": "custom",
+                    "capability": "image",
+                    "provider": "openai-compatible",
+                    "base_url": "https://example.invalid/v1",
+                    "model_name": "gpt-image-1",
+                    "enabled": True,
+                },
+            ]),
+        )
+        payload = serialize_registry_payload()
+        ids = [item["id"] for item in payload["profiles"]]
+        self.assertEqual(ids.count("builtin-mock-image"), 1)
+        self.assertIn("custom-image", ids)
+        self.assertEqual(next(item for item in payload["profiles"] if item["id"] == "builtin-mock-image")["model_name"], "mock-image-v1")
+
     def test_mock_profiles_are_disabled_and_have_no_default_outside_isolated_runtime(self):
         with patch.dict(os.environ, {"E2E_EXTERNAL_RUNTIME": "", "APP_ENV": "staging", "DEPLOYMENT_ENV": "staging"}, clear=False):
             payload = serialize_registry_payload()

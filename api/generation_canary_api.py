@@ -48,6 +48,7 @@ from core.provider_execution_profile import (
 from core.canonical_generation import CanonicalGenerationContractError, ProductionGenerationSelection, canonical_request_fingerprint
 from core.public_asset_storage import _load_source_bytes, _normalize_provider_image_bytes
 from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
+from core.media_authority import MediaAuthorityError
 from core.provider_transport_registry import (
     ProviderTransportBinding,
     dispatch_provider_transport,
@@ -816,6 +817,21 @@ async def _call_provider(*, context: dict[str, Any]) -> dict[str, Any]:
         raise _error(409, code, str(exc), provider_calls=0) from exc
     except ModelProfileError:
         raise
+    # Keep Provider response identity complete at the canonical boundary even
+    # when a transport adapter omitted an OpenAI-style response id.  Prefer an
+    # upstream id; otherwise derive a deterministic, secret-free identity from
+    # the redacted response projection.  This prevents the generic setdefault
+    # below from turning a valid synchronous SHAPI response into an empty
+    # candidate lineage field.
+    if isinstance(generated, dict) and str(profile.get("provider") or "") == "shapi-openai-images":
+        response = generated.get("providerResponse")
+        existing_request_id = str(generated.get("providerRequestId") or "").strip()
+        existing_task_id = str(generated.get("providerTaskId") or "").strip()
+        if not existing_request_id and isinstance(response, dict):
+            existing_request_id = "shapi-response-" + _response_hash(response)[:32]
+            generated["providerRequestId"] = existing_request_id
+        if not existing_task_id:
+            generated["providerTaskId"] = existing_request_id
     generated.setdefault("provider", profile.get("provider"))
     generated.setdefault("model", profile.get("model_name"))
     generated.setdefault("providerRequestId", generated.get("externalTaskId") or "")
@@ -1472,6 +1488,29 @@ async def _execute_generation_canary_impl(
             row.updated_at = datetime.utcnow()
             session.commit()
             raise
+        except MediaAuthorityError as exc:
+            # Preserve the deterministic candidate validation cause at the
+            # API boundary.  A generic 502 would hide whether the provider
+            # response projection or the media authority rejected the row.
+            session.rollback()
+            row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.preview_execution_id).first() or row
+            row.status = "FAILED"
+            row.logical_provider_calls = 1
+            row.transport_retry_count = 0
+            row.latency_ms = int((time.perf_counter() - started) * 1000)
+            row.failure_code = str(exc.code)
+            row.failure_message = str(exc.message)[:500]
+            row.completed_at = datetime.utcnow()
+            row.updated_at = datetime.utcnow()
+            session.commit()
+            raise _error(
+                int(getattr(exc, "status_code", 422) or 422),
+                str(exc.code),
+                str(exc.message)[:500],
+                diagnostics=getattr(exc, "diagnostics", None),
+                provider_calls=1,
+                retry_calls=0,
+            )
         except Exception as exc:
             session.rollback()
             row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.preview_execution_id).first() or row
