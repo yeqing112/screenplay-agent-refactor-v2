@@ -27,7 +27,7 @@ The ordinary-user journey passed twice consecutively from project list through U
 ## Checks
 
 - Web: 63 files / 445 tests passed.
-- Backend relevant contract suite: 65 passed.
+- Backend relevant contract suite: 85 passed.
 - Canonical generation / mock-runtime gate tests: 60 passed.
 - Frontend build: passed.
 - Python compileall: passed.

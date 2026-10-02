@@ -4,6 +4,7 @@ import json
 import copy
 
 from datetime import datetime
+import pytest
 
 from core.visual_asset_authority import build_asset_key, fingerprint, scope_key
 from models import (
@@ -26,6 +27,14 @@ from tests.test_scene_blocking_authority_contract import (
 )
 
 _AuthorityFixture.__test__ = False
+
+
+@pytest.fixture(autouse=True)
+def _mock_runtime_test_environment(monkeypatch):
+    """Run the public pilot in an explicit isolated mock environment."""
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.setenv("DEPLOYMENT_ENV", "test")
+    monkeypatch.setenv("APP_ENV", "test")
 
 
 def _human_proposal(plan: dict, blocking: dict) -> dict:
