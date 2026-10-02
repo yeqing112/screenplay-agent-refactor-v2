@@ -62,5 +62,5 @@ ScriptIR → DirectorPlan → ScenePlan → ShotPlan → ShotDirection → Gener
 ## 远程提交
 
 - 分支：`codex/visual-authoring-provider-canary-reconcile`
-- 当前远程提交：`64ac68243dd78a51d8245d844ed834e7c3bec0de`
+- 当前远程提交：`cf5717a`
 - 远程仓库：[yeqing112/screenplay-agent-refactor-v2](https://github.com/yeqing112/screenplay-agent-refactor-v2)

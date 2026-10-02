@@ -70,6 +70,6 @@
 ## 本轮发布
 
 - 发布分支：codex/visual-authoring-provider-canary-reconcile
-- 发布提交：64ac68243dd78a51d8245d844ed834e7c3bec0de
+- 发布提交：cf5717a
 - disposable canary：Book 990403 已丢弃；Book 990400 保留且写入数为 0；998755 未恢复。
 - SHAPI 仅作为后续真实 provider 选型（https://www.shapi.vip/），本轮真实调用数为 0。
