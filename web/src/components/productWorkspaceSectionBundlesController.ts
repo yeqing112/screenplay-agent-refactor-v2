@@ -82,6 +82,8 @@ interface UseProductWorkspaceSectionBundlesParams {
   onDismissStoryboardRecoveryFocus: () => void
   onGenerateScripts: () => void
   isGeneratingScripts: boolean
+  onPrepareProduction: (episode: number) => void
+  productionPreparationState: 'idle' | 'loading' | 'ready' | 'error'
   onGenerateStoryboard: () => void
   isGeneratingStoryboard: boolean
   initialStoryboardEpisode?: number | null
@@ -259,6 +261,8 @@ export function useProductWorkspaceSectionBundles(params: UseProductWorkspaceSec
         onNavigateTaskSection: params.onNavigateTaskSection,
         onGenerateScripts: params.onGenerateScripts,
         isGeneratingScripts: params.isGeneratingScripts,
+        onPrepareProduction: params.onPrepareProduction,
+        productionPreparationState: params.productionPreparationState,
       },
       storyboard: {
         bookId: params.bookId,

@@ -127,6 +127,7 @@ export default function ProductWorkspace({
   const [assetGenerationState, setAssetGenerationState] = useState<'idle' | 'saving'>('idle')
   const [isGeneratingScripts, setIsGeneratingScripts] = useState(false)
   const [isGeneratingStoryboard, setIsGeneratingStoryboard] = useState(false)
+  const [productionPreparationState, setProductionPreparationState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const { data, loading, error, refresh } = useBookOutputs(book.id)
   const productionWorkspace = useProductionWorkspace(book.id)
   const productionWorkspaceV2 = useProductionWorkspaceV2(book.id)
@@ -235,6 +236,32 @@ export default function ProductWorkspace({
     if (isGeneratingStoryboard) return
     setIsGeneratingStoryboard(true)
     try {
+      // A production-qualified ScriptIR must materialize canonical Storyboard
+      // rows through the authority boundary. The legacy pipeline remains the
+      // fallback for creative-draft projects that have not entered production.
+      let materialized = false
+      for (const episode of buildEpisodeSequence(episodeCount)) {
+        try {
+          const irResponse = await fetch(`/api/books/${book.id}/episodes/${episode}/script-ir`, { cache: 'no-store' })
+          if (!irResponse.ok) continue
+          const irPayload = await irResponse.json()
+          if (String(irPayload?.status ?? '').toLowerCase() !== 'production_qualified') continue
+          const materializeResponse = await fetch(`/api/books/${book.id}/episodes/${episode}/storyboard/materialize`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ confirmed: true }),
+          })
+          if (materializeResponse.ok) materialized = true
+        } catch {
+          // Continue to the next episode; the visible production gate will
+          // surface the first actionable blocker in the storyboard surface.
+        }
+      }
+      if (materialized) {
+        setIsGeneratingStoryboard(false)
+        await handleRefreshAll()
+        return
+      }
       const genre = 'short_drama'
       const res = await fetch('/api/pipeline/storyboard', {
         method: 'POST',
@@ -273,6 +300,24 @@ export default function ProductWorkspace({
       setIsGeneratingStoryboard(false)
     }
   }, [book.id, episodeCount, isGeneratingStoryboard, handleRefreshAll])
+
+  const handlePrepareProduction = useCallback(async (episode: number) => {
+    if (productionPreparationState === 'loading') return
+    if (typeof window !== 'undefined' && !window.confirm('确认准备进入导演阶段？系统会整理当前锁定剧本的生产结构，仍保留人工审核。')) return
+    setProductionPreparationState('loading')
+    try {
+      const response = await fetch(`/api/books/${book.id}/episodes/${episode}/script-ir/prepare-production`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmed: true }),
+      })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      setProductionPreparationState('ready')
+      handleRefreshAll()
+    } catch {
+      setProductionPreparationState('error')
+    }
+  }, [book.id, handleRefreshAll, productionPreparationState])
 
   const characterAssets = useMemo(
     () => buildCharacterAssetSummaries(makeups),
@@ -610,6 +655,8 @@ export default function ProductWorkspace({
     onDismissStoryboardRecoveryFocus: dismissStoryboardRecoveryFocus,
     onGenerateScripts: handleGenerateScripts,
     isGeneratingScripts,
+    onPrepareProduction: (episode) => { void handlePrepareProduction(episode) },
+    productionPreparationState,
     onGenerateStoryboard: handleGenerateStoryboard,
     isGeneratingStoryboard,
     initialStoryboardEpisode: urlNavigation.episode ?? null,

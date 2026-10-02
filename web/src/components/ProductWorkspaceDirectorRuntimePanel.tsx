@@ -42,7 +42,7 @@ type PreviewResponse = {
 type Benchmark = { status?: string; score?: number; checks?: Array<{ label?: string; passed?: boolean; detail?: string }> }
 type SceneSummary = { scene_name?: string; status?: string }
 
-type Props = { bookId: number; episode: number | null }
+type Props = { bookId: number; episode: number | null; sceneId?: string; workflowProfile?: 'creative_draft' | 'production' }
 
 const button = 'rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-200 transition hover:border-slate-500 disabled:cursor-not-allowed disabled:opacity-50'
 const primary = 'rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-50'
@@ -56,7 +56,7 @@ function statusLabel(status: string | undefined, state: StageState) {
   return '未生成'
 }
 
-export default function ProductWorkspaceDirectorRuntimePanel({ bookId, episode }: Props) {
+export default function ProductWorkspaceDirectorRuntimePanel({ bookId, episode, sceneId = '', workflowProfile = 'creative_draft' }: Props) {
   const [blocking, setBlocking] = useState<Blocking | null>(null)
   const [blockingDraftId, setBlockingDraftId] = useState<number | null>(null)
   const [blockingState, setBlockingState] = useState<StageState>('idle')
@@ -134,7 +134,7 @@ export default function ProductWorkspaceDirectorRuntimePanel({ bookId, episode }
     try {
       const response = await fetch(`${base}/scene-blocking/preview`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sceneName: selectedScene, persist: true }),
+        body: JSON.stringify({ sceneName: selectedScene, scene_id: sceneId, persist: true, workflow_profile: workflowProfile }),
       })
       const payload = await response.json() as PreviewResponse & { detail?: string }
       if (!response.ok) throw new Error(payload.detail || `HTTP ${response.status}`)
@@ -155,7 +155,7 @@ export default function ProductWorkspaceDirectorRuntimePanel({ bookId, episode }
     try {
       const response = await fetch(`${base}/scene-blocking/confirm`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ blockingId: blockingDraftId, evidenceFingerprint: blocking.evidence_fingerprint, confirmed: true, blocking }),
+        body: JSON.stringify({ blockingId: blockingDraftId, evidenceFingerprint: blocking.evidence_fingerprint, confirmed: true, blocking, workflow_profile: workflowProfile }),
       })
       const payload = await response.json() as { scene_blocking?: Blocking; detail?: string }
       if (!response.ok) throw new Error(payload.detail || `HTTP ${response.status}`)
@@ -175,7 +175,7 @@ export default function ProductWorkspaceDirectorRuntimePanel({ bookId, episode }
     try {
       const response = await fetch(`${base}/shot-plan/preview`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sceneName: selectedScene, persist: true }),
+        body: JSON.stringify({ sceneName: selectedScene, scene_id: sceneId, persist: true, workflow_profile: workflowProfile }),
       })
       const payload = await response.json() as PreviewResponse & { detail?: string }
       if (!response.ok) throw new Error(payload.detail || `HTTP ${response.status}`)
@@ -196,7 +196,7 @@ export default function ProductWorkspaceDirectorRuntimePanel({ bookId, episode }
     try {
       const response = await fetch(`${base}/shot-plan/confirm`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planId: planDraftId, evidenceFingerprint: plan.evidence_fingerprint, confirmed: true, plan }),
+        body: JSON.stringify({ planId: planDraftId, evidenceFingerprint: plan.evidence_fingerprint, confirmed: true, plan, workflow_profile: workflowProfile }),
       })
       const payload = await response.json() as { shot_plan?: ShotPlan; detail?: string }
       if (!response.ok) throw new Error(payload.detail || `HTTP ${response.status}`)

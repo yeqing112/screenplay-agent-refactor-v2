@@ -219,6 +219,8 @@ export interface ScriptsBundle {
   onNavigateTaskSection: TaskNavigateHandler
   onGenerateScripts: () => void
   isGeneratingScripts: boolean
+  onPrepareProduction: (episode: number) => void
+  productionPreparationState: 'idle' | 'loading' | 'ready' | 'error'
 }
 
 export interface StoryboardBundle {

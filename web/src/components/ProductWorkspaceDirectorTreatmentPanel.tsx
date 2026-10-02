@@ -18,10 +18,10 @@ type Preview = {
   evidence: { scene_name?: string; evidence_fingerprint?: string }
 }
 
-type Props = { bookId: number; episode: number | null }
+type Props = { bookId: number; episode: number | null; sceneId?: string; workflowProfile?: 'creative_draft' | 'production' }
 type HistoryItem = { packet_id?: number; packet_fingerprint?: string; scene_name?: string; status?: string; candidate?: Treatment; model_info?: Record<string, unknown>; created_at?: string | null; confirmed_at?: string | null }
 
-export default function ProductWorkspaceDirectorTreatmentPanel({ bookId, episode }: Props) {
+export default function ProductWorkspaceDirectorTreatmentPanel({ bookId, episode, sceneId = '', workflowProfile = 'creative_draft' }: Props) {
   const [preview, setPreview] = useState<Preview | null>(null)
   const [candidate, setCandidate] = useState<Treatment | null>(null)
   const [packetId, setPacketId] = useState<number | null>(null)
@@ -47,7 +47,7 @@ export default function ProductWorkspaceDirectorTreatmentPanel({ bookId, episode
     setMessage('正在读取本集导演方案证据...')
     try {
       const response = await fetch(`/api/books/${bookId}/episodes/${episode}/director-treatment/preview`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ workflow_profile: workflowProfile, scene_id: sceneId }),
       })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const payload = await response.json() as Preview
@@ -85,7 +85,7 @@ export default function ProductWorkspaceDirectorTreatmentPanel({ bookId, episode
     try {
       const response = await fetch(`/api/books/${bookId}/episodes/${episode}/director-treatment/llm-draft`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packetFingerprint: preview.packet_fingerprint, confirmed: true, allowExternalCall: true }),
+        body: JSON.stringify({ packetFingerprint: preview.packet_fingerprint, confirmed: true, allowExternalCall: true, workflow_profile: workflowProfile, scene_id: sceneId }),
       })
       const payload = await response.json() as { packet_id?: number; candidate?: Treatment; deduplicated?: boolean; detail?: string }
       if (!response.ok) throw new Error(payload.detail || `HTTP ${response.status}`)
@@ -106,7 +106,7 @@ export default function ProductWorkspaceDirectorTreatmentPanel({ bookId, episode
     try {
       const response = await fetch(`/api/books/${bookId}/episodes/${episode}/director-treatment/confirm`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packetId, packetFingerprint: preview.packet_fingerprint, confirmed: true, candidate }),
+        body: JSON.stringify({ packetId, packetFingerprint: preview.packet_fingerprint, confirmed: true, candidate, workflow_profile: workflowProfile }),
       })
       const payload = await response.json() as { treatment?: Treatment; detail?: string }
       if (!response.ok) throw new Error(payload.detail || `HTTP ${response.status}`)

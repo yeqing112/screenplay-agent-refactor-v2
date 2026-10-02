@@ -27,6 +27,8 @@ interface Props {
   onNavigate: (section: WorkspaceSection, options?: { episode?: number | null }) => void
   onGenerateScripts: () => void
   isGeneratingScripts: boolean
+  onPrepareProduction?: (episode: number) => void
+  productionPreparationState?: 'idle' | 'loading' | 'ready' | 'error'
 }
 
 function tone(status: 'done' | 'pending' | 'blocked') {
@@ -108,11 +110,14 @@ export default function ProductWorkspaceScriptsSection({
   onNavigate,
   onGenerateScripts,
   isGeneratingScripts,
+  onPrepareProduction,
+  productionPreparationState = 'idle',
 }: Props) {
   const [qaWorkbench, setQaWorkbench] = useState<ScriptWorkbenchResponse | null>(null)
   const [workbenchState, setWorkbenchState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const [selectedEpisode, setSelectedEpisode] = useState<number | null>(scripts[0]?.episode ?? null)
   const [decisionNote, setDecisionNote] = useState('')
+  const [productionSceneId, setProductionSceneId] = useState('')
 
   useEffect(() => {
     if (bookId <= 0) return
@@ -183,6 +188,21 @@ export default function ProductWorkspaceScriptsSection({
     (qaWorkbench?.episodes ?? []).find((item) => Number(item.episode ?? 0) === selectedSummary?.episode) ?? null
   const selectedScenes = useMemo(() => parseScriptScenes(selectedScript?.content ?? ''), [selectedScript?.content])
   const selectedDecision = selectedSummary ? getScriptDecision(scriptDecisionState, selectedSummary.episode) : null
+
+  useEffect(() => {
+    setProductionSceneId('')
+    if (productionPreparationState !== 'ready' || !selectedSummary?.episode) return
+    let cancelled = false
+    fetch(`/api/books/${bookId}/episodes/${selectedSummary.episode}/script-ir`, { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload: { payload?: { scenes?: Array<{ scene_id?: string; name?: string }> } } | null) => {
+        if (cancelled) return
+        const scenes = payload?.payload?.scenes ?? []
+        setProductionSceneId(String(scenes[0]?.scene_id ?? ''))
+      })
+      .catch(() => { if (!cancelled) setProductionSceneId('') })
+    return () => { cancelled = true }
+  }, [bookId, productionPreparationState, selectedSummary?.episode])
   const adaptationInheritanceSummary = buildAdaptationInheritanceSummary({
     hasLockedAdaptation: hasExplicitLockedAdaptation,
     adaptationStateLabel,
@@ -266,7 +286,7 @@ export default function ProductWorkspaceScriptsSection({
 
   return (
     <div className="space-y-6">
-      <ProductWorkspaceDirectorRuntimePanel bookId={bookId} episode={selectedSummary?.episode ?? null} />
+      <ProductWorkspaceDirectorRuntimePanel bookId={bookId} episode={selectedSummary?.episode ?? null} sceneId={productionSceneId} workflowProfile={productionPreparationState === 'ready' ? 'production' : 'creative_draft'} />
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.2fr_0.95fr]">
       <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
         <div className="flex items-center justify-between gap-3">
@@ -357,7 +377,7 @@ export default function ProductWorkspaceScriptsSection({
       </div>
 
       <div className="space-y-6">
-        <ProductWorkspaceDirectorTreatmentPanel bookId={bookId} episode={selectedSummary?.episode ?? null} />
+        <ProductWorkspaceDirectorTreatmentPanel bookId={bookId} episode={selectedSummary?.episode ?? null} sceneId={productionSceneId} workflowProfile={productionPreparationState === 'ready' ? 'production' : 'creative_draft'} />
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -629,6 +649,24 @@ export default function ProductWorkspaceScriptsSection({
               </div>
 
               <div className="mt-5 grid gap-3">
+                {selectedSummary.releaseStatus === 'done' && hasExplicitLockedAdaptation ? (
+                  <div className="rounded-xl border border-violet-500/30 bg-violet-500/10 p-4">
+                    <div className="text-sm font-medium text-violet-100">准备进入导演阶段</div>
+                    <div className="mt-2 text-xs leading-5 text-violet-100/80">
+                      系统会整理当前锁定剧本的生产结构，完成后即可进入导演方案和镜头设计。
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onPrepareProduction?.(selectedSummary.episode)}
+                      disabled={productionPreparationState === 'loading'}
+                      className="mt-3 rounded-xl border border-violet-400/50 bg-violet-500/15 px-4 py-3 text-sm font-medium text-violet-100 transition hover:bg-violet-500/25 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {productionPreparationState === 'loading' ? '正在准备生产结构…' : '准备进入导演阶段'}
+                    </button>
+                    {productionPreparationState === 'ready' ? <div className="mt-2 text-xs text-emerald-200" role="status">剧本生产结构已准备完成，可以进入导演阶段。</div> : null}
+                    {productionPreparationState === 'error' ? <div className="mt-2 text-xs text-rose-200" role="alert">生产准备失败，请重新同步剧本状态后再试。</div> : null}
+                  </div>
+                ) : null}
                 <button
                   type="button"
                   onClick={() => onNavigate('storyboard', { episode: selectedSummary.episode })}

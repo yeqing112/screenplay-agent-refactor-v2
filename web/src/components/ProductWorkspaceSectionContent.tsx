@@ -285,6 +285,8 @@ export default function ProductWorkspaceSectionContent({
           onNavigate={scripts.onNavigateTaskSection}
           onGenerateScripts={scripts.onGenerateScripts}
           isGeneratingScripts={scripts.isGeneratingScripts}
+          onPrepareProduction={scripts.onPrepareProduction}
+          productionPreparationState={scripts.productionPreparationState}
         />
       ) : null}
 

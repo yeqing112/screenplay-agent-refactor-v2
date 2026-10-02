@@ -12,6 +12,13 @@ ScriptIR → DirectorPlan → ScenePlan → ShotPlan → ShotDirection → Gener
 
 ## 已交付
 
+### Production UI 衔接增量（2026-10-02）
+
+- 新增 ScriptIR production preparation facade 与剧本工作台人工确认入口。
+- Production preparation 复用既有 ScriptIR authority activation、FactSnapshot 和版本链；不调用 LLM/媒体 provider。
+- 导演方案、SceneBlocking、ShotPlan UI 在准备完成后携带 production profile 与 scene identity；分镜生成优先调用 canonical materializer。
+- 该增量已通过 Web 445 tests、production authority 定向 24 tests、TypeScript build 与 Python compileall；完整浏览器业务链仍保留 `PARTIAL / ASSET_BLOCKED` 结论，未提前宣称全链路完成。
+
 - `director_plan(script_ir, episode_context, character_profiles, scene_profiles)` 确定性 Adapter，返回结构化 JSON。
 - 版本化 `DirectorPlan` 与 `ScenePlan` 持久化；ShotPlan 继续复用现有 canonical 表。
 - ShotDirection 与 GenerationIntent 候选包含 source hash、direction fingerprint 和 prompt lineage。
