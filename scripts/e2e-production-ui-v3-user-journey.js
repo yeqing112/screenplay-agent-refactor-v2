@@ -6,6 +6,7 @@ const BASE = process.env.E2E_BASE_URL || 'http://127.0.0.1:5176';
 const ALLOWED_HOSTS = new Set([new URL(BASE).host, new URL(process.env.E2E_API_URL || 'http://127.0.0.1:18768').host]);
 const OUT = path.resolve(process.env.E2E_ARTIFACT_DIR || 'output/playwright/user-journey');
 const REAL_IMAGE_STAGING = process.env.E2E_REAL_IMAGE_STAGING === '1';
+const REAL_IMAGE_SINGLE_CALL = process.env.E2E_REAL_IMAGE_SINGLE_CALL === '1';
 const REAL_IMAGE_PROFILE_ID = process.env.E2E_REAL_IMAGE_PROFILE_ID || 'local-image-mw4y52';
 const EXISTING_CANARY_BOOK_ID = Number(process.env.E2E_EXISTING_CANARY_BOOK_ID || 0) || null;
 fs.mkdirSync(OUT, { recursive: true });
@@ -401,6 +402,21 @@ async function runOnce(browser, index) {
       const officialV1State = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.candidate_id === initialCandidateId);
       const officialV1 = officialV1State.shot.IMAGE?.official?.version || {};
 
+      if (REAL_IMAGE_SINGLE_CALL) {
+        evidence.real_image_staging = {
+          profile_id: REAL_IMAGE_PROFILE_ID,
+          model_name: 'grok-imagine-image-quality',
+          target_shot_id: shotId,
+          initial: { execution: initialExecution, candidate_id: initialCandidateId, preview_present: Boolean(initialCandidatePreview), official_version_id: officialV1.id || null },
+          regenerate: null,
+          final: { official_v1_version_id: officialV1.id || null, official_v1_current: officialV1.current === true },
+          video_status: 'FROZEN_NO_CALL',
+        };
+        evidence.real_provider_generation_posts = (evidence.mutations || []).filter((mutation) => mutation.method === 'POST' && mutation.path.endsWith('/generate-frame')).length;
+        await shot('real-image-v1-official');
+        return;
+      }
+
       const regenerate = page.getByTestId('shot-studio-regenerate-image');
       await regenerate.waitFor({ state: 'visible', timeout: 30000 });
       const attemptPost = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/generation-attempts'), { timeout: 60000 }).catch(() => null);
@@ -620,7 +636,8 @@ async function runOnce(browser, index) {
     if ((run.blockers || []).length) failures.push({ run: run.run, code: 'BLOCKERS_PRESENT', blockers: run.blockers });
     if ((run.steps || []).some((item) => item.status !== 'passed')) failures.push({ run: run.run, code: 'STEP_NOT_PASSED' });
     if (!REAL_IMAGE_STAGING && (!run.delivery_readiness?.can_export || !run.delivery_export?.record || run.delivery_export.record.status !== 'completed')) failures.push({ run: run.run, code: 'FORMAL_DELIVERY_NOT_READY', readiness: run.delivery_readiness });
-    if (REAL_IMAGE_STAGING && (!run.real_image_staging?.final?.official_v2_version_id || !run.real_image_staging?.regenerate?.official_v1_current_during_review)) failures.push({ run: run.run, code: 'REAL_IMAGE_VERSION_LINEAGE_NOT_PROVEN', real_image_staging: run.real_image_staging });
+    if (REAL_IMAGE_STAGING && REAL_IMAGE_SINGLE_CALL && (!run.real_image_staging?.final?.official_v1_version_id || run.real_image_staging?.final?.official_v1_current !== true || run.real_image_staging?.regenerate !== null)) failures.push({ run: run.run, code: 'REAL_IMAGE_INITIAL_OFFICIAL_NOT_PROVEN', real_image_staging: run.real_image_staging });
+    if (REAL_IMAGE_STAGING && !REAL_IMAGE_SINGLE_CALL && (!run.real_image_staging?.final?.official_v2_version_id || !run.real_image_staging?.regenerate?.official_v1_current_during_review)) failures.push({ run: run.run, code: 'REAL_IMAGE_VERSION_LINEAGE_NOT_PROVEN', real_image_staging: run.real_image_staging });
     if (!run.delete_audit || Number(run.delete_audit.payload?.orphan_rows || 0) !== 0 || Number(run.delete_audit.payload?.ambiguous_rows || 0) !== 0) failures.push({ run: run.run, code: 'DELETE_AUDIT_FAILED', delete_audit: run.delete_audit });
     if (!REAL_IMAGE_STAGING && ((run.video_running_before_reload || []).some((item) => !item.execution_id || !item.provider_task_id) || (run.video_running_after_reload || []).some((item) => !item.same_execution || !item.same_provider_task))) failures.push({ run: run.run, code: 'VIDEO_RELOAD_NOT_PROVEN' });
   }
@@ -628,7 +645,7 @@ async function runOnce(browser, index) {
     const videoSubmissionCounts = runs.flatMap((run) => (run.video_running_before_reload || []).map((item) => ({ run: run.run, shot_id: item.shot_id, count: (run.mutations || []).filter((mutation) => mutation.method === 'POST' && new RegExp(`/storyboard/1/${String(item.shot_id).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/generate-video$`).test(mutation.path)).length })));
     for (const item of videoSubmissionCounts) if (item.count !== 1) failures.push({ ...item, code: 'VIDEO_DUPLICATE_OR_MISSING_SUBMISSION' });
   }
-  const summary = { schema_version: REAL_IMAGE_STAGING ? 'production-ui-v3-real-provider-staging-image-first-v1' : 'production-ui-v3-browser-user-journey-delivery-readiness-reconcile-v1', generated_at: new Date().toISOString(), runs, ledger, failures, all_steps_passed: failures.length === 0, policy: { mutations_via_visible_ui_only: true, real_external_hosts_allowed: [], mock_runtime_only: !REAL_IMAGE_STAGING, real_provider: REAL_IMAGE_STAGING ? 'shapi-openai-images' : null, formal_delivery_gate: REAL_IMAGE_STAGING ? 'IMAGE v2 official with v1 current during regeneration; VIDEO blocked' : 'canExport=true and completed delivery record' } };
+  const summary = { schema_version: REAL_IMAGE_STAGING ? (REAL_IMAGE_SINGLE_CALL ? 'production-ui-v3-real-provider-staging-image-single-call-v1' : 'production-ui-v3-real-provider-staging-image-first-v1') : 'production-ui-v3-browser-user-journey-delivery-readiness-reconcile-v1', generated_at: new Date().toISOString(), runs, ledger, failures, all_steps_passed: failures.length === 0, policy: { mutations_via_visible_ui_only: true, real_external_hosts_allowed: [], mock_runtime_only: !REAL_IMAGE_STAGING, real_provider: REAL_IMAGE_STAGING ? 'shapi-openai-images' : null, formal_delivery_gate: REAL_IMAGE_STAGING ? (REAL_IMAGE_SINGLE_CALL ? 'IMAGE v1 official; no regenerate; VIDEO frozen' : 'IMAGE v2 official with v1 current during regeneration; VIDEO blocked') : 'canExport=true and completed delivery record' } };
   await fs.promises.writeFile(path.join(OUT, 'summary.json'), JSON.stringify(summary, null, 2));
   console.log(JSON.stringify({ output: path.join(OUT, 'summary.json'), runs: runs.length, failures: failures.length, external_hosts: [...new Set(runs.flatMap(item => item.external_hosts))] }, null, 2));
   if (failures.length) process.exitCode = 1;
