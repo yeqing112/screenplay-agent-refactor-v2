@@ -1,0 +1,102 @@
+{
+  "schema_version": "real-image-current-runtime-single-call-verification-truth-audit-v1",
+  "phase": "PHASE_REAL_IMAGE_CURRENT_RUNTIME_SINGLE_CALL_VERIFICATION",
+  "status": "REAL_IMAGE_INITIAL_GO_REVIEW_NOT_COMPLETED",
+  "baseline": "7f54114f1965cc21473ede8e7166e70192973f7a",
+  "backend_runtime_commit": "7f54114f1965cc21473ede8e7166e70192973f7a",
+  "historical_real_image_calls": 4,
+  "authorized_new_real_image_calls": 1,
+  "actual_new_real_image_calls": 1,
+  "cumulative_real_image_calls": 5,
+  "hard_cap": 6,
+  "provider": "shapi-openai-images",
+  "provider_host": "shapi.vip",
+  "profile": {
+    "profile_id": "local-image-mw4y52",
+    "provider": "shapi-openai-images",
+    "model": "grok-imagine-image-quality",
+    "transport": "shapi-openai-images.image.v1",
+    "enabled": true,
+    "read_only_confirmed": true
+  },
+  "runtime_restart": {
+    "current_source_restarted": true,
+    "app_env": "staging",
+    "deployment_env": "staging",
+    "real_provider_staging_max_calls": 1,
+    "provider_posts_before_initial": 0,
+    "backend_process_start_time": "2026-10-03T07:31:00+08:00"
+  },
+  "real_image_initial": "GO",
+  "initial_execution": {
+    "state": "SUCCEEDED",
+    "execution_id": "d2874e17ffbb4145814ace456b4520e3",
+    "provider_request_id": "shapi-response-28b2497ad7d01f52eb794b4fe4061f0d",
+    "provider_task_id": "shapi-response-28b2497ad7d01f52eb794b4fe4061f0d",
+    "provider_response_hash": "a8f30ed04c1272db3ace0fe1778f482cdeda26dc9b50ce0667010dfc156f9b93",
+    "logical_provider_calls": 1,
+    "transport_retry_count": 0,
+    "response_identity_present": true,
+    "response_hash_present": true
+  },
+  "provider_request_identity_present": true,
+  "provider_task_identity_present": true,
+  "provider_response_hash_present": true,
+  "candidate": {
+    "created": true,
+    "candidate_id": "candidate-0ef271ea20fa49a790785d9505ac59b8",
+    "status": "MEDIA_CANDIDATE",
+    "provider_task_id_matches_execution": true,
+    "provider_response_hash_matches_execution": true
+  },
+  "media_integrity": {
+    "passed": true,
+    "validation_status": "TECHNICALLY_VALID",
+    "validation_id": "mvr-a8dc3a87aa545cc6374df1d6d4d144537cdde880",
+    "mime": "image/jpeg",
+    "width": 1024,
+    "height": 1024,
+    "byte_size": 414365,
+    "checksum_valid": true,
+    "storage_identity_valid": true,
+    "decodable": true
+  },
+  "review_required": true,
+  "media_promotion_record": {
+    "created": true,
+    "status": "REVIEW_REQUIRED"
+  },
+  "official_v1_created": false,
+  "official_v1_current": false,
+  "review_completion": {
+    "status": "NOT_COMPLETED",
+    "blocker": "E2E harness timed out on a stale reviewEligibility projection field before the UI promotion click",
+    "provider_calls_after_initial": 0
+  },
+  "regenerate_calls": 0,
+  "video_calls": 0,
+  "duplicate_profile_warnings": 0,
+  "protected_book_990400_writes": 0,
+  "browser_direct_shapi_calls": 0,
+  "secret_leaks": 0,
+  "authorization_header_artifacts": 0,
+  "raw_provider_response_persisted": false,
+  "raw_b64_persisted": false,
+  "disposable_canary": {
+    "book_id": 990453,
+    "deleted_through_ui": true,
+    "orphan_rows": 0,
+    "ambiguous_rows": 0,
+    "orphan_media_files": 0
+  },
+  "browser_evidence": "output/playwright/real-image-current-runtime-single-call/summary.json",
+  "browser_run_detail": "output/playwright/real-image-current-runtime-single-call/run-1.json",
+  "browser_external_hosts": [],
+  "browser_http_errors": 0,
+  "browser_console_errors": 0,
+  "alembic_head": "p1q2r3s4t5u6",
+  "new_migrations": 0,
+  "worktree": "clean_before_report_commit",
+  "previous_failed_call_disposition": "discard_stale_backend_process_evidence_as_current_runtime_conclusion",
+  "next_action": "STOP — no additional real Provider call authorized"
+}
