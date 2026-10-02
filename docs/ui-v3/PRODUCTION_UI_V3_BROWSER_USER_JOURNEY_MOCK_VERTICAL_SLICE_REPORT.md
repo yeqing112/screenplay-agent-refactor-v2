@@ -2,42 +2,54 @@
 
 ## 结论
 
-本轮结论为 **PARTIAL / ASSET_BLOCKED**。两次独立浏览器运行均从项目列表开始，并通过可见 UI 完成：项目创建、短篇内容导入、Production Skill 与改编方向锁定、剧本生成、剧本锁稿/放行、ScriptIR production preparation、production Director Treatment 预览/LLM mock 候选/人工确认、Scene Blocking 预览，以及资产中心与项目删除。
+本轮状态为 **PARTIAL / ASSET_BRIDGE_BLOCKED**。两次独立 mock 浏览器运行均通过可见 UI 完成项目创建、短篇内容导入、Production Skill 与改编方向锁定、剧本生成与锁稿、ScriptIR production preparation、Director Treatment 人工确认、SceneBlocking 确认、ShotPlan 确认，以及 Storyboard materialization。
 
-生产 Scene Blocking 确认被后端真实门禁拒绝，原因是 `INVALID_AXIS_SUBJECT` 和 `SCENE_ASSET_MISSING`。因此本轮没有伪造 ShotPlan、Storyboard、PromptIR、媒体或交付结果，也没有写入完成标志 `PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE`。
+唯一剩余阻塞是 `production-asset-bridge-through-ui`：V3 页面在两次运行中都没有呈现 `[data-testid="production-asset-bridge"]`，等待 60 秒后进入阻塞。资产阻塞证据步骤仍然通过，因此没有伪造实体资产、图片或视频生成结果，也没有写入完成标志 `PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE`。
 
-## 本轮代码修复
+## 本轮代码与运行修复
 
-- `api/script_ir_preparation_api.py`：对不可变 legacy Markdown screenplay 做只读解析，生成版本化 ScriptIR candidate；不改写 `Script` 原文或 Source Fact。
-- source anchor 绑定按 immutable evidence block 匹配场景名，不再把所有 blocking requirement 粗暴绑定到 `E0001`。
-- `scripts/e2e-production-ui-v3-user-journey.js`：修复默认展开内容表单误折叠；内容等待 120 秒；补齐脚本生成、锁稿/放行、生产准备、Treatment、SceneBlocking 证据、canonical read-only audit；响应错误进入报告。
+- `core/screenplay_compiler.py`：短但包含场景标题和对白的 mock 剧本可复用，保留参与者投影。
+- `api/director_treatment_api.py`：缺失参与者时读取 EpisodeOutline 的源派生角色作为 advisory evidence，不回写 ScriptIR。
+- `core/phase_c_shot_plan.py`：兼容 `beat_ref`/`beat_refs`，补齐 legacy reaction refs，并为多动作 beat 提供可执行时长承载。
+- SceneBlocking / ShotPlan API 与 authority 校验继续保持版本化、人工确认、不可变 Source Fact 边界。
+- E2E runner 记录真实 HTTP 状态、canonical read-only projection、ShotPlan 与 Storyboard materialization 证据。
 
-## 浏览器证据
+## 浏览器结果
 
-- 两轮 runner 汇总：[summary.json](../../output/playwright/user-journey/summary.json)
-- 真值审计：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_TRUTH_AUDIT.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_TRUTH_AUDIT.json)
-- 浏览器 QA：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json)
-- 网络审计：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json)
-- UX friction：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_UX_FRICTION.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_UX_FRICTION.json)
+| 项目 | 结果 |
+|---|---|
+| 独立运行 | 2 |
+| 项目到 Storyboard 可见 UI 链路 | 通过 |
+| SceneBlocking confirm | 通过 |
+| ShotPlan confirm | 通过 |
+| Storyboard materialization | 通过 |
+| Production Asset Bridge | 阻塞（两轮均未呈现） |
+| 浏览器 console errors | 0 |
+| 真实外部 host | 0 |
+| mock LLM / IMAGE / VIDEO | 22 / 0 / 0 |
 
-## 外部调用与安全
+## Provider 与安全边界
 
-- 真实外部 host：0（列表：[]）。
-- mock ledger：LLM 234，IMAGE 0，VIDEO 0。
-- SHAPI（https://www.shapi.vip/）本轮没有真实调用；仍按 mock runtime 验收。
-- 所有业务 mutation 均由可见 UI 触发；runner 只读取 canonical projection 做审计。
-- 990400 保留且本轮写入数为 0；998755 未恢复或创建。
-- 本轮调试遗留项目 990403、990404 已通过项目列表 UI 删除。
+生图模型只保留 SHAPI 参考地址：[https://www.shapi.vip/](https://www.shapi.vip/)。本轮未调用 SHAPI，也未调用任何真实 LLM、图片或视频 provider；所有运行仍是 mock runtime。Source Fact 与 ScriptIR 原始事实未被修改，生成候选和确认结果保持版本化并保留人工审核门禁。
 
-## 当前阻塞与后续顺序
+## 清理决策
 
-1. 资产中心需要可见的实体资产上传、审核、激活、绑定入口，并在 Scene Blocking 前可提供当前 scene asset。
-2. SceneBlocking 预览需要在提交前修复 camera axis subject，使其引用 participants。
-3. 通过后再继续 ShotPlan production confirm、canonical storyboard materialization、PromptIR、SHAPI-compatible mock IMAGE/VIDEO、QA 和 Delivery export。
+- 已保留两轮最新 JSON、Storyboard/ShotPlan/SceneBlocking/资产阻塞截图和审计文件。
+- 已丢弃不属于最新两轮证据的 `output/playwright/user-journey/01-director-runtime.png` 与 `02-director-runtime.png`。
+- 两轮 disposable project 已通过 UI 清理：990441, 990442。
 
-## 验证结果
+## 后续动作
 
-- 两次 runner 均无外部 host、无浏览器 console error。
-- 两次均通过 UI 删除自己的 disposable project。
-- ScriptIR production preparation 两次通过；canonical projection 返回 `read_only=true`、`authority_source=current_authority_pointers_only`。
-- SceneBlocking confirm 两次复现同一真实 blocker；未绕过门禁。
+1. 在 V3 production workspace 呈现 Production Asset Bridge。
+2. 提供当前 scene 的实体资产上传、审核、激活和绑定状态。
+3. 重新运行同一 mock journey；通过后再验证 PromptIR、SHAPI-compatible mock IMAGE/VIDEO、QA 与 Delivery export。
+
+## 证据文件
+
+- [runner summary](../../output/playwright/user-journey/summary.json)
+- [run 1](../../output/playwright/user-journey/run-1.json)
+- [run 2](../../output/playwright/user-journey/run-2.json)
+- [truth audit](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_TRUTH_AUDIT.json)
+- [browser QA](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json)
+- [network audit](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json)
+- [UX friction](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_UX_FRICTION.json)

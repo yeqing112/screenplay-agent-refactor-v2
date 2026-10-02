@@ -71,8 +71,23 @@ def compile_screenplay(
     validation = _validate_inputs(story_fact_sheet, scene_execution_cards)
     compilation_notes: list[str] = []
 
-    # If we have an existing script, skip LLM regeneration and just validate
-    if raw_script_content and len(raw_script_content) > 1000:
+    # If we have an existing script, skip LLM regeneration and just validate.
+    # Deterministic mock/runtime fixtures can be intentionally short while
+    # still carrying a complete scene header and dialogue.  Falling back to
+    # the fact-sheet projection in that case erases authored participants and
+    # makes downstream SceneBlocking appear to have an empty cast.
+    reusable_raw_script = bool(
+        raw_script_content
+        and (
+            len(raw_script_content) > 1000
+            or (
+                len(raw_script_content) > 100
+                and re.search(r"##\s*场景", raw_script_content)
+                and ("**" in raw_script_content or "：" in raw_script_content or ":" in raw_script_content)
+            )
+        )
+    )
+    if reusable_raw_script:
         compilation_notes.append("使用已有脚本内容，跳过LLM重新生成")
         constraint_report = _check_constraints(
             compiled_script=raw_script_content,

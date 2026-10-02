@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from typing import Any
 
 SHOT_PLAN_CONTRACT_VERSION = "shot_plan_phase_c_v1"
@@ -214,6 +215,15 @@ def compile_shot_coverage(*, treatment: dict[str, Any], blocking: dict[str, Any]
                 for reaction in contract.get("reaction_contracts", []):
                     if "REACTION_COVERAGE" in shot.get("coverage_roles", []) and reaction.get("character_ref") in shot_subjects and str(reaction.get("reaction_contract_ref")) in set(map(str, shot.get("reaction_contract_refs", []))):
                         reaction_results.append({"reaction_contract_ref": reaction["reaction_contract_ref"], "satisfied_by": [shot_identity], "complete": True})
+                # Legacy Phase B projections expose the stable reaction refs
+                # without the expanded reaction contract objects. The
+                # coverage role plus an exact ref is sufficient to satisfy
+                # that already-authored obligation.
+                if not contract.get("reaction_contracts") and "REACTION_COVERAGE" in shot.get("coverage_roles", []):
+                    declared_reactions = set(map(str, shot.get("reaction_contract_refs", [])))
+                    for reaction_ref in contract.get("reaction_contract_refs", []):
+                        if str(reaction_ref) in declared_reactions:
+                            reaction_results.append({"reaction_contract_ref": str(reaction_ref), "satisfied_by": [shot_identity], "complete": True})
                 if "INSERT_EVIDENCE" in shot.get("coverage_roles", []):
                     shot_props = set(map(str, binding.get("prop_refs", [])))
                     for prop in contract.get("required_prop_refs", []):
@@ -243,7 +253,7 @@ def compile_shot_continuity(*, shots: list[dict[str, Any]], blocking: dict[str, 
         row = {"shot_id": sid, "axis_ref": axis_ref, "axis_policy": c.get("axis_policy", "PRESERVE"), "screen_side_assignments": c.get("screen_side_assignments", {}), "look_direction": c.get("look_direction", {}), "blocking_state_refs": (shot.get("spatial_binding") or {}).get("blocking_state_refs", [])}
         if axis_ref and axis_ref not in axes and c.get("axis_applicability") != "NOT_APPLICABLE":
             row["error"] = "SHOT_AXIS_REF_INVALID"; errors.append({"code": "SHOT_AXIS_REF_INVALID", "shot_id": sid})
-        if previous and axis_ref == previous.get("axis_ref") and c.get("axis_policy") != "MOTIVATED_CROSS":
+        if previous and axis_ref and axis_ref == previous.get("axis_ref") and c.get("axis_policy") != "MOTIVATED_CROSS":
             if row.get("screen_side_assignments") != previous.get("screen_side_assignments"):
                 row["error"] = "SHOT_AXIS_CONTINUITY_INVALID"; errors.append({"code": "SHOT_AXIS_CONTINUITY_INVALID", "shot_id": sid, "previous_shot_id": compiled[-1]["shot_id"]})
             if row.get("look_direction") != previous.get("look_direction"):
@@ -355,22 +365,52 @@ def validate_shot_plan_contract(*, plan: dict[str, Any], treatment: dict[str, An
 
 def build_phase_c_shot_plan(*, treatment: dict[str, Any], blocking: dict[str, Any], script_authority: dict[str, Any] | None = None) -> dict[str, Any]:
     """Create a deterministic, full-scene proposal from current Phase B inputs."""
-    contracts = build_beat_coverage_contracts(treatment=treatment, blocking=blocking)
+    # Use the same Phase C requirement projection that the API stores in the
+    # authority contract. This keeps reaction refs and requirement ids aligned
+    # between the deterministic candidate and later materialization validation.
+    contracts = build_shot_requirements(treatment=treatment, blocking=blocking).get("requirements", [])
+    interaction_axes = _interaction_axes(blocking)
     shots = []
     for i, beat in enumerate(_beats(treatment), 1):
         bid, event = str(beat["beat_id"]), str(beat.get("event") or "")
         decision = _decisions(treatment).get(bid, {})
         roles = ["PRIMARY_BEAT_COVERAGE"]
-        if "REACTION_COVERAGE" in next(c["required_coverages"] for c in contracts if c["beat_ref"] == bid): roles.append("REACTION_COVERAGE")
-        contract = next(c for c in contracts if c["beat_ref"] == bid)
+        # Phase C authority requirements use ``beat_refs`` (a requirement may
+        # cover more than one beat); older projections used a singular
+        # ``beat_ref``.  Accept both shapes at this deterministic boundary.
+        contract = next((c for c in contracts if str(c.get("beat_ref") or "") == bid or bid in [str(x) for x in (c.get("beat_refs") or [])]), None)
+        if contract is None:
+            contract = {"requirement_id": f"REQ_{bid}", "required_coverages": [], "reaction_contract_refs": [], "required_prop_refs": []}
+        if "REACTION_COVERAGE" in contract.get("required_coverages", []): roles.append("REACTION_COVERAGE")
         if "INSERT_EVIDENCE" in contract["required_coverages"]: roles.append("INSERT_EVIDENCE")
         if i == len(_beats(treatment)): roles.append("SCENE_EXIT_COVERAGE")
         state = _blocking_state(blocking, bid)
         subjects = [str(x) for x in (beat.get("characters") or beat.get("participants") or []) if str(x).strip()]
+        reaction_contracts = [x for x in (decision.get("reaction_contracts") or []) if isinstance(x, dict)]
+        for reaction in reaction_contracts:
+            character_ref = str(reaction.get("character_ref") or reaction.get("character_id") or "").strip()
+            if character_ref and character_ref not in subjects:
+                # A legacy treatment may use the aggregate SCENE_CAST token
+                # without repeating it in beat.characters. Preserve that
+                # authored contract in the canonical coverage projection.
+                subjects.append(character_ref)
         framing = "INSERT" if "INSERT_EVIDENCE" in roles else ("MEDIUM_CLOSE" if "REACTION_COVERAGE" in roles else "MEDIUM")
         purpose_map = {"INTRODUCE_ANOMALY": "REVEAL_INFORMATION", "CONFIRM_EVIDENCE": "CONFIRM_EVIDENCE", "ESCALATE_THREAT": "ESCALATE_THREAT", "SHIFT_POWER": "SHIFT_POWER", "HOOK_NEXT_SCENE": "SCENE_EXIT", "RAISE_SUSPICION": "WITHHOLD_INFORMATION", "TRIGGER_DECISION": "REDIRECT_ATTENTION", "SETUP_RELATIONSHIP": "ESTABLISH_RELATIONSHIP"}
         decision_id = str(decision.get("decision_id") or "")
-        shot = {"shot_id": f"SH_{str(treatment.get('scene_id') or blocking.get('scene_id') or 'SCENE').replace('-', '_')}_{i:03d}", "scene_id": str(treatment.get("scene_id") or blocking.get("scene_id") or ""), "beat_refs": [bid], "director_decision_refs": [decision_id] if decision_id else [], "shot_purpose": "SCENE_EXIT" if i == len(_beats(treatment)) else purpose_map.get(str(decision.get("dramatic_purpose") or ""), "FOLLOW_ACTION"), "coverage_roles": roles, "dramatic_payload": {"primary_subject": subjects[0] if subjects else "", "secondary_subjects": subjects[1:], "information_delivered": [str(x) for x in (decision.get("audience_state_delta") or {}).get("knowledge_added", [])] if isinstance(decision.get("audience_state_delta"), dict) else [], "reaction_required": [str(x.get("character_ref")) for x in (decision.get("reaction_contracts") or []) if isinstance(x, dict) and x.get("character_ref")]}, "spatial_binding": {"blocking_state_ref": state.get("state_ref", bid), "subject_zones": state.get("subject_zones", {}), "prop_refs": contract.get("required_prop_refs", [])}, "information_visibility": "CHARACTER_AND_AUDIENCE", "camera_state": {"framing_class": framing, "orientation": "EYE_LEVEL", "support": "STATIC", "movement": "NONE", "subject_binding": subjects}, "continuity_contract": {"axis_ref": str(blocking.get("interaction_axis") or blocking.get("axis_ref") or "AXIS_UNSPECIFIED"), "axis_policy": "PRESERVE", "blocking_state_ref": state.get("state_ref", bid), "screen_direction_state": {}, "prop_refs": contract.get("required_prop_refs", [])}, "temporal_intent": {"duration_mode": "REACTION_HOLD" if "REACTION_COVERAGE" in roles else "ACTION_COMPLETION", "cut_trigger": event}, "camera_segments": [{"camera_state": "single_continuous_take"}], "estimated_duration_ms": int(max(1000, float(beat.get("duration_seconds") or 3) * 1000)), "shot_description": event}
+        continuity_contract = {"axis_ref": str(blocking.get("interaction_axis") or blocking.get("axis_ref") or "") if interaction_axes else "", "axis_policy": "PRESERVE", "axis_applicability": "REQUIRED" if interaction_axes else "NOT_APPLICABLE", "blocking_state_ref": state.get("state_ref", bid), "screen_direction_state": {}, "prop_refs": contract.get("required_prop_refs", [])}
+        axis_contract = {"axis_ref": continuity_contract.get("axis_ref", ""), "axis_policy": "PRESERVE", "axis_applicability": continuity_contract.get("axis_applicability", "NOT_APPLICABLE")}
+        shot_id = f"SH_{str(treatment.get('scene_id') or blocking.get('scene_id') or 'SCENE').replace('-', '_')}_{i:03d}"
+        authored_duration_ms = float(beat.get("duration_seconds") or 3) * 1000
+        action_units = [part for part in re.split(r"[。！？；]|随后|然后|接着|再将|再把|并将|并把|同时", event) if str(part).strip()]
+        # Keep deterministic shots executable without silently dropping an
+        # authored action.  A beat with three or more visible action units
+        # receives the existing preflight's six-second carrying capacity;
+        # human review can still shorten or split it later.
+        duration_ms = int(max(1000, authored_duration_ms, min(15000, max(1, len(action_units)) * 2000)))
+        subject_zones = dict(state.get("subject_zones", {})) if isinstance(state.get("subject_zones"), dict) else {}
+        for subject in subjects:
+            subject_zones.setdefault(subject, "scene_center")
+        shot = {"shot_id": shot_id, "plan_shot_id": shot_id, "scene_id": str(treatment.get("scene_id") or blocking.get("scene_id") or ""), "beat_refs": [bid], "requirement_refs": [str(contract.get("requirement_id") or f"REQ_{bid}")], "director_decision_refs": [decision_id] if decision_id else [], "shot_purpose": "SCENE_EXIT" if i == len(_beats(treatment)) else purpose_map.get(str(decision.get("dramatic_purpose") or ""), "FOLLOW_ACTION"), "coverage_roles": roles, "reaction_contract_refs": [str(x) for x in contract.get("reaction_contract_refs", [])], "event": event, "action_beats": [{"action": event}], "duration_hint_seconds": round(duration_ms / 1000, 2), "camera": {"movement": "static"}, "entry_state": state, "exit_state": {"state_ref": state.get("state_ref", bid), "last_event": event}, "dramatic_payload": {"primary_subject": subjects[0] if subjects else "", "secondary_subjects": subjects[1:], "information_delivered": [str(x) for x in (decision.get("audience_state_delta") or {}).get("knowledge_added", [])] if isinstance(decision.get("audience_state_delta"), dict) else [], "reaction_required": [str(x.get("character_ref")) for x in reaction_contracts if x.get("character_ref")]}, "spatial_binding": {"blocking_state_ref": state.get("state_ref", bid), "blocking_state_refs": [state.get("state_ref", bid)], "subject_zones": subject_zones, "prop_refs": contract.get("required_prop_refs", [])}, "information_visibility": "CHARACTER_AND_AUDIENCE", "camera_state": {"framing_class": framing, "orientation": "EYE_LEVEL", "support": "STATIC", "movement": "NONE", "subject_binding": subjects}, "axis_contract": axis_contract, "continuity_contract": continuity_contract, "continuous_take": True, "cut_events": [], "temporal_intent": {"duration_mode": "REACTION_HOLD" if "REACTION_COVERAGE" in roles else "ACTION_COMPLETION", "cut_trigger": event}, "camera_segments": [{"camera_state": "single_continuous_take"}], "estimated_duration_ms": duration_ms, "shot_description": event}
         shots.append(shot)
     coverage = compile_shot_coverage(treatment=treatment, blocking=blocking, shots=shots, contracts=contracts)
     continuity = compile_shot_continuity(shots=shots, blocking=blocking)

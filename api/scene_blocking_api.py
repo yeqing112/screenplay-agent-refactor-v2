@@ -112,7 +112,11 @@ def _validate_blocking_candidate(raw: Any, baseline: dict[str, Any], *, producti
             raise ValueError("BLOCKING_SEMANTIC_CONTRACT_REQUIRED: candidate must contain the canonical blocking contract")
         candidate = validate_scene_blocking_candidate_authority(raw if isinstance(raw, dict) else {}, baseline)
         canonical_keys = {"initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash"}
-        missing = sorted(key for key in canonical_keys if key not in raw or raw.get(key) in (None, "", []))
+        # An empty transition list is a valid deterministic contract when a
+        # scene has no authored movement changes. The field must be present,
+        # while the compiler decides whether the empty list is semantically
+        # valid for the declared beat set.
+        missing = sorted(key for key in canonical_keys if key not in raw or raw.get(key) in (None, ""))
         if missing:
             raise ValueError(f"BLOCKING_SEMANTIC_CONTRACT_REQUIRED: missing {', '.join(missing)}")
         if raw.get("compiler_version") != COMPILER_VERSION:
@@ -313,17 +317,27 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
         if is_production:
             # Geometry and required continuity are explicit production blockers;
             # advisory legacy rows never satisfy the gate.
-            extra_errors = list(blocking.get("validation", {}).get("errors", []))
+            spatial_errors = list(blocking.get("validation", {}).get("errors", []))
+            axis = blocking.get("camera_axis") if isinstance(blocking.get("camera_axis"), dict) else {}
+            participants = blocking.get("participants") if isinstance(blocking.get("participants"), list) else []
+            if not participants and not str(axis.get("subject_a") or "").strip() and not str(axis.get("subject_b") or "").strip():
+                spatial_errors = [item for item in spatial_errors if str(item.get("code") or "") != "INVALID_AXIS_SUBJECT"]
+            continuity_errors = list(continuity_state.get("unresolved", []))
+            asset_errors: list[dict[str, Any]] = []
             if asset_authority.get("authority_class") != "LOCKED_PRODUCTION_CONSTRAINT":
-                extra_errors.extend(asset_authority.get("authoring_pending", []) or [{"code": "SCENE_ASSET_NOT_LOCKED", "severity": "blocker"}])
-            extra_errors.extend(continuity_state.get("unresolved", []))
-            blocking["production_blockers"] = extra_errors
-            blocking["validation"] = {**(blocking.get("validation") or {}), "status": "qualified" if not extra_errors else "blocked", "errors": extra_errors, "blocker_count": len(extra_errors), "warning_count": int((blocking.get("validation") or {}).get("warning_count") or 0)}
+                asset_errors.extend(asset_authority.get("authoring_pending", []) or [{"code": "SCENE_ASSET_NOT_LOCKED", "severity": "blocker"}])
+            # Asset identity is deliberately carried as an explicit readiness
+            # signal, but it is consumed after ShotPlan/Storyboard
+            # materialization. SceneBlocking must remain confirmable so the
+            # authored order can be SceneBlocking -> ShotPlan -> assets.
+            production_blockers = spatial_errors + continuity_errors
+            blocking["production_blockers"] = production_blockers
+            blocking["asset_blockers"] = asset_errors
+            blocking["validation"] = {**(blocking.get("validation") or {}), "status": "qualified" if not production_blockers else "blocked", "errors": production_blockers, "blocker_count": len(production_blockers), "warning_count": int((blocking.get("validation") or {}).get("warning_count") or 0)}
             # Keep the legacy V2 unknowns projection stable for callers that
-            # only ask about spatial facts.  Production prerequisites such as
-            # an unbound scene asset live in the explicit blocker list and are
-            # enforced at confirmation/ShotPlan gates.
-            blocking["unknowns"] = [str(item.get("message") or item.get("code") or item) for item in extra_errors if isinstance(item, dict) and item.get("code") not in {"SCENE_ASSET_MISSING", "SCENE_ASSET_NOT_LOCKED", "SCENE_ASSET_GEOMETRY_MISSING", "SCENE_ASSET_SCENE_ID_MISMATCH"}]
+            # only ask about spatial facts. Asset readiness remains visible in
+            # asset_blockers and is enforced by materialization/generation.
+            blocking["unknowns"] = [str(item.get("message") or item.get("code") or item) for item in production_blockers if isinstance(item, dict)]
         repairs: list[dict[str, Any]] = []
         if blocking.get("validation", {}).get("status") == "blocked" and not is_production:
             repaired = repair_scene_blocking(blocking, max_attempts=2)
@@ -344,6 +358,22 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
             # otherwise a later confirm would target an already-finalized row.
             existing = session.query(SceneBlocking).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, evidence_fingerprint=blocking["evidence_fingerprint"], status="draft").first()
             if existing:
+                # A draft may survive a UI project cleanup in the local
+                # SQLite fixture. Refresh its server-owned compiled fields so
+                # a reused evidence packet cannot replay an obsolete blocked
+                # validation result.
+                if _text(getattr(existing, "validation_fingerprint", "")) != _text(blocking.get("validation_fingerprint")) or _text(getattr(existing, "payload_hash", "")) != _text(blocking.get("payload_hash")):
+                    existing.participants = json.dumps(blocking["participants"], ensure_ascii=False)
+                    existing.beat_transitions = json.dumps(blocking["beat_transitions"], ensure_ascii=False)
+                    existing.unknowns = json.dumps(blocking["unknowns"], ensure_ascii=False)
+                    existing.spatial_model = json.dumps(blocking.get("space", {}), ensure_ascii=False)
+                    existing.camera_axis = json.dumps(blocking.get("camera_axis", {}), ensure_ascii=False)
+                    existing.validation = json.dumps(blocking.get("validation", {}), ensure_ascii=False)
+                    existing.model_info = json.dumps(blocking.get("model_info", {}), ensure_ascii=False)
+                    existing.validation_fingerprint = blocking.get("validation_fingerprint", "")
+                    existing.payload_hash = blocking.get("payload_hash", "")
+                    existing.updated_at = datetime.now()
+                    session.commit()
                 persisted_id = existing.id
             else:
                 persisted_spatial_model = dict(blocking.get("space", {}) if isinstance(blocking.get("space", {}), dict) else {})
@@ -479,6 +509,12 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
                     candidate_source[field] = persisted_contract[field]
                 elif field in baseline:
                     candidate_source[field] = baseline[field]
+            # Validation is derived evidence, never an editable browser field.
+            # Recompute from the current server baseline so a stale draft
+            # cannot replay an obsolete blocker after a local project id is
+            # reused.
+            candidate_source["validation"] = baseline.get("validation", {})
+            candidate_source["unknowns"] = baseline.get("unknowns", [])
         candidate = _validate_blocking_candidate(candidate_source, baseline, production=is_production)
     except ValueError as exc:
         message = str(exc)

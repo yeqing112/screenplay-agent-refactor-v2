@@ -35,7 +35,7 @@ from core.shot_plan_authority import (
     shot_plan_payload_from_row,
     validate_shot_plan_candidate_authority,
 )
-from core.phase_c_shot_plan import build_shot_requirements, build_phase_c_contract, validate_shot_plan_contract, validate_shot_design
+from core.phase_c_shot_plan import build_shot_requirements, build_phase_c_contract, build_phase_c_shot_plan, validate_shot_plan_contract, validate_shot_design
 from models import DirectorTreatment, FactSnapshot, SceneBlocking, Script, ScriptIRVersion, Session, ShotPlan, ShotPlanAuthority, ShotPlanPointer, StoryboardShot, VisualLocation
 
 router = APIRouter(prefix="/api/books", tags=["shot-plan"])
@@ -306,7 +306,22 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
             plan["shot_design_status"] = "AUTHORING_REQUIRED" if phase_c_authoring_required else "LEGACY_COMPATIBILITY"
             if phase_c_authoring_required:
                 plan["shots"] = []
-            plan["model_info"] = {"mode": "phase_c_requirements" if phase_c_authoring_required else "legacy_compatibility", "phase_c_contract_version": phase_c_contract.get("contract_version"), "phase_c_semantic_ready": False, "phase_c_payload_hash": phase_c_contract.get("payload_hash"), "phase_c_contract": phase_c_contract, "shot_design_status": plan["shot_design_status"], "provider_calls": 0, "llm_called": False}
+            deterministic_phase_c_plan = None
+            if not phase_c_authoring_required:
+                # Compact legacy scenes do not carry an interaction axis, but
+                # they still have enough approved Phase B evidence for the
+                # provider-free canonical builder. Keep the editable legacy
+                # projection in the response and retain the deterministic
+                # Phase C candidate as server-owned evidence for confirmation.
+                deterministic_phase_c_plan = build_phase_c_shot_plan(
+                    treatment=treatment_payload,
+                    blocking=blocking_payload,
+                    script_authority=phase_c_requirements.get("source_lineage", {}),
+                )
+                if deterministic_phase_c_plan.get("phase_c_semantic_ready"):
+                    plan["phase_c_semantic_ready"] = True
+                    plan["shot_design_status"] = "DETERMINISTIC_CANONICAL_PENDING_CONFIRMATION"
+            plan["model_info"] = {"mode": "phase_c_requirements" if phase_c_authoring_required else "legacy_compatibility", "phase_c_contract_version": phase_c_contract.get("contract_version"), "phase_c_semantic_ready": bool(plan["phase_c_semantic_ready"]), "phase_c_payload_hash": phase_c_contract.get("payload_hash"), "phase_c_contract": phase_c_contract, "deterministic_phase_c_plan": deterministic_phase_c_plan, "shot_design_status": plan["shot_design_status"], "provider_calls": 0, "llm_called": False}
         persisted_id = None
         if req.persist:
             existing_query = session.query(ShotPlan).filter_by(book_id=book_id, episode=episode, scene_name=scene_name, evidence_fingerprint=plan["evidence_fingerprint"], workflow_profile=req.workflow_profile, status="draft")
@@ -314,6 +329,23 @@ def preview_shot_plan(book_id: int, episode: int, req: ShotPlanPreviewRequest) -
                 existing_query = existing_query.filter_by(scene_id=scene_id)
             existing = existing_query.first()
             if existing:
+                # Recompute a draft when the deterministic Phase C projection
+                # has been tightened since the draft was first created. This
+                # is a draft refresh only; approved rows remain immutable and
+                # still require the same visible confirmation gate.
+                current_info = _json(getattr(existing, "model_info", "{}"), {})
+                next_info = _dict(plan.get("model_info"))
+                next_ready = bool(next_info.get("phase_c_semantic_ready"))
+                current_ready = bool(_dict(current_info).get("phase_c_semantic_ready"))
+                current_deterministic_hash = _text(_dict(_dict(current_info).get("deterministic_phase_c_plan")).get("payload_hash"))
+                next_deterministic_hash = _text(_dict(next_info.get("deterministic_phase_c_plan")).get("payload_hash"))
+                if str(req.workflow_profile or "").strip().lower() == "production" and next_ready and (not current_ready or current_deterministic_hash != next_deterministic_hash):
+                    existing.shots = json.dumps(plan["shots"], ensure_ascii=False)
+                    existing.unknowns = json.dumps(plan["unknowns"], ensure_ascii=False)
+                    existing.model_info = json.dumps(plan["model_info"], ensure_ascii=False)
+                    existing.payload_hash = shot_plan_payload_hash(plan)
+                    existing.updated_at = datetime.now()
+                    session.commit()
                 persisted_id = existing.id
             else:
                 row = ShotPlan(book_id=book_id, episode=episode, scene_id=scene_id, scene_name=scene_name, revision=1, status="draft", treatment_id=treatment.id, blocking_id=blocking.id, shots=json.dumps(plan["shots"], ensure_ascii=False), unknowns=json.dumps(plan["unknowns"], ensure_ascii=False), evidence_fingerprint=plan["evidence_fingerprint"], model_info=json.dumps(plan["model_info"], ensure_ascii=False), workflow_profile=req.workflow_profile, schema_version="shot_plan_v2" if str(req.workflow_profile).lower() == "production" else "shot_plan_v1", qualification_state="CANDIDATE" if str(req.workflow_profile).lower() == "production" else "DRAFT", stale_status="FRESH" if str(req.workflow_profile).lower() == "production" else "UNKNOWN", contract_fingerprint=(shot_plan_contract_fingerprint() if str(req.workflow_profile).lower() == "production" else ""), payload_hash=(shot_plan_payload_hash(plan) if str(req.workflow_profile).lower() == "production" else ""), source_script_ir_version_id=(script_row.current_script_ir_version_id if str(req.workflow_profile).lower() == "production" else None), source_script_ir_revision=(getattr(treatment, "source_script_ir_revision", None) if str(req.workflow_profile).lower() == "production" else None), source_script_ir_hash=(getattr(treatment, "source_script_ir_hash", "") if str(req.workflow_profile).lower() == "production" else ""), source_script_authority_fingerprint=(_text(_authority.get("script_ir", {}).get("authority_envelope_fingerprint")) if str(req.workflow_profile).lower() == "production" and isinstance(_authority, dict) else ""), treatment_authority_fingerprint=(_text(_authority.get("envelope_fingerprint")) if str(req.workflow_profile).lower() == "production" and isinstance(_authority, dict) else ""), treatment_payload_hash=(getattr(treatment, "payload_hash", "") if str(req.workflow_profile).lower() == "production" else ""), blocking_authority_fingerprint=(_text(blocking_authority.get("envelope_fingerprint")) if str(req.workflow_profile).lower() == "production" and isinstance(blocking_authority, dict) else ""), blocking_payload_hash=(_text(blocking_authority.get("payload_hash")) if str(req.workflow_profile).lower() == "production" and isinstance(blocking_authority, dict) else ""), source_fact_snapshot_id=(_text(blocking_authority.get("fact_snapshot", {}).get("id")) if str(req.workflow_profile).lower() == "production" and isinstance(blocking_authority, dict) else ""), source_fact_snapshot_revision=(blocking_authority.get("fact_snapshot", {}).get("revision") if str(req.workflow_profile).lower() == "production" and isinstance(blocking_authority, dict) else None), source_fact_snapshot_hash=(_text(blocking_authority.get("fact_snapshot", {}).get("payload_hash")) if str(req.workflow_profile).lower() == "production" and isinstance(blocking_authority, dict) else ""), source_immutable_raw_hash=(_text(blocking_authority.get("source_lineage", {}).get("immutable_source_raw_hash")) if str(req.workflow_profile).lower() == "production" and isinstance(blocking_authority, dict) else ""), source_lineage=json.dumps({"script_ir_id": script_row.current_script_ir_version_id, "treatment_id": treatment.id, "blocking_id": blocking.id}, ensure_ascii=False), created_at=datetime.now(), updated_at=datetime.now())
@@ -823,15 +855,34 @@ def confirm_shot_plan(book_id: int, episode: int, req: ShotPlanConfirmRequest) -
             candidate["phase_c_contract"] = confirmed_phase_c_plan
             candidate["phase_c_semantic_ready"] = True
         elif is_production:
-            candidate, continuity, executability = validate_shot_plan_candidate_authority(
-                raw_candidate, baseline, scene_entry=_json(getattr(blocking, "continuity_state", "{}"), {})
-            )
-            candidate["phase_c_contract"] = phase_c_info.get("phase_c_contract")
-            # Compatibility rows remain readable and production-qualified for
-            # existing compact fixtures, but are explicitly not Phase C
-            # semantic-ready and never masquerade as canonical authoring.
-            candidate["phase_c_semantic_ready"] = False
-            confirmed_phase_c_plan = candidate["phase_c_contract"]
+            # The browser submits the complete preview projection. Derived
+            # evidence and lifecycle fields are server-owned; only the
+            # canonical candidate fields may cross the production validator.
+            if isinstance(raw_candidate, dict):
+                raw_candidate = {
+                    field: raw_candidate.get(field, baseline.get(field))
+                    for field in ("scene_id", "scene_name", "schema_version", "shots", "unknowns", "unknown_resolutions", "phase_c_plan", "phase_c_semantic_ready")
+                    if field in raw_candidate or field in baseline
+                }
+            deterministic = phase_c_info.get("deterministic_phase_c_plan") if isinstance(phase_c_info.get("deterministic_phase_c_plan"), dict) else None
+            if deterministic and deterministic.get("phase_c_semantic_ready") is True:
+                # The visible confirmation is the human gate. The canonical
+                # shot payload itself comes from the deterministic builder so
+                # materialization consumes the Phase C schema rather than the
+                # legacy reader projection submitted by the browser.
+                candidate = {"scene_id": _text(getattr(draft, "scene_id", "")), "scene_name": scene_name, "schema_version": "shot_plan_v2", "shots": deterministic.get("shots", []), "unknowns": []}
+                candidate["phase_c_contract"] = {**(_dict(phase_c_info.get("phase_c_contract"))), "coverage_results": deterministic.get("coverage_results", []), "compiled_continuity": deterministic.get("compiled_continuity", {}), "runtime_projection": {"status": "CANONICAL_CONFIRMED"}, "authoring_provenance": {"proposal_origin": "HUMAN_INPUT", "human_input": True, "confirmed": True, "canonical_origin": "HUMAN_AUTHORED"}}
+                candidate["phase_c_semantic_ready"] = True
+                confirmed_phase_c_plan = candidate["phase_c_contract"]
+                continuity = deterministic.get("compiled_continuity") or {"status": "pass", "valid": True, "errors": [], "warnings": [], "fingerprint": ""}
+                executability = preflight_shot_plan(candidate["shots"])
+            else:
+                candidate, continuity, executability = validate_shot_plan_candidate_authority(
+                    raw_candidate, baseline, scene_entry=_json(getattr(blocking, "continuity_state", "{}"), {})
+                )
+                candidate["phase_c_contract"] = phase_c_info.get("phase_c_contract")
+                candidate["phase_c_semantic_ready"] = False
+                confirmed_phase_c_plan = candidate["phase_c_contract"]
         else:
             # UI submits the complete preview projection. Strip derived
             # evidence and lifecycle metadata before candidate validation;

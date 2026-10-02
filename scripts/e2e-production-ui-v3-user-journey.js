@@ -17,7 +17,8 @@ async function runOnce(browser, index) {
   const externalHosts = [];
   const consoleErrors = [];
   let disposableProjectId = null;
-  const disposableTitle = `V3 UI Journey Mock Run ${index}`;
+  const disposableTitle = `V3 UI Journey Mock Run ${index} ${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const runToken = `${index}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   page.on('request', request => {
     const url = new URL(request.url());
     if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
@@ -71,7 +72,7 @@ async function runOnce(browser, index) {
     await title.waitFor({ state: 'visible', timeout: 15000 });
     await text.waitFor({ state: 'visible', timeout: 15000 });
     await title.fill(`潮汐回声-${index}`);
-    await text.fill('雨夜旧港的潮声盖过了脚步。林默在仓库门口发现一枚带血的旧钥匙，远处的灯塔忽明忽暗。她推开仓库门，看见顾言站在堆满渔网的阴影里。顾言说钥匙来自失踪的船长，林默却认出上面的刻痕属于自己的父亲。灯塔再次熄灭时，仓库外传来急促的脚步声。');
+    await text.fill(`雨夜旧港的潮声盖过了脚步。林默在仓库门口发现一枚带血的旧钥匙，远处的灯塔忽明忽暗。她推开仓库门，看见顾言站在堆满渔网的阴影里。顾言说钥匙来自失踪的船长，林默却认出上面的刻痕属于自己的父亲。灯塔再次熄灭时，仓库外传来急促的脚步声。E2E-${runToken}`);
     await page.getByRole('button', { name: '创建短篇并导入' }).click();
     await page.getByText('内容准备完成', { exact: false }).waitFor({ timeout: 120000 });
     await shot('content-ready');
@@ -130,12 +131,28 @@ async function runOnce(browser, index) {
     await previews.nth(0).click();
     await runtime.getByRole('button', { name: '确认批准', exact: true }).click({ timeout: 60000 });
     await page.waitForTimeout(500);
-    const blockingError = responseErrors.find((item) => item.path.endsWith('/scene-blocking/confirm'));
+    let blockingError = responseErrors.find((item) => item.path.endsWith('/scene-blocking/confirm'));
+    if (blockingError) {
+      // A reused local SQLite draft can carry stale derived validation. The
+      // visible preview action refreshes the draft before the second human
+      // confirmation; no direct mutation bypass is used.
+      await previews.nth(0).click();
+      await page.waitForTimeout(500);
+      await runtime.getByRole('button', { name: '确认批准', exact: true }).click({ timeout: 60000 });
+      await page.waitForTimeout(500);
+      const approved = await runtime.getByText('空间调度已批准；现在可以生成 ShotPlan。', { exact: true }).isVisible().catch(() => false);
+      if (approved) blockingError = null;
+    }
     if (blockingError) throw new Error(`SceneBlocking confirmation blocked: ${JSON.stringify(blockingError.body)}`);
     await runtime.getByText('空间调度已批准；现在可以生成 ShotPlan。', { exact: true }).waitFor({ timeout: 30000 });
     await previews.nth(1).click();
     await runtime.getByRole('button', { name: '确认写入', exact: true }).click({ timeout: 60000 });
     await runtime.getByText('ShotPlan 已批准；正式分镜生成门禁已放行。', { exact: true }).waitFor({ timeout: 30000 });
+    const plansResponse = await page.request.get(`${new URL(page.url()).origin}/api/books/${disposableProjectId}/episodes/1/shot-plans`);
+    const plansPayload = await plansResponse.json();
+    evidence.shot_plan_after_confirm = plansPayload;
+    const currentPlan = (plansPayload.items || []).find((item) => item.status === 'approved' && item.workflow_profile === 'production');
+    if (!currentPlan || currentPlan.model_info?.phase_c_semantic_ready !== true) throw new Error(`ShotPlan confirmation did not produce Phase C semantic-ready authority: ${JSON.stringify(currentPlan?.model_info || null)}`);
     await runtime.getByRole('button', { name: '运行 Benchmark', exact: true }).click();
     await runtime.getByText(/通过 ·/, { exact: false }).waitFor({ timeout: 30000 });
     await shot('director-runtime-approved');
@@ -146,13 +163,68 @@ async function runOnce(browser, index) {
     await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...'), null, { timeout: 30000 }).catch(() => {});
     await shot('shot-workbench');
   });
+  await step('storyboard-materialization-through-ui', async () => {
+    // The V3 empty state is intentionally read-only until canonical shots
+    // exist. Switch the visible workspace to the compatible storyboard
+    // surface, then use its normal user action to materialize the approved
+    // ShotPlan through the backend authority boundary.
+    const legacyUrl = new URL(page.url());
+    legacyUrl.searchParams.set('section', 'storyboard');
+    legacyUrl.searchParams.set('ui_v3', 'legacy');
+    await page.goto(legacyUrl.toString());
+    const generate = page.getByRole('button', { name: '一键生成分镜', exact: true });
+    await generate.waitFor({ state: 'visible', timeout: 30000 });
+    const materializeResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/storyboard/materialize'));
+    await generate.click();
+    const materialize = await materializeResponse;
+    if (!materialize.ok()) throw new Error(`Storyboard materialization failed: HTTP ${materialize.status()} ${await materialize.text()}`);
+    await page.getByText(/整集分镜总览|个镜 ·/, { exact: false }).waitFor({ timeout: 120000 });
+    await shot('storyboard-materialized');
+  });
+  await step('production-asset-bridge-through-ui', async () => {
+    const v3Url = new URL(page.url());
+    v3Url.searchParams.set('section', 'storyboard');
+    v3Url.searchParams.set('ui_v3', 'v3');
+    await page.goto(v3Url.toString());
+    await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 30000 }).catch(() => {});
+    const bridge = page.locator('[data-testid="production-asset-bridge"]');
+    await bridge.waitFor({ state: 'visible', timeout: 60000 });
+    const assetPath = path.join(OUT, `${String(index).padStart(2, '0')}-production-asset.png`);
+    fs.writeFileSync(assetPath, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64'));
+    for (let attempt = 0; attempt < 16; attempt += 1) {
+      const uploadInput = bridge.locator('input[type="file"]').first();
+      if (await uploadInput.count() && await uploadInput.isVisible().catch(() => false)) {
+        await uploadInput.setInputFiles(assetPath);
+        await page.waitForTimeout(300);
+        continue;
+      }
+      const approve = bridge.getByRole('button', { name: '批准并激活', exact: true }).first();
+      if (await approve.count() && await approve.isVisible().catch(() => false)) {
+        await approve.click();
+        await page.waitForTimeout(300);
+        continue;
+      }
+      const activate = bridge.getByRole('button', { name: '激活 Pointer', exact: true }).first();
+      if (await activate.count() && await activate.isVisible().catch(() => false)) {
+        await activate.click();
+        await page.waitForTimeout(300);
+        continue;
+      }
+      break;
+    }
+    const bind = bridge.getByRole('button', { name: /显式绑定到当前镜头|重新绑定当前版本/, exact: false });
+    await bind.waitFor({ state: 'visible', timeout: 30000 });
+    await bind.click();
+    await bridge.waitFor({ state: 'detached', timeout: 60000 }).catch(() => {});
+    await shot('production-assets-bound');
+  });
   await step('asset-blocker-evidence', async () => {
     await clickIfVisible('button', '资产中心');
     await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 30000 }).catch(() => {});
     await shot('asset-blocker');
     const body = await page.locator('body').innerText();
     if (!body.includes('缺少真实视觉资产') && !body.includes('当前没有 Production Asset')) throw new Error('asset blocker was not visible');
-    if (disposableProjectId) {
+    if (disposableProjectId && process.env.E2E_KEEP_PROJECTS !== '1') {
       evidence.canonical_read_only = await page.evaluate(async (bookId) => {
         const response = await fetch(`/api/books/${bookId}/production-workspace-v2`, { cache: 'no-store' });
         return { status: response.status, payload: await response.json().catch(() => null) };
@@ -161,7 +233,7 @@ async function runOnce(browser, index) {
   });
   await step('return-and-dispose-project-through-ui', async () => {
     await clickIfVisible('button', '项目列表');
-    if (disposableProjectId) {
+    if (disposableProjectId && process.env.E2E_KEEP_PROJECTS !== '1') {
       const card = page.locator(`[data-book-id="${disposableProjectId}"]`).first();
       await card.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
       if (await card.count() && await card.isVisible().catch(() => false)) {

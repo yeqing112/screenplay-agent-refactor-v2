@@ -275,7 +275,12 @@ def validate_scene_blocking(blocking: dict[str, Any], *, scene_canonical: dict[s
             if isinstance(value, dict) and value.get("authority") not in SPATIAL_AUTHORITIES:
                 errors.append({"code": "SPATIAL_AUTHORITY_INVALID", "severity": "blocker", "target_id": subject, "message": f"{field} has an unknown authority"})
     axis = blocking.get("camera_axis") if isinstance(blocking.get("camera_axis"), dict) else {}
-    if _name(axis.get("subject_a")) not in ids or (_name(axis.get("subject_b")) and _name(axis.get("subject_b")) not in ids):
+    axis_a = _name(axis.get("subject_a"))
+    axis_b = _name(axis.get("subject_b"))
+    # A compact scene with no declared participants has no camera axis to
+    # validate. Preserve the empty deterministic contract and defer asset and
+    # shot-level requirements to their own gates.
+    if (axis_a or axis_b) and (axis_a not in ids or (axis_b and axis_b not in ids)):
         errors.append({"code": "INVALID_AXIS_SUBJECT", "severity": "blocker", "message": "camera axis subjects must be participants"})
     if axis.get("crossed_axis") is True or axis.get("axis_violation") is True:
         errors.append({"code": "AXIS_VIOLATION", "severity": "blocker", "message": "camera placement crosses the established 180-degree axis"})

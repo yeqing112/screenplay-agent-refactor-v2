@@ -1,43 +1,26 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-ux-friction-v3",
-  "generated_at": "2026-10-02T01:48:52.078Z",
-  "conclusion": "PARTIAL / ASSET_BLOCKED",
+  "schema_version": "production-ui-v3-browser-user-journey-ux-friction-v4",
+  "generated_at": "2026-10-02T04:32:26.703Z",
+  "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
+  "conclusion": "PARTIAL / ASSET_BRIDGE_BLOCKED",
   "frictions": [
     {
-      "id": "CONTENT_ASYNC_WAIT",
-      "severity": "medium",
-      "evidence": "内容准备真实 UI 任务通常需要 60-70 秒；runner 已改为等待可见完成状态，timeout 120 秒。",
-      "recommendation": "在内容准备区显示任务阶段、task id 和失败原因。"
-    },
-    {
-      "id": "PRODUCTION_SCENE_ASSET_GATE",
-      "severity": "high",
-      "evidence": "SceneBlocking confirm 返回 SCENE_BLOCKING_NOT_READY，包含 SCENE_ASSET_MISSING。",
-      "recommendation": "在进入 SceneBlocking 前显示 Production Asset 摄取入口和缺失实体。"
-    },
-    {
-      "id": "AXIS_SUBJECT_VALIDATION",
-      "severity": "high",
-      "evidence": "同一响应包含 INVALID_AXIS_SUBJECT；候选 camera axis subject 不在 participants。",
-      "recommendation": "预览阶段直接标出非法 subject 并提供从 participants 选择的控件。"
-    },
-    {
-      "id": "ASSET_EMPTY_STATE_ACTION",
-      "severity": "high",
-      "evidence": "资产中心空状态没有从 UI 开始上传、审核、激活、绑定的入口。",
-      "recommendation": "将实体资产上传入口放入空状态，并保留人工审核门禁。"
-    },
-    {
-      "id": "LONG_CHAIN_PROGRESS",
-      "severity": "medium",
-      "evidence": "多模块切换期间出现“正在加载工作区”；runner 需要等待真实内容再截图。",
-      "recommendation": "为每个阶段提供明确的加载、成功和阻塞状态。"
+      "id": "ASSET_BRIDGE_NOT_RENDERED",
+      "severity": "blocker",
+      "surface": "Production UI V3",
+      "evidence": "[data-testid=\"production-asset-bridge\"] did not become visible in either run within 60s.",
+      "impact": "The visible journey cannot enter entity asset upload/review/activation/binding, so the next visual generation stage cannot be truthfully exercised.",
+      "recommended_fix": "Render the Production Asset Bridge in the V3 production workspace and expose the current scene asset binding state.",
+      "runs": [
+        1,
+        2
+      ]
     }
   ],
   "resolved_in_this_round": [
-    "content summary default-collapse misclick",
-    "legacy Markdown ScriptIR preparation",
-    "scene source-anchor first-anchor assumption",
-    "temporary projects 990403 and 990404 deleted through UI"
+    "ScriptIR preparation now preserves authored scene participants for short deterministic screenplay fixtures.",
+    "SceneBlocking axis subjects are accepted from the current participant projection.",
+    "Phase C ShotPlan accepts beat_ref and beat_refs projections and carries multi-action duration.",
+    "ShotPlan and Storyboard materialization now complete before the asset bridge gate."
   ]
 }

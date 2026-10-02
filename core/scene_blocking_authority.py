@@ -507,7 +507,11 @@ def resolve_current_authoritative_scene_blocking(session: Any, *, book_id: int, 
         if expected_asset_fp and expected_asset_fp != _text(asset_state.get("fingerprint")):
             mark_scene_blocking_stale(session, row, ["SCENE_ASSET_CHANGED"]); session.commit(); _raise("SCENE_ASSET_CHANGED", "Bound scene asset authority is stale.")
     model = _json(getattr(row, "spatial_model", "{}"), {})
-    envelope["phase_b_semantic_ready"] = bool(all(key in model and model.get(key) not in (None, "", []) for key in ("initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash")) and model.get("compiler_version") == COMPILER_VERSION)
+    # Empty transitions are a valid semantic contract for a scene whose
+    # spatial relationship is intentionally held constant across beats. The
+    # field must exist and the deterministic compiler hash still proves the
+    # contract; only absent/blank values are incomplete.
+    envelope["phase_b_semantic_ready"] = bool(all(key in model and model.get(key) not in (None, "") for key in ("initial_state", "blocking_transitions", "compiler_version", "compiled_states_hash")) and model.get("compiler_version") == COMPILER_VERSION)
     return row, envelope
 
 

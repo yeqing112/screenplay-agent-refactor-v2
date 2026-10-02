@@ -31,7 +31,7 @@ from core.director_treatment_authority import (
 from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
 from core.script_ir import resolve_script_payload
 import core.llm as llm_client
-from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
+from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
 
 router = APIRouter(prefix="/api/books", tags=["director-treatment"])
@@ -254,6 +254,23 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
                     value = str(item or "").strip()
                     if value:
                         participant_refs.add(value)
+        if profile == "production" and not participant_refs:
+            # Some deterministic screenplay compilers preserve the scene
+            # identity but omit the optional participant projection.  The
+            # episode outline already contains the source-derived cast; use
+            # it as advisory evidence for this review packet without writing
+            # back to ScriptIR or promoting an asset.
+            outline = (
+                session.query(EpisodeOutline)
+                .filter_by(book_id=book_id, episode=req.episode)
+                .order_by(EpisodeOutline.id.desc())
+                .first()
+            )
+            outline_chars = str(getattr(outline, "characters", "") or "") if outline else ""
+            for value in re.split(r"[,，、\\n]+", outline_chars):
+                value = value.strip()
+                if value:
+                    participant_refs.add(value)
         if participant_refs:
             makeup_rows = [
                 row for row in makeup_rows

@@ -254,14 +254,25 @@ def legacy_markdown_to_script_ir(markdown: str, *, book_id: int, episode: int) -
     """Best-effort one-time reconstruction; callers must mark needs_review."""
     scenes: list[dict[str, Any]] = []
     current: dict[str, Any] | None = None
+    # Legacy screenplay rows predate ScriptIR and therefore do not carry an
+    # explicit participant array. Recover only identities visibly authored as
+    # dialogue speakers. This is a read-only projection of immutable markdown;
+    # it does not create or mutate Character assets.
+    speaker_pattern = re.compile(r"^\s*(?:\*\*)?([^：:\[\]\n]{1,32})(?:\*\*)?[：:]\s*.+$")
+    ignored_speakers = {"时间", "地点", "场景", "镜头", "旁白", "动作", "画外音"}
     for line in str(markdown or "").splitlines():
         text = line.strip()
         heading = re.match(r"^#{2,4}\s+(.+?)\s*$", text)
         if heading:
-            current = {"name": heading.group(1).strip(), "beats": []}
+            current = {"name": heading.group(1).strip(), "beats": [], "participants": []}
             scenes.append(current)
         elif text and current is not None and not text.startswith("#"):
             current.setdefault("beats", []).append({"type": "action", "event": text})
+            speaker = speaker_pattern.match(text)
+            if speaker:
+                name = re.sub(r"\s+", " ", speaker.group(1)).strip(" *（）()")
+                if name and name not in ignored_speakers and name not in {item.get("name") for item in current["participants"]}:
+                    current["participants"].append({"id": name, "character_id": name, "name": name})
     return build_script_ir({"scenes": scenes}, book_id=book_id, episode=episode)
 
 

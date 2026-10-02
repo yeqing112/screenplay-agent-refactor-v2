@@ -1,238 +1,41 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-network-audit-v3",
-  "generated_at": "2026-10-02T01:53:50.841Z",
+  "schema_version": "production-ui-v3-browser-user-journey-mock-network-audit-v4",
+  "generated_at": "2026-10-02T04:32:26.703Z",
+  "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
   "policy": {
-    "mutations_via_visible_ui_only": true,
-    "real_external_hosts_allowed": [],
-    "mock_runtime_only": true
+    "mock_runtime_only": true,
+    "allowed_real_external_hosts": [],
+    "image_provider_reference": "https://www.shapi.vip/",
+    "real_provider_calls_allowed": false,
+    "mutations_via_visible_ui_only": true
   },
   "external_hosts": [],
   "real_external_call_count": 0,
+  "mock_ledger": {
+    "llm": 22,
+    "image": 0,
+    "video": 0
+  },
   "runs": [
     {
       "run": 1,
-      "book_id": 990403,
-      "mutation_count": 16,
-      "mutations": [
-        {
-          "method": "POST",
-          "path": "/api/books",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/agent/updates/reconcile",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/upload",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/pipeline/script",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/production-skill-state",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/adaptation-state",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/pipeline/script",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/script-decisions/1",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/script-decisions/1",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/script-ir/prepare-production",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/director-treatment/preview",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/director-treatment/llm-draft",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/director-treatment/confirm",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/scene-blocking/preview",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/scene-blocking/confirm",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "DELETE",
-          "path": "/api/books/990403",
-          "host": "127.0.0.1:5176"
-        }
-      ],
-      "response_errors": [
-        {
-          "path": "/api/books/990403/episodes/1/scene-blocking/confirm",
-          "status": 409,
-          "body": {
-            "detail": {
-              "code": "SCENE_BLOCKING_NOT_READY",
-              "message": "SceneBlocking production prerequisites are unresolved.",
-              "blocking_issues": [
-                {
-                  "code": "INVALID_AXIS_SUBJECT",
-                  "severity": "blocker",
-                  "message": "camera axis subjects must be participants"
-                },
-                {
-                  "code": "SCENE_ASSET_MISSING"
-                }
-              ]
-            }
-          }
-        }
-      ]
+      "book_id": 990441,
+      "external_hosts": [],
+      "console_errors": 0,
+      "response_error_count": 0
     },
     {
       "run": 2,
-      "book_id": 990403,
-      "mutation_count": 16,
-      "mutations": [
-        {
-          "method": "POST",
-          "path": "/api/books",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/agent/updates/reconcile",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/upload",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/pipeline/script",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/production-skill-state",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/adaptation-state",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/pipeline/script",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/script-decisions/1",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "PUT",
-          "path": "/api/books/990403/script-decisions/1",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/script-ir/prepare-production",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/director-treatment/preview",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/director-treatment/llm-draft",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/director-treatment/confirm",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/scene-blocking/preview",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "POST",
-          "path": "/api/books/990403/episodes/1/scene-blocking/confirm",
-          "host": "127.0.0.1:5176"
-        },
-        {
-          "method": "DELETE",
-          "path": "/api/books/990403",
-          "host": "127.0.0.1:5176"
-        }
-      ],
-      "response_errors": [
-        {
-          "path": "/api/books/990403/episodes/1/scene-blocking/confirm",
-          "status": 409,
-          "body": {
-            "detail": {
-              "code": "SCENE_BLOCKING_NOT_READY",
-              "message": "SceneBlocking production prerequisites are unresolved.",
-              "blocking_issues": [
-                {
-                  "code": "INVALID_AXIS_SUBJECT",
-                  "severity": "blocker",
-                  "message": "camera axis subjects must be participants"
-                },
-                {
-                  "code": "SCENE_ASSET_MISSING"
-                }
-              ]
-            }
-          }
-        }
-      ]
+      "book_id": 990442,
+      "external_hosts": [],
+      "console_errors": 0,
+      "response_error_count": 0
     }
   ],
-  "forbidden_shortcuts_checked": {
-    "db_seed": false,
-    "direct_business_mutation_from_runner": false,
-    "page_route_business_mock": false,
-    "fixture_workspace_bypass": false,
-    "direct_api_delete": false
-  }
+  "forbidden_shortcuts_checked": [
+    "no direct database mutation used for business steps",
+    "no real LLM/image/video provider call",
+    "no completion marker written while asset bridge remained blocked",
+    "no ScriptIR source fact rewrite"
+  ]
 }
