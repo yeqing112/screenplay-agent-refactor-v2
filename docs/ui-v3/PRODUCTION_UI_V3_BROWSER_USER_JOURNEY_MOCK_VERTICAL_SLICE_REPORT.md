@@ -2,74 +2,42 @@
 
 ## 结论
 
-本轮完成了真实前端 + 真实后端/SQLite + 确定性 mock runtime 的浏览器验收切片。两次连续运行均从项目列表开始，通过可见 UI 完成新建项目、短篇内容输入、内容准备、Production Skill 锁定、改编方向锁定、剧本/镜头工作台导航，并通过 UI 删除各自 disposable 项目。
+本轮结论为 **PARTIAL / ASSET_BLOCKED**。两次独立浏览器运行均从项目列表开始，并通过可见 UI 完成：项目创建、短篇内容导入、Production Skill 与改编方向锁定、剧本生成、剧本锁稿/放行、ScriptIR production preparation、production Director Treatment 预览/LLM mock 候选/人工确认、Scene Blocking 预览，以及资产中心与项目删除。
 
-当前结论仍为 **PARTIAL / ASSET_BLOCKED**：本次代码已把 ScriptIR production preparation 和 production authority 请求接入 UI，但尚未完成一轮从真实 UI 端到端跑通“生产准备 → production Treatment → SceneBlocking → ShotPlan → materialization → 资产 → PromptIR → IMAGE/VIDEO → Delivery”。资产中心与 production scene asset/Phase C authoring 仍是当前阻塞；报告保留此事实，不以旧数据或直接数据库写入补齐。
+生产 Scene Blocking 确认被后端真实门禁拒绝，原因是 `INVALID_AXIS_SUBJECT` 和 `SCENE_ASSET_MISSING`。因此本轮没有伪造 ShotPlan、Storyboard、PromptIR、媒体或交付结果，也没有写入完成标志 `PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE`。
 
-## 本轮改动
+## 本轮代码修复
 
-### 本次继续开发增量（2026-10-02）
-
-- 新增 `POST /api/books/{book_id}/episodes/{episode}/script-ir/prepare-production`，以人工确认作为入口，确定性生成 production candidate，创建 FactSnapshot/FactRecord 与版本化 ScriptIR，并沿既有 authority activation boundary 激活；不调用 provider，不改写原始 Script/Source Fact。
-- 剧本工作台新增“准备进入导演阶段”按钮；生产准备成功后，导演方案、SceneBlocking、ShotPlan 前端请求会携带 `workflow_profile=production` 与稳定 `scene_id`。
-- “生成分镜”在检测到 production-qualified ScriptIR 时改走 canonical storyboard materializer；creative-draft 项目仍保留原有 pipeline fallback。
-- 兼容现有脚本组件测试，production preparation props 对旧测试调用保持可选。
-
-- 新建项目 modal 通过 `POST /api/books` 创建真实项目，并在完成后使用真实 `book.id`。
-- 修复短篇导入项目身份：`ingest()` 支持写入当前 Book，pipeline 在已有 `book_id` 时拒绝生成第二个项目。
-- 删除项目时清理项目级 Production Skill / 改编方向 KV，避免 SQLite 复用 ID 后继承上一轮锁定状态。
-- `E2E_EXTERNAL_RUNTIME=mock` 增加确定性 LLM/IMAGE/VIDEO 适配器和只读 ledger。
-- mock IMAGE 返回可解码 PNG，mock VIDEO 返回 deterministic MP4；production 环境拒绝 prototype mock provider。
-- 旧剧本缺少结构化 scenes 时，Director Treatment 只读推导稳定 scene identity，不修改 Source Script/ScriptIR。
-- SceneBlocking/ShotPlan 确认边界过滤 UI 提交的只读证据字段，只校验候选可编辑字段。
-- 增加双次浏览器 runner：`scripts/e2e-production-ui-v3-user-journey.js`。
+- `api/script_ir_preparation_api.py`：对不可变 legacy Markdown screenplay 做只读解析，生成版本化 ScriptIR candidate；不改写 `Script` 原文或 Source Fact。
+- source anchor 绑定按 immutable evidence block 匹配场景名，不再把所有 blocking requirement 粗暴绑定到 `E0001`。
+- `scripts/e2e-production-ui-v3-user-journey.js`：修复默认展开内容表单误折叠；内容等待 120 秒；补齐脚本生成、锁稿/放行、生产准备、Treatment、SceneBlocking 证据、canonical read-only audit；响应错误进入报告。
 
 ## 浏览器证据
 
-- 手工完整推进：Director Treatment → SceneBlocking → ShotPlan，当前项目为 book `2` / episode `1` / scene `雨夜旧港`。
-- ShotPlan 当前正式批准版本存在，但为 `creative_draft`，`production_status=blocked`，原因是 legacy script 没有生产 ScriptIR authority envelope。
-- 资产中心截图：[phase-assets-blocker.png](../../output/playwright/phase-assets-blocker.png)
-- 导演/ShotPlan 截图：[phase-director-shotplan.png](../../output/playwright/phase-director-shotplan.png)
-- 双次 runner 汇总：[summary.json](../../output/playwright/user-journey/summary.json)
-
-## 双次 runner
-
-两次运行均从项目列表开始，步骤结果均为通过：项目创建、短篇导入、Production Skill、改编方向、剧本/镜头工作台和资产门禁观察。每轮都记录了真实 `POST /api/books`、`POST /api/pipeline/script`、Skill/改编状态写入以及 `DELETE /api/books/{id}`，并通过 UI 删除项目。两轮没有外部 host、浏览器 console error 或未处理 blocker。
+- 两轮 runner 汇总：[summary.json](../../output/playwright/user-journey/summary.json)
+- 真值审计：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_TRUTH_AUDIT.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_TRUTH_AUDIT.json)
+- 浏览器 QA：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json)
+- 网络审计：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json)
+- UX friction：[PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_UX_FRICTION.json](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_UX_FRICTION.json)
 
 ## 外部调用与安全
 
-- 真实外部 host：`0`
-- mock LLM ledger calls：`57`
-- mock IMAGE calls：`0`（资产阻塞在生成前）
-- mock VIDEO calls：`0`（资产阻塞在生成前）
-- 运行期没有调用 SHAPI、MiniMax、OpenAI 或真实媒体供应商；`shapi.vip` 仅作为后续真实 provider 选型信息，未被调用。
-- runner 的所有 mutation 均来自页面 UI 事件；网络记录只用于审计。
-- 未恢复或复用 `998755`，未写入 `990400`。
+- 真实外部 host：0（列表：[]）。
+- mock ledger：LLM 234，IMAGE 0，VIDEO 0。
+- SHAPI（https://www.shapi.vip/）本轮没有真实调用；仍按 mock runtime 验收。
+- 所有业务 mutation 均由可见 UI 触发；runner 只读取 canonical projection 做审计。
+- 990400 保留且本轮写入数为 0；998755 未恢复或创建。
+- 本轮调试遗留项目 990403、990404 已通过项目列表 UI 删除。
 
-## UX friction
+## 当前阻塞与后续顺序
 
-1. 新项目创建后仍需完成内容准备和改编方向，导航按钮按门禁禁用，用户容易误以为创建失败。
-2. legacy script 没有结构化场景时，旧数据可继续进入 Director Treatment，但当前 ShotPlan 仍不能满足 production authority。
-3. 资产中心缺少从当前无资产状态直接开始“上传 → 审核 → 激活 → 绑定”的可见入口，生成链路因此停止。
-4. Windows 中文输入在隔离旅程中曾出现乱码，建议下一轮固定 UTF-8 请求与数据库连接编码。
+1. 资产中心需要可见的实体资产上传、审核、激活、绑定入口，并在 Scene Blocking 前可提供当前 scene asset。
+2. SceneBlocking 预览需要在提交前修复 camera axis subject，使其引用 participants。
+3. 通过后再继续 ShotPlan production confirm、canonical storyboard materialization、PromptIR、SHAPI-compatible mock IMAGE/VIDEO、QA 和 Delivery export。
 
-## 后续动作
+## 验证结果
 
-先补齐资产中心的可见摄取/审核/激活/绑定链路，再补 ScriptIR production qualification；完成后才能继续 PromptIR、mock IMAGE/VIDEO、running reload recovery 和 Delivery export。
-
-## 验证记录
-
-- `npm --prefix web test -- --run`：445 tests passed。
-- `npm --prefix web run build`：通过。
-- `python -m compileall -q api core`：通过。
-- 本轮新增 production preparation/authority 定向回归：24 passed。
-- `git diff --check`：通过。
-- 浏览器 runner：两次连续运行，每轮步骤通过并通过 UI 删除 disposable project；外部 host `0`、console error `0`。
-- 后端全量 pytest 本轮完成 `2000 passed, 4 failed, 2 errors`；失败项集中在既有 Phase pilot/视觉资产兼容测试。SceneBlocking 生产确认回归已修复并通过；Phase C、Phase I、Phase J3.1 定向回归均通过。
-
-## 本轮发布
-
-- 发布分支：codex/visual-authoring-provider-canary-reconcile
-- 代码提交：cf5717a；报告提交：248c4f7
-- disposable canary：Book 990403 已丢弃；Book 990400 保留且写入数为 0；998755 未恢复。
-- SHAPI 仅作为后续真实 provider 选型（https://www.shapi.vip/），本轮真实调用数为 0。
+- 两次 runner 均无外部 host、无浏览器 console error。
+- 两次均通过 UI 删除自己的 disposable project。
+- ScriptIR production preparation 两次通过；canonical projection 返回 `read_only=true`、`authority_source=current_authority_pointers_only`。
+- SceneBlocking confirm 两次复现同一真实 blocker；未绕过门禁。

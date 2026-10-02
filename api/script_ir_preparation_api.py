@@ -11,7 +11,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from core.fact_snapshot import build_fact_snapshot, snapshot_hash
-from core.script_ir import validate_script_ir, script_ir_hash
+from core.script_ir import validate_script_ir, script_ir_hash, legacy_markdown_to_script_ir
 from core.script_ir_authority import ScriptIRAuthorityError, activate_script_ir
 from core.script_ir_production_preparation import build_production_candidate
 from core.script_ir_source_requirements import compile_script_ir_source_requirements
@@ -30,7 +30,12 @@ def _source_payload(script: Script) -> Any:
         parsed = json.loads(str(script.content or ""))
     except (TypeError, ValueError, json.JSONDecodeError):
         parsed = None
-    return parsed if isinstance(parsed, dict) else str(script.content or "")
+    if isinstance(parsed, dict):
+        return parsed
+    # Scriptwriter output is still stored as immutable Markdown screenplay
+    # text.  Preparation must be able to derive a versioned ScriptIR candidate
+    # from that legacy representation without rewriting the source row.
+    return legacy_markdown_to_script_ir(str(script.content or ""), book_id=int(script.book_id), episode=int(script.episode))
 
 
 def _snapshot_records(requirement_set: dict[str, Any]) -> list[dict[str, Any]]:
@@ -52,6 +57,31 @@ def _snapshot_records(requirement_set: dict[str, Any]) -> list[dict[str, Any]]:
             "evidence": ["E0001"],
         })
     return records
+
+
+def _source_anchor_bindings(requirement_set: dict[str, Any], source_index: dict[str, Any]) -> dict[str, list[str]]:
+    """Bind each blocking requirement to a byte-accurate source block.
+
+    A single first-anchor binding is unsafe for scene identity: a screenplay
+    can contain a title block before its scene heading.  Resolve the anchor
+    from the immutable evidence index while retaining the first anchor as the
+    deterministic episode-level existence proof.
+    """
+    anchors = [row for row in (source_index.get("anchors") or []) if isinstance(row, dict)]
+    result: dict[str, list[str]] = {}
+    for requirement in requirement_set.get("requirements") or []:
+        if not requirement.get("blocking"):
+            continue
+        requirement_id = str(requirement.get("requirement_id") or "")
+        expected = str(requirement.get("expected_value") or "").strip()
+        if requirement.get("contract_requirement_id") == "SIR_SCENE_NAME" and expected:
+            matches = [str(anchor.get("anchor_ref")) for anchor in anchors if expected in str(anchor.get("exact_text") or "")]
+            if matches:
+                result[requirement_id] = [matches[0]]
+                continue
+        if anchors:
+            result[requirement_id] = [str(anchors[0].get("anchor_ref") or "E0001")]
+    return result
 
 
 def _payload(row: ScriptIRVersion) -> dict[str, Any]:
@@ -111,7 +141,7 @@ def prepare_script_ir_production(book_id: int, episode: int, req: PrepareProduct
         draft = ScriptIRVersion(book_id=book_id, episode=episode, revision=(int(previous.revision) + 1 if previous else 1), status="draft", schema_version="script_ir_v1", source_fact_snapshot_id=str(fact_row.id), source_fingerprint=raw_hash, payload_json=json.dumps(candidate, ensure_ascii=False), payload_hash=script_ir_hash(candidate), validation_status=structural["status"], validation_report=json.dumps(structural, ensure_ascii=False), previous_revision_id=previous.id if previous else None, created_at=datetime.now(), updated_at=datetime.now())
         session.add(draft)
         session.flush()
-        bindings = {str(requirement.get("requirement_id")): ["E0001"] for requirement in requirement_set.get("requirements") or [] if requirement.get("blocking")}
+        bindings = _source_anchor_bindings(requirement_set, source_index)
         try:
             result = activate_script_ir(session=session, script_row=script, draft_row=draft, source_structure=candidate, source_package_id=source_package_id, source_version_id=source_version_id, immutable_source_raw_hash=raw_hash, source_evidence_index=source_index, source_anchor_bindings=bindings, fact_snapshot_row=fact_row)
         except ScriptIRAuthorityError as exc:

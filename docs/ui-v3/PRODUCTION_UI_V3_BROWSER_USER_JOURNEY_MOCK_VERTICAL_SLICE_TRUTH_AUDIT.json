@@ -1,69 +1,1972 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-truth-v1",
-  "status": "partial_asset_blocked",
-  "runtime_evidence_generated_at": "2026-10-02T00:14:00Z",
-  "manual_completed_through": [
-    "project_list",
-    "new_project",
-    "director_treatment_preview",
-    "director_treatment_human_confirm",
-    "scene_blocking_preview",
-    "scene_blocking_human_confirm",
-    "shot_plan_preview",
-    "shot_plan_human_confirm",
-    "shot_workbench",
-    "project_cleanup_via_ui"
-  ],
-  "blocked_at": [
-    "production_script_ir_authority",
-    "production_assets",
-    "prompt_ir",
-    "image_generation",
-    "video_generation",
-    "delivery_export"
-  ],
-  "book_id": 2,
-  "episode": 1,
-  "scene_name": "雨夜旧港",
-  "shot_plan_status": "approved",
-  "shot_plan_workflow_profile": "creative_draft",
-  "shot_plan_production_status": "blocked",
-  "source_fact_mutation": false,
-  "real_llm_calls": 0,
-  "real_image_calls": 0,
-  "real_video_calls": 0,
-  "real_external_hosts": 0,
-  "writes_to_990400": 0,
-  "revived_998755": false,
-  "mock_ledger_counts": {
-    "mock_llm_calls": 57,
-    "mock_image_calls": 0,
-    "mock_video_calls": 0
+  "schema_version": "production-ui-v3-browser-user-journey-mock-truth-audit-v3",
+  "generated_at": "2026-10-02T01:53:50.841Z",
+  "conclusion": "PARTIAL / ASSET_BLOCKED",
+  "completion_marker_present": false,
+  "scope": {
+    "goal": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
+    "mock_runtime_only": true,
+    "real_external_hosts": []
   },
-  "two_runs": {
-    "count": 2,
-    "started_from_project_list": true,
-    "mutations_via_visible_ui_only": true,
-    "disposable_projects_deleted_via_ui": true,
-    "run_1_all_steps_passed": true,
-    "run_2_all_steps_passed": true,
-    "project_identity_preserved_during_import": true,
-    "project_ids_reused_after_ui_delete": true
-  },
-  "evidence_files": [
-    "output/playwright/phase-director-shotplan.png",
-    "output/playwright/phase-assets-blocker.png",
-    "output/playwright/user-journey/summary.json"
+  "runs": [
+    {
+      "run": 1,
+      "book_id": 990403,
+      "all_steps_passed": false,
+      "steps": [
+        {
+          "name": "project-list",
+          "status": "passed"
+        },
+        {
+          "name": "create-project-through-ui",
+          "status": "passed"
+        },
+        {
+          "name": "content-preparation",
+          "status": "passed"
+        },
+        {
+          "name": "short-story-input-and-import",
+          "status": "passed"
+        },
+        {
+          "name": "production-skill-and-adaptation-lock",
+          "status": "passed"
+        },
+        {
+          "name": "script-generation-and-review",
+          "status": "passed"
+        },
+        {
+          "name": "script-lock-release-and-production-preparation",
+          "status": "passed"
+        },
+        {
+          "name": "director-treatment-review-and-confirm",
+          "status": "passed"
+        },
+        {
+          "name": "director-runtime-scene-blocking-shot-plan",
+          "status": "blocked",
+          "error": "Error: SceneBlocking confirmation blocked: {\"detail\":{\"code\":\"SCENE_BLOCKING_NOT_READY\",\"message\":\"SceneBlocking production prerequisites are unresolved.\",\"blocking_issues\":[{\"code\":\"INVALID_AXIS_SUBJECT\",\"severity\":\"blocker\",\"message\":\"camera axis subjects must be participants\"},{\"code\":\"SCENE_ASSET_MISSING\"}]}}"
+        },
+        {
+          "name": "director-and-shot-workbench-observation",
+          "status": "passed"
+        },
+        {
+          "name": "asset-blocker-evidence",
+          "status": "passed"
+        },
+        {
+          "name": "return-and-dispose-project-through-ui",
+          "status": "passed"
+        }
+      ],
+      "blockers": [
+        {
+          "step": "director-runtime-scene-blocking-shot-plan",
+          "error": "Error: SceneBlocking confirmation blocked: {\"detail\":{\"code\":\"SCENE_BLOCKING_NOT_READY\",\"message\":\"SceneBlocking production prerequisites are unresolved.\",\"blocking_issues\":[{\"code\":\"INVALID_AXIS_SUBJECT\",\"severity\":\"blocker\",\"message\":\"camera axis subjects must be participants\"},{\"code\":\"SCENE_ASSET_MISSING\"}]}}"
+        }
+      ],
+      "response_errors": [
+        {
+          "path": "/api/books/990403/episodes/1/scene-blocking/confirm",
+          "status": 409,
+          "body": {
+            "detail": {
+              "code": "SCENE_BLOCKING_NOT_READY",
+              "message": "SceneBlocking production prerequisites are unresolved.",
+              "blocking_issues": [
+                {
+                  "code": "INVALID_AXIS_SUBJECT",
+                  "severity": "blocker",
+                  "message": "camera axis subjects must be participants"
+                },
+                {
+                  "code": "SCENE_ASSET_MISSING"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "canonical_read_only": {
+        "status": 200,
+        "payload": {
+          "schema_version": "production_workspace_projection_v2",
+          "book_id": 990403,
+          "workflow_profile": "production",
+          "read_only": true,
+          "authority_source": "current_authority_pointers_only",
+          "project": {
+            "title": "潮汐回声-1",
+            "overall_state": "needs_action",
+            "overall_progress": 27,
+            "current_blockers": [
+              {
+                "code": "SCENE_BLOCKING_MISSING",
+                "title": "场面调度待设计",
+                "description": "补齐人物位置、空间关系和运动规则。",
+                "severity": "blocked",
+                "stage": "SCENE",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "场面调度待设计",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              },
+              {
+                "code": "SHOT_PLAN_MISSING",
+                "title": "镜头规划待确认",
+                "description": "确认这一场的镜头数量和镜头动作。",
+                "severity": "blocked",
+                "stage": "SHOT",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "镜头规划待确认",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              },
+              {
+                "code": "STORYBOARD_MISSING",
+                "title": "分镜还未物化",
+                "description": "把已确认的镜头规划物化为分镜。",
+                "severity": "blocked",
+                "stage": "STORYBOARD",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "分镜还未物化",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              }
+            ],
+            "next_actions": [
+              {
+                "code": "SCENE_BLOCKING_MISSING",
+                "title": "场面调度待设计",
+                "description": "补齐人物位置、空间关系和运动规则。",
+                "severity": "blocked",
+                "stage": "SCENE",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "场面调度待设计",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              }
+            ]
+          },
+          "stages": {
+            "CONTENT": {
+              "key": "CONTENT",
+              "label": "内容",
+              "state": "complete",
+              "detail": "1/1 集已完成",
+              "completed": true,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 1,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "SCRIPT_IR": {
+              "key": "SCRIPT_IR",
+              "label": "剧本权威",
+              "state": "complete",
+              "detail": "1/1 集已完成",
+              "completed": true,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 1,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "DIRECTOR_TREATMENT": {
+              "key": "DIRECTOR_TREATMENT",
+              "label": "导演方案",
+              "state": "complete",
+              "detail": "1/1 集已完成",
+              "completed": true,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 1,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "SCENE_BLOCKING": {
+              "key": "SCENE_BLOCKING",
+              "label": "场面调度",
+              "state": "needs_action",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 1
+              },
+              "reason_codes": [
+                "SCENE_BLOCKING_MISSING"
+              ],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": [
+                {
+                  "code": "SCENE_BLOCKING_MISSING",
+                  "title": "场面调度待设计",
+                  "description": "补齐人物位置、空间关系和运动规则。",
+                  "severity": "blocked",
+                  "stage": "SCENE",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "场面调度待设计",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ]
+            },
+            "SHOT_PLAN": {
+              "key": "SHOT_PLAN",
+              "label": "镜头规划",
+              "state": "needs_action",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 1
+              },
+              "reason_codes": [
+                "SHOT_PLAN_MISSING"
+              ],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": [
+                {
+                  "code": "SHOT_PLAN_MISSING",
+                  "title": "镜头规划待确认",
+                  "description": "确认这一场的镜头数量和镜头动作。",
+                  "severity": "blocked",
+                  "stage": "SHOT",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "镜头规划待确认",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ]
+            },
+            "STORYBOARD": {
+              "key": "STORYBOARD",
+              "label": "分镜物化",
+              "state": "needs_action",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 1
+              },
+              "reason_codes": [
+                "STORYBOARD_MISSING"
+              ],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": [
+                {
+                  "code": "STORYBOARD_MISSING",
+                  "title": "分镜还未物化",
+                  "description": "把已确认的镜头规划物化为分镜。",
+                  "severity": "blocked",
+                  "stage": "STORYBOARD",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "分镜还未物化",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ]
+            },
+            "PROMPT_IR": {
+              "key": "PROMPT_IR",
+              "label": "PromptIR",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "VISUAL_ASSET": {
+              "key": "VISUAL_ASSET",
+              "label": "视觉资产",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "REFERENCE": {
+              "key": "REFERENCE",
+              "label": "参考图",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "MEDIA": {
+              "key": "MEDIA",
+              "label": "媒体",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "QA": {
+              "key": "QA",
+              "label": "QA",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            }
+          },
+          "episodes": [
+            {
+              "episode": 1,
+              "overall_state": "needs_action",
+              "overall_progress": 27,
+              "blockers": [
+                {
+                  "code": "SCENE_BLOCKING_MISSING",
+                  "title": "场面调度待设计",
+                  "description": "补齐人物位置、空间关系和运动规则。",
+                  "severity": "blocked",
+                  "stage": "SCENE",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "场面调度待设计",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                },
+                {
+                  "code": "SHOT_PLAN_MISSING",
+                  "title": "镜头规划待确认",
+                  "description": "确认这一场的镜头数量和镜头动作。",
+                  "severity": "blocked",
+                  "stage": "SHOT",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "镜头规划待确认",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                },
+                {
+                  "code": "STORYBOARD_MISSING",
+                  "title": "分镜还未物化",
+                  "description": "把已确认的镜头规划物化为分镜。",
+                  "severity": "blocked",
+                  "stage": "STORYBOARD",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "分镜还未物化",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ],
+              "next_action": {
+                "code": "SCENE_BLOCKING_MISSING",
+                "title": "场面调度待设计",
+                "description": "补齐人物位置、空间关系和运动规则。",
+                "severity": "blocked",
+                "stage": "SCENE",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "场面调度待设计",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              },
+              "stages": {
+                "CONTENT": {
+                  "key": "CONTENT",
+                  "label": "内容",
+                  "state": "complete",
+                  "detail": "内容已导入",
+                  "completed": true,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 1
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "content"
+                  },
+                  "blockers": []
+                },
+                "SCRIPT_IR": {
+                  "key": "SCRIPT_IR",
+                  "label": "剧本权威",
+                  "state": "complete",
+                  "detail": "ScriptIR v1 已确认",
+                  "completed": true,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 1
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "scripts",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "DIRECTOR_TREATMENT": {
+                  "key": "DIRECTOR_TREATMENT",
+                  "label": "导演方案",
+                  "state": "complete",
+                  "detail": "1/1 个场景已确认",
+                  "completed": true,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 1,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "scripts",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "SCENE_BLOCKING": {
+                  "key": "SCENE_BLOCKING",
+                  "label": "场面调度",
+                  "state": "needs_action",
+                  "detail": "0/1 个场景已确认",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 1,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [
+                    "SCENE_BLOCKING_MISSING"
+                  ],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": [
+                    {
+                      "code": "SCENE_BLOCKING_MISSING",
+                      "title": "场面调度待设计",
+                      "description": "补齐人物位置、空间关系和运动规则。",
+                      "severity": "blocked",
+                      "stage": "SCENE",
+                      "scope": "scene",
+                      "book_id": 990403,
+                      "episode": 1,
+                      "scene_id": "E01_SC001",
+                      "shot_id": null,
+                      "asset_key": null,
+                      "recommended_action": "场面调度待设计",
+                      "target_section": "storyboard",
+                      "target_params": {
+                        "episode": 1,
+                        "scene_id": "E01_SC001",
+                        "shot_id": null,
+                        "asset_key": null
+                      }
+                    }
+                  ]
+                },
+                "SHOT_PLAN": {
+                  "key": "SHOT_PLAN",
+                  "label": "镜头规划",
+                  "state": "needs_action",
+                  "detail": "0/1 个场景已确认",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 1,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [
+                    "SHOT_PLAN_MISSING"
+                  ],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": [
+                    {
+                      "code": "SHOT_PLAN_MISSING",
+                      "title": "镜头规划待确认",
+                      "description": "确认这一场的镜头数量和镜头动作。",
+                      "severity": "blocked",
+                      "stage": "SHOT",
+                      "scope": "scene",
+                      "book_id": 990403,
+                      "episode": 1,
+                      "scene_id": "E01_SC001",
+                      "shot_id": null,
+                      "asset_key": null,
+                      "recommended_action": "镜头规划待确认",
+                      "target_section": "storyboard",
+                      "target_params": {
+                        "episode": 1,
+                        "scene_id": "E01_SC001",
+                        "shot_id": null,
+                        "asset_key": null
+                      }
+                    }
+                  ]
+                },
+                "STORYBOARD": {
+                  "key": "STORYBOARD",
+                  "label": "分镜物化",
+                  "state": "needs_action",
+                  "detail": "0/1 个场景已物化",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 1,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [
+                    "STORYBOARD_MISSING"
+                  ],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": [
+                    {
+                      "code": "STORYBOARD_MISSING",
+                      "title": "分镜还未物化",
+                      "description": "把已确认的镜头规划物化为分镜。",
+                      "severity": "blocked",
+                      "stage": "STORYBOARD",
+                      "scope": "scene",
+                      "book_id": 990403,
+                      "episode": 1,
+                      "scene_id": "E01_SC001",
+                      "shot_id": null,
+                      "asset_key": null,
+                      "recommended_action": "分镜还未物化",
+                      "target_section": "storyboard",
+                      "target_params": {
+                        "episode": 1,
+                        "scene_id": "E01_SC001",
+                        "shot_id": null,
+                        "asset_key": null
+                      }
+                    }
+                  ]
+                },
+                "PROMPT_IR": {
+                  "key": "PROMPT_IR",
+                  "label": "PromptIR",
+                  "state": "not_started",
+                  "detail": "等待分镜物化",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "VISUAL_ASSET": {
+                  "key": "VISUAL_ASSET",
+                  "label": "视觉资产",
+                  "state": "not_started",
+                  "detail": "还没有当前视觉资产",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "assets",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "REFERENCE": {
+                  "key": "REFERENCE",
+                  "label": "参考图",
+                  "state": "not_started",
+                  "detail": "等待视觉资产",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "assets",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "MEDIA": {
+                  "key": "MEDIA",
+                  "label": "媒体",
+                  "state": "not_started",
+                  "detail": "等待分镜",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "QA": {
+                  "key": "QA",
+                  "label": "QA",
+                  "state": "not_started",
+                  "detail": "等待分镜",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "not_started": 1
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "qa",
+                    "episode": 1
+                  },
+                  "blockers": []
+                }
+              }
+            }
+          ],
+          "shots": [],
+          "assets": [],
+          "asset_ingestion_api_available": true,
+          "view_contract": {
+            "standard": "state,next_action,blockers,official_media",
+            "professional": "authority,pointer,prompt_ir,model,adapter,transport,execution,candidate,validation,official,history"
+          },
+          "legacy_adopted_is_display_only": true,
+          "provider_calls": 0
+        }
+      },
+      "screenshots": [
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-project-list.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-created-project.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-content-preparation.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-content-ready.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-adaptation-locked.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-script-generated.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-production-prepared.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-director-treatment-confirmed.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-shot-workbench.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-asset-blocker.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-project-cleanup.png"
+      ]
+    },
+    {
+      "run": 2,
+      "book_id": 990403,
+      "all_steps_passed": false,
+      "steps": [
+        {
+          "name": "project-list",
+          "status": "passed"
+        },
+        {
+          "name": "create-project-through-ui",
+          "status": "passed"
+        },
+        {
+          "name": "content-preparation",
+          "status": "passed"
+        },
+        {
+          "name": "short-story-input-and-import",
+          "status": "passed"
+        },
+        {
+          "name": "production-skill-and-adaptation-lock",
+          "status": "passed"
+        },
+        {
+          "name": "script-generation-and-review",
+          "status": "passed"
+        },
+        {
+          "name": "script-lock-release-and-production-preparation",
+          "status": "passed"
+        },
+        {
+          "name": "director-treatment-review-and-confirm",
+          "status": "passed"
+        },
+        {
+          "name": "director-runtime-scene-blocking-shot-plan",
+          "status": "blocked",
+          "error": "Error: SceneBlocking confirmation blocked: {\"detail\":{\"code\":\"SCENE_BLOCKING_NOT_READY\",\"message\":\"SceneBlocking production prerequisites are unresolved.\",\"blocking_issues\":[{\"code\":\"INVALID_AXIS_SUBJECT\",\"severity\":\"blocker\",\"message\":\"camera axis subjects must be participants\"},{\"code\":\"SCENE_ASSET_MISSING\"}]}}"
+        },
+        {
+          "name": "director-and-shot-workbench-observation",
+          "status": "passed"
+        },
+        {
+          "name": "asset-blocker-evidence",
+          "status": "passed"
+        },
+        {
+          "name": "return-and-dispose-project-through-ui",
+          "status": "passed"
+        }
+      ],
+      "blockers": [
+        {
+          "step": "director-runtime-scene-blocking-shot-plan",
+          "error": "Error: SceneBlocking confirmation blocked: {\"detail\":{\"code\":\"SCENE_BLOCKING_NOT_READY\",\"message\":\"SceneBlocking production prerequisites are unresolved.\",\"blocking_issues\":[{\"code\":\"INVALID_AXIS_SUBJECT\",\"severity\":\"blocker\",\"message\":\"camera axis subjects must be participants\"},{\"code\":\"SCENE_ASSET_MISSING\"}]}}"
+        }
+      ],
+      "response_errors": [
+        {
+          "path": "/api/books/990403/episodes/1/scene-blocking/confirm",
+          "status": 409,
+          "body": {
+            "detail": {
+              "code": "SCENE_BLOCKING_NOT_READY",
+              "message": "SceneBlocking production prerequisites are unresolved.",
+              "blocking_issues": [
+                {
+                  "code": "INVALID_AXIS_SUBJECT",
+                  "severity": "blocker",
+                  "message": "camera axis subjects must be participants"
+                },
+                {
+                  "code": "SCENE_ASSET_MISSING"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "canonical_read_only": {
+        "status": 200,
+        "payload": {
+          "schema_version": "production_workspace_projection_v2",
+          "book_id": 990403,
+          "workflow_profile": "production",
+          "read_only": true,
+          "authority_source": "current_authority_pointers_only",
+          "project": {
+            "title": "潮汐回声-2",
+            "overall_state": "needs_action",
+            "overall_progress": 27,
+            "current_blockers": [
+              {
+                "code": "SCENE_BLOCKING_MISSING",
+                "title": "场面调度待设计",
+                "description": "补齐人物位置、空间关系和运动规则。",
+                "severity": "blocked",
+                "stage": "SCENE",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "场面调度待设计",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              },
+              {
+                "code": "SHOT_PLAN_MISSING",
+                "title": "镜头规划待确认",
+                "description": "确认这一场的镜头数量和镜头动作。",
+                "severity": "blocked",
+                "stage": "SHOT",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "镜头规划待确认",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              },
+              {
+                "code": "STORYBOARD_MISSING",
+                "title": "分镜还未物化",
+                "description": "把已确认的镜头规划物化为分镜。",
+                "severity": "blocked",
+                "stage": "STORYBOARD",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "分镜还未物化",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              }
+            ],
+            "next_actions": [
+              {
+                "code": "SCENE_BLOCKING_MISSING",
+                "title": "场面调度待设计",
+                "description": "补齐人物位置、空间关系和运动规则。",
+                "severity": "blocked",
+                "stage": "SCENE",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "场面调度待设计",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              }
+            ]
+          },
+          "stages": {
+            "CONTENT": {
+              "key": "CONTENT",
+              "label": "内容",
+              "state": "complete",
+              "detail": "1/1 集已完成",
+              "completed": true,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 1,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "SCRIPT_IR": {
+              "key": "SCRIPT_IR",
+              "label": "剧本权威",
+              "state": "complete",
+              "detail": "1/1 集已完成",
+              "completed": true,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 1,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "DIRECTOR_TREATMENT": {
+              "key": "DIRECTOR_TREATMENT",
+              "label": "导演方案",
+              "state": "complete",
+              "detail": "1/1 集已完成",
+              "completed": true,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 1,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "SCENE_BLOCKING": {
+              "key": "SCENE_BLOCKING",
+              "label": "场面调度",
+              "state": "needs_action",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 1
+              },
+              "reason_codes": [
+                "SCENE_BLOCKING_MISSING"
+              ],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": [
+                {
+                  "code": "SCENE_BLOCKING_MISSING",
+                  "title": "场面调度待设计",
+                  "description": "补齐人物位置、空间关系和运动规则。",
+                  "severity": "blocked",
+                  "stage": "SCENE",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "场面调度待设计",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ]
+            },
+            "SHOT_PLAN": {
+              "key": "SHOT_PLAN",
+              "label": "镜头规划",
+              "state": "needs_action",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 1
+              },
+              "reason_codes": [
+                "SHOT_PLAN_MISSING"
+              ],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": [
+                {
+                  "code": "SHOT_PLAN_MISSING",
+                  "title": "镜头规划待确认",
+                  "description": "确认这一场的镜头数量和镜头动作。",
+                  "severity": "blocked",
+                  "stage": "SHOT",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "镜头规划待确认",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ]
+            },
+            "STORYBOARD": {
+              "key": "STORYBOARD",
+              "label": "分镜物化",
+              "state": "needs_action",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 1
+              },
+              "reason_codes": [
+                "STORYBOARD_MISSING"
+              ],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": [
+                {
+                  "code": "STORYBOARD_MISSING",
+                  "title": "分镜还未物化",
+                  "description": "把已确认的镜头规划物化为分镜。",
+                  "severity": "blocked",
+                  "stage": "STORYBOARD",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "分镜还未物化",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ]
+            },
+            "PROMPT_IR": {
+              "key": "PROMPT_IR",
+              "label": "PromptIR",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "VISUAL_ASSET": {
+              "key": "VISUAL_ASSET",
+              "label": "视觉资产",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "REFERENCE": {
+              "key": "REFERENCE",
+              "label": "参考图",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "MEDIA": {
+              "key": "MEDIA",
+              "label": "媒体",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            },
+            "QA": {
+              "key": "QA",
+              "label": "QA",
+              "state": "not_started",
+              "detail": "0/1 集已完成",
+              "completed": false,
+              "blocked": false,
+              "stale": false,
+              "warning": false,
+              "counts": {
+                "total": 1,
+                "complete": 0,
+                "blocked": 0,
+                "stale": 0,
+                "needs_action": 0
+              },
+              "reason_codes": [],
+              "target_route": {
+                "section": "dashboard"
+              },
+              "blockers": []
+            }
+          },
+          "episodes": [
+            {
+              "episode": 1,
+              "overall_state": "needs_action",
+              "overall_progress": 27,
+              "blockers": [
+                {
+                  "code": "SCENE_BLOCKING_MISSING",
+                  "title": "场面调度待设计",
+                  "description": "补齐人物位置、空间关系和运动规则。",
+                  "severity": "blocked",
+                  "stage": "SCENE",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "场面调度待设计",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                },
+                {
+                  "code": "SHOT_PLAN_MISSING",
+                  "title": "镜头规划待确认",
+                  "description": "确认这一场的镜头数量和镜头动作。",
+                  "severity": "blocked",
+                  "stage": "SHOT",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "镜头规划待确认",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                },
+                {
+                  "code": "STORYBOARD_MISSING",
+                  "title": "分镜还未物化",
+                  "description": "把已确认的镜头规划物化为分镜。",
+                  "severity": "blocked",
+                  "stage": "STORYBOARD",
+                  "scope": "scene",
+                  "book_id": 990403,
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null,
+                  "recommended_action": "分镜还未物化",
+                  "target_section": "storyboard",
+                  "target_params": {
+                    "episode": 1,
+                    "scene_id": "E01_SC001",
+                    "shot_id": null,
+                    "asset_key": null
+                  }
+                }
+              ],
+              "next_action": {
+                "code": "SCENE_BLOCKING_MISSING",
+                "title": "场面调度待设计",
+                "description": "补齐人物位置、空间关系和运动规则。",
+                "severity": "blocked",
+                "stage": "SCENE",
+                "scope": "scene",
+                "book_id": 990403,
+                "episode": 1,
+                "scene_id": "E01_SC001",
+                "shot_id": null,
+                "asset_key": null,
+                "recommended_action": "场面调度待设计",
+                "target_section": "storyboard",
+                "target_params": {
+                  "episode": 1,
+                  "scene_id": "E01_SC001",
+                  "shot_id": null,
+                  "asset_key": null
+                }
+              },
+              "stages": {
+                "CONTENT": {
+                  "key": "CONTENT",
+                  "label": "内容",
+                  "state": "complete",
+                  "detail": "内容已导入",
+                  "completed": true,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 1
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "content"
+                  },
+                  "blockers": []
+                },
+                "SCRIPT_IR": {
+                  "key": "SCRIPT_IR",
+                  "label": "剧本权威",
+                  "state": "complete",
+                  "detail": "ScriptIR v1 已确认",
+                  "completed": true,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 1
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "scripts",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "DIRECTOR_TREATMENT": {
+                  "key": "DIRECTOR_TREATMENT",
+                  "label": "导演方案",
+                  "state": "complete",
+                  "detail": "1/1 个场景已确认",
+                  "completed": true,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 1,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "scripts",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "SCENE_BLOCKING": {
+                  "key": "SCENE_BLOCKING",
+                  "label": "场面调度",
+                  "state": "needs_action",
+                  "detail": "0/1 个场景已确认",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 1,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [
+                    "SCENE_BLOCKING_MISSING"
+                  ],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": [
+                    {
+                      "code": "SCENE_BLOCKING_MISSING",
+                      "title": "场面调度待设计",
+                      "description": "补齐人物位置、空间关系和运动规则。",
+                      "severity": "blocked",
+                      "stage": "SCENE",
+                      "scope": "scene",
+                      "book_id": 990403,
+                      "episode": 1,
+                      "scene_id": "E01_SC001",
+                      "shot_id": null,
+                      "asset_key": null,
+                      "recommended_action": "场面调度待设计",
+                      "target_section": "storyboard",
+                      "target_params": {
+                        "episode": 1,
+                        "scene_id": "E01_SC001",
+                        "shot_id": null,
+                        "asset_key": null
+                      }
+                    }
+                  ]
+                },
+                "SHOT_PLAN": {
+                  "key": "SHOT_PLAN",
+                  "label": "镜头规划",
+                  "state": "needs_action",
+                  "detail": "0/1 个场景已确认",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 1,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [
+                    "SHOT_PLAN_MISSING"
+                  ],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": [
+                    {
+                      "code": "SHOT_PLAN_MISSING",
+                      "title": "镜头规划待确认",
+                      "description": "确认这一场的镜头数量和镜头动作。",
+                      "severity": "blocked",
+                      "stage": "SHOT",
+                      "scope": "scene",
+                      "book_id": 990403,
+                      "episode": 1,
+                      "scene_id": "E01_SC001",
+                      "shot_id": null,
+                      "asset_key": null,
+                      "recommended_action": "镜头规划待确认",
+                      "target_section": "storyboard",
+                      "target_params": {
+                        "episode": 1,
+                        "scene_id": "E01_SC001",
+                        "shot_id": null,
+                        "asset_key": null
+                      }
+                    }
+                  ]
+                },
+                "STORYBOARD": {
+                  "key": "STORYBOARD",
+                  "label": "分镜物化",
+                  "state": "needs_action",
+                  "detail": "0/1 个场景已物化",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 1,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [
+                    "STORYBOARD_MISSING"
+                  ],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": [
+                    {
+                      "code": "STORYBOARD_MISSING",
+                      "title": "分镜还未物化",
+                      "description": "把已确认的镜头规划物化为分镜。",
+                      "severity": "blocked",
+                      "stage": "STORYBOARD",
+                      "scope": "scene",
+                      "book_id": 990403,
+                      "episode": 1,
+                      "scene_id": "E01_SC001",
+                      "shot_id": null,
+                      "asset_key": null,
+                      "recommended_action": "分镜还未物化",
+                      "target_section": "storyboard",
+                      "target_params": {
+                        "episode": 1,
+                        "scene_id": "E01_SC001",
+                        "shot_id": null,
+                        "asset_key": null
+                      }
+                    }
+                  ]
+                },
+                "PROMPT_IR": {
+                  "key": "PROMPT_IR",
+                  "label": "PromptIR",
+                  "state": "not_started",
+                  "detail": "等待分镜物化",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "VISUAL_ASSET": {
+                  "key": "VISUAL_ASSET",
+                  "label": "视觉资产",
+                  "state": "not_started",
+                  "detail": "还没有当前视觉资产",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "assets",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "REFERENCE": {
+                  "key": "REFERENCE",
+                  "label": "参考图",
+                  "state": "not_started",
+                  "detail": "等待视觉资产",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "assets",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "MEDIA": {
+                  "key": "MEDIA",
+                  "label": "媒体",
+                  "state": "not_started",
+                  "detail": "等待分镜",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 0,
+                    "complete": 0,
+                    "ready": 0,
+                    "blocked": 0,
+                    "stale": 0,
+                    "needs_action": 0,
+                    "warning": 0,
+                    "not_started": 0
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "storyboard",
+                    "episode": 1
+                  },
+                  "blockers": []
+                },
+                "QA": {
+                  "key": "QA",
+                  "label": "QA",
+                  "state": "not_started",
+                  "detail": "等待分镜",
+                  "completed": false,
+                  "blocked": false,
+                  "stale": false,
+                  "warning": false,
+                  "counts": {
+                    "total": 1,
+                    "not_started": 1
+                  },
+                  "reason_codes": [],
+                  "target_route": {
+                    "section": "qa",
+                    "episode": 1
+                  },
+                  "blockers": []
+                }
+              }
+            }
+          ],
+          "shots": [],
+          "assets": [],
+          "asset_ingestion_api_available": true,
+          "view_contract": {
+            "standard": "state,next_action,blockers,official_media",
+            "professional": "authority,pointer,prompt_ir,model,adapter,transport,execution,candidate,validation,official,history"
+          },
+          "legacy_adopted_is_display_only": true,
+          "provider_calls": 0
+        }
+      },
+      "screenshots": [
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-project-list.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-created-project.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-content-preparation.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-content-ready.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-adaptation-locked.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-script-generated.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-production-prepared.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-director-treatment-confirmed.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-shot-workbench.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-asset-blocker.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-project-cleanup.png"
+      ]
+    }
   ],
-  "verification": {
-    "web_tests_passed": 445,
-    "web_build": "PASS",
-    "python_compileall": "PASS",
-    "git_diff_check": "PASS",
-    "backend_full_pytest": "2000 passed, 4 failed, 2 errors",
-    "targeted_scene_blocking_regression": "PASS",
-    "targeted_phase_c_regression": "PASS",
-    "targeted_phase_i_regression": "PASS",
-    "targeted_phase_j3_1_regression": "PASS"
-  }
+  "authority_facts": {
+    "script_ir_preparation": "passed in both runs",
+    "script_ir_source_preserved": true,
+    "director_treatment_production_profile": "passed in both runs",
+    "scene_blocking_production_confirmation": "blocked by backend prerequisites",
+    "blocker_codes": [
+      "INVALID_AXIS_SUBJECT",
+      "SCENE_ASSET_MISSING"
+    ],
+    "canonical_projection_read_only": true
+  },
+  "provider_calls": {
+    "mock_llm": 234,
+    "mock_image": 0,
+    "mock_video": 0,
+    "real_external": 0
+  },
+  "disposal": {
+    "ui_deleted_books": [
+      990403,
+      990403
+    ],
+    "protected_book_990400_written": false,
+    "book_998755_present": false,
+    "legacy_debug_projects_deleted_via_ui": [
+      "990403",
+      "990404"
+    ]
+  },
+  "remaining_not_claimed": [
+    "ShotPlan production confirmation",
+    "canonical storyboard materialization",
+    "Production Asset upload/approve/activate/bind",
+    "PromptIR",
+    "IMAGE candidate/official",
+    "VIDEO running/reload/candidate/official",
+    "QA release",
+    "Delivery export record",
+    "completion marker"
+  ],
+  "code_change": "api/script_ir_preparation_api.py now derives a versioned ScriptIR candidate from immutable legacy Markdown and resolves scene source anchors by matching immutable evidence blocks."
 }
