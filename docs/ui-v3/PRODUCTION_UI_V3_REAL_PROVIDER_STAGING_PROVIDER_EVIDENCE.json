@@ -1,17 +1,20 @@
 {
-  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED",
-  "environment": null,
-  "canary_book_id": null,
-  "provider_profiles_preflight": null,
-  "real_provider_calls": 0,
-  "real_llm_calls": 0,
-  "executions": [],
-  "redaction": {
-    "credentials_logged": false,
-    "authorization_headers_logged": false,
-    "raw_provider_responses_logged": false,
-    "third_party_ids_logged": false
+  "schema_version": "production_ui_v3_real_provider_staging_provider_evidence_v1",
+  "status": "BLOCKED_REAL_IMAGE_RESPONSE_PROJECTION",
+  "provider": "shapi-openai-images",
+  "profile_id": "local-image-mw4y52",
+  "model": "grok-imagine-image-quality",
+  "transport_binding_id": "shapi-openai-images.image.v1",
+  "connection_probe": {
+    "request": "GET /v1/models",
+    "model_available": true,
+    "catalog_status": "verified"
   },
-  "reason": "Staging isolation and real-provider authorization were not confirmed by the process environment; no provider or LLM execution started."
+  "provider_calls": [
+    { "run": "final5", "logical_provider_calls": 1, "status": "FAILED", "failure_code": "GENERATION_EXECUTION_FAILED", "provider_response_projection_complete": false },
+    { "run": "final7", "logical_provider_calls": 1, "status": "FAILED", "failure_code": "GENERATION_EXECUTION_FAILED", "provider_response_projection_complete": false },
+    { "run": "final8", "logical_provider_calls": 1, "status": "FAILED", "failure_code": "GENERATION_EXECUTION_FAILED", "provider_response_projection_complete": false }
+  ],
+  "failure_message": "Candidate must retain a complete, traceable Provider response projection.",
+  "secrets": { "api_key_logged": false, "request_payload_logged": false, "response_body_logged": false }
 }

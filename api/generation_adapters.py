@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import uuid
 from asyncio import sleep
@@ -1531,12 +1532,22 @@ async def _generate_shapi_openai_image(
         preview_url = _make_data_uri(str(image_item["b64_json"]), str(image_item.get("mime_type") or "image/png"))
     if not preview_url:
         raise ModelProfileError("SHAPI OpenAI 图片响应缺少 url 或 b64_json。", provider_response=data, provider_request_payload=payload)
+    # SHAPI may omit OpenAI's usual top-level ``id``.  Canonical candidate
+    # lineage still needs a stable provider response identity, so derive a
+    # secret-free response fingerprint when the upstream does not supply one.
+    response_identity = str(data.get("id") or "").strip() if isinstance(data, dict) else ""
+    if not response_identity:
+        response_identity = "shapi-response-" + hashlib.sha256(
+            json.dumps(data, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")
+        ).hexdigest()[:32]
     return {
         "previewUrl": preview_url,
         "uri": preview_url,
         "revisedPrompt": image_item.get("revised_prompt"),
         "providerResponse": data,
         "providerRequestPayload": payload,
+        "providerRequestId": response_identity,
+        "providerTaskId": response_identity,
     }
 
 

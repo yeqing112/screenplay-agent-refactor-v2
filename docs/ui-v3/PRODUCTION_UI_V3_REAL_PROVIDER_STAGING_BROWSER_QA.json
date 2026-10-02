@@ -1,11 +1,14 @@
 {
-  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED",
-  "browser_started": false,
-  "canary_book_id": null,
-  "screenshots": [],
-  "provider_submissions": 0,
-  "foundation_api_calls": 0,
-  "legacy_retry_calls": 0,
-  "reason": "Browser execution was intentionally not started because staging isolation and Provider authorization were not confirmed by the process environment."
+  "schema_version": "production_ui_v3_real_provider_staging_browser_qa_v1",
+  "status": "BLOCKED_REAL_IMAGE_RESPONSE_PROJECTION",
+  "artifact": "output/playwright/real-image-staging-final8/summary.json",
+  "viewport": { "width": 1440, "height": 900 },
+  "pre_generation_steps_passed": 16,
+  "blockers": ["GENERATION_EXECUTION_FAILED"],
+  "external_hosts": [],
+  "http_errors": [{ "method": "POST", "path": "/api/books/990453/storyboard/1/1/generate-frame", "status": 502 }],
+  "console_warning": "duplicate React keys for built-in selector entries",
+  "ui_only_mutations": true,
+  "video_started": false,
+  "cleanup": { "deleted": true, "orphan_rows": 0, "ambiguous_rows": 0 }
 }

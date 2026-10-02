@@ -1,14 +1,16 @@
 {
-  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "status": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED",
-  "environment": null,
-  "canary_book_id": null,
-  "requests": [],
-  "provider_submission_count": 0,
-  "transport_retry_count": 0,
-  "foundation_api_calls": 0,
-  "legacy_recovery_calls": 0,
-  "ordinary_generate_fallback_calls": 0,
-  "secret_redaction": "PASS",
-  "reason": "Execution stopped before canary creation and before any provider network activity because staging isolation was not confirmed."
+  "schema_version": "production_ui_v3_real_provider_staging_network_audit_v1",
+  "status": "BLOCKED_REAL_IMAGE_RESPONSE_PROJECTION",
+  "browser_external_hosts": [],
+  "browser_api_origin": "127.0.0.1:5176",
+  "backend_api_origin": "127.0.0.1:18768",
+  "provider_host": "shapi.vip",
+  "provider_access": "backend_only",
+  "catalog_probe": "GET /v1/models",
+  "generation_requests": 3,
+  "generation_request_failures": 3,
+  "video_requests": 0,
+  "book_990400_mutations": 0,
+  "secret_exposure": false,
+  "final_browser_artifact": "output/playwright/real-image-staging-final8/summary.json"
 }

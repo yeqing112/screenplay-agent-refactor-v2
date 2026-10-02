@@ -313,7 +313,7 @@ export function buildDeliveryEpisodeReadiness(params: Params): DeliveryEpisodeRe
         blockedReasons,
         blockedItems,
         recommendedRepairSection,
-        recommendedRepairLabel,
+        recommendedRepairLabel: blockedItems.length === 0 ? '' : recommendedRepairLabel,
         totalShots: shots.length,
         readyShots,
         promptReadyShots,

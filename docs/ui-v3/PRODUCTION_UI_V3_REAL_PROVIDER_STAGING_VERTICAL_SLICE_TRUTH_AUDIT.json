@@ -1,72 +1,52 @@
 {
-  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "baseline_commit": "bb0f5373c8e356b74ba7958570cfe42611e26c20",
-  "final_status": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED",
-  "preflight": {
-    "app_env": null,
-    "deployment_env": null,
-    "real_provider_staging_confirmed": false,
-    "staging_allow_canary_book_create": false,
-    "provider_call_budget_present": false,
-    "provider_call_budget": null,
-    "staging_canary_book_id": null,
-    "production_environment_detected": false,
-    "reason": "APP_ENV, DEPLOYMENT_ENV, REAL_PROVIDER_STAGING_CONFIRMED, STAGING_ALLOW_CANARY_BOOK_CREATE and REAL_PROVIDER_STAGING_MAX_CALLS were unset; stopped before canary creation."
+  "schema_version": "production_ui_v3_real_provider_staging_vertical_slice_truth_audit_v1",
+  "status": "BLOCKED_REAL_IMAGE_RESPONSE_PROJECTION",
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "baseline_commit": "7c5f28c13aba50d1bcb4b91f775deaaa8ac1fdad",
+  "canary_book_id": 990453,
+  "protected_book_990400_writes": 0,
+  "production_writes_outside_canary": 0,
+  "catalog_probe": {
+    "method": "GET /v1/models",
+    "provider": "shapi-openai-images",
+    "profile_id": "local-image-mw4y52",
+    "model": "grok-imagine-image-quality",
+    "model_available": true,
+    "catalog_status": "verified",
+    "secret_logged": false
   },
-  "production_database_used": false,
-  "staging_canary_book_scoped": false,
-  "real_image_provider_calls": 0,
-  "real_video_provider_calls": 0,
-  "real_llm_calls": 0,
-  "provider_call_budget_exceeded": false,
-  "image_initial_real": false,
-  "image_regenerate_real": false,
-  "video_initial_real": false,
-  "video_regenerate_real": false,
-  "real_retry_evidence": "CONDITIONAL_NOT_EXERCISED",
-  "video_reload_recovery": false,
-  "candidate_media_valid": false,
-  "old_official_preserved_before_approval": false,
-  "official_replaced_only_after_approval": false,
-  "retry_regenerate_foundation_api_calls": 0,
-  "legacy_recovery_calls": 0,
-  "writes_outside_canary_book": 0,
-  "production_writes": 0,
-  "credentials_leaked": false,
-  "provider_preflight": {
-    "real_provider_execution": "NOT_STARTED",
-    "data_readiness_gate": "NOT_REACHED",
-    "profiles_resolved": false
+  "browser": {
+    "ordinary_v3_ui": true,
+    "direct_provider_hosts": 0,
+    "final_artifact": "output/playwright/real-image-staging-final8/summary.json",
+    "pre_generation_steps_passed": 16,
+    "failed_business_mutations": 1,
+    "known_console_warning": "duplicate React keys for built-in selector entries"
   },
-  "disposal": {
-    "selected_disposable_book_id": null,
-    "selection_reason": "No new canary was created. 990400 remains protected; 998755 and 990403 remain deleted and are not reused.",
-    "delete_contract": "DELETE /api/books/{book_id}",
-    "delete_verified": null,
-    "remaining_990400": null
+  "generation": {
+    "target_media": "IMAGE",
+    "initial_candidate_created": false,
+    "official_v1_created": false,
+    "regeneration_started": false,
+    "official_v2_created": false,
+    "video_started": false,
+    "attempts": [
+      { "artifact": "final5", "provider_calls": 1, "status": "GENERATION_EXECUTION_FAILED" },
+      { "artifact": "final7", "provider_calls": 1, "status": "GENERATION_EXECUTION_FAILED" },
+      { "artifact": "final8", "provider_calls": 1, "status": "GENERATION_EXECUTION_FAILED" }
+    ],
+    "observed_provider_calls": 3,
+    "requested_provider_call_budget": 2,
+    "budget_compliant": false,
+    "failure": "Candidate must retain a complete, traceable Provider response projection."
   },
-  "blocked_reason": "STAGING_ISOLATION_UNCONFIRMED",
-  "canary_creation": {
-    "requested_name": "V3-CANARY-DISPOSABLE-REAL-PROVIDER-R3",
-    "allow_canary_book_create": false,
-    "formal_book_create_contract": true,
-    "result": "BLOCKED_STAGING_ISOLATION_UNCONFIRMED"
+  "truth_constraints": {
+    "source_fact_modified": false,
+    "script_ir_modified": false,
+    "real_llm_called": false,
+    "real_video_called": false,
+    "api_keys_in_artifacts": false,
+    "mock_used_for_llm_upstream_only": true
   },
-  "evidence": {
-    "provider_calls": 0,
-    "llm_calls": 0,
-    "foundation_api_calls": 0,
-    "legacy_retry_calls": 0,
-    "secret_audit": "PASS",
-    "worktree_before_evidence": "CLEAN",
-    "backend_tests": "2006 passed (formal baseline)",
-    "web_tests": "63 files / 445 tests passed (formal baseline)",
-    "web_build": "PASS (formal baseline)",
-    "python_compileall": "PASS (formal baseline)",
-    "json_validation": "PASS",
-    "git_diff_check": "PASS"
-  },
-  "resume_phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE",
-  "next_phase": null,
-  "release_recommendation": "HOLD_REAL_PROVIDER_EXECUTION_UNTIL_STAGING_ISOLATION_IS_EXPLICITLY_CONFIRMED"
+  "completion_marker": "NOT_REACHED"
 }

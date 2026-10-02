@@ -62,6 +62,7 @@ describe('productWorkspaceDelivery', () => {
       imageReadyShots: 1,
       videoReadyShots: 1,
       recommendedRepairSection: null,
+      recommendedRepairLabel: '',
     })
     expect(summarizeDeliveryPackage(readiness[0]!)).toContain('QA')
   })

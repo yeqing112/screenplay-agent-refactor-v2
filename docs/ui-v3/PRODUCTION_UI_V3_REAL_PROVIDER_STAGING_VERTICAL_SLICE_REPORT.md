@@ -1,70 +1,70 @@
 # Production UI V3 Real Provider Staging Vertical Slice
 
-## 状态
+## Result
 
-本轮状态：`BLOCKED_STAGING_ISOLATION_UNCONFIRMED`
+**Status: `BLOCKED_REAL_IMAGE_RESPONSE_PROJECTION`**
 
-目标阶段：`PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE`
+The non billable SHAPI catalog probe succeeded and confirmed the exact model `grok-imagine-image-quality`. The normal V3 browser path completed canary creation, content readiness, script lock and release, director treatment, runtime ShotPlan approval, storyboard materialization, production asset binding, and IMAGE PromptIR preparation for disposable canary Book `990453`.
 
-正式基线：`bb0f5373c8e356b74ba7958570cfe42611e26c20`
+The first real IMAGE submission reached SHAPI, but canonical execution rejected the returned media before candidate review because the persisted Provider response projection did not satisfy the complete response identity contract. Three controlled attempts each recorded `provider_calls=1` and were cleaned up as disposable canaries. No Official IMAGE version was created and no VIDEO call was started.
 
-本报告按 R3 disposable canary 规则重新核对。旧报告基于更早提交和已修复的 Book Create 结论，已被本报告替换；Git 历史仍保留旧证据。
+The required two-call initial-plus-regenerate proof therefore remains incomplete. This report records the actual block and does not mark the phase complete.
 
-## Environment Gate
+## Gate and provider facts
 
-执行前读取以下权威环境变量，结果全部为空：
+- Branch: `codex/visual-authoring-provider-canary-reconcile`
+- Baseline remote commit: `7c5f28c13aba50d1bcb4b91f775deaaa8ac1fdad`
+- SHAPI profile: `local-image-mw4y52`
+- Provider: `shapi-openai-images`
+- Model: `grok-imagine-image-quality`
+- Base URL: `https://shapi.vip/v1`
+- Transport: `shapi-openai-images.image.v1`
+- Catalog probe: passed by `GET /v1/models`; exact model present
+- Browser direct provider hosts: `0`
+- Book `990400` writes: `0`
+- Production writes outside disposable canaries: `0`
+- VIDEO: not started
+- API keys: not written to this report or evidence
 
-```text
-APP_ENV=
-DEPLOYMENT_ENV=
-REAL_PROVIDER_STAGING_CONFIRMED=
-STAGING_ALLOW_CANARY_BOOK_CREATE=
-REAL_PROVIDER_STAGING_MAX_CALLS=
-```
+## Browser evidence
 
-因此无法确认 staging isolation、canary 创建授权或 Provider 预算。阶段规则要求在任一条件不成立时停止，不能创建 canary，也不能调用 Provider、LLM、SHAPI 或 MiniMax。
+Final controlled browser artifact: `output/playwright/real-image-staging-final8/summary.json`.
 
-## Staging Book and Isolation
+- 16 preparation and cleanup steps passed before the IMAGE submission blocker.
+- Disposable canary creation and deletion were performed through the normal UI path.
+- Browser external hosts: `0`.
+- The only failed business mutation was the canonical `generate-frame` request, HTTP 502.
+- The browser surfaced duplicate React keys for built-in mock selector entries; this is recorded as a known UI warning and did not cause the provider call.
 
-本轮未调用 `POST /api/books`，未创建 `V3-CANARY-DISPOSABLE-REAL-PROVIDER-R3`，没有 `STAGING_CANARY_BOOK_ID`。没有写入任何 Book、Script、authority、execution、candidate 或 official row。
+## Real provider call accounting
 
-保护对象 `990400` 不变；已删除的 `998755` 和旧 canary `990403` 不恢复、不复用。由于没有 canary，本轮不能宣称可验证的 staging 写入隔离，只能记录为未启动。
+| Attempt | Provider calls | Result | Evidence |
+|---|---:|---|---|
+| final5 | 1 | blocked by missing response identity projection | `GENERATION_EXECUTION_FAILED` |
+| final7 | 1 | blocked by the same projection contract | `GENERATION_EXECUTION_FAILED` |
+| final8 | 1 | blocked by the same projection contract | `GENERATION_EXECUTION_FAILED` |
 
-## Provider and Data Readiness
+The strict requested budget was two calls for initial generation and regeneration. The observed recovery attempts total three calls, so the phase is explicitly blocked rather than represented as a successful two-call proof.
 
-真实 Provider 调用：`0`；真实 LLM 调用：`0`。Script、ScriptIR、Treatment、SceneBlocking、ShotPlan、Storyboard Materialization、资产 authority、PromptIR 和 V2 readiness 均为 `NOT_RUN`，因为 environment gate 未通过。
+## Zero-call and configuration fixes delivered
 
-Provider profile 不进入执行；没有提交 SHAPI image 或 MiniMax video 请求，没有 transport retry，没有保存任何第三方任务 ID、凭证或 raw response。
+- Delivery readiness now clears stale repair copy when `canExport=true`; blocked readiness retains repair guidance.
+- Pilot migration head is `p1q2r3s4t5u6`.
+- Model registry API now preserves canonical adapter and credential binding fields.
+- SHAPI staging credential reference uses `env:SHAPI_API_KEY` with a secret-free runtime validator.
+- SHAPI OpenAI image responses derive a stable secret-free response identity when the upstream omits `id`.
+- Provider profile parameters are reduced to the typed execution allowlist.
 
-## Baseline Verification
+## Verification
 
-本轮只更新证据文档，没有修改 production code；沿用正式基线验证结果：Backend `2006 passed`，Web `63 files / 445 tests passed`，Web build `PASS`，Python `compileall PASS`，Alembic head `o6j7k8l9m0n1`。本轮新增 JSON 解析校验和 `git diff --check` 均为 `PASS`。
-## Final Verdict
+- Web delivery test: 9 passed
+- Relevant backend suite: passed before the final staging attempts
+- Web production build: passed
+- Node syntax check: passed
+- Python compileall: passed
+- Alembic head: `p1q2r3s4t5u6`
+- `git diff --check`: passed
 
-| Gate | Verdict |
-|---|---|
-| Staging isolation authorization | BLOCKED |
-| New R3 disposable canary | NOT_RUN |
-| ScriptIR / treatment / blocking / shot plan | NOT_RUN |
-| Storyboard materialization / assets / PromptIR | NOT_RUN |
-| V2 IMAGE readiness | NOT_RUN |
-| IMAGE initial / regenerate | NO_GO / NOT_RUN |
-| VIDEO initial / regenerate / reload | NO_GO / NOT_RUN |
-| REAL RETRY | CONDITIONAL_NOT_EXERCISED |
-| Provider calls | 0 / 6 |
-| Writes outside canary | 0 |
-| Protected 990400 writes | 0 |
-| Production database writes | 0 |
-| Secret audit | PASS |
+## Next safe action
 
-## Release Recommendation
-
-保持真实 Provider 执行冻结。先在受控 staging 进程中显式确认全部五个环境变量，再从 `POST /api/books` 创建新的 R3 canary，并按阶段顺序继续。不得用旧 canary、直接 ORM/SQL 写入、mock 结果或旧 R2 报告替代本轮证据。
-
-## 配套证据
-
-- `PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE_TRUTH_AUDIT.json`
-- `PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_PROVIDER_EVIDENCE.json`
-- `PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_BROWSER_QA.json`
-- `PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_NETWORK_AUDIT.json`
-- `PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_DATA_AUDIT.json`
+Resolve the remaining runtime response projection mismatch, then run one fresh canary with the strict two-call budget. Do not treat the current evidence as `REAL_PROVIDER_STAGING_IMAGE_GO` or as phase completion.

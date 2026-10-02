@@ -94,6 +94,8 @@ function applyProductionTruthToReadiness(
         statusLabel: blockedItems.length === 0 ? '可交付' : readiness.statusLabel,
         blockedReasons: blockedItems.map((item) => item.label),
         blockedItems,
+        recommendedRepairSection: blockedItems.length === 0 ? null : readiness.recommendedRepairSection,
+        recommendedRepairLabel: blockedItems.length === 0 ? '' : readiness.recommendedRepairLabel,
         promptReadyShots: readiness.totalShots,
         imageReadyShots: readiness.totalShots,
         videoReadyShots: readiness.totalShots,

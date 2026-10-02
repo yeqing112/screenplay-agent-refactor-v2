@@ -5,6 +5,9 @@ const path = require('path');
 const BASE = process.env.E2E_BASE_URL || 'http://127.0.0.1:5176';
 const ALLOWED_HOSTS = new Set([new URL(BASE).host, new URL(process.env.E2E_API_URL || 'http://127.0.0.1:18768').host]);
 const OUT = path.resolve(process.env.E2E_ARTIFACT_DIR || 'output/playwright/user-journey');
+const REAL_IMAGE_STAGING = process.env.E2E_REAL_IMAGE_STAGING === '1';
+const REAL_IMAGE_PROFILE_ID = process.env.E2E_REAL_IMAGE_PROFILE_ID || 'local-image-mw4y52';
+const EXISTING_CANARY_BOOK_ID = Number(process.env.E2E_EXISTING_CANARY_BOOK_ID || 0) || null;
 fs.mkdirSync(OUT, { recursive: true });
 
 function safeName(value) { return String(value).replace(/[^a-zA-Z0-9_-]+/g, '-').slice(0, 80); }
@@ -86,7 +89,7 @@ async function runOnce(browser, index) {
   const externalHosts = [];
   const consoleErrors = [];
   let disposableProjectId = null;
-  const disposableTitle = `V3 UI Journey Mock Run ${index} ${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const disposableTitle = `${REAL_IMAGE_STAGING ? 'V3 Real SHAPI Image Staging' : 'V3 UI Journey Mock Run'} ${index} ${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
   const runToken = `${index}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   page.on('request', request => {
     const url = new URL(request.url());
@@ -115,6 +118,7 @@ async function runOnce(browser, index) {
     }
   });
   const evidence = { run: index, started_at: new Date().toISOString(), viewport: { width: 1440, height: 900 }, steps: [], blockers: [], screenshot_paths: [], mutations, response_errors: responseErrors, http_errors: httpErrors, external_hosts: externalHosts, console_errors: consoleErrors, policy: { ordinary_user_browser_only: true, direct_database_seed: false, business_api_response_mocking: false, workspace_fixture_used: false, legacy_ui_bypass: false, page_route_count: 0 }, reload_checks: [], viewport_smoke: [], protected_book_990400_writes: 0, delete_audit: null };
+  if (EXISTING_CANARY_BOOK_ID) disposableProjectId = EXISTING_CANARY_BOOK_ID;
   const shot = async (name) => { const file = path.join(OUT, `${String(index).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
   const step = async (name, action) => {
     try { await action(); evidence.steps.push({ name, status: 'passed' }); }
@@ -126,8 +130,9 @@ async function runOnce(browser, index) {
     await locator.click();
   };
 
-  await step('project-list', async () => { await page.goto(BASE); await page.getByRole('button', { name: '新建项目' }).waitFor(); await shot('project-list'); });
+  await step('project-list', async () => { await page.goto(EXISTING_CANARY_BOOK_ID ? `${BASE}/?book_id=${EXISTING_CANARY_BOOK_ID}` : BASE); await page.getByRole('button', { name: EXISTING_CANARY_BOOK_ID ? '正式工作台' : '新建项目' }).waitFor(); await shot('project-list'); });
   await step('create-project-through-ui', async () => {
+    if (EXISTING_CANARY_BOOK_ID) return;
     await clickIfVisible('button', '新建项目');
     await page.getByLabel('项目名称').fill(disposableTitle);
     await clickIfVisible('button', '创建项目');
@@ -147,8 +152,9 @@ async function runOnce(browser, index) {
     evidence.reload_checks.push({ stage: 'project-created', preserved_book_id: disposableProjectId, url: page.url(), server_backed: restoredBook });
     await shot('created-project');
   });
-  await step('content-preparation', async () => { await clickIfVisible('button', '内容准备'); await shot('content-preparation'); });
+  await step('content-preparation', async () => { if (EXISTING_CANARY_BOOK_ID) return; await clickIfVisible('button', '内容准备'); await shot('content-preparation'); });
   await step('short-story-input-and-import', async () => {
+    if (EXISTING_CANARY_BOOK_ID) return;
     const importSummary = page.getByText(/导入小说，建立内容基础|高级：更换内容或导入新的小说/).first();
     const title = page.getByPlaceholder('短篇标题');
     const text = page.getByPlaceholder('粘贴短篇正文');
@@ -362,6 +368,72 @@ async function runOnce(browser, index) {
     await shot('production-assets-bound');
   });
   await step('all-shots-prompt-media-review-through-ui', async () => {
+    if (REAL_IMAGE_STAGING) {
+      const imageModel = page.getByLabel('IMAGE 生成模型', { exact: true });
+      await imageModel.waitFor({ state: 'visible', timeout: 30000 });
+      await imageModel.selectOption(REAL_IMAGE_PROFILE_ID);
+      const shotId = String((evidence.materialized_shot_ids || [])[0] || '');
+      if (!shotId) throw new Error('Real IMAGE staging requires one materialized target shot.');
+      const shotButton = page.getByTestId(`shot-studio-shot-${shotId}`);
+      await shotButton.click();
+      const prepareImage = page.getByRole('button', { name: '准备 IMAGE PromptIR', exact: true });
+      const imagePrompt = await clickAndWaitForResponse(page, prepareImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
+      if (!imagePrompt.ok()) throw new Error(`IMAGE PromptIR compilation failed: HTTP ${imagePrompt.status()} ${await imagePrompt.text()}`);
+      await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.prompt_ir?.current === true);
+      await page.getByRole('button', { name: '图片', exact: true }).click();
+
+      const generateImage = page.getByRole('button', { name: '生成 IMAGE', exact: true });
+      await generateImage.waitFor({ state: 'visible', timeout: 30000 });
+      const initialGeneration = await clickAndWaitForResponse(page, generateImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), 180000);
+      if (!initialGeneration.ok()) throw new Error(`Initial real IMAGE generation failed: HTTP ${initialGeneration.status()} ${await initialGeneration.text()}`);
+      await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 180000 });
+      const initialCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.candidate?.reviewEligibility === true && current.IMAGE?.latest_execution?.state === 'SUCCEEDED');
+      const initialExecution = executionIdentity(initialCandidate.shot, 'IMAGE');
+      const initialCandidateId = initialCandidate.shot.IMAGE?.candidate?.candidate?.id || initialCandidate.shot.IMAGE?.latest_execution?.raw?.candidate_id || null;
+      const initialCandidatePreview = initialCandidate.shot.IMAGE?.candidate?.candidate?.preview_url || initialCandidate.shot.IMAGE?.candidate?.candidate?.preview || null;
+      const approve = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
+      await approve.waitFor({ state: 'visible', timeout: 30000 });
+      const initialPromotion = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/api/assets/candidates/') && new URL(response.url()).pathname.endsWith('/promote'), { timeout: 60000 });
+      await approve.click();
+      const initialPromotionResponse = await initialPromotion;
+      if (!initialPromotionResponse.ok()) throw new Error(`Initial IMAGE promotion failed: HTTP ${initialPromotionResponse.status()} ${await initialPromotionResponse.text()}`);
+      await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 });
+      const officialV1State = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.candidate_id === initialCandidateId);
+      const officialV1 = officialV1State.shot.IMAGE?.official?.version || {};
+
+      const regenerate = page.getByTestId('shot-studio-regenerate-image');
+      await regenerate.waitFor({ state: 'visible', timeout: 30000 });
+      const attemptPost = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/generation-attempts'), { timeout: 60000 }).catch(() => null);
+      await regenerate.click();
+      await attemptPost;
+      const regeneratedCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.id === officialV1.id && current.IMAGE?.candidate?.reviewEligibility === true && current.IMAGE?.latest_execution?.state === 'SUCCEEDED' && current.IMAGE?.latest_execution?.id !== initialExecution.execution_id, 180000);
+      const regeneratedExecution = executionIdentity(regeneratedCandidate.shot, 'IMAGE');
+      const regeneratedCandidateId = regeneratedCandidate.shot.IMAGE?.candidate?.candidate?.id || regeneratedCandidate.shot.IMAGE?.latest_execution?.raw?.candidate_id || null;
+      const regeneratedPreview = regeneratedCandidate.shot.IMAGE?.candidate?.candidate?.preview_url || regeneratedCandidate.shot.IMAGE?.candidate?.candidate?.preview || null;
+      const duringRegenerationOfficial = regeneratedCandidate.shot.IMAGE?.official?.version || {};
+      if (!duringRegenerationOfficial.current && duringRegenerationOfficial.id !== officialV1.id) throw new Error('Official v1 was not current while regenerated candidate awaited review.');
+      await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 30000 });
+      const approveV2 = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
+      const v2Promotion = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/api/assets/candidates/') && new URL(response.url()).pathname.endsWith('/promote'), { timeout: 60000 });
+      await approveV2.click();
+      const v2PromotionResponse = await v2Promotion;
+      if (!v2PromotionResponse.ok()) throw new Error(`Regenerated IMAGE promotion failed: HTTP ${v2PromotionResponse.status()} ${await v2PromotionResponse.text()}`);
+      await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 });
+      const officialV2State = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.id !== officialV1.id && current.IMAGE?.official?.version?.candidate_id === regeneratedCandidateId, 120000);
+      const officialV2 = officialV2State.shot.IMAGE?.official?.version || {};
+      evidence.real_image_staging = {
+        profile_id: REAL_IMAGE_PROFILE_ID,
+        model_name: 'grok-imagine-image-quality',
+        target_shot_id: shotId,
+        initial: { execution: initialExecution, candidate_id: initialCandidateId, preview_present: Boolean(initialCandidatePreview), official_version_id: officialV1.id || null },
+        regenerate: { execution: regeneratedExecution, candidate_id: regeneratedCandidateId, preview_present: Boolean(regeneratedPreview), official_v1_current_during_review: duringRegenerationOfficial.id === officialV1.id && duringRegenerationOfficial.current === true },
+        final: { official_v2_version_id: officialV2.id || null, candidate_id: officialV2.candidate_id || null, v1_superseded: officialV2.id !== officialV1.id },
+        video_status: 'BLOCKED_REAL_VIDEO_NOT_CONFIGURED',
+      };
+      evidence.real_provider_generation_posts = (evidence.mutations || []).filter((mutation) => mutation.method === 'POST' && (mutation.path.endsWith('/generate-frame') || mutation.path.includes('/generation-attempts'))).length;
+      await shot('real-image-v2-official');
+      return;
+    }
     const imageModel = page.getByLabel('IMAGE 生成模型', { exact: true });
     const videoModel = page.getByLabel('VIDEO 生成模型', { exact: true });
     await imageModel.waitFor({ state: 'visible', timeout: 30000 });
@@ -447,6 +519,11 @@ async function runOnce(browser, index) {
     if (checks.length !== (evidence.materialized_shot_ids || []).length || checks.some((item) => !item.prompt_ready || !item.image_official || !item.video_official || item.image_official_id !== item.video_source_official_image_id)) throw new Error(`Not every materialized shot completed PromptIR → IMAGE Official → VIDEO Official with same-shot source: ${JSON.stringify(checks)}`);
   });
   await step('qa-and-delivery-export', async () => {
+    if (REAL_IMAGE_STAGING) {
+      evidence.video_status = 'REAL_PROVIDER_STAGING_IMAGE_GO_VIDEO_BLOCKED';
+      evidence.delivery_readiness = { can_export: false, blocked_by: 'VIDEO_NOT_CONFIGURED', image_official_ready: true };
+      return;
+    }
     await clickIfVisible('button', 'QA 修复');
     await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 60000 }).catch(() => {});
     const qaBody = await page.locator('body').innerText();
@@ -542,13 +619,16 @@ async function runOnce(browser, index) {
   for (const run of runs) {
     if ((run.blockers || []).length) failures.push({ run: run.run, code: 'BLOCKERS_PRESENT', blockers: run.blockers });
     if ((run.steps || []).some((item) => item.status !== 'passed')) failures.push({ run: run.run, code: 'STEP_NOT_PASSED' });
-    if (!run.delivery_readiness?.can_export || !run.delivery_export?.record || run.delivery_export.record.status !== 'completed') failures.push({ run: run.run, code: 'FORMAL_DELIVERY_NOT_READY', readiness: run.delivery_readiness });
+    if (!REAL_IMAGE_STAGING && (!run.delivery_readiness?.can_export || !run.delivery_export?.record || run.delivery_export.record.status !== 'completed')) failures.push({ run: run.run, code: 'FORMAL_DELIVERY_NOT_READY', readiness: run.delivery_readiness });
+    if (REAL_IMAGE_STAGING && (!run.real_image_staging?.final?.official_v2_version_id || !run.real_image_staging?.regenerate?.official_v1_current_during_review)) failures.push({ run: run.run, code: 'REAL_IMAGE_VERSION_LINEAGE_NOT_PROVEN', real_image_staging: run.real_image_staging });
     if (!run.delete_audit || Number(run.delete_audit.payload?.orphan_rows || 0) !== 0 || Number(run.delete_audit.payload?.ambiguous_rows || 0) !== 0) failures.push({ run: run.run, code: 'DELETE_AUDIT_FAILED', delete_audit: run.delete_audit });
-    if ((run.video_running_before_reload || []).some((item) => !item.execution_id || !item.provider_task_id) || (run.video_running_after_reload || []).some((item) => !item.same_execution || !item.same_provider_task)) failures.push({ run: run.run, code: 'VIDEO_RELOAD_NOT_PROVEN' });
+    if (!REAL_IMAGE_STAGING && ((run.video_running_before_reload || []).some((item) => !item.execution_id || !item.provider_task_id) || (run.video_running_after_reload || []).some((item) => !item.same_execution || !item.same_provider_task))) failures.push({ run: run.run, code: 'VIDEO_RELOAD_NOT_PROVEN' });
   }
-  const videoSubmissionCounts = runs.flatMap((run) => (run.video_running_before_reload || []).map((item) => ({ run: run.run, shot_id: item.shot_id, count: (run.mutations || []).filter((mutation) => mutation.method === 'POST' && new RegExp(`/storyboard/1/${String(item.shot_id).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/generate-video$`).test(mutation.path)).length })));
-  for (const item of videoSubmissionCounts) if (item.count !== 1) failures.push({ ...item, code: 'VIDEO_DUPLICATE_OR_MISSING_SUBMISSION' });
-  const summary = { schema_version: 'production-ui-v3-browser-user-journey-delivery-readiness-reconcile-v1', generated_at: new Date().toISOString(), runs, ledger, failures, all_steps_passed: failures.length === 0, policy: { mutations_via_visible_ui_only: true, real_external_hosts_allowed: [], mock_runtime_only: true, formal_delivery_gate: 'canExport=true and completed delivery record' } };
+  if (!REAL_IMAGE_STAGING) {
+    const videoSubmissionCounts = runs.flatMap((run) => (run.video_running_before_reload || []).map((item) => ({ run: run.run, shot_id: item.shot_id, count: (run.mutations || []).filter((mutation) => mutation.method === 'POST' && new RegExp(`/storyboard/1/${String(item.shot_id).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/generate-video$`).test(mutation.path)).length })));
+    for (const item of videoSubmissionCounts) if (item.count !== 1) failures.push({ ...item, code: 'VIDEO_DUPLICATE_OR_MISSING_SUBMISSION' });
+  }
+  const summary = { schema_version: REAL_IMAGE_STAGING ? 'production-ui-v3-real-provider-staging-image-first-v1' : 'production-ui-v3-browser-user-journey-delivery-readiness-reconcile-v1', generated_at: new Date().toISOString(), runs, ledger, failures, all_steps_passed: failures.length === 0, policy: { mutations_via_visible_ui_only: true, real_external_hosts_allowed: [], mock_runtime_only: !REAL_IMAGE_STAGING, real_provider: REAL_IMAGE_STAGING ? 'shapi-openai-images' : null, formal_delivery_gate: REAL_IMAGE_STAGING ? 'IMAGE v2 official with v1 current during regeneration; VIDEO blocked' : 'canExport=true and completed delivery record' } };
   await fs.promises.writeFile(path.join(OUT, 'summary.json'), JSON.stringify(summary, null, 2));
   console.log(JSON.stringify({ output: path.join(OUT, 'summary.json'), runs: runs.length, failures: failures.length, external_hosts: [...new Set(runs.flatMap(item => item.external_hosts))] }, null, 2));
   if (failures.length) process.exitCode = 1;

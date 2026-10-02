@@ -2068,6 +2068,13 @@ class ModelProfilePayload(BaseModel):
     default_params: dict = Field(default_factory=dict, validation_alias=AliasChoices("default_params", "defaultParams"))
     enabled: bool = True
     api_key: Optional[str] = Field(default=None, validation_alias=AliasChoices("api_key", "apiKey"))
+    generation_capability: str = Field(default="", validation_alias=AliasChoices("generation_capability", "generationCapability"))
+    adapter_id: str = Field(default="", validation_alias=AliasChoices("adapter_id", "adapterId"))
+    adapter_version: str = Field(default="", validation_alias=AliasChoices("adapter_version", "adapterVersion"))
+    credential_ref: str = Field(default="", validation_alias=AliasChoices("credential_ref", "credentialRef"))
+    credential_configured: bool = Field(default=False, validation_alias=AliasChoices("credential_configured", "credentialConfigured"))
+    runtime_binding_id: str = Field(default="", validation_alias=AliasChoices("runtime_binding_id", "runtimeBindingId"))
+    transport_binding_id: str = Field(default="", validation_alias=AliasChoices("transport_binding_id", "transportBindingId"))
 
 
 class ModelRegistryUpdateRequest(BaseModel):
