@@ -32,12 +32,13 @@
 - 技术验证、响应 hash 一致性、密钥不进入结果投影、REVIEW_REQUIRED 门禁均通过；没有 Official Media 行。
 - `validate_media_candidate_integrity()` 通过；GenerationExecution、Candidate 和 request snapshot 不包含 raw `b64_json` 或完整 Provider body，只保留 response hash。
 - Media Authority 错误映射已保留根错误码；重复 builtin Profile id 在后端和前端来源处做了 canonical 去重。
+- 旧后端进程已停止并以当前工作区源码重新启动为 provider-free 环境；`GET /api/model-registry` 返回 HTTP 200，未发起 Provider 请求。
 
 ## 真实调用结果
 
 真实浏览器路径在第 4 次调用时收到 HTTP 502。该调用没有建立可审核候选，也没有 Official Media 写入；dispose 流程完成，`orphan_rows=0`、`ambiguous_rows=0`，失败 Provider media 文件 orphan 为 0。由于初次真实提交失败，按照本阶段规则不再尝试 regenerate。
 
-provider-free 测试使用当前源代码通过，但已运行的后端进程未在本次源代码修复后重启；真实调用证据因此保留为失败事实，不能推断当前源码已通过真实 Provider 响应投影。后续若继续，必须先重启后端并重新获得人工批准；本轮不再消耗调用预算。
+真实调用证据仍保留为失败事实；本轮随后已重启当前源码的 provider-free 后端，但没有用剩余预算重试真实 Provider。后续若继续，必须重新获得人工批准；本轮不再消耗调用预算。
 
 ## 校验
 

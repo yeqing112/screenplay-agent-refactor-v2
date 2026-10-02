@@ -37,6 +37,12 @@
   "candidate_execution_response_hash_match": true,
   "duplicate_model_profile_ids": 0,
   "browser_evidence": "output/playwright/real-image-reconcile-final/summary.json",
+  "runtime_provider_free_restart": {
+    "status": "PASS",
+    "api_origin": "127.0.0.1:18768",
+    "health_probe": "GET /api/model-registry -> 200",
+    "real_provider_posts_after_restart": 0
+  },
   "browser_external_hosts": [],
   "browser_direct_shapi_calls": 0,
   "disposable_book_id": 990453,
