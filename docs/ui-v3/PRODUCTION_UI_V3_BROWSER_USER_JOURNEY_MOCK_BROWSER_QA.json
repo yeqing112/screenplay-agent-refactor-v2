@@ -1,9 +1,10 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-browser-qa-v1",
+  "schema_version": "production-ui-v3-browser-user-journey-mock-browser-qa-v2",
+  "generated_at": "2026-10-02T00:18:22.692Z",
   "runs": [
     {
       "run": 1,
-      "started_at": "2026-10-01T23:45:16.729Z",
+      "started_at": "2026-10-02T00:18:04.295Z",
       "steps": [
         {
           "name": "project-list",
@@ -18,56 +19,126 @@
           "status": "passed"
         },
         {
+          "name": "short-story-input-and-import",
+          "status": "passed"
+        },
+        {
+          "name": "production-skill-and-adaptation-lock",
+          "status": "passed"
+        },
+        {
           "name": "director-and-shot-workbench-observation",
-          "status": "blocked",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"
+          "status": "passed"
         },
         {
           "name": "asset-blocker-evidence",
-          "status": "blocked",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+          "status": "passed"
         },
         {
           "name": "return-and-dispose-project-through-ui",
           "status": "passed"
         }
       ],
-      "blockers": [
-        {
-          "step": "director-and-shot-workbench-observation",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"
-        },
-        {
-          "step": "asset-blocker-evidence",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
-        }
-      ],
+      "blockers": [],
       "screenshot_paths": [
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-project-list.png",
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-created-project.png",
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-content-preparation.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-content-ready.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-adaptation-locked.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-director-runtime.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-shot-workbench.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-asset-blocker.png",
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\01-project-cleanup.png"
       ],
       "mutations": [
         {
           "method": "POST",
           "path": "/api/books",
-          "host": "127.0.0.1:5176"
+          "host": "127.0.0.1:5176",
+          "body": {
+            "title": "V3 UI Journey Mock Run 1"
+          }
         },
         {
           "method": "POST",
           "path": "/api/agent/updates/reconcile",
-          "host": "127.0.0.1:5176"
+          "host": "127.0.0.1:5176",
+          "body": {
+            "bookId": 5,
+            "scope": {
+              "section": "创作画布",
+              "shot_id": null,
+              "asset_id": null
+            }
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/api/upload",
+          "host": "127.0.0.1:5176",
+          "body": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/pipeline/script",
+          "host": "127.0.0.1:5176",
+          "body": {
+            "book_id": 5,
+            "filepath": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\20261002_081805_cb6229e7_潮汐回声-1.txt",
+            "genre": "short_drama",
+            "episode_count": 1,
+            "stop_after": "content",
+            "preferred_title": "潮汐回声-1"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/books/5/production-skill-state",
+          "host": "127.0.0.1:5176",
+          "body": {
+            "skillId": "rebirth_suspense",
+            "platform": "douyin",
+            "track": "重生悬疑",
+            "emotionGoal": "高压悬念",
+            "rhythmStrength": "strong_hooks",
+            "visualStyle": "cinematic_realism",
+            "priorities": [
+              "storyboard",
+              "assets",
+              "mystery"
+            ],
+            "enforcement": "strict",
+            "customNote": "",
+            "lockedAt": "2026-10-02T00:18:07.297Z"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/books/5/adaptation-state",
+          "host": "127.0.0.1:5176",
+          "body": {
+            "selectedId": "emotion-suspense",
+            "selectedName": "竖屏情绪悬疑短剧",
+            "customNote": "",
+            "lockedAt": "2026-10-02T00:18:07.395Z"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/books/5",
+          "host": "127.0.0.1:5176",
+          "body": null
         }
       ],
       "external_hosts": [],
       "console_errors": [],
-      "disposable_project_id": null,
-      "finished_at": "2026-10-01T23:45:32.811Z"
+      "disposable_project_id": 5,
+      "finished_at": "2026-10-02T00:18:13.446Z"
     },
     {
       "run": 2,
-      "started_at": "2026-10-01T23:45:32.879Z",
+      "started_at": "2026-10-02T00:18:13.519Z",
       "steps": [
         {
           "name": "project-list",
@@ -82,62 +153,128 @@
           "status": "passed"
         },
         {
+          "name": "short-story-input-and-import",
+          "status": "passed"
+        },
+        {
+          "name": "production-skill-and-adaptation-lock",
+          "status": "passed"
+        },
+        {
           "name": "director-and-shot-workbench-observation",
-          "status": "blocked",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n"
+          "status": "passed"
         },
         {
           "name": "asset-blocker-evidence",
-          "status": "blocked",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+          "status": "passed"
         },
         {
           "name": "return-and-dispose-project-through-ui",
           "status": "passed"
         }
       ],
-      "blockers": [
-        {
-          "step": "director-and-shot-workbench-observation",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '剧本工作台' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    9 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n"
-        },
-        {
-          "step": "asset-blocker-evidence",
-          "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '资产中心' }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-disabled=\"true\" title=\"内容准备已具备，可以先生成 2-3 个候选改编方向再做项目级决策。\" class=\"flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 cursor-not-allowed text-slate-600\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
-        }
-      ],
+      "blockers": [],
       "screenshot_paths": [
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-project-list.png",
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-created-project.png",
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-content-preparation.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-content-ready.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-adaptation-locked.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-director-runtime.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-shot-workbench.png",
+        "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-asset-blocker.png",
         "D:\\Work\\Project\\screenplay-agent-refactor-v2\\output\\playwright\\user-journey\\02-project-cleanup.png"
       ],
       "mutations": [
         {
           "method": "POST",
           "path": "/api/books",
-          "host": "127.0.0.1:5176"
+          "host": "127.0.0.1:5176",
+          "body": {
+            "title": "V3 UI Journey Mock Run 2"
+          }
         },
         {
           "method": "POST",
           "path": "/api/agent/updates/reconcile",
-          "host": "127.0.0.1:5176"
+          "host": "127.0.0.1:5176",
+          "body": {
+            "bookId": 5,
+            "scope": {
+              "section": "创作画布",
+              "shot_id": null,
+              "asset_id": null
+            }
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/api/upload",
+          "host": "127.0.0.1:5176",
+          "body": null
+        },
+        {
+          "method": "POST",
+          "path": "/api/pipeline/script",
+          "host": "127.0.0.1:5176",
+          "body": {
+            "book_id": 5,
+            "filepath": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\20261002_081814_14e4c1d3_潮汐回声-2.txt",
+            "genre": "short_drama",
+            "episode_count": 1,
+            "stop_after": "content",
+            "preferred_title": "潮汐回声-2"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/books/5/production-skill-state",
+          "host": "127.0.0.1:5176",
+          "body": {
+            "skillId": "rebirth_suspense",
+            "platform": "douyin",
+            "track": "重生悬疑",
+            "emotionGoal": "高压悬念",
+            "rhythmStrength": "strong_hooks",
+            "visualStyle": "cinematic_realism",
+            "priorities": [
+              "storyboard",
+              "assets",
+              "mystery"
+            ],
+            "enforcement": "strict",
+            "customNote": "",
+            "lockedAt": "2026-10-02T00:18:16.529Z"
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/books/5/adaptation-state",
+          "host": "127.0.0.1:5176",
+          "body": {
+            "selectedId": "emotion-suspense",
+            "selectedName": "竖屏情绪悬疑短剧",
+            "customNote": "",
+            "lockedAt": "2026-10-02T00:18:16.628Z"
+          }
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/books/5",
+          "host": "127.0.0.1:5176",
+          "body": null
         }
       ],
       "external_hosts": [],
       "console_errors": [],
-      "disposable_project_id": null,
-      "finished_at": "2026-10-01T23:45:48.877Z"
+      "disposable_project_id": 5,
+      "finished_at": "2026-10-02T00:18:22.637Z"
     }
   ],
-  "manual_browser_checkpoint": {
-    "director_treatment": "approved",
-    "scene_blocking": "approved",
-    "shot_plan": "approved",
-    "assets": "blocked"
-  },
-  "screenshots": [
-    "output/playwright/phase-director-shotplan.png",
-    "output/playwright/phase-assets-blocker.png"
-  ]
+  "assertions": {
+    "all_steps_passed": true,
+    "external_hosts": [],
+    "console_errors": 0,
+    "ui_delete_mutations": 2
+  }
 }

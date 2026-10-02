@@ -458,6 +458,27 @@ def confirm_scene_blocking(book_id: int, episode: int, req: SceneBlockingConfirm
                         candidate_source[field] = persisted_contract[field]
         if is_production:
             candidate_source["unknown_resolutions"] = req.unknown_resolutions
+            # The production semantic contract is editable only through its
+            # canonical candidate fields, but older clients and the browser
+            # projection may send those fields alongside the regular preview
+            # fields. Preserve them for validation instead of dropping them
+            # during the UI projection whitelist step.
+            persisted_contract = _json(getattr(draft, "spatial_model", "{}"), {})
+            if not isinstance(persisted_contract, dict):
+                persisted_contract = {}
+            for field in (
+                "initial_state", "blocking_transitions", "compiler_version",
+                "compiled_states_hash", "beat_spatial_states", "movement_path_projection",
+                "space_model", "zones", "anchors", "connections", "characters",
+                "movement_paths", "eyelines", "prop_spatial_states", "critical_props",
+                "interactions", "interaction_axes", "director_direction_refs", "provenance",
+            ):
+                if isinstance(req.blocking, dict) and field in req.blocking:
+                    candidate_source[field] = req.blocking[field]
+                elif field in persisted_contract:
+                    candidate_source[field] = persisted_contract[field]
+                elif field in baseline:
+                    candidate_source[field] = baseline[field]
         candidate = _validate_blocking_candidate(candidate_source, baseline, production=is_production)
     except ValueError as exc:
         message = str(exc)

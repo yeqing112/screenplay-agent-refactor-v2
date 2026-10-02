@@ -1,6 +1,7 @@
 {
   "schema_version": "production-ui-v3-browser-user-journey-mock-truth-v1",
   "status": "partial_asset_blocked",
+  "runtime_evidence_generated_at": "2026-10-02T00:14:00Z",
   "manual_completed_through": [
     "project_list",
     "new_project",
@@ -10,7 +11,8 @@
     "scene_blocking_human_confirm",
     "shot_plan_preview",
     "shot_plan_human_confirm",
-    "shot_workbench"
+    "shot_workbench",
+    "project_cleanup_via_ui"
   ],
   "blocked_at": [
     "production_script_ir_authority",
@@ -34,7 +36,7 @@
   "writes_to_990400": 0,
   "revived_998755": false,
   "mock_ledger_counts": {
-    "mock_llm_calls": 21,
+    "mock_llm_calls": 57,
     "mock_image_calls": 0,
     "mock_video_calls": 0
   },
@@ -42,11 +44,26 @@
     "count": 2,
     "started_from_project_list": true,
     "mutations_via_visible_ui_only": true,
-    "disposable_projects_deleted_via_ui": true
+    "disposable_projects_deleted_via_ui": true,
+    "run_1_all_steps_passed": true,
+    "run_2_all_steps_passed": true,
+    "project_identity_preserved_during_import": true,
+    "project_ids_reused_after_ui_delete": true
   },
   "evidence_files": [
     "output/playwright/phase-director-shotplan.png",
     "output/playwright/phase-assets-blocker.png",
     "output/playwright/user-journey/summary.json"
-  ]
+  ],
+  "verification": {
+    "web_tests_passed": 445,
+    "web_build": "PASS",
+    "python_compileall": "PASS",
+    "git_diff_check": "PASS",
+    "backend_full_pytest": "2000 passed, 4 failed, 2 errors",
+    "targeted_scene_blocking_regression": "PASS",
+    "targeted_phase_c_regression": "PASS",
+    "targeted_phase_i_regression": "PASS",
+    "targeted_phase_j3_1_regression": "PASS"
+  }
 }

@@ -23,7 +23,7 @@ from uuid import uuid4
 import config
 from sqlalchemy import and_, or_
 
-from models import Base, Book, EpisodeOutline, Script, Session
+from models import Base, Book, EpisodeOutline, KV, Script, Session
 
 
 class BookLifecycleError(ValueError):
@@ -982,12 +982,32 @@ def delete_book_scope(session: Any, *, book_id: int) -> dict[str, Any]:
         count = _delete_rows(session, model, model.book_id == int(book_id))
         if count:
             counts[table_name] = counts.get(table_name, 0) + count
+    # Project-level UI state is stored in the shared KV table. Remove only
+    # keys owned by this Book so a later disposable project cannot inherit a
+    # previous run's locked skill or adaptation decision when SQLite reuses an
+    # integer id.
+    kv_prefixes = (
+        f"product_workspace:adaptation:{int(book_id)}",
+        f"product_workspace:production_skill:{int(book_id)}",
+    )
+    kv_deleted = int(
+        session.query(KV)
+        .filter(KV.key.in_(kv_prefixes))
+        .delete(synchronize_session=False)
+        or 0
+    )
+    if kv_deleted:
+        counts["book_workspace_kv"] = kv_deleted
     session.delete(book)
     session.commit()
 
     with Session() as verify:
         has_neighbor = verify.query(Book).filter(Book.title == title, Book.id != int(book_id)).first() is not None
     filesystem = _remove_scoped_files(int(book_id), title, has_same_title_neighbor=has_neighbor)
+    script_decision_path = Path(__file__).resolve().parents[1] / "script_decisions" / f"book_{int(book_id)}.json"
+    if script_decision_path.exists():
+        script_decision_path.unlink()
+        filesystem.setdefault("removed", []).append(str(script_decision_path))
     with Session() as verify:
         remaining = audit_book_scope(verify, int(book_id))
         indirect_remaining = _audit_indirect_scope(verify, ctx)

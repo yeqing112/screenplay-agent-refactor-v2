@@ -90,7 +90,7 @@ def _is_invalid_extracted_title(candidate: str) -> bool:
     return False
 
 
-def ingest(filepath: str, preferred_title: str | None = None) -> dict:
+def ingest(filepath: str, preferred_title: str | None = None, target_book_id: int | None = None) -> dict:
     """Import a novel file. Returns {book_id, title, chapters, words}."""
     path = Path(filepath)
     if not path.exists():
@@ -129,9 +129,21 @@ def ingest(filepath: str, preferred_title: str | None = None) -> dict:
     import config
 
     with Session() as session:
-        book = Book(title=title, filename=path.name, status="imported")
-        session.add(book)
-        session.flush()
+        book = session.get(Book, int(target_book_id)) if target_book_id else None
+        if book is None:
+            book = Book(title=title, filename=path.name, status="imported")
+            session.add(book)
+            session.flush()
+        else:
+            # Content preparation for a newly created project must keep the
+            # project identity. Replace only the imported source layer; all
+            # downstream production rows remain owned by this Book.
+            session.query(Chapter).filter(Chapter.book_id == book.id).delete(synchronize_session=False)
+            book.title = title or book.title
+            book.filename = path.name
+            book.status = "imported"
+            book.chapter_count = 0
+            book.total_words = 0
 
         total_words = 0
         chapter_ids: list[str] = []

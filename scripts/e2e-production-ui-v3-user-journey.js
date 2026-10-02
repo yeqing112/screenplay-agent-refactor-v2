@@ -20,11 +20,19 @@ async function runOnce(browser, index) {
   page.on('request', request => {
     const url = new URL(request.url());
     if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) {
-      mutations.push({ method: request.method(), path: `${url.pathname}${url.search}`, host: url.host });
+      mutations.push({ method: request.method(), path: `${url.pathname}${url.search}`, host: url.host, body: request.postDataJSON?.() ?? request.postData() ?? null });
     }
     if (!['127.0.0.1:5176', '127.0.0.1:18768'].includes(url.host)) externalHosts.push(url.host);
   });
   page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+  page.on('response', async response => {
+    if (response.request().method() === 'POST' && new URL(response.url()).pathname === '/api/books') {
+      try {
+        const payload = await response.json();
+        if (payload?.id) disposableProjectId = Number(payload.id);
+      } catch { /* response may be unavailable after navigation */ }
+    }
+  });
   const evidence = { run: index, started_at: new Date().toISOString(), steps: [], blockers: [], screenshot_paths: [], mutations, external_hosts: externalHosts, console_errors: consoleErrors };
   const shot = async (name) => { const file = path.join(OUT, `${String(index).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
   const step = async (name, action) => {
@@ -43,11 +51,33 @@ async function runOnce(browser, index) {
     await page.getByLabel('项目名称').fill(disposableTitle);
     await clickIfVisible('button', '创建项目');
     await page.waitForTimeout(500);
-    const cardId = await page.locator('[data-book-id]').first().getAttribute('data-book-id').catch(() => null);
-    disposableProjectId = cardId ? Number(cardId) : null;
     await shot('created-project');
   });
   await step('content-preparation', async () => { await clickIfVisible('button', '内容准备'); await shot('content-preparation'); });
+  await step('short-story-input-and-import', async () => {
+    const importSummary = page.getByText(/导入小说，建立内容基础|高级：更换内容或导入新的小说/).first();
+    if (await importSummary.count() && await importSummary.isVisible()) await importSummary.click();
+    const title = page.getByPlaceholder('短篇标题');
+    const text = page.getByPlaceholder('粘贴短篇正文');
+    await title.fill(`潮汐回声-${index}`);
+    await text.fill('雨夜旧港的潮声盖过了脚步。林默在仓库门口发现一枚带血的旧钥匙，远处的灯塔忽明忽暗。');
+    await page.getByRole('button', { name: '创建短篇并导入' }).click();
+    await page.getByText('内容准备完成', { exact: false }).waitFor({ timeout: 30000 });
+    await shot('content-ready');
+  });
+  await step('production-skill-and-adaptation-lock', async () => {
+    await clickIfVisible('button', '改编方向');
+    await page.getByRole('button', { name: '锁定 Production Skill' }).waitFor({ timeout: 30000 });
+    await page.getByRole('button', { name: '锁定 Production Skill' }).click();
+    const candidates = page.getByRole('button', { name: /竖屏情绪悬疑短剧|都市关系流连续短剧|强反转剧情向短剧/ });
+    if (await candidates.count() === 0) throw new Error('adaptation candidates were not rendered');
+    await candidates.first().click();
+    await candidates.first().waitFor({ state: 'visible' });
+    if ((await candidates.first().getAttribute('aria-pressed')) !== 'true') throw new Error('adaptation candidate selection did not persist');
+    await page.getByRole('button', { name: '锁定为主方向' }).click();
+    await page.getByRole('button', { name: '进入剧本工作台' }).waitFor({ timeout: 10000 });
+    await shot('adaptation-locked');
+  });
   await step('director-and-shot-workbench-observation', async () => {
     await clickIfVisible('button', '剧本工作台');
     await page.getByText('导演运行时', { exact: false }).waitFor().catch(() => {});
@@ -59,12 +89,13 @@ async function runOnce(browser, index) {
   await step('asset-blocker-evidence', async () => { await clickIfVisible('button', '资产中心'); await shot('asset-blocker'); const body = await page.locator('body').innerText(); if (!body.includes('缺少真实视觉资产') && !body.includes('当前没有 Production Asset')) throw new Error('asset blocker was not visible'); });
   await step('return-and-dispose-project-through-ui', async () => {
     await clickIfVisible('button', '项目列表');
-    {
-      const card = page.getByLabel(`打开项目 ${disposableTitle}`).first();
-      if (await card.count()) {
+    if (disposableProjectId) {
+      const card = page.locator(`[data-book-id="${disposableProjectId}"]`).first();
+      await card.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+      if (await card.count() && await card.isVisible().catch(() => false)) {
         page.once('dialog', dialog => dialog.accept());
         await card.locator('button[title="删除项目"]').click();
-        await page.waitForTimeout(300);
+        await page.waitForTimeout(500);
       }
     }
     await shot('project-cleanup');

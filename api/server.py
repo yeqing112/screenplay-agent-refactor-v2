@@ -4173,9 +4173,19 @@ async def run_script_pipeline(req: PipelineRequest, bg: BackgroundTasks):
             # Handle filepath ingest at step level
             if req.filepath:
                 update_step("瀵煎叆鏂囦欢")
-                ingest_result = await asyncio.to_thread(ingest, req.filepath, req.preferred_title)
-                book_id = ingest_result["book_id"]
-                _pipeline_tasks[task_id]["new_book_id"] = book_id
+                ingest_result = await asyncio.to_thread(
+                    ingest,
+                    req.filepath,
+                    req.preferred_title,
+                    req.book_id if int(req.book_id or 0) > 0 else None,
+                )
+                imported_book_id = int(ingest_result["book_id"])
+                # A file import attached to an existing project is an update
+                # of that project's source layer, never a second project.
+                book_id = int(req.book_id or imported_book_id)
+                if imported_book_id != book_id:
+                    raise RuntimeError("USER_JOURNEY_PROJECT_IDENTITY_BROKEN")
+                _pipeline_tasks[task_id]["new_book_id"] = None
                 _pipeline_tasks[task_id]["book_id"] = book_id
                 _persist_task_state(task_id, "pipeline", _pipeline_tasks[task_id])
                 update_step("鏂囦欢瀵煎叆瀹屾垚")
