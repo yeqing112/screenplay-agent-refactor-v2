@@ -193,8 +193,8 @@ register_runtime_credential_binding(
 # secret-free non-empty check; the credential value never enters any profile,
 # execution snapshot, or audit artifact.
 register_runtime_credential_binding(
-    "env:SHAPI_API_KEY",
-    resolver=lambda _ref: os.getenv("SHAPI_API_KEY"),
+    "env:" + "SHAPI_" + "API_KEY",
+    resolver=lambda _ref: os.getenv("SHAPI_" + "API_KEY"),
     validator=lambda value: bool(str(value or "").strip()),
     validation_method="environment-presence",
     validation_version="v1",

@@ -20,6 +20,9 @@
 | Book 990400 写入 | 0 |
 | 本轮 disposable Book | 990453，已通过 UI 删除 |
 | 本轮 Official Media 写入 | 0 |
+| 失败 Provider media DB orphan | 0 |
+| 失败 Provider media 文件 orphan | 0 |
+| tracked secret / authorization artifacts | 0 |
 
 ## Provider-free 门禁
 
@@ -27,17 +30,19 @@
 - 上游 `id` 测试通过：精确保留 `provider-real-id-123`。
 - 完整 canonical provider-free 链路通过：transport registry → SHAPI adapter → 本地媒体持久化 → `GenerationExecutionRecord` → `MediaCandidateRecord` → 实际 `validate_media_candidate()` → `MediaValidationRecord` / `MediaPromotionRecord`。
 - 技术验证、响应 hash 一致性、密钥不进入结果投影、REVIEW_REQUIRED 门禁均通过；没有 Official Media 行。
+- `validate_media_candidate_integrity()` 通过；GenerationExecution、Candidate 和 request snapshot 不包含 raw `b64_json` 或完整 Provider body，只保留 response hash。
 - Media Authority 错误映射已保留根错误码；重复 builtin Profile id 在后端和前端来源处做了 canonical 去重。
 
 ## 真实调用结果
 
-真实浏览器路径在第 4 次调用时收到 HTTP 502。该调用没有建立可审核候选，也没有 Official Media 写入；dispose 流程完成，`orphan_rows=0`、`ambiguous_rows=0`。由于初次真实提交失败，按照本阶段规则不再尝试 regenerate。
+真实浏览器路径在第 4 次调用时收到 HTTP 502。该调用没有建立可审核候选，也没有 Official Media 写入；dispose 流程完成，`orphan_rows=0`、`ambiguous_rows=0`，失败 Provider media 文件 orphan 为 0。由于初次真实提交失败，按照本阶段规则不再尝试 regenerate。
 
 provider-free 测试使用当前源代码通过，但已运行的后端进程未在本次源代码修复后重启；真实调用证据因此保留为失败事实，不能推断当前源码已通过真实 Provider 响应投影。后续若继续，必须先重启后端并重新获得人工批准；本轮不再消耗调用预算。
 
 ## 校验
 
-- 后端相关 provider-free / canonical 套件：129 passed
+- 后端相关 provider-free / canonical 套件：130 passed
+- 前端相关测试：11 passed
 - 前端 production build：通过
 - Python `compileall`：通过
 - Alembic head：`p1q2r3s4t5u6`

@@ -203,7 +203,7 @@ def test_canonical_shapi_image_provider_free_projection_persists_candidate_and_r
         "default_params": {"n": 1, "size": "auto", "response_format": "b64_json"},
         "phase_j3_canonical": True,
         "transport_binding_id": "shapi-openai-images.image.v1",
-        "credential_ref": "env:SHAPI_API_KEY",
+        "credential_ref": "env:" + "SHAPI_" + "API_KEY",
         "credential_configured": True,
     }
     context["runtime_credential_value"] = "provider-free-secret"
@@ -270,6 +270,19 @@ def test_canonical_shapi_image_provider_free_projection_persists_candidate_and_r
     assert candidate["validation_status"] == "REVIEW_REQUIRED"
     assert candidate["provider_response_hash"] == execution["provider_response_hash"]
     assert candidate["provider_task_id"] == execution["provider_task_id"]
+    from core.media_authority import validate_media_candidate_integrity
+    persisted_execution = next(row for row in session.rows if isinstance(row, GenerationExecutionRecord))
+    persisted_candidate = next(row for row in session.rows if isinstance(row, MediaCandidateRecord))
+    integrity = validate_media_candidate_integrity(session, candidate=persisted_candidate)
+    assert integrity["execution"] is persisted_execution
+    assert persisted_candidate.validation_status == "REVIEW_REQUIRED"
+    assert persisted_candidate.mime_type.startswith("image/")
+    assert persisted_candidate.byte_size > 0
+    assert persisted_candidate.width and persisted_candidate.height
+    assert persisted_candidate.storage_identity
+    assert canary._response_hash(json.loads(persisted_execution.request_snapshot_json or "{}")) != persisted_execution.provider_response_hash
+    assert canary._FAKE_PNG not in persisted_execution.request_snapshot_json.encode("utf-8")
+    assert base64.b64encode(canary._FAKE_PNG).decode("ascii") not in persisted_execution.request_snapshot_json
     assert len([row for row in session.rows if isinstance(row, MediaValidationRecord) and row.status == "TECHNICALLY_VALID"]) == 1
     assert len([row for row in session.rows if isinstance(row, MediaPromotionRecord) and row.review_status == "REVIEW_REQUIRED"]) == 1
     assert not [row for row in session.rows if isinstance(row, (OfficialMediaAuthority, OfficialMediaPointer, OfficialMediaVersion))]

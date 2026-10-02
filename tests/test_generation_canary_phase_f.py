@@ -257,6 +257,33 @@ def test_invalid_media_fails_closed_without_candidate(monkeypatch):
     assert execution.transport_retry_count == 0
 
 
+def test_media_authority_error_preserves_root_code_after_provider_call(monkeypatch):
+    from core.media_authority import MediaAuthorityError
+
+    session = _Session()
+    context = _context()
+    monkeypatch.setattr(canary, "Session", lambda: session)
+    monkeypatch.setattr(canary, "_resolve_execution_inputs", lambda *args, **kwargs: context)
+    preview = canary.preview_generation_canary(1, 1, 101, canary.CanaryPreviewRequest(adapter_id="image_generic", model_profile_id="builtin-mock-image"))
+
+    async def provider(**_kwargs):
+        return {"uri": "data:image/png;base64,AAAA", "providerResponse": {"status": "returned_media"}, "providerRequestId": "response-1", "providerTaskId": "response-1"}
+
+    monkeypatch.setattr(canary, "_call_provider", provider)
+    monkeypatch.setattr(canary, "_persist_candidate_media", lambda **_kwargs: {"storage_identity": "local://candidate-1", "storage_reference": {"image_url": "local://candidate-1"}, "checksum_sha256": "sha", "mime_type": "image/png", "byte_size": 68, "width": 1, "height": 1})
+    monkeypatch.setattr("core.media_authority.validate_media_candidate", lambda *_args, **_kwargs: (_ for _ in ()).throw(MediaAuthorityError("MEDIA_PROVIDER_RESPONSE_INCOMPLETE", "projection incomplete", diagnostics={"response_identity_present": False})))
+    req = canary.CanaryExecuteRequest(execute=True, confirmation_token=preview["confirmation_token"], preview_execution_id=preview["execution"]["execution_id"])
+    with pytest.raises(HTTPException) as exc:
+        asyncio.run(canary.execute_generation_canary(1, 1, 101, req))
+    assert exc.value.detail["code"] == "MEDIA_PROVIDER_RESPONSE_INCOMPLETE"
+    assert exc.value.detail["provider_calls"] == 1
+    assert exc.value.detail["diagnostics"]["response_identity_present"] is False
+    execution = next(row for row in session.rows if isinstance(row, GenerationExecutionRecord))
+    assert execution.status == "FAILED"
+    assert execution.logical_provider_calls == 1
+    assert execution.failure_code == "MEDIA_PROVIDER_RESPONSE_INCOMPLETE"
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [

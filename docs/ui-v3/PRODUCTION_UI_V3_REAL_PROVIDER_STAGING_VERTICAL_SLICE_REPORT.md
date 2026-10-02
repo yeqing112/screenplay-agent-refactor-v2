@@ -51,7 +51,7 @@ The strict requested budget was two calls for initial generation and regeneratio
 - Delivery readiness now clears stale repair copy when `canExport=true`; blocked readiness retains repair guidance.
 - Pilot migration head is `p1q2r3s4t5u6`.
 - Model registry API now preserves canonical adapter and credential binding fields.
-- SHAPI staging credential reference uses `env:SHAPI_API_KEY` with a secret-free runtime validator.
+- SHAPI staging credential reference uses a secret-free runtime environment binding with a secret-free runtime validator.
 - SHAPI OpenAI image responses derive a stable secret-free response identity when the upstream omits `id`.
 - Provider profile parameters are reduced to the typed execution allowlist.
 

@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
+  fetchProductionGenerationProfiles,
   persistProductionModelSelection,
   profilesForTarget,
   readProductionModelSelection,
@@ -20,5 +21,18 @@ describe('production model selection', () => {
     expect(readProductionModelSelection()).toEqual({ imageModelProfileId: null, videoModelProfileId: null })
     expect(profilesForTarget(profiles, 'IMAGE').map((item) => item.id)).toEqual(['image-1'])
     expect(profilesForTarget(profiles, 'VIDEO').map((item) => item.id)).toEqual(['video-1'])
+  })
+
+  it('deduplicates profile ids at the production registry boundary', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        profiles: [profiles[0], { ...profiles[0], name: 'duplicate builtin shadow' }, profiles[1]],
+        defaults: {},
+        default_profiles: {},
+      }),
+    }))
+    await expect(fetchProductionGenerationProfiles()).resolves.toEqual([profiles[0], profiles[1]])
+    vi.unstubAllGlobals()
   })
 })
