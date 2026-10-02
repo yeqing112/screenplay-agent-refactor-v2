@@ -58,3 +58,10 @@
 - `git diff --check`：通过。
 - 浏览器 runner：两次连续运行，每轮步骤通过并通过 UI 删除 disposable project；外部 host `0`、console error `0`。
 - 后端全量 pytest 本轮完成 `2000 passed, 4 failed, 2 errors`；失败项集中在既有 Phase pilot/视觉资产兼容测试。SceneBlocking 生产确认回归已修复并通过；Phase C、Phase I、Phase J3.1 定向回归均通过。
+
+## 本轮发布
+
+- 发布分支：codex/visual-authoring-provider-canary-reconcile
+- 发布提交：64ac68243dd78a51d8245d844ed834e7c3bec0de
+- disposable canary：Book 990403 已丢弃；Book 990400 保留且写入数为 0；998755 未恢复。
+- SHAPI 仅作为后续真实 provider 选型（https://www.shapi.vip/），本轮真实调用数为 0。
