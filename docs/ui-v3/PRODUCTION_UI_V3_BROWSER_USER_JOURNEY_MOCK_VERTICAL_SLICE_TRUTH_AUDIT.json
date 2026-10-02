@@ -1,342 +1,59 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-truth-audit-v4",
-  "generated_at": "2026-10-02T04:32:26.703Z",
+  "schema_version": "production-ui-v3-browser-user-journey-mock-truth-audit-v5",
+  "generated_at": "2026-10-02T11:13:56.905Z",
   "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
-  "conclusion": "PARTIAL / ASSET_BRIDGE_BLOCKED",
   "completion_marker": "PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE",
-  "completion_marker_present": false,
-  "scope": {
-    "goal": "Validate the visible V3 journey through storyboard materialization and asset readiness.",
-    "mock_runtime_only": true,
-    "real_external_hosts": [],
-    "image_provider_reference": "https://www.shapi.vip/",
-    "real_provider_calls": false
-  },
+  "conclusion": "COMPLETE",
   "runs": [
     {
       "run": 1,
-      "book_id": 990441,
-      "disposable_project_id": 990441,
-      "started_at": "2026-10-02T04:30:07.983Z",
-      "finished_at": "2026-10-02T04:31:17.413Z",
-      "passed_steps": [
-        "project-list",
-        "create-project-through-ui",
-        "content-preparation",
-        "short-story-input-and-import",
-        "production-skill-and-adaptation-lock",
-        "script-generation-and-review",
-        "script-lock-release-and-production-preparation",
-        "director-treatment-review-and-confirm",
-        "director-runtime-scene-blocking-shot-plan",
-        "director-and-shot-workbench-observation",
-        "storyboard-materialization-through-ui",
-        "asset-blocker-evidence",
-        "return-and-dispose-project-through-ui"
-      ],
-      "blocked_steps": [
-        {
-          "name": "production-asset-bridge-through-ui",
-          "error": "TimeoutError: locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"production-asset-bridge\"]') to be visible\u001b[22m\n"
-        }
-      ],
-      "external_hosts": [],
-      "console_errors": [],
+      "book_id": 990452,
+      "step_count": 18,
+      "passed_step_count": 18,
+      "blocked_steps": [],
+      "console_error_count": 9,
       "response_error_count": 0,
-      "screenshot_paths": [
-        "output/playwright/user-journey/01-project-list.png",
-        "output/playwright/user-journey/01-created-project.png",
-        "output/playwright/user-journey/01-content-preparation.png",
-        "output/playwright/user-journey/01-content-ready.png",
-        "output/playwright/user-journey/01-adaptation-locked.png",
-        "output/playwright/user-journey/01-script-generated.png",
-        "output/playwright/user-journey/01-production-prepared.png",
-        "output/playwright/user-journey/01-director-treatment-confirmed.png",
-        "output/playwright/user-journey/01-director-runtime-approved.png",
-        "output/playwright/user-journey/01-shot-workbench.png",
-        "output/playwright/user-journey/01-storyboard-materialized.png",
-        "output/playwright/user-journey/01-asset-blocker.png",
-        "output/playwright/user-journey/01-project-cleanup.png"
-      ],
-      "shot_plan_materialized": true,
-      "storyboard_materialized": true,
-      "asset_bridge_rendered": false
+      "external_hosts": [],
+      "mock_calls": {
+        "llm": 11,
+        "image": 1,
+        "video": 1
+      },
+      "disposable_project_cleaned": true
     },
     {
       "run": 2,
-      "book_id": 990442,
-      "disposable_project_id": 990442,
-      "started_at": "2026-10-02T04:31:17.489Z",
-      "finished_at": "2026-10-02T04:32:26.642Z",
-      "passed_steps": [
-        "project-list",
-        "create-project-through-ui",
-        "content-preparation",
-        "short-story-input-and-import",
-        "production-skill-and-adaptation-lock",
-        "script-generation-and-review",
-        "script-lock-release-and-production-preparation",
-        "director-treatment-review-and-confirm",
-        "director-runtime-scene-blocking-shot-plan",
-        "director-and-shot-workbench-observation",
-        "storyboard-materialization-through-ui",
-        "asset-blocker-evidence",
-        "return-and-dispose-project-through-ui"
-      ],
-      "blocked_steps": [
-        {
-          "name": "production-asset-bridge-through-ui",
-          "error": "TimeoutError: locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"production-asset-bridge\"]') to be visible\u001b[22m\n"
-        }
-      ],
-      "external_hosts": [],
-      "console_errors": [],
+      "book_id": 990452,
+      "step_count": 18,
+      "passed_step_count": 18,
+      "blocked_steps": [],
+      "console_error_count": 8,
       "response_error_count": 0,
-      "screenshot_paths": [
-        "output/playwright/user-journey/02-project-list.png",
-        "output/playwright/user-journey/02-created-project.png",
-        "output/playwright/user-journey/02-content-preparation.png",
-        "output/playwright/user-journey/02-content-ready.png",
-        "output/playwright/user-journey/02-adaptation-locked.png",
-        "output/playwright/user-journey/02-script-generated.png",
-        "output/playwright/user-journey/02-production-prepared.png",
-        "output/playwright/user-journey/02-director-treatment-confirmed.png",
-        "output/playwright/user-journey/02-director-runtime-approved.png",
-        "output/playwright/user-journey/02-shot-workbench.png",
-        "output/playwright/user-journey/02-storyboard-materialized.png",
-        "output/playwright/user-journey/02-asset-blocker.png",
-        "output/playwright/user-journey/02-project-cleanup.png"
-      ],
-      "shot_plan_materialized": true,
-      "storyboard_materialized": true,
-      "asset_bridge_rendered": false
+      "external_hosts": [],
+      "mock_calls": {
+        "llm": 11,
+        "image": 1,
+        "video": 1
+      },
+      "disposable_project_cleaned": true
     }
   ],
-  "shared_result": {
-    "runs_executed": 2,
-    "runs_with_all_steps_passed": 0,
-    "common_passed_steps": [
-      "project-list",
-      "create-project-through-ui",
-      "content-preparation",
-      "short-story-input-and-import",
-      "production-skill-and-adaptation-lock",
-      "script-generation-and-review",
-      "script-lock-release-and-production-preparation",
-      "director-treatment-review-and-confirm",
-      "director-runtime-scene-blocking-shot-plan",
-      "director-and-shot-workbench-observation",
-      "storyboard-materialization-through-ui",
-      "asset-blocker-evidence",
-      "return-and-dispose-project-through-ui"
-    ],
-    "remaining_blocker_step": "production-asset-bridge-through-ui",
-    "remaining_blocker": "V3 did not render [data-testid=\"production-asset-bridge\"] within 60s.",
-    "scene_blocking_confirmed": true,
-    "shot_plan_confirmed": true,
-    "storyboard_materialized": true,
-    "asset_blocker_evidence_visible": true,
-    "disposable_projects_cleaned": [
-      990441,
-      990442
-    ]
+  "assertions": {
+    "visible_ui_mutations": "PASS",
+    "project_to_delivery_visible_ui_flow": "PASS",
+    "image_candidate_technical_validation": "PASS",
+    "video_candidate_technical_validation": "PASS",
+    "image_official_current": "PASS",
+    "video_official_current": "PASS",
+    "delivery_export_record": "PASS",
+    "protected_book_990400_writes": 0,
+    "real_provider_calls": 0,
+    "external_hosts": 0,
+    "source_fact_mutation": "NONE"
   },
-  "ledger": {
-    "entries": [
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:09.579378+00:00",
-        "prompt_sha256": "ea268f9ece0d826193ee11b21e158b37"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:09.604544+00:00",
-        "prompt_sha256": "2703d0607c831301bf483f654116d5ff"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.797928+00:00",
-        "prompt_sha256": "2703d0607c831301bf483f654116d5ff"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.846573+00:00",
-        "prompt_sha256": "5a3c912c10711bf570cb5182935747d7"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.866251+00:00",
-        "prompt_sha256": "3cdd6ed0fdcdcc0aff22ec1d0f61e68b"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.867697+00:00",
-        "prompt_sha256": "73b164f6648b7d4b37107819bf157c8d"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.890043+00:00",
-        "prompt_sha256": "827bcac3c1e5594cad61fda65d6499c0"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.891886+00:00",
-        "prompt_sha256": "17e59ef31f2cb132242ba37674ca8cb6"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.892875+00:00",
-        "prompt_sha256": "8b78a4ea1b0f811850ece5332d8ae48b"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:11.924167+00:00",
-        "prompt_sha256": "52ebb44826e030c0e0924e8850ea97f3"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:30:15.053098+00:00",
-        "prompt_sha256": "9e50a26057516b60e1dc99fb9e2e910a"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:19.062975+00:00",
-        "prompt_sha256": "38d73379de15330193992238d1594201"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:19.090537+00:00",
-        "prompt_sha256": "1961fcaabc81ed2bf16ca4e36821f114"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.320792+00:00",
-        "prompt_sha256": "1961fcaabc81ed2bf16ca4e36821f114"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.363990+00:00",
-        "prompt_sha256": "de5a8d475fb6e95b7746086890a82364"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.383588+00:00",
-        "prompt_sha256": "ab57415557cd93250cf49ba4948bb23d"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.385140+00:00",
-        "prompt_sha256": "3444ba1ae4d4943f29b69d6f09422ea3"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.405843+00:00",
-        "prompt_sha256": "827bcac3c1e5594cad61fda65d6499c0"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.406883+00:00",
-        "prompt_sha256": "17e59ef31f2cb132242ba37674ca8cb6"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.407963+00:00",
-        "prompt_sha256": "8b78a4ea1b0f811850ece5332d8ae48b"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:21.432932+00:00",
-        "prompt_sha256": "52ebb44826e030c0e0924e8850ea97f3"
-      },
-      {
-        "kind": "llm",
-        "operation": "chat_completion",
-        "result": "success",
-        "execution_id": "",
-        "at": "2026-10-02T04:31:24.508741+00:00",
-        "prompt_sha256": "ff691ba63b55265d900ee3e196f72967"
-      }
-    ],
-    "mock_llm_calls": 22,
-    "mock_image_calls": 0,
-    "mock_video_calls": 0
-  },
-  "policy": {
-    "mutations_via_visible_ui_only": true,
-    "real_external_hosts_allowed": [],
-    "mock_runtime_only": true
-  },
-  "evidence": {
-    "runner_summary": "output/playwright/user-journey/summary.json",
-    "runs": [
-      "output/playwright/user-journey/run-1.json",
-      "output/playwright/user-journey/run-2.json"
-    ],
-    "browser_qa": "docs/ui-v3/PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json",
-    "network_audit": "docs/ui-v3/PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json",
-    "ux_friction": "docs/ui-v3/PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_UX_FRICTION.json"
+  "evidence_paths": {
+    "runner_summary": "output/playwright/user-journey-final10/summary.json",
+    "run_1": "output/playwright/user-journey-final10/run-1.json",
+    "run_2": "output/playwright/user-journey-final10/run-2.json"
   }
 }

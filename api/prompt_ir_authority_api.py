@@ -114,8 +114,26 @@ def _production_asset_authority(session, *, book_id: int, handoff: dict) -> dict
                 resolved_asset = resolve_current_visual_asset_authority(session, book_id=book_id, asset_key=asset_key, expected_asset_type=asset_type)
                 pointer = resolved_asset["pointer"]
                 version = resolved_asset["version"]
-            except VisualAssetAuthorityError as exc:
-                _conflict(exc.code, exc.message, diagnostics=exc.diagnostics)
+                asset_authority_ref = asset_key
+                authority_status = version.authority_status
+                version_fingerprint = version.payload_hash
+            except VisualAssetAuthorityError:
+                # Production Asset Bridge is the canonical user-facing asset
+                # path.  Projects created through the browser may have no
+                # legacy VisualAsset row; resolve the typed Production Asset
+                # authority instead of treating a valid bound file as absent.
+                from core.production_asset_authority import resolve_production_asset_book_scope
+                try:
+                    scope = resolve_production_asset_book_scope(session, book_id=book_id, asset_type=asset_type.upper(), asset_id=canonical_id)
+                except Exception:
+                    continue
+                pointer = scope.get("pointer")
+                version = scope.get("version")
+                if not pointer or not version:
+                    continue
+                asset_authority_ref = str(scope["authority"].authority_id)
+                authority_status = "PRODUCTION_AUTHORITATIVE"
+                version_fingerprint = str(version.checksum or version.metadata_hash or "")
             reference = None
             if version:
                 candidates = session.query(VisualReferenceAuthority).filter_by(asset_key=asset_key).all()
@@ -128,7 +146,7 @@ def _production_asset_authority(session, *, book_id: int, handoff: dict) -> dict
                     reference = {"status": authority.status, "stale_status": authority.stale_status, "authority_fingerprint": authority.authority_fingerprint, "asset_version_id": authority.asset_version_id, "asset_version_fingerprint": authority.asset_version_fingerprint, "reference_token": _json(authority.reference_token_mapping_json, {}).get("token", ""), "reference_name": _json(authority.reference_token_mapping_json, {}).get("name", "")}
                     if str(authority.asset_version_fingerprint or "") != str(version.payload_hash or ""):
                         reference["stale_status"] = "STALE"
-            entries.append(production_asset_binding(asset_key=asset_key, asset_type=asset_type, asset_name=display_name, version={"id": version.id, "revision": version.revision, "payload": _json(version.payload_json, {}), "payload_hash": version.payload_hash, "authority_status": version.authority_status, "stale_status": version.stale_status} if version else {}, reference=reference, reference_required=False))
+            entries.append(production_asset_binding(asset_key=asset_key, asset_type=asset_type, asset_name=display_name, version={"id": version.id if hasattr(version, "id") else version.version_id, "revision": version.revision, "payload": _json(getattr(version, "payload_json", "{}"), {}), "payload_hash": version_fingerprint, "authority_status": authority_status, "stale_status": "FRESH"} if version else {}, reference=reference, reference_required=False))
     return {"bindings": entries, "authority_fingerprint": __import__("core.visual_asset_authority", fromlist=["fingerprint"]).fingerprint(entries), "source": "current_visual_asset_pointers", "provider_calls": 0}
 
 

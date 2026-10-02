@@ -412,7 +412,7 @@ def production_asset_binding(*, asset_key: str, asset_type: str, asset_name: str
     version = _dict(version)
     reference = _dict(reference)
     payload = _dict(version.get("payload"))
-    ready = bool(version and _text(version.get("authority_status")) in {SPEC_APPROVED, PRODUCTION_READY} and _text(version.get("stale_status")) != STALE)
+    ready = bool(version and _text(version.get("authority_status")) in {SPEC_APPROVED, PRODUCTION_READY, "PRODUCTION_AUTHORITATIVE"} and _text(version.get("stale_status")) != STALE)
     ref_ready = bool(reference and _text(reference.get("status")).upper() in {"LOCKED", REFERENCE_LOCKED} and _text(reference.get("stale_status") or "FRESH") == "FRESH")
     spec = _dict(payload.get("canonical_spec"))
     authoring = _dict(payload.get("authoring_spec"))

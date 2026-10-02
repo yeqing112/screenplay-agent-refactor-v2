@@ -260,6 +260,11 @@ export function createShotStudioGenerationController(dependencies: ShotGeneratio
         if (signal.aborted) {
           return submissionStarted ? stoppedObservation(shotId, target, response) : { ok: false, state: 'cancelled', snapshot: emit({ state: 'cancelled', shotId, target, message: '已取消生成。', errorCode: 'GENERATION_CANCELLED', status: null, response }) }
         }
+        // React state updates produced by refreshCanonical are committed on
+        // the next render. Yield briefly before reading the view model so the
+        // observer sees the fresh canonical projection instead of repeatedly
+        // inspecting the pre-submit snapshot.
+        await sleep(25, signal)
         const refreshed = dependencies.getViewModel(shotId)
         const refreshedLane = refreshed ? laneFor(refreshed, target) : null
         if (refreshedLane?.state === 'failed' || refreshedLane?.execution.state === 'failed') {

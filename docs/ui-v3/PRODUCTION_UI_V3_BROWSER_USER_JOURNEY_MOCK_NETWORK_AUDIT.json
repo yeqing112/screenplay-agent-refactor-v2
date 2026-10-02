@@ -1,41 +1,33 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-network-audit-v4",
-  "generated_at": "2026-10-02T04:32:26.703Z",
-  "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
-  "policy": {
-    "mock_runtime_only": true,
-    "allowed_real_external_hosts": [],
-    "image_provider_reference": "https://www.shapi.vip/",
-    "real_provider_calls_allowed": false,
-    "mutations_via_visible_ui_only": true
-  },
+  "schema_version": "production-ui-v3-browser-user-journey-mock-network-audit-v5",
+  "generated_at": "2026-10-02T11:13:56.905Z",
+  "conclusion": "PASS",
+  "allowed_hosts": [
+    "127.0.0.1:5180",
+    "127.0.0.1:18773"
+  ],
   "external_hosts": [],
-  "real_external_call_count": 0,
-  "mock_ledger": {
-    "llm": 22,
-    "image": 0,
-    "video": 0
-  },
   "runs": [
     {
       "run": 1,
-      "book_id": 990441,
+      "mutation_count": 36,
+      "response_errors": [],
       "external_hosts": [],
-      "console_errors": 0,
-      "response_error_count": 0
+      "real_provider_calls": 0,
+      "provider_calls_projection": 0
     },
     {
       "run": 2,
-      "book_id": 990442,
+      "mutation_count": 36,
+      "response_errors": [],
       "external_hosts": [],
-      "console_errors": 0,
-      "response_error_count": 0
+      "real_provider_calls": 0,
+      "provider_calls_projection": 0
     }
   ],
-  "forbidden_shortcuts_checked": [
-    "no direct database mutation used for business steps",
-    "no real LLM/image/video provider call",
-    "no completion marker written while asset bridge remained blocked",
-    "no ScriptIR source fact rewrite"
-  ]
+  "policy": {
+    "mutations_via_visible_ui_only": true,
+    "real_external_hosts_allowed": [],
+    "mock_runtime_only": true
+  }
 }

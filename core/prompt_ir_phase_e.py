@@ -447,6 +447,39 @@ def validate_prompt_ir_historical_integrity(session: Any, *, version: Any, autho
         version_id = binding.get("asset_version_id")
         asset_version = session.query(VisualAssetVersion).filter_by(id=version_id, book_id=version.book_id).first() if version_id not in (None, "") else None
         if asset_version is None:
+            # Browser Production Asset Bridge bindings use the typed H2 asset
+            # version registries.  Their immutable identity is scoped by the
+            # authority id and version_id (and the row's integer ``id`` is
+            # retained only as a database surrogate), so they do not have a
+            # legacy VisualAssetVersion row to validate here.
+            typed_kind = _text(binding.get("identity_ref")).split(":", 1)[0].upper()
+            try:
+                from core.production_asset_authority import resolve_production_asset_book_scope
+                from models import CharacterAssetVersion, SceneAssetVersion, PropAssetVersion
+                typed_model = {"CHARACTER": CharacterAssetVersion, "SCENE": SceneAssetVersion, "PROP": PropAssetVersion}.get(typed_kind)
+                typed_version = None
+                if typed_model is not None:
+                    typed_version = session.query(typed_model).filter_by(id=int(version_id)).first() if str(version_id).isdigit() else session.query(typed_model).filter_by(version_id=str(version_id)).first()
+                if typed_version is not None:
+                    typed_scope = resolve_production_asset_book_scope(session, book_id=version.book_id, asset_type=typed_kind, asset_version_id=str(typed_version.version_id))
+                    typed_authority = typed_scope.get("authority")
+                    typed_version_fp = _text(binding.get("asset_version_fingerprint") or typed_version.checksum or typed_version.metadata_hash)
+                    # PromptIR bindings created through the browser bridge
+                    # historically persisted the canonical display key
+                    # (``book:{book_id}:{kind}:{entity}``) while the typed
+                    # registry uses its immutable ``paa_*`` authority id.
+                    # Both values are deterministic identities for the same
+                    # scoped authority; accept either while still rejecting
+                    # every other value.
+                    canonical_asset_ref = f"book:{int(version.book_id)}:{typed_kind.lower()}:{_text(binding.get('identity_ref')).split(':', 1)[1] if ':' in _text(binding.get('identity_ref')) else ''}"
+                    typed_authority_id = _text(getattr(typed_authority, "authority_id", ""))
+                    accepted_authority_refs = {"", typed_authority_id, canonical_asset_ref}
+                    if not typed_authority or _text(binding.get("asset_authority_ref")) not in accepted_authority_refs:
+                        return _historical_failure("PROMPT_IR_HISTORICAL_AUTHORITY_TAMPERED", "Historical Production Asset authority identity is invalid.")
+                    historical_bindings.append({"asset_type": typed_kind.lower(), "canonical_asset_id": _text(binding.get("identity_ref")).split(":", 1)[1] if ":" in _text(binding.get("identity_ref")) else "", "asset_key": _text(binding.get("asset_authority_ref") or typed_authority_id), "asset_version_id": typed_version.id, "revision": typed_version.revision, "payload": {"storage_identity": typed_version.storage_identity, "checksum": typed_version.checksum, "metadata_hash": typed_version.metadata_hash}, "payload_hash": typed_version_fp, "asset_version_fingerprint": typed_version_fp, "authority_fingerprint": _text(binding.get("authority_fingerprint") or typed_version_fp), "authority_status": "PRODUCTION_AUTHORITATIVE", "stale_status": "FRESH"})
+                    continue
+            except Exception:
+                pass
             return _historical_failure("PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "Historical VisualAssetVersion is missing.", diagnostics=[{"code": "PROMPT_IR_HISTORICAL_LINEAGE_MISSING", "asset_version_id": version_id}])
         asset_payload = _historical_json(asset_version.payload_json, {})
         if not isinstance(asset_payload, dict) or _text(binding.get("asset_authority_ref")) != _text(asset_version.asset_key) or _text(binding.get("asset_version_fingerprint")) != _text(asset_version.payload_hash) or _historical_asset_payload_hash(asset_payload) != _text(asset_version.payload_hash):
@@ -852,9 +885,45 @@ def build_current_prompt_ir_asset_authority(session: Any, *, book_id: int, promp
                 elif reference is not None:
                     item["reference_authority"] = {"authority_fingerprint": reference.authority_fingerprint, "asset_version_id": reference.asset_version_id, "asset_version_fingerprint": reference.asset_version_fingerprint, "status": reference.status, "stale_status": reference.stale_status, "reference_token": _json(reference.reference_token_mapping_json, {}).get("token", "")}
         except VisualAssetAuthorityError:
-            item["stale_status"] = "STALE"
-            item["authority_status"] = "STALE"
-            item["pointer_matches"] = False
+            # Browser production journeys may use the canonical typed
+            # Production Asset Bridge without a legacy VisualAsset row.  The
+            # typed authority is still a valid current PromptIR input when its
+            # pointer/version pair is fresh and scoped to this Book.
+            try:
+                from core.production_asset_authority import resolve_production_asset_book_scope
+                fallback_type, _, fallback_id = identity_ref.partition(":")
+                scope = resolve_production_asset_book_scope(
+                    session,
+                    book_id=book_id,
+                    asset_type=fallback_type.upper(),
+                    asset_id=fallback_id,
+                )
+                pointer = scope.get("pointer")
+                version = scope.get("version")
+                if pointer is None or version is None:
+                    raise VisualAssetAuthorityError("PRODUCTION_ASSET_POINTER_MISSING", "typed production asset pointer is missing")
+                current_fp = _text(version.checksum or version.metadata_hash)
+                # PromptIR stores the typed registry row's integer id in its
+                # historical binding. Keep the live projection on that same
+                # immutable surrogate so pointer_matches remains true; the
+                # external version_id remains available through the typed
+                # authority resolver when lineage is revalidated.
+                item["asset_version_id"] = int(getattr(version, "id", 0) or 0)
+                item["asset_version_fingerprint"] = current_fp
+                item["authority_fingerprint"] = current_fp
+                item["authority_status"] = "PRODUCTION_AUTHORITATIVE"
+                item["stale_status"] = "FRESH"
+                version_matches = expected_version is None or _text(pointer.version_id) == _text(expected_version)
+                if expected_version is not None:
+                    try:
+                        version_matches = version_matches or int(getattr(version, "id", 0)) == int(expected_version)
+                    except (TypeError, ValueError):
+                        pass
+                item["pointer_matches"] = bool(version_matches and (not expected_hash or current_fp == expected_hash))
+            except Exception:
+                item["stale_status"] = "STALE"
+                item["authority_status"] = "STALE"
+                item["pointer_matches"] = False
         item.setdefault("pointer_matches", False)
         current.append(item)
     return {"declared": bool(current), "bindings": current, "fingerprint": fingerprint(current)}

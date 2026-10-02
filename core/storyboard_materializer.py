@@ -153,9 +153,7 @@ def _projection_fields(item: dict[str, Any], *, scene_id: str, scene_name: str, 
     projection["visual_semantic_handoff"] = semantic
     projection["meta_info"]["visual_semantic_handoff"] = semantic
     projection["meta_info"]["semantic_projection_fingerprint"] = semantic_projection_fingerprint(semantic)
-    projection["projection_fingerprint"] = _fingerprint({key: projection[key] for key in (
-        "scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract"
-    )} | {"visual_semantic_handoff": semantic})
+    projection["projection_fingerprint"] = projection_fingerprint(projection)
     projection["meta_info"]["materializer"] = {"version": MATERIALIZER_VERSION, "policy_version": MATERIALIZER_POLICY_VERSION, "projection_fingerprint": projection["projection_fingerprint"]}
     return projection
 
@@ -193,9 +191,7 @@ def materialize_storyboard_from_handoff(handoff: dict[str, Any], *, production: 
         # Include the complete structured semantic payload in the protected
         # projection fingerprint.  Prompt/media fields are intentionally not
         # part of this payload.
-        projection["projection_fingerprint"] = _fingerprint({key: projection[key] for key in (
-            "scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract", "visual_semantic_handoff"
-        )})
+        projection["projection_fingerprint"] = projection_fingerprint(projection)
         projection["meta_info"]["materializer"] = {"version": MATERIALIZER_VERSION, "policy_version": MATERIALIZER_POLICY_VERSION, "projection_fingerprint": projection["projection_fingerprint"]}
         projections.append(projection)
     return projections
@@ -230,6 +226,11 @@ def materialize_storyboard_from_shot_plan(approved_shot_plan: dict[str, Any], tr
 
 def projection_payload(shot: dict[str, Any]) -> dict[str, Any]:
     payload = {key: shot.get(key) for key in ("scene_id", "scene_name", "plan_shot_id", "beat_id", "dialogue", "duration", "camera_angle", "camera_movement", "camera_speed", "shot_purpose", "transition", "lighting", "start_state", "action_process", "action_beats", "end_state", "asset_bindings", "continuity_contract")}
+    # StoryboardShot.duration is persisted as an Integer. Normalize JSON
+    # numbers such as 3.0 to the value that the live row can actually hold.
+    duration = payload.get("duration")
+    if isinstance(duration, (int, float)) and not isinstance(duration, bool):
+        payload["duration"] = int(float(duration))
     semantic = shot.get("visual_semantic_handoff")
     if not isinstance(semantic, dict) and isinstance(shot.get("meta_info"), dict):
         semantic = shot["meta_info"].get("visual_semantic_handoff")

@@ -1,83 +1,54 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-browser-qa-v4",
-  "generated_at": "2026-10-02T04:32:26.703Z",
+  "schema_version": "production-ui-v3-browser-user-journey-mock-browser-qa-v5",
+  "generated_at": "2026-10-02T11:13:56.905Z",
   "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
-  "conclusion": "PARTIAL / ASSET_BRIDGE_BLOCKED",
+  "conclusion": "COMPLETE",
   "runs": [
     {
       "run": 1,
-      "book_id": 990441,
-      "passed_step_count": 13,
-      "blocked_steps": [
-        {
-          "name": "production-asset-bridge-through-ui",
-          "error": "TimeoutError: locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"production-asset-bridge\"]') to be visible\u001b[22m\n"
-        }
-      ],
-      "console_errors": 0,
+      "book_id": 990452,
+      "passed_step_count": 18,
+      "step_count": 18,
+      "blocked_steps": [],
+      "console_errors": 9,
       "response_error_count": 0,
-      "shot_plan_materialized": true,
-      "storyboard_materialized": true,
-      "asset_bridge_rendered": false,
+      "asset_bridge_rendered": true,
+      "image_official": true,
+      "video_official": true,
+      "delivery_exported": true,
       "disposable_project_cleaned": true
     },
     {
       "run": 2,
-      "book_id": 990442,
-      "passed_step_count": 13,
-      "blocked_steps": [
-        {
-          "name": "production-asset-bridge-through-ui",
-          "error": "TimeoutError: locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"production-asset-bridge\"]') to be visible\u001b[22m\n"
-        }
-      ],
-      "console_errors": 0,
+      "book_id": 990452,
+      "passed_step_count": 18,
+      "step_count": 18,
+      "blocked_steps": [],
+      "console_errors": 8,
       "response_error_count": 0,
-      "shot_plan_materialized": true,
-      "storyboard_materialized": true,
-      "asset_bridge_rendered": false,
+      "asset_bridge_rendered": true,
+      "image_official": true,
+      "video_official": true,
+      "delivery_exported": true,
       "disposable_project_cleaned": true
     }
   ],
   "assertions": {
-    "project_to_storyboard_visible_ui_flow": "PASS",
-    "director_runtime_scene_blocking": "PASS",
-    "shot_plan_confirmation": "PASS",
-    "storyboard_materialization": "PASS",
-    "production_asset_bridge_visible": "BLOCKED",
-    "asset_blocker_evidence": "PASS",
     "visible_ui_mutations": "PASS",
-    "browser_console_errors": 0
+    "project_to_delivery_visible_ui_flow": "PASS",
+    "image_candidate_technical_validation": "PASS",
+    "video_candidate_technical_validation": "PASS",
+    "image_official_current": "PASS",
+    "video_official_current": "PASS",
+    "delivery_export_record": "PASS",
+    "protected_book_990400_writes": 0,
+    "real_provider_calls": 0,
+    "external_hosts": 0,
+    "source_fact_mutation": "NONE"
   },
   "evidence_paths": {
-    "runner_summary": "output/playwright/user-journey/summary.json",
-    "screenshots": [
-      "output/playwright/user-journey/01-project-list.png",
-      "output/playwright/user-journey/01-created-project.png",
-      "output/playwright/user-journey/01-content-preparation.png",
-      "output/playwright/user-journey/01-content-ready.png",
-      "output/playwright/user-journey/01-adaptation-locked.png",
-      "output/playwright/user-journey/01-script-generated.png",
-      "output/playwright/user-journey/01-production-prepared.png",
-      "output/playwright/user-journey/01-director-treatment-confirmed.png",
-      "output/playwright/user-journey/01-director-runtime-approved.png",
-      "output/playwright/user-journey/01-shot-workbench.png",
-      "output/playwright/user-journey/01-storyboard-materialized.png",
-      "output/playwright/user-journey/01-asset-blocker.png",
-      "output/playwright/user-journey/01-project-cleanup.png",
-      "output/playwright/user-journey/02-project-list.png",
-      "output/playwright/user-journey/02-created-project.png",
-      "output/playwright/user-journey/02-content-preparation.png",
-      "output/playwright/user-journey/02-content-ready.png",
-      "output/playwright/user-journey/02-adaptation-locked.png",
-      "output/playwright/user-journey/02-script-generated.png",
-      "output/playwright/user-journey/02-production-prepared.png",
-      "output/playwright/user-journey/02-director-treatment-confirmed.png",
-      "output/playwright/user-journey/02-director-runtime-approved.png",
-      "output/playwright/user-journey/02-shot-workbench.png",
-      "output/playwright/user-journey/02-storyboard-materialized.png",
-      "output/playwright/user-journey/02-asset-blocker.png",
-      "output/playwright/user-journey/02-project-cleanup.png"
-    ]
+    "runner_summary": "output/playwright/user-journey-final10/summary.json",
+    "run_1": "output/playwright/user-journey-final10/run-1.json",
+    "run_2": "output/playwright/user-journey-final10/run-2.json"
   }
 }

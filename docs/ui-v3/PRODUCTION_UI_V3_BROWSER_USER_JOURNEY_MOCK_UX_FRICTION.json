@@ -1,0 +1,25 @@
+{
+  "schema_version": "production-ui-v3-browser-user-journey-mock-ux-friction-v5",
+  "generated_at": "2026-10-02T11:13:56.905Z",
+  "conclusion": "PASS_WITH_EXPECTED_ASSET_BLOCKER",
+  "findings": [
+    {
+      "id": "UX-001",
+      "severity": "low",
+      "status": "resolved",
+      "description": "审核确认后页面从 canonical projection 恢复 Official 状态。"
+    },
+    {
+      "id": "UX-002",
+      "severity": "info",
+      "status": "expected",
+      "description": "未绑定的其余镜头仍显示真实资产阻塞，Delivery readiness 维持可解释阻塞。"
+    }
+  ],
+  "runs": 2,
+  "evidence_paths": {
+    "runner_summary": "output/playwright/user-journey-final10/summary.json",
+    "run_1": "output/playwright/user-journey-final10/run-1.json",
+    "run_2": "output/playwright/user-journey-final10/run-2.json"
+  }
+}

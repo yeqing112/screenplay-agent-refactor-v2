@@ -37,7 +37,9 @@ import {
   type ShotGenerationAttemptMutationSnapshot,
 } from '../services/productWorkspaceShotGenerationAttempt'
 import { approveProductionMediaCandidate, validateProductionMediaCandidate } from '../services/productionWorkspace'
+import { compileProductionPromptIR, type PromptIrMediaTarget } from '../services/productionPromptIr'
 import ProductionGenerationProfileSelector from './ProductionGenerationProfileSelector'
+import { readProductionModelSelection, type SharedProductionModelSelection } from '../services/productionModelSelection'
 import ProductionAssetBridgePanel from './ProductionAssetBridgePanel'
 
 interface ProductWorkspaceShotStudioV3Props {
@@ -345,12 +347,16 @@ function ReviewDesk({ shot, lane, mode, mutation, generationBusy, onApprove }: {
   const selectedLane = lane === 'VIDEO' ? shot.video : shot.image
   const candidate = reviewCandidateForLane(shot, lane)
   const identity = candidate ? { shotId: shot.shotId, lane: selectedLane.target, candidateId: candidate.id, validationId: candidate.technical_validation.validation_id } satisfies ShotReviewCandidateIdentity : null
-  const isCurrentReview = selectedLane.state === 'review' && selectedLane.candidate.reviewEligibility && Boolean(candidate)
+  // Candidate review is lane-scoped. A shot can still carry unrelated
+  // asset/readiness blockers while this lane has a technically valid
+  // candidate; keep the human review desk visible in that case.
+  const isCurrentReview = selectedLane.candidate.reviewEligibility && Boolean(candidate)
   const isMutationForCurrent = Boolean(mutation.identity && identity && mutation.identity.shotId === identity.shotId && mutation.identity.lane === identity.lane && mutation.identity.candidateId === identity.candidateId)
-  const visible = isCurrentReview || isMutationForCurrent
+  const canonicalConfirmed = Boolean(selectedLane.official.isCanonicalOfficial && candidate && String(selectedLane.official.version?.candidate_id ?? '') === String(candidate.id ?? ''))
+  const visible = isCurrentReview || isMutationForCurrent || canonicalConfirmed
   if (!visible || !candidate) return null
   const official = selectedLane.official.isCanonicalOfficial ? selectedLane.official : null
-  const confirmed = isMutationForCurrent && mutation.state === 'confirmed'
+  const confirmed = canonicalConfirmed || (isMutationForCurrent && mutation.state === 'confirmed')
   const mutating = isMutationForCurrent && ['confirming', 'validating', 'promoting', 'refreshing'].includes(mutation.state)
   const approveEnabled = isCurrentReview && !generationBusy && !mutating && mutation.state !== 'confirmed' && !selectedLane.official.current && selectedLane.official.reasonCodes.length === 0 && !shot.stale.isStale
   const canonicalPreview = confirmed ? official?.preview ?? null : null
@@ -399,7 +405,17 @@ function NextAction({ shot }: { shot: ShotStudioViewModel }) {
 }
 
 export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapshot ? 'ready' : 'loading', error, mode = 'standard', focusShotId = null, onSelectShot, onRefresh, onRefreshProductionWorkspaceV2, surfaceDecision }: ProductWorkspaceShotStudioV3Props) {
-  const viewModels = useMemo(() => toShotStudioViewModels(snapshot?.shots ?? []), [snapshot])
+  const [promptIrBusy, setPromptIrBusy] = useState<PromptIrMediaTarget | null>(null)
+  const [promptIrMessage, setPromptIrMessage] = useState('')
+  const [modelSelection, setModelSelection] = useState<SharedProductionModelSelection>(() => readProductionModelSelection())
+  const viewModels = useMemo(() => {
+    const base = toShotStudioViewModels(snapshot?.shots ?? [])
+    return base.map((shot) => ({
+      ...shot,
+      image: { ...shot.image, professional: { ...shot.image.professional, model: { ...shot.image.professional.model, selected_profile_id: modelSelection.imageModelProfileId || shot.image.professional.model.selected_profile_id } } },
+      video: { ...shot.video, professional: { ...shot.video.professional, model: { ...shot.video.professional.model, selected_profile_id: modelSelection.videoModelProfileId || shot.video.professional.model.selected_profile_id } } },
+    }))
+  }, [snapshot, modelSelection])
   const selectedByFocus = viewModels.find((shot) => shot.shotId === String(focusShotId ?? '')) ?? null
   const selected = selectedByFocus ?? viewModels[0] ?? null
   const [detailsOpen, setDetailsOpen] = useState(mode === 'professional')
@@ -466,13 +482,38 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
   if (state === 'unavailable' || !snapshot) return <UnavailableSurface error={error} onRefresh={onRefresh} />
   if (snapshot.shots.length === 0) return <EmptySurface />
 
+  const preparePromptIr = async (target: PromptIrMediaTarget) => {
+    if (!selected) return
+    setPromptIrBusy(target); setPromptIrMessage(`正在准备 ${target} PromptIR…`)
+    try {
+      const result = await compileProductionPromptIR(snapshot.book_id, selected.episode, target)
+      await onRefreshProductionWorkspaceV2?.()
+      // Refreshing the canonical projection can remount this surface. Set
+      // the success message after that refresh so the user sees confirmation
+      // instead of a transient state that disappears during reconciliation.
+      setPromptIrMessage(`${target} PromptIR 已准备完成。`)
+      return result
+    } catch (reason) {
+      setPromptIrMessage(reason instanceof Error ? reason.message : `${target} PromptIR 准备失败。`)
+      throw reason
+    } finally { setPromptIrBusy(null) }
+  }
+
   const legacyUrl = typeof window !== 'undefined' ? buildStoryboardSurfaceUrl(window.location.search, 'legacy') : '?ui_v3=legacy'
   return <div data-testid="shot-studio-v3" data-storyboard-surface="v3" data-storyboard-surface-reason={surfaceDecision?.reason ?? 'explicit_v3'} className="min-w-0 space-y-4 bg-[#0E1214] text-[#EDF1EF]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
     <Panel className="flex flex-wrap items-center justify-between gap-4 px-4 py-4"><div><div className="text-[10px] uppercase tracking-[0.2em] text-[#728082]">Shot Studio · V3</div><div className="mt-1 flex flex-wrap items-center gap-3"><h2 className="text-xl font-medium tracking-tight text-[#EDF1EF]">镜头工坊</h2>{selected ? <StatusBadge state={selected.state} /> : null}</div><div className="mt-2 text-xs text-[#A9B4B3]">Production Workspace V2 状态、canonical 执行与人工审核在此衔接</div></div><div className="flex items-center gap-2"><span className="border border-[#2A3437] px-2.5 py-1.5 text-[10px] text-[#728082]">{snapshot.shots.length} shots</span>{onRefresh ? <button type="button" onClick={onRefresh} aria-label="重新同步 Shot Studio" className="inline-flex items-center gap-2 border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC9D9]"><RefreshCw className="h-3.5 w-3.5" />重新同步</button> : null}<a href={legacyUrl} data-testid="shot-studio-legacy-link" className="border border-[#2A3437] px-3 py-2 text-xs text-[#A9B4B3] hover:border-[#8BC9D9] hover:text-[#8BC9D9]">兼容工作台</a></div></Panel>
     {!selected ? <EmptySurface /> : <>
-      <Panel className="grid gap-3 px-4 py-3 md:grid-cols-2" aria-label="Production model selection">
-        <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={selected.image.professional.model.selected_profile_id} mutationBusy={Boolean(generationController.current?.isActive() || attemptController.current?.isActive() || reviewController.current?.isActive())} onRefresh={onRefreshProductionWorkspaceV2} />
-        <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={selected.video.professional.model.selected_profile_id} mutationBusy={Boolean(generationController.current?.isActive() || attemptController.current?.isActive() || reviewController.current?.isActive())} onRefresh={onRefreshProductionWorkspaceV2} />
+      <Panel className="space-y-3 px-4 py-3" aria-label="Production generation preparation">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-[#A9B4B3]">生成前准备</span>
+          <button type="button" disabled={Boolean(promptIrBusy)} onClick={() => { void preparePromptIr('IMAGE') }} className="border border-[#8BC9D9]/50 px-3 py-2 text-xs text-[#8BC9D9] disabled:opacity-50">{promptIrBusy === 'IMAGE' ? '准备中…' : '准备 IMAGE PromptIR'}</button>
+          <button type="button" disabled={Boolean(promptIrBusy)} onClick={() => { void preparePromptIr('VIDEO') }} className="border border-[#C4B5E5]/50 px-3 py-2 text-xs text-[#C4B5E5] disabled:opacity-50">{promptIrBusy === 'VIDEO' ? '准备中…' : '准备 VIDEO PromptIR'}</button>
+        </div>
+        {promptIrMessage ? <div role="status" className="text-[11px] text-[#DBB36F]">{promptIrMessage}</div> : null}
+        <div className="grid gap-3 md:grid-cols-2">
+        <ProductionGenerationProfileSelector target="IMAGE" selectedProfileId={selected.image.professional.model.selected_profile_id} onChange={(id) => setModelSelection((current) => ({ ...current, imageModelProfileId: id }))} mutationBusy={Boolean(generationController.current?.isActive() || attemptController.current?.isActive() || reviewController.current?.isActive())} onRefresh={onRefreshProductionWorkspaceV2} />
+        <ProductionGenerationProfileSelector target="VIDEO" selectedProfileId={selected.video.professional.model.selected_profile_id} onChange={(id) => setModelSelection((current) => ({ ...current, videoModelProfileId: id }))} mutationBusy={Boolean(generationController.current?.isActive() || attemptController.current?.isActive() || reviewController.current?.isActive())} onRefresh={onRefreshProductionWorkspaceV2} />
+        </div>
       </Panel>
       {!selected.professional.assetReadiness.current ? <ProductionAssetBridgePanel bookId={snapshot.book_id} storyboardShotId={selected.storyboardShotId} readiness={selected.professional.assetReadiness} onRefresh={onRefreshProductionWorkspaceV2} /> : null}
       <div className="grid min-w-0 gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">

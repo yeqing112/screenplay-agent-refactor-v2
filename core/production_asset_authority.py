@@ -411,7 +411,9 @@ def ingest_production_asset(
         session.flush()
         if activate_pointer:
             authority.current_version_id = version_id
-    pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id}).one_or_none() if activate_pointer else None
+    # Entity keys are reusable across Books; resolve the pointer through the
+    # canonical authority rather than the display/entity key alone.
+    pointer = session.query(config["pointer"]).filter_by(**{config["entity"]: entity_id, "authority_id": authority_id}).one_or_none() if activate_pointer else None
     pointer_fingerprint = _pointer_fingerprint(entity_id=entity_id, authority_id=authority_id, version_id=version_id)
     if activate_pointer and pointer is None:
         pointer = config["pointer"](**{config["entity"]: entity_id, "authority_id": authority_id, "version_id": version_id, "fingerprint": pointer_fingerprint})
@@ -461,7 +463,8 @@ def _switch_current_production_asset_version(
     if not entity_id or not version_id:
         raise ProductionAssetSchemaError("entity_id and version_id are required for pointer switching")
     config = _typed_config(kind)
-    authority = session.query(config["authority"]).filter_by(**{config["entity"]: entity_id}).one_or_none()
+    authority_id = _authority_id(book_id=book_id, asset_type=kind, entity_id=entity_id)
+    authority = session.query(config["authority"]).filter_by(authority_id=authority_id).one_or_none()
     if authority is None:
         raise AssetBindingInvalid("asset authority does not exist", diagnostics=[{"asset_type": kind, "entity_id": entity_id}])
     authority_id = str(getattr(authority, "authority_id", "") or "")
@@ -599,16 +602,20 @@ def bind_shot_assets(session, *, storyboard_shot_id: int, characters: list[Mappi
     return resolved
 
 
-def resolve_shot_assets(session, *, storyboard_shot_id: int) -> dict[str, Any]:
+def resolve_shot_assets(session, *, storyboard_shot_id: int, book_id: int | None = None) -> dict[str, Any]:
     """Resolve and validate a shot's formal bindings; failures are HTTP 409 compatible."""
     # Historical STALE rows remain queryable for lineage/audit, but only the
     # current ACTIVE binding set forms the shot's production resolution.
+    if book_id is None:
+        from models import StoryboardShot
+        shot = session.query(StoryboardShot).filter_by(id=int(storyboard_shot_id)).first()
+        book_id = int(getattr(shot, "book_id", 990401) or 990401)
     rows = session.query(ShotAssetBinding).filter_by(storyboard_shot_id=storyboard_shot_id, status="ACTIVE").all()
     if not rows:
         raise AssetBindingInvalid("shot has no formal asset bindings")
     result = {"storyboard_shot_id": storyboard_shot_id, "characters": [], "scene": None, "props": [], "status": "PASS"}
     for row in rows:
-        asset = _find_asset(session, asset_type=row.asset_type, authority_id=row.authority_id, version_id=row.version_id)
+        asset = _find_asset(session, asset_type=row.asset_type, authority_id=row.authority_id, version_id=row.version_id, book_id=int(book_id))
         expected = _binding_fingerprint(storyboard_shot_id=storyboard_shot_id, asset_type=row.asset_type, authority_fingerprint=asset["authority_fingerprint"], version_fingerprint=asset["version_fingerprint"], pointer_fingerprint=asset["pointer_fingerprint"])
         if row.status != "ACTIVE" or row.binding_fingerprint != expected:
             raise AssetBindingInvalid("shot binding fingerprint or lifecycle is invalid", diagnostics=[{"binding_id": row.id, "asset_type": row.asset_type, "status": row.status}])
@@ -621,8 +628,11 @@ def resolve_shot_assets(session, *, storyboard_shot_id: int) -> dict[str, Any]:
             result["scene"] = asset
         else:
             result["props"].append(asset)
-    if result["scene"] is None or not result["characters"]:
-        raise AssetBindingInvalid("shot requires one scene and at least one character binding")
+    # A production shot may be environment-only. Character bindings are
+    # optional when the current ShotPlan declares no character authority;
+    # the scene binding remains mandatory for an explicit asset bridge.
+    if result["scene"] is None:
+        raise AssetBindingInvalid("shot requires one scene binding")
     return result
 
 

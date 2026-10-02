@@ -432,7 +432,7 @@ def _storyboard_shot_fingerprint(shot: Any) -> str:
     )
 
 
-def _production_asset_binding_snapshot(session: Any, *, storyboard_shot_id: int) -> dict[str, Any]:
+def _production_asset_binding_snapshot(session: Any, *, storyboard_shot_id: int, book_id: int | None = None) -> dict[str, Any]:
     """Snapshot explicit H2.2 bindings without falling back to legacy metadata."""
     from core.production_asset_authority import AssetBindingInvalid, resolve_shot_assets
     from models import ShotAssetBinding
@@ -441,7 +441,7 @@ def _production_asset_binding_snapshot(session: Any, *, storyboard_shot_id: int)
     if not rows:
         return {"schema_version": "phase_h2_2_binding_snapshot_v1", "declared": False, "currentness_valid": True, "bindings": [], "fingerprint": _fingerprint([])}
     try:
-        resolved = resolve_shot_assets(session, storyboard_shot_id=storyboard_shot_id)
+        resolved = resolve_shot_assets(session, storyboard_shot_id=storyboard_shot_id, book_id=book_id)
     except AssetBindingInvalid as exc:
         return {
             "schema_version": "phase_h2_2_binding_snapshot_v1",
@@ -593,7 +593,7 @@ def _current_authority_snapshot(session: Any, *, candidate: MediaCandidateRecord
         asset_bindings.append({"asset_key": asset_key, "pointer_present": pointer is not None, "current_version_id": getattr(pointer, "current_version_id", None) if pointer else None, "payload_hash": str(getattr(pointer, "payload_hash", "") or "") if pointer else "", "pointer_matches": pointer_matches})
     asset = {"declared": bool(asset_bindings), "bindings": asset_bindings}
     reference = _reference_snapshot(session, execution)
-    production_asset_binding = _production_asset_binding_snapshot(session, storyboard_shot_id=int(execution.storyboard_shot_id))
+    production_asset_binding = _production_asset_binding_snapshot(session, storyboard_shot_id=int(execution.storyboard_shot_id), book_id=int(execution.book_id))
     return {
         "schema_version": "media_authority_snapshot_v1",
         "prompt_ir": prompt,

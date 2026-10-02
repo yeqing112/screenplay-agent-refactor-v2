@@ -114,7 +114,10 @@ class CharacterAssetVersion(_AssetVersionMixin, Base):
 
 class CharacterAssetAuthority(_AssetAuthorityMixin, Base):
     __tablename__ = "character_asset_authorities"
-    character_id = Column(String, nullable=False, unique=True)
+    # Entity identifiers repeat across Books.  The canonical authority_id and
+    # fingerprint carry the Book scope, so the display/entity key must not be
+    # globally unique.
+    character_id = Column(String, nullable=False)
     current_version_id = Column(String, nullable=True)
     __table_args__ = (
         ForeignKeyConstraint(
@@ -124,14 +127,13 @@ class CharacterAssetAuthority(_AssetAuthorityMixin, Base):
             ondelete="RESTRICT",
         ),
         UniqueConstraint("authority_id", name="uq_character_asset_authority_identity"),
-        UniqueConstraint("character_id", name="uq_character_asset_authority_entity"),
         CheckConstraint("status IN ('ACTIVE','STALE')", name="ck_character_asset_authority_status"),
     )
 
 
 class CharacterAssetPointer(_AssetPointerMixin, Base):
     __tablename__ = "character_asset_pointers"
-    character_id = Column(String, nullable=False, unique=True)
+    character_id = Column(String, nullable=False)
     authority_id = Column(
         String,
         ForeignKey("character_asset_authorities.authority_id", ondelete="RESTRICT"),
@@ -168,7 +170,7 @@ class SceneAssetVersion(_AssetVersionMixin, Base):
 
 class SceneAssetAuthority(_AssetAuthorityMixin, Base):
     __tablename__ = "scene_asset_authorities"
-    scene_id = Column(String, nullable=False, unique=True)
+    scene_id = Column(String, nullable=False)
     current_version_id = Column(String, nullable=True)
     __table_args__ = (
         ForeignKeyConstraint(
@@ -178,14 +180,13 @@ class SceneAssetAuthority(_AssetAuthorityMixin, Base):
             ondelete="RESTRICT",
         ),
         UniqueConstraint("authority_id", name="uq_scene_asset_authority_identity"),
-        UniqueConstraint("scene_id", name="uq_scene_asset_authority_entity"),
         CheckConstraint("status IN ('ACTIVE','STALE')", name="ck_scene_asset_authority_status"),
     )
 
 
 class SceneAssetPointer(_AssetPointerMixin, Base):
     __tablename__ = "scene_asset_pointers"
-    scene_id = Column(String, nullable=False, unique=True)
+    scene_id = Column(String, nullable=False)
     authority_id = Column(
         String,
         ForeignKey("scene_asset_authorities.authority_id", ondelete="RESTRICT"),
@@ -222,7 +223,7 @@ class PropAssetVersion(_AssetVersionMixin, Base):
 
 class PropAssetAuthority(_AssetAuthorityMixin, Base):
     __tablename__ = "prop_asset_authorities"
-    prop_id = Column(String, nullable=False, unique=True)
+    prop_id = Column(String, nullable=False)
     current_version_id = Column(String, nullable=True)
     __table_args__ = (
         ForeignKeyConstraint(
@@ -232,14 +233,13 @@ class PropAssetAuthority(_AssetAuthorityMixin, Base):
             ondelete="RESTRICT",
         ),
         UniqueConstraint("authority_id", name="uq_prop_asset_authority_identity"),
-        UniqueConstraint("prop_id", name="uq_prop_asset_authority_entity"),
         CheckConstraint("status IN ('ACTIVE','STALE')", name="ck_prop_asset_authority_status"),
     )
 
 
 class PropAssetPointer(_AssetPointerMixin, Base):
     __tablename__ = "prop_asset_pointers"
-    prop_id = Column(String, nullable=False, unique=True)
+    prop_id = Column(String, nullable=False)
     authority_id = Column(
         String,
         ForeignKey("prop_asset_authorities.authority_id", ondelete="RESTRICT"),

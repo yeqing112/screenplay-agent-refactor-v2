@@ -222,6 +222,9 @@ def _request_snapshot(*, profile: dict[str, Any], adapter: dict[str, Any], paylo
         "transport_config": execution_profile.get("transport_config") or {},
         "credential": execution_profile.get("credential") or {},
         "target_media": target_media,
+        # Keep OfficialMedia pointers lane-scoped. IMAGE and VIDEO share a
+        # storyboard shot but must never overwrite each other's authority.
+        "media_role": "SHOT_PRIMARY_IMAGE" if str(target_media).upper() == "IMAGE" else "SHOT_PRIMARY_VIDEO",
         "asset_bindings_fingerprint": asset_bindings_fingerprint,
         "generation_mode": str(payload.get("generation_policy", {}).get("mode") or ""),
         "duration_seconds": request.get("duration_seconds"),
@@ -684,6 +687,8 @@ async def _fake_provider_video(*, request_snapshot: dict[str, Any], provider_req
 
 
 async def _mock_image_transport(context: dict[str, Any]) -> dict[str, Any]:
+    from core.mock_runtime import record
+    record("image", "canonical_generation", execution_id=str(context.get("provider_request_fingerprint") or ""), result="success", target_media="IMAGE")
     return await _fake_provider_image(
         request_snapshot=context["request_snapshot"],
         provider_request_fingerprint=context["provider_request_fingerprint"],
@@ -691,6 +696,8 @@ async def _mock_image_transport(context: dict[str, Any]) -> dict[str, Any]:
 
 
 async def _mock_video_transport(context: dict[str, Any]) -> dict[str, Any]:
+    from core.mock_runtime import record
+    record("video", "canonical_generation", execution_id=str(context.get("provider_request_fingerprint") or ""), result="success", target_media="VIDEO")
     return await _fake_provider_video(
         request_snapshot=context["request_snapshot"],
         provider_request_fingerprint=context["provider_request_fingerprint"],
@@ -1405,6 +1412,13 @@ async def _execute_generation_canary_impl(
             row.failure_code = ""
             row.failure_message = ""
             row.updated_at = completed
+            # Technical media validation is deterministic and provider-free.
+            # Run it at the canonical candidate boundary so the UI can open
+            # the human review desk immediately after generation; promotion
+            # remains a separate human decision.
+            from core.media_authority import validate_media_candidate
+            session.flush()
+            validate_media_candidate(session, candidate_id)
             session.commit()
             return {"execution": _serialize_execution(row), "candidate": _serialize_candidate(candidate), "provider_calls": 1, "reused": False, "official_promotion_count": 0}
         except HTTPException as exc:

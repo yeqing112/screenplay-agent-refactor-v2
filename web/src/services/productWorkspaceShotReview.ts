@@ -73,7 +73,10 @@ export function isReviewCandidateCurrent(view: ShotStudioViewModel | null, ident
   if (!view || view.shotId !== identity.shotId || view.stale.isStale) return false
   const lane = identity.lane === 'IMAGE' ? view.image : view.video
   const candidate = lane.candidate.candidate
-  if (lane.state !== 'review' || !lane.candidate.reviewEligibility || !candidate) return false
+  // Review eligibility belongs to the selected media lane. Shot-level
+  // blockers may coexist with a valid candidate and must not prevent the
+  // explicit human validation/promotion path from running.
+  if (!lane.candidate.reviewEligibility || !candidate) return false
   if (text(candidate.id) !== identity.candidateId) return false
   // A current Official may coexist with a newer candidate during review.
   // Only malformed Official evidence must fail closed here.  The candidate
@@ -169,6 +172,7 @@ export function createShotStudioMediaReviewController(dependencies: ShotReviewMu
       for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
         emit({ state: 'refreshing', identity: resolvedIdentity, message: attempt === 0 ? '正在同步正式状态…' : `正在等待正式状态同步（${attempt + 1}/${maxAttempts}）…`, errorCode: null })
         await dependencies.refreshCanonical()
+        await sleep(25, signal)
         if (isCanonicalConfirmationCurrent(dependencies.getViewModel(resolvedIdentity.shotId), resolvedIdentity)) {
           const message = '已建立正式版本。'
           emit({ state: 'confirmed', identity: resolvedIdentity, message, errorCode: null })
