@@ -42,8 +42,8 @@ describe('resolveStoryboardSurface', () => {
     expect(resolveStoryboardSurface({ ...eligible, v2State: 'unavailable', snapshot: null })).toMatchObject({ surface: 'legacy', reason: 'v2_unavailable' })
     expect(resolveStoryboardSurface({ ...eligible, snapshot: { ...eligible.snapshot, schema_version: 'wrong' } })).toMatchObject({ surface: 'legacy', reason: 'v2_contract_invalid' })
   })
-  it('falls back for no shots, active generation, recovery, and legacy steps', () => {
-    expect(resolveStoryboardSurface({ ...eligible, snapshot: snapshotWithShots(0) })).toMatchObject({ surface: 'legacy', reason: 'no_canonical_shots' })
+  it('keeps the empty generation state on V3 and falls back for active generation, recovery, and legacy steps', () => {
+    expect(resolveStoryboardSurface({ ...eligible, snapshot: snapshotWithShots(0) })).toMatchObject({ surface: 'v3', reason: 'no_canonical_shots' })
     expect(resolveStoryboardSurface({ ...eligible, isGeneratingStoryboard: true })).toMatchObject({ surface: 'legacy', reason: 'storyboard_generation_running' })
     expect(resolveStoryboardSurface({ ...eligible, recoveryTarget: 'storyboard' })).toMatchObject({ surface: 'legacy', reason: 'legacy_recovery_context' })
     expect(resolveStoryboardSurface({ ...eligible, search: '?step=frame' })).toMatchObject({ surface: 'legacy', reason: 'legacy_step_deeplink' })

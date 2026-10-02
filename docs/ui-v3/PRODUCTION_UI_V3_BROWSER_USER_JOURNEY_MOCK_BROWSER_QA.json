@@ -1,54 +1,691 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-browser-qa-v5",
-  "generated_at": "2026-10-02T11:13:56.905Z",
+  "schema_version": "production-ui-v3-browser-qa-v2",
   "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
-  "conclusion": "COMPLETE",
+  "commit": "29fcd10b6d2a0581b2e7b77aaaa1ce4bed742a4a",
+  "viewport_primary": {
+    "width": 1440,
+    "height": 900
+  },
   "runs": [
     {
       "run": 1,
-      "book_id": 990452,
-      "passed_step_count": 18,
-      "step_count": 18,
-      "blocked_steps": [],
-      "console_errors": 9,
-      "response_error_count": 0,
-      "asset_bridge_rendered": true,
-      "image_official": true,
-      "video_official": true,
-      "delivery_exported": true,
-      "disposable_project_cleaned": true
+      "steps": [
+        {
+          "step": "project-list",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "create-project-through-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "content-preparation",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "short-story-input-and-import",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "production-skill-and-adaptation-lock",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "script-generation-and-review",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "script-lock-release-and-production-preparation",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "director-treatment-review-and-confirm",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "director-runtime-scene-blocking-shot-plan",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "director-and-shot-workbench-observation",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "storyboard-materialization-through-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "production-asset-bridge-through-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "prompt-ir-preparation-through-v3-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "image-generation-review-official",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "video-generation-review-official",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "qa-and-delivery-export",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "asset-blocker-evidence",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "responsive-viewport-smoke",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "return-and-dispose-project-through-ui",
+          "result": "passed",
+          "error": null
+        }
+      ],
+      "reload_checks": [
+        {
+          "stage": "project-created",
+          "preserved_book_id": 990452,
+          "url": "http://127.0.0.1:5180/?book_id=990452",
+          "server_backed": {
+            "status": 200,
+            "found": true
+          }
+        },
+        {
+          "stage": "adaptation-after-local-storage-clear",
+          "server_backed": true
+        },
+        {
+          "stage": "script-production-prepared",
+          "restored": true
+        }
+      ],
+      "viewport_smoke": [
+        {
+          "width": 1280,
+          "height": 900,
+          "restored_book_id": 990452,
+          "url": "http://127.0.0.1:5180/?book_id=990452&section=storyboard&episode=1&shot=1&ui_v3=shot-studio"
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "restored_book_id": 990452,
+          "url": "http://127.0.0.1:5180/?book_id=990452&section=storyboard&episode=1&shot=1&ui_v3=shot-studio"
+        }
+      ],
+      "console_errors": [],
+      "http_errors": [],
+      "delete_audit": {
+        "status": 200,
+        "payload": {
+          "ok": true,
+          "deleted": "潮汐回声-1",
+          "book_id": 990452,
+          "deleted_rows": {
+            "production_asset_review_history": 6,
+            "production_asset_reviews": 1,
+            "media_promotion_records": 2,
+            "media_validation_records": 2,
+            "media_candidates": 2,
+            "shot_asset_bindings": 1,
+            "official_media_authorities": 2,
+            "scene_asset_pointers": 1,
+            "scene_asset_versions": 1,
+            "scene_asset_authorities": 1,
+            "production_asset_version_registry": 1,
+            "production_asset_authority_registry": 1,
+            "fact_records": 2,
+            "agent_project_updates": 6,
+            "production_export_records": 1,
+            "decision_packet_records": 1,
+            "qa_results": 1,
+            "task_runs": 2,
+            "prompt_ir_authorities": 8,
+            "prompt_ir_pointers": 8,
+            "prompt_ir_versions": 8,
+            "storyboard_materialization_pointers": 1,
+            "storyboard_materialization_sets": 1,
+            "shot_plan_authorities": 1,
+            "shot_plan_pointers": 1,
+            "shot_plans": 2,
+            "scene_blocking_authorities": 1,
+            "scene_blocking_pointers": 1,
+            "scene_blockings": 2,
+            "director_treatment_authorities": 1,
+            "director_treatment_pointers": 1,
+            "director_treatments": 1,
+            "generation_execution_records": 2,
+            "official_media_pointers": 2,
+            "official_media_versions": 2,
+            "script_ir_versions": 1,
+            "scripts": 1,
+            "episode_outlines": 1,
+            "storyboard_shots": 4,
+            "fact_snapshots": 1,
+            "chapters": 1,
+            "book_bibles": 1,
+            "book_workspace_kv": 2
+          },
+          "filesystem": {
+            "removed": [
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\production-assets\\book-990452",
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\manual-media\\book-990452-generated-phase-f-canary-d4fd40e7976f4539-431ced6916a2a21a.png",
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\generated-media\\book-990452-generated-phase-j3-canonical-b1244eee4b934a6b-40b746666769e615.mp4",
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\script_decisions\\book_990452.json"
+            ],
+            "skipped": [
+              "shared-title:潮汐回声-1"
+            ]
+          },
+          "orphan_rows": 0,
+          "ambiguous_rows": 0,
+          "orphan_audit": {
+            "book_id": 990452,
+            "rows": {
+              "books": 0
+            },
+            "total_rows": 0,
+            "direct_inventory": {
+              "direct_book_scope_tables": [
+                "agent_attachments",
+                "agent_project_updates",
+                "agent_sessions",
+                "agent_violation_logs",
+                "asset_semantic_governance_records",
+                "book_bibles",
+                "chapters",
+                "character_profiles",
+                "character_stages",
+                "decision_packet_records",
+                "director_benchmark_runs",
+                "director_treatment_authorities",
+                "director_treatment_pointers",
+                "director_treatments",
+                "episode_outlines",
+                "fact_snapshots",
+                "generation_execution_attempt_lineages",
+                "generation_execution_records",
+                "official_media_pointers",
+                "official_media_versions",
+                "production_export_records",
+                "prompt_ir_authorities",
+                "prompt_ir_pointers",
+                "prompt_ir_versions",
+                "qa_issues",
+                "qa_results",
+                "repair_attempts",
+                "scene_blocking_authorities",
+                "scene_blocking_pointers",
+                "scene_blockings",
+                "scene_characters",
+                "scene_props",
+                "script_ir_versions",
+                "script_versions",
+                "scripts",
+                "shot_plan_authorities",
+                "shot_plan_pointers",
+                "shot_plans",
+                "shot_style_bindings",
+                "storyboard_acceptance_records",
+                "storyboard_materialization_pointers",
+                "storyboard_materialization_sets",
+                "storyboard_prompt_versions",
+                "storyboard_shots",
+                "storyboard_transition_continuity_reviews",
+                "storyboard_transition_contracts",
+                "storyboard_transition_frames",
+                "storyboard_video_retry_attempts",
+                "task_runs",
+                "visual_asset_pointers",
+                "visual_asset_versions",
+                "visual_authoring_decision_requests",
+                "visual_authoring_decisions",
+                "visual_authoring_proposals",
+                "visual_era_specs",
+                "visual_locations",
+                "visual_makeups",
+                "visual_props",
+                "visual_reference_assets",
+                "visual_style_profiles"
+              ],
+              "actual_direct_book_scope_tables": [
+                "agent_attachments",
+                "agent_project_updates",
+                "agent_sessions",
+                "agent_violation_logs",
+                "asset_semantic_governance_records",
+                "book_bibles",
+                "chapters",
+                "character_profiles",
+                "character_stages",
+                "decision_packet_records",
+                "director_benchmark_runs",
+                "director_treatment_authorities",
+                "director_treatment_pointers",
+                "director_treatments",
+                "episode_outlines",
+                "fact_snapshots",
+                "generation_execution_attempt_lineages",
+                "generation_execution_records",
+                "official_media_pointers",
+                "official_media_versions",
+                "production_export_records",
+                "prompt_ir_authorities",
+                "prompt_ir_pointers",
+                "prompt_ir_versions",
+                "qa_issues",
+                "qa_results",
+                "repair_attempts",
+                "scene_blocking_authorities",
+                "scene_blocking_pointers",
+                "scene_blockings",
+                "scene_characters",
+                "scene_props",
+                "script_ir_versions",
+                "script_versions",
+                "scripts",
+                "shot_plan_authorities",
+                "shot_plan_pointers",
+                "shot_plans",
+                "shot_style_bindings",
+                "storyboard_acceptance_records",
+                "storyboard_materialization_pointers",
+                "storyboard_materialization_sets",
+                "storyboard_prompt_versions",
+                "storyboard_shots",
+                "storyboard_transition_continuity_reviews",
+                "storyboard_transition_contracts",
+                "storyboard_transition_frames",
+                "storyboard_video_retry_attempts",
+                "task_runs",
+                "visual_asset_pointers",
+                "visual_asset_versions",
+                "visual_authoring_decision_requests",
+                "visual_authoring_decisions",
+                "visual_authoring_proposals",
+                "visual_era_specs",
+                "visual_locations",
+                "visual_makeups",
+                "visual_props",
+                "visual_reference_assets",
+                "visual_style_profiles"
+              ],
+              "unreviewed_direct_book_scope_tables": [],
+              "removed_from_schema": [],
+              "complete": true
+            },
+            "orphan_rows": 0,
+            "indirect_rows": {}
+          }
+        },
+        "cleanup_mode": "journey_delete_step"
+      }
     },
     {
       "run": 2,
-      "book_id": 990452,
-      "passed_step_count": 18,
-      "step_count": 18,
-      "blocked_steps": [],
-      "console_errors": 8,
-      "response_error_count": 0,
-      "asset_bridge_rendered": true,
-      "image_official": true,
-      "video_official": true,
-      "delivery_exported": true,
-      "disposable_project_cleaned": true
+      "steps": [
+        {
+          "step": "project-list",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "create-project-through-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "content-preparation",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "short-story-input-and-import",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "production-skill-and-adaptation-lock",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "script-generation-and-review",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "script-lock-release-and-production-preparation",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "director-treatment-review-and-confirm",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "director-runtime-scene-blocking-shot-plan",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "director-and-shot-workbench-observation",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "storyboard-materialization-through-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "production-asset-bridge-through-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "prompt-ir-preparation-through-v3-ui",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "image-generation-review-official",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "video-generation-review-official",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "qa-and-delivery-export",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "asset-blocker-evidence",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "responsive-viewport-smoke",
+          "result": "passed",
+          "error": null
+        },
+        {
+          "step": "return-and-dispose-project-through-ui",
+          "result": "passed",
+          "error": null
+        }
+      ],
+      "reload_checks": [
+        {
+          "stage": "project-created",
+          "preserved_book_id": 990452,
+          "url": "http://127.0.0.1:5180/?book_id=990452",
+          "server_backed": {
+            "status": 200,
+            "found": true
+          }
+        },
+        {
+          "stage": "adaptation-after-local-storage-clear",
+          "server_backed": true
+        },
+        {
+          "stage": "script-production-prepared",
+          "restored": true
+        }
+      ],
+      "viewport_smoke": [
+        {
+          "width": 1280,
+          "height": 900,
+          "restored_book_id": 990452,
+          "url": "http://127.0.0.1:5180/?book_id=990452&section=storyboard&episode=1&shot=1&ui_v3=shot-studio"
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "restored_book_id": 990452,
+          "url": "http://127.0.0.1:5180/?book_id=990452&section=storyboard&episode=1&shot=1&ui_v3=shot-studio"
+        }
+      ],
+      "console_errors": [],
+      "http_errors": [],
+      "delete_audit": {
+        "status": 200,
+        "payload": {
+          "ok": true,
+          "deleted": "潮汐回声-2",
+          "book_id": 990452,
+          "deleted_rows": {
+            "production_asset_review_history": 6,
+            "production_asset_reviews": 1,
+            "media_promotion_records": 2,
+            "media_validation_records": 2,
+            "media_candidates": 2,
+            "shot_asset_bindings": 1,
+            "official_media_authorities": 2,
+            "scene_asset_pointers": 1,
+            "scene_asset_versions": 1,
+            "scene_asset_authorities": 1,
+            "production_asset_version_registry": 1,
+            "production_asset_authority_registry": 1,
+            "fact_records": 2,
+            "agent_project_updates": 4,
+            "production_export_records": 1,
+            "decision_packet_records": 1,
+            "qa_results": 1,
+            "task_runs": 2,
+            "prompt_ir_authorities": 8,
+            "prompt_ir_pointers": 8,
+            "prompt_ir_versions": 8,
+            "storyboard_materialization_pointers": 1,
+            "storyboard_materialization_sets": 1,
+            "shot_plan_authorities": 1,
+            "shot_plan_pointers": 1,
+            "shot_plans": 2,
+            "scene_blocking_authorities": 1,
+            "scene_blocking_pointers": 1,
+            "scene_blockings": 2,
+            "director_treatment_authorities": 1,
+            "director_treatment_pointers": 1,
+            "director_treatments": 1,
+            "generation_execution_records": 2,
+            "official_media_pointers": 2,
+            "official_media_versions": 2,
+            "script_ir_versions": 1,
+            "scripts": 1,
+            "episode_outlines": 1,
+            "storyboard_shots": 4,
+            "fact_snapshots": 1,
+            "chapters": 1,
+            "book_bibles": 1,
+            "book_workspace_kv": 2
+          },
+          "filesystem": {
+            "removed": [
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\production-assets\\book-990452",
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\manual-media\\book-990452-generated-phase-f-canary-664439d7fef04a91-431ced6916a2a21a.png",
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\generated-media\\book-990452-generated-phase-j3-canonical-948e51b808964d5f-40b746666769e615.mp4",
+              "D:\\Work\\Project\\screenplay-agent-refactor-v2\\script_decisions\\book_990452.json"
+            ],
+            "skipped": [
+              "shared-title:潮汐回声-2"
+            ]
+          },
+          "orphan_rows": 0,
+          "ambiguous_rows": 0,
+          "orphan_audit": {
+            "book_id": 990452,
+            "rows": {
+              "books": 0
+            },
+            "total_rows": 0,
+            "direct_inventory": {
+              "direct_book_scope_tables": [
+                "agent_attachments",
+                "agent_project_updates",
+                "agent_sessions",
+                "agent_violation_logs",
+                "asset_semantic_governance_records",
+                "book_bibles",
+                "chapters",
+                "character_profiles",
+                "character_stages",
+                "decision_packet_records",
+                "director_benchmark_runs",
+                "director_treatment_authorities",
+                "director_treatment_pointers",
+                "director_treatments",
+                "episode_outlines",
+                "fact_snapshots",
+                "generation_execution_attempt_lineages",
+                "generation_execution_records",
+                "official_media_pointers",
+                "official_media_versions",
+                "production_export_records",
+                "prompt_ir_authorities",
+                "prompt_ir_pointers",
+                "prompt_ir_versions",
+                "qa_issues",
+                "qa_results",
+                "repair_attempts",
+                "scene_blocking_authorities",
+                "scene_blocking_pointers",
+                "scene_blockings",
+                "scene_characters",
+                "scene_props",
+                "script_ir_versions",
+                "script_versions",
+                "scripts",
+                "shot_plan_authorities",
+                "shot_plan_pointers",
+                "shot_plans",
+                "shot_style_bindings",
+                "storyboard_acceptance_records",
+                "storyboard_materialization_pointers",
+                "storyboard_materialization_sets",
+                "storyboard_prompt_versions",
+                "storyboard_shots",
+                "storyboard_transition_continuity_reviews",
+                "storyboard_transition_contracts",
+                "storyboard_transition_frames",
+                "storyboard_video_retry_attempts",
+                "task_runs",
+                "visual_asset_pointers",
+                "visual_asset_versions",
+                "visual_authoring_decision_requests",
+                "visual_authoring_decisions",
+                "visual_authoring_proposals",
+                "visual_era_specs",
+                "visual_locations",
+                "visual_makeups",
+                "visual_props",
+                "visual_reference_assets",
+                "visual_style_profiles"
+              ],
+              "actual_direct_book_scope_tables": [
+                "agent_attachments",
+                "agent_project_updates",
+                "agent_sessions",
+                "agent_violation_logs",
+                "asset_semantic_governance_records",
+                "book_bibles",
+                "chapters",
+                "character_profiles",
+                "character_stages",
+                "decision_packet_records",
+                "director_benchmark_runs",
+                "director_treatment_authorities",
+                "director_treatment_pointers",
+                "director_treatments",
+                "episode_outlines",
+                "fact_snapshots",
+                "generation_execution_attempt_lineages",
+                "generation_execution_records",
+                "official_media_pointers",
+                "official_media_versions",
+                "production_export_records",
+                "prompt_ir_authorities",
+                "prompt_ir_pointers",
+                "prompt_ir_versions",
+                "qa_issues",
+                "qa_results",
+                "repair_attempts",
+                "scene_blocking_authorities",
+                "scene_blocking_pointers",
+                "scene_blockings",
+                "scene_characters",
+                "scene_props",
+                "script_ir_versions",
+                "script_versions",
+                "scripts",
+                "shot_plan_authorities",
+                "shot_plan_pointers",
+                "shot_plans",
+                "shot_style_bindings",
+                "storyboard_acceptance_records",
+                "storyboard_materialization_pointers",
+                "storyboard_materialization_sets",
+                "storyboard_prompt_versions",
+                "storyboard_shots",
+                "storyboard_transition_continuity_reviews",
+                "storyboard_transition_contracts",
+                "storyboard_transition_frames",
+                "storyboard_video_retry_attempts",
+                "task_runs",
+                "visual_asset_pointers",
+                "visual_asset_versions",
+                "visual_authoring_decision_requests",
+                "visual_authoring_decisions",
+                "visual_authoring_proposals",
+                "visual_era_specs",
+                "visual_locations",
+                "visual_makeups",
+                "visual_props",
+                "visual_reference_assets",
+                "visual_style_profiles"
+              ],
+              "unreviewed_direct_book_scope_tables": [],
+              "removed_from_schema": [],
+              "complete": true
+            },
+            "orphan_rows": 0,
+            "indirect_rows": {}
+          }
+        },
+        "cleanup_mode": "journey_delete_step"
+      }
     }
-  ],
-  "assertions": {
-    "visible_ui_mutations": "PASS",
-    "project_to_delivery_visible_ui_flow": "PASS",
-    "image_candidate_technical_validation": "PASS",
-    "video_candidate_technical_validation": "PASS",
-    "image_official_current": "PASS",
-    "video_official_current": "PASS",
-    "delivery_export_record": "PASS",
-    "protected_book_990400_writes": 0,
-    "real_provider_calls": 0,
-    "external_hosts": 0,
-    "source_fact_mutation": "NONE"
-  },
-  "evidence_paths": {
-    "runner_summary": "output/playwright/user-journey-final10/summary.json",
-    "run_1": "output/playwright/user-journey-final10/run-1.json",
-    "run_2": "output/playwright/user-journey-final10/run-2.json"
-  }
+  ]
 }

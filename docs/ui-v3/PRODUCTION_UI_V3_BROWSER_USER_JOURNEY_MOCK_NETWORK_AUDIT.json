@@ -1,30 +1,5349 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-network-audit-v5",
-  "generated_at": "2026-10-02T11:13:56.905Z",
-  "conclusion": "PASS",
-  "allowed_hosts": [
-    "127.0.0.1:5180",
-    "127.0.0.1:18773"
-  ],
-  "external_hosts": [],
-  "runs": [
+  "schema_version": "production-ui-v3-browser-network-audit-v2",
+  "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
+  "commit": "29fcd10b6d2a0581b2e7b77aaaa1ce4bed742a4a",
+  "business_api_calls": [
     {
-      "run": 1,
-      "mutation_count": 36,
-      "response_errors": [],
-      "external_hosts": [],
-      "real_provider_calls": 0,
-      "provider_calls_projection": 0
+      "method": "POST",
+      "path": "/api/books",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "title": "V3 UI Journey Mock Run 1 1790944407126-bp43b"
+      }
     },
     {
-      "run": 2,
-      "mutation_count": 36,
-      "response_errors": [],
-      "external_hosts": [],
-      "real_provider_calls": 0,
-      "provider_calls_projection": 0
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/upload",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/pipeline/script",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "book_id": 990452,
+        "filepath": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\20261002_203328_6da6629b_潮汐回声-1.txt",
+        "genre": "short_drama",
+        "episode_count": 1,
+        "stop_after": "content",
+        "preferred_title": "潮汐回声-1"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/production-skill-state",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "skillId": "rebirth_suspense",
+        "platform": "douyin",
+        "track": "重生悬疑",
+        "emotionGoal": "高压悬念",
+        "rhythmStrength": "strong_hooks",
+        "visualStyle": "cinematic_realism",
+        "priorities": [
+          "storyboard",
+          "assets",
+          "mystery"
+        ],
+        "enforcement": "strict",
+        "customNote": "",
+        "lockedAt": "2026-10-02T12:33:30.481Z"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/adaptation-state",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "selectedId": "emotion-suspense",
+        "selectedName": "竖屏情绪悬疑短剧",
+        "customNote": "",
+        "lockedAt": "2026-10-02T12:33:30.582Z"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/pipeline/script",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "book_id": 990452,
+        "genre": "short_drama",
+        "episode_count": 1
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/script-decisions/1",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "lockedAt": "2026-10-02T12:33:34.581Z",
+        "releasedAt": null,
+        "note": "E2E mock journey: script reviewed and ready for production."
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/script-decisions/1",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "lockedAt": "2026-10-02T12:33:34.581Z",
+        "releasedAt": "2026-10-02T12:33:34.631Z",
+        "note": "E2E mock journey: script reviewed and ready for production."
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/script-ir/prepare-production",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "confirmed": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/director-treatment/preview",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "workflow_profile": "production",
+        "scene_id": "E01_SC001"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/director-treatment/llm-draft",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "packetFingerprint": "27aac56e2ee4ec5647fa8de1",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "workflow_profile": "production",
+        "scene_id": "E01_SC001"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/director-treatment/confirm",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "packetId": 63,
+        "packetFingerprint": "27aac56e2ee4ec5647fa8de1",
+        "confirmed": true,
+        "candidate": {
+          "dramatic_objective": "围绕“雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。”建立冲突，并通过“【场景结束】”推进本场戏。",
+          "audience_question": "人物最终会如何改变当前局面？",
+          "character_intents": {
+            "林晚": {
+              "name": "林晚",
+              "goal": "完成本场戏的叙事目标",
+              "obstacle": "场景中的对立力量或信息缺口",
+              "tactic": "通过行动而非解释推进局面",
+              "subtext": "",
+              "emotion_in": "克制",
+              "emotion_out": "变化中",
+              "power_in": 0.5,
+              "power_out": 0.5
+            }
+          },
+          "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+          "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+          "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+          "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+          "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+          "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+          "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+          "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+          "scene_objective": null,
+          "dramatic_question": null,
+          "audience_state_in": null,
+          "audience_state_out": null,
+          "suspicion_or_information_strategy": null,
+          "character_directions": null,
+          "beat_directions": null,
+          "director_beat_decisions": [
+            {
+              "decision_id": "DBD_E01_SC001_B01",
+              "beat_ref": "E01_SC001_B01",
+              "dramatic_purpose": "SETUP_RELATIONSHIP",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "PROGRESS_BEAT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B01"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            },
+            {
+              "decision_id": "DBD_E01_SC001_B02",
+              "beat_ref": "E01_SC001_B02",
+              "dramatic_purpose": "SETUP_RELATIONSHIP",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "PROGRESS_BEAT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B02"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            },
+            {
+              "decision_id": "DBD_E01_SC001_B03",
+              "beat_ref": "E01_SC001_B03",
+              "dramatic_purpose": "SETUP_RELATIONSHIP",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "PROGRESS_BEAT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B03"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            },
+            {
+              "decision_id": "DBD_E01_SC001_B04",
+              "beat_ref": "E01_SC001_B04",
+              "dramatic_purpose": "HOOK_NEXT_SCENE",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [
+                {
+                  "character_ref": "SCENE_CAST",
+                  "trigger_ref": "E01_SC001_B04",
+                  "reaction_type": "RECOGNITION",
+                  "required": true,
+                  "state_delta_ref": "E01_SC001_B04"
+                }
+              ],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "HOLD_FOR_DOUBT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B04"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            }
+          ],
+          "director_contract_version": "director_semantic_contract_v1",
+          "performance_arc": null,
+          "rhythm_strategy": null,
+          "visual_priority": null,
+          "scene_exit_intent": null,
+          "prohibited_interpretations": null,
+          "constraints": [
+            "不得覆盖锁定资产事实",
+            "不得把未声明内容伪装成剧本事实"
+          ],
+          "unknowns": [],
+          "scene_id": "E01_SC001",
+          "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+          "beat_map": [
+            {
+              "beat_id": "E01_SC001_B01",
+              "type": "action",
+              "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+              "dramatic_function": "推进可见行动",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "ACTION",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": false,
+              "importance": "normal"
+            },
+            {
+              "beat_id": "E01_SC001_B02",
+              "type": "action",
+              "event": "林晚：你见过这个人吗？",
+              "dramatic_function": "推进可见行动",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "ACTION",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": false,
+              "importance": "normal"
+            },
+            {
+              "beat_id": "E01_SC001_B03",
+              "type": "action",
+              "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+              "dramatic_function": "推进可见行动",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "ACTION",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": false,
+              "importance": "normal"
+            },
+            {
+              "beat_id": "E01_SC001_B04",
+              "type": "hook",
+              "event": "【场景结束】",
+              "dramatic_function": "推进当前叙事节拍",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "HOOK",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": true,
+              "importance": "critical"
+            }
+          ],
+          "decision": "ready_for_review",
+          "confidence": 0.91,
+          "human_confirmation_required": true,
+          "note": "deterministic mock proposal; requires human confirmation",
+          "proposal_origin": "PROVIDER_PROPOSAL",
+          "proposal_provenance": {
+            "proposal_origin": "PROVIDER_PROPOSAL",
+            "provider": {
+              "called": true,
+              "calls": 1,
+              "profile_id": "builtin-mock-llm",
+              "model": "builtin-mock-llm",
+              "request_fingerprint": null,
+              "response_fingerprint": null
+            },
+            "authoring": {
+              "human_input": false
+            }
+          }
+        },
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/scene-blocking/preview",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "sceneName": "",
+        "scene_id": "E01_SC001",
+        "persist": true,
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/scene-blocking/confirm",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "blockingId": 80,
+        "evidenceFingerprint": "a0fee0c1ca2a09b1ba03b68b726f5b48bf0da7bf524eae6c081b25eef8bfc386",
+        "confirmed": true,
+        "blocking": {
+          "space": {
+            "anchors": [],
+            "zones": [],
+            "entrances": [],
+            "exits": [],
+            "fixed_objects": []
+          },
+          "participants": [
+            {
+              "character_id": "林晚",
+              "name": "林晚",
+              "start_position": {
+                "value": "scene_center",
+                "authority": "CREATIVE_CHOICE",
+                "authority_class": "BLOCKING_AUTHORING_DECISION"
+              },
+              "facing": {
+                "value": "scene_action",
+                "authority": "CREATIVE_CHOICE",
+                "authority_class": "BLOCKING_AUTHORING_DECISION"
+              },
+              "eyeline_target": {
+                "value": "scene_action",
+                "authority": "CREATIVE_CHOICE",
+                "authority_class": "BLOCKING_AUTHORING_DECISION"
+              },
+              "screen_side": {
+                "value": "left",
+                "authority": "DERIVED_CONSTRAINT",
+                "authority_class": "DERIVED_SPATIAL_CONSTRAINT"
+              },
+              "movement_path": [],
+              "position": "scene_center",
+              "anchor": null,
+              "source": "director_choice"
+            }
+          ],
+          "camera_axis": {
+            "subject_a": "林晚",
+            "subject_b": "",
+            "preferred_side": "center",
+            "authority": "CREATIVE_CHOICE"
+          },
+          "creative_decisions": [
+            {
+              "decision": "start_position",
+              "subject_id": "林晚",
+              "value": "scene_center",
+              "authority": "CREATIVE_CHOICE",
+              "reason": "source did not specify a required position"
+            },
+            {
+              "decision": "eyeline_target",
+              "subject_id": "林晚",
+              "value": "scene_action",
+              "authority": "CREATIVE_CHOICE"
+            },
+            {
+              "decision": "facing",
+              "subject_id": "林晚",
+              "value": "scene_action",
+              "authority": "CREATIVE_CHOICE"
+            }
+          ],
+          "derived_constraints": {
+            "screen_direction": "establish_from_camera_axis",
+            "axis": {
+              "subject_a": "林晚",
+              "subject_b": "",
+              "preferred_side": "center"
+            },
+            "movement_continuity": "preserve_entry_and_exit_states",
+            "teleport_detection": true
+          },
+          "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+          "scene_id": "E01_SC001",
+          "source_spatial_facts": [],
+          "unresolved_facts": [],
+          "conflicts": [],
+          "schema_version": "scene_blocking_v2",
+          "beat_transitions": [
+            {
+              "beat_id": "E01_SC001_B01",
+              "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "scene_start",
+              "exit_state": "same_as_next"
+            },
+            {
+              "beat_id": "E01_SC001_B02",
+              "event": "林晚：你见过这个人吗？",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "same_as_previous",
+              "exit_state": "same_as_next"
+            },
+            {
+              "beat_id": "E01_SC001_B03",
+              "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "same_as_previous",
+              "exit_state": "same_as_next"
+            },
+            {
+              "beat_id": "E01_SC001_B04",
+              "event": "【场景结束】",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "same_as_previous",
+              "exit_state": "same_as_next"
+            }
+          ],
+          "spatial_rules": [
+            "locked_source_fact_is_immutable",
+            "creative_choice_must_be_labeled",
+            "derived_constraints_are_program_validated",
+            "preserve_screen_direction_without_declared_transition"
+          ],
+          "unknowns": [],
+          "treatment_fingerprint": "c35b742abb34f61f7fe20108f307a65ceeb6300124c857951ddae8a1ad6b8efa",
+          "source_script_hash": "55dd6ee88f52d727b5ba8abb3b64f2601042d3511af7d1cea4822230a35561ad",
+          "evidence_fingerprint": "a0fee0c1ca2a09b1ba03b68b726f5b48bf0da7bf524eae6c081b25eef8bfc386",
+          "validation": {
+            "status": "qualified",
+            "errors": [],
+            "warnings": [],
+            "blocker_count": 0,
+            "warning_count": 0
+          },
+          "model_info": {
+            "mode": "deterministic_spatial_authority_v2",
+            "llm_called": false
+          },
+          "status": "ready_for_review",
+          "initial_state": {
+            "characters": {},
+            "props": {},
+            "exit_access": {}
+          },
+          "blocking_transitions": [],
+          "compiler_version": "blocking_state_compiler_v1",
+          "beat_spatial_states": [
+            {
+              "beat_ref": "E01_SC001_B01",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            },
+            {
+              "beat_ref": "E01_SC001_B02",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            },
+            {
+              "beat_ref": "E01_SC001_B03",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            },
+            {
+              "beat_ref": "E01_SC001_B04",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            }
+          ],
+          "compiled_states_hash": "4d6df4895ee01534e07ed27e35f68339e3200cfe41bda6d7b86e54a949439fec",
+          "movement_path_projection": [],
+          "_locked_space": false,
+          "asset_authority": {
+            "authority_class": "AUTHORING_PENDING",
+            "status": "missing",
+            "reason": "SCENE_ASSET_MISSING",
+            "locked_constraints": [],
+            "advisory_context": [],
+            "authoring_pending": [
+              {
+                "code": "SCENE_ASSET_MISSING"
+              }
+            ],
+            "fingerprint": "5bf0077339604e03b086ecc361241958b793eee7db9332c494a6c9bdce43cc98",
+            "scene_asset_fingerprint": "5bf0077339604e03b086ecc361241958b793eee7db9332c494a6c9bdce43cc98"
+          },
+          "continuity_state": {
+            "states": [
+              {
+                "character_id": "林晚",
+                "scene_id": "E01_SC001",
+                "state": null,
+                "authority_class": "UNKNOWN_UNRESOLVED",
+                "provenance": {
+                  "scene_id": "E01_SC001",
+                  "character_id": "林晚"
+                },
+                "unresolved": true
+              }
+            ],
+            "unresolved": [],
+            "resolution": [
+              {
+                "code": "RESOLVED_BY_SOURCE",
+                "count": 0
+              },
+              {
+                "code": "RESOLVED_BY_DERIVATION",
+                "count": 0
+              },
+              {
+                "code": "STILL_UNKNOWN",
+                "count": 0
+              }
+            ],
+            "fingerprint": "c912262d016c51e966c310f2f34282c4bc419e56fb9bc8430b28ed15e9b3b985"
+          },
+          "treatment_id": 65,
+          "treatment_revision": 1,
+          "production_blockers": [],
+          "asset_blockers": [
+            {
+              "code": "SCENE_ASSET_MISSING"
+            }
+          ],
+          "repair_attempts": [],
+          "qualification_state": "REVIEW_REQUIRED",
+          "source_lineage": {
+            "script_ir_version_id": 51,
+            "script_ir_authority_fingerprint": "1c3e3366974c95cfb39cd838d2a391153fd043b45ea4edfc6b57a66565bc53e8",
+            "source_immutable_raw_hash": "3c3006048a70ecd636cf473e7d30284055b456deb5e8f1d94051a7a97a3833d9",
+            "fact_snapshot_id": "48",
+            "fact_snapshot_revision": 1,
+            "fact_snapshot_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+          },
+          "payload_hash": "7dacaac6268e13dcbe43ef35003933ee6023b74f44db83dc3fcc33aca1d8f8d7",
+          "contract_fingerprint": "340a7891cdd7f310686be4f09c9333a21845898c9a50f7ee9d8b15021640bef8",
+          "validation_fingerprint": "b2edc4858674eb65906d4b139fef1cbf6e2c8ba35551ce3cced444c8fae8922b"
+        },
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shot-plan/preview",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "sceneName": "",
+        "scene_id": "E01_SC001",
+        "persist": true,
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shot-plan/confirm",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "planId": 33,
+        "evidenceFingerprint": "377aa342be111afbc1652005cf4dbd530cc779f97d4015b0adf1cd3a983676f4",
+        "confirmed": true,
+        "plan": {
+          "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+          "shots": [
+            {
+              "plan_shot_id": "S01",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B01",
+              "purpose": "action",
+              "dramatic_function": "推进可见行动",
+              "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B01_A01",
+                  "actor": "林晚",
+                  "action": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S01",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S01",
+                "last_event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            },
+            {
+              "plan_shot_id": "S02",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B02",
+              "purpose": "action",
+              "dramatic_function": "推进可见行动",
+              "event": "林晚：你见过这个人吗？",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B02_A01",
+                  "actor": "林晚",
+                  "action": "林晚：你见过这个人吗？",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S02",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S02",
+                "last_event": "林晚：你见过这个人吗？",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            },
+            {
+              "plan_shot_id": "S03",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B03",
+              "purpose": "action",
+              "dramatic_function": "推进可见行动",
+              "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B03_A01",
+                  "actor": "林晚",
+                  "action": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S03",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S03",
+                "last_event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            },
+            {
+              "plan_shot_id": "S04",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B04",
+              "purpose": "coverage",
+              "dramatic_function": "推进当前叙事节拍",
+              "event": "【场景结束】",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B04_A01",
+                  "actor": "林晚",
+                  "action": "【场景结束】",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S04",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S04",
+                "last_event": "【场景结束】",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            }
+          ],
+          "unknowns": [],
+          "treatment_fingerprint": "",
+          "blocking_fingerprint": "a0fee0c1ca2a09b1ba03b68b726f5b48bf0da7bf524eae6c081b25eef8bfc386",
+          "status": "ready_for_review",
+          "evidence_fingerprint": "377aa342be111afbc1652005cf4dbd530cc779f97d4015b0adf1cd3a983676f4",
+          "model_info": {
+            "mode": "legacy_compatibility",
+            "phase_c_contract_version": "shot_plan_phase_c_v1",
+            "phase_c_semantic_ready": true,
+            "phase_c_payload_hash": "2e7de58dabff72ce74cb8ccf764c24e6ecb7f1eabe23ea549aa8995091e72ef6",
+            "phase_c_contract": {
+              "contract_version": "shot_plan_phase_c_v1",
+              "requirements": [
+                {
+                  "requirement_id": "REQ_E01_SC001_B01",
+                  "beat_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B01"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B02",
+                  "beat_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B02"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B03",
+                  "beat_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B03"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B04",
+                  "beat_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B04"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [
+                    {
+                      "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                      "character_ref": "SCENE_CAST",
+                      "reaction_type": "RECOGNITION",
+                      "required": true
+                    }
+                  ],
+                  "reaction_contract_refs": [
+                    "RC_E01_SC001_B04_SCENE_CAST"
+                  ],
+                  "blocking_state_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                }
+              ],
+              "coverage_results": [],
+              "compiled_continuity": {},
+              "runtime_projection": {
+                "status": "AUTHORING_DERIVED_OR_PENDING"
+              },
+              "source_lineage": {
+                "script_ir": {
+                  "id": 51,
+                  "authority_envelope_fingerprint": "1c3e3366974c95cfb39cd838d2a391153fd043b45ea4edfc6b57a66565bc53e8"
+                },
+                "treatment": {
+                  "id": 65,
+                  "revision": 1,
+                  "payload_hash": "5fb3f172ce2bc28a526cff6bc22b9d099ffc31c22f7d1b89a8e9aa4f2d386d4e",
+                  "authority_envelope_fingerprint": "c35b742abb34f61f7fe20108f307a65ceeb6300124c857951ddae8a1ad6b8efa"
+                },
+                "blocking": {
+                  "id": 81,
+                  "revision": 1,
+                  "payload_hash": "bc2958ca390f5570a846178b4ecad08cd2844a60a3d969ef9984a74cd6c7b7c9",
+                  "authority_envelope_fingerprint": "24455d9a85a1eaa19650e4cfc56a2ff6dc5f31023922f5dcd209e7c06f4220d1"
+                }
+              },
+              "authoring_provenance": {},
+              "payload_hash": "2e7de58dabff72ce74cb8ccf764c24e6ecb7f1eabe23ea549aa8995091e72ef6"
+            },
+            "deterministic_phase_c_plan": {
+              "contract_version": "shot_plan_phase_c_v1",
+              "scene_id": "E01_SC001",
+              "shots": [
+                {
+                  "shot_id": "SH_E01_SC001_001",
+                  "plan_shot_id": "SH_E01_SC001_001",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B01"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B01"
+                  ],
+                  "shot_purpose": "ESTABLISH_RELATIONSHIP",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [],
+                  "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+                  "action_beats": [
+                    {
+                      "action": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                    }
+                  ],
+                  "duration_hint_seconds": 4,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B01",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B01",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B01",
+                    "last_event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": []
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B01",
+                    "blocking_state_refs": [
+                      "E01_SC001_B01"
+                    ],
+                    "subject_zones": {},
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": []
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B01",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "ACTION_COMPLETION",
+                    "cut_trigger": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 4000,
+                  "shot_description": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                },
+                {
+                  "shot_id": "SH_E01_SC001_002",
+                  "plan_shot_id": "SH_E01_SC001_002",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B02"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B02"
+                  ],
+                  "shot_purpose": "ESTABLISH_RELATIONSHIP",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [],
+                  "event": "林晚：你见过这个人吗？",
+                  "action_beats": [
+                    {
+                      "action": "林晚：你见过这个人吗？"
+                    }
+                  ],
+                  "duration_hint_seconds": 3,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B02",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B02",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B02",
+                    "last_event": "林晚：你见过这个人吗？"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": []
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B02",
+                    "blocking_state_refs": [
+                      "E01_SC001_B02"
+                    ],
+                    "subject_zones": {},
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": []
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B02",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "ACTION_COMPLETION",
+                    "cut_trigger": "林晚：你见过这个人吗？"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 3000,
+                  "shot_description": "林晚：你见过这个人吗？"
+                },
+                {
+                  "shot_id": "SH_E01_SC001_003",
+                  "plan_shot_id": "SH_E01_SC001_003",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B03"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B03"
+                  ],
+                  "shot_purpose": "ESTABLISH_RELATIONSHIP",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [],
+                  "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+                  "action_beats": [
+                    {
+                      "action": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                    }
+                  ],
+                  "duration_hint_seconds": 6,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B03",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B03",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B03",
+                    "last_event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": []
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B03",
+                    "blocking_state_refs": [
+                      "E01_SC001_B03"
+                    ],
+                    "subject_zones": {},
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": []
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B03",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "ACTION_COMPLETION",
+                    "cut_trigger": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 6000,
+                  "shot_description": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                },
+                {
+                  "shot_id": "SH_E01_SC001_004",
+                  "plan_shot_id": "SH_E01_SC001_004",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B04"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B04"
+                  ],
+                  "shot_purpose": "SCENE_EXIT",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [
+                    "RC_E01_SC001_B04_SCENE_CAST"
+                  ],
+                  "event": "【场景结束】",
+                  "action_beats": [
+                    {
+                      "action": "【场景结束】"
+                    }
+                  ],
+                  "duration_hint_seconds": 3,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B04",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B04",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B04",
+                    "last_event": "【场景结束】"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "SCENE_CAST",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": [
+                      "SCENE_CAST"
+                    ]
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B04",
+                    "blocking_state_refs": [
+                      "E01_SC001_B04"
+                    ],
+                    "subject_zones": {
+                      "SCENE_CAST": "scene_center"
+                    },
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM_CLOSE",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": [
+                      "SCENE_CAST"
+                    ]
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B04",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "REACTION_HOLD",
+                    "cut_trigger": "【场景结束】"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 3000,
+                  "shot_description": "【场景结束】"
+                }
+              ],
+              "coverage_contracts": [
+                {
+                  "requirement_id": "REQ_E01_SC001_B01",
+                  "beat_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B01"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B02",
+                  "beat_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B02"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B03",
+                  "beat_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B03"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B04",
+                  "beat_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B04"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [
+                    {
+                      "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                      "character_ref": "SCENE_CAST",
+                      "reaction_type": "RECOGNITION",
+                      "required": true
+                    }
+                  ],
+                  "reaction_contract_refs": [
+                    "RC_E01_SC001_B04_SCENE_CAST"
+                  ],
+                  "blocking_state_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                }
+              ],
+              "coverage_results": [
+                {
+                  "requirement_ref": "REQ_E01_SC001_B01",
+                  "beat_ref": "E01_SC001_B01",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_001"
+                    ]
+                  },
+                  "reaction_results": [],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    ""
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_001"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_001"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_001"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_001"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                },
+                {
+                  "requirement_ref": "REQ_E01_SC001_B02",
+                  "beat_ref": "E01_SC001_B02",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_002"
+                    ]
+                  },
+                  "reaction_results": [],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    ""
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_002"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_002"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_002"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_002"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                },
+                {
+                  "requirement_ref": "REQ_E01_SC001_B03",
+                  "beat_ref": "E01_SC001_B03",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_003"
+                    ]
+                  },
+                  "reaction_results": [],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    ""
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_003"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_003"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_003"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_003"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                },
+                {
+                  "requirement_ref": "REQ_E01_SC001_B04",
+                  "beat_ref": "E01_SC001_B04",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_004"
+                    ],
+                    "REACTION_COVERAGE": [
+                      "SH_E01_SC001_004"
+                    ],
+                    "SCENE_EXIT_COVERAGE": [
+                      "SH_E01_SC001_004"
+                    ]
+                  },
+                  "reaction_results": [
+                    {
+                      "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                      "satisfied_by": [
+                        "SH_E01_SC001_004"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    "SCENE_CAST"
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_004"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_004"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_004"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_004"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                }
+              ],
+              "compiled_continuity": {
+                "compiler_version": "shot_continuity_compiler_v2",
+                "shots": [
+                  {
+                    "shot_id": "SH_E01_SC001_001",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B01"
+                    ]
+                  },
+                  {
+                    "shot_id": "SH_E01_SC001_002",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B02"
+                    ]
+                  },
+                  {
+                    "shot_id": "SH_E01_SC001_003",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B03"
+                    ]
+                  },
+                  {
+                    "shot_id": "SH_E01_SC001_004",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B04"
+                    ]
+                  }
+                ],
+                "errors": [],
+                "valid": true,
+                "continuity_hash": "c6731a35e8d6df54ee6c1d9fd3708a7b7fd5de7a38ba8779689d5b736db9c9f2"
+              },
+              "runtime_estimate": {
+                "estimator_version": "duration_estimator_v1",
+                "shot_count": 4,
+                "estimated_duration_ms": 16000,
+                "estimated_duration_seconds": 16
+              },
+              "phase_c_semantic_ready": true,
+              "source_lineage": {
+                "script_ir": {
+                  "id": 51,
+                  "authority_envelope_fingerprint": "1c3e3366974c95cfb39cd838d2a391153fd043b45ea4edfc6b57a66565bc53e8"
+                },
+                "treatment": {
+                  "id": 65,
+                  "revision": 1,
+                  "payload_hash": "5fb3f172ce2bc28a526cff6bc22b9d099ffc31c22f7d1b89a8e9aa4f2d386d4e",
+                  "authority_envelope_fingerprint": "c35b742abb34f61f7fe20108f307a65ceeb6300124c857951ddae8a1ad6b8efa"
+                },
+                "blocking": {
+                  "id": 81,
+                  "revision": 1,
+                  "payload_hash": "bc2958ca390f5570a846178b4ecad08cd2844a60a3d969ef9984a74cd6c7b7c9",
+                  "authority_envelope_fingerprint": "24455d9a85a1eaa19650e4cfc56a2ff6dc5f31023922f5dcd209e7c06f4220d1"
+                }
+              },
+              "provider_provenance": {
+                "origin": "DETERMINISTIC_BUILDER",
+                "provider_calls": 0
+              },
+              "payload_hash": "5bb4d8aef013926d181d915ecf31ed410795fe5c3ce6736e8d386b5156314420"
+            },
+            "shot_design_status": "DETERMINISTIC_CANONICAL_PENDING_CONFIRMATION",
+            "provider_calls": 0,
+            "llm_called": false
+          },
+          "scene_id": "E01_SC001",
+          "schema_version": "shot_plan_v2",
+          "phase_c_contract": {
+            "contract_version": "shot_plan_phase_c_v1",
+            "requirements": [
+              {
+                "requirement_id": "REQ_E01_SC001_B01",
+                "beat_refs": [
+                  "E01_SC001_B01"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B01"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [],
+                "reaction_contract_refs": [],
+                "blocking_state_refs": [
+                  "E01_SC001_B01"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              },
+              {
+                "requirement_id": "REQ_E01_SC001_B02",
+                "beat_refs": [
+                  "E01_SC001_B02"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B02"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [],
+                "reaction_contract_refs": [],
+                "blocking_state_refs": [
+                  "E01_SC001_B02"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              },
+              {
+                "requirement_id": "REQ_E01_SC001_B03",
+                "beat_refs": [
+                  "E01_SC001_B03"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B03"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [],
+                "reaction_contract_refs": [],
+                "blocking_state_refs": [
+                  "E01_SC001_B03"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              },
+              {
+                "requirement_id": "REQ_E01_SC001_B04",
+                "beat_refs": [
+                  "E01_SC001_B04"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B04"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE",
+                  "REACTION_COVERAGE",
+                  "SCENE_EXIT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [
+                  {
+                    "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                    "character_ref": "SCENE_CAST",
+                    "reaction_type": "RECOGNITION",
+                    "required": true
+                  }
+                ],
+                "reaction_contract_refs": [
+                  "RC_E01_SC001_B04_SCENE_CAST"
+                ],
+                "blocking_state_refs": [
+                  "E01_SC001_B04"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              }
+            ],
+            "coverage_results": [],
+            "compiled_continuity": {},
+            "runtime_projection": {
+              "status": "AUTHORING_DERIVED_OR_PENDING"
+            },
+            "source_lineage": {
+              "script_ir": {
+                "id": 51,
+                "authority_envelope_fingerprint": "1c3e3366974c95cfb39cd838d2a391153fd043b45ea4edfc6b57a66565bc53e8"
+              },
+              "treatment": {
+                "id": 65,
+                "revision": 1,
+                "payload_hash": "5fb3f172ce2bc28a526cff6bc22b9d099ffc31c22f7d1b89a8e9aa4f2d386d4e",
+                "authority_envelope_fingerprint": "c35b742abb34f61f7fe20108f307a65ceeb6300124c857951ddae8a1ad6b8efa"
+              },
+              "blocking": {
+                "id": 81,
+                "revision": 1,
+                "payload_hash": "bc2958ca390f5570a846178b4ecad08cd2844a60a3d969ef9984a74cd6c7b7c9",
+                "authority_envelope_fingerprint": "24455d9a85a1eaa19650e4cfc56a2ff6dc5f31023922f5dcd209e7c06f4220d1"
+              }
+            },
+            "authoring_provenance": {},
+            "payload_hash": "2e7de58dabff72ce74cb8ccf764c24e6ecb7f1eabe23ea549aa8995091e72ef6"
+          },
+          "phase_c_semantic_ready": true,
+          "shot_design_status": "DETERMINISTIC_CANONICAL_PENDING_CONFIRMATION"
+        },
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/storyboard/materialize",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "confirmed": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/ingest",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/reviews/par_f0cc4c7950a7a43f5812bced_01/decision",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "decision": "APPROVE",
+        "reviewer_type": "DIRECTOR"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/reviews/par_f0cc4c7950a7a43f5812bced_01/activate",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/shots/388/bind-current",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/prompt-ir/compile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "generation_policy": {
+          "mode": "TEXT_TO_IMAGE",
+          "target_media": "IMAGE",
+          "source": "shot-studio-ui"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/storyboard/1/1/generate-frame",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "modelProfileId": "builtin-mock-image",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "compileIfMissing": false,
+        "generationChain": "production_workspace_v2"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/assets/candidates/candidate-ca02355069954abe889a258e77fc6ab6/promote",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "validation_id": "mvr-3683b92d02c4b77ddd3d9970d78031847e13daa6",
+        "reviewer": "shot-studio-human",
+        "decision": "APPROVE",
+        "review_notes": "Approved from Shot Studio Review Desk.",
+        "confirmation": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/prompt-ir/compile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "generation_policy": {
+          "mode": "IMAGE_TO_VIDEO",
+          "target_media": "VIDEO",
+          "duration_seconds": 5,
+          "source": "shot-studio-ui"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/storyboard/1/1/generate-video",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "modelProfileId": "builtin-mock-video",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "compileIfMissing": false,
+        "generationChain": "production_workspace_v2"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/assets/candidates/candidate-9c344dadb1714d45ba5c09fb16e672bb/promote",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "validation_id": "mvr-bf9727adc212ea13f3985ffe52ec0d3e2eb5436d",
+        "reviewer": "shot-studio-human",
+        "decision": "APPROVE",
+        "review_notes": "Approved from Shot Studio Review Desk.",
+        "confirmation": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/export-records",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "exportFormat": "json",
+        "formatLabel": "JSON",
+        "status": "blocked",
+        "totalShots": 4,
+        "deliverableShots": 0,
+        "pendingReviewShots": 4,
+        "blockedShots": 5,
+        "summary": "第 1 集 | 剧本 已锁稿并放行 | 镜头 0/4 | 提示词 0/4 | 分镜图 0/4 | 视频 0/4 | 资产引用 0 | QA 通过",
+        "metaInfo": {
+          "episode": 1,
+          "script_status": "已锁稿并放行",
+          "blocked_reasons": [
+            "提示词未齐",
+            "缺已采纳分镜图",
+            "缺已采纳视频",
+            "缺可追溯资产引用",
+            "缺当前正式分镜图"
+          ],
+          "blocked_codes": [
+            "missing_prompts",
+            "missing_images",
+            "missing_videos",
+            "missing_asset_references",
+            "missing_images"
+          ],
+          "version_label": "阻塞快照"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/books/990452",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/books",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "title": "V3 UI Journey Mock Run 2 1790944426785-gq254"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/upload",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/pipeline/script",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "book_id": 990452,
+        "filepath": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\20261002_203348_6e5ef142_潮汐回声-2.txt",
+        "genre": "short_drama",
+        "episode_count": 1,
+        "stop_after": "content",
+        "preferred_title": "潮汐回声-2"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/production-skill-state",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "skillId": "rebirth_suspense",
+        "platform": "douyin",
+        "track": "重生悬疑",
+        "emotionGoal": "高压悬念",
+        "rhythmStrength": "strong_hooks",
+        "visualStyle": "cinematic_realism",
+        "priorities": [
+          "storyboard",
+          "assets",
+          "mystery"
+        ],
+        "enforcement": "strict",
+        "customNote": "",
+        "lockedAt": "2026-10-02T12:33:50.129Z"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/adaptation-state",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "selectedId": "emotion-suspense",
+        "selectedName": "竖屏情绪悬疑短剧",
+        "customNote": "",
+        "lockedAt": "2026-10-02T12:33:50.229Z"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/pipeline/script",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "book_id": 990452,
+        "genre": "short_drama",
+        "episode_count": 1
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/script-decisions/1",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "lockedAt": "2026-10-02T12:33:54.246Z",
+        "releasedAt": null,
+        "note": "E2E mock journey: script reviewed and ready for production."
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/990452/script-decisions/1",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "lockedAt": "2026-10-02T12:33:54.246Z",
+        "releasedAt": "2026-10-02T12:33:54.296Z",
+        "note": "E2E mock journey: script reviewed and ready for production."
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/script-ir/prepare-production",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "confirmed": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/director-treatment/preview",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "workflow_profile": "production",
+        "scene_id": "E01_SC001"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/director-treatment/llm-draft",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "packetFingerprint": "b709004f5300666ed0ee6922",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "workflow_profile": "production",
+        "scene_id": "E01_SC001"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/director-treatment/confirm",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "packetId": 63,
+        "packetFingerprint": "b709004f5300666ed0ee6922",
+        "confirmed": true,
+        "candidate": {
+          "dramatic_objective": "围绕“雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。”建立冲突，并通过“【场景结束】”推进本场戏。",
+          "audience_question": "人物最终会如何改变当前局面？",
+          "character_intents": {
+            "林晚": {
+              "name": "林晚",
+              "goal": "完成本场戏的叙事目标",
+              "obstacle": "场景中的对立力量或信息缺口",
+              "tactic": "通过行动而非解释推进局面",
+              "subtext": "",
+              "emotion_in": "克制",
+              "emotion_out": "变化中",
+              "power_in": 0.5,
+              "power_out": 0.5
+            }
+          },
+          "relationship_power_shift": "由节拍中的行动与决策呈现，不预设未声明的关系事实。",
+          "audience_emotion": "从建立预期到产生变化，再留下下一步悬念。",
+          "information_strategy": "只在 beat_map 声明的揭示节拍释放新信息，其余节拍维持已知事实。",
+          "performance_direction": "以目标、阻碍和策略驱动表演，避免只标注单一情绪。",
+          "visual_strategy": "优先呈现可观察的空间关系、动作节拍和关键道具状态。",
+          "coverage_strategy": "先保证节拍与人物关系可见，再由后续 ShotPlan 决定具体覆盖。",
+          "sound_strategy": "声音服务于节拍变化；未声明的对白、音乐和音效不作为事实写入。",
+          "edit_rhythm": "按节拍强弱切换，信息揭示前保留反应空间。",
+          "scene_objective": null,
+          "dramatic_question": null,
+          "audience_state_in": null,
+          "audience_state_out": null,
+          "suspicion_or_information_strategy": null,
+          "character_directions": null,
+          "beat_directions": null,
+          "director_beat_decisions": [
+            {
+              "decision_id": "DBD_E01_SC001_B01",
+              "beat_ref": "E01_SC001_B01",
+              "dramatic_purpose": "SETUP_RELATIONSHIP",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "PROGRESS_BEAT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B01"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            },
+            {
+              "decision_id": "DBD_E01_SC001_B02",
+              "beat_ref": "E01_SC001_B02",
+              "dramatic_purpose": "SETUP_RELATIONSHIP",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "PROGRESS_BEAT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B02"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            },
+            {
+              "decision_id": "DBD_E01_SC001_B03",
+              "beat_ref": "E01_SC001_B03",
+              "dramatic_purpose": "SETUP_RELATIONSHIP",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "PROGRESS_BEAT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B03"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            },
+            {
+              "decision_id": "DBD_E01_SC001_B04",
+              "beat_ref": "E01_SC001_B04",
+              "dramatic_purpose": "HOOK_NEXT_SCENE",
+              "audience_state_delta": {
+                "knowledge_added": [],
+                "knowledge_confirmed": [],
+                "knowledge_invalidated": [],
+                "belief_shift": [],
+                "open_question_added": [],
+                "open_question_resolved": []
+              },
+              "character_state_deltas": [],
+              "performance_objectives": [],
+              "reaction_contracts": [
+                {
+                  "character_ref": "SCENE_CAST",
+                  "trigger_ref": "E01_SC001_B04",
+                  "reaction_type": "RECOGNITION",
+                  "required": true,
+                  "state_delta_ref": "E01_SC001_B04"
+                }
+              ],
+              "information_policy": {
+                "audience_knows_truth": true,
+                "characters_with_truth": [],
+                "characters_uncertain": [],
+                "withheld_from": []
+              },
+              "tempo_function": "HOLD_FOR_DOUBT",
+              "blocking_requirements": [],
+              "source_refs": [
+                "ScriptIR:E01_SC001_B04"
+              ],
+              "director_notes": "",
+              "decision_origin": "GENERATED_DRAFT",
+              "review_status": "REVIEW_REQUIRED"
+            }
+          ],
+          "director_contract_version": "director_semantic_contract_v1",
+          "performance_arc": null,
+          "rhythm_strategy": null,
+          "visual_priority": null,
+          "scene_exit_intent": null,
+          "prohibited_interpretations": null,
+          "constraints": [
+            "不得覆盖锁定资产事实",
+            "不得把未声明内容伪装成剧本事实"
+          ],
+          "unknowns": [],
+          "scene_id": "E01_SC001",
+          "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+          "beat_map": [
+            {
+              "beat_id": "E01_SC001_B01",
+              "type": "action",
+              "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+              "dramatic_function": "推进可见行动",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "ACTION",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": false,
+              "importance": "normal"
+            },
+            {
+              "beat_id": "E01_SC001_B02",
+              "type": "action",
+              "event": "林晚：你见过这个人吗？",
+              "dramatic_function": "推进可见行动",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "ACTION",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": false,
+              "importance": "normal"
+            },
+            {
+              "beat_id": "E01_SC001_B03",
+              "type": "action",
+              "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+              "dramatic_function": "推进可见行动",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "ACTION",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": false,
+              "importance": "normal"
+            },
+            {
+              "beat_id": "E01_SC001_B04",
+              "type": "hook",
+              "event": "【场景结束】",
+              "dramatic_function": "推进当前叙事节拍",
+              "information_change": "",
+              "emotion_change": "",
+              "beat_type": "HOOK",
+              "objective": "",
+              "characters": [],
+              "information_delta": "",
+              "emotional_delta": "",
+              "requires_reaction": true,
+              "importance": "critical"
+            }
+          ],
+          "decision": "ready_for_review",
+          "confidence": 0.91,
+          "human_confirmation_required": true,
+          "note": "deterministic mock proposal; requires human confirmation",
+          "proposal_origin": "PROVIDER_PROPOSAL",
+          "proposal_provenance": {
+            "proposal_origin": "PROVIDER_PROPOSAL",
+            "provider": {
+              "called": true,
+              "calls": 1,
+              "profile_id": "builtin-mock-llm",
+              "model": "builtin-mock-llm",
+              "request_fingerprint": null,
+              "response_fingerprint": null
+            },
+            "authoring": {
+              "human_input": false
+            }
+          }
+        },
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/scene-blocking/preview",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "sceneName": "",
+        "scene_id": "E01_SC001",
+        "persist": true,
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/scene-blocking/confirm",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "blockingId": 80,
+        "evidenceFingerprint": "2ef96cabea333c226278b7c29651b03526a3d9dc855ead4f90f1424bed07b547",
+        "confirmed": true,
+        "blocking": {
+          "space": {
+            "anchors": [],
+            "zones": [],
+            "entrances": [],
+            "exits": [],
+            "fixed_objects": []
+          },
+          "participants": [
+            {
+              "character_id": "林晚",
+              "name": "林晚",
+              "start_position": {
+                "value": "scene_center",
+                "authority": "CREATIVE_CHOICE",
+                "authority_class": "BLOCKING_AUTHORING_DECISION"
+              },
+              "facing": {
+                "value": "scene_action",
+                "authority": "CREATIVE_CHOICE",
+                "authority_class": "BLOCKING_AUTHORING_DECISION"
+              },
+              "eyeline_target": {
+                "value": "scene_action",
+                "authority": "CREATIVE_CHOICE",
+                "authority_class": "BLOCKING_AUTHORING_DECISION"
+              },
+              "screen_side": {
+                "value": "left",
+                "authority": "DERIVED_CONSTRAINT",
+                "authority_class": "DERIVED_SPATIAL_CONSTRAINT"
+              },
+              "movement_path": [],
+              "position": "scene_center",
+              "anchor": null,
+              "source": "director_choice"
+            }
+          ],
+          "camera_axis": {
+            "subject_a": "林晚",
+            "subject_b": "",
+            "preferred_side": "center",
+            "authority": "CREATIVE_CHOICE"
+          },
+          "creative_decisions": [
+            {
+              "decision": "start_position",
+              "subject_id": "林晚",
+              "value": "scene_center",
+              "authority": "CREATIVE_CHOICE",
+              "reason": "source did not specify a required position"
+            },
+            {
+              "decision": "eyeline_target",
+              "subject_id": "林晚",
+              "value": "scene_action",
+              "authority": "CREATIVE_CHOICE"
+            },
+            {
+              "decision": "facing",
+              "subject_id": "林晚",
+              "value": "scene_action",
+              "authority": "CREATIVE_CHOICE"
+            }
+          ],
+          "derived_constraints": {
+            "screen_direction": "establish_from_camera_axis",
+            "axis": {
+              "subject_a": "林晚",
+              "subject_b": "",
+              "preferred_side": "center"
+            },
+            "movement_continuity": "preserve_entry_and_exit_states",
+            "teleport_detection": true
+          },
+          "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+          "scene_id": "E01_SC001",
+          "source_spatial_facts": [],
+          "unresolved_facts": [],
+          "conflicts": [],
+          "schema_version": "scene_blocking_v2",
+          "beat_transitions": [
+            {
+              "beat_id": "E01_SC001_B01",
+              "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "scene_start",
+              "exit_state": "same_as_next"
+            },
+            {
+              "beat_id": "E01_SC001_B02",
+              "event": "林晚：你见过这个人吗？",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "same_as_previous",
+              "exit_state": "same_as_next"
+            },
+            {
+              "beat_id": "E01_SC001_B03",
+              "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "same_as_previous",
+              "exit_state": "same_as_next"
+            },
+            {
+              "beat_id": "E01_SC001_B04",
+              "event": "【场景结束】",
+              "blocking_change": "preserve_existing_spatial_relationship",
+              "entry_state": "same_as_previous",
+              "exit_state": "same_as_next"
+            }
+          ],
+          "spatial_rules": [
+            "locked_source_fact_is_immutable",
+            "creative_choice_must_be_labeled",
+            "derived_constraints_are_program_validated",
+            "preserve_screen_direction_without_declared_transition"
+          ],
+          "unknowns": [],
+          "treatment_fingerprint": "f8f7937d7408deae78b33be14c2b7f386c80ea78e2743304589b65a4707d633b",
+          "source_script_hash": "55dd6ee88f52d727b5ba8abb3b64f2601042d3511af7d1cea4822230a35561ad",
+          "evidence_fingerprint": "2ef96cabea333c226278b7c29651b03526a3d9dc855ead4f90f1424bed07b547",
+          "validation": {
+            "status": "qualified",
+            "errors": [],
+            "warnings": [],
+            "blocker_count": 0,
+            "warning_count": 0
+          },
+          "model_info": {
+            "mode": "deterministic_spatial_authority_v2",
+            "llm_called": false
+          },
+          "status": "ready_for_review",
+          "initial_state": {
+            "characters": {},
+            "props": {},
+            "exit_access": {}
+          },
+          "blocking_transitions": [],
+          "compiler_version": "blocking_state_compiler_v1",
+          "beat_spatial_states": [
+            {
+              "beat_ref": "E01_SC001_B01",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            },
+            {
+              "beat_ref": "E01_SC001_B02",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            },
+            {
+              "beat_ref": "E01_SC001_B03",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            },
+            {
+              "beat_ref": "E01_SC001_B04",
+              "characters": {},
+              "props": {},
+              "exit_access": {},
+              "authority_class": "DERIVED_PROJECTION",
+              "compiler_version": "blocking_state_compiler_v1"
+            }
+          ],
+          "compiled_states_hash": "4d6df4895ee01534e07ed27e35f68339e3200cfe41bda6d7b86e54a949439fec",
+          "movement_path_projection": [],
+          "_locked_space": false,
+          "asset_authority": {
+            "authority_class": "AUTHORING_PENDING",
+            "status": "missing",
+            "reason": "SCENE_ASSET_MISSING",
+            "locked_constraints": [],
+            "advisory_context": [],
+            "authoring_pending": [
+              {
+                "code": "SCENE_ASSET_MISSING"
+              }
+            ],
+            "fingerprint": "5bf0077339604e03b086ecc361241958b793eee7db9332c494a6c9bdce43cc98",
+            "scene_asset_fingerprint": "5bf0077339604e03b086ecc361241958b793eee7db9332c494a6c9bdce43cc98"
+          },
+          "continuity_state": {
+            "states": [
+              {
+                "character_id": "林晚",
+                "scene_id": "E01_SC001",
+                "state": null,
+                "authority_class": "UNKNOWN_UNRESOLVED",
+                "provenance": {
+                  "scene_id": "E01_SC001",
+                  "character_id": "林晚"
+                },
+                "unresolved": true
+              }
+            ],
+            "unresolved": [],
+            "resolution": [
+              {
+                "code": "RESOLVED_BY_SOURCE",
+                "count": 0
+              },
+              {
+                "code": "RESOLVED_BY_DERIVATION",
+                "count": 0
+              },
+              {
+                "code": "STILL_UNKNOWN",
+                "count": 0
+              }
+            ],
+            "fingerprint": "c912262d016c51e966c310f2f34282c4bc419e56fb9bc8430b28ed15e9b3b985"
+          },
+          "treatment_id": 65,
+          "treatment_revision": 1,
+          "production_blockers": [],
+          "asset_blockers": [
+            {
+              "code": "SCENE_ASSET_MISSING"
+            }
+          ],
+          "repair_attempts": [],
+          "qualification_state": "REVIEW_REQUIRED",
+          "source_lineage": {
+            "script_ir_version_id": 51,
+            "script_ir_authority_fingerprint": "f2f549d7e2bb9bf9d75ba516265b5cfc88953b42f5b21cf2d633bef575a0bab7",
+            "source_immutable_raw_hash": "3c3006048a70ecd636cf473e7d30284055b456deb5e8f1d94051a7a97a3833d9",
+            "fact_snapshot_id": "48",
+            "fact_snapshot_revision": 1,
+            "fact_snapshot_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+          },
+          "payload_hash": "52fcad361c2eafab9c91f6a757d35c23eca510d339fe76eb538b5a34dfe54d52",
+          "contract_fingerprint": "340a7891cdd7f310686be4f09c9333a21845898c9a50f7ee9d8b15021640bef8",
+          "validation_fingerprint": "b2edc4858674eb65906d4b139fef1cbf6e2c8ba35551ce3cced444c8fae8922b"
+        },
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shot-plan/preview",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "sceneName": "",
+        "scene_id": "E01_SC001",
+        "persist": true,
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shot-plan/confirm",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "planId": 33,
+        "evidenceFingerprint": "164f500e8a4434dd44eebaf2395d332a79b12d3fbe6a1dfa7f7d10c218e9f259",
+        "confirmed": true,
+        "plan": {
+          "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+          "shots": [
+            {
+              "plan_shot_id": "S01",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B01",
+              "purpose": "action",
+              "dramatic_function": "推进可见行动",
+              "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B01_A01",
+                  "actor": "林晚",
+                  "action": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S01",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S01",
+                "last_event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            },
+            {
+              "plan_shot_id": "S02",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B02",
+              "purpose": "action",
+              "dramatic_function": "推进可见行动",
+              "event": "林晚：你见过这个人吗？",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B02_A01",
+                  "actor": "林晚",
+                  "action": "林晚：你见过这个人吗？",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S02",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S02",
+                "last_event": "林晚：你见过这个人吗？",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            },
+            {
+              "plan_shot_id": "S03",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B03",
+              "purpose": "action",
+              "dramatic_function": "推进可见行动",
+              "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B03_A01",
+                  "actor": "林晚",
+                  "action": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S03",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S03",
+                "last_event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            },
+            {
+              "plan_shot_id": "S04",
+              "scene_id": "E01_SC001",
+              "beat_id": "E01_SC001_B04",
+              "purpose": "coverage",
+              "dramatic_function": "推进当前叙事节拍",
+              "event": "【场景结束】",
+              "participants": [
+                "林晚"
+              ],
+              "spatial_source": "approved_scene_blocking",
+              "camera": {
+                "shot_size": "MS",
+                "angle": "eye_level",
+                "movement": "static",
+                "speed": "slow",
+                "camera_side": "center"
+              },
+              "camera_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "deterministic_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "duration_hint_seconds": 6,
+              "duration_provenance": {
+                "authority_class": "SHOT_AUTHORING_DECISION",
+                "source": "authored_default",
+                "policy_version": "shot_plan_default_policy_v1"
+              },
+              "action_beats": [
+                {
+                  "action_id": "E01_SC001_B04_A01",
+                  "actor": "林晚",
+                  "action": "【场景结束】",
+                  "start_seconds": 0,
+                  "end_seconds": 3.4
+                }
+              ],
+              "entry_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S04",
+                "participants": [
+                  "林晚"
+                ],
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "approved_scene_blocking",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking"
+                }
+              },
+              "exit_state": {
+                "scene_id": "E01_SC001",
+                "shot_id": "S04",
+                "last_event": "【场景结束】",
+                "characters": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "props": [],
+                "source": "shot_plan_authored_transition",
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "shot_plan_authored_transition"
+                }
+              },
+              "asset_bindings": {
+                "scene_asset_id": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                "character_asset_ids": [
+                  "林晚"
+                ],
+                "prop_asset_ids": [],
+                "canonical_asset_identity": {
+                  "scene": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+                  "characters": [
+                    "林晚"
+                  ],
+                  "props": []
+                },
+                "locked_visual_references": [],
+                "media_asset_pending": [
+                  {
+                    "code": "SCENE_ASSET_MISSING"
+                  }
+                ]
+              },
+              "continuity_contract": {
+                "screen_direction": "maintain",
+                "eyeline": {},
+                "prop_state": {},
+                "character_state": {
+                  "林晚": {
+                    "position": {
+                      "value": "scene_center",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "facing": {
+                      "value": "scene_action",
+                      "authority": "CREATIVE_CHOICE",
+                      "authority_class": "BLOCKING_AUTHORING_DECISION"
+                    },
+                    "state": null,
+                    "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                    "provenance": {
+                      "scene_id": "E01_SC001",
+                      "character_id": "林晚"
+                    }
+                  }
+                },
+                "provenance": {
+                  "authority_class": "PRODUCTION_CONTINUITY_STATE",
+                  "source": "approved_scene_blocking + deterministic shot transition"
+                }
+              },
+              "continuity": "inherit approved blocking and screen direction"
+            }
+          ],
+          "unknowns": [],
+          "treatment_fingerprint": "",
+          "blocking_fingerprint": "2ef96cabea333c226278b7c29651b03526a3d9dc855ead4f90f1424bed07b547",
+          "status": "ready_for_review",
+          "evidence_fingerprint": "164f500e8a4434dd44eebaf2395d332a79b12d3fbe6a1dfa7f7d10c218e9f259",
+          "model_info": {
+            "mode": "legacy_compatibility",
+            "phase_c_contract_version": "shot_plan_phase_c_v1",
+            "phase_c_semantic_ready": true,
+            "phase_c_payload_hash": "de3414a7e483019acc4e21e88c7d847fb8d740f7081d9ad1c5455a260efd9362",
+            "phase_c_contract": {
+              "contract_version": "shot_plan_phase_c_v1",
+              "requirements": [
+                {
+                  "requirement_id": "REQ_E01_SC001_B01",
+                  "beat_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B01"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B02",
+                  "beat_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B02"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B03",
+                  "beat_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B03"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B04",
+                  "beat_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B04"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [
+                    {
+                      "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                      "character_ref": "SCENE_CAST",
+                      "reaction_type": "RECOGNITION",
+                      "required": true
+                    }
+                  ],
+                  "reaction_contract_refs": [
+                    "RC_E01_SC001_B04_SCENE_CAST"
+                  ],
+                  "blocking_state_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                }
+              ],
+              "coverage_results": [],
+              "compiled_continuity": {},
+              "runtime_projection": {
+                "status": "AUTHORING_DERIVED_OR_PENDING"
+              },
+              "source_lineage": {
+                "script_ir": {
+                  "id": 51,
+                  "authority_envelope_fingerprint": "f2f549d7e2bb9bf9d75ba516265b5cfc88953b42f5b21cf2d633bef575a0bab7"
+                },
+                "treatment": {
+                  "id": 65,
+                  "revision": 1,
+                  "payload_hash": "5fb3f172ce2bc28a526cff6bc22b9d099ffc31c22f7d1b89a8e9aa4f2d386d4e",
+                  "authority_envelope_fingerprint": "f8f7937d7408deae78b33be14c2b7f386c80ea78e2743304589b65a4707d633b"
+                },
+                "blocking": {
+                  "id": 81,
+                  "revision": 1,
+                  "payload_hash": "941f01219a64aac6a39a9ea63ff7c80865ce80f13fa260005ddc8d753ab24832",
+                  "authority_envelope_fingerprint": "e5de1e2d417fc32f9c22aa1ca9105268cc6af2cd762da46b1d0c625776350c64"
+                }
+              },
+              "authoring_provenance": {},
+              "payload_hash": "de3414a7e483019acc4e21e88c7d847fb8d740f7081d9ad1c5455a260efd9362"
+            },
+            "deterministic_phase_c_plan": {
+              "contract_version": "shot_plan_phase_c_v1",
+              "scene_id": "E01_SC001",
+              "shots": [
+                {
+                  "shot_id": "SH_E01_SC001_001",
+                  "plan_shot_id": "SH_E01_SC001_001",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B01"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B01"
+                  ],
+                  "shot_purpose": "ESTABLISH_RELATIONSHIP",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [],
+                  "event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。",
+                  "action_beats": [
+                    {
+                      "action": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                    }
+                  ],
+                  "duration_hint_seconds": 4,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B01",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B01",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B01",
+                    "last_event": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": []
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B01",
+                    "blocking_state_refs": [
+                      "E01_SC001_B01"
+                    ],
+                    "subject_zones": {},
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": []
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B01",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "ACTION_COMPLETION",
+                    "cut_trigger": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 4000,
+                  "shot_description": "雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。"
+                },
+                {
+                  "shot_id": "SH_E01_SC001_002",
+                  "plan_shot_id": "SH_E01_SC001_002",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B02"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B02"
+                  ],
+                  "shot_purpose": "ESTABLISH_RELATIONSHIP",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [],
+                  "event": "林晚：你见过这个人吗？",
+                  "action_beats": [
+                    {
+                      "action": "林晚：你见过这个人吗？"
+                    }
+                  ],
+                  "duration_hint_seconds": 3,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B02",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B02",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B02",
+                    "last_event": "林晚：你见过这个人吗？"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": []
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B02",
+                    "blocking_state_refs": [
+                      "E01_SC001_B02"
+                    ],
+                    "subject_zones": {},
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": []
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B02",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "ACTION_COMPLETION",
+                    "cut_trigger": "林晚：你见过这个人吗？"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 3000,
+                  "shot_description": "林晚：你见过这个人吗？"
+                },
+                {
+                  "shot_id": "SH_E01_SC001_003",
+                  "plan_shot_id": "SH_E01_SC001_003",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B03"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B03"
+                  ],
+                  "shot_purpose": "ESTABLISH_RELATIONSHIP",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [],
+                  "event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。",
+                  "action_beats": [
+                    {
+                      "action": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                    }
+                  ],
+                  "duration_hint_seconds": 6,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B03",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B03",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B03",
+                    "last_event": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": []
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B03",
+                    "blocking_state_refs": [
+                      "E01_SC001_B03"
+                    ],
+                    "subject_zones": {},
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": []
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B03",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "ACTION_COMPLETION",
+                    "cut_trigger": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 6000,
+                  "shot_description": "店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。"
+                },
+                {
+                  "shot_id": "SH_E01_SC001_004",
+                  "plan_shot_id": "SH_E01_SC001_004",
+                  "scene_id": "E01_SC001",
+                  "beat_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "requirement_refs": [
+                    "REQ_E01_SC001_B04"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B04"
+                  ],
+                  "shot_purpose": "SCENE_EXIT",
+                  "coverage_roles": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "reaction_contract_refs": [
+                    "RC_E01_SC001_B04_SCENE_CAST"
+                  ],
+                  "event": "【场景结束】",
+                  "action_beats": [
+                    {
+                      "action": "【场景结束】"
+                    }
+                  ],
+                  "duration_hint_seconds": 3,
+                  "camera": {
+                    "movement": "static"
+                  },
+                  "entry_state": {
+                    "beat_ref": "E01_SC001_B04",
+                    "characters": {},
+                    "props": {},
+                    "exit_access": {},
+                    "authority_class": "DERIVED_PROJECTION",
+                    "compiler_version": "blocking_state_compiler_v1",
+                    "state_ref": "E01_SC001_B04",
+                    "subject_zones": {},
+                    "prop_states": {}
+                  },
+                  "exit_state": {
+                    "state_ref": "E01_SC001_B04",
+                    "last_event": "【场景结束】"
+                  },
+                  "dramatic_payload": {
+                    "primary_subject": "SCENE_CAST",
+                    "secondary_subjects": [],
+                    "information_delivered": [],
+                    "reaction_required": [
+                      "SCENE_CAST"
+                    ]
+                  },
+                  "spatial_binding": {
+                    "blocking_state_ref": "E01_SC001_B04",
+                    "blocking_state_refs": [
+                      "E01_SC001_B04"
+                    ],
+                    "subject_zones": {
+                      "SCENE_CAST": "scene_center"
+                    },
+                    "prop_refs": []
+                  },
+                  "information_visibility": "CHARACTER_AND_AUDIENCE",
+                  "camera_state": {
+                    "framing_class": "MEDIUM_CLOSE",
+                    "orientation": "EYE_LEVEL",
+                    "support": "STATIC",
+                    "movement": "NONE",
+                    "subject_binding": [
+                      "SCENE_CAST"
+                    ]
+                  },
+                  "axis_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE"
+                  },
+                  "continuity_contract": {
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "axis_applicability": "NOT_APPLICABLE",
+                    "blocking_state_ref": "E01_SC001_B04",
+                    "screen_direction_state": {},
+                    "prop_refs": []
+                  },
+                  "continuous_take": true,
+                  "cut_events": [],
+                  "temporal_intent": {
+                    "duration_mode": "REACTION_HOLD",
+                    "cut_trigger": "【场景结束】"
+                  },
+                  "camera_segments": [
+                    {
+                      "camera_state": "single_continuous_take"
+                    }
+                  ],
+                  "estimated_duration_ms": 3000,
+                  "shot_description": "【场景结束】"
+                }
+              ],
+              "coverage_contracts": [
+                {
+                  "requirement_id": "REQ_E01_SC001_B01",
+                  "beat_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B01"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B01"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B02",
+                  "beat_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B02"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B02"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B03",
+                  "beat_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B03"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [],
+                  "reaction_contract_refs": [],
+                  "blocking_state_refs": [
+                    "E01_SC001_B03"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                },
+                {
+                  "requirement_id": "REQ_E01_SC001_B04",
+                  "beat_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "director_decision_refs": [
+                    "DBD_E01_SC001_B04"
+                  ],
+                  "required_coverages": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "required_subjects": [],
+                  "reaction_contracts": [
+                    {
+                      "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                      "character_ref": "SCENE_CAST",
+                      "reaction_type": "RECOGNITION",
+                      "required": true
+                    }
+                  ],
+                  "reaction_contract_refs": [
+                    "RC_E01_SC001_B04_SCENE_CAST"
+                  ],
+                  "blocking_state_refs": [
+                    "E01_SC001_B04"
+                  ],
+                  "required_axis_refs": [],
+                  "required_prop_refs": [],
+                  "required_information": [],
+                  "required_information_refs": [],
+                  "information_requirements": []
+                }
+              ],
+              "coverage_results": [
+                {
+                  "requirement_ref": "REQ_E01_SC001_B01",
+                  "beat_ref": "E01_SC001_B01",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_001"
+                    ]
+                  },
+                  "reaction_results": [],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    ""
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_001"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_001"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_001"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_001"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                },
+                {
+                  "requirement_ref": "REQ_E01_SC001_B02",
+                  "beat_ref": "E01_SC001_B02",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_002"
+                    ]
+                  },
+                  "reaction_results": [],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    ""
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_002"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_002"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_002"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_002"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                },
+                {
+                  "requirement_ref": "REQ_E01_SC001_B03",
+                  "beat_ref": "E01_SC001_B03",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_003"
+                    ]
+                  },
+                  "reaction_results": [],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    ""
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_003"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_003"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_003"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_003"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                },
+                {
+                  "requirement_ref": "REQ_E01_SC001_B04",
+                  "beat_ref": "E01_SC001_B04",
+                  "required": [
+                    "PRIMARY_BEAT_COVERAGE",
+                    "REACTION_COVERAGE",
+                    "SCENE_EXIT_COVERAGE"
+                  ],
+                  "satisfied_by": {
+                    "PRIMARY_BEAT_COVERAGE": [
+                      "SH_E01_SC001_004"
+                    ],
+                    "REACTION_COVERAGE": [
+                      "SH_E01_SC001_004"
+                    ],
+                    "SCENE_EXIT_COVERAGE": [
+                      "SH_E01_SC001_004"
+                    ]
+                  },
+                  "reaction_results": [
+                    {
+                      "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                      "satisfied_by": [
+                        "SH_E01_SC001_004"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "prop_results": [],
+                  "required_subjects": [],
+                  "covered_subjects": [
+                    "SCENE_CAST"
+                  ],
+                  "blocking_state_satisfied_by": [
+                    "SH_E01_SC001_004"
+                  ],
+                  "axis_satisfied_by": [
+                    "SH_E01_SC001_004"
+                  ],
+                  "information_results": [
+                    {
+                      "information_ref": null,
+                      "satisfied_by": [
+                        "SH_E01_SC001_004"
+                      ],
+                      "visibility": [
+                        "CHARACTER_AND_AUDIENCE"
+                      ],
+                      "complete": true
+                    }
+                  ],
+                  "information_satisfied_by": [
+                    "SH_E01_SC001_004"
+                  ],
+                  "required_information_refs": [],
+                  "complete": true
+                }
+              ],
+              "compiled_continuity": {
+                "compiler_version": "shot_continuity_compiler_v2",
+                "shots": [
+                  {
+                    "shot_id": "SH_E01_SC001_001",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B01"
+                    ]
+                  },
+                  {
+                    "shot_id": "SH_E01_SC001_002",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B02"
+                    ]
+                  },
+                  {
+                    "shot_id": "SH_E01_SC001_003",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B03"
+                    ]
+                  },
+                  {
+                    "shot_id": "SH_E01_SC001_004",
+                    "axis_ref": "",
+                    "axis_policy": "PRESERVE",
+                    "screen_side_assignments": {},
+                    "look_direction": {},
+                    "blocking_state_refs": [
+                      "E01_SC001_B04"
+                    ]
+                  }
+                ],
+                "errors": [],
+                "valid": true,
+                "continuity_hash": "c6731a35e8d6df54ee6c1d9fd3708a7b7fd5de7a38ba8779689d5b736db9c9f2"
+              },
+              "runtime_estimate": {
+                "estimator_version": "duration_estimator_v1",
+                "shot_count": 4,
+                "estimated_duration_ms": 16000,
+                "estimated_duration_seconds": 16
+              },
+              "phase_c_semantic_ready": true,
+              "source_lineage": {
+                "script_ir": {
+                  "id": 51,
+                  "authority_envelope_fingerprint": "f2f549d7e2bb9bf9d75ba516265b5cfc88953b42f5b21cf2d633bef575a0bab7"
+                },
+                "treatment": {
+                  "id": 65,
+                  "revision": 1,
+                  "payload_hash": "5fb3f172ce2bc28a526cff6bc22b9d099ffc31c22f7d1b89a8e9aa4f2d386d4e",
+                  "authority_envelope_fingerprint": "f8f7937d7408deae78b33be14c2b7f386c80ea78e2743304589b65a4707d633b"
+                },
+                "blocking": {
+                  "id": 81,
+                  "revision": 1,
+                  "payload_hash": "941f01219a64aac6a39a9ea63ff7c80865ce80f13fa260005ddc8d753ab24832",
+                  "authority_envelope_fingerprint": "e5de1e2d417fc32f9c22aa1ca9105268cc6af2cd762da46b1d0c625776350c64"
+                }
+              },
+              "provider_provenance": {
+                "origin": "DETERMINISTIC_BUILDER",
+                "provider_calls": 0
+              },
+              "payload_hash": "b0be9cc7f5b12b4ed3a727c82df4bb97fed9ebc9d739d88f57ecb6f16a161157"
+            },
+            "shot_design_status": "DETERMINISTIC_CANONICAL_PENDING_CONFIRMATION",
+            "provider_calls": 0,
+            "llm_called": false
+          },
+          "scene_id": "E01_SC001",
+          "schema_version": "shot_plan_v2",
+          "phase_c_contract": {
+            "contract_version": "shot_plan_phase_c_v1",
+            "requirements": [
+              {
+                "requirement_id": "REQ_E01_SC001_B01",
+                "beat_refs": [
+                  "E01_SC001_B01"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B01"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [],
+                "reaction_contract_refs": [],
+                "blocking_state_refs": [
+                  "E01_SC001_B01"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              },
+              {
+                "requirement_id": "REQ_E01_SC001_B02",
+                "beat_refs": [
+                  "E01_SC001_B02"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B02"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [],
+                "reaction_contract_refs": [],
+                "blocking_state_refs": [
+                  "E01_SC001_B02"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              },
+              {
+                "requirement_id": "REQ_E01_SC001_B03",
+                "beat_refs": [
+                  "E01_SC001_B03"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B03"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [],
+                "reaction_contract_refs": [],
+                "blocking_state_refs": [
+                  "E01_SC001_B03"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              },
+              {
+                "requirement_id": "REQ_E01_SC001_B04",
+                "beat_refs": [
+                  "E01_SC001_B04"
+                ],
+                "director_decision_refs": [
+                  "DBD_E01_SC001_B04"
+                ],
+                "required_coverages": [
+                  "PRIMARY_BEAT_COVERAGE",
+                  "REACTION_COVERAGE",
+                  "SCENE_EXIT_COVERAGE"
+                ],
+                "required_subjects": [],
+                "reaction_contracts": [
+                  {
+                    "reaction_contract_ref": "RC_E01_SC001_B04_SCENE_CAST",
+                    "character_ref": "SCENE_CAST",
+                    "reaction_type": "RECOGNITION",
+                    "required": true
+                  }
+                ],
+                "reaction_contract_refs": [
+                  "RC_E01_SC001_B04_SCENE_CAST"
+                ],
+                "blocking_state_refs": [
+                  "E01_SC001_B04"
+                ],
+                "required_axis_refs": [],
+                "required_prop_refs": [],
+                "required_information": [],
+                "required_information_refs": [],
+                "information_requirements": []
+              }
+            ],
+            "coverage_results": [],
+            "compiled_continuity": {},
+            "runtime_projection": {
+              "status": "AUTHORING_DERIVED_OR_PENDING"
+            },
+            "source_lineage": {
+              "script_ir": {
+                "id": 51,
+                "authority_envelope_fingerprint": "f2f549d7e2bb9bf9d75ba516265b5cfc88953b42f5b21cf2d633bef575a0bab7"
+              },
+              "treatment": {
+                "id": 65,
+                "revision": 1,
+                "payload_hash": "5fb3f172ce2bc28a526cff6bc22b9d099ffc31c22f7d1b89a8e9aa4f2d386d4e",
+                "authority_envelope_fingerprint": "f8f7937d7408deae78b33be14c2b7f386c80ea78e2743304589b65a4707d633b"
+              },
+              "blocking": {
+                "id": 81,
+                "revision": 1,
+                "payload_hash": "941f01219a64aac6a39a9ea63ff7c80865ce80f13fa260005ddc8d753ab24832",
+                "authority_envelope_fingerprint": "e5de1e2d417fc32f9c22aa1ca9105268cc6af2cd762da46b1d0c625776350c64"
+              }
+            },
+            "authoring_provenance": {},
+            "payload_hash": "de3414a7e483019acc4e21e88c7d847fb8d740f7081d9ad1c5455a260efd9362"
+          },
+          "phase_c_semantic_ready": true,
+          "shot_design_status": "DETERMINISTIC_CANONICAL_PENDING_CONFIRMATION"
+        },
+        "workflow_profile": "production"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/storyboard/materialize",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "confirmed": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/ingest",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/reviews/par_7814f4ebc1b97cb95a461309_01/decision",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "decision": "APPROVE",
+        "reviewer_type": "DIRECTOR"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/reviews/par_7814f4ebc1b97cb95a461309_01/activate",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/production-assets/shots/388/bind-current",
+      "host": "127.0.0.1:5180",
+      "body": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/prompt-ir/compile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "generation_policy": {
+          "mode": "TEXT_TO_IMAGE",
+          "target_media": "IMAGE",
+          "source": "shot-studio-ui"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/storyboard/1/1/generate-frame",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "modelProfileId": "builtin-mock-image",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "compileIfMissing": false,
+        "generationChain": "production_workspace_v2"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/assets/candidates/candidate-895234c8c4e04f08a36631664f7dac4e/promote",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "validation_id": "mvr-bbd38802431666c55b15c293e834e898c2775c02",
+        "reviewer": "shot-studio-human",
+        "decision": "APPROVE",
+        "review_notes": "Approved from Shot Studio Review Desk.",
+        "confirmation": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/prompt-ir/compile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "generation_policy": {
+          "mode": "IMAGE_TO_VIDEO",
+          "target_media": "VIDEO",
+          "duration_seconds": 5,
+          "source": "shot-studio-ui"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/storyboard/1/1/generate-video",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "modelProfileId": "builtin-mock-video",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "compileIfMissing": false,
+        "generationChain": "production_workspace_v2"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/assets/candidates/candidate-4c3443c277524222aab02935fccc145c/promote",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "validation_id": "mvr-3095a23396c213f66fe4edf3b225f8ba5c8ef0aa",
+        "reviewer": "shot-studio-human",
+        "decision": "APPROVE",
+        "review_notes": "Approved from Shot Studio Review Desk.",
+        "confirmation": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/export-records",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "exportFormat": "json",
+        "formatLabel": "JSON",
+        "status": "blocked",
+        "totalShots": 4,
+        "deliverableShots": 0,
+        "pendingReviewShots": 4,
+        "blockedShots": 5,
+        "summary": "第 1 集 | 剧本 已锁稿并放行 | 镜头 0/4 | 提示词 0/4 | 分镜图 1/4 | 视频 1/4 | 资产引用 0 | QA 通过",
+        "metaInfo": {
+          "episode": 1,
+          "script_status": "已锁稿并放行",
+          "blocked_reasons": [
+            "提示词未齐",
+            "缺已采纳分镜图",
+            "缺已采纳视频",
+            "缺可追溯资产引用",
+            "缺当前正式分镜图"
+          ],
+          "blocked_codes": [
+            "missing_prompts",
+            "missing_images",
+            "missing_videos",
+            "missing_asset_references",
+            "missing_images"
+          ],
+          "version_label": "阻塞快照"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5180",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/books/990452",
+      "host": "127.0.0.1:5180",
+      "body": null
     }
   ],
+  "mutation_count": 88,
+  "unexpected_calls": [],
+  "real_external_hosts": [],
+  "mock_adapter_calls": {
+    "llm": 661,
+    "image": 33,
+    "video": 21
+  },
   "policy": {
     "mutations_via_visible_ui_only": true,
     "real_external_hosts_allowed": [],

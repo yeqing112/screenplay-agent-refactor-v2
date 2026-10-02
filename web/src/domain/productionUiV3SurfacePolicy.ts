@@ -108,7 +108,10 @@ export function resolveStoryboardSurface({
   if (v2State === 'loading') return { surface: 'pending', reason: 'v2_loading', overridden: false, shotCount, maxShots: safeMaxShots }
   if (v2State === 'unavailable' || snapshot === null) return { surface: 'legacy', reason: 'v2_unavailable', overridden: false, shotCount, maxShots: safeMaxShots }
   if (!isProductionWorkspaceV2ContractValid(snapshot)) return { surface: 'legacy', reason: 'v2_contract_invalid', overridden: false, shotCount, maxShots: safeMaxShots }
-  if (snapshot.shots.length === 0) return { surface: 'legacy', reason: 'no_canonical_shots', overridden: false, shotCount, maxShots: safeMaxShots }
+  // V3 owns the empty state as well as the populated Shot Studio. Keeping the
+  // canonical generation action on V3 prevents the browser journey from
+  // falling back to the compatibility surface before materialization.
+  if (snapshot.shots.length === 0) return { surface: 'v3', reason: 'no_canonical_shots', overridden: false, shotCount, maxShots: safeMaxShots }
   if (snapshot.shots.length > safeMaxShots) return { surface: 'legacy', reason: 'rollout_shot_limit', overridden: false, shotCount, maxShots: safeMaxShots }
   return { surface: 'v3', reason: 'eligible_default', overridden, shotCount, maxShots: safeMaxShots }
 }

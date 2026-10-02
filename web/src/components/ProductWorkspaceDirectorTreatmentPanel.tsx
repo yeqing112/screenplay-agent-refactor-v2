@@ -146,7 +146,7 @@ export default function ProductWorkspaceDirectorTreatmentPanel({ bookId, episode
         </span>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        <button type="button" onClick={loadPreview} disabled={state === 'loading' || state === 'calling' || state === 'saving'} className="rounded-lg border border-slate-600 px-3 py-2 text-sm text-slate-200 hover:border-slate-400 disabled:opacity-50">查看导演方案</button>
+        <button type="button" onClick={loadPreview} disabled={state === 'loading' || state === 'calling' || state === 'saving' || (workflowProfile === 'production' && !sceneId)} className="rounded-lg border border-slate-600 px-3 py-2 text-sm text-slate-200 hover:border-slate-400 disabled:opacity-50">查看导演方案</button>
         <button type="button" onClick={callLlm} disabled={!preview || state === 'calling' || state === 'saving' || state === 'approved'} className="rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white hover:bg-violet-500 disabled:opacity-50">让 AI 优化方案</button>
         <button type="button" onClick={confirmCandidate} disabled={!preview || !packetId || !candidate || state === 'saving' || state === 'approved' || state !== 'review'} className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50">确认写入正式版本</button>
         <button type="button" onClick={loadHistory} className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300 hover:border-slate-500">查看历史修订</button>

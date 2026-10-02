@@ -9,8 +9,38 @@ fs.mkdirSync(OUT, { recursive: true });
 
 function safeName(value) { return String(value).replace(/[^a-zA-Z0-9_-]+/g, '-').slice(0, 80); }
 
+async function clickAndWaitForResponse(page, locator, predicate, timeout = 30000) {
+  const responsePromise = page.waitForResponse(predicate, { timeout }).catch((error) => ({ __wait_error: error }));
+  let clickError = null;
+  try {
+    await locator.click();
+  } catch (error) {
+    clickError = error;
+  }
+  const response = await responsePromise;
+  if (clickError) throw clickError;
+  if (response?.__wait_error) throw response.__wait_error;
+  return response;
+}
+
+async function clickAndObserveResponse(page, locator, predicate, observationWindow = 8000) {
+  const responsePromise = page.waitForResponse(predicate, { timeout: 120000 }).catch(() => null);
+  let clickError = null;
+  try {
+    await locator.click();
+  } catch (error) {
+    clickError = error;
+  }
+  const response = await Promise.race([
+    responsePromise,
+    page.waitForTimeout(observationWindow).then(() => null),
+  ]);
+  if (clickError) throw clickError;
+  return response;
+}
+
 async function runOnce(browser, index) {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   page.setDefaultTimeout(10000);
   page.on('dialog', dialog => dialog.accept());
@@ -29,7 +59,11 @@ async function runOnce(browser, index) {
   });
   page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
   const responseErrors = [];
+  const httpErrors = [];
   page.on('response', async response => {
+    if (response.status() >= 400) {
+      httpErrors.push({ method: response.request().method(), path: new URL(response.url()).pathname, status: response.status() });
+    }
     if (response.request().method() === 'POST' && response.status() >= 400) {
       let body = null;
       try { body = await response.json(); } catch { try { body = await response.text(); } catch { /* ignore */ } }
@@ -42,7 +76,7 @@ async function runOnce(browser, index) {
       } catch { /* response may be unavailable after navigation */ }
     }
   });
-  const evidence = { run: index, started_at: new Date().toISOString(), steps: [], blockers: [], screenshot_paths: [], mutations, response_errors: responseErrors, external_hosts: externalHosts, console_errors: consoleErrors };
+  const evidence = { run: index, started_at: new Date().toISOString(), viewport: { width: 1440, height: 900 }, steps: [], blockers: [], screenshot_paths: [], mutations, response_errors: responseErrors, http_errors: httpErrors, external_hosts: externalHosts, console_errors: consoleErrors, policy: { ordinary_user_browser_only: true, direct_database_seed: false, business_api_response_mocking: false, workspace_fixture_used: false, legacy_ui_bypass: false, page_route_count: 0 }, reload_checks: [], viewport_smoke: [], protected_book_990400_writes: 0, delete_audit: null };
   const shot = async (name) => { const file = path.join(OUT, `${String(index).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
   const step = async (name, action) => {
     try { await action(); evidence.steps.push({ name, status: 'passed' }); }
@@ -60,6 +94,19 @@ async function runOnce(browser, index) {
     await page.getByLabel('项目名称').fill(disposableTitle);
     await clickIfVisible('button', '创建项目');
     await page.waitForTimeout(500);
+    const createdUrl = page.url();
+    await page.reload();
+    await page.waitForFunction(() => !document.body.innerText.includes('正在加载') && !document.body.innerText.includes('正在同步'), null, { timeout: 30000 }).catch(() => {});
+    const restoredBook = await page.evaluate(async (bookId) => {
+      const response = await fetch('/api/books', { cache: 'no-store' });
+      const books = await response.json().catch(() => []);
+      return { status: response.status, found: Array.isArray(books) && books.some((item) => Number(item.id) === Number(bookId)) };
+    }, disposableProjectId);
+    const restoredCanvas = page.getByText('正式工作台', { exact: true });
+    if (!restoredBook.found || !(await restoredCanvas.isVisible().catch(() => false)) || !page.url().includes(`book_id=${disposableProjectId}`)) {
+      throw new Error(`project reload did not preserve the created project: ${createdUrl} -> ${page.url()} / ${JSON.stringify(restoredBook)}`);
+    }
+    evidence.reload_checks.push({ stage: 'project-created', preserved_book_id: disposableProjectId, url: page.url(), server_backed: restoredBook });
     await shot('created-project');
   });
   await step('content-preparation', async () => { await clickIfVisible('button', '内容准备'); await shot('content-preparation'); });
@@ -89,6 +136,16 @@ async function runOnce(browser, index) {
     if ((await candidates.first().getAttribute('aria-pressed')) !== 'true') throw new Error('adaptation candidate selection did not persist');
     await page.getByRole('button', { name: '锁定为主方向' }).click();
     await page.getByRole('button', { name: '进入剧本工作台' }).waitFor({ timeout: 10000 });
+    await page.evaluate((bookId) => {
+      for (const key of Object.keys(localStorage)) {
+        if (key === `product-workspace:adaptation:${bookId}` || key === `product-workspace:production-skill:${bookId}`) localStorage.removeItem(key);
+      }
+    }, disposableProjectId);
+    await page.reload();
+    await page.waitForFunction(() => !document.body.innerText.includes('正在加载') && !document.body.innerText.includes('正在同步'), null, { timeout: 30000 }).catch(() => {});
+    await clickIfVisible('button', '改编方向');
+    await page.getByText(/当前项目已经锁定主方向|当前主方向：/, { exact: false }).first().waitFor({ timeout: 30000 });
+    evidence.reload_checks.push({ stage: 'adaptation-after-local-storage-clear', server_backed: true });
     await shot('adaptation-locked');
   });
   await step('script-generation-and-review', async () => {
@@ -114,11 +171,34 @@ async function runOnce(browser, index) {
     await page.getByRole('button', { name: '放行到分镜', exact: true }).click();
     await page.getByRole('button', { name: '准备进入导演阶段', exact: true }).click();
     await page.getByText('剧本生产结构已准备完成，可以进入导演阶段。', { exact: true }).waitFor({ timeout: 30000 });
+    await page.reload();
+    await page.waitForFunction(() => !document.body.innerText.includes('正在加载') && !document.body.innerText.includes('正在同步'), null, { timeout: 30000 }).catch(() => {});
+    await page.getByRole('button', { name: '剧本工作台', exact: true }).waitFor({ timeout: 30000 });
+    evidence.reload_checks.push({ stage: 'script-production-prepared', restored: true });
     await shot('production-prepared');
   });
   await step('director-treatment-review-and-confirm', async () => {
-    await page.getByRole('button', { name: '查看导演方案', exact: true }).click();
-    await page.getByText('已生成只读方案；尚未调用模型，也未写入生产数据。', { exact: true }).waitFor({ timeout: 30000 });
+    await clickIfVisible('button', '剧本工作台');
+    await page.waitForFunction(() => document.body.innerText.includes('剧本工作台') || document.body.innerText.includes('查看导演方案'), null, { timeout: 30000 });
+    await page.waitForFunction(async () => {
+      const id = new URL(window.location.href).searchParams.get('book_id');
+      if (!id) return false;
+      const response = await fetch(`/api/books/${id}/episodes/1/script-ir`, { cache: 'no-store' });
+      const payload = await response.json().catch(() => null);
+      return response.ok && Boolean(payload?.payload?.scenes?.[0]?.scene_id);
+    }, null, { timeout: 30000 }).catch(() => {});
+    const treatmentButton = page.getByRole('button', { name: '查看导演方案', exact: true });
+    const readonlyMessage = page.getByText('已生成只读方案；尚未调用模型，也未写入生产数据。', { exact: true });
+    await treatmentButton.click();
+    try {
+      await readonlyMessage.waitFor({ timeout: 30000 });
+    } catch (error) {
+      const sceneIdRace = responseErrors.some((item) => item.path.endsWith('/director-treatment/preview') && item.body?.detail?.code === 'SCENE_ID_REQUIRED');
+      if (!sceneIdRace) throw error;
+      await page.waitForTimeout(1000);
+      await treatmentButton.click();
+      await readonlyMessage.waitFor({ timeout: 30000 });
+    }
     await page.getByRole('button', { name: '让 AI 优化方案', exact: true }).click();
     await page.getByText(/候选草案已生成|已有相同证据的候选草案/, { exact: false }).waitFor({ timeout: 90000 });
     await page.getByRole('button', { name: '确认写入正式版本', exact: true }).click();
@@ -147,6 +227,15 @@ async function runOnce(browser, index) {
     if (blockingError) throw new Error(`SceneBlocking confirmation blocked: ${JSON.stringify(blockingError.body)}`);
     await runtime.getByText('空间调度已批准；现在可以生成 ShotPlan。', { exact: true }).waitFor({ timeout: 30000 });
     await previews.nth(1).click();
+    // The deterministic mock script can produce a dense four-second plan.
+    // Keep the human review path real by editing the visible duration fields
+    // before confirmation, using the recommended six-second budget.
+    const durationInputs = runtime.locator('input[type="number"]');
+    await durationInputs.first().waitFor({ state: 'visible', timeout: 30000 });
+    for (let index = 0; index < await durationInputs.count(); index += 1) {
+      await durationInputs.nth(index).fill('6');
+    }
+    await page.waitForTimeout(300);
     await runtime.getByRole('button', { name: '确认写入', exact: true }).click({ timeout: 60000 });
     await runtime.getByText('ShotPlan 已批准；正式分镜生成门禁已放行。', { exact: true }).waitFor({ timeout: 30000 });
     const plansResponse = await page.request.get(`${new URL(page.url()).origin}/api/books/${disposableProjectId}/episodes/1/shot-plans`);
@@ -165,21 +254,15 @@ async function runOnce(browser, index) {
     await shot('shot-workbench');
   });
   await step('storyboard-materialization-through-ui', async () => {
-    // The V3 empty state is intentionally read-only until canonical shots
-    // exist. Switch the visible workspace to the compatible storyboard
-    // surface, then use its normal user action to materialize the approved
-    // ShotPlan through the backend authority boundary.
-    const legacyUrl = new URL(page.url());
-    legacyUrl.searchParams.set('section', 'storyboard');
-    legacyUrl.searchParams.set('ui_v3', 'legacy');
-    await page.goto(legacyUrl.toString());
-    const generate = page.getByRole('button', { name: '一键生成分镜', exact: true });
+    // The default V3 empty state exposes the normal production action. The
+    // click delegates to the existing canonical materializer facade.
+    const generate = page.getByRole('button', { name: '生成分镜', exact: true });
     await generate.waitFor({ state: 'visible', timeout: 30000 });
-    const materializeResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/storyboard/materialize'));
-    await generate.click();
-    const materialize = await materializeResponse;
+    const materialize = await clickAndWaitForResponse(page, generate, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/storyboard/materialize'), 120000);
     if (!materialize.ok()) throw new Error(`Storyboard materialization failed: HTTP ${materialize.status()} ${await materialize.text()}`);
-    await page.getByText(/整集分镜总览|个镜 ·/, { exact: false }).waitFor({ timeout: 120000 });
+    await page.locator('[data-testid="shot-studio-v3"]').waitFor({ state: 'visible', timeout: 120000 });
+    const materializedShot = page.locator('[data-testid^="shot-studio-shot-"]').first();
+    await materializedShot.waitFor({ state: 'visible', timeout: 120000 });
     await shot('storyboard-materialized');
   });
   await step('production-asset-bridge-through-ui', async () => {
@@ -213,9 +296,7 @@ async function runOnce(browser, index) {
     await videoModel.selectOption('builtin-mock-video');
     const prepareImage = page.getByRole('button', { name: '准备 IMAGE PromptIR', exact: true });
     await prepareImage.waitFor({ state: 'visible', timeout: 30000 });
-    const promptResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), { timeout: 30000 });
-    await prepareImage.click();
-    const prompt = await promptResponse;
+    const prompt = await clickAndWaitForResponse(page, prepareImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
     if (!prompt.ok()) {
       let detail = '';
       try { detail = JSON.stringify(await prompt.json()); } catch { detail = await prompt.text().catch(() => ''); }
@@ -229,10 +310,7 @@ async function runOnce(browser, index) {
     const generate = page.getByRole('button', { name: '生成 IMAGE', exact: true });
     await generate.waitFor({ state: 'visible', timeout: 30000 });
     await generate.waitFor({ state: 'visible', timeout: 30000 });
-    const [generation] = await Promise.all([
-      page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), { timeout: 120000 }),
-      generate.click(),
-    ]);
+    const generation = await clickAndWaitForResponse(page, generate, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), 120000);
     if (!generation.ok()) throw new Error(`IMAGE generation failed: HTTP ${generation.status()} ${await generation.text()}`);
     await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 120000 }).catch(async (error) => {
       await shot('image-review-timeout');
@@ -247,18 +325,16 @@ async function runOnce(browser, index) {
   });
   await step('video-generation-review-official', async () => {
     const prepareVideo = page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true });
-    const promptResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), { timeout: 30000 });
-    await prepareVideo.click();
-    const prompt = await promptResponse;
+    const prompt = await clickAndWaitForResponse(page, prepareVideo, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
     if (!prompt.ok()) throw new Error(`VIDEO PromptIR compilation failed: HTTP ${prompt.status()} ${await prompt.text()}`);
     await page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true }).waitFor({ state: 'visible', timeout: 30000 });
     await page.getByRole('button', { name: '视频', exact: true }).click();
     const generate = page.getByRole('button', { name: '生成 VIDEO', exact: true });
     await generate.waitFor({ state: 'visible', timeout: 30000 });
-    const [generationResponse] = await Promise.all([
-      page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'), { timeout: 120000 }),
-      generate.click(),
-    ]);
+    // VIDEO execution is intentionally asynchronous. Observe the submission
+    // briefly, then let the durable projection and reload prove the running /
+    // completed state instead of blocking the journey on a long response.
+    const generationResponse = await clickAndObserveResponse(page, generate, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'));
     // The canonical mock video adapter is asynchronous. Reload after the
     // submission has been accepted so the next state is recovered from the
     // durable Production Workspace projection.
@@ -266,7 +342,7 @@ async function runOnce(browser, index) {
     await page.reload();
     await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 60000 }).catch(() => {});
     await shot('video-reload-running');
-    if (!generationResponse.ok()) throw new Error(`VIDEO generation failed: HTTP ${generationResponse.status()} ${await generationResponse.text()}`);
+    if (generationResponse && !generationResponse.ok()) throw new Error(`VIDEO generation failed: HTTP ${generationResponse.status()} ${await generationResponse.text()}`);
     await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 120000 });
     await shot('video-review');
     const approve = page.getByRole('button', { name: '批准并继续', exact: true });
@@ -299,6 +375,13 @@ async function runOnce(browser, index) {
     await shot('asset-blocker');
     const body = await page.locator('body').innerText();
     if (!body.includes('缺少真实视觉资产') && !body.includes('当前没有 Production Asset')) throw new Error('asset blocker was not visible');
+    const protectedBook = await page.evaluate(async () => {
+      const response = await fetch('/api/books/990400/production-workspace-v2', { cache: 'no-store' });
+      return { status: response.status, payload: await response.json().catch(() => null) };
+    });
+    evidence.protected_book_after = protectedBook;
+    evidence.protected_book_990400_writes = mutations.filter((item) => item.path.includes('/990400')).length;
+    if (evidence.protected_book_990400_writes !== 0) throw new Error('protected Book 990400 received a business mutation');
     if (disposableProjectId && process.env.E2E_KEEP_PROJECTS !== '1') {
       evidence.canonical_read_only = await page.evaluate(async (bookId) => {
         const response = await fetch(`/api/books/${bookId}/production-workspace-v2`, { cache: 'no-store' });
@@ -306,14 +389,26 @@ async function runOnce(browser, index) {
       }, disposableProjectId);
     }
   });
+  await step('responsive-viewport-smoke', async () => {
+    for (const viewport of [{ width: 1280, height: 900 }, { width: 1920, height: 1080 }]) {
+      await page.setViewportSize(viewport);
+      await page.reload();
+      await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 30000 }).catch(() => {});
+      evidence.viewport_smoke.push({ ...viewport, restored_book_id: disposableProjectId, url: page.url() });
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+  });
   await step('return-and-dispose-project-through-ui', async () => {
     await clickIfVisible('button', '项目列表');
     if (disposableProjectId && process.env.E2E_KEEP_PROJECTS !== '1') {
       const card = page.locator(`[data-book-id="${disposableProjectId}"]`).first();
       await card.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
       if (await card.count() && await card.isVisible().catch(() => false)) {
-        await card.locator('button[title="删除项目"]').click();
-        await page.waitForTimeout(500);
+        const deleted = await clickAndWaitForResponse(page, card.locator('button[title="删除项目"]'), (response) => response.request().method() === 'DELETE' && new URL(response.url()).pathname === `/api/books/${disposableProjectId}`, 30000);
+        const payload = await deleted.json().catch(() => ({}));
+        evidence.delete_audit = { status: deleted.status(), payload, cleanup_mode: 'journey_delete_step' };
+        if (!deleted.ok()) throw new Error(`delete project failed: HTTP ${deleted.status()}`);
+        if (Number(payload?.orphan_rows || 0) !== 0 || Number(payload?.ambiguous_rows || 0) !== 0) throw new Error(`delete cleanup audit failed: ${JSON.stringify(payload)}`);
       }
     }
     await shot('project-cleanup');

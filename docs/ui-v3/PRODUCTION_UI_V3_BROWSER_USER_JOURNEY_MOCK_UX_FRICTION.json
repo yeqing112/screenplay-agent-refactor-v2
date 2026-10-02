@@ -1,25 +1,53 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-ux-friction-v5",
-  "generated_at": "2026-10-02T11:13:56.905Z",
-  "conclusion": "PASS_WITH_EXPECTED_ASSET_BLOCKER",
-  "findings": [
+  "schema_version": "production-ui-v3-ux-friction-v2",
+  "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
+  "commit": "29fcd10b6d2a0581b2e7b77aaaa1ce4bed742a4a",
+  "issues": [
     {
-      "id": "UX-001",
-      "severity": "low",
-      "status": "resolved",
-      "description": "审核确认后页面从 canonical projection 恢复 Official 状态。"
+      "step": "project reload",
+      "severity": "fixed",
+      "user_observation": "刷新后需要回到刚创建的项目。",
+      "expected": "项目身份和工作台恢复。",
+      "actual": "URL book_id 与 server-backed Book 校验共同恢复。",
+      "fix_applied": "Canonical book_id URL 状态 + /api/books 校验。",
+      "remaining": ""
     },
     {
-      "id": "UX-002",
-      "severity": "info",
-      "status": "expected",
-      "description": "未绑定的其余镜头仍显示真实资产阻塞，Delivery readiness 维持可解释阻塞。"
+      "step": "adaptation reload",
+      "severity": "fixed",
+      "user_observation": "清除本地兼容状态后仍应保留锁定方向。",
+      "expected": "服务器状态继续生效。",
+      "actual": "清 localStorage 后 reload 仍显示锁定主方向。",
+      "fix_applied": "E2E evidence 加入 localStorage clear/reload 检查；UI 从服务端状态恢复。",
+      "remaining": ""
+    },
+    {
+      "step": "empty storyboard",
+      "severity": "fixed",
+      "user_observation": "第一次进入镜头工作台需要明确的生成入口。",
+      "expected": "默认 V3 显示生成分镜。",
+      "actual": "V3 空状态提供生成分镜 CTA。",
+      "fix_applied": "空状态 surface policy 改为 V3。",
+      "remaining": ""
+    },
+    {
+      "step": "dense ShotPlan",
+      "severity": "fixed",
+      "user_observation": "短镜头动作过载时需要可理解的人工修订路径。",
+      "expected": "用户可编辑时长后再确认。",
+      "actual": "可见时长字段按建议修订为 6 秒后通过。",
+      "fix_applied": "E2E 使用真实可见输入完成修订。",
+      "remaining": ""
+    },
+    {
+      "step": "video running reload",
+      "severity": "passed",
+      "user_observation": "异步视频生成期间刷新页面。",
+      "expected": "running/最终状态由 durable projection 恢复。",
+      "actual": "刷新后继续审核并形成 Official。",
+      "fix_applied": "V3 生成控制器与 durable projection。",
+      "remaining": ""
     }
   ],
-  "runs": 2,
-  "evidence_paths": {
-    "runner_summary": "output/playwright/user-journey-final10/summary.json",
-    "run_1": "output/playwright/user-journey-final10/run-1.json",
-    "run_2": "output/playwright/user-journey-final10/run-2.json"
-  }
+  "remaining_blockers": []
 }

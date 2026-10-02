@@ -799,8 +799,8 @@ export default function ProductWorkspaceDeliverySection({
                     </summary>
                     <div className="mt-1 text-xs leading-5 text-slate-500">先完成上面的首个阻塞项；需要安排后续工作时再展开。</div>
                     <div className="mt-4 space-y-3">
-                      {selectedReadiness.blockedItems.slice(1).map((item) => (
-                        <BlockedItemCard key={`${selectedReadiness.episode}-${item.code}`} item={item} onNavigate={onNavigate} />
+                      {selectedReadiness.blockedItems.slice(1).map((item, index) => (
+                        <BlockedItemCard key={`${selectedReadiness.episode}-${item.code}-${index}`} item={item} onNavigate={onNavigate} />
                       ))}
                     </div>
                   </details>

@@ -1,41 +1,49 @@
-# Production UI V3 Browser User Journey Mock Vertical Slice Report
+# PRODUCTION UI V3 Browser User Journey Mock Vertical Slice Report
 
-## 结论
+## Phase
 
-本轮达到 `PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE`。两轮独立浏览器运行均通过可见 UI 完成项目创建、内容导入、Production Skill/改编方向锁定、剧本生成与放行、ScriptIR production preparation、Director Treatment、Scene Blocking、ShotPlan、Storyboard materialization、Production Asset 上传/审核/激活/绑定、PromptIR、IMAGE/VIDEO mock generation、技术验证、人工批准、Official、QA 与 Delivery JSON 登记。
+`PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE`
 
-每轮结束后，临时项目均通过项目列表 UI 删除；保护 Book 990400 未写入。生图模型保持 SHAPI 参考地址（https://www.shapi.vip/），运行使用 deterministic builtin mock，不调用真实 SHAPI、LLM、图片或视频 provider。
+## Result
 
-## 本轮实现
+`PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE`
 
-- PromptIR typed Production Asset lineage 兼容历史 canonical ref，并统一 typed version/id 比较。
-- Production Asset authority/pointer 增加 Book scope 与跨 Book 隔离迁移。
-- Book lifecycle 清理间接 Production Asset、PromptIR、Generation、Candidate、Official、Delivery 记录。
-- Storyboard materializer 统一 duration canonicalization 与 projection fingerprint。
-- Shot Studio V3 增加 PromptIR 准备、模型选择状态覆盖、候选审核与 canonical Official 状态恢复。
-- Generation candidate 创建后执行 deterministic technical validation；IMAGE/VIDEO Official pointer 分 lane 保存，避免 VIDEO 覆盖 IMAGE。
-- VIDEO PromptIR 默认声明 `duration_seconds`，满足 canonical generation policy。
+The ordinary-user journey passed twice consecutively from project list through UI creation, content entry, Production Skill and adaptation locking, script generation/release, production ScriptIR preparation, Director Treatment, Scene Blocking, ShotPlan, V3 Storyboard Materialization, Production Asset authority, PromptIR, IMAGE and VIDEO candidate review/Official, QA, Delivery export, return to project list, and UI deletion.
 
-## 浏览器结果
+## Verification
 
-| 指标 | 结果 |
-|---|---|
-| 独立运行 | 2 |
-| 每轮步骤 | 18/18 通过 |
-| IMAGE 生成/审核/Official | 通过 |
-| VIDEO 生成/审核/Official | 通过 |
-| QA 与 Delivery export record | 通过 |
-| 外部 host | 0 |
-| POST response errors | 0 |
-| 每轮 mock LLM / IMAGE / VIDEO | 11 / 1 / 1 |
-| 保护 Book 990400 写入 | 0 |
+- Primary viewport: 1440x900.
+- Responsive smoke: 1280x900 and 1920x1080 on both runs.
+- Reload checks: project creation, production preparation, and video running state.
+- localStorage compatibility state was cleared after adaptation lock; the server-backed lock remained.
+- Browser mutations: visible UI only; no database seed, route mocking, fixture, or Legacy query bypass.
+- External hosts: 0. Real LLM/Image/Video/SHAPI/MiniMax calls: 0.
+- Mock ledger snapshot: LLM 661, IMAGE 33, VIDEO 21.
+- Protected Book 990400 writes: 0. Book 998755 was not restored.
+- Delete response: HTTP 200, orphan_rows=0, ambiguous_rows=0 on both runs.
+- Console errors and HTTP errors: 0 on both final runs.
 
-## 证据
+## Checks
 
-- [runner summary](../../output/playwright/user-journey-final10/summary.json)
-- [run 1](../../output/playwright/user-journey-final10/run-1.json)
-- [run 2](../../output/playwright/user-journey-final10/run-2.json)
-- [truth audit](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_TRUTH_AUDIT.json)
-- [browser QA](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json)
-- [network audit](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json)
-- [UX friction](PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_UX_FRICTION.json)
+- Web: 63 files / 445 tests passed.
+- Backend relevant contract suite: 65 passed.
+- Frontend build: passed.
+- Python compileall: passed.
+- Alembic head: p1q2r3s4t5u6.
+- git diff --check: passed.
+
+## Evidence
+
+- Browser evidence: output/playwright/user-journey-final30/
+- Truth audit: PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_TRUTH_AUDIT.json
+- Browser QA: PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_BROWSER_QA.json
+- Network audit: PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_NETWORK_AUDIT.json
+- UX friction: PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_UX_FRICTION.json
+
+## Recommended next phase
+
+PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE
+
+## Commit
+
+29fcd10b6d2a0581b2e7b77aaaa1ce4bed742a4a

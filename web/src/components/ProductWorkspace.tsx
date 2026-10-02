@@ -132,6 +132,14 @@ export default function ProductWorkspace({
   const productionWorkspace = useProductionWorkspace(book.id)
   const productionWorkspaceV2 = useProductionWorkspaceV2(book.id)
 
+  // Production preparation is durable in ScriptIR. Rehydrate the local UI
+  // gate after a browser reload so Director Runtime continues with the
+  // production workflow profile instead of silently reverting to a draft.
+  useEffect(() => {
+    setProductionPreparationState('idle')
+    if (productionWorkspaceV2.data?.stages?.SCRIPT_IR?.completed === true) setProductionPreparationState('ready')
+  }, [book.id, productionWorkspaceV2.data?.stages?.SCRIPT_IR?.completed])
+
   const handleRefreshAll = useCallback(() => {
     onRefresh()
     refresh()

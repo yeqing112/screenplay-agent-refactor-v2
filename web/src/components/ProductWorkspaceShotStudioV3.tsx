@@ -51,6 +51,8 @@ interface ProductWorkspaceShotStudioV3Props {
   onSelectShot: (shotId: string | null) => void
   onRefresh?: () => void
   onRefreshProductionWorkspaceV2?: () => Promise<void>
+  onGenerateStoryboard?: () => void
+  isGeneratingStoryboard?: boolean
   surfaceDecision?: StoryboardSurfaceDecision
 }
 
@@ -138,12 +140,13 @@ function LoadingSurface() {
   )
 }
 
-function EmptySurface() {
+function EmptySurface({ onGenerateStoryboard, isGeneratingStoryboard = false }: { onGenerateStoryboard?: () => void; isGeneratingStoryboard?: boolean }) {
   return (
     <div data-testid="shot-studio-empty" className="flex min-h-[420px] items-center justify-center border border-dashed border-[#2A3437] bg-[#141A1D] p-8 text-center">
       <div>
         <div className="text-sm font-medium text-[#EDF1EF]">当前还没有可查看的镜头。</div>
         <p className="mt-2 max-w-md text-xs leading-6 text-[#A9B4B3]">完成上游镜头规划后，这里会出现生产状态。</p>
+        {onGenerateStoryboard ? <button type="button" onClick={onGenerateStoryboard} disabled={isGeneratingStoryboard} aria-busy={isGeneratingStoryboard} className="mt-4 border border-[#8BC9D9]/60 bg-[#8BC9D9]/10 px-3 py-2 text-xs font-medium text-[#BDE8F0] disabled:cursor-not-allowed disabled:opacity-50">{isGeneratingStoryboard ? '正在生成分镜…' : '生成分镜'}</button> : null}
       </div>
     </div>
   )
@@ -404,7 +407,7 @@ function NextAction({ shot }: { shot: ShotStudioViewModel }) {
   return <div data-testid="shot-studio-next-action" className="mt-4 border border-[#8BC9D9]/40 bg-[#8BC9D9]/5 p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="text-[10px] uppercase tracking-[0.16em] text-[#8BC9D9]">Canonical next action</div><div className="mt-1 text-base font-medium text-[#EDF1EF]">下一步 · {shot.primaryAction.label}</div></div><div className="flex items-center gap-2 text-[10px] text-[#A9B4B3]"><SlidersHorizontal className="h-3.5 w-3.5" />{nextActionCategory(shot)}</div></div><div className="mt-2 text-xs leading-6 text-[#A9B4B3]">{shot.primaryAction.reason || shot.detail}</div>{shot.primaryAction.requiresProviderCall ? <div className="mt-3 inline-flex items-center gap-2 border border-[#DBB36F]/30 bg-[#DBB36F]/5 px-2 py-1.5 text-[10px] text-[#DBB36F]"><CircleHelp className="h-3.5 w-3.5" />生成按钮会先请求费用确认，并由 canonical execution 记录真实状态。</div> : null}</div>
 }
 
-export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapshot ? 'ready' : 'loading', error, mode = 'standard', focusShotId = null, onSelectShot, onRefresh, onRefreshProductionWorkspaceV2, surfaceDecision }: ProductWorkspaceShotStudioV3Props) {
+export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapshot ? 'ready' : 'loading', error, mode = 'standard', focusShotId = null, onSelectShot, onRefresh, onRefreshProductionWorkspaceV2, onGenerateStoryboard, isGeneratingStoryboard = false, surfaceDecision }: ProductWorkspaceShotStudioV3Props) {
   const [promptIrBusy, setPromptIrBusy] = useState<PromptIrMediaTarget | null>(null)
   const [promptIrMessage, setPromptIrMessage] = useState('')
   const [modelSelection, setModelSelection] = useState<SharedProductionModelSelection>(() => readProductionModelSelection())
@@ -480,7 +483,7 @@ export default function ProductWorkspaceShotStudioV3({ snapshot, state = snapsho
 
   if (state === 'loading') return <LoadingSurface />
   if (state === 'unavailable' || !snapshot) return <UnavailableSurface error={error} onRefresh={onRefresh} />
-  if (snapshot.shots.length === 0) return <EmptySurface />
+  if (snapshot.shots.length === 0) return <EmptySurface onGenerateStoryboard={onGenerateStoryboard} isGeneratingStoryboard={isGeneratingStoryboard} />
 
   const preparePromptIr = async (target: PromptIrMediaTarget) => {
     if (!selected) return

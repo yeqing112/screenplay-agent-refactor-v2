@@ -303,6 +303,8 @@ export default function ProductWorkspaceSectionContent({
             onSelectShot={storyboard.onSelectShot}
             onRefresh={storyboard.onRefreshAll}
             onRefreshProductionWorkspaceV2={storyboard.onRefreshProductionWorkspaceV2}
+            onGenerateStoryboard={storyboard.onGenerateStoryboard}
+            isGeneratingStoryboard={storyboard.isGeneratingStoryboard}
             surfaceDecision={surfaceDecision}
           />
         ) : (

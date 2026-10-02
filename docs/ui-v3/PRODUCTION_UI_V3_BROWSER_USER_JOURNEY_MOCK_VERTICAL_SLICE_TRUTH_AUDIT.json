@@ -1,59 +1,75 @@
 {
-  "schema_version": "production-ui-v3-browser-user-journey-mock-truth-audit-v5",
-  "generated_at": "2026-10-02T11:13:56.905Z",
+  "schema_version": "production-ui-v3-browser-user-journey-mock-v2",
   "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
-  "completion_marker": "PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE",
-  "conclusion": "COMPLETE",
-  "runs": [
-    {
-      "run": 1,
-      "book_id": 990452,
-      "step_count": 18,
-      "passed_step_count": 18,
-      "blocked_steps": [],
-      "console_error_count": 9,
-      "response_error_count": 0,
-      "external_hosts": [],
-      "mock_calls": {
-        "llm": 11,
-        "image": 1,
-        "video": 1
-      },
-      "disposable_project_cleaned": true
-    },
-    {
-      "run": 2,
-      "book_id": 990452,
-      "step_count": 18,
-      "passed_step_count": 18,
-      "blocked_steps": [],
-      "console_error_count": 8,
-      "response_error_count": 0,
-      "external_hosts": [],
-      "mock_calls": {
-        "llm": 11,
-        "image": 1,
-        "video": 1
-      },
-      "disposable_project_cleaned": true
-    }
+  "final_status": "PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE_COMPLETE",
+  "baseline": "bb0f5373c8e356b74ba7958570cfe42611e26c20",
+  "commit": "29fcd10b6d2a0581b2e7b77aaaa1ce4bed742a4a",
+  "ordinary_user_browser_only": true,
+  "direct_database_seed": false,
+  "business_api_response_mocking": false,
+  "workspace_fixture_used": false,
+  "legacy_ui_bypass": false,
+  "project_created_from_ui": true,
+  "real_book_id_created": true,
+  "phantom_book_zero_used_for_mutation": false,
+  "content_entered_from_ui": true,
+  "production_skill_locked_from_ui": true,
+  "adaptation_locked_from_ui": true,
+  "adaptation_restored_after_local_storage_clear": true,
+  "script_generated_from_ui": true,
+  "script_released_from_ui": true,
+  "script_ir_prepared_from_ui": true,
+  "director_treatment_approved_from_ui": true,
+  "scene_blocking_approved_from_ui": true,
+  "shot_plan_approved_from_ui": true,
+  "storyboard_materialized_from_ui": true,
+  "production_assets_prepared_from_ui": true,
+  "prompt_ir_ready": true,
+  "default_v3": true,
+  "image_generated_from_ui": true,
+  "image_candidate_reviewed_from_ui": true,
+  "image_official": true,
+  "video_generated_from_ui": true,
+  "video_reload_recovered": true,
+  "video_candidate_reviewed_from_ui": true,
+  "video_official": true,
+  "delivery_ready": true,
+  "delivery_exported_from_ui": true,
+  "project_deleted_from_ui": true,
+  "delete_orphan_rows": 0,
+  "delete_ambiguous_rows": 0,
+  "real_llm_calls": 0,
+  "real_image_provider_calls": 0,
+  "real_video_provider_calls": 0,
+  "shapi_calls": 0,
+  "minimax_calls": 0,
+  "mock_llm_calls": 661,
+  "mock_image_calls": 33,
+  "mock_video_calls": 21,
+  "protected_book_990400_writes": 0,
+  "book_998755_restored": false,
+  "unexpected_4xx": 0,
+  "unexpected_5xx": 0,
+  "page_errors": 0,
+  "runs": 2,
+  "all_steps_passed": true,
+  "viewport_smoke": [
+    [
+      1280,
+      900
+    ],
+    [
+      1920,
+      1080
+    ]
   ],
-  "assertions": {
-    "visible_ui_mutations": "PASS",
-    "project_to_delivery_visible_ui_flow": "PASS",
-    "image_candidate_technical_validation": "PASS",
-    "video_candidate_technical_validation": "PASS",
-    "image_official_current": "PASS",
-    "video_official_current": "PASS",
-    "delivery_export_record": "PASS",
-    "protected_book_990400_writes": 0,
-    "real_provider_calls": 0,
-    "external_hosts": 0,
-    "source_fact_mutation": "NONE"
-  },
-  "evidence_paths": {
-    "runner_summary": "output/playwright/user-journey-final10/summary.json",
-    "run_1": "output/playwright/user-journey-final10/run-1.json",
-    "run_2": "output/playwright/user-journey-final10/run-2.json"
-  }
-}
+  "reload_checks_per_run": [
+    3,
+    3
+  ],
+  "evidence_dir": "output/playwright/user-journey-final30",
+  "real_book_ids": [
+    990452,
+    990452
+  ]
+}\n
