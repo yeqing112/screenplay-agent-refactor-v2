@@ -1,0 +1,83 @@
+{
+  "schema_version": "real-image-review-harness-raw-v2-reconcile-truth-audit-v1",
+  "phase": "PHASE_REAL_IMAGE_REVIEW_HARNESS_RAW_V2_RECONCILE",
+  "status": "REAL_IMAGE_REVIEW_HARNESS_RAW_V2_RECONCILE_COMPLETE",
+  "baseline": "aed82ef2daf9a63a5915d2e5a54f74c263ecfe46",
+  "real_image_calls_before_phase": 5,
+  "real_image_calls_during_phase": 0,
+  "real_image_calls_after_phase": 5,
+  "hard_cap": 6,
+  "raw_v2_used_by_wait_helper": true,
+  "shot_studio_view_model_assumption_removed": true,
+  "raw_candidate_selected_by_latest_execution": true,
+  "raw_candidate_validation_reviewable": true,
+  "raw_candidate_rules": {
+    "execution_state": "SUCCEEDED",
+    "candidate_state": "MEDIA_CANDIDATE",
+    "accepted_validation_statuses": ["TECHNICALLY_VALID", "REVIEW_REQUIRED", "PASS"],
+    "current_official_candidate_is_reviewable": false
+  },
+  "exact_real_image_e2e_branch_provider_free": "PASS",
+  "mock_profile": {
+    "profile_id": "builtin-mock-image",
+    "provider": "prototype-task-adapter",
+    "model": "mock-image-v1",
+    "runtime": "E2E_EXTERNAL_RUNTIME=mock"
+  },
+  "candidate_review_ui_visible": true,
+  "approve_and_continue_enabled": true,
+  "candidate_validation_status": "TECHNICALLY_VALID",
+  "candidate_validation_from_ui": "PASS_EXISTING_VALIDATION_ID_REUSED",
+  "validation_endpoint_invocations": {
+    "media_authority_validate": 0,
+    "assets_validate": 0,
+    "reason": "The generation chain already supplied a valid MediaValidationRecord/validation_id; the product review controller intentionally skips duplicate validation and uses that id for promotion."
+  },
+  "candidate_promotion_from_ui": true,
+  "promotion_endpoint": "/api/assets/candidates/{candidate}/promote",
+  "official_v1_from_ui": true,
+  "exact_branch_mutations": {
+    "generate_frame_posts": 1,
+    "generation_attempt_posts": 0,
+    "validate_posts": 0,
+    "promote_posts": 1,
+    "generate_video_posts": 0
+  },
+  "real_provider_calls": 0,
+  "real_image_generation_evidence": "GO_RETAINED_FROM_AED82EF",
+  "real_official_v1": "NOT_PROVEN_WITH_REAL_MEDIA",
+  "real_regenerate": "NOT_RUN",
+  "real_video": "NOT_RUN",
+  "protected_book_990400_writes": 0,
+  "browser_direct_shapi_calls": 0,
+  "browser_external_hosts": [],
+  "browser_http_errors": 0,
+  "browser_console_errors": 0,
+  "duplicate_key_warnings": 0,
+  "disposable_canary": {
+    "book_id": 990453,
+    "deleted_through_ui": true,
+    "orphan_rows": 0,
+    "ambiguous_rows": 0,
+    "orphan_media_files": 0
+  },
+  "evidence": {
+    "summary": "output/playwright/real-image-review-harness-raw-v2-reconcile-final/summary.json",
+    "run": "output/playwright/real-image-review-harness-raw-v2-reconcile-final/run-1.json",
+    "helper_test": "scripts/e2e-production-ui-v3-user-journey-raw-helper.test.js"
+  },
+  "tests": {
+    "raw_v2_helper": "passed",
+    "production_ui_v3": "16 passed",
+    "product_workspace_shot_review": "15 passed",
+    "product_workspace_shot_generation": "29 passed",
+    "web_related": "60 passed",
+    "web_build": "passed",
+    "node_check": "passed",
+    "git_diff_check": "passed"
+  },
+  "alembic_head": "p1q2r3s4t5u6",
+  "new_migrations": 0,
+  "worktree": "clean_before_report_commit",
+  "next_action": "STOP — call #6 remains unauthorized"
+}

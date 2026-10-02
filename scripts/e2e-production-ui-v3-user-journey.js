@@ -8,6 +8,7 @@ const OUT = path.resolve(process.env.E2E_ARTIFACT_DIR || 'output/playwright/user
 const REAL_IMAGE_STAGING = process.env.E2E_REAL_IMAGE_STAGING === '1';
 const REAL_IMAGE_SINGLE_CALL = process.env.E2E_REAL_IMAGE_SINGLE_CALL === '1';
 const REAL_IMAGE_PROFILE_ID = process.env.E2E_REAL_IMAGE_PROFILE_ID || 'local-image-mw4y52';
+const REAL_IMAGE_MODEL_NAME = process.env.E2E_REAL_IMAGE_MODEL_NAME || (REAL_IMAGE_PROFILE_ID === 'builtin-mock-image' ? 'mock-image-v1' : 'grok-imagine-image-quality');
 const EXISTING_CANARY_BOOK_ID = Number(process.env.E2E_EXISTING_CANARY_BOOK_ID || 0) || null;
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -53,6 +54,39 @@ async function readWorkspaceV2(page, bookId) {
 function findWorkspaceShot(payload, shotId) {
   const wanted = String(shotId);
   return (payload?.shots || []).find((item) => String(item?.identity?.shot_id ?? '') === wanted) || null;
+}
+
+// The E2E runner reads the raw production-workspace-v2 projection.  The
+// browser domain adapter derives `reviewEligibility` later; that field is not
+// part of this API contract.  Keep the raw candidate selection in one place
+// and bind it to the latest execution so a stale candidate cannot be reviewed
+// after a regenerate.
+function reviewableRawCandidate(lane) {
+  const execution = lane?.latest_execution || null;
+  const candidateId = String(execution?.candidate_id || '').trim();
+  const items = Array.isArray(lane?.candidates?.items) ? lane.candidates.items : [];
+  const latest = lane?.candidates?.latest || null;
+  const candidate = candidateId
+    ? (items.find((item) => String(item?.id || '') === candidateId) || (String(latest?.id || '') === candidateId ? latest : null))
+    : null;
+  const validationStatus = String(candidate?.technical_validation?.status || '').toUpperCase();
+  const validationReviewable = new Set(['TECHNICALLY_VALID', 'REVIEW_REQUIRED', 'PASS']).has(validationStatus);
+  const officialCandidateId = String(lane?.official?.version?.candidate_id || '').trim();
+  const alreadyOfficial = lane?.official?.current === true && officialCandidateId !== '' && officialCandidateId === candidateId;
+  const reviewable = String(execution?.state || '').toUpperCase() === 'SUCCEEDED'
+    && Boolean(candidate)
+    && String(candidate?.state || '').toUpperCase() === 'MEDIA_CANDIDATE'
+    && validationReviewable
+    && !alreadyOfficial;
+  return {
+    reviewable,
+    candidate,
+    candidateId: candidateId || null,
+    previewUrl: candidate?.preview_url || candidate?.preview || null,
+    validationStatus: validationStatus || null,
+    executionId: execution?.id || null,
+    nextAction: lane?.next_action?.key || null,
+  };
 }
 
 async function waitForWorkspaceShot(page, bookId, shotId, predicate, timeout = 120000) {
@@ -388,12 +422,22 @@ async function runOnce(browser, index) {
       const initialGeneration = await clickAndWaitForResponse(page, generateImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), 180000);
       if (!initialGeneration.ok()) throw new Error(`Initial real IMAGE generation failed: HTTP ${initialGeneration.status()} ${await initialGeneration.text()}`);
       await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 180000 });
-      const initialCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.candidate?.reviewEligibility === true && current.IMAGE?.latest_execution?.state === 'SUCCEEDED');
+      const initialCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => reviewableRawCandidate(current.IMAGE).reviewable);
       const initialExecution = executionIdentity(initialCandidate.shot, 'IMAGE');
-      const initialCandidateId = initialCandidate.shot.IMAGE?.candidate?.candidate?.id || initialCandidate.shot.IMAGE?.latest_execution?.raw?.candidate_id || null;
-      const initialCandidatePreview = initialCandidate.shot.IMAGE?.candidate?.candidate?.preview_url || initialCandidate.shot.IMAGE?.candidate?.candidate?.preview || null;
+      const initialReview = reviewableRawCandidate(initialCandidate.shot.IMAGE);
+      const initialCandidateId = initialReview.candidateId;
+      const initialCandidatePreview = initialReview.previewUrl;
+      evidence.real_image_review_gate = {
+        source: 'raw_production_workspace_v2',
+        candidate_id: initialCandidateId,
+        execution_id: initialReview.executionId,
+        validation_status: initialReview.validationStatus,
+        next_action: initialReview.nextAction,
+        reviewable: initialReview.reviewable,
+      };
       const approve = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
       await approve.waitFor({ state: 'visible', timeout: 30000 });
+      if (await approve.isDisabled()) throw new Error('Initial IMAGE review action is disabled.');
       const initialPromotion = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/api/assets/candidates/') && new URL(response.url()).pathname.endsWith('/promote'), { timeout: 60000 });
       await approve.click();
       const initialPromotionResponse = await initialPromotion;
@@ -405,11 +449,11 @@ async function runOnce(browser, index) {
       if (REAL_IMAGE_SINGLE_CALL) {
         evidence.real_image_staging = {
           profile_id: REAL_IMAGE_PROFILE_ID,
-          model_name: 'grok-imagine-image-quality',
+          model_name: REAL_IMAGE_MODEL_NAME,
           target_shot_id: shotId,
           initial: { execution: initialExecution, candidate_id: initialCandidateId, preview_present: Boolean(initialCandidatePreview), official_version_id: officialV1.id || null },
           regenerate: null,
-          final: { official_v1_version_id: officialV1.id || null, official_v1_current: officialV1.current === true },
+          final: { official_v1_version_id: officialV1.id || null, official_v1_current: officialV1State.shot.IMAGE?.official?.current === true, official_v1_candidate_id: officialV1.candidate_id || null },
           video_status: 'FROZEN_NO_CALL',
         };
         evidence.real_provider_generation_posts = (evidence.mutations || []).filter((mutation) => mutation.method === 'POST' && mutation.path.endsWith('/generate-frame')).length;
@@ -422,14 +466,16 @@ async function runOnce(browser, index) {
       const attemptPost = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/generation-attempts'), { timeout: 60000 }).catch(() => null);
       await regenerate.click();
       await attemptPost;
-      const regeneratedCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.id === officialV1.id && current.IMAGE?.candidate?.reviewEligibility === true && current.IMAGE?.latest_execution?.state === 'SUCCEEDED' && current.IMAGE?.latest_execution?.id !== initialExecution.execution_id, 180000);
+      const regeneratedCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.id === officialV1.id && reviewableRawCandidate(current.IMAGE).reviewable && current.IMAGE?.latest_execution?.id !== initialExecution.execution_id, 180000);
       const regeneratedExecution = executionIdentity(regeneratedCandidate.shot, 'IMAGE');
-      const regeneratedCandidateId = regeneratedCandidate.shot.IMAGE?.candidate?.candidate?.id || regeneratedCandidate.shot.IMAGE?.latest_execution?.raw?.candidate_id || null;
-      const regeneratedPreview = regeneratedCandidate.shot.IMAGE?.candidate?.candidate?.preview_url || regeneratedCandidate.shot.IMAGE?.candidate?.candidate?.preview || null;
+      const regeneratedReview = reviewableRawCandidate(regeneratedCandidate.shot.IMAGE);
+      const regeneratedCandidateId = regeneratedReview.candidateId;
+      const regeneratedPreview = regeneratedReview.previewUrl;
       const duringRegenerationOfficial = regeneratedCandidate.shot.IMAGE?.official?.version || {};
       if (!duringRegenerationOfficial.current && duringRegenerationOfficial.id !== officialV1.id) throw new Error('Official v1 was not current while regenerated candidate awaited review.');
       await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 30000 });
       const approveV2 = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
+      if (await approveV2.isDisabled()) throw new Error('Regenerated IMAGE review action is disabled.');
       const v2Promotion = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/api/assets/candidates/') && new URL(response.url()).pathname.endsWith('/promote'), { timeout: 60000 });
       await approveV2.click();
       const v2PromotionResponse = await v2Promotion;
@@ -439,7 +485,7 @@ async function runOnce(browser, index) {
       const officialV2 = officialV2State.shot.IMAGE?.official?.version || {};
       evidence.real_image_staging = {
         profile_id: REAL_IMAGE_PROFILE_ID,
-        model_name: 'grok-imagine-image-quality',
+        model_name: REAL_IMAGE_MODEL_NAME,
         target_shot_id: shotId,
         initial: { execution: initialExecution, candidate_id: initialCandidateId, preview_present: Boolean(initialCandidatePreview), official_version_id: officialV1.id || null },
         regenerate: { execution: regeneratedExecution, candidate_id: regeneratedCandidateId, preview_present: Boolean(regeneratedPreview), official_v1_current_during_review: duringRegenerationOfficial.id === officialV1.id && duringRegenerationOfficial.current === true },
@@ -623,7 +669,7 @@ async function runOnce(browser, index) {
   return evidence;
 }
 
-(async () => {
+async function main() {
   const browser = await chromium.launch({ headless: process.env.E2E_HEADED !== '1' });
   const runs = [];
   const runIndexes = String(process.env.E2E_RUNS || '1,2').split(',').map((item) => Number(item.trim())).filter((item) => Number.isFinite(item) && item > 0);
@@ -649,4 +695,10 @@ async function runOnce(browser, index) {
   await fs.promises.writeFile(path.join(OUT, 'summary.json'), JSON.stringify(summary, null, 2));
   console.log(JSON.stringify({ output: path.join(OUT, 'summary.json'), runs: runs.length, failures: failures.length, external_hosts: [...new Set(runs.flatMap(item => item.external_hosts))] }, null, 2));
   if (failures.length) process.exitCode = 1;
-})().catch(error => { console.error(error); process.exitCode = 1; });
+}
+
+module.exports = { findWorkspaceShot, reviewableRawCandidate };
+
+if (require.main === module) {
+  main().catch(error => { console.error(error); process.exitCode = 1; });
+}
