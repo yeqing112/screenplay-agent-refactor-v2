@@ -17,6 +17,14 @@ import models
 from models import GenerationExecutionRecord, MediaCandidateRecord
 
 
+@pytest.fixture(autouse=True)
+def _mock_runtime_test_environment(monkeypatch):
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.delenv("DEPLOYMENT_ENV", raising=False)
+    monkeypatch.setenv("APP_ENV", "test")
+    monkeypatch.setattr("core.media_authority.validate_media_candidate", lambda *_args, **_kwargs: {"status": "valid"})
+
+
 class _Query:
     def __init__(self, rows):
         self.rows = rows
@@ -58,6 +66,9 @@ class _Session:
         return None
 
     def rollback(self):
+        return None
+
+    def flush(self):
         return None
 
 

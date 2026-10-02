@@ -773,6 +773,22 @@ def _validate_transport_semantics(context: dict[str, Any]) -> None:
 
 def _validate_real_provider_opt_in(context: dict[str, Any]) -> None:
     provider = str(context["profile"].get("provider") or "")
+    if provider == MOCK_PROVIDER:
+        # Mock external adapters are an isolated development/test boundary.
+        # Keep the guard at the canonical execution gate so IMAGE and VIDEO
+        # cannot reach their deterministic transports in production, even if
+        # a mock profile is selected explicitly or remains the built-in
+        # default in a fresh registry.
+        from core import mock_runtime
+
+        if not mock_runtime.enabled():
+            raise _error(
+                409,
+                "MOCK_RUNTIME_DISABLED_IN_PRODUCTION",
+                "Deterministic mock external runtime is disabled outside development/test/isolated staging.",
+                provider_calls=0,
+            )
+        return
     if bool(context["profile"].get("phase_j3_canonical")) and provider != "prototype-task-adapter":
         if os.getenv("PHASE_J_PROVIDER_AUTHORIZED", "").strip().lower() not in {"1", "true", "yes"}:
             raise _error(409, "REAL_PROVIDER_EXECUTION_NOT_AUTHORIZED", "Real canonical Provider execution requires explicit human authorization.", provider_calls=0)

@@ -60,6 +60,13 @@ class _ClaimLostSession:
         return None
 
 
+@pytest.fixture(autouse=True)
+def _mock_runtime_test_environment(monkeypatch):
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.delenv("DEPLOYMENT_ENV", raising=False)
+    monkeypatch.setenv("APP_ENV", "test")
+
+
 def _context():
     return {
         "row": SimpleNamespace(id=7),

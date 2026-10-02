@@ -59,6 +59,17 @@ class _Session:
     def rollback(self):
         return None
 
+    def flush(self):
+        return None
+
+
+@pytest.fixture(autouse=True)
+def _mock_runtime_test_environment(monkeypatch):
+    """Keep canonical mock-provider tests explicit and provider-free."""
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.delenv("DEPLOYMENT_ENV", raising=False)
+    monkeypatch.setenv("APP_ENV", "test")
+
 
 def _context(*, payload_fp="payload-fp"):
     return {
@@ -161,6 +172,7 @@ def test_execute_success_persists_one_candidate_and_replay_is_zero_call(monkeypa
 
     monkeypatch.setattr(canary, "_call_provider", provider)
     monkeypatch.setattr(canary, "_persist_candidate_media", lambda **_kwargs: {"storage_identity": "local://candidate-1", "storage_reference": {"image_url": "local://candidate-1"}, "checksum_sha256": "sha", "mime_type": "image/png", "byte_size": 68, "width": 1, "height": 1})
+    monkeypatch.setattr("core.media_authority.validate_media_candidate", lambda *_args, **_kwargs: {"status": "valid"})
     req = canary.CanaryExecuteRequest(execute=True, confirmation_token=preview["confirmation_token"], preview_execution_id=preview["execution"]["execution_id"])
 
     result = asyncio.run(canary.execute_generation_canary(1, 1, 101, req))
@@ -349,6 +361,27 @@ def test_real_provider_requires_explicit_opt_in_before_transport(monkeypatch):
     assert exc.value.detail["code"] == "GENERATION_REAL_PROVIDER_OPT_IN_REQUIRED"
     assert exc.value.detail["provider_calls"] == 0
     assert calls == []
+
+
+def test_mock_provider_is_rejected_in_production(monkeypatch):
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.delenv("DEPLOYMENT_ENV", raising=False)
+    monkeypatch.setenv("APP_ENV", "production")
+
+    with pytest.raises(HTTPException) as exc:
+        canary._validate_real_provider_opt_in(_context())
+
+    assert exc.value.status_code == 409
+    assert exc.value.detail["code"] == "MOCK_RUNTIME_DISABLED_IN_PRODUCTION"
+    assert exc.value.detail["provider_calls"] == 0
+
+
+def test_mock_provider_is_allowed_in_test_runtime(monkeypatch):
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.delenv("DEPLOYMENT_ENV", raising=False)
+    monkeypatch.setenv("APP_ENV", "test")
+
+    canary._validate_real_provider_opt_in(_context())
 
 
 def _successful_replay_fixture(monkeypatch):

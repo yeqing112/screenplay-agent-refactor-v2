@@ -17,6 +17,13 @@ from core.provider_execution_profile import (
 from models import GenerationExecutionRecord, MediaCandidateRecord
 
 
+@pytest.fixture(autouse=True)
+def _mock_runtime_test_environment(monkeypatch):
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.delenv("DEPLOYMENT_ENV", raising=False)
+    monkeypatch.setenv("APP_ENV", "test")
+
+
 def test_provider_execution_profile_is_allowlisted_and_secret_free():
     raw = {
         "id": "image-a",
