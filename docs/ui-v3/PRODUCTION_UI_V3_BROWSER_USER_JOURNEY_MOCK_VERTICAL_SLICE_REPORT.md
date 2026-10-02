@@ -19,6 +19,7 @@ The ordinary-user journey passed twice consecutively from project list through U
 - Browser mutations: visible UI only; no database seed, route mocking, fixture, or Legacy query bypass.
 - External hosts: 0. Real LLM/Image/Video/SHAPI/MiniMax calls: 0.
 - Mock ledger snapshot: LLM 661, IMAGE 33, VIDEO 21.
+- Canonical mock-provider gate: `APP_ENV=production` rejects IMAGE/VIDEO mock execution with `MOCK_RUNTIME_DISABLED_IN_PRODUCTION`; test runtime allows the deterministic adapters.
 - Protected Book 990400 writes: 0. Book 998755 was not restored.
 - Delete response: HTTP 200, orphan_rows=0, ambiguous_rows=0 on both runs.
 - Console errors and HTTP errors: 0 on both final runs.
@@ -27,6 +28,7 @@ The ordinary-user journey passed twice consecutively from project list through U
 
 - Web: 63 files / 445 tests passed.
 - Backend relevant contract suite: 65 passed.
+- Canonical generation / mock-runtime gate tests: 60 passed.
 - Frontend build: passed.
 - Python compileall: passed.
 - Alembic head: p1q2r3s4t5u6.
@@ -46,4 +48,4 @@ PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_STAGING_VERTICAL_SLICE
 
 ## Commit
 
-29fcd10b6d2a0581b2e7b77aaaa1ce4bed742a4a
+65f8ea32713788d5458704aa073cc61b5cd77d65

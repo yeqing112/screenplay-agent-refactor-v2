@@ -1,7 +1,7 @@
 {
   "schema_version": "production-ui-v3-browser-network-audit-v2",
   "phase": "PHASE_PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_MOCK_VERTICAL_SLICE",
-  "commit": "29fcd10b6d2a0581b2e7b77aaaa1ce4bed742a4a",
+  "commit": "65f8ea32713788d5458704aa073cc61b5cd77d65",
   "business_api_calls": [
     {
       "method": "POST",
