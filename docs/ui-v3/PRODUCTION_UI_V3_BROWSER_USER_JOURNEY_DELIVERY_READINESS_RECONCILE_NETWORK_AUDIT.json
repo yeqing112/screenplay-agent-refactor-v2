@@ -1,0 +1,11 @@
+{
+  "schema_version": "production-ui-v3-network-audit-v1",
+  "runs": 2,
+  "allowed_hosts": ["127.0.0.1:5176", "127.0.0.1:18768"],
+  "external_hosts": [],
+  "mock_adapter_calls": {"llm": 848, "image": 71, "video": 66},
+  "real_provider_calls": {"llm": 0, "image": 0, "video": 0, "shapi": 0, "minimax": 0},
+  "video_generation": {"submission_posts_per_run": 4, "submission_posts_per_shot": 1, "running_observed_before_reload": 4, "same_execution_and_provider_task_after_reload": 4},
+  "mutation_policy": {"visible_ui_only": true, "database_seed": false, "business_api_response_mocking": false, "protected_book_990400_writes": 0},
+  "cleanup": {"orphan_rows": 0, "ambiguous_rows": 0}
+}

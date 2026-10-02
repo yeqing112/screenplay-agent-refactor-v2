@@ -78,8 +78,29 @@ function applyProductionTruthToReadiness(
       : []
     const imageReady = projectedShots.filter((shot) => shot.IMAGE.official.current).length
     const videoReady = projectedShots.filter((shot) => shot.VIDEO.official.current).length
-    const productionMediaReady = projectionReady && projectedShots.length === readiness.totalShots && imageReady === readiness.totalShots && videoReady === readiness.totalShots
-    if (productionMediaReady) return readiness
+    const promptReady = projectedShots.filter((shot) => shot.IMAGE.prompt_ir.current && shot.VIDEO.prompt_ir.current).length
+    const productionAssetReady = projectedShots.filter((shot) => shot.asset_readiness.current).length
+    // A current Production Asset binding is the canonical, traceable asset
+    // reference for the V2 delivery contract.  Keep the legacy reference
+    // count when present, and add one auditable reference per bound shot.
+    const referencedAssetCount = Math.max(readiness.referencedAssetCount, productionAssetReady)
+    const productionMediaReady = projectionReady && projectedShots.length === readiness.totalShots && promptReady === readiness.totalShots && productionAssetReady === readiness.totalShots && imageReady === readiness.totalShots && videoReady === readiness.totalShots
+    if (productionMediaReady) {
+      const canonicalCodes = new Set(['missing_prompts', 'missing_images', 'missing_videos', 'missing_asset_references'])
+      const blockedItems = readiness.blockedItems.filter((item) => !canonicalCodes.has(item.code))
+      return {
+        ...readiness,
+        canExport: blockedItems.length === 0,
+        statusLabel: blockedItems.length === 0 ? '可交付' : readiness.statusLabel,
+        blockedReasons: blockedItems.map((item) => item.label),
+        blockedItems,
+        promptReadyShots: readiness.totalShots,
+        imageReadyShots: readiness.totalShots,
+        videoReadyShots: readiness.totalShots,
+        readyShots: blockedItems.length === 0 ? readiness.totalShots : 0,
+        referencedAssetCount,
+      }
+    }
     const blockedItem: DeliveryBlockedItem = {
       code: imageReady < readiness.totalShots ? 'missing_images' : 'missing_videos',
       label: imageReady < readiness.totalShots ? '缺当前正式分镜图' : '缺当前正式视频',
@@ -100,6 +121,8 @@ function applyProductionTruthToReadiness(
       recommendedRepairLabel: readiness.recommendedRepairLabel || '返回镜头工作台确认当前正式媒体',
       imageReadyShots: projectionReady ? imageReady : 0,
       videoReadyShots: projectionReady ? videoReady : 0,
+      promptReadyShots: projectionReady ? promptReady : 0,
+      referencedAssetCount: projectionReady ? referencedAssetCount : 0,
       readyShots: 0,
     }
   })

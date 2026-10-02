@@ -1,0 +1,166 @@
+{
+  "bookId": 990453,
+  "bookTitle": "潮汐回声-2",
+  "episode": 1,
+  "generatedAt": "2026-10-02T16:11:43.055Z",
+  "versionLabel": "v1",
+  "contentPreparation": {
+    "chapterCount": 1,
+    "wordCount": 140,
+    "statusLabel": "已完成",
+    "statusDetail": "当前已整理出 1 章、约 0.0 万字内容，可进入改编方向。"
+  },
+  "adaptationDirection": {
+    "statusLabel": "已锁定",
+    "statusDetail": "当前主方向：竖屏情绪悬疑短剧",
+    "selectedName": "竖屏情绪悬疑短剧",
+    "customNote": null,
+    "lockedAt": "2026-10-02T16:10:25.643Z"
+  },
+  "script": {
+    "episode": 1,
+    "statusLabel": "已锁稿并放行",
+    "lockedAt": "2026-10-02T16:10:29.627Z",
+    "releasedAt": "2026-10-02T16:10:29.676Z",
+    "note": "E2E mock journey: script reviewed and ready for production.",
+    "content": "# 第1集 雨夜照片\n\n## 场景一：雨夜旧港 — 旧港便利店 — 夜\n\n雨声砸在玻璃上。林晚推门进入便利店，手里攥着一段录音和被雨水打湿的照片。\n\n林晚：你见过这个人吗？\n\n店员抬眼看向照片，沉默两秒后指向后门。林晚顺着视线转身，门缝外掠过一道黑影。她立即追出门外，录音在掌心继续播放。\n\n【场景结束】"
+  },
+  "qa": {
+    "totalIssueCount": 0,
+    "blocked": false,
+    "summary": "当前未发现交付阻塞 QA。"
+  },
+  "readiness": {
+    "episode": 1,
+    "hasScript": true,
+    "canExport": true,
+    "statusLabel": "可交付",
+    "scriptLocked": true,
+    "scriptReleased": true,
+    "scriptStatusLabel": "已锁稿并放行",
+    "blockedReasons": [],
+    "blockedItems": [],
+    "recommendedRepairSection": "storyboard",
+    "recommendedRepairLabel": "先回镜头工作台：仍有 4 个镜头缺少静态或运动提示词。 首个阻塞镜头：1。",
+    "totalShots": 4,
+    "readyShots": 4,
+    "promptReadyShots": 4,
+    "imageReadyShots": 4,
+    "videoReadyShots": 4,
+    "referencedAssetCount": 4,
+    "qaTotalIssueCount": 0,
+    "qaOpenIssueCount": 0,
+    "qaInProgressCount": 0,
+    "qaResolvedCount": 0,
+    "qaHighOpenIssueCount": 0,
+    "qaCount": 0
+  },
+  "adoptedStoryboard": [
+    {
+      "shotId": "1",
+      "sceneName": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "promptVersion": null,
+      "staticPrompt": "",
+      "motionPrompt": "",
+      "finalPrompt": "",
+      "adoptedImage": {
+        "id": "omv-7675121e2b0310f2d82cb414c404d14ddeef4b85",
+        "title": "IMAGE OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/manual-media/book-990453-generated-phase-f-canary-8770c573bc254e77-431ced6916a2a21a.png"
+      },
+      "adoptedVideo": {
+        "id": "omv-c5472cc2e83e1268a32600da7c9fbbdab713b8c8",
+        "title": "VIDEO OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/generated-media/book-990453-generated-phase-j3-canonical-dee414631a7642d3-40b746666769e615.mp4"
+      }
+    },
+    {
+      "shotId": "2",
+      "sceneName": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "promptVersion": null,
+      "staticPrompt": "",
+      "motionPrompt": "",
+      "finalPrompt": "",
+      "adoptedImage": {
+        "id": "omv-d7e2ffd2cf9cbc502d37715049e5ee101444f818",
+        "title": "IMAGE OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/manual-media/book-990453-generated-phase-f-canary-5e4a316d3efa446d-431ced6916a2a21a.png"
+      },
+      "adoptedVideo": {
+        "id": "omv-ec30338261e9efca4ed76585b91886d260efbc82",
+        "title": "VIDEO OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/generated-media/book-990453-generated-phase-j3-canonical-11bb616ec2e44921-40b746666769e615.mp4"
+      }
+    },
+    {
+      "shotId": "3",
+      "sceneName": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "promptVersion": null,
+      "staticPrompt": "",
+      "motionPrompt": "",
+      "finalPrompt": "",
+      "adoptedImage": {
+        "id": "omv-e491ce861891bd7e6fb08d8000087d50638f8dca",
+        "title": "IMAGE OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/manual-media/book-990453-generated-phase-f-canary-a2a6b185fba947fd-431ced6916a2a21a.png"
+      },
+      "adoptedVideo": {
+        "id": "omv-0ec05b31de9996939c725b13c11604b9845de34d",
+        "title": "VIDEO OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/generated-media/book-990453-generated-phase-j3-canonical-9b176cb1726f44ea-40b746666769e615.mp4"
+      }
+    },
+    {
+      "shotId": "4",
+      "sceneName": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "promptVersion": null,
+      "staticPrompt": "",
+      "motionPrompt": "",
+      "finalPrompt": "",
+      "adoptedImage": {
+        "id": "omv-871d303b3c6288c703d58831024f3fce7717c5ff",
+        "title": "IMAGE OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/manual-media/book-990453-generated-phase-f-canary-4e28d7f8b18d42e4-431ced6916a2a21a.png"
+      },
+      "adoptedVideo": {
+        "id": "omv-25b9ee4342edc06d912d1996f3c35be299a9eebe",
+        "title": "VIDEO OfficialMedia",
+        "label": "v1",
+        "uri": "/api/prototyping/generated-media/book-990453-generated-phase-j3-canonical-703b059e621a4f5b-40b746666769e615.mp4"
+      }
+    }
+  ],
+  "selectedReferenceAssets": {
+    "characters": [],
+    "locations": [],
+    "props": []
+  },
+  "record": {
+    "id": 1,
+    "book_id": 990453,
+    "export_format": "json",
+    "format_label": "JSON",
+    "status": "completed",
+    "total_shots": 4,
+    "deliverable_shots": 4,
+    "pending_review_shots": 0,
+    "blocked_shots": 0,
+    "summary": "第 1 集 | 剧本 已锁稿并放行 | 镜头 4/4 | 提示词 4/4 | 分镜图 4/4 | 视频 4/4 | 资产引用 4 | QA 通过",
+    "meta_info": {
+      "episode": 1,
+      "script_status": "已锁稿并放行",
+      "blocked_reasons": [],
+      "blocked_codes": [],
+      "version_label": "可交付快照"
+    },
+    "created_at": "2026-10-02T16:11:43.895544",
+    "updated_at": "2026-10-02T16:11:43.895544"
+  }
+}

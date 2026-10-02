@@ -1,0 +1,22 @@
+{
+  "schema_version": "production-ui-v3-browser-user-journey-delivery-readiness-reconcile-v1",
+  "result": "PRODUCTION_UI_V3_BROWSER_USER_JOURNEY_DELIVERY_READINESS_RECONCILE_COMPLETE",
+  "runs": 2,
+  "materialized_shots_per_run": 4,
+  "all_shots_ready": true,
+  "delivery_can_export": true,
+  "delivery_record_status": "completed",
+  "pending_review_shots": 0,
+  "blocked_shots": 0,
+  "referenced_asset_count_per_run": 4,
+  "video_running_before_reload_per_run": 4,
+  "video_running_after_reload_per_run": 4,
+  "video_submission_posts_per_run": 4,
+  "video_submission_posts_per_shot": 1,
+  "external_hosts": [],
+  "real_provider_calls": {"llm": 0, "image": 0, "video": 0, "shapi": 0, "minimax": 0},
+  "protected_book_990400_writes": 0,
+  "delete_cleanup": {"orphan_rows": 0, "ambiguous_rows": 0},
+  "runtime": {"e2e_external_runtime": "mock", "app_env": "test", "deployment_env": "test", "production_mock_gate": "MOCK_RUNTIME_DISABLED_IN_PRODUCTION"},
+  "evidence_directory": "output/playwright/user-journey-delivery-readiness-reconcile-final/"
+}

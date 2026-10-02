@@ -32,6 +32,21 @@ SHAPI_GEMINI_IMAGE_PROVIDER = "shapi-gemini-image"
 
 VIDEO_REAL_DEFAULT_ENABLED = True
 
+
+def _mock_runtime_enabled() -> bool:
+    """Return whether deterministic mock profiles may participate in runtime config.
+
+    Mock profiles are an explicit E2E/test boundary.  A plain development
+    process must still configure a real provider (or fail closed when none is
+    configured) so the registry cannot silently turn a staging run into a
+    mock run.
+    """
+
+    e2e_runtime = str(os.environ.get("E2E_EXTERNAL_RUNTIME") or "").strip().lower()
+    app_env = str(os.environ.get("APP_ENV") or "").strip().lower()
+    deployment_env = str(os.environ.get("DEPLOYMENT_ENV") or getattr(config, "DEPLOYMENT_ENV", "") or "").strip().lower()
+    return e2e_runtime == "mock" and app_env != "production" and deployment_env != "production"
+
 _TRANSPORT_BINDING_IDS = {
     (OPENAI_COMPATIBLE_PROVIDER, "image"): "openai-compatible.image.v1",
     (POYO_ASYNC_PROVIDER, "image"): "poyo-async.image.v1",
@@ -54,6 +69,7 @@ def _transport_binding_id(profile: dict[str, Any]) -> str:
 
 
 def _builtin_profiles() -> list[dict[str, Any]]:
+    mock_runtime_enabled = _mock_runtime_enabled()
     return [
         {
             "id": "builtin-llm-env",
@@ -99,7 +115,7 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "base_url": "",
             "model_name": "mock-llm-v1",
             "default_params": {"temperature": 0.0, "max_tokens": 8192},
-            "enabled": True,
+            "enabled": mock_runtime_enabled,
             "is_default": False,
             "key_configured": True,
             "builtin": True,
@@ -119,8 +135,8 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "default_params": {
                 "size": "1024x1024",
             },
-            "enabled": True,
-            "is_default": True,
+            "enabled": mock_runtime_enabled,
+            "is_default": mock_runtime_enabled,
             "key_configured": True,
             "builtin": True,
             "source": "builtin",
@@ -143,8 +159,8 @@ def _builtin_profiles() -> list[dict[str, Any]]:
             "default_params": {
                 "duration_seconds": 5,
             },
-            "enabled": True,
-            "is_default": True,
+            "enabled": mock_runtime_enabled,
+            "is_default": mock_runtime_enabled,
             "key_configured": True,
             "builtin": True,
             "source": "builtin",
@@ -161,11 +177,12 @@ def _builtin_profiles() -> list[dict[str, Any]]:
 
 
 def _builtin_default_map() -> dict[str, str]:
+    mock_runtime_enabled = _mock_runtime_enabled()
     return {
-        "llm": "builtin-mock-llm" if str(os.environ.get("E2E_EXTERNAL_RUNTIME") or "").strip().lower() == "mock" else "builtin-llm-env",
+        "llm": "builtin-mock-llm" if mock_runtime_enabled else "builtin-llm-env",
         "embedding": "builtin-embedding-env",
-        "image": "builtin-mock-image",
-        "video": "builtin-mock-video",
+        "image": "builtin-mock-image" if mock_runtime_enabled else "",
+        "video": "builtin-mock-video" if mock_runtime_enabled else "",
     }
 
 
@@ -300,6 +317,8 @@ def _all_profiles_raw() -> list[dict[str, Any]]:
 def _is_profile_allowed_as_default(profile: dict[str, Any] | None) -> bool:
     if not profile:
         return False
+    if _profile_uses_mock(profile) and not _mock_runtime_enabled():
+        return False
     if not profile.get("enabled", True):
         return False
     capability = profile.get("capability")
@@ -330,7 +349,10 @@ def _resolve_default_for_capability(
     for profile in profile_index.values():
         if profile.get("capability") == capability and _is_profile_allowed_as_default(profile):
             return profile["id"]
-    return builtin_default_id
+    # No mock fallback is allowed outside the isolated mock runtime.  An empty
+    # default is intentional: callers must show “no valid default” and ask an
+    # operator to configure a real provider instead of guessing one.
+    return builtin_default_id if builtin_default_id else ""
 
 
 def resolve_defaults() -> dict[str, str]:

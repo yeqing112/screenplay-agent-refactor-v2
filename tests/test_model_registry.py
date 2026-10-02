@@ -1,4 +1,5 @@
 import unittest
+import os
 from unittest.mock import AsyncMock, Mock, patch
 
 from fastapi.testclient import TestClient
@@ -22,6 +23,10 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         init_db()
 
     def setUp(self):
+        self._runtime_env = {key: os.environ.get(key) for key in ("E2E_EXTERNAL_RUNTIME", "APP_ENV", "DEPLOYMENT_ENV")}
+        os.environ["E2E_EXTERNAL_RUNTIME"] = "mock"
+        os.environ["APP_ENV"] = "test"
+        os.environ["DEPLOYMENT_ENV"] = "test"
         self._original_profiles = get_kv(MODEL_REGISTRY_PROFILES_KEY, "[]")
         self._original_defaults = get_kv(MODEL_REGISTRY_DEFAULTS_KEY, "{}")
         set_kv(MODEL_REGISTRY_PROFILES_KEY, "[]")
@@ -30,6 +35,11 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
     def tearDown(self):
         set_kv(MODEL_REGISTRY_PROFILES_KEY, self._original_profiles)
         set_kv(MODEL_REGISTRY_DEFAULTS_KEY, self._original_defaults)
+        for key, value in self._runtime_env.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
 
     def test_builtin_defaults_include_embedding_image_and_video(self):
         payload = serialize_registry_payload()
@@ -39,6 +49,18 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["default_profiles"]["embedding"]["provider"], "ollama")
         self.assertEqual(payload["default_profiles"]["image"]["provider"], "prototype-task-adapter")
         self.assertEqual(payload["default_profiles"]["video"]["provider"], "prototype-task-adapter")
+
+    def test_mock_profiles_are_disabled_and_have_no_default_outside_isolated_runtime(self):
+        with patch.dict(os.environ, {"E2E_EXTERNAL_RUNTIME": "", "APP_ENV": "staging", "DEPLOYMENT_ENV": "staging"}, clear=False):
+            payload = serialize_registry_payload()
+            image = next(item for item in payload["profiles"] if item["id"] == "builtin-mock-image")
+            video = next(item for item in payload["profiles"] if item["id"] == "builtin-mock-video")
+            self.assertFalse(image["enabled"])
+            self.assertFalse(video["enabled"])
+            self.assertEqual(payload["defaults"]["image"], "")
+            self.assertEqual(payload["defaults"]["video"], "")
+            self.assertIsNone(payload["default_profiles"]["image"])
+            self.assertIsNone(payload["default_profiles"]["video"])
 
     def test_save_registry_persists_custom_image_default(self):
         payload = save_registry(

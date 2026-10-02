@@ -39,6 +39,44 @@ async function clickAndObserveResponse(page, locator, predicate, observationWind
   return response;
 }
 
+async function readWorkspaceV2(page, bookId) {
+  const response = await page.request.get(`${new URL(page.url()).origin}/api/books/${bookId}/production-workspace-v2`, { headers: { 'Cache-Control': 'no-cache' } });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok()) throw new Error(`production workspace read failed: HTTP ${response.status()} ${JSON.stringify(payload)}`);
+  return payload;
+}
+
+function findWorkspaceShot(payload, shotId) {
+  const wanted = String(shotId);
+  return (payload?.shots || []).find((item) => String(item?.identity?.shot_id ?? '') === wanted) || null;
+}
+
+async function waitForWorkspaceShot(page, bookId, shotId, predicate, timeout = 120000) {
+  const deadline = Date.now() + timeout;
+  let latest = null;
+  while (Date.now() < deadline) {
+    const payload = await readWorkspaceV2(page, bookId);
+    latest = findWorkspaceShot(payload, shotId);
+    if (latest && predicate(latest, payload)) return { shot: latest, payload };
+    await page.waitForTimeout(100);
+  }
+  throw new Error(`timed out waiting for canonical shot ${shotId}: ${JSON.stringify(latest)}`);
+}
+
+function executionState(shot, target) {
+  return String(shot?.[target]?.latest_execution?.state || shot?.[target]?.execution?.state || '').toUpperCase();
+}
+
+function executionIdentity(shot, target) {
+  const execution = shot?.[target]?.latest_execution || shot?.[target]?.execution || {};
+  return {
+    execution_id: execution.id || null,
+    provider_task_id: execution.provider_task_id || null,
+    provider_request_id: execution.provider_request_id || null,
+    state: String(execution.state || '').toUpperCase(),
+  };
+}
+
 async function runOnce(browser, index) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
@@ -261,8 +299,14 @@ async function runOnce(browser, index) {
     const materialize = await clickAndWaitForResponse(page, generate, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/storyboard/materialize'), 120000);
     if (!materialize.ok()) throw new Error(`Storyboard materialization failed: HTTP ${materialize.status()} ${await materialize.text()}`);
     await page.locator('[data-testid="shot-studio-v3"]').waitFor({ state: 'visible', timeout: 120000 });
-    const materializedShot = page.locator('[data-testid^="shot-studio-shot-"]').first();
-    await materializedShot.waitFor({ state: 'visible', timeout: 120000 });
+    const materializedShots = page.locator('[data-testid^="shot-studio-shot-"]');
+    await materializedShots.first().waitFor({ state: 'visible', timeout: 120000 });
+    const materializedShotIds = await materializedShots.evaluateAll((nodes) => nodes.map((node) => String(node.getAttribute('data-testid') || '').replace(/^shot-studio-shot-/, '')).filter(Boolean));
+    if (!materializedShotIds.length) throw new Error('Storyboard materialization returned no canonical shots.');
+    evidence.materialized_shot_ids = materializedShotIds;
+    const workspace = await readWorkspaceV2(page, disposableProjectId);
+    evidence.materialized_shots = (workspace.shots || []).filter((item) => materializedShotIds.includes(String(item?.identity?.shot_id ?? ''))).map((item) => item.identity);
+    if (evidence.materialized_shots.length !== materializedShotIds.length) throw new Error(`Materialized shot projection mismatch: ${JSON.stringify({ materializedShotIds, projected: evidence.materialized_shots })}`);
     await shot('storyboard-materialized');
   });
   await step('production-asset-bridge-through-ui', async () => {
@@ -271,85 +315,136 @@ async function runOnce(browser, index) {
     v3Url.searchParams.set('ui_v3', 'shot-studio');
     await page.goto(v3Url.toString());
     await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 30000 }).catch(() => {});
-    const bridge = page.locator('[data-testid="production-asset-bridge"]');
-    await bridge.waitFor({ state: 'visible', timeout: 60000 });
     const assetPath = path.join(OUT, `${String(index).padStart(2, '0')}-production-asset.png`);
     fs.writeFileSync(assetPath, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64'));
-    const uploadInput = bridge.locator('input[type="file"]').first();
-    await uploadInput.waitFor({ state: 'visible', timeout: 30000 });
-    await uploadInput.setInputFiles(assetPath);
-    const approve = bridge.getByRole('button', { name: '批准并激活', exact: true }).first();
-    await approve.waitFor({ state: 'visible', timeout: 30000 });
-    await approve.click();
-    const bind = bridge.getByRole('button', { name: /显式绑定到当前镜头|重新绑定当前版本/, exact: false });
-    await bind.waitFor({ state: 'visible', timeout: 30000 });
-    await bind.click();
-    await bridge.waitFor({ state: 'detached', timeout: 60000 }).catch(() => {});
+    const checks = [];
+    for (const shotId of evidence.materialized_shot_ids || []) {
+      const shotButton = page.getByTestId(`shot-studio-shot-${shotId}`);
+      await shotButton.waitFor({ state: 'visible', timeout: 30000 });
+      await shotButton.click();
+      await shotButton.waitFor({ state: 'attached', timeout: 30000 });
+      const bridge = page.locator('[data-testid="production-asset-bridge"]');
+      // The bridge is mounted asynchronously after the shot selection.  Do
+      // not gate on visibility here: its upload input is intentionally
+      // sr-only, while the section itself may still be settling after the
+      // workspace refresh.
+      await page.waitForTimeout(500);
+      if (await bridge.count()) {
+        const uploadInput = bridge.locator('input[type="file"]').first();
+        if (await uploadInput.count()) {
+          await uploadInput.setInputFiles(assetPath);
+          const approve = bridge.getByRole('button', { name: '批准并激活', exact: true }).first();
+          await approve.waitFor({ state: 'visible', timeout: 60000 });
+          await approve.click();
+        }
+        const bind = bridge.getByRole('button', { name: /显式绑定到当前镜头|重新绑定当前版本/, exact: false }).first();
+        // Approval refreshes bridge-state asynchronously.  Resolve the
+        // locator before the refresh and wait for its eventual appearance so
+        // the explicit binding POST cannot be skipped during the rerender.
+        await bind.waitFor({ state: 'visible', timeout: 60000 });
+        await bind.click();
+      }
+      const storyboardShotId = (evidence.materialized_shots || []).find((item) => String(item?.shot_id) === String(shotId))?.storyboard_shot_id;
+      if (!storyboardShotId) throw new Error(`Missing storyboard_shot_id for materialized shot ${shotId}`);
+      let readinessPayload = null;
+      const readinessDeadline = Date.now() + 60000;
+      while (Date.now() < readinessDeadline) {
+        const readinessResponse = await page.request.get(`${new URL(page.url()).origin}/api/books/${disposableProjectId}/production-assets/shots/${storyboardShotId}/readiness`, { headers: { 'Cache-Control': 'no-cache' } });
+        readinessPayload = await readinessResponse.json().catch(() => null);
+        if (readinessResponse.ok() && readinessPayload?.asset_readiness?.current === true) break;
+        await page.waitForTimeout(300);
+      }
+      if (!readinessPayload?.asset_readiness?.current) throw new Error(`Production Asset readiness is not current for shot ${shotId}: ${JSON.stringify(readinessPayload)}`);
+      checks.push({ shot_id: String(shotId), storyboard_shot_id: storyboardShotId, current: true, readiness: readinessPayload.asset_readiness });
+    }
+    evidence.production_asset_checks = checks;
+    if (checks.length !== (evidence.materialized_shot_ids || []).length) throw new Error('Not every materialized shot received a current Production Asset binding.');
     await shot('production-assets-bound');
   });
-  await step('prompt-ir-preparation-through-v3-ui', async () => {
+  await step('all-shots-prompt-media-review-through-ui', async () => {
     const imageModel = page.getByLabel('IMAGE 生成模型', { exact: true });
     const videoModel = page.getByLabel('VIDEO 生成模型', { exact: true });
     await imageModel.waitFor({ state: 'visible', timeout: 30000 });
     await videoModel.waitFor({ state: 'visible', timeout: 30000 });
     await imageModel.selectOption('builtin-mock-image');
     await videoModel.selectOption('builtin-mock-video');
-    const prepareImage = page.getByRole('button', { name: '准备 IMAGE PromptIR', exact: true });
-    await prepareImage.waitFor({ state: 'visible', timeout: 30000 });
-    const prompt = await clickAndWaitForResponse(page, prepareImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
-    if (!prompt.ok()) {
-      let detail = '';
-      try { detail = JSON.stringify(await prompt.json()); } catch { detail = await prompt.text().catch(() => ''); }
-      throw new Error(`PromptIR compilation failed: HTTP ${prompt.status()} ${detail}`);
+    const checks = [];
+    for (const shotId of evidence.materialized_shot_ids || []) {
+      const shotButton = page.getByTestId(`shot-studio-shot-${shotId}`);
+      await shotButton.click();
+      const prepareImage = page.getByRole('button', { name: '准备 IMAGE PromptIR', exact: true });
+      const imagePrompt = await clickAndWaitForResponse(page, prepareImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
+      if (!imagePrompt.ok()) throw new Error(`IMAGE PromptIR compilation failed for shot ${shotId}: HTTP ${imagePrompt.status()} ${await imagePrompt.text()}`);
+      await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.prompt_ir?.current === true);
+      await page.getByRole('button', { name: '图片', exact: true }).click();
+      const generateImage = page.getByRole('button', { name: '生成 IMAGE', exact: true });
+      await generateImage.waitFor({ state: 'visible', timeout: 30000 });
+      const imageGeneration = await clickAndWaitForResponse(page, generateImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), 120000);
+      if (!imageGeneration.ok()) throw new Error(`IMAGE generation failed for shot ${shotId}: HTTP ${imageGeneration.status()} ${await imageGeneration.text()}`);
+      await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 120000 });
+      await page.getByRole('button', { name: '批准并继续', exact: true }).click();
+      await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 });
+      const imageOfficial = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true);
+
+      const prepareVideo = page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true });
+      const videoPrompt = await clickAndWaitForResponse(page, prepareVideo, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
+      if (!videoPrompt.ok()) throw new Error(`VIDEO PromptIR compilation failed for shot ${shotId}: HTTP ${videoPrompt.status()} ${await videoPrompt.text()}`);
+      await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.VIDEO?.prompt_ir?.current === true && current.VIDEO?.generation_mode === 'IMAGE_TO_VIDEO');
+      const imageOfficialId = imageOfficial.shot.IMAGE.official.version?.id || null;
+      const generateVideo = page.getByRole('button', { name: '生成 VIDEO', exact: true });
+      await page.getByRole('button', { name: '视频', exact: true }).click();
+      await generateVideo.waitFor({ state: 'visible', timeout: 30000 });
+      const videoResponsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'), { timeout: 120000 }).catch((error) => ({ __wait_error: error }));
+      await generateVideo.click();
+      evidence.video_poll_states = evidence.video_poll_states || [];
+      const runningBefore = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => {
+        if (evidence.video_poll_states.length < 40) evidence.video_poll_states.push({ state: executionState(current, 'VIDEO'), ...executionIdentity(current, 'VIDEO') });
+        return ['RUNNING', 'IN_PROGRESS', 'PROVIDER_PENDING', 'PROVIDER_CALLED'].includes(executionState(current, 'VIDEO')) && Boolean(executionIdentity(current, 'VIDEO').execution_id) && Boolean(executionIdentity(current, 'VIDEO').provider_task_id);
+      }, 120000);
+      const runningIdentity = executionIdentity(runningBefore.shot, 'VIDEO');
+      evidence.video_running_before_reload = evidence.video_running_before_reload || [];
+      evidence.video_running_before_reload.push({ shot_id: String(shotId), ...runningIdentity });
+      await page.reload();
+      await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 60000 }).catch(() => {});
+      const runningAfter = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => executionIdentity(current, 'VIDEO').execution_id === runningIdentity.execution_id && executionIdentity(current, 'VIDEO').provider_task_id === runningIdentity.provider_task_id && ['RUNNING', 'IN_PROGRESS', 'PROVIDER_PENDING', 'PROVIDER_CALLED', 'SUCCEEDED'].includes(executionState(current, 'VIDEO')), 120000);
+      evidence.video_running_after_reload = evidence.video_running_after_reload || [];
+      evidence.video_running_after_reload.push({ shot_id: String(shotId), ...executionIdentity(runningAfter.shot, 'VIDEO'), same_execution: true, same_provider_task: true });
+      // A full page reload can abort the Playwright response object even
+      // though the POST was accepted and the canonical execution completed.
+      // The request ledger plus the V2 candidate are the durable evidence;
+      // consume a response when it is available without making an aborted
+      // response a false blocker.
+      const videoResponse = await Promise.race([videoResponsePromise, page.waitForTimeout(5000).then(() => null)]);
+      if (videoResponse && !videoResponse.__wait_error && !videoResponse.ok()) throw new Error(`VIDEO generation failed for shot ${shotId}: HTTP ${videoResponse.status()} ${await videoResponse.text()}`);
+      // Reload restores canonical workspace state but not the transient lane
+      // tab.  Re-select VIDEO so the review action is bound to the candidate
+      // that was just produced, rather than the default IMAGE lane.
+      await page.getByRole('button', { name: '视频', exact: true }).click();
+      const syncShotStudio = page.getByRole('button', { name: '重新同步 Shot Studio', exact: true });
+      if (await syncShotStudio.count()) {
+        await syncShotStudio.click();
+        await page.waitForTimeout(500);
+        await page.getByRole('button', { name: '视频', exact: true }).click();
+      }
+      await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 120000 });
+      const videoApprove = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
+      await videoApprove.waitFor({ state: 'visible', timeout: 30000 });
+      await page.waitForTimeout(500);
+      if (await videoApprove.isDisabled()) throw new Error(`VIDEO candidate review action is disabled for shot ${shotId}`);
+      evidence.video_review_debug = evidence.video_review_debug || [];
+      evidence.video_review_debug.push({ shot_id: String(shotId), url: page.url(), text: await page.getByTestId('shot-studio-review-desk').innerText(), disabled: await videoApprove.isDisabled() });
+      const videoPromotion = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/api/assets/candidates/') && new URL(response.url()).pathname.endsWith('/promote'), { timeout: 60000 }).catch((error) => ({ __wait_error: error }));
+      await videoApprove.click();
+      const videoPromotionResponse = await videoPromotion;
+      if (videoPromotionResponse?.__wait_error) throw videoPromotionResponse.__wait_error;
+      if (!videoPromotionResponse.ok()) throw new Error(`VIDEO candidate promotion failed for shot ${shotId}: HTTP ${videoPromotionResponse.status()} ${await videoPromotionResponse.text()}`);
+      await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 });
+      const final = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.VIDEO?.official?.current === true && current.VIDEO?.source_official_image?.version?.id === imageOfficialId);
+      checks.push({ shot_id: String(shotId), prompt_ready: final.shot.IMAGE.prompt_ir.current === true && final.shot.VIDEO.prompt_ir.current === true, image_official: final.shot.IMAGE.official.current === true, video_official: final.shot.VIDEO.official.current === true, image_official_id: imageOfficialId, video_source_official_image_id: final.shot.VIDEO.source_official_image?.version?.id || null });
+      await shot(`shot-${shotId}-official`);
     }
-    await page.getByRole('button', { name: '准备 IMAGE PromptIR', exact: true }).waitFor({ state: 'visible', timeout: 30000 });
-    await shot('prompt-ir-prepared');
-  });
-  await step('image-generation-review-official', async () => {
-    await page.getByRole('button', { name: '图片', exact: true }).click();
-    const generate = page.getByRole('button', { name: '生成 IMAGE', exact: true });
-    await generate.waitFor({ state: 'visible', timeout: 30000 });
-    await generate.waitFor({ state: 'visible', timeout: 30000 });
-    const generation = await clickAndWaitForResponse(page, generate, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), 120000);
-    if (!generation.ok()) throw new Error(`IMAGE generation failed: HTTP ${generation.status()} ${await generation.text()}`);
-    await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 120000 }).catch(async (error) => {
-      await shot('image-review-timeout');
-      throw error;
-    });
-    await shot('image-review');
-    const approve = page.getByRole('button', { name: '批准并继续', exact: true });
-    await approve.waitFor({ state: 'visible', timeout: 30000 });
-    await approve.click();
-    await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 });
-    await shot('image-official');
-  });
-  await step('video-generation-review-official', async () => {
-    const prepareVideo = page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true });
-    const prompt = await clickAndWaitForResponse(page, prepareVideo, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
-    if (!prompt.ok()) throw new Error(`VIDEO PromptIR compilation failed: HTTP ${prompt.status()} ${await prompt.text()}`);
-    await page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true }).waitFor({ state: 'visible', timeout: 30000 });
-    await page.getByRole('button', { name: '视频', exact: true }).click();
-    const generate = page.getByRole('button', { name: '生成 VIDEO', exact: true });
-    await generate.waitFor({ state: 'visible', timeout: 30000 });
-    // VIDEO execution is intentionally asynchronous. Observe the submission
-    // briefly, then let the durable projection and reload prove the running /
-    // completed state instead of blocking the journey on a long response.
-    const generationResponse = await clickAndObserveResponse(page, generate, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'));
-    // The canonical mock video adapter is asynchronous. Reload after the
-    // submission has been accepted so the next state is recovered from the
-    // durable Production Workspace projection.
-    await page.waitForTimeout(250);
-    await page.reload();
-    await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 60000 }).catch(() => {});
-    await shot('video-reload-running');
-    if (generationResponse && !generationResponse.ok()) throw new Error(`VIDEO generation failed: HTTP ${generationResponse.status()} ${await generationResponse.text()}`);
-    await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 120000 });
-    await shot('video-review');
-    const approve = page.getByRole('button', { name: '批准并继续', exact: true });
-    await approve.waitFor({ state: 'visible', timeout: 30000 });
-    await approve.click();
-    await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 });
-    await shot('video-official');
+    evidence.shot_media_checks = checks;
+    if (checks.length !== (evidence.materialized_shot_ids || []).length || checks.some((item) => !item.prompt_ready || !item.image_official || !item.video_official || item.image_official_id !== item.video_source_official_image_id)) throw new Error(`Not every materialized shot completed PromptIR → IMAGE Official → VIDEO Official with same-shot source: ${JSON.stringify(checks)}`);
   });
   await step('qa-and-delivery-export', async () => {
     await clickIfVisible('button', 'QA 修复');
@@ -358,6 +453,22 @@ async function runOnce(browser, index) {
     if (/阻塞|待处理/.test(qaBody) && !/没有|已放行|通过/.test(qaBody)) throw new Error('QA still reports a delivery blocker.');
     await clickIfVisible('button', '导出中心');
     await page.getByText('交付 readiness', { exact: true }).waitFor({ timeout: 60000 });
+    await page.getByText('可交付', { exact: true }).first().waitFor({ timeout: 60000 });
+    const workspace = await readWorkspaceV2(page, disposableProjectId);
+    const episodeShots = (workspace?.shots || []).filter((item) => Number(item?.identity?.episode) === 1);
+    const adopted = (items) => Boolean(items?.official?.current);
+    const references = episodeShots.reduce((sum, item) => sum + (item?.asset_readiness?.current ? 1 : 0), 0);
+    const deliveryReadiness = {
+      total_shots: episodeShots.length,
+      prompt_ready_shots: episodeShots.filter((item) => Boolean(item.IMAGE?.prompt_ir?.current && item.VIDEO?.prompt_ir?.current)).length,
+      image_ready_shots: episodeShots.filter((item) => adopted(item.IMAGE)).length,
+      video_ready_shots: episodeShots.filter((item) => adopted(item.VIDEO)).length,
+      referenced_asset_count: references,
+    };
+    deliveryReadiness.ready_shots = episodeShots.filter((item) => item.IMAGE?.prompt_ir?.current && item.VIDEO?.prompt_ir?.current && adopted(item.IMAGE) && adopted(item.VIDEO) && item.asset_readiness?.current).length;
+    deliveryReadiness.can_export = deliveryReadiness.total_shots > 0 && deliveryReadiness.ready_shots === deliveryReadiness.total_shots && deliveryReadiness.prompt_ready_shots === deliveryReadiness.total_shots && deliveryReadiness.image_ready_shots === deliveryReadiness.total_shots && deliveryReadiness.video_ready_shots === deliveryReadiness.total_shots && deliveryReadiness.referenced_asset_count > 0;
+    evidence.delivery_readiness = deliveryReadiness;
+    if (!deliveryReadiness.can_export) throw new Error(`Delivery readiness contract failed before export: ${JSON.stringify(deliveryReadiness)}`);
     await page.getByText('更多交付格式、复制与历史刷新', { exact: true }).click().catch(() => {});
     const download = page.waitForEvent('download', { timeout: 60000 });
     await page.getByRole('button', { name: '导出 JSON 并登记', exact: true }).click();
@@ -366,15 +477,14 @@ async function runOnce(browser, index) {
     const savePath = path.join(OUT, `${String(index).padStart(2, '0')}-${safeName(suggested || 'delivery.json')}`);
     await file.saveAs(savePath);
     if (!fs.statSync(savePath).size) throw new Error('Delivery export download was empty.');
+    const exported = JSON.parse(fs.readFileSync(savePath, 'utf8'));
+    const record = exported?.record || {};
+    if (exported?.readiness?.canExport !== true || record.status !== 'completed' || Number(record.total_shots) !== deliveryReadiness.total_shots || Number(record.deliverable_shots) !== deliveryReadiness.total_shots || Number(record.pending_review_shots) !== 0 || Number(record.blocked_shots) !== 0 || String(record.meta_info?.version_label || record.metaInfo?.version_label || '').includes('阻塞')) throw new Error(`Formal delivery export is not complete: ${JSON.stringify({ readiness: exported?.readiness, record })}`);
+    evidence.delivery_export = { path: savePath, readiness: exported.readiness, record };
     await page.getByText(/JSON 已导出，并登记交付记录。/, { exact: true }).waitFor({ timeout: 30000 }).catch(() => {});
     await shot('delivery-ready');
   });
-  await step('asset-blocker-evidence', async () => {
-    await clickIfVisible('button', '资产中心');
-    await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 30000 }).catch(() => {});
-    await shot('asset-blocker');
-    const body = await page.locator('body').innerText();
-    if (!body.includes('缺少真实视觉资产') && !body.includes('当前没有 Production Asset')) throw new Error('asset blocker was not visible');
+  await step('delivery-read-only-contract-audit', async () => {
     const protectedBook = await page.evaluate(async () => {
       const response = await fetch('/api/books/990400/production-workspace-v2', { cache: 'no-store' });
       return { status: response.status, payload: await response.json().catch(() => null) };
@@ -428,7 +538,18 @@ async function runOnce(browser, index) {
   await browser.close();
   let ledger = {};
   try { ledger = await (await fetch(`${process.env.E2E_API_URL || 'http://127.0.0.1:18768'}/api/e2e/mock-ledger`)).json(); } catch (error) { ledger = { error: String(error) }; }
-  const summary = { schema_version: 'production-ui-v3-browser-user-journey-mock-v1', generated_at: new Date().toISOString(), runs, ledger, policy: { mutations_via_visible_ui_only: true, real_external_hosts_allowed: [], mock_runtime_only: true } };
+  const failures = [];
+  for (const run of runs) {
+    if ((run.blockers || []).length) failures.push({ run: run.run, code: 'BLOCKERS_PRESENT', blockers: run.blockers });
+    if ((run.steps || []).some((item) => item.status !== 'passed')) failures.push({ run: run.run, code: 'STEP_NOT_PASSED' });
+    if (!run.delivery_readiness?.can_export || !run.delivery_export?.record || run.delivery_export.record.status !== 'completed') failures.push({ run: run.run, code: 'FORMAL_DELIVERY_NOT_READY', readiness: run.delivery_readiness });
+    if (!run.delete_audit || Number(run.delete_audit.payload?.orphan_rows || 0) !== 0 || Number(run.delete_audit.payload?.ambiguous_rows || 0) !== 0) failures.push({ run: run.run, code: 'DELETE_AUDIT_FAILED', delete_audit: run.delete_audit });
+    if ((run.video_running_before_reload || []).some((item) => !item.execution_id || !item.provider_task_id) || (run.video_running_after_reload || []).some((item) => !item.same_execution || !item.same_provider_task)) failures.push({ run: run.run, code: 'VIDEO_RELOAD_NOT_PROVEN' });
+  }
+  const videoSubmissionCounts = runs.flatMap((run) => (run.video_running_before_reload || []).map((item) => ({ run: run.run, shot_id: item.shot_id, count: (run.mutations || []).filter((mutation) => mutation.method === 'POST' && new RegExp(`/storyboard/1/${String(item.shot_id).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/generate-video$`).test(mutation.path)).length })));
+  for (const item of videoSubmissionCounts) if (item.count !== 1) failures.push({ ...item, code: 'VIDEO_DUPLICATE_OR_MISSING_SUBMISSION' });
+  const summary = { schema_version: 'production-ui-v3-browser-user-journey-delivery-readiness-reconcile-v1', generated_at: new Date().toISOString(), runs, ledger, failures, all_steps_passed: failures.length === 0, policy: { mutations_via_visible_ui_only: true, real_external_hosts_allowed: [], mock_runtime_only: true, formal_delivery_gate: 'canExport=true and completed delivery record' } };
   await fs.promises.writeFile(path.join(OUT, 'summary.json'), JSON.stringify(summary, null, 2));
-  console.log(JSON.stringify({ output: path.join(OUT, 'summary.json'), runs: runs.length, external_hosts: [...new Set(runs.flatMap(item => item.external_hosts))] }, null, 2));
+  console.log(JSON.stringify({ output: path.join(OUT, 'summary.json'), runs: runs.length, failures: failures.length, external_hosts: [...new Set(runs.flatMap(item => item.external_hosts))] }, null, 2));
+  if (failures.length) process.exitCode = 1;
 })().catch(error => { console.error(error); process.exitCode = 1; });

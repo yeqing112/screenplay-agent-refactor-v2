@@ -10,6 +10,7 @@ authority is mutated here.
 from __future__ import annotations
 
 import base64
+import asyncio
 import hashlib
 import json
 import os
@@ -696,6 +697,15 @@ async def _mock_image_transport(context: dict[str, Any]) -> dict[str, Any]:
 
 
 async def _mock_video_transport(context: dict[str, Any]) -> dict[str, Any]:
+    # Keep the deterministic E2E transport visibly asynchronous so the browser
+    # can prove durable RUNNING state and reload recovery.  The delay is opt-in
+    # and never changes real-provider polling semantics.
+    try:
+        delay_seconds = max(float(os.environ.get("E2E_MOCK_VIDEO_DELAY_SECONDS", "0") or 0), 0.0)
+    except (TypeError, ValueError):
+        delay_seconds = 0.0
+    if delay_seconds:
+        await asyncio.sleep(delay_seconds)
     from core.mock_runtime import record
     record("video", "canonical_generation", execution_id=str(context.get("provider_request_fingerprint") or ""), result="success", target_media="VIDEO")
     return await _fake_provider_video(
@@ -1378,6 +1388,18 @@ async def _execute_generation_canary_impl(
         row.submitted_at = claim_time
         row.updated_at = datetime.utcnow()
         session.commit()
+        # Deterministic mock VIDEO exposes its async task identity at submit
+        # time, before the transport finishes.  This lets the browser observe
+        # RUNNING and verify that a reload resumes the same execution/task
+        # rather than silently creating a second submission.
+        if str(context.get("target_media") or row.target_media or "").upper() == "VIDEO" and str(context["profile"].get("provider") or "") == MOCK_PROVIDER:
+            mock_task_id = f"fake-video-{str(row.provider_request_fingerprint or '')[:24]}"
+            row.provider = str(context["profile"].get("provider") or MOCK_PROVIDER)
+            row.model = str(context["profile"].get("model_name") or "mock-video-v1")
+            row.provider_request_id = mock_task_id
+            row.provider_task_id = mock_task_id
+            row.updated_at = datetime.utcnow()
+            session.commit()
         started = time.perf_counter()
         generated: dict[str, Any] = {}
         try:

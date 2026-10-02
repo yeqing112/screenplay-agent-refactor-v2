@@ -1,0 +1,12 @@
+{
+  "schema_version": "production-ui-v3-browser-qa-v1",
+  "runs": [
+    {"run": 1, "steps_passed": 17, "steps_total": 17, "materialized_shots": 4, "all_shots_ready": true, "delivery_can_export": true, "delivery_record_status": "completed", "pending_review_shots": 0, "blocked_shots": 0, "referenced_asset_count": 4, "video_running_before_reload": 4, "video_running_after_reload": 4, "video_submission_posts_per_shot": 1, "orphan_rows": 0, "ambiguous_rows": 0, "external_hosts": [], "console_errors": 0, "http_errors": 0},
+    {"run": 2, "steps_passed": 17, "steps_total": 17, "materialized_shots": 4, "all_shots_ready": true, "delivery_can_export": true, "delivery_record_status": "completed", "pending_review_shots": 0, "blocked_shots": 0, "referenced_asset_count": 4, "video_running_before_reload": 4, "video_running_after_reload": 4, "video_submission_posts_per_shot": 1, "orphan_rows": 0, "ambiguous_rows": 0, "external_hosts": [], "console_errors": 0, "http_errors": 0}
+  ],
+  "responsive_smoke": [{"width": 1280, "height": 900}, {"width": 1920, "height": 1080}],
+  "ordinary_user_browser_only": true,
+  "direct_database_seed": false,
+  "api_response_mocking": false,
+  "legacy_ui_bypass": false
+}
