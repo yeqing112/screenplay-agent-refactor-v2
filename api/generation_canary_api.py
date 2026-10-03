@@ -48,7 +48,11 @@ from core.provider_execution_profile import (
     fingerprint_provider_execution_profile,
 )
 from core.canonical_generation import CanonicalGenerationContractError, ProductionGenerationSelection, canonical_request_fingerprint
-from core.public_asset_storage import _load_source_bytes, _normalize_provider_image_bytes
+from core.public_asset_storage import (
+    _load_source_bytes,
+    _normalize_provider_image_bytes,
+    ensure_provider_accessible_url,
+)
 from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
 from core.media_authority import MediaAuthorityError
 from core.provider_transport_registry import (
@@ -524,6 +528,45 @@ def _current_image_to_video_binding(session: Any, *, book_id: int, episode: int,
     return binding, str(version.storage_identity or "")
 
 
+def _provider_ready_video_source(
+    source_storage: str,
+    *,
+    book_id: int,
+    episode: int,
+    storyboard_shot_id: int,
+    provider: str,
+) -> str:
+    """Resolve the current IMAGE authority to a URL accepted by VIDEO providers.
+
+    OfficialMedia deliberately stores the durable local identity.  Real video
+    providers cannot dereference that workstation path, so publish the exact
+    bytes through the configured public asset storage boundary for the request.
+    Provider-free runtimes keep the local identity and never upload fixtures.
+    """
+    normalized = str(source_storage or "").strip()
+    if not normalized or str(provider or "").startswith("phase-") or str(provider or "") == MOCK_PROVIDER:
+        return normalized
+    if normalized.startswith(("http://", "https://")) and not normalized.startswith(("http://127.0.0.1", "http://localhost")):
+        return normalized
+    result = ensure_provider_accessible_url(
+        normalized,
+        key_hint=f"video-source/{book_id}/{episode}/{storyboard_shot_id}",
+    )
+    if not result.ok or not result.public_url:
+        raise _error(
+            409,
+            "VIDEO_SOURCE_PUBLIC_URL_UNAVAILABLE",
+            "IMAGE_TO_VIDEO requires a provider-accessible public source image URL.",
+            diagnostics={
+                "source_storage_identity": normalized,
+                "storage_error": result.error,
+                "storage_provider": result.storage_provider,
+            },
+            provider_calls=0,
+        )
+    return str(result.public_url)
+
+
 def _resolve_canonical_execution_inputs(
     session: Any,
     *,
@@ -590,6 +633,13 @@ def _resolve_canonical_execution_inputs(
         source_storage = ""
         if mode == "IMAGE_TO_VIDEO":
             source_binding, source_storage = _current_image_to_video_binding(session, book_id=book_id, episode=episode, storyboard_shot_id=row.id)
+            source_storage = _provider_ready_video_source(
+                source_storage,
+                book_id=book_id,
+                episode=episode,
+                storyboard_shot_id=row.id,
+                provider=str(profile.get("provider") or ""),
+            )
             policy = dict(policy)
             policy["source_binding"] = source_binding
         payload = adapt_prompt_ir_to_generation_payload(resolved["payload"], generation_policy=policy, model_profile=phase_profile)

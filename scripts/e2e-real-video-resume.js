@@ -53,9 +53,24 @@ async function main() {
   });
   const shot = async (name) => { const file = path.join(OUT, `01-${name}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshots.push(file); };
   await page.goto(`${BASE}/?book_id=${BOOK_ID}`);
+  // The current production shell labels this route "镜头工作台". Keep the
+  // legacy label only as a fallback for older snapshots.
   const formalWorkspace = page.getByRole('button', { name: '正式工作台', exact: true });
-  if (await formalWorkspace.count()) { await formalWorkspace.click(); await page.waitForTimeout(800); }
-  await page.getByRole('button', { name: '镜头工坊', exact: true }).waitFor({ state: 'visible', timeout: 60000 }).catch(() => {});
+  if (await formalWorkspace.count() && await formalWorkspace.isVisible().catch(() => false)) {
+    await formalWorkspace.click();
+    await page.waitForTimeout(800);
+  }
+  const shotStudio = page.getByRole('button', { name: '镜头工作台', exact: true });
+  const legacyShotStudio = page.getByRole('button', { name: '镜头工坊', exact: true });
+  let canonicalNav = shotStudio;
+  try {
+    await shotStudio.waitFor({ state: 'visible', timeout: 60000 });
+  } catch {
+    canonicalNav = legacyShotStudio;
+    await canonicalNav.waitFor({ state: 'visible', timeout: 15000 });
+  }
+  await canonicalNav.click();
+  await page.waitForTimeout(500);
   await page.getByTestId(`shot-studio-shot-${SHOT_ID}`).click();
   const prepareVideo = page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true });
   const compileVideo = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), { timeout: 30000 });
