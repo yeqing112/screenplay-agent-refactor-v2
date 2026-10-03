@@ -12,7 +12,7 @@
     "authorized_calls": 5,
     "actual_real_provider_calls": 4,
     "reserve_remaining": 1,
-    "status": "ACTIVE",
+    "status": "CLOSED",
     "emergency_reserve_used": false,
     "note": "Four real IMAGE calls were consumed across two provider-free-to-video-blocked canary attempts; the remaining one call is not used because the unresolved VIDEO issues are application/configuration issues rather than transient Provider failures."
   },
@@ -83,7 +83,17 @@
     ],
     "old_official_preserved_during_review": "NOT_PROVEN_BY_FINAL_ARTIFACT",
     "official_v2": "PROVEN_IN_EACH_IMAGE_ATTEMPT",
-    "note": "All four calls reached SHAPI and succeeded. Canaries were cleaned after each blocked run; their media is retained as JSON/screenshot evidence only."
+    "note": "All four calls reached SHAPI and succeeded. Canaries were cleaned after each blocked run; their media is retained as JSON/screenshot evidence only.",
+    "evidence_gap": {
+      "code": "IMAGE_EVIDENCE_GAP_REMAINS",
+      "result": "NOT_PROVEN_BY_FINAL_ARTIFACT",
+      "checked_artifacts": [
+        "output/playwright/real-provider-final-slice-v2-real-final-success/17-image-v1-before-regenerate.png",
+        "output/playwright/real-provider-final-slice-v2-real-final-success/06-image-review-v2.png",
+        "output/playwright/real-provider-final-slice-v2-real-final-success/run-1.json"
+      ],
+      "reason": "Screenshots do not expose an authoritative API/DB snapshot of Official v1 current during Candidate v2 review; run projection explicitly records false."
+    }
   },
   "video": {
     "profile_id": "local-video-7deneh",
@@ -150,5 +160,13 @@
     "git_diff_check": "passed"
   },
   "blocking_condition": "BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET",
-  "required_next_action": "Obtain a fresh independent real-provider budget before attempting the remaining two VIDEO calls; the canonical projection fix is now verified without provider calls."
+  "required_next_action": "Obtain a fresh independent real-provider budget before attempting the remaining two VIDEO calls; the canonical projection fix is now verified without provider calls.",
+  "video_only_budget": {
+    "authorized_calls": 3,
+    "normal_required_calls": 2,
+    "starting_used_calls": 0,
+    "actual_real_provider_calls": 0,
+    "reserve_remaining": 1,
+    "status": "ACTIVE"
+  }
 }

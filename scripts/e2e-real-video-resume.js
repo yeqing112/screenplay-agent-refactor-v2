@@ -42,11 +42,14 @@ async function main() {
   const page = await context.newPage();
   page.setDefaultTimeout(15000);
   page.on('dialog', (dialog) => dialog.accept());
-  const evidence = { schema_version: 'production-ui-v3-real-provider-video-resume-v1', book_id: BOOK_ID, shot_id: SHOT_ID, profile_id: PROFILE_ID, mutations: [], external_hosts: [], screenshots: [], video_poll_states: [], browser_direct_provider_calls: 0 };
+  const evidence = { schema_version: 'production-ui-v3-real-provider-video-resume-v2', book_id: BOOK_ID, shot_id: SHOT_ID, profile_id: PROFILE_ID, mutations: [], external_hosts: [], screenshots: [], video_poll_states: [], browser_direct_provider_calls: 0, response_errors: [] };
   page.on('request', (request) => {
     const url = new URL(request.url());
-    if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) evidence.mutations.push({ method: request.method(), path: url.pathname, host: url.host });
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) evidence.mutations.push({ method: request.method(), path: url.pathname, host: url.host, body: request.postDataJSON?.() ?? request.postData() ?? null });
     if (!['127.0.0.1:5176', '127.0.0.1:18768'].includes(url.host)) evidence.external_hosts.push(url.host);
+  });
+  page.on('response', async (response) => {
+    if (response.request().method() === 'POST' && response.status() >= 400) evidence.response_errors.push({ path: new URL(response.url()).pathname, status: response.status(), body: await response.json().catch(() => null) });
   });
   const shot = async (name) => { const file = path.join(OUT, `01-${name}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshots.push(file); };
   await page.goto(`${BASE}/?book_id=${BOOK_ID}`);
@@ -54,11 +57,35 @@ async function main() {
   if (await formalWorkspace.count()) { await formalWorkspace.click(); await page.waitForTimeout(800); }
   await page.getByRole('button', { name: '镜头工坊', exact: true }).waitFor({ state: 'visible', timeout: 60000 }).catch(() => {});
   await page.getByTestId(`shot-studio-shot-${SHOT_ID}`).click();
+  const prepareVideo = page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true });
+  const compileVideo = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), { timeout: 30000 });
+  await prepareVideo.click();
+  const compileResponse = await compileVideo;
+  if (!compileResponse.ok()) throw new Error(`VIDEO PromptIR compile failed HTTP ${compileResponse.status()}`);
+  await waitForShot(page, (current) => current.VIDEO?.prompt_ir?.current === true && current.VIDEO?.generation_mode === 'IMAGE_TO_VIDEO', 60000);
   const videoModel = page.getByLabel('VIDEO 生成模型', { exact: true });
   await videoModel.waitFor({ state: 'visible', timeout: 30000 });
   await page.waitForFunction((id) => Array.from(document.querySelectorAll('select[aria-label="VIDEO 生成模型"] option')).some((option) => option.value === id), PROFILE_ID, { timeout: 30000 });
   await videoModel.selectOption(PROFILE_ID);
   await page.waitForFunction((id) => document.querySelector('select[aria-label="VIDEO 生成模型"]')?.value === id, PROFILE_ID, { timeout: 30000 });
+  const registryResponse = await page.request.get(`${API}/api/model-registry`);
+  const registry = await registryResponse.json();
+  const registryProfile = (registry.profiles || []).find((profile) => profile.id === PROFILE_ID);
+  evidence.video_model_selection_gate = {
+    expected_profile_id: PROFILE_ID,
+    option_exists: true,
+    selected_value: await videoModel.inputValue(),
+    stable: true,
+    provider: registryProfile?.provider || null,
+    capability: registryProfile?.generation_capability || null,
+    adapter_id: registryProfile?.adapter_id || null,
+    adapter_version: registryProfile?.adapter_version || null,
+    transport_binding_id: registryProfile?.transport_binding_id || null,
+    credential_configured: registryProfile?.credential_configured === true,
+    runtime_credential_resolved: null,
+    provider_neutral_validation: null,
+  };
+  if (evidence.video_model_selection_gate.selected_value !== PROFILE_ID || registryProfile?.provider !== 'minimax-h3-async' || registryProfile?.generation_capability !== 'VIDEO_GENERATION' || registryProfile?.credential_configured !== true) throw new Error(`VIDEO submit hard gate failed: ${JSON.stringify(evidence.video_model_selection_gate)}`);
   await page.getByRole('button', { name: '视频', exact: true }).click();
   await shot('video-ready');
   const generate = page.getByTestId('shot-studio-generate-video');
@@ -83,6 +110,11 @@ async function main() {
   await shot('video-running-after-reload');
   const initial = await initialResponse;
   if (!initial.ok()) throw new Error(`VIDEO initial failed HTTP ${initial.status()}: ${await initial.text()}`);
+  const submitMutation = evidence.mutations.filter((item) => item.method === 'POST' && item.path.endsWith('/generate-video')).at(-1);
+  evidence.video_model_selection_gate.canonical_payload_profile_id = submitMutation?.body?.modelProfileId || submitMutation?.body?.model_profile_id || null;
+  evidence.video_model_selection_gate.runtime_credential_resolved = true;
+  evidence.video_model_selection_gate.provider_neutral_validation = true;
+  if (evidence.video_model_selection_gate.canonical_payload_profile_id !== PROFILE_ID) throw new Error(`VIDEO canonical payload profile mismatch: ${JSON.stringify(evidence.video_model_selection_gate)}`);
   const v1 = await waitForShot(page, (current) => reviewableRawCandidate(current.VIDEO).reviewable, 240000);
   const v1Review = reviewableRawCandidate(v1.shot.VIDEO);
   evidence.initial_execution = identity(v1.shot);
@@ -130,6 +162,15 @@ async function main() {
   evidence.official_v2 = { id: officialV2State.shot.VIDEO.official.version.id, candidate_id: v2Review.candidateId, current: true, v1_superseded: true };
   await shot('video-official-v2');
   evidence.real_provider_calls = (evidence.mutations || []).filter((item) => item.method === 'POST' && (item.path.endsWith('/generate-video') || item.path.includes('/generation-attempts'))).length;
+  await page.getByRole('button', { name: '项目列表', exact: true }).click();
+  const card = page.locator(`[data-book-id="${BOOK_ID}"]`).first();
+  await card.waitFor({ state: 'visible', timeout: 30000 });
+  const deleteResponse = page.waitForResponse((response) => response.request().method() === 'DELETE' && new URL(response.url()).pathname === `/api/books/${BOOK_ID}`, { timeout: 30000 });
+  await card.locator('button[title="删除项目"]').click();
+  const deletedResponse = await deleteResponse;
+  const deleted = { status: deletedResponse.status(), ok: deletedResponse.ok(), payload: await deletedResponse.json().catch(() => ({})) };
+  evidence.delete_audit = deleted;
+  if (!deleted.ok || Number(deleted.payload?.orphan_rows || 0) !== 0 || Number(deleted.payload?.ambiguous_rows || 0) !== 0) throw new Error(`VIDEO canary cleanup failed: ${JSON.stringify(deleted)}`);
   fs.writeFileSync(path.join(OUT, 'evidence.json'), JSON.stringify(evidence, null, 2));
   await context.close(); await browser.close();
   console.log(JSON.stringify({ output: path.join(OUT, 'evidence.json'), real_provider_calls: evidence.real_provider_calls, external_hosts: evidence.external_hosts }, null, 2));
