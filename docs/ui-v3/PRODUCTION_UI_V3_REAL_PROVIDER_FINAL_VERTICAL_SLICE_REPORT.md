@@ -4,6 +4,9 @@
 
 - phase: `PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE`
 - baseline: `ce9c4c93ccd632fe21dd94e0b7c94ff484933205`
+- final code commit: `9d8432f7e40bba620e625aa50c94244e6b7971af`
+- Alembic head: `p1q2r3s4t5u6`
+- new migrations: `0`
 - status: `BLOCKED_REAL_VIDEO_NOT_CONFIGURED_AFTER_CANARY_BUDGET_GUARD`
 - target marker `PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE` 未设置。
 - 本阶段真实 Provider 预算：`2/5`，剩余 `3`；没有为绕过当前阻塞而重复调用。
