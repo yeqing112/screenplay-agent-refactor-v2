@@ -233,5 +233,12 @@
     ],
     "evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json"
   },
-  "video_closure_evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json"
+  "video_closure_evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json",
+  "latest_verification": {
+    "targeted_backend": "51 passed (tests/test_generation_canary_phase_f.py + tests/test_phase_j3_canonical_generation.py)",
+    "frontend_build": "passed",
+    "python_compileall": "passed",
+    "git_diff_check": "passed",
+    "note": "generation_attempt_canonical_facade.py retains pre-existing local:// fixture validation failures and was not counted as a regression from this closure patch."
+  }
 }

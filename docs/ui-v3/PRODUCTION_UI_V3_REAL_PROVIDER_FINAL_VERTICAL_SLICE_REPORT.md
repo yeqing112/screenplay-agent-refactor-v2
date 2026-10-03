@@ -66,3 +66,11 @@ Selector、canonical payload、runtime credential、VIDEO capability、adapter�
 - 更新 Truth Audit、Provider Evidence、Network Audit、Data Audit、Browser QA。
 
 达到 COMPLETE 还需要：恢复 MiniMax H3 可用余额，完成 VIDEO initial 与 VIDEO regenerate 的成功生命周期，并补齐 IMAGE review 期间旧 Official 保持 current 的最终证据。本轮不设置 COMPLETE marker。
+
+## Verification
+
+- targeted backend generation suite: **51 passed**
+- frontend production build: **passed**
+- Python compileall: **passed**
+- `git diff --check`: **passed**
+- the existing attempt-facade suite still has local fixture validation failures (`local://...`); those failures are recorded as pre-existing and were not counted as closure evidence.
