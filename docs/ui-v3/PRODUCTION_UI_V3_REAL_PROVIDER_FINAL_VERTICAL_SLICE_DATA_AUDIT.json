@@ -1,5 +1,5 @@
 {
-  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-data-audit-v1",
+  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-data-audit-v2",
   "database_identities": {
     "production": {
       "path": "work/db/screenplay.db",
@@ -7,9 +7,8 @@
       "sha256_after": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d"
     },
     "staging": {
-      "path": "work/db/phase-production-ui-v3-final-slice-20261003.sqlite",
-      "sha256_before": "e5ce4047209c04e3242974a6151b5f456d7f457975575e8930843f7b8699d0a1",
-      "sha256_after": "BD174534F2FC555B8265376338DE64091B5EA1496A7F9446542D51C1A087C95B2"
+      "path": "work/db/phase-production-ui-v3-final-slice-v2-real-20261003.sqlite",
+      "new_identity": true
     }
   },
   "protected_book_990400": {
@@ -19,12 +18,12 @@
   "writes_outside_canary": 0,
   "production_db_writes": 0,
   "canary_cleanup": {
-    "book_id": 990454,
     "orphan_rows": 0,
-    "ambiguous_rows": 0,
-    "orphan_media_files": 0
+    "orphan_media_files": 0,
+    "ambiguous_rows": 0
   },
-  "secret_leaks": 0,
   "source_fact_deltas": 0,
-  "script_ir_deltas": 0
+  "script_ir_deltas": 0,
+  "provider_call_count": 4,
+  "video_provider_call_count": 0
 }

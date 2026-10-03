@@ -200,6 +200,17 @@ register_runtime_credential_binding(
     validation_version="v1",
 )
 
+# MiniMax H3 staging uses the same explicit environment-backed lifecycle.  The
+# profile keeps only the reference; the provider key is supplied by the
+# staging process and never enters an execution snapshot or audit artifact.
+register_runtime_credential_binding(
+    "env:MINIMAX_API_KEY",
+    resolver=lambda _ref: os.getenv("MINIMAX_API_KEY"),
+    validator=lambda value: bool(str(value or "").strip()),
+    validation_method="environment-presence",
+    validation_version="v1",
+)
+
 
 __all__ = [
     "RuntimeCredential",

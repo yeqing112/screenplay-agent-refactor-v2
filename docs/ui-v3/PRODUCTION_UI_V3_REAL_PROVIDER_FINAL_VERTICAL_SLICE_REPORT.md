@@ -1,75 +1,84 @@
 # PRODUCTION UI V3 REAL PROVIDER FINAL VERTICAL SLICE REPORT
 
-## 状态
+## Final status
 
 - phase: `PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE`
-- baseline: `ce9c4c93ccd632fe21dd94e0b7c94ff484933205`
-- final code commit: `0760a02` (subsequent commits contain audit/evidence only)
-- Alembic head: `p1q2r3s4t5u6`
-- new migrations: `0`
-- status: `BLOCKED_REAL_VIDEO_MODEL_SELECTION_ASYNC_409`
-- target marker `PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE` 未设置。
-- 本阶段真实 Provider 预算：`2/5`，剩余 `3`；没有为绕过当前阻塞而重复调用。
+- status: `BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET`
+- marker: `PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE` **未设置**
+- historical budget: **2/5, CLOSED**
+- current budget: **4/5, ACTIVE**
+- emergency reserve: **未使用，剩余 1 次**
+- blocking rule: 剩余 1 次不能覆盖尚未证明的 VIDEO initial + VIDEO regenerate 两次正常调用；第 5 次也不能用于 application/configuration 问题。
 
-## 已完成的真实链路
+## Zero-call preflight
 
-### IMAGE
+新的 mock 预检已通过：
 
-独立 staging SQLite 中完成了真实 IMAGE 初次生成和重生成，共 2 次真实调用：
+- IMAGE：submit → execution → candidate → approve → Official v1 → regenerate → candidate v2 → Official v2
+- VIDEO：异步 option 存在、selected value 稳定、submit → RUNNING → reload 后 execution identity 保持 → candidate → approve → regenerate → Official v2
+- 外部 host：0
+- 失败：0
 
-- profile: `local-image-mw4y52`
-- provider: `shapi-openai-images`
-- model: `grok-imagine-image-quality`
-- transport: `shapi-openai-images.image.v1`
-- initial execution: `ea054b0e7b834f989792e6ffa577adc3`
-- initial candidate: `candidate-3c1ea83d3ca2457aa9eb93bb9e741990`
-- initial official: `omv-a44eb0a35c4ca8b6c105e008b89e9dfa51626232`
-- regenerate execution: `93ea2c354cfd4a1cbe6b61dbc43ba038`
-- regenerate candidate: `candidate-2564a864cf3344919f2451efdc02d88d`
-- final official v2: `omv-9cae40c7d65c97022299161fa5f1b0721efca2a6`
-- v1 superseded: `true`
-- transport retries: `0`
+证据：[zero-call preflight](../../output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json)。
 
-IMAGE 的 Provider 证据、执行身份和候选校验已写入 [Provider Evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_PROVIDER_EVIDENCE.json)。
+## Real Provider calls
 
-### VIDEO
+四次真实调用均为 SHAPI IMAGE，且均成功：
 
-VIDEO profile 实际存在（`local-video-7deneh` / `minimax-h3-async` / `MiniMax-H3`），但浏览器在 VIDEO 模型选项异步刷新完成前读取到空选择，点击生成被 canonical API 以 `409 MODEL_PROFILE_REQUIRED` 拒绝；没有写入 VIDEO execution，也没有产生真实 VIDEO Provider 账单调用。该问题已在 E2E 编排中增加“等待 option 并确认 selected value”的修复，且失败的 real canary 后续已由 UI 清理，清理审计为 `orphan_rows=0`。
+1. IMAGE initial — execution `cc1bfad62e104750bf5b6565193dda4b`
+2. IMAGE regenerate — execution `8fbcfa4e9c8b4284affcfbd97ca12edc`
+3. IMAGE initial — execution `8fb1e56f6270412ebf658891c26a0534`
+4. IMAGE regenerate — execution `f166c8d2af6145339e5baa546a4237d2`
 
-因此以下目标仍未证明：VIDEO running → reload identity → candidate v1 → official v1 → regenerate → candidate v2 → official v2。
+Provider：`shapi-openai-images`；model：`grok-imagine-image-quality`。每次 logical provider calls=1，transport retry=0。两次 canary 均在 VIDEO 阶段前后清理完成，orphan rows/files=0。
 
-## 安全与隔离
+IMAGE v2 晋级已证明；由于最终快照的 projection 没有保留 review 中旧 Official 的 current 字段，本轮将“旧 Official 在 review 期间保持 current”记为 **NOT_PROVEN_BY_FINAL_ARTIFACT**，没有把它伪记为通过。
 
-- staging DB: `work/db/phase-production-ui-v3-final-slice-20261003.sqlite`
-- production DB SHA256 before/after: `3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d`
-- production DB writes: `0`
-- protected Book `990400` writes: `0`
-- browser direct Provider calls: `0`
-- browser external hosts: `0`
-- secrets leaked in committed artifacts: `0`
-- canary cleanup orphan rows/files: `0`
+## VIDEO blocking facts
 
-## 验证
+VIDEO selection gate 已经在 mock preflight 中通过，且 real attempt 的浏览器层也确认：
 
-- mock post-fix preflight: 1 run, all steps passed; sequential Browser QA names present
-- real final attempt: setup steps passed; media step blocked at VIDEO 409
-- Web targeted tests: 72 passed
-- backend relevant suite: 111 passed
-- frontend build: passed
-- Python compileall: passed
-- Alembic head: `p1q2r3s4t5u6`
-- `git diff --check`: passed
+- expected profile: `local-video-7deneh`
+- option exists: true
+- selected value: `local-video-7deneh`
 
-证据目录：
+随后真实 VIDEO 未产生 Provider call。连续修复/验证得到：
 
-- [mock post-fix preflight](../../output/playwright/real-provider-final-slice-mock-final2/summary.json)
-- [real attempt](../../output/playwright/real-provider-final-slice-real-final2/summary.json)
+- `RUNTIME_CREDENTIAL_NOT_RESOLVED`：已修复 staging 环境变量绑定。
+- `MODEL_CAPABILITY_MISMATCH`：已修复 staging profile 的 VIDEO capability/adapter 元数据。
+- 当前剩余阻塞：`GENERATION_PROVIDER_PARAM_INVALID`，MiniMax profile 的旧 default_params 含 canonical allowlist 不接受的字段；Provider calls=0。
+
+因此 VIDEO 的 RUNNING、reload identity、candidate v1/v2、Official v1/v2、VIDEO regenerate 均没有真实证据。按照本轮规则，不使用剩余的第 5 次调用。
+
+## Isolation and audit
+
+- production DB SHA256 before/after：`3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d`（相同）
+- production DB writes：0
+- protected Book 990400 writes：0
+- writes outside canary：0
+- browser direct Provider calls：0
+- browser external Provider hosts：0
+- secret leaks：0
+- orphan rows：0
+- orphan media files：0
+- Alembic head：`p1q2r3s4t5u6`
+- new migrations：0
+
+## Code and evidence updates
+
+本轮已更新：
+
+- E2E VIDEO submit 前重新选择并断言 model profile，避免 PromptIR rehydrate 清空 selector。
+- Model registry 对旧 image/video profile 自动补齐 canonical capability/adapter metadata。
+- 增加 MiniMax environment-backed runtime credential binding。
+- 更新 Truth Audit、Provider Evidence、Network Audit、Data Audit、Browser QA。
+
+最终权威文件：
+
 - [Truth Audit](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_TRUTH_AUDIT.json)
 - [Provider Evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_PROVIDER_EVIDENCE.json)
 - [Network Audit](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_NETWORK_AUDIT.json)
 - [Data Audit](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_DATA_AUDIT.json)
 - [Browser QA](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_BROWSER_QA.json)
 
-## 后续恢复条件
-
-在新的用户批准预算下，复用已修复的模型选择等待逻辑，创建新的 disposable staging canary，仅执行完整的 4-call IMAGE/VIDEO 纵向切片；不复用已清理 canary，不修改 production DB。
+要达到 COMPLETE，需要新的独立真实 Provider 预算，再完成 VIDEO initial 与 VIDEO regenerate 两次调用；本轮不设置 COMPLETE marker。

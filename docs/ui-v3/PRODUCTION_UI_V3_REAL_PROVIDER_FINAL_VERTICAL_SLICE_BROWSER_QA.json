@@ -1,52 +1,36 @@
 {
-  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-browser-qa-v1",
-  "mock_preflight": {
+  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-browser-qa-v2",
+  "zero_call_preflight": {
     "runs": 1,
-    "steps_passed": 17,
     "failures": 0,
     "external_hosts": 0,
-    "artifact": "output/playwright/real-provider-final-slice-mock-final2/summary.json",
-    "required_named_screenshots": [
-      "01-image-ready.png",
-      "02-image-running.png",
-      "03-image-review-v1.png",
-      "04-image-official-v1.png",
-      "05-image-regenerate-running.png",
-      "06-image-review-v2.png",
-      "07-image-official-v2.png",
-      "08-video-running-before-reload.png",
-      "09-video-running-after-reload.png",
-      "10-video-review-v1.png",
-      "11-video-official-v1.png",
-      "12-video-regenerate.png",
-      "13-video-review-v2.png",
-      "14-video-official-v2.png",
-      "15-cleanup.png"
-    ]
+    "artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json",
+    "video_selection_gate": {
+      "expected_profile_id": "builtin-mock-video",
+      "option_exists": true,
+      "selected_value": "builtin-mock-video",
+      "canonical_payload_profile_id": "builtin-mock-video"
+    }
   },
-  "real_attempt": {
-    "runs": 1,
-    "setup_steps_passed": 12,
-    "media_step": "blocked",
-    "http_error_409": true,
-    "artifact": "output/playwright/real-provider-final-slice-real-final2/summary.json",
-    "screenshots": [
-      "01-image-v1-before-regenerate.png",
-      "01-real-image-v2-official.png",
-      "01-video-ready.png"
-    ]
-  },
-  "required_real_video_screenshots_not_available": [
-    "video-running-before-reload",
-    "video-running-after-reload",
-    "video-review-v1",
-    "video-official-v1",
-    "video-regenerate-running",
-    "video-review-v2",
-    "video-official-v2"
+  "real_attempts": [
+    {
+      "artifact": "output/playwright/real-provider-final-slice-v2-real-final-success/summary.json",
+      "image_calls": 2,
+      "video_calls": 0,
+      "blocked_code": "GENERATION_PROVIDER_PARAM_INVALID"
+    }
   ],
-  "console_errors_real_attempt": 1,
+  "video_required_screenshots_not_available": [
+    "08-video-running-before-reload.png",
+    "09-video-running-after-reload.png",
+    "10-video-review-v1.png",
+    "11-video-official-v1.png",
+    "12-video-regenerate.png",
+    "13-video-review-v2.png",
+    "14-video-official-v2.png"
+  ],
   "browser_direct_provider_calls": 0,
+  "console_errors": "real attempts contained only application-side 409/timeout errors; no external host errors",
   "responsive_smoke": [
     "1280x900",
     "1920x1080"

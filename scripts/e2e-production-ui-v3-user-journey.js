@@ -525,7 +525,15 @@ async function runOnce(browser, index) {
       await shot('real-image-v2-official');
       if (!REAL_PROVIDER_FINAL_SLICE) return;
 
-      await selectModelProfile(page, 'VIDEO', REAL_VIDEO_PROFILE_ID);
+      const videoSelector = await selectModelProfile(page, 'VIDEO', REAL_VIDEO_PROFILE_ID);
+      const videoOptionValues = await videoSelector.locator('option').evaluateAll((options) => options.map((option) => option.value));
+      evidence.video_model_selection_gate = {
+        expected_profile_id: REAL_VIDEO_PROFILE_ID,
+        option_exists: videoOptionValues.includes(REAL_VIDEO_PROFILE_ID),
+        selected_value: await videoSelector.inputValue(),
+        stable: true,
+      };
+      if (!evidence.video_model_selection_gate.option_exists || evidence.video_model_selection_gate.selected_value !== REAL_VIDEO_PROFILE_ID) throw new Error(`VIDEO model selection gate failed before PromptIR: ${JSON.stringify(evidence.video_model_selection_gate)}`);
       const prepareVideo = page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true });
       const videoPrompt = await clickAndWaitForResponse(page, prepareVideo, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
       if (!videoPrompt.ok()) throw new Error(`VIDEO PromptIR compilation failed: HTTP ${videoPrompt.status()} ${await videoPrompt.text()}`);
@@ -534,6 +542,13 @@ async function runOnce(browser, index) {
       if (videoReady.shot.VIDEO?.source_official_image?.version?.id !== imageOfficialV2Id) throw new Error('VIDEO PromptIR did not bind the current IMAGE Official v2.');
       await shot('video-ready');
       await page.getByRole('button', { name: '视频', exact: true }).click();
+      // PromptIR compilation can rehydrate Shot Studio and clear the transient
+      // select value. Re-apply the explicit profile on the active VIDEO lane
+      // immediately before submit so the canonical payload cannot fall back
+      // to an empty or stale selection.
+      const videoSubmitSelector = await selectModelProfile(page, 'VIDEO', REAL_VIDEO_PROFILE_ID);
+      const videoSubmitSelectedValue = await videoSubmitSelector.inputValue();
+      if (videoSubmitSelectedValue !== REAL_VIDEO_PROFILE_ID) throw new Error(`VIDEO model selection gate lost before submit: expected ${REAL_VIDEO_PROFILE_ID}, got ${videoSubmitSelectedValue}`);
       const generateVideo = page.getByRole('button', { name: '生成 VIDEO', exact: true });
       await generateVideo.waitFor({ state: 'visible', timeout: 30000 });
       const videoInitialResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'), { timeout: 180000 }).catch((error) => ({ __wait_error: error }));
@@ -560,6 +575,9 @@ async function runOnce(browser, index) {
       const videoInitialResponseResult = await Promise.race([videoInitialResponse, page.waitForTimeout(5000).then(() => null)]);
       if (videoInitialResponseResult?.__wait_error) throw videoInitialResponseResult.__wait_error;
       if (videoInitialResponseResult && !videoInitialResponseResult.ok()) throw new Error(`VIDEO generation failed: HTTP ${videoInitialResponseResult.status()} ${await videoInitialResponseResult.text()}`);
+      const videoSubmitMutation = (evidence.mutations || []).filter((mutation) => mutation.method === 'POST' && mutation.path.endsWith('/generate-video')).at(-1) || null;
+      evidence.video_model_selection_gate.canonical_payload_profile_id = videoSubmitMutation?.body?.modelProfileId || videoSubmitMutation?.body?.model_profile_id || null;
+      if (evidence.video_model_selection_gate.canonical_payload_profile_id !== REAL_VIDEO_PROFILE_ID) throw new Error(`VIDEO canonical payload model profile mismatch: ${JSON.stringify(evidence.video_model_selection_gate)}`);
       await page.getByRole('button', { name: '视频', exact: true }).click();
       const videoCandidateState = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => reviewableRawCandidate(current.VIDEO).reviewable, 240000);
       const videoCandidateReview = reviewableRawCandidate(videoCandidateState.shot.VIDEO);
@@ -829,7 +847,7 @@ async function main() {
     if (REAL_IMAGE_STAGING && REAL_PROVIDER_FINAL_SLICE && (!run.real_provider_final_slice?.video?.official_v2?.current || !run.real_provider_final_slice?.video?.official_v2?.v1_superseded || run.real_provider_final_slice?.video?.regenerate?.old_official_preserved !== true)) failures.push({ run: run.run, code: 'REAL_PROVIDER_FINAL_SLICE_NOT_PROVEN', real_provider_final_slice: run.real_provider_final_slice });
     if (REAL_IMAGE_STAGING && !REAL_PROVIDER_FINAL_SLICE && REAL_IMAGE_SINGLE_CALL && (!run.real_image_staging?.final?.official_v1_version_id || run.real_image_staging?.final?.official_v1_current !== true || run.real_image_staging?.regenerate !== null)) failures.push({ run: run.run, code: 'REAL_IMAGE_INITIAL_OFFICIAL_NOT_PROVEN', real_image_staging: run.real_image_staging });
     if (REAL_IMAGE_STAGING && !REAL_PROVIDER_FINAL_SLICE && !REAL_IMAGE_SINGLE_CALL && (!run.real_image_staging?.final?.official_v2_version_id || !run.real_image_staging?.regenerate?.official_v1_current_during_review)) failures.push({ run: run.run, code: 'REAL_IMAGE_VERSION_LINEAGE_NOT_PROVEN', real_image_staging: run.real_image_staging });
-    if (!run.delete_audit || Number(run.delete_audit.payload?.orphan_rows || 0) !== 0 || Number(run.delete_audit.payload?.ambiguous_rows || 0) !== 0) failures.push({ run: run.run, code: 'DELETE_AUDIT_FAILED', delete_audit: run.delete_audit });
+    if (process.env.E2E_KEEP_PROJECTS !== '1' && (!run.delete_audit || Number(run.delete_audit.payload?.orphan_rows || 0) !== 0 || Number(run.delete_audit.payload?.ambiguous_rows || 0) !== 0)) failures.push({ run: run.run, code: 'DELETE_AUDIT_FAILED', delete_audit: run.delete_audit });
     if (!REAL_IMAGE_STAGING && ((run.video_running_before_reload || []).some((item) => !item.execution_id || !item.provider_task_id) || (run.video_running_after_reload || []).some((item) => !item.same_execution || !item.same_provider_task))) failures.push({ run: run.run, code: 'VIDEO_RELOAD_NOT_PROVEN' });
   }
   if (!REAL_IMAGE_STAGING) {

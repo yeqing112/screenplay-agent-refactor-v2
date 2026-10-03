@@ -1,68 +1,153 @@
 {
-  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-truth-audit-v1",
+  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-truth-audit-v2",
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE",
-  "baseline_commit": "ce9c4c93ccd632fe21dd94e0b7c94ff484933205",
-  "status": "BLOCKED_REAL_VIDEO_MODEL_SELECTION_ASYNC_409",
-  "phase_budget": {
+  "status": "BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET",
+  "marker": "PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE_NOT_SET",
+  "historical_budget": {
     "authorized_calls": 5,
     "actual_real_provider_calls": 2,
-    "reserve_remaining": 3,
-    "retry": "CONDITIONAL_NOT_EXERCISED"
+    "status": "CLOSED"
+  },
+  "current_budget": {
+    "authorized_calls": 5,
+    "actual_real_provider_calls": 4,
+    "reserve_remaining": 1,
+    "status": "ACTIVE",
+    "emergency_reserve_used": false,
+    "note": "Four real IMAGE calls were consumed across two provider-free-to-video-blocked canary attempts; the remaining one call is not used because the unresolved VIDEO issues are application/configuration issues rather than transient Provider failures."
+  },
+  "zero_call_final_preflight": {
+    "status": "PASS",
+    "artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json",
+    "runs": 1,
+    "failures": 0,
+    "external_hosts": 0,
+    "video_model_selection_gate": {
+      "expected_profile_id": "builtin-mock-video",
+      "option_exists": true,
+      "selected_value": "builtin-mock-video",
+      "canonical_payload_profile_id": "builtin-mock-video",
+      "stable": true
+    },
+    "image_workflow": "PASS",
+    "video_workflow": "PASS"
   },
   "staging": {
-    "database": "work/db/phase-production-ui-v3-final-slice-20261003.sqlite",
+    "database": "work/db/phase-production-ui-v3-final-slice-v2-real-20261003.sqlite",
     "production_db_distinct": true,
     "production_sha256_before": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d",
-    "production_sha256_after": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d"
+    "production_sha256_after": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d",
+    "protected_book_990400_writes": 0,
+    "writes_outside_canary": 0,
+    "production_db_writes": 0
   },
   "image": {
     "profile_id": "local-image-mw4y52",
     "provider": "shapi-openai-images",
     "model": "grok-imagine-image-quality",
-    "initial": {
-      "execution_id": "ea054b0e7b834f989792e6ffa577adc3",
-      "candidate_id": "candidate-3c1ea83d3ca2457aa9eb93bb9e741990",
-      "official_id": "omv-a44eb0a35c4ca8b6c105e008b89e9dfa51626232",
-      "result": "SUCCEEDED"
-    },
-    "regenerate": {
-      "execution_id": "93ea2c354cfd4a1cbe6b61dbc43ba038",
-      "candidate_id": "candidate-2564a864cf3344919f2451efdc02d88d",
-      "old_official_preservation_during_review": "NOT_PROVEN_BY_FINAL_ARTIFACT",
-      "result": "SUCCEEDED"
-    },
-    "official_v2": {
-      "id": "omv-9cae40c7d65c97022299161fa5f1b0721efca2a6",
-      "current": true,
-      "v1_superseded": true
-    },
-    "final": "PARTIAL_GO"
+    "real_provider_calls": 4,
+    "successful_operations": [
+      {
+        "ordinal": 1,
+        "attempt": "credential-fixed-run",
+        "operation": "initial",
+        "execution_id": "cc1bfad62e104750bf5b6565193dda4b",
+        "candidate_id": "candidate-799daf41748b41c5a65c165e81b49891",
+        "result": "SUCCEEDED"
+      },
+      {
+        "ordinal": 2,
+        "attempt": "credential-fixed-run",
+        "operation": "regenerate",
+        "execution_id": "8fbcfa4e9c8b4284affcfbd97ca12edc",
+        "candidate_id": "candidate-ee504678e7e5467eb31e2599b8e2ab33",
+        "result": "SUCCEEDED"
+      },
+      {
+        "ordinal": 3,
+        "attempt": "profile-metadata-fixed-run",
+        "operation": "initial",
+        "execution_id": "8fb1e56f6270412ebf658891c26a0534",
+        "candidate_id": "candidate-02f877d202ca4e5dbe07b2a41accd87e",
+        "result": "SUCCEEDED"
+      },
+      {
+        "ordinal": 4,
+        "attempt": "profile-metadata-fixed-run",
+        "operation": "regenerate",
+        "execution_id": "f166c8d2af6145339e5baa546a4237d2",
+        "candidate_id": "candidate-1cb45c89e2bb41999b88ef9ba3576340",
+        "result": "SUCCEEDED"
+      }
+    ],
+    "old_official_preserved_during_review": "NOT_PROVEN_BY_FINAL_ARTIFACT",
+    "official_v2": "PROVEN_IN_EACH_IMAGE_ATTEMPT",
+    "note": "All four calls reached SHAPI and succeeded. Canaries were cleaned after each blocked run; their media is retained as JSON/screenshot evidence only."
   },
   "video": {
     "profile_id": "local-video-7deneh",
     "provider": "minimax-h3-async",
     "model": "MiniMax-H3",
-    "initial_calls": 0,
+    "model_profile_selected_before_submit": true,
+    "selection_gate_artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json",
+    "real_provider_calls": 0,
+    "initial": "NOT_SUBMITTED",
     "running_observed": false,
-    "reload_identity": "NOT_REACHED",
-    "duplicate_submission": false,
+    "reload_identity_preserved": "NOT_REACHED",
+    "duplicate_provider_submission": false,
     "candidate_v1": null,
     "official_v1": null,
     "regenerate": null,
-    "old_official_preserved": null,
+    "old_official_preserved_during_review": null,
     "candidate_v2": null,
     "official_v2": null,
-    "final": "BLOCKED_MODEL_SELECTION_ASYNC_409"
+    "blocking_attempts": [
+      {
+        "provider_calls": 0,
+        "error": "RUNTIME_CREDENTIAL_NOT_RESOLVED",
+        "fixed": true
+      },
+      {
+        "provider_calls": 0,
+        "error": "MODEL_CAPABILITY_MISMATCH",
+        "fixed": true
+      },
+      {
+        "provider_calls": 0,
+        "error": "GENERATION_PROVIDER_PARAM_INVALID",
+        "fixed_in_staging": false
+      }
+    ],
+    "note": "The final VIDEO block occurred before Provider submission because the persisted MiniMax default_params contain fields rejected by the canonical ProviderExecutionProfile allowlist."
   },
-  "protected_book_990400_writes": 0,
-  "writes_outside_canary": 0,
-  "production_db_writes": 0,
-  "browser_direct_provider_calls": 0,
-  "secret_leaks": 0,
-  "orphan_rows": 0,
-  "orphan_media_files": 0,
+  "attempt_lineage": {
+    "status": "PARTIAL_IMAGE_ONLY",
+    "video_lineage": "NOT_CREATED",
+    "cross_media_contamination": false
+  },
+  "canonical_path": {
+    "browser_to_backend": true,
+    "browser_direct_provider_calls": 0,
+    "legacy_authoritative_writes": 0
+  },
+  "network": {
+    "browser_external_provider_hosts": 0,
+    "secret_leaks": 0
+  },
+  "cleanup": {
+    "orphan_rows": 0,
+    "orphan_media_files": 0,
+    "ambiguous_rows": 0
+  },
   "alembic_head": "p1q2r3s4t5u6",
   "new_migrations": 0,
-  "final_code_commit": "0760a02",
-  "audit_commit_note": "Subsequent commits contain audit/evidence updates only."
+  "tests": {
+    "web_targeted": "63 files / 447 tests passed",
+    "backend_relevant": "60 + 45 passed (105 total)",
+    "frontend_build": "passed",
+    "compileall": "passed",
+    "git_diff_check": "passed"
+  },
+  "blocking_condition": "BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET",
+  "required_next_action": "Obtain a fresh independent real-provider budget before attempting the remaining two VIDEO calls; do not consume the one-call emergency reserve for this application/configuration failure."
 }

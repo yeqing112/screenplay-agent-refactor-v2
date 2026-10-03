@@ -452,6 +452,15 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "transport_binding_id": _transport_binding_id(profile),
     }
 
+    # Older persisted profiles may predate the canonical adapter metadata.
+    # Derive the stable capability/adapter identity from the validated media
+    # capability so a registry edit can repair those rows without requiring
+    # operators to know internal adapter version strings.
+    if capability in {"image", "video"}:
+        normalized["generation_capability"] = normalized["generation_capability"] or f"{capability.upper()}_GENERATION"
+        normalized["adapter_id"] = normalized["adapter_id"] or f"{capability}_generic"
+        normalized["adapter_version"] = normalized["adapter_version"] or f"{capability}_generic_adapter_v1"
+
     if provider == MOCK_PROVIDER:
         return normalized
 

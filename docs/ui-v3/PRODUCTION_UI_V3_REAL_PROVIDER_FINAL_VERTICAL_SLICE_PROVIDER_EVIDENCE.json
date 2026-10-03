@@ -1,51 +1,81 @@
 {
-  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-provider-evidence-v1",
-  "budget": {
+  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-provider-evidence-v2",
+  "historical_budget": {
     "authorized": 5,
-    "actual": 2,
-    "reserve_remaining": 3
+    "actual_real_provider_calls": 2,
+    "status": "CLOSED"
+  },
+  "current_budget": {
+    "authorized": 5,
+    "actual_real_provider_calls": 4,
+    "reserve_remaining": 1,
+    "status": "ACTIVE"
   },
   "calls": [
     {
       "ordinal": 1,
-      "media_type": "IMAGE",
+      "attempt": "credential-fixed-run",
       "operation": "initial",
-      "execution_id": "ea054b0e7b834f989792e6ffa577adc3",
-      "attempt_id": null,
+      "execution_id": "cc1bfad62e104750bf5b6565193dda4b",
+      "candidate_id": "candidate-799daf41748b41c5a65c165e81b49891",
+      "result": "SUCCEEDED",
       "provider": "shapi-openai-images",
       "model": "grok-imagine-image-quality",
       "logical_provider_calls": 1,
-      "transport_retry_count": 0,
-      "result": "SUCCEEDED",
-      "candidate_id": "candidate-3c1ea83d3ca2457aa9eb93bb9e741990",
-      "official_version_id": "omv-a44eb0a35c4ca8b6c105e008b89e9dfa51626232"
+      "transport_retry_count": 0
     },
     {
       "ordinal": 2,
-      "media_type": "IMAGE",
+      "attempt": "credential-fixed-run",
       "operation": "regenerate",
-      "execution_id": "93ea2c354cfd4a1cbe6b61dbc43ba038",
-      "attempt_id": "gat_4318a17bdf7a456a81add64b13e2f7a7",
+      "execution_id": "8fbcfa4e9c8b4284affcfbd97ca12edc",
+      "candidate_id": "candidate-ee504678e7e5467eb31e2599b8e2ab33",
+      "result": "SUCCEEDED",
       "provider": "shapi-openai-images",
       "model": "grok-imagine-image-quality",
       "logical_provider_calls": 1,
-      "transport_retry_count": 0,
-      "result": "SUCCEEDED",
-      "candidate_id": "candidate-2564a864cf3344919f2451efdc02d88d",
-      "official_version_id": "omv-9cae40c7d65c97022299161fa5f1b0721efca2a6"
+      "transport_retry_count": 0
     },
     {
       "ordinal": 3,
-      "media_type": "VIDEO",
+      "attempt": "profile-metadata-fixed-run",
       "operation": "initial",
-      "execution_id": null,
-      "attempt_id": null,
-      "provider": "minimax-h3-async",
-      "model": "MiniMax-H3",
-      "logical_provider_calls": 0,
-      "transport_retry_count": 0,
-      "result": "NOT_SUBMITTED",
-      "ui_error": "HTTP 409 model profile required"
+      "execution_id": "8fb1e56f6270412ebf658891c26a0534",
+      "candidate_id": "candidate-02f877d202ca4e5dbe07b2a41accd87e",
+      "result": "SUCCEEDED",
+      "provider": "shapi-openai-images",
+      "model": "grok-imagine-image-quality",
+      "logical_provider_calls": 1,
+      "transport_retry_count": 0
+    },
+    {
+      "ordinal": 4,
+      "attempt": "profile-metadata-fixed-run",
+      "operation": "regenerate",
+      "execution_id": "f166c8d2af6145339e5baa546a4237d2",
+      "candidate_id": "candidate-1cb45c89e2bb41999b88ef9ba3576340",
+      "result": "SUCCEEDED",
+      "provider": "shapi-openai-images",
+      "model": "grok-imagine-image-quality",
+      "logical_provider_calls": 1,
+      "transport_retry_count": 0
+    }
+  ],
+  "video_attempts": [
+    {
+      "provider_calls": 0,
+      "error": "RUNTIME_CREDENTIAL_NOT_RESOLVED",
+      "fixed": true
+    },
+    {
+      "provider_calls": 0,
+      "error": "MODEL_CAPABILITY_MISMATCH",
+      "fixed": true
+    },
+    {
+      "provider_calls": 0,
+      "error": "GENERATION_PROVIDER_PARAM_INVALID",
+      "fixed_in_staging": false
     }
   ],
   "secrets_redacted": true
