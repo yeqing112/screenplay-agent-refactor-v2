@@ -1,0 +1,16 @@
+{
+  "schema_version": "production-ui-v3-video-async-zero-call-snapshot-v1",
+  "phase": "PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE",
+  "provider": "75api-minimax-h3",
+  "model": "minimax_h3_no_audios",
+  "profile_id": "local-video-ex8l4t",
+  "real_provider_calls": 0,
+  "secret_leaks": 0,
+  "snapshot": "VIDEO_SUBMIT_BOUNDARY_STATE",
+  "execution_id": "execution-a",
+  "attempt_id": "attempt-a",
+  "provider_task_id": "task-a",
+  "status": "RUNNING",
+  "candidate_id": null,
+  "logical_provider_calls": 1
+}

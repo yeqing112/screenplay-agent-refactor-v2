@@ -1,7 +1,7 @@
 {
   "schema_version": "production-ui-v3-real-provider-video-closure-v4",
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_V4",
-  "status": "BLOCKED_TECHNICAL_VALIDATION",
+  "status": "CLOSED_BLOCKED_TECHNICAL_VALIDATION",
   "closure_marker": "VIDEO_REAL_PROVIDER_CLOSURE_COMPLETE_NOT_SET",
   "final_vertical_slice_marker": "PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE_NOT_SET",
   "budget": {
@@ -91,5 +91,33 @@
     "VIDEO_TECHNICAL_VALIDATION_FAILED",
     "IMAGE_REVIEW_PRESERVATION_EVIDENCE_GAP"
   ],
-  "next_action": "Create a new independently authorized VIDEO budget after resolving the canonical 75API media retrieval/storage issue; do not consume the v4 reserve for this non-transient failure."
+  "next_action": "Create a new independently authorized VIDEO budget after resolving the canonical 75API media retrieval/storage issue; do not consume the v4 reserve for this non-transient failure.",
+  "v4_historical_truth": {
+    "authorized_calls": 3,
+    "used_calls": 2,
+    "successful_normal_closure_calls": 0,
+    "reserve_used": false,
+    "reserve_permanently_unused": true,
+    "real_provider_calls_this_zero_call_phase": 0,
+    "historical_failure_preserved": true
+  },
+  "root_cause_clarification": [
+    "Canonical profile is secret-free; be9eca2 initially read profile.api_key for content retrieval instead of runtime_credential_value.",
+    "The async transport previously hid submit and polling in one blocking handler and did not persist provider task identity at the submit boundary.",
+    "That blocking path prevented authoritative RUNNING/reload/reconcile evidence.",
+    "The current code routes submit, poll, and content retrieval through one runtime_credential_value authority and separates SUBMIT from RECONCILE."
+  ],
+  "provider_free_followup": {
+    "phase": "PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE",
+    "real_provider_generation_calls": 0,
+    "75api_post": 0,
+    "75api_poll": 0,
+    "75api_content": 0,
+    "real_image_calls": 0,
+    "local_protocol_fixture": "PASS",
+    "canonical_submit_reconcile_contract": "PASS",
+    "canonical_ui_browser_reload_evidence": "NOT_RUN",
+    "ready_for_v5": false,
+    "reason": "Provider-free transport and canonical service contracts pass; browser-level Production UI V3 snapshot capture remains to be run before authorizing a new real budget."
+  }
 }

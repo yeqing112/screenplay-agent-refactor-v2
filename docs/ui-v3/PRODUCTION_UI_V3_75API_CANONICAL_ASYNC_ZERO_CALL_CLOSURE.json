@@ -1,0 +1,84 @@
+{
+  "schema_version": "production-ui-v3-75api-canonical-async-zero-call-closure-v1",
+  "phase": "PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE",
+  "status": "BLOCKED_TECHNICAL_VALIDATION",
+  "v4": {
+    "status": "CLOSED_BLOCKED_TECHNICAL_VALIDATION",
+    "authorized": 3,
+    "used": 2,
+    "reserve": 1,
+    "reserve_permanently_unused": true
+  },
+  "canonical_credential_source": {
+    "profile_api_key_used": false,
+    "runtime_credential_value_used": true,
+    "submit_auth": "PASS",
+    "poll_auth": "PASS",
+    "content_auth": "PASS",
+    "secret_free_profile": "PASS"
+  },
+  "async_runtime": {
+    "submit_poll_split": "PASS",
+    "provider_task_persisted_at_submit": "PASS",
+    "running_observable": "PASS",
+    "reload_same_execution": "PASS",
+    "reload_same_task": "PASS",
+    "duplicate_submit": "PASS",
+    "logical_provider_calls": 1
+  },
+  "content_retrieval": {
+    "bearer_source": "runtime_credential_value",
+    "authenticated_fixture": "PASS",
+    "mp4_persistence": "PASS",
+    "technical_validation": "PASS",
+    "diagnostics": "PASS"
+  },
+  "provider_free_video_initial": {
+    "candidate_v1": "PASS",
+    "official_v1": "PASS",
+    "real_calls": 0
+  },
+  "provider_free_video_regenerate": {
+    "new_execution": "PASS",
+    "new_provider_task": "PASS",
+    "old_official_preserved": "PASS",
+    "candidate_v2": "PASS",
+    "official_v2": "PASS",
+    "real_calls": 0
+  },
+  "authoritative_snapshots": {
+    "VIDEO_SUBMIT_BOUNDARY_STATE": "PASS",
+    "VIDEO_RUNNING_BEFORE_RELOAD_STATE": "PASS",
+    "VIDEO_RUNNING_AFTER_RELOAD_STATE": "PASS",
+    "VIDEO_OFFICIAL_V1_STATE": "PASS",
+    "VIDEO_REGENERATE_PRE_APPROVAL_STATE": "PASS",
+    "VIDEO_OFFICIAL_V2_STATE": "PASS",
+    "browser_capture": "NOT_RUN",
+    "artifact_directory": "docs/ui-v3/PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE/"
+  },
+  "real_provider_calls": {
+    "75api_post": 0,
+    "75api_poll": 0,
+    "75api_content": 0,
+    "image": 0
+  },
+  "security": {
+    "secret_leaks": 0,
+    "browser_direct_provider_calls": 0,
+    "production_db_writes": 0,
+    "book_990400_writes": 0,
+    "orphans": 0
+  },
+  "tests": {
+    "async_lifecycle": "4 passed",
+    "backend_relevant": "100 passed",
+    "compile": "PASS",
+    "diff_check": "PASS",
+    "alembic_head": "p1q2r3s4t5u6",
+    "web_full": "previous baseline 447 passed",
+    "frontend_build": "previous baseline PASS"
+  },
+  "next_phase": "BLOCKED_TECHNICAL_VALIDATION",
+  "blocker": "Browser-level Production UI V3 reload/snapshot capture remains before a new real V5 budget may be authorized.",
+  "v5_budget_created": false
+}

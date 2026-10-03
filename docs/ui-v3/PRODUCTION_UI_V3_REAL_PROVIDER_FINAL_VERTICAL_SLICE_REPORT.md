@@ -104,3 +104,14 @@ These snapshots carry candidate, execution, attempt, provider-task identity, cur
 - production DB SHA before/after: `d729360fae56fe082729962db48d26de272cd956e500b1cda6702328d424c026`（相同）
 - 代码修复：canonical VIDEO persistence 现在会向 75API 内容 URL 传递解析后的 Bearer credential；该修复尚未用额外真实调用验证。
 - 证据：[V4 VIDEO closure evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_V4_EVIDENCE.json)。
+
+## Provider-free 75API async zero-call closure
+
+本轮新增 provider-free canonical async 验证，不产生任何真实 Provider 调用。75API 的 submit、poll、authenticated content retrieval 均使用同一个 `runtime_credential_value`；canonical submit 在 poll 前持久化 `RUNNING` 与 provider task identity，reconcile 只使用已持久化 task，不重复 POST。
+
+- 0 次 75API POST / poll / content
+- 0 次真实 IMAGE
+- 本地 HTTP protocol fixture、MP4 持久化、canonical submit/reconcile、task identity、regenerate lineage 测试通过
+- 浏览器级 Production UI V3 reload snapshot 尚未执行，因此不创建 V5 预算，状态保持 `BLOCKED_TECHNICAL_VALIDATION`
+
+证据：[zero-call closure report](./PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE_REPORT.md)；[zero-call closure audit](./PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE.json)。
