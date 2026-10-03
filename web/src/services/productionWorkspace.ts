@@ -29,6 +29,16 @@ export async function fetchProductionWorkspaceV2(bookId: number, selection?: { i
   return normalizeProductionWorkspaceV2Snapshot(payload, bookId)
 }
 
+export async function reconcileCanonicalGeneration(options: { bookId: number; episode: number; shotId: string | number; executionId: string; confirmationToken: string }) {
+  const response = await fetch(`/api/books/${options.bookId}/episodes/${options.episode}/shots/${options.shotId}/generation/reconcile`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ execution_id: options.executionId, confirmation_token: options.confirmationToken }),
+  })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return response.json() as Promise<Record<string, unknown>>
+}
+
 export class ProductionWorkspaceServiceError extends Error {
   readonly status: number
   readonly code: string | null

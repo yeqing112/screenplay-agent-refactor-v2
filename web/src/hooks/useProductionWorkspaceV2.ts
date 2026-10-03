@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createProductionWorkspaceV2GenerationFixture, createProductionWorkspaceV2OfficialCandidateCoexistenceFixture, createProductionWorkspaceV2ReviewFixture, productionWorkspaceV2Fixture, type ProductionWorkspaceV2GenerationFixtureKind } from '../fixtures/productionWorkspaceV2'
-import { fetchProductionWorkspaceV2 } from '../services/productionWorkspace'
+import { fetchProductionWorkspaceV2, reconcileCanonicalGeneration } from '../services/productionWorkspace'
 import type { ProductionWorkspaceLoadState, ProductionWorkspaceV2Snapshot } from '../domain/productionWorkspace'
 import { readExplicitGenerationProfileSelection } from '../components/productWorkspaceGeneration'
 
@@ -10,6 +10,7 @@ export function useProductionWorkspaceV2(bookId?: number) {
   const [error, setError] = useState<string | null>(null)
   const [state, setState] = useState<ProductionWorkspaceLoadState>('loading')
   const [reviewFixtureRefreshCount, setReviewFixtureRefreshCount] = useState(0)
+  const reconcileTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const refresh = useCallback(async () => {
     if (!bookId || bookId <= 0) {
@@ -73,8 +74,32 @@ export function useProductionWorkspaceV2(bookId?: number) {
         return
       }
       const selection = readExplicitGenerationProfileSelection()
-      setData(await fetchProductionWorkspaceV2(bookId, selection))
+      const snapshot = await fetchProductionWorkspaceV2(bookId, selection)
+      // Async canonical VIDEO executions are durable. Reconcile them from
+      // the read model on load so a browser reload resumes the same task.
+      const running = snapshot.shots.flatMap((shot) => {
+        const execution = shot.VIDEO?.latest_execution
+        const state = String(execution?.state || '').toUpperCase()
+        if (!execution?.id || !execution?.provider_task_id || !execution?.confirmation_token || !['RUNNING', 'PROVIDER_PENDING', 'PROVIDER_CALLED'].includes(state)) return []
+        return [{ episode: Number(shot.identity.episode), shotId: shot.identity.shot_id, executionId: String(execution.id), confirmationToken: String(execution.confirmation_token) }]
+      })
+      setData(snapshot)
       setState('ready')
+      // Publish RUNNING before the first provider status GET completes. The
+      // bounded timer keeps polling through this same backend reconcile path,
+      // including after a full browser reload.
+      if (running.length > 0 && !reconcileTimer.current) {
+        reconcileTimer.current = setTimeout(() => {
+          reconcileTimer.current = null
+          void (async () => {
+            let changed = false
+            for (const item of running) {
+              try { await reconcileCanonicalGeneration({ bookId, ...item }); changed = true } catch { /* retry on next refresh */ }
+            }
+            if (changed) await refresh()
+          })()
+        }, 250)
+      }
     } catch (reason) {
       setData(null)
       setState('unavailable')

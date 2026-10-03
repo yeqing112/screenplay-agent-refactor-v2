@@ -1,0 +1,251 @@
+{
+  "schema_version": "production-ui-v3-75api-async-browser-zero-call-network-v1",
+  "browser_generation_execute_post_count": 2,
+  "browser_generation_submit_count": 2,
+  "browser_generation_reconcile_post_count": 8,
+  "browser_promotion_post_count": 2,
+  "browser_direct_provider_calls": 0,
+  "browser_external_hosts": [],
+  "fixture_provider_submit_post_count": 2,
+  "fixture_provider_poll_get_count": 6,
+  "fixture_provider_content_get_count": 2,
+  "fixture_auth_failures": 0,
+  "fixture_authorization_headers": [
+    "<present>",
+    "<present>",
+    "<present>",
+    "<present>",
+    "<present>",
+    "<present>",
+    "<present>",
+    "<present>",
+    "<present>",
+    "<present>"
+  ],
+  "real_75api_post": 0,
+  "real_75api_poll": 0,
+  "real_75api_content": 0,
+  "real_image_provider_calls": 0,
+  "mutations": [
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/storyboard/1/1/generate-video",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "modelProfileId": "browser-fixture-75api-v1",
+        "confirmed": true,
+        "allowExternalCall": true,
+        "compileIfMissing": false,
+        "generationChain": "production_workspace_v2"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/agent/updates/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "bookId": 990452,
+        "scope": {
+          "section": "创作画布",
+          "shot_id": null,
+          "asset_id": null
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "46b41d450757419ba2206dec81180077",
+        "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "46b41d450757419ba2206dec81180077",
+        "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "46b41d450757419ba2206dec81180077",
+        "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "46b41d450757419ba2206dec81180077",
+        "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/assets/candidates/candidate-e98c034e820c420890431bebe8133082/promote",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "validation_id": "mvr-b67c5aeb34acef665e5a0f3e3ed8a36ec61be1eb",
+        "reviewer": "shot-studio-human",
+        "decision": "APPROVE",
+        "review_notes": "Approved from Shot Studio Review Desk.",
+        "confirmation": true
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation-attempts",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "operationKind": "REGENERATE",
+        "targetMedia": "VIDEO",
+        "operationIdempotencyKey": "dcec59ef-a9b2-4cee-b216-40219d75169a",
+        "reason": "Regenerate current official"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation-attempts/gat_4d446c09b8684aba8001ab54c19c8648/preview",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "attemptConfirmationToken": "gat_a90cbac7a6c3c93bd432f5d133bd0ee79288105eb78ee83c6a13a0a435913310"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation-attempts/gat_4d446c09b8684aba8001ab54c19c8648/execute",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execute": true,
+        "confirmed": true,
+        "allowExternalCall": true,
+        "attemptConfirmationToken": "gat_a90cbac7a6c3c93bd432f5d133bd0ee79288105eb78ee83c6a13a0a435913310",
+        "previewExecutionId": "be61bf5d92444ebcb4502359d1f95d71",
+        "executionConfirmationToken": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+        "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+        "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+        "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+        "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/assets/candidates/candidate-b374746b1a954f9b8360c770cd940986/promote",
+      "host": "127.0.0.1:5176",
+      "body": {
+        "validation_id": "mvr-7a67b6272e3a99199c6940826f35f37201943aa1",
+        "reviewer": "shot-studio-human",
+        "decision": "APPROVE",
+        "review_notes": "Approved from Shot Studio Review Desk.",
+        "confirmation": true
+      }
+    }
+  ],
+  "console_errors": [],
+  "http_errors": [],
+  "initial_execution": {
+    "execution_id": "46b41d450757419ba2206dec81180077",
+    "attempt_id": null,
+    "provider_task_id": "browser-task-001",
+    "provider_request_id": "browser-request-001",
+    "state": "RUNNING",
+    "candidate_id": null
+  },
+  "regenerate_execution": {
+    "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+    "attempt_id": null,
+    "provider_task_id": "browser-task-002",
+    "provider_request_id": "browser-request-002",
+    "state": "RUNNING",
+    "candidate_id": null
+  },
+  "candidate_v1": "candidate-e98c034e820c420890431bebe8133082",
+  "candidate_v2": "candidate-b374746b1a954f9b8360c770cd940986",
+  "official_v1": "omv-d9589ef1b403bf0c5d18798b08e27db5782a80e0",
+  "official_v2": "omv-5a404d844ae4477f3a73560b935410301b2b1d8d",
+  "real_provider_calls": {
+    "75api_post": 0,
+    "75api_poll": 0,
+    "75api_content": 0,
+    "image": 0
+  }
+}

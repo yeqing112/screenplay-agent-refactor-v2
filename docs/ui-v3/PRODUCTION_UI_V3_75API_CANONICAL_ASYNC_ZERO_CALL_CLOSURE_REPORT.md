@@ -1,70 +1,50 @@
-# PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE
+# Production UI V3 · 75API Canonical Async Zero Call Closure
 
 ## Status
 
-- V4: `CLOSED_BLOCKED_TECHNICAL_VALIDATION`
-- V4 used: `2/3`
-- V4 reserve: `1` unused and permanently closed
-- real Provider calls in this phase: `0`
-- `READY_FOR_REAL_PROVIDER_VIDEO_V5_BUDGET`: **NO**
+`READY_FOR_REAL_PROVIDER_VIDEO_V5_BUDGET`
 
-## Credential authority
+This phase used only an isolated SQLite database and a local HTTP fixture that implements the 75API protocol. No V5 budget was created and no real provider was contacted. Historical V4 evidence remains `CLOSED_BLOCKED_TECHNICAL_VALIDATION`, used `2/3`, with its reserve permanently unused.
 
-Canonical profiles remain secret-free. The canonical transport now passes the short-lived `runtime_credential_value` into all three 75API boundaries:
+## Browser evidence
 
-- `POST /v1/videos`
-- `GET /v1/videos/{task_id}`
-- `GET /v1/videos/{task_id}/content`
+The actual Production UI V3 browser run used Book `990452`, Shot `1`, profile `browser-fixture-75api-v1` (`75api-minimax-h3`, `minimax_h3_no_audios`, `75api-minimax-h3.video.v1`). The browser clicked Generate VIDEO, observed authoritative RUNNING state, reloaded the same page, resumed through backend reconcile, approved Candidate v1, regenerated, reviewed Candidate v2 while Official v1 stayed current, and approved Official v2.
 
-The content download header is constructed only from `runtime_credential_value`; `profile.api_key` is not used by the canonical content path. Provider responses, execution snapshots, candidates, audit JSON, and browser traffic contain no credential value.
+- Before reload: execution `46b41d450757419ba2206dec81180077`, task `browser-task-001`.
+- After reload: the same execution and task remained RUNNING; no second submit occurred.
+- Candidate v1: `candidate-e98c034e820c420890431bebe8133082`; Official v1: `omv-d9589ef1b403bf0c5d18798b08e27db5782a80e0`.
+- Regenerate: execution `be61bf5d92444ebcb4502359d1f95d71`, task `browser-task-002`.
+- Candidate v2: `candidate-b374746b1a954f9b8360c770cd940986`; Official v2: `omv-5a404d844ae4477f3a73560b935410301b2b1d8d`.
 
-## Async runtime
+Screenshots and browser-produced authoritative snapshots are under [`PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE`](./PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE/). The independent network ledger is [`PRODUCTION_UI_V3_75API_ASYNC_BROWSER_ZERO_CALL_NETWORK.json`](./PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE/PRODUCTION_UI_V3_75API_ASYNC_BROWSER_ZERO_CALL_NETWORK.json).
 
-The exact async binding now exposes separate `SUBMIT` and `RECONCILE` operations. Canonical submit persists `status=RUNNING`, provider, model, request identity, task identity, response hash, and `logical_provider_calls=1` before returning. Reconcile uses the persisted task ID and never calls POST again.
+## Network and fixture ledger
 
-A dedicated reconcile route is available at:
+- Browser generation submits: `2`; backend reconcile POSTs: `8`; promotion POSTs: `2`.
+- Browser direct Provider calls: `0`; browser external hosts: `0`.
+- Local fixture submit POSTs: `2`; status polls: `6`; authenticated content GETs: `2`; auth failures: `0`.
+- Real 75API POST/poll/content: `0/0/0`; real IMAGE calls: `0`.
 
-```text
-POST /api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation/reconcile
-```
+The fixture required `Authorization: Bearer <test-runtime-secret>` and only recorded redacted presence markers. The runtime secret was supplied to the isolated backend process and never persisted in the model profile or browser artifacts.
 
-The canary-compatible route is also available under `generation-canary/reconcile`.
+## Runtime fix
 
-## Provider-free evidence
+Production UI V3 now publishes the durable RUNNING projection before reconcile, then calls `POST /api/books/{book_id}/episodes/{episode}/shots/{shot_id}/generation/reconcile` on a bounded refresh loop. Reload recovery uses the persisted execution ID, task ID, and derived confirmation token from `production-workspace-v2`; it never re-submits the Provider. Reconcile accepts regenerate attempt lineage when its stored base provider request fingerprint still matches current authority.
 
-A local HTTP protocol fixture implements:
+## Isolation
 
-```text
-POST /v1/videos -> task-001
-GET /v1/videos/task-001 -> processing -> completed
-GET /v1/videos/task-001/content -> authenticated MP4
-```
+- Production backend `18765` and production frontend `5175` were not used for writes.
+- The isolated backend/frontend were `18768/5176`.
+- Book `990400` writes: `0`; production write audit: `0`; orphan rows: `0`; secret leaks: `0`.
+- The prior production DB audit hash remains unchanged at `d729360fae56fe082729962db48d26de272cd956e500b1cda6702328d424c026`.
 
-The fixture rejects missing authentication with HTTP 401. Tests prove:
+## Validation
 
-- one POST for one logical generation;
-- the same runtime credential on submit, poll, and content;
-- authenticated MP4 persistence;
-- canonical RUNNING task identity;
-- reconcile after reload-shaped state without duplicate POST;
-- regenerate creates a new execution/task and preserves Official v1 during Candidate v2 review.
+- Browser E2E: passed; screenshots `08` through `14`, all required state snapshots, and network ledger written.
+- 75API async fixture tests: `4 passed`.
+- Canonical focused backend suite: previous targeted `100 passed`; this run also re-ran the async lifecycle `4 passed`.
+- Web baseline: `447 passed`; frontend build: passed.
+- Python compileall and `git diff --check`: passed.
+- Alembic baseline: `p1q2r3s4t5u6`.
 
-The browser-level Production UI V3 snapshot capture has not been run in this zero-call phase, so V5 authorization remains blocked.
-
-## Technical diagnostics
-
-The canonical VIDEO boundary retains the public error `VIDEO_TECHNICAL_VALIDATION_FAILED` while recording secret-free diagnostic codes such as `CONTENT_AUTH_FAILED`, `CONTENT_DOWNLOAD_HTTP_ERROR`, `CONTENT_EMPTY`, `INVALID_MP4_CONTAINER`, `INVALID_DURATION`, and `LOCAL_PERSIST_FAILURE`. Provider task identity is preserved when post-processing fails.
-
-## Security and isolation
-
-- 75API POST: `0`
-- 75API poll: `0`
-- 75API content: `0`
-- real IMAGE calls: `0`
-- browser direct Provider calls: `0`
-- production DB writes: `0`
-- Book 990400 writes: `0`
-- orphan rows: `0`
-- secrets leaked: `0`
-
-Historical V4 evidence remains unchanged apart from the root-cause clarification: [V4 evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_V4_EVIDENCE.json).
+`VIDEO_REAL_PROVIDER_CLOSURE_COMPLETE` is not set. The next authorized stage may create V5 budget only after separate approval.

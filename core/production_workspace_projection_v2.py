@@ -9,11 +9,13 @@ contracts consumed by production execution.
 from __future__ import annotations
 
 import json
+import hashlib
 from collections import defaultdict
 from typing import Any
 from urllib.parse import urlparse
 
 from .production_workspace_projection import build_production_workspace_projection
+from .prompt_ir_phase_e import canonical
 
 
 # The repository has provider-free persistence helpers for controlled tests
@@ -39,6 +41,18 @@ def _json(value: Any, fallback: Any = None) -> Any:
 
 def _iso(value: Any) -> str | None:
     return value.isoformat() if value is not None and hasattr(value, "isoformat") else None
+
+
+def _execution_confirmation_token(execution: Any) -> str:
+    """Derive the non-secret token used to resume canonical reconciliation."""
+    return hashlib.sha256(canonical({
+        "schema_version": "phase_f_confirmation_v1",
+        "execution_id": _text(getattr(execution, "execution_id", "")),
+        "prompt_ir_version_id": int(getattr(execution, "prompt_ir_version_id", 0) or 0),
+        "generation_payload_fingerprint": _text(getattr(execution, "generation_payload_fingerprint", "")),
+        "model_profile_id": _text(getattr(execution, "model_profile_id", "")),
+        "provider_request_fingerprint": _text(getattr(execution, "provider_request_fingerprint", "")),
+    }).encode("utf-8")).hexdigest()
 
 
 def _preview_url(identity: Any) -> str | None:
@@ -123,6 +137,8 @@ def _prompt_lane(session: Any, *, shot: dict[str, Any], target_media: str) -> di
 def _execution_projection(execution: Any | None) -> dict[str, Any] | None:
     if execution is None:
         return None
+    snapshot = _json(getattr(execution, "request_snapshot_json", "{}"), {})
+    attempt = snapshot.get("_generation_attempt") if isinstance(snapshot, dict) else {}
     return {
         "id": _text(getattr(execution, "execution_id", "")),
         "state": _text(getattr(execution, "status", "")) or "unknown",
@@ -135,6 +151,8 @@ def _execution_projection(execution: Any | None) -> dict[str, Any] | None:
         "transport_retry_count": int(getattr(execution, "transport_retry_count", 0) or 0),
         "provider_task_id": _text(getattr(execution, "provider_task_id", "")),
         "provider_request_id": _text(getattr(execution, "provider_request_id", "")),
+        "confirmation_token": _execution_confirmation_token(execution),
+        "attempt_lineage_id": _text(attempt.get("attempt_lineage_id")) if isinstance(attempt, dict) else "",
         "request_fingerprint": _text(getattr(execution, "provider_request_fingerprint", "")),
         "candidate_id": _text(getattr(execution, "candidate_id", "")) or None,
         "failure_code": _text(getattr(execution, "failure_code", "")) or None,

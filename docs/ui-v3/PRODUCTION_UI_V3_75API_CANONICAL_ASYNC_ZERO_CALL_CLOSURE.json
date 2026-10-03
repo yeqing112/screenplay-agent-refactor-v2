@@ -1,7 +1,7 @@
 {
   "schema_version": "production-ui-v3-75api-canonical-async-zero-call-closure-v1",
   "phase": "PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE",
-  "status": "BLOCKED_TECHNICAL_VALIDATION",
+  "status": "READY_FOR_REAL_PROVIDER_VIDEO_V5_BUDGET",
   "v4": {
     "status": "CLOSED_BLOCKED_TECHNICAL_VALIDATION",
     "authorized": 3,
@@ -53,7 +53,7 @@
     "VIDEO_OFFICIAL_V1_STATE": "PASS",
     "VIDEO_REGENERATE_PRE_APPROVAL_STATE": "PASS",
     "VIDEO_OFFICIAL_V2_STATE": "PASS",
-    "browser_capture": "NOT_RUN",
+    "browser_capture": "PASS",
     "artifact_directory": "docs/ui-v3/PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE/"
   },
   "real_provider_calls": {
@@ -78,7 +78,35 @@
     "web_full": "previous baseline 447 passed",
     "frontend_build": "previous baseline PASS"
   },
-  "next_phase": "BLOCKED_TECHNICAL_VALIDATION",
-  "blocker": "Browser-level Production UI V3 reload/snapshot capture remains before a new real V5 budget may be authorized.",
-  "v5_budget_created": false
+  "next_phase": "READY_FOR_REAL_PROVIDER_VIDEO_V5_BUDGET",
+  "blocker": null,
+  "v5_budget_created": false,
+  "browser_capture": {
+    "status": "PASS",
+    "book_id": 990452,
+    "shot_id": "1",
+    "profile_id": "browser-fixture-75api-v1",
+    "initial_execution": "46b41d450757419ba2206dec81180077",
+    "initial_provider_task": "browser-task-001",
+    "regenerate_execution": "be61bf5d92444ebcb4502359d1f95d71",
+    "regenerate_provider_task": "browser-task-002",
+    "same_execution_after_reload": true,
+    "same_provider_task_after_reload": true,
+    "duplicate_submit": 0,
+    "candidate_v1": "candidate-e98c034e820c420890431bebe8133082",
+    "official_v1": "omv-d9589ef1b403bf0c5d18798b08e27db5782a80e0",
+    "candidate_v2": "candidate-b374746b1a954f9b8360c770cd940986",
+    "official_v2": "omv-5a404d844ae4477f3a73560b935410301b2b1d8d",
+    "browser_network": "docs/ui-v3/PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE/PRODUCTION_UI_V3_75API_ASYNC_BROWSER_ZERO_CALL_NETWORK.json"
+  },
+  "browser_network": {
+    "browser_generation_submit_count": 2,
+    "browser_generation_reconcile_post_count": 8,
+    "browser_promotion_post_count": 2,
+    "browser_direct_provider_calls": 0,
+    "fixture_provider_submit_post_count": 2,
+    "fixture_provider_poll_get_count": 6,
+    "fixture_provider_content_get_count": 2,
+    "browser_external_hosts": []
+  }
 }

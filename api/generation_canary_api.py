@@ -1737,7 +1737,17 @@ async def _reconcile_generation_canary_impl(book_id: int, episode: int, shot_id:
             "model_profile_fingerprint": (row.model_profile_fingerprint, context["profile_fingerprint"]),
             "provider_request_fingerprint": (row.provider_request_fingerprint, context["provider_request_fingerprint"]),
         }
-        changed = [key for key, (before, after) in drift.items() if str(before or "") != str(after or "")]
+        # Regenerate attempts intentionally derive a distinct business request
+        # fingerprint from the same canonical base request.  Reconcile must
+        # validate that stored base fingerprint against current authority
+        # instead of treating the attempt lineage suffix as drift.
+        attempt_meta = _json(row.request_snapshot_json, {}).get("_generation_attempt") if isinstance(_json(row.request_snapshot_json, {}), dict) else {}
+        provider_request_matches = str(row.provider_request_fingerprint or "") == str(context["provider_request_fingerprint"] or "")
+        if isinstance(attempt_meta, dict) and str(attempt_meta.get("base_provider_request_fingerprint") or "") == str(context["provider_request_fingerprint"] or ""):
+            provider_request_matches = True
+        changed = [key for key, (before, after) in drift.items() if key != "provider_request_fingerprint" and str(before or "") != str(after or "")]
+        if not provider_request_matches:
+            changed.append("provider_request_fingerprint")
         if changed:
             raise _error(409, "GENERATION_PREVIEW_STALE", "Async execution authority changed before reconcile.", changed=changed, provider_calls=0)
         try:

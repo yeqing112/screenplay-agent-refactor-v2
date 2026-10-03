@@ -1,0 +1,1628 @@
+{
+  "book_id": 990452,
+  "shot_id": "1",
+  "profile": {
+    "id": "browser-fixture-75api-v1",
+    "name": "Browser 75API protocol fixture",
+    "capability": "video",
+    "provider": "75api-minimax-h3",
+    "base_url": "http://127.0.0.1:18769",
+    "model_name": "minimax_h3_no_audios",
+    "default_params": {
+      "task_modes": [
+        "image_to_video",
+        "reference_to_video"
+      ],
+      "supports_reference_images": true,
+      "max_reference_images": 8,
+      "supports_first_frame": true,
+      "supports_last_frame": false,
+      "supports_audio": false,
+      "supports_text_to_video": false,
+      "supports_image_url": true,
+      "supports_file_upload": false,
+      "supports_negative_prompt": false,
+      "supports_async_tasks": true,
+      "requires_public_media_url": false,
+      "resolution": "768p",
+      "seconds": 5,
+      "aspect_ratio": "16:9",
+      "transport": "75api-videos",
+      "poll_interval_seconds": 1,
+      "poll_timeout_seconds": 120
+    },
+    "enabled": true,
+    "is_default": false,
+    "key_configured": false,
+    "builtin": false,
+    "source": "user",
+    "uses_mock": false,
+    "generation_capability": "VIDEO_GENERATION",
+    "adapter_id": "video_generic",
+    "adapter_version": "video_generic_adapter_v1",
+    "credential_ref": "env:API75_API_KEY",
+    "credential_configured": true,
+    "runtime_binding_id": "env:API75_API_KEY",
+    "transport_binding_id": "75api-minimax-h3.video.v1"
+  },
+  "boundary": {
+    "schema_version": "production-ui-v3-video-async-zero-call-browser-snapshot-v1",
+    "phase": "PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE",
+    "provider": "75api-minimax-h3",
+    "model": "minimax_h3_no_audios",
+    "profile_id": "browser-fixture-75api-v1",
+    "real_provider_calls": 0,
+    "secret_leaks": 0,
+    "snapshot": "VIDEO_SUBMIT_BOUNDARY_STATE",
+    "execution_id": "46b41d450757419ba2206dec81180077",
+    "attempt_id": null,
+    "provider_task_id": "browser-task-001",
+    "status": "RUNNING",
+    "candidate_id": null,
+    "logical_provider_calls": 1,
+    "authoritative_source": "GET /api/books/{book_id}/production-workspace-v2",
+    "shot": {
+      "identity": {
+        "episode": 1,
+        "shot_id": "1",
+        "storyboard_shot_id": 388,
+        "plan_shot_id": "SH_E01_SC001_001"
+      },
+      "scene": {
+        "id": "E01_SC001",
+        "name": "E01_SC001"
+      },
+      "duration": 4,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "speed": ""
+      },
+      "action": "",
+      "asset_readiness": {
+        "state": "ready",
+        "required": {
+          "CHARACTER": [],
+          "SCENE": [
+            {
+              "entity_id": "E01_SC001",
+              "asset_type": "SCENE",
+              "authority_id": "paa_scene_4678c6bf16d99702dc071478",
+              "version_id": "pav_035fc1ab49f21c75c744ac04",
+              "status": "ACTIVE",
+              "current": true,
+              "media": {
+                "present": true,
+                "reason_codes": [],
+                "source_kind": "local_file",
+                "storage_identity": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\production-assets\\book-990452\\scene\\E01_SC001\\8bbaea6c583640ffbd687a70a3679962.png",
+                "checksum": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                "metadata_hash": "a095885feb93f836ae0b2826e903953faa2a5dab878187ab577b31d2a01562e5",
+                "visual_asset_version_id": null,
+                "revision": 1,
+                "status": "CURRENT"
+              },
+              "failed_checks": [],
+              "fingerprint": "398daa039eb46122bcead644c4491b876f84505a028d9ed11a01a1cfec12c253"
+            }
+          ],
+          "PROP": []
+        },
+        "required_entities": [
+          "SCENE:E01_SC001"
+        ],
+        "missing": [],
+        "stale": [],
+        "current": true,
+        "required_entity_count": 1,
+        "requirement_source": "production_asset_requirement_contract"
+      },
+      "IMAGE": {
+        "prompt_ir": {
+          "current": true,
+          "version": 33,
+          "stale": false,
+          "state": "complete",
+          "payload_hash": "393a0f62e556854bc60f9b5b612ae821fc50d646ea958e3a20843ffa38d7efb2",
+          "generation_policy": {
+            "fingerprint": "e2490afa2edb435bb3cc24934d7bf072960d24ac2a7f78620e7f193ef0786d81",
+            "language": "",
+            "mode": "TEXT_TO_IMAGE",
+            "optional_asset_classes": [],
+            "required_asset_classes": [],
+            "schema_version": "generation_policy_v1",
+            "source": "shot-studio-ui",
+            "style_profile_id": "",
+            "target_media": "IMAGE"
+          },
+          "reason_codes": []
+        },
+        "generation_mode": "TEXT_TO_IMAGE",
+        "source_official_image": null,
+        "model": {
+          "selected_profile_id": null,
+          "provider": null,
+          "model_name": null,
+          "last_execution_profile_id": "builtin-mock-image",
+          "last_execution_model": "deterministic-image-v1"
+        },
+        "latest_execution": {
+          "id": "1bd13336231742af9df7dbc055527e73",
+          "state": "SUCCEEDED",
+          "target_media": "IMAGE",
+          "model_profile_id": "builtin-mock-image",
+          "provider": "phase-f-fake-image-provider",
+          "model": "deterministic-image-v1",
+          "adapter": "image_generic",
+          "adapter_version": "image_generic_adapter_v1",
+          "transport_retry_count": 0,
+          "provider_task_id": "fake-e6e1725b938c4f73d494b442",
+          "provider_request_id": "fake-e6e1725b938c4f73d494b442",
+          "confirmation_token": "3cbf3058e2f01f9db013c7c58e3b6600e1c80de0cbda23eee9db41daf008d2fd",
+          "request_fingerprint": "e6e1725b938c4f73d494b442412059ce7ccb0a298c5cb9b06aee67f0628a9178",
+          "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+          "failure_code": null,
+          "created_at": "2026-10-03T15:17:09.998985",
+          "completed_at": "2026-10-03T15:17:10.208146"
+        },
+        "candidates": {
+          "count": 1,
+          "latest": {
+            "id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "state": "MEDIA_CANDIDATE",
+            "preview": null,
+            "preview_url": null,
+            "created_at": "2026-10-03T15:17:10.207972",
+            "model_profile_id": "builtin-mock-image",
+            "technical_validation": {
+              "status": "TECHNICALLY_VALID",
+              "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22",
+              "mime": "image/png",
+              "width": 1,
+              "height": 1,
+              "duration_ms": null,
+              "details": {
+                "byte_size": 68,
+                "byte_size_valid": true,
+                "bytes_valid": true,
+                "checksum_observed": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                "checksum_valid": true,
+                "dimensions_valid": true,
+                "duration_observed_ms": null,
+                "duration_valid": true,
+                "height_observed": 1,
+                "media_type": "IMAGE",
+                "media_type_valid": true,
+                "metadata_complete": true,
+                "mime_observed": "image/png",
+                "mime_valid": true,
+                "schema_version": "media_technical_validation_v2",
+                "storage_identity_valid": true,
+                "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\manual-media\\book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+                "storage_valid": true,
+                "technical_validation_fingerprint": "6679b6cc05af17888f9059fac377e2b0b6363535db1edad0489ce815b1e3204d",
+                "valid": true,
+                "width_observed": 1
+              }
+            },
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png"
+          },
+          "items": [
+            {
+              "id": "candidate-5214da378f2747cf8db96000c218d90c",
+              "state": "MEDIA_CANDIDATE",
+              "preview": null,
+              "preview_url": null,
+              "created_at": "2026-10-03T15:17:10.207972",
+              "model_profile_id": "builtin-mock-image",
+              "technical_validation": {
+                "status": "TECHNICALLY_VALID",
+                "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22",
+                "mime": "image/png",
+                "width": 1,
+                "height": 1,
+                "duration_ms": null,
+                "details": {
+                  "byte_size": 68,
+                  "byte_size_valid": true,
+                  "bytes_valid": true,
+                  "checksum_observed": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                  "checksum_valid": true,
+                  "dimensions_valid": true,
+                  "duration_observed_ms": null,
+                  "duration_valid": true,
+                  "height_observed": 1,
+                  "media_type": "IMAGE",
+                  "media_type_valid": true,
+                  "metadata_complete": true,
+                  "mime_observed": "image/png",
+                  "mime_valid": true,
+                  "schema_version": "media_technical_validation_v2",
+                  "storage_identity_valid": true,
+                  "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\manual-media\\book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+                  "storage_valid": true,
+                  "technical_validation_fingerprint": "6679b6cc05af17888f9059fac377e2b0b6363535db1edad0489ce815b1e3204d",
+                  "valid": true,
+                  "width_observed": 1
+                }
+              },
+              "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+              "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png"
+            }
+          ]
+        },
+        "official": {
+          "current": true,
+          "currentness": "current",
+          "version": {
+            "id": "omv-6ffa3ac01b568bceb635b1ae0b5f8a1744c24b47",
+            "revision": 1,
+            "media_type": "IMAGE",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "mime": "image/png",
+            "width": 1,
+            "height": 1,
+            "duration_ms": null,
+            "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22"
+          },
+          "authority": {
+            "id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "status": "CURRENT",
+            "payload_hash": "6f48fb3a97adf9e28967100a57d953577a3680bf8893a9daa4d95ab882fc9868",
+            "lineage_hash": "5ffa63209b716566f3a624491befcbc058631ec9eb9c33d95bbb0d8ef84a8559",
+            "resolver_error": null
+          },
+          "pointer": {
+            "id": 1,
+            "authority_id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "fingerprint": "9d633352543f9488f1aeedc1e42364fe1d3c03927fbb315d7e917a040d5e559f"
+          },
+          "preview": null,
+          "preview_url": null
+        },
+        "generation_readiness": {
+          "ready": false,
+          "reason_codes": [
+            "CANDIDATE_REVIEW_REQUIRED",
+            "OFFICIAL_MEDIA_ALREADY_CURRENT",
+            "MODEL_PROFILE_REQUIRED"
+          ],
+          "primary_blocker": {
+            "code": "CANDIDATE_REVIEW_REQUIRED",
+            "message": "先验证或提升现有候选结果。"
+          },
+          "blockers": [
+            {
+              "code": "CANDIDATE_REVIEW_REQUIRED",
+              "message": "先验证或提升现有候选结果。"
+            },
+            {
+              "code": "OFFICIAL_MEDIA_ALREADY_CURRENT",
+              "message": "当前已有正式版本。"
+            },
+            {
+              "code": "MODEL_PROFILE_REQUIRED",
+              "message": "请显式选择本次生成使用的模型。"
+            }
+          ]
+        }
+      },
+      "VIDEO": {
+        "prompt_ir": {
+          "current": true,
+          "version": 37,
+          "stale": false,
+          "state": "complete",
+          "payload_hash": "8368d6cad52d2d87b23e873c6045b998c92bfee6f3939ba6991fde42d1f9d467",
+          "generation_policy": {
+            "duration_seconds": 5,
+            "fingerprint": "e4305909943baf9223f9bb5dbeb21ba0a47c49b77e8162bc714560329beed9e2",
+            "language": "",
+            "mode": "IMAGE_TO_VIDEO",
+            "optional_asset_classes": [],
+            "required_asset_classes": [],
+            "schema_version": "generation_policy_v1",
+            "source": "shot-studio-ui",
+            "style_profile_id": "",
+            "target_media": "VIDEO"
+          },
+          "reason_codes": []
+        },
+        "generation_mode": "IMAGE_TO_VIDEO",
+        "source_official_image": {
+          "current": true,
+          "currentness": "current",
+          "version": {
+            "id": "omv-6ffa3ac01b568bceb635b1ae0b5f8a1744c24b47",
+            "revision": 1,
+            "media_type": "IMAGE",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "mime": "image/png",
+            "width": 1,
+            "height": 1,
+            "duration_ms": null,
+            "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22"
+          },
+          "authority": {
+            "id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "status": "CURRENT",
+            "payload_hash": "6f48fb3a97adf9e28967100a57d953577a3680bf8893a9daa4d95ab882fc9868",
+            "lineage_hash": "5ffa63209b716566f3a624491befcbc058631ec9eb9c33d95bbb0d8ef84a8559",
+            "resolver_error": null
+          },
+          "pointer": {
+            "id": 1,
+            "authority_id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "fingerprint": "9d633352543f9488f1aeedc1e42364fe1d3c03927fbb315d7e917a040d5e559f"
+          },
+          "preview": null,
+          "preview_url": null
+        },
+        "model": {
+          "selected_profile_id": null,
+          "provider": null,
+          "model_name": null,
+          "last_execution_profile_id": "browser-fixture-75api-v1",
+          "last_execution_model": "minimax_h3_no_audios"
+        },
+        "latest_execution": {
+          "id": "46b41d450757419ba2206dec81180077",
+          "state": "RUNNING",
+          "target_media": "VIDEO",
+          "model_profile_id": "browser-fixture-75api-v1",
+          "provider": "75api-minimax-h3",
+          "model": "minimax_h3_no_audios",
+          "adapter": "video_generic",
+          "adapter_version": "video_generic_adapter_v1",
+          "transport_retry_count": 0,
+          "provider_task_id": "browser-task-001",
+          "provider_request_id": "browser-request-001",
+          "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685",
+          "request_fingerprint": "9a1e89368edddacac25b0a5123e7dbec8a38aaf29061738dfba88f887ab255a8",
+          "candidate_id": null,
+          "failure_code": null,
+          "created_at": "2026-10-03T19:57:30.957986",
+          "completed_at": null
+        },
+        "candidates": {
+          "count": 0,
+          "latest": null,
+          "items": []
+        },
+        "official": {
+          "current": false,
+          "currentness": "missing",
+          "version": null,
+          "authority": null,
+          "pointer": null,
+          "preview": null,
+          "preview_url": null
+        },
+        "generation_mode_source": "PromptIR.generation_policy.mode",
+        "generation_readiness": {
+          "ready": false,
+          "reason_codes": [
+            "MODEL_PROFILE_REQUIRED"
+          ],
+          "primary_blocker": {
+            "code": "MODEL_PROFILE_REQUIRED",
+            "message": "请显式选择本次生成使用的模型。"
+          },
+          "blockers": [
+            {
+              "code": "MODEL_PROFILE_REQUIRED",
+              "message": "请显式选择本次生成使用的模型。"
+            }
+          ]
+        }
+      },
+      "next_action": {
+        "key": "REVIEW_IMAGE_CANDIDATE",
+        "label": "审核候选图片"
+      },
+      "blockers": [
+        {
+          "code": "CANDIDATE_REVIEW_REQUIRED",
+          "message": "先验证或提升现有候选结果。",
+          "lane": "IMAGE"
+        },
+        {
+          "code": "MODEL_PROFILE_REQUIRED",
+          "message": "请显式选择本次生成使用的模型。",
+          "lane": "VIDEO"
+        }
+      ],
+      "legacy": {
+        "prompt_ir_state": "complete",
+        "reference_state": "unknown",
+        "media_state": "pending"
+      }
+    },
+    "browser_submit": true,
+    "candidate_null": true
+  },
+  "before": {
+    "schema_version": "production-ui-v3-video-async-zero-call-browser-snapshot-v1",
+    "phase": "PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE",
+    "provider": "75api-minimax-h3",
+    "model": "minimax_h3_no_audios",
+    "profile_id": "browser-fixture-75api-v1",
+    "real_provider_calls": 0,
+    "secret_leaks": 0,
+    "snapshot": "VIDEO_RUNNING_BEFORE_RELOAD_STATE",
+    "execution_id": "46b41d450757419ba2206dec81180077",
+    "attempt_id": null,
+    "provider_task_id": "browser-task-001",
+    "status": "RUNNING",
+    "candidate_id": null,
+    "logical_provider_calls": 1,
+    "authoritative_source": "GET /api/books/{book_id}/production-workspace-v2",
+    "shot": {
+      "identity": {
+        "episode": 1,
+        "shot_id": "1",
+        "storyboard_shot_id": 388,
+        "plan_shot_id": "SH_E01_SC001_001"
+      },
+      "scene": {
+        "id": "E01_SC001",
+        "name": "E01_SC001"
+      },
+      "duration": 4,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "speed": ""
+      },
+      "action": "",
+      "asset_readiness": {
+        "state": "ready",
+        "required": {
+          "CHARACTER": [],
+          "SCENE": [
+            {
+              "entity_id": "E01_SC001",
+              "asset_type": "SCENE",
+              "authority_id": "paa_scene_4678c6bf16d99702dc071478",
+              "version_id": "pav_035fc1ab49f21c75c744ac04",
+              "status": "ACTIVE",
+              "current": true,
+              "media": {
+                "present": true,
+                "reason_codes": [],
+                "source_kind": "local_file",
+                "storage_identity": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\production-assets\\book-990452\\scene\\E01_SC001\\8bbaea6c583640ffbd687a70a3679962.png",
+                "checksum": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                "metadata_hash": "a095885feb93f836ae0b2826e903953faa2a5dab878187ab577b31d2a01562e5",
+                "visual_asset_version_id": null,
+                "revision": 1,
+                "status": "CURRENT"
+              },
+              "failed_checks": [],
+              "fingerprint": "398daa039eb46122bcead644c4491b876f84505a028d9ed11a01a1cfec12c253"
+            }
+          ],
+          "PROP": []
+        },
+        "required_entities": [
+          "SCENE:E01_SC001"
+        ],
+        "missing": [],
+        "stale": [],
+        "current": true,
+        "required_entity_count": 1,
+        "requirement_source": "production_asset_requirement_contract"
+      },
+      "IMAGE": {
+        "prompt_ir": {
+          "current": true,
+          "version": 33,
+          "stale": false,
+          "state": "complete",
+          "payload_hash": "393a0f62e556854bc60f9b5b612ae821fc50d646ea958e3a20843ffa38d7efb2",
+          "generation_policy": {
+            "fingerprint": "e2490afa2edb435bb3cc24934d7bf072960d24ac2a7f78620e7f193ef0786d81",
+            "language": "",
+            "mode": "TEXT_TO_IMAGE",
+            "optional_asset_classes": [],
+            "required_asset_classes": [],
+            "schema_version": "generation_policy_v1",
+            "source": "shot-studio-ui",
+            "style_profile_id": "",
+            "target_media": "IMAGE"
+          },
+          "reason_codes": []
+        },
+        "generation_mode": "TEXT_TO_IMAGE",
+        "source_official_image": null,
+        "model": {
+          "selected_profile_id": null,
+          "provider": null,
+          "model_name": null,
+          "last_execution_profile_id": "builtin-mock-image",
+          "last_execution_model": "deterministic-image-v1"
+        },
+        "latest_execution": {
+          "id": "1bd13336231742af9df7dbc055527e73",
+          "state": "SUCCEEDED",
+          "target_media": "IMAGE",
+          "model_profile_id": "builtin-mock-image",
+          "provider": "phase-f-fake-image-provider",
+          "model": "deterministic-image-v1",
+          "adapter": "image_generic",
+          "adapter_version": "image_generic_adapter_v1",
+          "transport_retry_count": 0,
+          "provider_task_id": "fake-e6e1725b938c4f73d494b442",
+          "provider_request_id": "fake-e6e1725b938c4f73d494b442",
+          "confirmation_token": "3cbf3058e2f01f9db013c7c58e3b6600e1c80de0cbda23eee9db41daf008d2fd",
+          "request_fingerprint": "e6e1725b938c4f73d494b442412059ce7ccb0a298c5cb9b06aee67f0628a9178",
+          "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+          "failure_code": null,
+          "created_at": "2026-10-03T15:17:09.998985",
+          "completed_at": "2026-10-03T15:17:10.208146"
+        },
+        "candidates": {
+          "count": 1,
+          "latest": {
+            "id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "state": "MEDIA_CANDIDATE",
+            "preview": null,
+            "preview_url": null,
+            "created_at": "2026-10-03T15:17:10.207972",
+            "model_profile_id": "builtin-mock-image",
+            "technical_validation": {
+              "status": "TECHNICALLY_VALID",
+              "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22",
+              "mime": "image/png",
+              "width": 1,
+              "height": 1,
+              "duration_ms": null,
+              "details": {
+                "byte_size": 68,
+                "byte_size_valid": true,
+                "bytes_valid": true,
+                "checksum_observed": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                "checksum_valid": true,
+                "dimensions_valid": true,
+                "duration_observed_ms": null,
+                "duration_valid": true,
+                "height_observed": 1,
+                "media_type": "IMAGE",
+                "media_type_valid": true,
+                "metadata_complete": true,
+                "mime_observed": "image/png",
+                "mime_valid": true,
+                "schema_version": "media_technical_validation_v2",
+                "storage_identity_valid": true,
+                "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\manual-media\\book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+                "storage_valid": true,
+                "technical_validation_fingerprint": "6679b6cc05af17888f9059fac377e2b0b6363535db1edad0489ce815b1e3204d",
+                "valid": true,
+                "width_observed": 1
+              }
+            },
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png"
+          },
+          "items": [
+            {
+              "id": "candidate-5214da378f2747cf8db96000c218d90c",
+              "state": "MEDIA_CANDIDATE",
+              "preview": null,
+              "preview_url": null,
+              "created_at": "2026-10-03T15:17:10.207972",
+              "model_profile_id": "builtin-mock-image",
+              "technical_validation": {
+                "status": "TECHNICALLY_VALID",
+                "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22",
+                "mime": "image/png",
+                "width": 1,
+                "height": 1,
+                "duration_ms": null,
+                "details": {
+                  "byte_size": 68,
+                  "byte_size_valid": true,
+                  "bytes_valid": true,
+                  "checksum_observed": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                  "checksum_valid": true,
+                  "dimensions_valid": true,
+                  "duration_observed_ms": null,
+                  "duration_valid": true,
+                  "height_observed": 1,
+                  "media_type": "IMAGE",
+                  "media_type_valid": true,
+                  "metadata_complete": true,
+                  "mime_observed": "image/png",
+                  "mime_valid": true,
+                  "schema_version": "media_technical_validation_v2",
+                  "storage_identity_valid": true,
+                  "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\manual-media\\book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+                  "storage_valid": true,
+                  "technical_validation_fingerprint": "6679b6cc05af17888f9059fac377e2b0b6363535db1edad0489ce815b1e3204d",
+                  "valid": true,
+                  "width_observed": 1
+                }
+              },
+              "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+              "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png"
+            }
+          ]
+        },
+        "official": {
+          "current": true,
+          "currentness": "current",
+          "version": {
+            "id": "omv-6ffa3ac01b568bceb635b1ae0b5f8a1744c24b47",
+            "revision": 1,
+            "media_type": "IMAGE",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "mime": "image/png",
+            "width": 1,
+            "height": 1,
+            "duration_ms": null,
+            "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22"
+          },
+          "authority": {
+            "id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "status": "CURRENT",
+            "payload_hash": "6f48fb3a97adf9e28967100a57d953577a3680bf8893a9daa4d95ab882fc9868",
+            "lineage_hash": "5ffa63209b716566f3a624491befcbc058631ec9eb9c33d95bbb0d8ef84a8559",
+            "resolver_error": null
+          },
+          "pointer": {
+            "id": 1,
+            "authority_id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "fingerprint": "9d633352543f9488f1aeedc1e42364fe1d3c03927fbb315d7e917a040d5e559f"
+          },
+          "preview": null,
+          "preview_url": null
+        },
+        "generation_readiness": {
+          "ready": false,
+          "reason_codes": [
+            "CANDIDATE_REVIEW_REQUIRED",
+            "OFFICIAL_MEDIA_ALREADY_CURRENT",
+            "MODEL_PROFILE_REQUIRED"
+          ],
+          "primary_blocker": {
+            "code": "CANDIDATE_REVIEW_REQUIRED",
+            "message": "先验证或提升现有候选结果。"
+          },
+          "blockers": [
+            {
+              "code": "CANDIDATE_REVIEW_REQUIRED",
+              "message": "先验证或提升现有候选结果。"
+            },
+            {
+              "code": "OFFICIAL_MEDIA_ALREADY_CURRENT",
+              "message": "当前已有正式版本。"
+            },
+            {
+              "code": "MODEL_PROFILE_REQUIRED",
+              "message": "请显式选择本次生成使用的模型。"
+            }
+          ]
+        }
+      },
+      "VIDEO": {
+        "prompt_ir": {
+          "current": true,
+          "version": 37,
+          "stale": false,
+          "state": "complete",
+          "payload_hash": "8368d6cad52d2d87b23e873c6045b998c92bfee6f3939ba6991fde42d1f9d467",
+          "generation_policy": {
+            "duration_seconds": 5,
+            "fingerprint": "e4305909943baf9223f9bb5dbeb21ba0a47c49b77e8162bc714560329beed9e2",
+            "language": "",
+            "mode": "IMAGE_TO_VIDEO",
+            "optional_asset_classes": [],
+            "required_asset_classes": [],
+            "schema_version": "generation_policy_v1",
+            "source": "shot-studio-ui",
+            "style_profile_id": "",
+            "target_media": "VIDEO"
+          },
+          "reason_codes": []
+        },
+        "generation_mode": "IMAGE_TO_VIDEO",
+        "source_official_image": {
+          "current": true,
+          "currentness": "current",
+          "version": {
+            "id": "omv-6ffa3ac01b568bceb635b1ae0b5f8a1744c24b47",
+            "revision": 1,
+            "media_type": "IMAGE",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "mime": "image/png",
+            "width": 1,
+            "height": 1,
+            "duration_ms": null,
+            "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22"
+          },
+          "authority": {
+            "id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "status": "CURRENT",
+            "payload_hash": "6f48fb3a97adf9e28967100a57d953577a3680bf8893a9daa4d95ab882fc9868",
+            "lineage_hash": "5ffa63209b716566f3a624491befcbc058631ec9eb9c33d95bbb0d8ef84a8559",
+            "resolver_error": null
+          },
+          "pointer": {
+            "id": 1,
+            "authority_id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "fingerprint": "9d633352543f9488f1aeedc1e42364fe1d3c03927fbb315d7e917a040d5e559f"
+          },
+          "preview": null,
+          "preview_url": null
+        },
+        "model": {
+          "selected_profile_id": null,
+          "provider": null,
+          "model_name": null,
+          "last_execution_profile_id": "browser-fixture-75api-v1",
+          "last_execution_model": "minimax_h3_no_audios"
+        },
+        "latest_execution": {
+          "id": "46b41d450757419ba2206dec81180077",
+          "state": "RUNNING",
+          "target_media": "VIDEO",
+          "model_profile_id": "browser-fixture-75api-v1",
+          "provider": "75api-minimax-h3",
+          "model": "minimax_h3_no_audios",
+          "adapter": "video_generic",
+          "adapter_version": "video_generic_adapter_v1",
+          "transport_retry_count": 0,
+          "provider_task_id": "browser-task-001",
+          "provider_request_id": "browser-request-001",
+          "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685",
+          "request_fingerprint": "9a1e89368edddacac25b0a5123e7dbec8a38aaf29061738dfba88f887ab255a8",
+          "candidate_id": null,
+          "failure_code": null,
+          "created_at": "2026-10-03T19:57:30.957986",
+          "completed_at": null
+        },
+        "candidates": {
+          "count": 0,
+          "latest": null,
+          "items": []
+        },
+        "official": {
+          "current": false,
+          "currentness": "missing",
+          "version": null,
+          "authority": null,
+          "pointer": null,
+          "preview": null,
+          "preview_url": null
+        },
+        "generation_mode_source": "PromptIR.generation_policy.mode",
+        "generation_readiness": {
+          "ready": false,
+          "reason_codes": [
+            "MODEL_PROFILE_REQUIRED"
+          ],
+          "primary_blocker": {
+            "code": "MODEL_PROFILE_REQUIRED",
+            "message": "请显式选择本次生成使用的模型。"
+          },
+          "blockers": [
+            {
+              "code": "MODEL_PROFILE_REQUIRED",
+              "message": "请显式选择本次生成使用的模型。"
+            }
+          ]
+        }
+      },
+      "next_action": {
+        "key": "REVIEW_IMAGE_CANDIDATE",
+        "label": "审核候选图片"
+      },
+      "blockers": [
+        {
+          "code": "CANDIDATE_REVIEW_REQUIRED",
+          "message": "先验证或提升现有候选结果。",
+          "lane": "IMAGE"
+        },
+        {
+          "code": "MODEL_PROFILE_REQUIRED",
+          "message": "请显式选择本次生成使用的模型。",
+          "lane": "VIDEO"
+        }
+      ],
+      "legacy": {
+        "prompt_ir_state": "complete",
+        "reference_state": "unknown",
+        "media_state": "pending"
+      }
+    },
+    "running_visible": true
+  },
+  "after": {
+    "schema_version": "production-ui-v3-video-async-zero-call-browser-snapshot-v1",
+    "phase": "PHASE_PRODUCTION_UI_V3_75API_CANONICAL_ASYNC_ZERO_CALL_CLOSURE",
+    "provider": "75api-minimax-h3",
+    "model": "minimax_h3_no_audios",
+    "profile_id": "browser-fixture-75api-v1",
+    "real_provider_calls": 0,
+    "secret_leaks": 0,
+    "snapshot": "VIDEO_RUNNING_AFTER_RELOAD_STATE",
+    "execution_id": "46b41d450757419ba2206dec81180077",
+    "attempt_id": null,
+    "provider_task_id": "browser-task-001",
+    "status": "RUNNING",
+    "candidate_id": null,
+    "logical_provider_calls": 1,
+    "authoritative_source": "GET /api/books/{book_id}/production-workspace-v2",
+    "shot": {
+      "identity": {
+        "episode": 1,
+        "shot_id": "1",
+        "storyboard_shot_id": 388,
+        "plan_shot_id": "SH_E01_SC001_001"
+      },
+      "scene": {
+        "id": "E01_SC001",
+        "name": "E01_SC001"
+      },
+      "duration": 4,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "speed": ""
+      },
+      "action": "",
+      "asset_readiness": {
+        "state": "ready",
+        "required": {
+          "CHARACTER": [],
+          "SCENE": [
+            {
+              "entity_id": "E01_SC001",
+              "asset_type": "SCENE",
+              "authority_id": "paa_scene_4678c6bf16d99702dc071478",
+              "version_id": "pav_035fc1ab49f21c75c744ac04",
+              "status": "ACTIVE",
+              "current": true,
+              "media": {
+                "present": true,
+                "reason_codes": [],
+                "source_kind": "local_file",
+                "storage_identity": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\uploads\\production-assets\\book-990452\\scene\\E01_SC001\\8bbaea6c583640ffbd687a70a3679962.png",
+                "checksum": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                "metadata_hash": "a095885feb93f836ae0b2826e903953faa2a5dab878187ab577b31d2a01562e5",
+                "visual_asset_version_id": null,
+                "revision": 1,
+                "status": "CURRENT"
+              },
+              "failed_checks": [],
+              "fingerprint": "398daa039eb46122bcead644c4491b876f84505a028d9ed11a01a1cfec12c253"
+            }
+          ],
+          "PROP": []
+        },
+        "required_entities": [
+          "SCENE:E01_SC001"
+        ],
+        "missing": [],
+        "stale": [],
+        "current": true,
+        "required_entity_count": 1,
+        "requirement_source": "production_asset_requirement_contract"
+      },
+      "IMAGE": {
+        "prompt_ir": {
+          "current": true,
+          "version": 33,
+          "stale": false,
+          "state": "complete",
+          "payload_hash": "393a0f62e556854bc60f9b5b612ae821fc50d646ea958e3a20843ffa38d7efb2",
+          "generation_policy": {
+            "fingerprint": "e2490afa2edb435bb3cc24934d7bf072960d24ac2a7f78620e7f193ef0786d81",
+            "language": "",
+            "mode": "TEXT_TO_IMAGE",
+            "optional_asset_classes": [],
+            "required_asset_classes": [],
+            "schema_version": "generation_policy_v1",
+            "source": "shot-studio-ui",
+            "style_profile_id": "",
+            "target_media": "IMAGE"
+          },
+          "reason_codes": []
+        },
+        "generation_mode": "TEXT_TO_IMAGE",
+        "source_official_image": null,
+        "model": {
+          "selected_profile_id": null,
+          "provider": null,
+          "model_name": null,
+          "last_execution_profile_id": "builtin-mock-image",
+          "last_execution_model": "deterministic-image-v1"
+        },
+        "latest_execution": {
+          "id": "1bd13336231742af9df7dbc055527e73",
+          "state": "SUCCEEDED",
+          "target_media": "IMAGE",
+          "model_profile_id": "builtin-mock-image",
+          "provider": "phase-f-fake-image-provider",
+          "model": "deterministic-image-v1",
+          "adapter": "image_generic",
+          "adapter_version": "image_generic_adapter_v1",
+          "transport_retry_count": 0,
+          "provider_task_id": "fake-e6e1725b938c4f73d494b442",
+          "provider_request_id": "fake-e6e1725b938c4f73d494b442",
+          "confirmation_token": "3cbf3058e2f01f9db013c7c58e3b6600e1c80de0cbda23eee9db41daf008d2fd",
+          "request_fingerprint": "e6e1725b938c4f73d494b442412059ce7ccb0a298c5cb9b06aee67f0628a9178",
+          "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+          "failure_code": null,
+          "created_at": "2026-10-03T15:17:09.998985",
+          "completed_at": "2026-10-03T15:17:10.208146"
+        },
+        "candidates": {
+          "count": 1,
+          "latest": {
+            "id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "state": "MEDIA_CANDIDATE",
+            "preview": null,
+            "preview_url": null,
+            "created_at": "2026-10-03T15:17:10.207972",
+            "model_profile_id": "builtin-mock-image",
+            "technical_validation": {
+              "status": "TECHNICALLY_VALID",
+              "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22",
+              "mime": "image/png",
+              "width": 1,
+              "height": 1,
+              "duration_ms": null,
+              "details": {
+                "byte_size": 68,
+                "byte_size_valid": true,
+                "bytes_valid": true,
+                "checksum_observed": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                "checksum_valid": true,
+                "dimensions_valid": true,
+                "duration_observed_ms": null,
+                "duration_valid": true,
+                "height_observed": 1,
+                "media_type": "IMAGE",
+                "media_type_valid": true,
+                "metadata_complete": true,
+                "mime_observed": "image/png",
+                "mime_valid": true,
+                "schema_version": "media_technical_validation_v2",
+                "storage_identity_valid": true,
+                "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\manual-media\\book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+                "storage_valid": true,
+                "technical_validation_fingerprint": "6679b6cc05af17888f9059fac377e2b0b6363535db1edad0489ce815b1e3204d",
+                "valid": true,
+                "width_observed": 1
+              }
+            },
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png"
+          },
+          "items": [
+            {
+              "id": "candidate-5214da378f2747cf8db96000c218d90c",
+              "state": "MEDIA_CANDIDATE",
+              "preview": null,
+              "preview_url": null,
+              "created_at": "2026-10-03T15:17:10.207972",
+              "model_profile_id": "builtin-mock-image",
+              "technical_validation": {
+                "status": "TECHNICALLY_VALID",
+                "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22",
+                "mime": "image/png",
+                "width": 1,
+                "height": 1,
+                "duration_ms": null,
+                "details": {
+                  "byte_size": 68,
+                  "byte_size_valid": true,
+                  "bytes_valid": true,
+                  "checksum_observed": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+                  "checksum_valid": true,
+                  "dimensions_valid": true,
+                  "duration_observed_ms": null,
+                  "duration_valid": true,
+                  "height_observed": 1,
+                  "media_type": "IMAGE",
+                  "media_type_valid": true,
+                  "metadata_complete": true,
+                  "mime_observed": "image/png",
+                  "mime_valid": true,
+                  "schema_version": "media_technical_validation_v2",
+                  "storage_identity_valid": true,
+                  "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\manual-media\\book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+                  "storage_valid": true,
+                  "technical_validation_fingerprint": "6679b6cc05af17888f9059fac377e2b0b6363535db1edad0489ce815b1e3204d",
+                  "valid": true,
+                  "width_observed": 1
+                }
+              },
+              "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+              "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png"
+            }
+          ]
+        },
+        "official": {
+          "current": true,
+          "currentness": "current",
+          "version": {
+            "id": "omv-6ffa3ac01b568bceb635b1ae0b5f8a1744c24b47",
+            "revision": 1,
+            "media_type": "IMAGE",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "mime": "image/png",
+            "width": 1,
+            "height": 1,
+            "duration_ms": null,
+            "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22"
+          },
+          "authority": {
+            "id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "status": "CURRENT",
+            "payload_hash": "6f48fb3a97adf9e28967100a57d953577a3680bf8893a9daa4d95ab882fc9868",
+            "lineage_hash": "5ffa63209b716566f3a624491befcbc058631ec9eb9c33d95bbb0d8ef84a8559",
+            "resolver_error": null
+          },
+          "pointer": {
+            "id": 1,
+            "authority_id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "fingerprint": "9d633352543f9488f1aeedc1e42364fe1d3c03927fbb315d7e917a040d5e559f"
+          },
+          "preview": null,
+          "preview_url": null
+        },
+        "generation_readiness": {
+          "ready": false,
+          "reason_codes": [
+            "CANDIDATE_REVIEW_REQUIRED",
+            "OFFICIAL_MEDIA_ALREADY_CURRENT",
+            "MODEL_PROFILE_REQUIRED"
+          ],
+          "primary_blocker": {
+            "code": "CANDIDATE_REVIEW_REQUIRED",
+            "message": "先验证或提升现有候选结果。"
+          },
+          "blockers": [
+            {
+              "code": "CANDIDATE_REVIEW_REQUIRED",
+              "message": "先验证或提升现有候选结果。"
+            },
+            {
+              "code": "OFFICIAL_MEDIA_ALREADY_CURRENT",
+              "message": "当前已有正式版本。"
+            },
+            {
+              "code": "MODEL_PROFILE_REQUIRED",
+              "message": "请显式选择本次生成使用的模型。"
+            }
+          ]
+        }
+      },
+      "VIDEO": {
+        "prompt_ir": {
+          "current": true,
+          "version": 37,
+          "stale": false,
+          "state": "complete",
+          "payload_hash": "8368d6cad52d2d87b23e873c6045b998c92bfee6f3939ba6991fde42d1f9d467",
+          "generation_policy": {
+            "duration_seconds": 5,
+            "fingerprint": "e4305909943baf9223f9bb5dbeb21ba0a47c49b77e8162bc714560329beed9e2",
+            "language": "",
+            "mode": "IMAGE_TO_VIDEO",
+            "optional_asset_classes": [],
+            "required_asset_classes": [],
+            "schema_version": "generation_policy_v1",
+            "source": "shot-studio-ui",
+            "style_profile_id": "",
+            "target_media": "VIDEO"
+          },
+          "reason_codes": []
+        },
+        "generation_mode": "IMAGE_TO_VIDEO",
+        "source_official_image": {
+          "current": true,
+          "currentness": "current",
+          "version": {
+            "id": "omv-6ffa3ac01b568bceb635b1ae0b5f8a1744c24b47",
+            "revision": 1,
+            "media_type": "IMAGE",
+            "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+            "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "mime": "image/png",
+            "width": 1,
+            "height": 1,
+            "duration_ms": null,
+            "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+            "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22"
+          },
+          "authority": {
+            "id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "status": "CURRENT",
+            "payload_hash": "6f48fb3a97adf9e28967100a57d953577a3680bf8893a9daa4d95ab882fc9868",
+            "lineage_hash": "5ffa63209b716566f3a624491befcbc058631ec9eb9c33d95bbb0d8ef84a8559",
+            "resolver_error": null
+          },
+          "pointer": {
+            "id": 1,
+            "authority_id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+            "fingerprint": "9d633352543f9488f1aeedc1e42364fe1d3c03927fbb315d7e917a040d5e559f"
+          },
+          "preview": null,
+          "preview_url": null
+        },
+        "model": {
+          "selected_profile_id": null,
+          "provider": null,
+          "model_name": null,
+          "last_execution_profile_id": "browser-fixture-75api-v1",
+          "last_execution_model": "minimax_h3_no_audios"
+        },
+        "latest_execution": {
+          "id": "46b41d450757419ba2206dec81180077",
+          "state": "RUNNING",
+          "target_media": "VIDEO",
+          "model_profile_id": "browser-fixture-75api-v1",
+          "provider": "75api-minimax-h3",
+          "model": "minimax_h3_no_audios",
+          "adapter": "video_generic",
+          "adapter_version": "video_generic_adapter_v1",
+          "transport_retry_count": 0,
+          "provider_task_id": "browser-task-001",
+          "provider_request_id": "browser-request-001",
+          "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685",
+          "request_fingerprint": "9a1e89368edddacac25b0a5123e7dbec8a38aaf29061738dfba88f887ab255a8",
+          "candidate_id": null,
+          "failure_code": null,
+          "created_at": "2026-10-03T19:57:30.957986",
+          "completed_at": null
+        },
+        "candidates": {
+          "count": 0,
+          "latest": null,
+          "items": []
+        },
+        "official": {
+          "current": false,
+          "currentness": "missing",
+          "version": null,
+          "authority": null,
+          "pointer": null,
+          "preview": null,
+          "preview_url": null
+        },
+        "generation_mode_source": "PromptIR.generation_policy.mode",
+        "generation_readiness": {
+          "ready": false,
+          "reason_codes": [
+            "MODEL_PROFILE_REQUIRED"
+          ],
+          "primary_blocker": {
+            "code": "MODEL_PROFILE_REQUIRED",
+            "message": "请显式选择本次生成使用的模型。"
+          },
+          "blockers": [
+            {
+              "code": "MODEL_PROFILE_REQUIRED",
+              "message": "请显式选择本次生成使用的模型。"
+            }
+          ]
+        }
+      },
+      "next_action": {
+        "key": "REVIEW_IMAGE_CANDIDATE",
+        "label": "审核候选图片"
+      },
+      "blockers": [
+        {
+          "code": "CANDIDATE_REVIEW_REQUIRED",
+          "message": "先验证或提升现有候选结果。",
+          "lane": "IMAGE"
+        },
+        {
+          "code": "MODEL_PROFILE_REQUIRED",
+          "message": "请显式选择本次生成使用的模型。",
+          "lane": "VIDEO"
+        }
+      ],
+      "legacy": {
+        "prompt_ir_state": "complete",
+        "reference_state": "unknown",
+        "media_state": "pending"
+      }
+    },
+    "same_execution": true,
+    "same_attempt": true,
+    "same_provider_task": true
+  },
+  "candidate_v1": {
+    "reviewable": true,
+    "candidate": {
+      "id": "candidate-e98c034e820c420890431bebe8133082",
+      "state": "MEDIA_CANDIDATE",
+      "preview": null,
+      "preview_url": null,
+      "created_at": "2026-10-03T19:57:40.432122",
+      "model_profile_id": "browser-fixture-75api-v1",
+      "technical_validation": {
+        "status": "TECHNICALLY_VALID",
+        "validation_id": "mvr-b67c5aeb34acef665e5a0f3e3ed8a36ec61be1eb",
+        "mime": "video/mp4",
+        "width": 320,
+        "height": 180,
+        "duration_ms": 5000,
+        "details": {
+          "byte_size": 4927,
+          "byte_size_valid": true,
+          "bytes_valid": true,
+          "checksum_observed": "99f1d3573fc5cfb9c5649ab75edc0820717ba9b0674e318dfd35fb37abc55e76",
+          "checksum_valid": true,
+          "dimensions_valid": true,
+          "duration_observed_ms": 5000,
+          "duration_valid": true,
+          "height_observed": 180,
+          "media_type": "VIDEO",
+          "media_type_valid": true,
+          "metadata_complete": true,
+          "mime_observed": "video/mp4",
+          "mime_valid": true,
+          "schema_version": "media_technical_validation_v2",
+          "storage_identity_valid": true,
+          "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\generated-media\\book-990452-generated-phase-j3-canonical-46b41d450757419b-99f1d3573fc5cfb9.mp4",
+          "storage_valid": true,
+          "technical_validation_fingerprint": "fd0c8018c9949e7cfb1d49e0879f054f07d4048f6f0554b3fcad930d44ea3885",
+          "valid": true,
+          "width_observed": 320
+        }
+      },
+      "checksum": "99f1d3573fc5cfb9c5649ab75edc0820717ba9b0674e318dfd35fb37abc55e76",
+      "storage_identity": "/api/prototyping/generated-media/book-990452-generated-phase-j3-canonical-46b41d450757419b-99f1d3573fc5cfb9.mp4"
+    },
+    "candidateId": "candidate-e98c034e820c420890431bebe8133082",
+    "previewUrl": null,
+    "validationStatus": "TECHNICALLY_VALID",
+    "executionId": "46b41d450757419ba2206dec81180077",
+    "nextAction": null
+  },
+  "official_v1": {
+    "id": "omv-d9589ef1b403bf0c5d18798b08e27db5782a80e0",
+    "revision": 1,
+    "media_type": "VIDEO",
+    "storage_identity": "/api/prototyping/generated-media/book-990452-generated-phase-j3-canonical-46b41d450757419b-99f1d3573fc5cfb9.mp4",
+    "checksum": "99f1d3573fc5cfb9c5649ab75edc0820717ba9b0674e318dfd35fb37abc55e76",
+    "mime": "video/mp4",
+    "width": 320,
+    "height": 180,
+    "duration_ms": 5000,
+    "candidate_id": "candidate-e98c034e820c420890431bebe8133082",
+    "validation_id": "mvr-b67c5aeb34acef665e5a0f3e3ed8a36ec61be1eb"
+  },
+  "regenerate_running": {
+    "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+    "attempt_id": null,
+    "provider_task_id": "browser-task-002",
+    "provider_request_id": "browser-request-002",
+    "state": "RUNNING",
+    "candidate_id": null
+  },
+  "candidate_v2": {
+    "reviewable": true,
+    "candidate": {
+      "id": "candidate-b374746b1a954f9b8360c770cd940986",
+      "state": "MEDIA_CANDIDATE",
+      "preview": null,
+      "preview_url": null,
+      "created_at": "2026-10-03T19:57:52.497089",
+      "model_profile_id": "browser-fixture-75api-v1",
+      "technical_validation": {
+        "status": "TECHNICALLY_VALID",
+        "validation_id": "mvr-7a67b6272e3a99199c6940826f35f37201943aa1",
+        "mime": "video/mp4",
+        "width": 320,
+        "height": 180,
+        "duration_ms": 5000,
+        "details": {
+          "byte_size": 4927,
+          "byte_size_valid": true,
+          "bytes_valid": true,
+          "checksum_observed": "99f1d3573fc5cfb9c5649ab75edc0820717ba9b0674e318dfd35fb37abc55e76",
+          "checksum_valid": true,
+          "dimensions_valid": true,
+          "duration_observed_ms": 5000,
+          "duration_valid": true,
+          "height_observed": 180,
+          "media_type": "VIDEO",
+          "media_type_valid": true,
+          "metadata_complete": true,
+          "mime_observed": "video/mp4",
+          "mime_valid": true,
+          "schema_version": "media_technical_validation_v2",
+          "storage_identity_valid": true,
+          "storage_source": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\uploads-video-v4\\generated-media\\book-990452-generated-phase-j3-canonical-be61bf5d92444ebc-99f1d3573fc5cfb9.mp4",
+          "storage_valid": true,
+          "technical_validation_fingerprint": "488b93f7b68c61204187842bda14d798086bbe9d2bde5fd383e58a734f21819c",
+          "valid": true,
+          "width_observed": 320
+        }
+      },
+      "checksum": "99f1d3573fc5cfb9c5649ab75edc0820717ba9b0674e318dfd35fb37abc55e76",
+      "storage_identity": "/api/prototyping/generated-media/book-990452-generated-phase-j3-canonical-be61bf5d92444ebc-99f1d3573fc5cfb9.mp4"
+    },
+    "candidateId": "candidate-b374746b1a954f9b8360c770cd940986",
+    "previewUrl": null,
+    "validationStatus": "TECHNICALLY_VALID",
+    "executionId": "be61bf5d92444ebcb4502359d1f95d71",
+    "nextAction": null
+  },
+  "official_v2": {
+    "id": "omv-5a404d844ae4477f3a73560b935410301b2b1d8d",
+    "revision": 2,
+    "media_type": "VIDEO",
+    "storage_identity": "/api/prototyping/generated-media/book-990452-generated-phase-j3-canonical-be61bf5d92444ebc-99f1d3573fc5cfb9.mp4",
+    "checksum": "99f1d3573fc5cfb9c5649ab75edc0820717ba9b0674e318dfd35fb37abc55e76",
+    "mime": "video/mp4",
+    "width": 320,
+    "height": 180,
+    "duration_ms": 5000,
+    "candidate_id": "candidate-b374746b1a954f9b8360c770cd940986",
+    "validation_id": "mvr-7a67b6272e3a99199c6940826f35f37201943aa1"
+  },
+  "network": {
+    "schema_version": "production-ui-v3-75api-async-browser-zero-call-network-v1",
+    "browser_generation_execute_post_count": 2,
+    "browser_generation_submit_count": 4,
+    "browser_generation_reconcile_post_count": 8,
+    "browser_promotion_post_count": 2,
+    "browser_direct_provider_calls": 0,
+    "browser_external_hosts": [],
+    "fixture_provider_submit_post_count": 2,
+    "fixture_provider_poll_get_count": 6,
+    "fixture_provider_content_get_count": 2,
+    "fixture_auth_failures": 0,
+    "fixture_authorization_headers": [
+      "<present>",
+      "<present>",
+      "<present>",
+      "<present>",
+      "<present>",
+      "<present>",
+      "<present>",
+      "<present>",
+      "<present>",
+      "<present>"
+    ],
+    "real_75api_post": 0,
+    "real_75api_poll": 0,
+    "real_75api_content": 0,
+    "real_image_provider_calls": 0,
+    "mutations": [
+      {
+        "method": "POST",
+        "path": "/api/agent/updates/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "bookId": 990452,
+          "scope": {
+            "section": "创作画布",
+            "shot_id": null,
+            "asset_id": null
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/agent/updates/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "bookId": 990452,
+          "scope": {
+            "section": "创作画布",
+            "shot_id": null,
+            "asset_id": null
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/storyboard/1/1/generate-video",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "modelProfileId": "browser-fixture-75api-v1",
+          "confirmed": true,
+          "allowExternalCall": true,
+          "compileIfMissing": false,
+          "generationChain": "production_workspace_v2"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/agent/updates/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "bookId": 990452,
+          "scope": {
+            "section": "创作画布",
+            "shot_id": null,
+            "asset_id": null
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/agent/updates/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "bookId": 990452,
+          "scope": {
+            "section": "创作画布",
+            "shot_id": null,
+            "asset_id": null
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "46b41d450757419ba2206dec81180077",
+          "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "46b41d450757419ba2206dec81180077",
+          "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "46b41d450757419ba2206dec81180077",
+          "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "46b41d450757419ba2206dec81180077",
+          "confirmation_token": "406daf855fe7423bc7acb7959759447c0432486a27d5a6708849496bc2c64685"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/assets/candidates/candidate-e98c034e820c420890431bebe8133082/promote",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "validation_id": "mvr-b67c5aeb34acef665e5a0f3e3ed8a36ec61be1eb",
+          "reviewer": "shot-studio-human",
+          "decision": "APPROVE",
+          "review_notes": "Approved from Shot Studio Review Desk.",
+          "confirmation": true
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation-attempts",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "operationKind": "REGENERATE",
+          "targetMedia": "VIDEO",
+          "operationIdempotencyKey": "dcec59ef-a9b2-4cee-b216-40219d75169a",
+          "reason": "Regenerate current official"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation-attempts/gat_4d446c09b8684aba8001ab54c19c8648/preview",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "attemptConfirmationToken": "gat_a90cbac7a6c3c93bd432f5d133bd0ee79288105eb78ee83c6a13a0a435913310"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation-attempts/gat_4d446c09b8684aba8001ab54c19c8648/execute",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execute": true,
+          "confirmed": true,
+          "allowExternalCall": true,
+          "attemptConfirmationToken": "gat_a90cbac7a6c3c93bd432f5d133bd0ee79288105eb78ee83c6a13a0a435913310",
+          "previewExecutionId": "be61bf5d92444ebcb4502359d1f95d71",
+          "executionConfirmationToken": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+          "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+          "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+          "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/books/990452/episodes/1/shots/1/generation/reconcile",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+          "confirmation_token": "6cfa3e9aa9e81bcc330e111a45dbbaa81bcf1077f7f85dfe03244d4706d904ca"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/assets/candidates/candidate-b374746b1a954f9b8360c770cd940986/promote",
+        "host": "127.0.0.1:5176",
+        "body": {
+          "validation_id": "mvr-7a67b6272e3a99199c6940826f35f37201943aa1",
+          "reviewer": "shot-studio-human",
+          "decision": "APPROVE",
+          "review_notes": "Approved from Shot Studio Review Desk.",
+          "confirmation": true
+        }
+      }
+    ],
+    "console_errors": [],
+    "http_errors": [],
+    "initial_execution": {
+      "execution_id": "46b41d450757419ba2206dec81180077",
+      "attempt_id": null,
+      "provider_task_id": "browser-task-001",
+      "provider_request_id": "browser-request-001",
+      "state": "RUNNING",
+      "candidate_id": null
+    },
+    "regenerate_execution": {
+      "execution_id": "be61bf5d92444ebcb4502359d1f95d71",
+      "attempt_id": null,
+      "provider_task_id": "browser-task-002",
+      "provider_request_id": "browser-request-002",
+      "state": "RUNNING",
+      "candidate_id": null
+    },
+    "candidate_v1": "candidate-e98c034e820c420890431bebe8133082",
+    "candidate_v2": "candidate-b374746b1a954f9b8360c770cd940986",
+    "official_v1": "omv-d9589ef1b403bf0c5d18798b08e27db5782a80e0",
+    "official_v2": "omv-5a404d844ae4477f3a73560b935410301b2b1d8d"
+  }
+}

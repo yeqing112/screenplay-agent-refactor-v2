@@ -44,6 +44,8 @@ export interface GenerationExecutionProjection {
   transport_retry_count: number
   provider_task_id: string
   provider_request_id: string
+  confirmation_token?: string
+  attempt_lineage_id?: string
   request_fingerprint: string
   candidate_id: string | null
   failure_code: string | null
@@ -511,6 +513,8 @@ function normalizeLane(value: unknown): ProductionMediaLane {
       transport_retry_count: Number(executionRecord.transport_retry_count ?? 0),
       provider_task_id: String(executionRecord.provider_task_id ?? ''),
       provider_request_id: String(executionRecord.provider_request_id ?? ''),
+      confirmation_token: String(executionRecord.confirmation_token ?? ''),
+      attempt_lineage_id: String(executionRecord.attempt_lineage_id ?? ''),
       request_fingerprint: String(executionRecord.request_fingerprint ?? ''),
       candidate_id: executionRecord.candidate_id == null ? null : String(executionRecord.candidate_id),
       failure_code: executionRecord.failure_code == null ? null : String(executionRecord.failure_code),
