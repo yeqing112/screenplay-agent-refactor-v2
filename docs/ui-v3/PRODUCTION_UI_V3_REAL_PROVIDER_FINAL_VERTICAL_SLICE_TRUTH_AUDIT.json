@@ -1,7 +1,7 @@
 {
   "schema_version": "production-ui-v3-real-provider-final-vertical-slice-truth-audit-v2",
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE",
-  "status": "BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET",
+  "status": "BLOCKED_IMAGE_REVIEW_PRESERVATION_EVIDENCE_GAP",
   "marker": "PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE_NOT_SET",
   "historical_budget": {
     "authorized_calls": 5,
@@ -37,7 +37,7 @@
     "database": "work/db/phase-production-ui-v3-final-slice-v2-real-20261003.sqlite",
     "production_db_distinct": true,
     "production_sha256_before": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d",
-    "production_sha256_after": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d",
+    "production_sha256_after": "3f04988BFCA00ED20233A3A355E381C403409482DF176246DE32C8451167218D",
     "protected_book_990400_writes": 0,
     "writes_outside_canary": 0,
     "production_db_writes": 0
@@ -101,7 +101,7 @@
     "model": "MiniMax-H3",
     "model_profile_selected_before_submit": true,
     "selection_gate_artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative3/summary.json",
-    "real_provider_calls": 0,
+    "real_provider_calls": 2,
     "initial": "NOT_SUBMITTED",
     "running_observed": false,
     "reload_identity_preserved": "NOT_REACHED",
@@ -127,13 +127,47 @@
         "provider_calls": 0,
         "error": "GENERATION_PROVIDER_PARAM_INVALID",
         "fixed_in_staging": false
+      },
+      {
+        "provider_calls": 1,
+        "execution_id": "c744b569c3474b19a548eef314cbb9d3",
+        "http_status": 400,
+        "error_code": "2013",
+        "error": "public source image URL required",
+        "fixed": true
+      },
+      {
+        "provider_calls": 1,
+        "execution_id": "848741711c0842d08c419bbe64c4c347",
+        "http_status": 402,
+        "error_code": "1008",
+        "error": "H3 account balance insufficient",
+        "fixed": false
       }
     ],
-    "note": "Canonical projection now filters MiniMax adapter-only default_params; targeted verification passed, but no remaining real budget was spent to re-run VIDEO."
+    "note": "Canonical projection now filters MiniMax adapter-only default_params; targeted verification passed, but no remaining real budget was spent to re-run VIDEO.",
+    "status": "BLOCKED_REAL_VIDEO_PROVIDER_INSUFFICIENT_BALANCE",
+    "selection_gate": {
+      "expected_profile_id": "local-video-7deneh",
+      "option_exists": true,
+      "selected_value": "local-video-7deneh",
+      "provider": "minimax-h3-async",
+      "generation_capability": "VIDEO_GENERATION",
+      "adapter_id": "video_generic",
+      "adapter_version": "video_generic_adapter_v1",
+      "transport_binding_id": "minimax-h3-async.video.v1",
+      "credential_configured": true,
+      "runtime_credential_resolved": true,
+      "provider_neutral_validation": true,
+      "canonical_payload_profile_id": "local-video-7deneh"
+    },
+    "source_public_url_gate": "PASS",
+    "initial_execution": "c744b569c3474b19a548eef314cbb9d3",
+    "initial_retry_execution": "848741711c0842d08c419bbe64c4c347"
   },
   "attempt_lineage": {
-    "status": "PARTIAL_IMAGE_ONLY",
-    "video_lineage": "NOT_CREATED",
+    "status": "VIDEO_PROVIDER_BLOCKED_BEFORE_TASK_CREATION",
+    "video_lineage": "NO_TASK_OR_CANDIDATE_CREATED",
     "cross_media_contamination": false
   },
   "canonical_path": {
@@ -148,7 +182,8 @@
   "cleanup": {
     "orphan_rows": 0,
     "orphan_media_files": 0,
-    "ambiguous_rows": 0
+    "ambiguous_rows": 0,
+    "video_canary_deleted": true
   },
   "alembic_head": "p1q2r3s4t5u6",
   "new_migrations": 0,
@@ -159,14 +194,44 @@
     "compileall": "passed",
     "git_diff_check": "passed"
   },
-  "blocking_condition": "BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET",
-  "required_next_action": "Obtain a fresh independent real-provider budget before attempting the remaining two VIDEO calls; the canonical projection fix is now verified without provider calls.",
+  "blocking_condition": "BLOCKED_IMAGE_REVIEW_PRESERVATION_EVIDENCE_GAP",
+  "required_next_action": "Preserve the IMAGE review-state evidence gap as unresolved; after Provider balance is restored, spend only the remaining VIDEO budget on the missing successful initial/regenerate lifecycle.",
   "video_only_budget": {
     "authorized_calls": 3,
     "normal_required_calls": 2,
     "starting_used_calls": 0,
-    "actual_real_provider_calls": 0,
+    "actual_real_provider_calls": 2,
     "reserve_remaining": 1,
-    "status": "ACTIVE"
-  }
+    "status": "BLOCKED_PROVIDER_INSUFFICIENT_BALANCE",
+    "calls": [
+      {
+        "ordinal": 1,
+        "operation": "initial",
+        "execution_id": "c744b569c3474b19a548eef314cbb9d3",
+        "provider": "minimax-h3-async",
+        "logical_provider_calls": 1,
+        "result": "FAILED",
+        "http_code": 400,
+        "error_code": "2013",
+        "error": "image_url.url must be a public http(s) URL",
+        "provider_task_id": "",
+        "provider_request_id": ""
+      },
+      {
+        "ordinal": 2,
+        "operation": "initial_retry",
+        "execution_id": "848741711c0842d08c419bbe64c4c347",
+        "provider": "minimax-h3-async",
+        "logical_provider_calls": 1,
+        "result": "FAILED",
+        "http_code": 402,
+        "error_code": "1008",
+        "error": "H3 account balance insufficient",
+        "provider_task_id": "",
+        "provider_request_id": ""
+      }
+    ],
+    "evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json"
+  },
+  "video_closure_evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json"
 }

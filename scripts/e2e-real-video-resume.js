@@ -102,12 +102,33 @@ async function main() {
   };
   if (evidence.video_model_selection_gate.selected_value !== PROFILE_ID || registryProfile?.provider !== 'minimax-h3-async' || registryProfile?.generation_capability !== 'VIDEO_GENERATION' || registryProfile?.credential_configured !== true) throw new Error(`VIDEO submit hard gate failed: ${JSON.stringify(evidence.video_model_selection_gate)}`);
   await page.getByRole('button', { name: '视频', exact: true }).click();
+  // Selecting a profile can refresh the canonical projection and clear the
+  // transient DOM selection. Re-apply the hard-gate selection immediately
+  // before Generate/Retry so a failed prior execution cannot leave the lane
+  // in MODEL_PROFILE_REQUIRED.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await videoModel.selectOption(PROFILE_ID);
+    await page.waitForTimeout(400);
+    if (await videoModel.inputValue() === PROFILE_ID) break;
+  }
+  // Profile refreshes default the canvas back to IMAGE; return to VIDEO after
+  // the selection has settled before locating Generate/Retry.
+  await page.getByRole('button', { name: '视频', exact: true }).click();
   await shot('video-ready');
   const generate = page.getByTestId('shot-studio-generate-video');
   await generate.waitFor({ state: 'visible', timeout: 30000 });
-  if (await generate.isDisabled()) throw new Error(`VIDEO generate disabled; selector=${await videoModel.inputValue()} body=${(await page.locator('body').innerText()).slice(0, 3000)}`);
-  const initialResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'), { timeout: 180000 });
-  await generate.click();
+  let initialResponse;
+  if (await generate.isDisabled()) {
+    const retry = page.getByTestId('shot-studio-retry-video');
+    if (!(await retry.count()) || await retry.isDisabled()) {
+      throw new Error(`VIDEO generate disabled; selector=${await videoModel.inputValue()} body=${(await page.locator('body').innerText()).slice(0, 3000)}`);
+    }
+    initialResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/generation-attempts'), { timeout: 180000 });
+    await retry.click();
+  } else {
+    initialResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'), { timeout: 180000 });
+    await generate.click();
+  }
   const runningBefore = await waitForShot(page, (current) => {
     const item = identity(current);
     if (evidence.video_poll_states.length < 120) evidence.video_poll_states.push(item);
@@ -125,7 +146,7 @@ async function main() {
   await shot('video-running-after-reload');
   const initial = await initialResponse;
   if (!initial.ok()) throw new Error(`VIDEO initial failed HTTP ${initial.status()}: ${await initial.text()}`);
-  const submitMutation = evidence.mutations.filter((item) => item.method === 'POST' && item.path.endsWith('/generate-video')).at(-1);
+  const submitMutation = evidence.mutations.filter((item) => item.method === 'POST' && (item.path.endsWith('/generate-video') || item.path.includes('/generation-attempts'))).at(-1);
   evidence.video_model_selection_gate.canonical_payload_profile_id = submitMutation?.body?.modelProfileId || submitMutation?.body?.model_profile_id || null;
   evidence.video_model_selection_gate.runtime_credential_resolved = true;
   evidence.video_model_selection_gate.provider_neutral_validation = true;
@@ -149,6 +170,8 @@ async function main() {
   evidence.official_v1 = { id: officialV1State.shot.VIDEO.official.version.id, candidate_id: v1Review.candidateId, current: true };
   await shot('video-official-v1');
   await page.getByRole('button', { name: '视频', exact: true }).click();
+  await videoModel.selectOption(PROFILE_ID);
+  await page.waitForTimeout(400);
   const regenerate = page.getByTestId('shot-studio-regenerate-video');
   await regenerate.waitFor({ state: 'visible', timeout: 30000 });
   if (await regenerate.isDisabled()) throw new Error('VIDEO regenerate disabled');

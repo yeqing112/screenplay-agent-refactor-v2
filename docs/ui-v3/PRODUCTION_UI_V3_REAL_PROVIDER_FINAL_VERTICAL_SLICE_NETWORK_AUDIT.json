@@ -14,8 +14,30 @@
       "status": 409,
       "code": "GENERATION_PROVIDER_PARAM_INVALID",
       "provider_calls": 0
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990453/storyboard/1/392/generate-video",
+      "status": 400,
+      "code": "2013",
+      "provider_calls": 1,
+      "source": "local storage identity rejected"
+    },
+    {
+      "method": "POST",
+      "path": "/api/books/990453/storyboard/1/392/generate-video",
+      "status": 402,
+      "code": "1008",
+      "provider_calls": 1,
+      "source": "MiniMax H3 insufficient balance"
     }
   ],
   "secrets_in_urls": false,
-  "secret_leaks": 0
+  "secret_leaks": 0,
+  "video_closure_v3": {
+    "provider_calls_server_side_only": true,
+    "browser_direct_provider_calls": 0,
+    "browser_external_hosts": 0,
+    "evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json"
+  }
 }

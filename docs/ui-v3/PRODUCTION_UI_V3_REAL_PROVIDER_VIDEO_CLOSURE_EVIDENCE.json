@@ -1,0 +1,88 @@
+{
+  "schema_version": "production-ui-v3-real-provider-video-closure-v1",
+  "phase": "REAL_PROVIDER_VIDEO_CLOSURE_BUDGET_V3",
+  "status": "BLOCKED_REAL_VIDEO_PROVIDER_INSUFFICIENT_BALANCE",
+  "budget": {
+    "authorized_calls": 3,
+    "normal_required_calls": 2,
+    "actual_real_provider_calls": 2,
+    "reserve_remaining": 1,
+    "emergency_reserve_used": false
+  },
+  "source_image": {
+    "mode": "staged_public_fixture",
+    "source_binding_preserved": true,
+    "public_fixture_url": "https://raw.githubusercontent.com/yeqing112/screenplay-agent-refactor-v2/codex/visual-authoring-provider-canary-reconcile/fixtures/video-canary-source.png",
+    "provider_ready_url_gate": true
+  },
+  "selection_gate": {
+    "expected_profile_id": "local-video-7deneh",
+    "option_exists": true,
+    "selected_value": "local-video-7deneh",
+    "provider": "minimax-h3-async",
+    "generation_capability": "VIDEO_GENERATION",
+    "adapter_id": "video_generic",
+    "adapter_version": "video_generic_adapter_v1",
+    "transport_binding_id": "minimax-h3-async.video.v1",
+    "credential_configured": true,
+    "runtime_credential_resolved": true,
+    "provider_neutral_validation": true,
+    "canonical_payload_profile_id": "local-video-7deneh"
+  },
+  "calls": [
+    {
+      "ordinal": 1,
+      "operation": "initial",
+      "execution_id": "c744b569c3474b19a548eef314cbb9d3",
+      "provider": "minimax-h3-async",
+      "logical_provider_calls": 1,
+      "result": "FAILED",
+      "http_code": 400,
+      "error_code": "2013",
+      "error": "image_url.url must be a public http(s) URL",
+      "provider_task_id": "",
+      "provider_request_id": ""
+    },
+    {
+      "ordinal": 2,
+      "operation": "initial_retry",
+      "execution_id": "848741711c0842d08c419bbe64c4c347",
+      "provider": "minimax-h3-async",
+      "logical_provider_calls": 1,
+      "result": "FAILED",
+      "http_code": 402,
+      "error_code": "1008",
+      "error": "H3 account balance insufficient",
+      "provider_task_id": "",
+      "provider_request_id": ""
+    }
+  ],
+  "video_lifecycle": {
+    "running": false,
+    "reload_identity": false,
+    "candidate_v1": null,
+    "official_v1": null,
+    "regenerate": null,
+    "candidate_v2": null,
+    "official_v2": null,
+    "reason": "Provider rejected/blocked before task creation; no task identity or candidate can be claimed."
+  },
+  "cleanup": {
+    "book_id": 990453,
+    "orphan_rows": 0,
+    "ambiguous_rows": 0,
+    "deleted": true
+  },
+  "isolation": {
+    "production_db_sha256_before": "3f04988bfca00ed20233a3a355e381c403409482DF176246DE32C8451167218D",
+    "production_db_sha256_after": "3f04988BFCA00ED20233A3A355E381C403409482DF176246DE32C8451167218D",
+    "production_db_writes": 0,
+    "protected_book_990400_writes": 0,
+    "browser_direct_provider_calls": 0,
+    "browser_external_hosts": 0,
+    "secret_leaks": 0
+  },
+  "image_preservation_evidence": "NOT_PROVEN_BY_FINAL_ARTIFACT",
+  "complete_marker": "NOT_SET",
+  "next_action": "Restore Provider balance or use an authorized funded credential, then rerun only the remaining VIDEO initial and regenerate calls; do not rerun IMAGE."
+}

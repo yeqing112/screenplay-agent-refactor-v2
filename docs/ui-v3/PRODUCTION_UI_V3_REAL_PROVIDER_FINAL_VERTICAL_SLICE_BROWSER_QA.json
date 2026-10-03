@@ -20,6 +20,14 @@
       "image_calls": 2,
       "video_calls": 0,
       "blocked_code": "GENERATION_PROVIDER_PARAM_INVALID"
+    },
+    {
+      "artifact": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json",
+      "image_calls": 0,
+      "video_calls": 2,
+      "blocked_code": "2013 then 1008",
+      "selector_gate": "PASS",
+      "browser_direct_provider_calls": 0
     }
   ],
   "video_required_screenshots_not_available": [
@@ -36,5 +44,10 @@
   "responsive_smoke": [
     "1280x900",
     "1920x1080"
-  ]
+  ],
+  "video_closure_v3": {
+    "status": "BLOCKED_REAL_VIDEO_PROVIDER_INSUFFICIENT_BALANCE",
+    "source_public_url_gate": "PASS",
+    "official_lifecycle": "NOT_PROVEN"
+  }
 }

@@ -3,83 +3,66 @@
 ## Final status
 
 - phase: `PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE`
-- status: `BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET`
+- status: `BLOCKED_IMAGE_REVIEW_PRESERVATION_EVIDENCE_GAP`
 - marker: `PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE` **未设置**
-- historical budget: **2/5, CLOSED**
-- current budget: **4/5, ACTIVE**
-- emergency reserve: **未使用，剩余 1 次**
-- blocking rule: 剩余 1 次不能覆盖尚未证明的 VIDEO initial + VIDEO regenerate 两次正常调用；第 5 次也不能用于 application/configuration 问题。
+- historical IMAGE budget: **4/5, CLOSED**
+- VIDEO closure budget v3: **2/3 used**；正常调用链仍未完成；应急额度 **1 次未使用**
+- IMAGE review preservation evidence: **NOT_PROVEN_BY_FINAL_ARTIFACT**
 
 ## Zero-call preflight
 
-新的 mock 预检已通过：
+此前 mock vertical slice 通过了 IMAGE 与 VIDEO 的 UI、selector、PromptIR、RUNNING/reload、审核和清理路径，外部 host 为 0，失败为 0。证据：[zero-call preflight](../../output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative3/summary.json)。
 
-- IMAGE：submit → execution → candidate → approve → Official v1 → regenerate → candidate v2 → Official v2
-- VIDEO：异步 option 存在、selected value 稳定、submit → RUNNING → reload 后 execution identity 保持 → candidate → approve → regenerate → Official v2
-- 外部 host：0
-- 失败：0
-
-证据：[zero-call preflight](../../output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative3/summary.json)。
-
-## Real Provider calls
+## Historical real IMAGE calls
 
 四次真实调用均为 SHAPI IMAGE，且均成功：
 
-1. IMAGE initial — execution `cc1bfad62e104750bf5b6565193dda4b`
-2. IMAGE regenerate — execution `8fbcfa4e9c8b4284affcfbd97ca12edc`
-3. IMAGE initial — execution `8fb1e56f6270412ebf658891c26a0534`
-4. IMAGE regenerate — execution `f166c8d2af6145339e5baa546a4237d2`
+1. IMAGE initial — `cc1bfad62e104750bf5b6565193dda4b`
+2. IMAGE regenerate — `8fbcfa4e9c8b4284affcfbd97ca12edc`
+3. IMAGE initial — `8fb1e56f6270412ebf658891c26a0534`
+4. IMAGE regenerate — `f166c8d2af6145339e5baa546a4237d2`
 
-Provider：`shapi-openai-images`；model：`grok-imagine-image-quality`。每次 logical provider calls=1，transport retry=0。两次 canary 均在 VIDEO 阶段前后清理完成，orphan rows/files=0。
+IMAGE v2 晋级已证明；最终快照没有保留 review 中旧 Official 的 current 字段，因此该项继续记为 **NOT_PROVEN_BY_FINAL_ARTIFACT**，没有补写为通过。
 
-IMAGE v2 晋级已证明；由于最终快照的 projection 没有保留 review 中旧 Official 的 current 字段，本轮将“旧 Official 在 review 期间保持 current”记为 **NOT_PROVEN_BY_FINAL_ARTIFACT**，没有把它伪记为通过。
+## VIDEO closure attempt
 
-## VIDEO blocking facts
+本轮 VIDEO 专用 staging canary 使用了保留权威身份的 mock IMAGE。真实传输边界把源图映射到已推送的公开 fixture URL；源 OfficialMedia authority、checksum、PromptIR 和 lineage 没有被改写。
 
-VIDEO selection gate 已经在 mock preflight 中通过，且 real attempt 的浏览器层也确认：
+Selector、canonical payload、runtime credential、VIDEO capability、adapter、transport binding 和 provider-neutral validation 均通过：
 
-- expected profile: `local-video-7deneh`
-- option exists: true
-- selected value: `local-video-7deneh`
+- profile: `local-video-7deneh`
+- provider: `minimax-h3-async`
+- adapter: `video_generic`
+- transport: `minimax-h3-async.video.v1`
+- public source URL gate: PASS
 
-随后真实 VIDEO 未产生 Provider call。连续修复/验证得到：
+实际 Provider 结果：
 
-- `RUNTIME_CREDENTIAL_NOT_RESOLVED`：已修复 staging 环境变量绑定。
-- `MODEL_CAPABILITY_MISMATCH`：已修复 staging profile 的 VIDEO capability/adapter 元数据。
-- 当前阻塞已在代码层修复：canonical projection 现在过滤 MiniMax adapter-only 参数，保留 adapter 原始参数；修复后的 canonical/model registry/MiniMax 测试通过。由于当前预算只剩 1 次，未重新消耗真实调用验证 VIDEO。
+1. VIDEO initial — execution `c744b569c3474b19a548eef314cbb9d3`：HTTP 400，错误 `2013 image_url.url must be a public http(s) URL`。该应用问题已修复。
+2. VIDEO initial retry — execution `848741711c0842d08c419bbe64c4c347`：HTTP 402，错误 `1008 H3 account balance insufficient`。
 
-因此 VIDEO 的 RUNNING、reload identity、candidate v1/v2、Official v1/v2、VIDEO regenerate 均没有真实证据。按照本轮规则，不使用剩余的第 5 次调用。
+两次调用都没有返回 Provider task/request ID，因此没有声称 RUNNING、reload identity、candidate、Official v1/v2 或 regenerate 成功。余额不足属于账户/Provider 配置问题，未消耗应急额度。
 
-## Isolation and audit
+证据：[VIDEO closure evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json)。
 
-- production DB SHA256 before/after：`3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d`（相同）
+## Isolation and cleanup
+
+- production DB SHA256 before/after：`3f04988BFCA00ED20233A3A355E381C403409482DF176246DE32C8451167218D`（相同）
 - production DB writes：0
 - protected Book 990400 writes：0
-- writes outside canary：0
 - browser direct Provider calls：0
-- browser external Provider hosts：0
+- browser external hosts：0
 - secret leaks：0
-- orphan rows：0
-- orphan media files：0
+- disposable VIDEO canary：已通过 UI 删除
+- orphan rows/files：0
+- ambiguous rows：0
 - Alembic head：`p1q2r3s4t5u6`
-- new migrations：0
 
 ## Code and evidence updates
 
-本轮已更新：
-
-- E2E VIDEO submit 前重新选择并断言 model profile，避免 PromptIR rehydrate 清空 selector。
-- Model registry 对旧 image/video profile 自动补齐 canonical capability/adapter metadata。
-- Canonical provider profile projection 过滤 MiniMax adapter-only 参数，避免旧 profile 在 Provider 前置校验阶段被拒绝。
-- 增加 MiniMax environment-backed runtime credential binding。
+- canonical VIDEO source handoff 支持 staging 公开 fixture URL，避免把本地 `/api/...` 路径提交给真实 Provider。
+- VIDEO E2E 在 PromptIR/selector refresh 后重新选择 profile，并支持失败 execution 的可见重试入口。
+- 新增公开 fixture：`fixtures/video-canary-source.png`。
 - 更新 Truth Audit、Provider Evidence、Network Audit、Data Audit、Browser QA。
 
-最终权威文件：
-
-- [Truth Audit](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_TRUTH_AUDIT.json)
-- [Provider Evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_PROVIDER_EVIDENCE.json)
-- [Network Audit](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_NETWORK_AUDIT.json)
-- [Data Audit](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_DATA_AUDIT.json)
-- [Browser QA](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_BROWSER_QA.json)
-
-要达到 COMPLETE，需要新的独立真实 Provider 预算，再完成 VIDEO initial 与 VIDEO regenerate 两次调用；本轮不设置 COMPLETE marker。
+达到 COMPLETE 还需要：恢复 MiniMax H3 可用余额，完成 VIDEO initial 与 VIDEO regenerate 的成功生命周期，并补齐 IMAGE review 期间旧 Official 保持 current 的最终证据。本轮不设置 COMPLETE marker。

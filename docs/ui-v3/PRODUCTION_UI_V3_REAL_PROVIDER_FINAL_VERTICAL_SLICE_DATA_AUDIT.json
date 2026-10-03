@@ -24,6 +24,17 @@
   },
   "source_fact_deltas": 0,
   "script_ir_deltas": 0,
-  "provider_call_count": 4,
-  "video_provider_call_count": 0
+  "provider_call_count": 6,
+  "video_provider_call_count": 2,
+  "video_closure_v3": {
+    "execution_ids": [
+      "c744b569c3474b19a548eef314cbb9d3",
+      "848741711c0842d08c419bbe64c4c347"
+    ],
+    "successful_candidates": 0,
+    "official_video_versions": 0,
+    "canary_deleted": true,
+    "orphan_rows": 0,
+    "ambiguous_rows": 0
+  }
 }
