@@ -4,7 +4,7 @@
 
 - phase: `PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE`
 - baseline: `ce9c4c93ccd632fe21dd94e0b7c94ff484933205`
-- final code commit: `9d8432f7e40bba620e625aa50c94244e6b7971af`
+- final code commit: `0760a02` (subsequent commits contain audit/evidence only)
 - Alembic head: `p1q2r3s4t5u6`
 - new migrations: `0`
 - status: `BLOCKED_REAL_VIDEO_MODEL_SELECTION_ASYNC_409`

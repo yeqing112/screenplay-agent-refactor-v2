@@ -63,5 +63,6 @@
   "orphan_media_files": 0,
   "alembic_head": "p1q2r3s4t5u6",
   "new_migrations": 0,
-  "final_code_commit": "786f494e5d907c1e40f32822315125805e0ae7f1"
+  "final_code_commit": "0760a02",
+  "audit_commit_note": "Subsequent commits contain audit/evidence updates only."
 }
