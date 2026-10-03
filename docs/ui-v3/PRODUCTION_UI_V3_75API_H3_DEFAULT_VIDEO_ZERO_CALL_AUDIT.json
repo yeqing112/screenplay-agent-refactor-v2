@@ -15,21 +15,21 @@
     "75api_profile_count": 1,
     "75api_default_applied": true,
     "credential_preflight": "GET /api/model-registry/credential-preflight/local-video-ex8l4t",
-    "credential_configured": false,
-    "credential_ref": "env:API75_API_KEY",
-    "runtime_binding_id": "env:API75_API_KEY"
+    "credential_configured": true,
+    "credential_ref": "profile:local-video-ex8l4t",
+    "runtime_binding_id": "model-registry-profile-secret"
   },
   "credential_gate": {
-    "status": "BLOCKED_RUNTIME_CREDENTIAL",
-    "credential_configured": false,
-    "resolved": false,
-    "validated": false,
-    "credential_ref": "env:API75_API_KEY",
-    "runtime_binding_id": "env:API75_API_KEY",
-    "validation_method": "environment-presence",
+    "status": "PASS",
+    "credential_configured": true,
+    "resolved": true,
+    "validated": true,
+    "credential_ref": "profile:local-video-ex8l4t",
+    "runtime_binding_id": "model-registry-profile-secret",
+    "validation_method": "model-registry-secret-presence",
     "validation_version": "v1",
     "legacy_profile_api_key_canonical_authority": false,
-    "reason": "API75_API_KEY is not present in the runtime environment; the legacy profile api_key is migration-only and cannot authorize canonical runtime execution.",
+    "reason": "The Model Management secret was resolved server-side through the profile reference. The secret value was not returned in the public profile or audit.",
     "provider_calls": 0,
     "secret_leaked": false
   },
@@ -53,7 +53,7 @@
   "zero_call_verification": {
     "registry_read": "PASS",
     "profile_structural_test": "PASS",
-    "credential_preflight": "PASS_WITH_FAIL_CLOSED_RESULT",
+    "credential_preflight": "PASS",
     "canonical_payload_preflight": "PASS",
     "provider_submission": "NOT_RUN",
     "provider_poll": "NOT_RUN",
@@ -64,13 +64,13 @@
     "manual_success_fabrication": false
   },
   "real_video_final_closure": {
-    "status": "BLOCKED_RUNTIME_CREDENTIAL",
-    "reason": "The VIDEO default and MiniMax H3 adapter are valid, but canonical runtime credential resolution is fail-closed until API75_API_KEY is configured and validated. No provider submission was attempted."
+    "status": "READY_FOR_NEW_AUTHORIZED_VIDEO_BUDGET",
+    "reason": "The Model Management credential resolved and validated locally through the canonical runtime boundary. No provider submission was attempted."
   },
   "required_operator_inputs": [
-    "Configure API75_API_KEY through the runtime secret mechanism when authorized; do not commit or paste the secret.",
-    "Re-run the pure credential and zero-call preflight. The status may become READY_FOR_NEW_AUTHORIZED_VIDEO_BUDGET only when configured, resolved, and validated are all true.",
+    "Model-management credential successfully resolved by Canonical Runtime.",
     "Authorize a new independent VIDEO closure budget after the zero-call validation.",
     "Keep the GROK1.5 Feishu contract separate if that model is also required; it is not the current MiniMax H3 profile."
-  ]
+  ],
+  "release_readiness_backlog": "MODEL_REGISTRY_SECRET_AT_REST_HARDENING"
 }

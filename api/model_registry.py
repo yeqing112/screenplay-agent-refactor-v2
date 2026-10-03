@@ -33,6 +33,7 @@ SHAPI_GEMINI_IMAGE_PROVIDER = "shapi-gemini-image"
 VIDEO_REAL_DEFAULT_ENABLED = True
 API75_API_KEY_ENV = "API75_API_KEY"
 API75_API_KEY_REF = f"env:{API75_API_KEY_ENV}"
+MODEL_REGISTRY_PROFILE_SECRET_BINDING = "model-registry-profile-secret"
 
 
 def _mock_runtime_enabled() -> bool:
@@ -199,19 +200,24 @@ def _profile_uses_mock(profile: dict[str, Any]) -> bool:
 def _runtime_credential_metadata(profile: Mapping[str, Any]) -> tuple[str, str, bool]:
     """Return a secret-free canonical credential reference and status.
 
-    75API profiles may still contain a legacy plaintext ``api_key`` from the
-    model-management migration.  That value keeps ``key_configured`` true for
-    operator visibility, but canonical generation only accepts the explicit
-    environment binding and checks the environment at runtime.
+    75API profiles use a stable server-side profile reference.  The plaintext
+    ``api_key`` is read only by the backend resolver and is never returned by
+    the public registry projection.
     """
 
     provider = str(profile.get("provider") or "").strip()
     explicit_ref = str(profile.get("credential_ref") or "").strip()
     explicit_binding = str(profile.get("runtime_binding_id") or "").strip()
     if provider == MINIMAX_H3_75API_PROVIDER:
-        # 75API has one canonical secret source.  Ignore persisted legacy
-        # references so an old profile api_key cannot become authority.
-        return API75_API_KEY_REF, API75_API_KEY_REF, bool(os.getenv(API75_API_KEY_ENV))
+        profile_id = str(profile.get("id") or "").strip()
+        api_key = str(profile.get("api_key") or "").strip()
+        if api_key and profile_id:
+            return f"profile:{profile_id}", MODEL_REGISTRY_PROFILE_SECRET_BINDING, True
+        # Keep explicit environment bindings available for deployments that
+        # intentionally omit a Model Management secret.
+        if explicit_ref.startswith("env:"):
+            return explicit_ref, explicit_binding or explicit_ref, bool(os.getenv(explicit_ref[4:]))
+        return f"profile:{profile_id}" if profile_id else "", MODEL_REGISTRY_PROFILE_SECRET_BINDING, False
     reference = explicit_ref
     binding_id = explicit_binding
     configured = bool(profile.get("credential_configured", bool(profile.get("api_key")) or bool(profile.get("key_configured"))))
@@ -237,7 +243,7 @@ def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str
         "default_params": _normalize_default_params(profile.get("default_params")),
         "enabled": bool(profile.get("enabled", True)),
         "is_default": bool(is_default),
-        "key_configured": bool(api_key) or bool(profile.get("key_configured")),
+        "key_configured": bool(api_key) if str(profile.get("provider") or "") == MINIMAX_H3_75API_PROVIDER else bool(api_key) or bool(profile.get("key_configured")),
         "builtin": bool(profile.get("builtin", False)),
         "source": str(profile.get("source") or ("builtin" if profile.get("builtin") else "user")),
         "uses_mock": _profile_uses_mock(profile),
@@ -294,9 +300,9 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
                 "generation_capability": str(item.get("generation_capability") or ""),
                 "adapter_id": str(item.get("adapter_id") or ""),
                 "adapter_version": str(item.get("adapter_version") or ""),
-                "credential_ref": API75_API_KEY_REF if item.get("provider") == MINIMAX_H3_75API_PROVIDER else str(item.get("credential_ref") or ""),
-                "credential_configured": bool(os.getenv(API75_API_KEY_ENV)) if item.get("provider") == MINIMAX_H3_75API_PROVIDER else bool(item.get("credential_configured", bool(item.get("api_key")))),
-                "runtime_binding_id": API75_API_KEY_REF if item.get("provider") == MINIMAX_H3_75API_PROVIDER else str(item.get("runtime_binding_id") or ""),
+                "credential_ref": f"profile:{item.get('id')}" if item.get("provider") == MINIMAX_H3_75API_PROVIDER and item.get("api_key") else str(item.get("credential_ref") or ""),
+                "credential_configured": bool(item.get("api_key")) if item.get("provider") == MINIMAX_H3_75API_PROVIDER else bool(item.get("credential_configured", bool(item.get("api_key")))),
+                "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if item.get("provider") == MINIMAX_H3_75API_PROVIDER and item.get("api_key") else str(item.get("runtime_binding_id") or ""),
                 "transport_binding_id": _transport_binding_id(item),
             }
         )
@@ -471,9 +477,9 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "generation_capability": str(profile.get("generation_capability") or ""),
         "adapter_id": str(profile.get("adapter_id") or ""),
         "adapter_version": str(profile.get("adapter_version") or ""),
-        "credential_ref": API75_API_KEY_REF if provider == MINIMAX_H3_75API_PROVIDER else str(profile.get("credential_ref") or ""),
-        "credential_configured": bool(os.getenv(API75_API_KEY_ENV)) if provider == MINIMAX_H3_75API_PROVIDER else bool(profile.get("credential_configured", bool(profile.get("api_key")))),
-        "runtime_binding_id": API75_API_KEY_REF if provider == MINIMAX_H3_75API_PROVIDER else str(profile.get("runtime_binding_id") or ""),
+        "credential_ref": f"profile:{profile.get('id')}" if provider == MINIMAX_H3_75API_PROVIDER and profile.get("api_key") else str(profile.get("credential_ref") or ""),
+        "credential_configured": bool(profile.get("api_key")) if provider == MINIMAX_H3_75API_PROVIDER else bool(profile.get("credential_configured", bool(profile.get("api_key")))),
+        "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if provider == MINIMAX_H3_75API_PROVIDER and profile.get("api_key") else str(profile.get("runtime_binding_id") or ""),
         "transport_binding_id": _transport_binding_id(profile),
     }
 

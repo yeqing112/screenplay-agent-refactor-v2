@@ -118,10 +118,9 @@ def resolve_runtime_credential(
     """Resolve and validate a credential without reading registry ``api_key``.
 
     A legacy plaintext ``api_key`` therefore cannot silently become a new
-    canonical credential. Operators must configure an environment-backed or
-    injected resolver explicitly. Deterministic fake credentials are supplied
-    only by an injected test/operations resolver; this module has no built-in
-    mock secret fallback.
+    canonical credential. Model Management credentials are resolved through a
+    server-side ``profile:<id>`` reference; environment and injected resolvers
+    remain supported for deployment-specific bindings.
     """
     ref = credential_reference(profile)
     if not ref:
@@ -139,6 +138,13 @@ def resolve_runtime_credential(
         validation_method = binding.validation_method
         validation_version = binding.validation_version
         lookup = ref
+    elif resolver is None and ref.startswith("profile:"):
+        from core.model_registry_credentials import resolve_model_registry_profile_secret
+
+        resolver = resolve_model_registry_profile_secret
+        validation_method = "model-registry-secret-presence"
+        validation_version = "v1"
+        lookup = ref
     elif resolver is None:
         env_name = str(profile.get("credential_env") or "").strip()
         if not env_name and ref.startswith("env:"):
@@ -151,6 +157,8 @@ def resolve_runtime_credential(
     if not isinstance(value, str) or not value:
         raise RuntimeCredentialError("RUNTIME_CREDENTIAL_NOT_RESOLVED", "The runtime credential reference could not be resolved.", credential_ref=ref)
     effective_validator = validator or (binding.validator if binding is not None else None)
+    if effective_validator is None and ref.startswith("profile:"):
+        effective_validator = lambda value: bool(str(value or "").strip())
     if effective_validator is None:
         raise RuntimeCredentialError(
             "RUNTIME_CREDENTIAL_NOT_VALIDATED",
@@ -211,9 +219,10 @@ register_runtime_credential_binding(
     validation_version="v1",
 )
 
-# 75API MiniMax H3 uses its own explicit environment-backed credential.  A
-# legacy registry api_key may remain for migration/compatibility, but it is
-# never used as the canonical credential source.
+# 75API may use an explicit environment-backed credential in deployments that
+# intentionally omit a Model Management secret.  A saved profile secret uses
+# the separate ``profile:<id>`` resolver above and remains authoritative for
+# the current operator configuration.
 register_runtime_credential_binding(
     "env:API75_API_KEY",
     resolver=lambda _ref: os.getenv("API75_API_KEY"),

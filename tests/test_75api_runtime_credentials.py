@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import pytest
 
 import api.model_registry as model_registry
 import core.provider_transport_registry as transport_registry
+import core.model_registry_credentials as registry_credentials
 from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
 
 
@@ -30,47 +32,53 @@ def _profile() -> dict:
     }
 
 
-def test_75api_legacy_key_maps_to_secret_free_environment_reference(monkeypatch):
+def test_75api_saved_model_management_key_maps_to_secret_free_profile_reference(monkeypatch):
     monkeypatch.delenv("API75_API_KEY", raising=False)
     monkeypatch.setattr(model_registry, "_all_profiles_raw", lambda: [_profile()])
 
     public = next(item for item in model_registry.list_profiles() if item["id"] == "local-video-ex8l4t")
 
     assert public["key_configured"] is True
-    assert public["credential_configured"] is False
-    assert public["credential_ref"] == "env:API75_API_KEY"
-    assert public["runtime_binding_id"] == "env:API75_API_KEY"
+    assert public["credential_configured"] is True
+    assert public["credential_ref"] == "profile:local-video-ex8l4t"
+    assert public["runtime_binding_id"] == "model-registry-profile-secret"
     assert "api_key" not in public
 
 
-def test_75api_environment_credential_is_configured_only_when_present(monkeypatch):
-    monkeypatch.setenv("API75_API_KEY", "runtime-secret")
+def test_75api_model_management_credential_resolves_server_side(monkeypatch):
+    monkeypatch.delenv("API75_API_KEY", raising=False)
     monkeypatch.setattr(model_registry, "_all_profiles_raw", lambda: [_profile()])
+    monkeypatch.setattr(registry_credentials, "get_kv", lambda _key, _default: json.dumps([_profile()]))
 
     public = next(item for item in model_registry.list_profiles() if item["id"] == "local-video-ex8l4t")
     assert public["credential_configured"] is True
 
     resolved = resolve_runtime_credential(public)
     assert resolved.audit() == {
-        "credential_ref": "env:API75_API_KEY",
+        "credential_ref": "profile:local-video-ex8l4t",
         "configured": True,
         "resolved": True,
         "validated": True,
-        "validation_method": "environment-presence",
+        "validation_method": "model-registry-secret-presence",
         "validation_version": "v1",
     }
-    assert "runtime-secret" not in str(resolved.audit())
+    assert "legacy-secret-must-not-be-canonical" not in str(resolved.audit())
 
 
-def test_75api_missing_environment_credential_fails_closed(monkeypatch):
+def test_75api_missing_model_management_credential_fails_closed(monkeypatch):
     monkeypatch.delenv("API75_API_KEY", raising=False)
-    monkeypatch.setattr(model_registry, "_all_profiles_raw", lambda: [_profile()])
+    profile = _profile()
+    profile["api_key"] = ""
+    monkeypatch.setattr(model_registry, "_all_profiles_raw", lambda: [profile])
+    monkeypatch.setattr(registry_credentials, "get_kv", lambda _key, _default: json.dumps([profile]))
     public = next(item for item in model_registry.list_profiles() if item["id"] == "local-video-ex8l4t")
 
+    assert public["key_configured"] is False
+    assert public["credential_configured"] is False
     with pytest.raises(RuntimeCredentialError) as exc:
         resolve_runtime_credential(public)
     assert exc.value.code == "RUNTIME_CREDENTIAL_NOT_RESOLVED"
-    assert exc.value.credential_ref == "env:API75_API_KEY"
+    assert exc.value.credential_ref == "profile:local-video-ex8l4t"
 
 
 def test_75api_transport_injects_ephemeral_credential_only(monkeypatch):
@@ -83,6 +91,8 @@ def test_75api_transport_injects_ephemeral_credential_only(monkeypatch):
 
     monkeypatch.setattr(transport_registry, "generate_video_asset", fake_generate)
     canonical_profile = {key: value for key, value in _profile().items() if key != "api_key"}
+    canonical_profile["credential_ref"] = "profile:local-video-ex8l4t"
+    canonical_profile["runtime_binding_id"] = "model-registry-profile-secret"
     context = {
         "profile": canonical_profile,
         "runtime_credential_value": "ephemeral-runtime-secret",

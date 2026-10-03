@@ -12,18 +12,20 @@
 
 模型管理中的切换已经写入运行注册表：`local-video-ex8l4t` 当前是 VIDEO 默认，provider 为 `75api-minimax-h3`，传输绑定为 `75api-minimax-h3.video.v1`。模型配置结构校验通过，并且该校验没有发起真实扣费任务。
 
-模型注册表已经使用无密配置投影，并把 75API H3 的规范凭据绑定到 `env:API75_API_KEY`。解析链为：`Model Registry → credential_ref/runtime_binding_id → RuntimeCredentialResolver → ephemeral credential → transport`。旧 profile 中的 `api_key` 只保留作迁移兼容，不是规范权限来源。
+模型注册表使用无密配置投影，并把 75API H3 的规范凭据绑定到 `profile:local-video-ex8l4t` / `model-registry-profile-secret`。解析链为：`Model Registry → credential_ref/runtime_binding_id → RuntimeCredentialResolver → server-side KV secret lookup → ephemeral credential → transport`。旧 profile 中的 `api_key` 只由后端 resolver 读取，不会进入 canonical profile、public API、execution snapshot 或审计输出。
 
-当前环境没有 `API75_API_KEY`，因此预检结果为 `BLOCKED_RUNTIME_CREDENTIAL`：`credential_configured=false`、`resolved=false`、`validated=false`。预检只读取本地注册表并在内存中构造 payload，未请求 `https://www.75api.com`，也没有提交 `/v1/videos`。
+当前模型管理保存的 Key 已成功在服务端解析：`credential_configured=true`、`resolved=true`、`validated=true`，校验方式为 `model-registry-secret-presence / v1`。该状态只代表本地运行时凭据可解析，不代表 Provider connectivity 已验证。预检只读取本地注册表并在内存中构造 payload，未请求 `https://www.75api.com`，也没有提交 `/v1/videos`。
 
 这个默认 profile 对应仓库已有的 75API MiniMax H3 适配器。飞书页面当前展示的是 GROK1.5（`grok-imagine-video-1.5-preview`）合同，两者保持独立。
 
 ## 后续条件
 
-1. 通过运行时安全配置提供 `API75_API_KEY`，完成凭据解析与验证；不要提交或粘贴密钥。
-2. 重新运行纯凭据预检与 zero-call 预检。只有 `configured`、`resolved`、`validated` 全部为真时，状态才可变为 `READY_FOR_NEW_AUTHORIZED_VIDEO_BUDGET`。
-3. 新建独立 VIDEO closure budget；v3 的 reserve 不继承。
-4. 保持 zero-call selector、payload、image-conditioned、5–15 秒和最多 8 张参考图门禁。
-5. 预算获批后，才允许真实提交 initial 与 regenerate。
+1. Model-management credential successfully resolved by Canonical Runtime。
+2. 当前 zero-call 结果为 `READY_FOR_NEW_AUTHORIZED_VIDEO_BUDGET`；这一步没有创建 VIDEO v4 active budget，也没有执行真实提交。
+3. 后续如获批新的独立 VIDEO closure budget，仍需保持 zero-call selector、payload、image-conditioned、5–15 秒和最多 8 张参考图门禁。
+
+## Release-readiness backlog
+
+`MODEL_REGISTRY_SECRET_AT_REST_HARDENING`：未来分离 profile metadata 与 credential secret，并接入加密或系统 Secret Manager。本轮不扩大范围，不阻塞当前 credential reconciliation。
 
 详细机器可读审计见同目录的 `PRODUCTION_UI_V3_75API_H3_DEFAULT_VIDEO_ZERO_CALL_AUDIT.json`。
