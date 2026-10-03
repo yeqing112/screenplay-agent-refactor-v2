@@ -7,7 +7,7 @@
 - final code commit: `9d8432f7e40bba620e625aa50c94244e6b7971af`
 - Alembic head: `p1q2r3s4t5u6`
 - new migrations: `0`
-- status: `BLOCKED_REAL_VIDEO_NOT_CONFIGURED_AFTER_CANARY_BUDGET_GUARD`
+- status: `BLOCKED_REAL_VIDEO_MODEL_SELECTION_ASYNC_409`
 - target marker `PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE` 未设置。
 - 本阶段真实 Provider 预算：`2/5`，剩余 `3`；没有为绕过当前阻塞而重复调用。
 
@@ -34,7 +34,7 @@ IMAGE 的 Provider 证据、执行身份和候选校验已写入 [Provider Evide
 
 ### VIDEO
 
-VIDEO 尚未完成真实调用。浏览器在 VIDEO 模型选项异步刷新完成前读取到空选择，点击生成被 canonical API 以 `409` 拒绝；没有写入 VIDEO execution，也没有产生真实 VIDEO Provider 账单调用。该问题已在 E2E 编排中增加“等待 option 并确认 selected value”的修复，且失败的 real canary 后续已由 UI 清理，清理审计为 `orphan_rows=0`。
+VIDEO profile 实际存在（`local-video-7deneh` / `minimax-h3-async` / `MiniMax-H3`），但浏览器在 VIDEO 模型选项异步刷新完成前读取到空选择，点击生成被 canonical API 以 `409 MODEL_PROFILE_REQUIRED` 拒绝；没有写入 VIDEO execution，也没有产生真实 VIDEO Provider 账单调用。该问题已在 E2E 编排中增加“等待 option 并确认 selected value”的修复，且失败的 real canary 后续已由 UI 清理，清理审计为 `orphan_rows=0`。
 
 因此以下目标仍未证明：VIDEO running → reload identity → candidate v1 → official v1 → regenerate → candidate v2 → official v2。
 

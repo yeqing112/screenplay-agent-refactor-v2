@@ -2,7 +2,7 @@
   "schema_version": "production-ui-v3-real-provider-final-vertical-slice-truth-audit-v1",
   "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE",
   "baseline_commit": "ce9c4c93ccd632fe21dd94e0b7c94ff484933205",
-  "status": "BLOCKED_REAL_VIDEO_NOT_CONFIGURED_AFTER_CANARY_BUDGET_GUARD",
+  "status": "BLOCKED_REAL_VIDEO_MODEL_SELECTION_ASYNC_409",
   "phase_budget": {
     "authorized_calls": 5,
     "actual_real_provider_calls": 2,
@@ -52,7 +52,7 @@
     "old_official_preserved": null,
     "candidate_v2": null,
     "official_v2": null,
-    "final": "BLOCKED_PROFILE_SELECTION_409"
+    "final": "BLOCKED_MODEL_SELECTION_ASYNC_409"
   },
   "protected_book_990400_writes": 0,
   "writes_outside_canary": 0,

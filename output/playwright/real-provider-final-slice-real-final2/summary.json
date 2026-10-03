@@ -5658,7 +5658,7 @@
           "candidate_id": "candidate-2564a864cf3344919f2451efdc02d88d",
           "v1_superseded": true
         },
-        "video_status": "BLOCKED_REAL_VIDEO_NOT_CONFIGURED"
+        "video_status": "BLOCKED_REAL_VIDEO_MODEL_SELECTION_ASYNC_409"
       },
       "real_provider_generation_posts": 4,
       "video_poll_states": [
