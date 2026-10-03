@@ -19,7 +19,7 @@
 - 外部 host：0
 - 失败：0
 
-证据：[zero-call preflight](../../output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json)。
+证据：[zero-call preflight](../../output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative3/summary.json)。
 
 ## Real Provider calls
 

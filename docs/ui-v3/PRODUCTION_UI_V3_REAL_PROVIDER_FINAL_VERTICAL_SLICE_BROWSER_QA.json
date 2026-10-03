@@ -4,13 +4,15 @@
     "runs": 1,
     "failures": 0,
     "external_hosts": 0,
-    "artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json",
+    "artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative3/summary.json",
     "video_selection_gate": {
       "expected_profile_id": "builtin-mock-video",
       "option_exists": true,
       "selected_value": "builtin-mock-video",
-      "canonical_payload_profile_id": "builtin-mock-video"
-    }
+      "canonical_payload_profile_id": "builtin-mock-video",
+      "stable": true
+    },
+    "steps_passed": "all"
   },
   "real_attempts": [
     {

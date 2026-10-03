@@ -549,6 +549,9 @@ async function runOnce(browser, index) {
       const videoSubmitSelector = await selectModelProfile(page, 'VIDEO', REAL_VIDEO_PROFILE_ID);
       const videoSubmitSelectedValue = await videoSubmitSelector.inputValue();
       if (videoSubmitSelectedValue !== REAL_VIDEO_PROFILE_ID) throw new Error(`VIDEO model selection gate lost before submit: expected ${REAL_VIDEO_PROFILE_ID}, got ${videoSubmitSelectedValue}`);
+      // Selecting the profile can re-render the canvas and restore the IMAGE
+      // lane. Set VIDEO again and require its action control to be visible.
+      await page.getByRole('button', { name: '视频', exact: true }).click();
       const generateVideo = page.getByRole('button', { name: '生成 VIDEO', exact: true });
       await generateVideo.waitFor({ state: 'visible', timeout: 30000 });
       const videoInitialResponse = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-video'), { timeout: 180000 }).catch((error) => ({ __wait_error: error }));

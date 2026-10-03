@@ -18,7 +18,7 @@
   },
   "zero_call_final_preflight": {
     "status": "PASS",
-    "artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json",
+    "artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative3/summary.json",
     "runs": 1,
     "failures": 0,
     "external_hosts": 0,
@@ -30,7 +30,8 @@
       "stable": true
     },
     "image_workflow": "PASS",
-    "video_workflow": "PASS"
+    "video_workflow": "PASS",
+    "selection_gate_fix_verified": true
   },
   "staging": {
     "database": "work/db/phase-production-ui-v3-final-slice-v2-real-20261003.sqlite",
@@ -89,7 +90,7 @@
     "provider": "minimax-h3-async",
     "model": "MiniMax-H3",
     "model_profile_selected_before_submit": true,
-    "selection_gate_artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative/summary.json",
+    "selection_gate_artifact": "output/playwright/real-provider-final-slice-v2-zero-call-preflight-authoritative3/summary.json",
     "real_provider_calls": 0,
     "initial": "NOT_SUBMITTED",
     "running_observed": false,
