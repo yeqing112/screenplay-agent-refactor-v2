@@ -1,0 +1,50 @@
+{
+  "schema_version": "production-ui-v3-75api-h3-default-video-zero-call-audit-v1",
+  "phase": "75API_H3_DEFAULT_VIDEO_ZERO_CALL_AUDIT",
+  "provider_calls": 0,
+  "external_provider_requests": 0,
+  "production_writes": 0,
+  "runtime": {
+    "api_health": "PASS",
+    "frontend_health": "PASS",
+    "registry_endpoint": "GET /api/model-registry",
+    "default_video_profile_id": "local-video-7deneh",
+    "default_video_provider": "minimax-h3-async",
+    "default_video_model": "MiniMax-H3",
+    "profile_count": 10,
+    "75api_profile_count": 0,
+    "75api_default_applied": false
+  },
+  "adapter_audit": {
+    "provider_id": "75api-minimax-h3",
+    "transport_binding": "75api-minimax-h3.video.v1",
+    "model_name": "minimax_h3_no_audios",
+    "image_conditioned_only": true,
+    "duration_contract": "5-15 seconds",
+    "reference_image_limit": 8,
+    "unit_and_boundary_tests": "13 passed",
+    "status": "PASS"
+  },
+  "default_video_change": {
+    "requested_profile": "75api-minimax-h3",
+    "status": "BLOCKED_MISSING_RUNTIME_PROFILE",
+    "reason": "No 75api-minimax-h3 profile is persisted and no 75API credential is available in the runtime environment."
+  },
+  "zero_call_verification": {
+    "registry_read": "PASS",
+    "provider_submission": "NOT_RUN",
+    "provider_poll": "NOT_RUN",
+    "real_video_closure": "NOT_RUN",
+    "mock_task_fabrication": false,
+    "manual_success_fabrication": false
+  },
+  "real_video_final_closure": {
+    "status": "BLOCKED",
+    "reason": "A valid 75API profile/key and an independently authorized VIDEO budget are required before any real submission."
+  },
+  "required_operator_inputs": [
+    "Persist a 75api-minimax-h3 profile with base_url https://www.75api.com and model_name minimax_h3_no_audios.",
+    "Provide the 75API credential through the runtime secret path without placing it in this report.",
+    "Authorize a new independent VIDEO closure budget after the profile passes zero-call validation."
+  ]
+}
