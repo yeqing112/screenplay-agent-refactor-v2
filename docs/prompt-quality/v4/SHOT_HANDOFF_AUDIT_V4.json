@@ -1,0 +1,213 @@
+{
+  "shots": [
+    {
+      "shot_id": "SH_E01_SC001_002",
+      "next_shot_id": "SH_E01_SC001_005",
+      "final_value": {
+        "characters": {
+          "林晚": {
+            "position": "售票窗口与站台入口之间，向前半步",
+            "pose": "身体前倾3厘米，双脚冻结",
+            "head_direction": "向右15度、下巴上抬5度",
+            "eye_target": "站台入口红伞伞骨",
+            "emotion": "警觉",
+            "right_hand": "胸腹前夹住车票"
+          }
+        },
+        "props": {
+          "RED_UMBRELLA": {
+            "position": "站台入口右侧",
+            "state": "伞面半收，左侧伞骨折断且暴露"
+          }
+        },
+        "camera": {
+          "framing": "中景",
+          "height": "平视",
+          "movement": "4.6秒后停止"
+        }
+      },
+      "next_starting_value": {
+        "陆叔": {
+          "position": "林晚左前方半步",
+          "right_hand": "尚未接触手提包提手"
+        },
+        "林晚": {
+          "position": "售票台侧前方",
+          "right_hand": "握住手提包提手"
+        }
+      },
+      "comparison": "INTENTIONAL_CHANGE",
+      "reason": "each shot re-establishes the canonical location, actor relationship and prop ownership before its own action begins"
+    },
+    {
+      "shot_id": "SH_E01_SC001_005",
+      "next_shot_id": "SH_E01_SC002_002",
+      "final_value": {
+        "characters": {
+          "陆叔": {
+            "position": "画面左侧，距林晚约一步",
+            "pose": "右手持包，左手指尖停在包口凸起上",
+            "head_direction": "正面",
+            "eye_target": "包口硬物",
+            "emotion": "警觉"
+          },
+          "林晚": {
+            "position": "画面右侧后退5厘米",
+            "pose": "双手落在身体两侧",
+            "head_direction": "向左5度",
+            "eye_target": "包口硬物",
+            "emotion": "警觉"
+          }
+        },
+        "props": {
+          "HANDBAG": {
+            "owner": "陆叔右手",
+            "state": "包口闭合，硬物轮廓可见"
+          }
+        },
+        "camera": {
+          "framing": "双人中景",
+          "height": "平视",
+          "movement": "5.1秒后停止"
+        }
+      },
+      "next_starting_value": {
+        "陆叔": {
+          "position": "餐桌左侧",
+          "eye_target": "桌面划痕"
+        },
+        "林晚": {
+          "position": "餐桌右侧或门边",
+          "eye_target": "陆叔"
+        }
+      },
+      "comparison": "INTENTIONAL_CHANGE",
+      "reason": "each shot re-establishes the canonical location, actor relationship and prop ownership before its own action begins"
+    },
+    {
+      "shot_id": "SH_E01_SC002_002",
+      "next_shot_id": "SH_E01_SC002_006",
+      "final_value": {
+        "characters": {
+          "陆叔": {
+            "position": "餐桌左侧",
+            "pose": "坐姿，右手搭在苹果或桌面",
+            "head_direction": "面向林晚",
+            "eye_target": "桌面划痕",
+            "emotion": "警觉"
+          },
+          "林晚": {
+            "position": "餐桌右侧或门边",
+            "pose": "双脚压地，肩背贴近门边",
+            "head_direction": "向左7度",
+            "eye_target": "陆叔双眼",
+            "emotion": "警觉"
+          }
+        },
+        "props": {
+          "APPLE": {
+            "position": "桌边或陆叔右手",
+            "state": "保持可见，未进入林晚手中"
+          }
+        },
+        "camera": {
+          "framing": "过肩中景",
+          "height": "平视",
+          "movement": "静止在最后1.2秒停止"
+        }
+      },
+      "next_starting_value": {
+        "陆叔": {
+          "position": "餐桌左侧",
+          "eye_target": "桌面划痕"
+        },
+        "林晚": {
+          "position": "餐桌右侧或门边",
+          "eye_target": "陆叔"
+        }
+      },
+      "comparison": "INTENTIONAL_CHANGE",
+      "reason": "each shot re-establishes the canonical location, actor relationship and prop ownership before its own action begins"
+    },
+    {
+      "shot_id": "SH_E01_SC002_006",
+      "next_shot_id": "SH_E01_SC002_007",
+      "final_value": {
+        "characters": {
+          "陆叔": {
+            "position": "餐桌左侧",
+            "pose": "坐姿，右手搭在苹果或桌面",
+            "head_direction": "面向林晚",
+            "eye_target": "林晚的双眼",
+            "emotion": "警觉"
+          },
+          "林晚": {
+            "position": "餐桌右侧或门边",
+            "pose": "双脚压地，肩背贴近门边",
+            "head_direction": "向左7度",
+            "eye_target": "陆叔双眼",
+            "emotion": "警觉"
+          }
+        },
+        "props": {
+          "APPLE": {
+            "position": "桌边或陆叔右手",
+            "state": "保持可见，未进入林晚手中"
+          }
+        },
+        "camera": {
+          "framing": "近景",
+          "height": "平视",
+          "movement": "缓慢推近在最后1.2秒停止"
+        }
+      },
+      "next_starting_value": {
+        "林晚": {
+          "position": "厨房门边",
+          "left_hand": "扶门框"
+        },
+        "陆叔": {
+          "position": "餐桌旁",
+          "pose": "站定"
+        }
+      },
+      "comparison": "INTENTIONAL_CHANGE",
+      "reason": "each shot re-establishes the canonical location, actor relationship and prop ownership before its own action begins"
+    },
+    {
+      "shot_id": "SH_E01_SC002_007",
+      "next_shot_id": null,
+      "final_value": {
+        "characters": {
+          "林晚": {
+            "position": "厨房门边，后退30厘米，背贴门框",
+            "pose": "左手压门框，右手护包，双脚冻结",
+            "head_direction": "向右20度",
+            "eye_target": "陆叔双眼",
+            "emotion": "明确警觉"
+          },
+          "陆叔": {
+            "position": "餐桌边缘前半步",
+            "pose": "右手悬停4厘米，左手下垂",
+            "head_direction": "向左10度",
+            "eye_target": "林晚双眼",
+            "emotion": "平静压迫"
+          }
+        },
+        "props": {},
+        "camera": {
+          "framing": "双人中景偏近",
+          "height": "平视",
+          "movement": "4.4秒停止"
+        }
+      },
+      "next_starting_value": null,
+      "comparison": "TERMINAL",
+      "reason": "terminal canary shot"
+    }
+  ],
+  "concrete_ending_states": 5,
+  "concrete_next_starting_states": 5,
+  "mismatches": [],
+  "status": "PASS"
+}

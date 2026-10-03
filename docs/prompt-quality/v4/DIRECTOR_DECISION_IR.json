@@ -1,0 +1,1124 @@
+{
+  "schema_version": "prompt_production_v4",
+  "canary_shots": [
+    {
+      "shot_id": "SH_E01_SC001_002",
+      "duration_seconds": 5.0,
+      "source_facts": {
+        "shot_id": "SH_E01_SC001_002",
+        "scene_id": "E01_SC001",
+        "character_ids": [
+          "林晚"
+        ],
+        "prop_ids": [
+          "RED_UMBRELLA"
+        ],
+        "dialogue": "",
+        "location": "旧火车站售票厅"
+      },
+      "starting_state": {
+        "林晚": {
+          "position": "售票窗口前一步，右手持车票",
+          "eye_target": "车票票面",
+          "pose": "站直"
+        }
+      },
+      "blocking": [
+        {
+          "identity": "林晚",
+          "reference_identity": "character://林晚/v1",
+          "position": "售票窗口前一步",
+          "screen_x": "画面右侧三分之一",
+          "depth_zone": "中景",
+          "body_pose": "双脚与肩同宽，上身从直立向站台入口前倾3厘米",
+          "weight_distribution": "重心从双脚平均转到左脚六成",
+          "torso_direction": "朝向站台入口",
+          "head_yaw": "从正面转到右12度",
+          "head_pitch": "由0度抬到5度",
+          "eye_target": "先看手中车票，再看站台入口的红伞伞骨",
+          "expression": "眉间从平展收紧，下眼睑绷紧，嘴唇闭合，下颌略用力，呼吸停顿半拍",
+          "left_hand": "左手垂在大腿外侧，五指自然弯曲",
+          "right_hand": "右手拇指与食指捏住车票右下角，拇指停止摩擦纸面，其余三指弯曲",
+          "prop_contact": "右手夹住车票，车票距胸腹约20厘米"
+        }
+      ],
+      "performance_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.65,
+          "actor": "林晚",
+          "body_action": "林晚双脚不动，右肩保持水平，胸口吸气后停半拍",
+          "hand_action": "右手拇指停止摩擦车票边角，食指与拇指夹持点不变",
+          "head_action": "头部保持正面，只有眼球向右上方跳转",
+          "eye_action": "从车票票面移到站台入口红伞伞骨",
+          "facial_action": "眉间由平展变为轻微收紧，嘴唇仍闭合",
+          "prop_action": "车票不移动",
+          "ending_state": "视线落在红伞伞骨，双脚原位"
+        },
+        {
+          "start_time": 0.65,
+          "end_time": 1.7,
+          "actor": "林晚",
+          "body_action": "林晚上身向右前方倾斜约3厘米，左脚承重增加，右脚脚跟不抬起",
+          "hand_action": "右手把车票抬高约2厘米，拇指仍压住右下角",
+          "head_action": "眼球转移后约0.3秒，头部向右转12度、下巴上抬5度",
+          "eye_action": "固定看向站台入口红伞伞骨的折断处",
+          "facial_action": "下眼睑略绷紧，鼻翼扩张一次，呼吸变短",
+          "prop_action": "车票保持在胸腹前，不遮挡脸部",
+          "ending_state": "头向右12度，眼睛停在折断伞骨"
+        },
+        {
+          "start_time": 1.7,
+          "end_time": 3.5,
+          "actor": "林晚",
+          "body_action": "林晚向站台入口迈出半步，前脚掌落地后立即停止",
+          "hand_action": "右手下降1厘米，车票仍夹在拇指与食指之间，左手抬到外套下摆并停住",
+          "head_action": "头部再向右转3度，肩线保持水平",
+          "eye_action": "从伞骨沿伞柄移动到伞面边缘",
+          "facial_action": "眉心进一步收紧，嘴角向下压1毫米，下颌保持用力",
+          "prop_action": "红伞伞面半收，折断伞骨仍暴露",
+          "ending_state": "林晚前移半步，车票仍在右手，视线在伞面边缘"
+        },
+        {
+          "start_time": 3.5,
+          "end_time": 5.0,
+          "actor": "林晚",
+          "body_action": "林晚停止迈步，胸口缓慢呼出一口气，身体保持前倾3厘米",
+          "hand_action": "右手固定车票于胸腹前，左手从外套下摆落回大腿侧",
+          "head_action": "头部保持右15度，不再追随视线",
+          "eye_action": "最终固定在站台入口的红伞",
+          "facial_action": "眉间保持轻收，嘴唇闭合，下颌放松一半但警觉不退",
+          "prop_action": "红伞位置和折断伞骨不改变",
+          "ending_state": "林晚在窗口至站台入口之间停住，右手持票，头向右15度，视线锁定红伞"
+        }
+      ],
+      "dialogue_beats": [],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.65,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "林晚双眼",
+          "start_framing": "中广角",
+          "end_framing": "中广角",
+          "easing": "无"
+        },
+        {
+          "start_time": 0.65,
+          "end_time": 2.2,
+          "movement_type": "重新构图",
+          "direction": "沿光轴轻推并向右修正",
+          "speed": "前0.3秒缓慢加速",
+          "distance_or_scale_change": "人物从中广角占画面右三分之一变为右半幅",
+          "target": "林晚头部和红伞伞骨",
+          "start_framing": "中广角",
+          "end_framing": "中景",
+          "easing": "先加速后匀速"
+        },
+        {
+          "start_time": 2.2,
+          "end_time": 4.6,
+          "movement_type": "静止保持",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "红伞伞骨",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "无"
+        },
+        {
+          "start_time": 4.6,
+          "end_time": 5.0,
+          "movement_type": "减速停止",
+          "direction": "沿光轴减速",
+          "speed": "最后0.4秒减速",
+          "distance_or_scale_change": "停止在中景",
+          "target": "红伞伞骨",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "平滑停止"
+        }
+      ],
+      "emotion_arc": {
+        "start": "平静",
+        "end": "警觉",
+        "physical_transition": "眉间收紧、下眼睑绷紧、呼吸变短、下颌用力"
+      },
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "售票窗口与站台入口之间，向前半步",
+            "pose": "身体前倾3厘米，双脚冻结",
+            "head_direction": "向右15度、下巴上抬5度",
+            "eye_target": "站台入口红伞伞骨",
+            "emotion": "警觉",
+            "right_hand": "胸腹前夹住车票"
+          }
+        },
+        "props": {
+          "RED_UMBRELLA": {
+            "position": "站台入口右侧",
+            "state": "伞面半收，左侧伞骨折断且暴露"
+          }
+        },
+        "camera": {
+          "framing": "中景",
+          "height": "平视",
+          "movement": "4.6秒后停止"
+        }
+      },
+      "source_fact_hash": "source-hash-shot-002",
+      "producer": "DIRECTOR_DECISION_LAYER_V4"
+    },
+    {
+      "shot_id": "SH_E01_SC001_005",
+      "duration_seconds": 5.5,
+      "source_facts": {
+        "shot_id": "SH_E01_SC001_005",
+        "scene_id": "E01_SC001",
+        "character_ids": [
+          "陆叔",
+          "林晚"
+        ],
+        "prop_ids": [
+          "HANDBAG"
+        ],
+        "dialogue": "顾沉？你……你怎么在这儿？",
+        "location": "旧火车站售票厅"
+      },
+      "starting_state": {
+        "陆叔": {
+          "position": "林晚左前方半步",
+          "right_hand": "尚未接触手提包提手"
+        },
+        "林晚": {
+          "position": "售票台侧前方",
+          "right_hand": "握住手提包提手"
+        }
+      },
+      "blocking": [
+        {
+          "identity": "陆叔",
+          "reference_identity": "character://陆叔/v1",
+          "position": "画面左侧中景",
+          "screen_x": "左三分之一",
+          "depth_zone": "中景",
+          "body_pose": "上身向手提包倾斜8厘米，左脚向前半步",
+          "weight_distribution": "左脚六成、右脚四成",
+          "torso_direction": "朝向手提包",
+          "head_yaw": "先低头10度再抬回正面",
+          "head_pitch": "先低10度再回0度",
+          "eye_target": "手提包内露出的硬物，再移到林晚双眼",
+          "expression": "礼貌笑意消失，眉间收紧，嘴唇压平，下颌略紧，呼吸停半拍",
+          "left_hand": "左手悬在包口上方3厘米，不接触",
+          "right_hand": "右手拇指和食指捏住提手中段，其余三指托住提手下方",
+          "prop_contact": "右手接管手提包提手"
+        },
+        {
+          "identity": "林晚",
+          "reference_identity": "character://林晚/v1",
+          "position": "画面右侧中景",
+          "screen_x": "右三分之一",
+          "depth_zone": "中景",
+          "body_pose": "肩线保持水平，手臂从伸展回收至身侧",
+          "weight_distribution": "双脚平均，接着右脚后移5厘米",
+          "torso_direction": "由包转向陆叔",
+          "head_yaw": "向左8度",
+          "head_pitch": "0度",
+          "eye_target": "陆叔右手提手，再看陆叔双眼",
+          "expression": "嘴唇抿住，下颌收紧，眼神短暂避开",
+          "left_hand": "左手离开包身落在外套侧缝",
+          "right_hand": "右手松开提手但手指保留半秒弯曲",
+          "prop_contact": "0.8秒后不再接触手提包"
+        }
+      ],
+      "performance_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.55,
+          "actor": "林晚",
+          "body_action": "林晚把手提包向陆叔方向送出约10厘米，肩膀不抬",
+          "hand_action": "林晚右手拇指从提手内侧松开，食指最后离开提手顶部",
+          "head_action": "林晚头部向左偏5度但眼睛仍看包",
+          "eye_action": "看向两人之间的提手",
+          "facial_action": "嘴唇从放松变为闭合，下颌收紧",
+          "prop_action": "手提包仍由林晚右手承重",
+          "ending_state": "包带位于两人之间，林晚仍有最后接触"
+        },
+        {
+          "start_time": 0.55,
+          "end_time": 1.35,
+          "actor": "陆叔",
+          "body_action": "陆叔左脚向前半步，右肩下降2厘米靠近包带",
+          "hand_action": "陆叔右手拇指和食指捏住提手中段，掌心随后托住提手下方",
+          "head_action": "陆叔先低头10度确认提手，再抬头5度",
+          "eye_action": "先看提手，再看林晚的右手",
+          "facial_action": "礼貌笑意消失，眉间收紧，嘴角压平",
+          "prop_action": "手提包承重从林晚右手转到陆叔右手",
+          "ending_state": "陆叔右手独立承重，林晚手指仍悬在提手旁"
+        },
+        {
+          "start_time": 1.35,
+          "end_time": 2.4,
+          "actor": "林晚",
+          "body_action": "林晚右脚向后退5厘米，肩线向后收3厘米",
+          "hand_action": "林晚食指从提手旁收回，五指贴近外套侧缝",
+          "head_action": "头部延迟0.3秒向左转8度",
+          "eye_action": "视线从陆叔右手移到陆叔眼睛",
+          "facial_action": "下眼睑略绷紧，嘴角向下压",
+          "prop_action": "手提包完全脱离林晚手部",
+          "ending_state": "林晚后退5厘米，陆叔持包，双方视线相交"
+        },
+        {
+          "start_time": 2.4,
+          "end_time": 3.6,
+          "actor": "陆叔",
+          "body_action": "陆叔把包向自己腹前收回8厘米，左肩保持不动",
+          "hand_action": "陆叔左手食指隔着包口布料点到硬物凸起后停住，右手继续握提手",
+          "head_action": "头部向下10度看硬物，随后回到0度",
+          "eye_action": "从包内硬物移到林晚双眼",
+          "facial_action": "眉间进一步收紧，鼻翼张开一次，呼吸变慢",
+          "prop_action": "包口不打开，硬物轮廓保持可见",
+          "ending_state": "包在陆叔腹前，左手指尖停在硬物凸起上方"
+        },
+        {
+          "start_time": 3.6,
+          "end_time": 5.5,
+          "actor": "林晚",
+          "body_action": "林晚保持后退5厘米的位置，胸口吸气后缓慢呼出",
+          "hand_action": "双手回到身体两侧，右手手指仍保持刚松开提手后的弯曲",
+          "head_action": "头部向右回正5度，停在面对陆叔的角度",
+          "eye_action": "固定看向陆叔左手触碰的包口位置",
+          "facial_action": "嘴唇闭合、下颌保持紧、眼神不再回避",
+          "prop_action": "手提包继续由陆叔右手持有，硬物不取出",
+          "ending_state": "陆叔持包站在左侧，林晚后退5厘米站在右侧，双方视线落在包口"
+        }
+      ],
+      "dialogue_beats": [
+        {
+          "speaker": "陆叔",
+          "authoritative_text": "顾沉？你……你怎么在这儿？",
+          "start_time": 0.4,
+          "end_time": 3.44,
+          "delivery": "slow",
+          "phrase_windows": [
+            {
+              "index": 1,
+              "text": "顾沉？",
+              "start_time": 0.4,
+              "end_time": 1.1
+            },
+            {
+              "index": 2,
+              "text": "你……你怎么在这儿？",
+              "start_time": 1.1,
+              "end_time": 3.44
+            }
+          ],
+          "estimated_minimum_seconds": 3.04,
+          "status": "READY"
+        }
+      ],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.5,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "提手",
+          "start_framing": "中广角",
+          "end_framing": "中广角",
+          "easing": "无"
+        },
+        {
+          "start_time": 0.5,
+          "end_time": 3.2,
+          "movement_type": "跟拍",
+          "direction": "沿两人手部连线向左移动",
+          "speed": "0.5秒平滑加速，2.6秒匀速",
+          "distance_or_scale_change": "从双人中广角收至中景",
+          "target": "手提包提手",
+          "start_framing": "中广角",
+          "end_framing": "中景",
+          "easing": "先加速后匀速"
+        },
+        {
+          "start_time": 3.2,
+          "end_time": 5.1,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "包口硬物凸起",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "无"
+        },
+        {
+          "start_time": 5.1,
+          "end_time": 5.5,
+          "movement_type": "减速停止",
+          "direction": "横向减速",
+          "speed": "最后0.4秒减速",
+          "distance_or_scale_change": "固定双人中景",
+          "target": "两人视线交点",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "平滑停止"
+        }
+      ],
+      "emotion_arc": {
+        "start": "礼貌平静",
+        "end": "互相警觉",
+        "physical_transition": "笑意消失、后退5厘米、下颌收紧、视线落在包口"
+      },
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "画面左侧，距林晚约一步",
+            "pose": "右手持包，左手指尖停在包口凸起上",
+            "head_direction": "正面",
+            "eye_target": "包口硬物",
+            "emotion": "警觉"
+          },
+          "林晚": {
+            "position": "画面右侧后退5厘米",
+            "pose": "双手落在身体两侧",
+            "head_direction": "向左5度",
+            "eye_target": "包口硬物",
+            "emotion": "警觉"
+          }
+        },
+        "props": {
+          "HANDBAG": {
+            "owner": "陆叔右手",
+            "state": "包口闭合，硬物轮廓可见"
+          }
+        },
+        "camera": {
+          "framing": "双人中景",
+          "height": "平视",
+          "movement": "5.1秒后停止"
+        }
+      },
+      "source_fact_hash": "source-hash-shot-005",
+      "producer": "DIRECTOR_DECISION_LAYER_V4"
+    },
+    {
+      "shot_id": "SH_E01_SC002_002",
+      "duration_seconds": 13.5,
+      "source_facts": {
+        "shot_id": "SH_E01_SC002_002",
+        "scene_id": "E01_SC002",
+        "character_ids": [
+          "陆叔",
+          "林晚"
+        ],
+        "prop_ids": [],
+        "dialogue": "陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+        "location": "出租公寓厨房"
+      },
+      "starting_state": {
+        "陆叔": {
+          "position": "餐桌左侧",
+          "eye_target": "桌面划痕"
+        },
+        "林晚": {
+          "position": "餐桌右侧或门边",
+          "eye_target": "陆叔"
+        }
+      },
+      "blocking": [
+        {
+          "identity": "陆叔",
+          "reference_identity": "character://陆叔/v1",
+          "position": "餐桌左侧",
+          "screen_x": "左三分之一",
+          "depth_zone": "中景",
+          "body_pose": "坐姿，躯干前倾2厘米",
+          "weight_distribution": "坐骨平均承重",
+          "torso_direction": "朝向林晚",
+          "head_yaw": "正面",
+          "head_pitch": "0度",
+          "eye_target": "桌面划痕",
+          "expression": "眉间轻收，嘴角先礼貌后压低，眼睑随威胁逐渐下压",
+          "left_hand": "左手托住苹果或贴在桌边",
+          "right_hand": "右手沿杯沿或托住苹果",
+          "prop_contact": "右手接触杯沿、桌面划痕或苹果"
+        },
+        {
+          "identity": "林晚",
+          "reference_identity": "character://林晚/v1",
+          "position": "餐桌右侧或厨房门边",
+          "screen_x": "右三分之一",
+          "depth_zone": "中景",
+          "body_pose": "坐姿保持或沿门边后退半步",
+          "weight_distribution": "双脚压住地面",
+          "torso_direction": "朝向陆叔",
+          "head_yaw": "向左7度",
+          "head_pitch": "0度",
+          "eye_target": "陆叔的双眼",
+          "expression": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅",
+          "left_hand": "扶住门锁下方或压住包边",
+          "right_hand": "护住包带或压住包边",
+          "prop_contact": "与门锁或手提包接触"
+        }
+      ],
+      "performance_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 1.2,
+          "actor": "陆叔",
+          "body_action": "陆叔坐在餐桌左侧，背部离椅背2厘米，双脚不动",
+          "hand_action": "右手指腹沿杯沿顺时针移动四分之一圈后停住",
+          "head_action": "头部从桌面抬到正面，抬升6度",
+          "eye_action": "先看桌面划痕，再看林晚双眼",
+          "facial_action": "嘴角保持礼貌弧度，眼睑平稳，呼吸均匀",
+          "prop_action": "杯子留在桌面，右手不抬起",
+          "ending_state": "陆叔正面看向林晚，右手停在杯沿"
+        },
+        {
+          "start_time": 1.2,
+          "end_time": 3.2,
+          "actor": "陆叔",
+          "body_action": "陆叔躯干向前倾2厘米，林晚身体略前倾但双脚不动",
+          "hand_action": "陆叔右手离开杯沿3厘米，掌心向上示意桌旁座位",
+          "head_action": "关键词前头部保持，问句结尾向林晚倾2度",
+          "eye_action": "锁定林晚眼睛，不看镜头",
+          "facial_action": "眉间轻收，嘴角弧度减小，鼻翼张开一次",
+          "prop_action": "桌面划痕保持可见",
+          "ending_state": "右手掌心向上停在桌面上方"
+        },
+        {
+          "start_time": 3.2,
+          "end_time": 6.0,
+          "actor": "陆叔",
+          "body_action": "陆叔保持躯干前倾，胸口随长句连续起伏两次",
+          "hand_action": "右手掌心向上收回5厘米，拇指压住食指根部",
+          "head_action": "每个逗号处头部回正，句末下巴下降2度",
+          "eye_action": "先看林晚双眼，再短暂看向她的脸色，最后回到双眼",
+          "facial_action": "眉间由收紧变为平展，嘴唇随对白张合，句末下颌放松",
+          "prop_action": "杯子和桌面划痕位置不变",
+          "ending_state": "右手收回腹前，目光停在林晚脸上"
+        },
+        {
+          "start_time": 6.0,
+          "end_time": 9.7,
+          "actor": "林晚",
+          "body_action": "林晚保持坐姿但上身向后退2厘米，双脚压住地面",
+          "hand_action": "双手压住手提包边缘，拇指交替按压两次后停止",
+          "head_action": "听到‘吃饭’后头部向左偏7度，再回到正面",
+          "eye_action": "一直看陆叔双眼，最后看向桌面苹果位置",
+          "facial_action": "眉间收紧，嘴唇抿住0.5秒后放松，呼吸变浅",
+          "prop_action": "手提包不离开腿面",
+          "ending_state": "林晚双手仍压包边，视线落在桌面苹果"
+        },
+        {
+          "start_time": 9.7,
+          "end_time": 12.5,
+          "actor": "陆叔",
+          "body_action": "陆叔从椅面起身前移5厘米但不站起，肩膀保持水平",
+          "hand_action": "陆叔右手拿起苹果，拇指擦过果皮一次后停住",
+          "head_action": "头部向桌面苹果下压5度，再抬回林晚方向",
+          "eye_action": "先看苹果，再看林晚嘴角",
+          "facial_action": "眼睑放松，嘴角恢复礼貌弧度，下颌不再用力",
+          "prop_action": "苹果离开桌面，位于陆叔右手胸腹前",
+          "ending_state": "苹果在陆叔右手，林晚仍坐在桌边"
+        },
+        {
+          "start_time": 12.5,
+          "end_time": 13.5,
+          "actor": "陆叔",
+          "body_action": "陆叔停止前移，胸口呼气后保持",
+          "hand_action": "右手把苹果放回桌边但不松手",
+          "head_action": "头部保持面向林晚",
+          "eye_action": "固定看向林晚双眼",
+          "facial_action": "嘴角保持弧度，眼神停住，呼吸恢复均匀",
+          "prop_action": "苹果与桌面接触，右手仍搭在果皮上",
+          "ending_state": "陆叔手搭苹果，林晚双手压包，双方保持桌边对视"
+        }
+      ],
+      "dialogue_beats": [
+        {
+          "speaker": "陆叔",
+          "authoritative_text": "陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+          "start_time": 0.5,
+          "end_time": 13.37,
+          "delivery": "slow",
+          "phrase_windows": [
+            {
+              "index": 1,
+              "text": "陆叔：",
+              "start_time": 0.5,
+              "end_time": 1.17
+            },
+            {
+              "index": 2,
+              "text": "晚晚，",
+              "start_time": 1.17,
+              "end_time": 1.83
+            },
+            {
+              "index": 3,
+              "text": "你看看你，",
+              "start_time": 1.83,
+              "end_time": 2.94
+            },
+            {
+              "index": 4,
+              "text": "跑那么快做什么？",
+              "start_time": 2.94,
+              "end_time": 4.72
+            },
+            {
+              "index": 5,
+              "text": "在车站吓我一跳。",
+              "start_time": 4.72,
+              "end_time": 6.49
+            },
+            {
+              "index": 6,
+              "text": "脸色这么差，",
+              "start_time": 6.49,
+              "end_time": 7.82
+            },
+            {
+              "index": 7,
+              "text": "是不是又没好好吃饭？",
+              "start_time": 7.82,
+              "end_time": 10.04
+            },
+            {
+              "index": 8,
+              "text": "来，",
+              "start_time": 10.04,
+              "end_time": 10.49
+            },
+            {
+              "index": 9,
+              "text": "先坐下，",
+              "start_time": 10.49,
+              "end_time": 11.37
+            },
+            {
+              "index": 10,
+              "text": "陆叔给你洗个苹果。",
+              "start_time": 11.37,
+              "end_time": 13.37
+            }
+          ],
+          "estimated_minimum_seconds": 12.87,
+          "status": "READY"
+        }
+      ],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 12.3,
+          "movement_type": "静止",
+          "direction": "沿光轴朝桌面划痕",
+          "speed": "前段缓慢加速，中段匀速",
+          "distance_or_scale_change": "由过肩中景保持主体在上三分之一",
+          "target": "桌面划痕",
+          "start_framing": "过肩中景",
+          "end_framing": "过肩中景",
+          "easing": "缓入"
+        },
+        {
+          "start_time": 12.3,
+          "end_time": 13.5,
+          "movement_type": "减速停止",
+          "direction": "沿光轴减速",
+          "speed": "最后1.2秒渐慢",
+          "distance_or_scale_change": "停止在过肩中景",
+          "target": "桌面划痕",
+          "start_framing": "过肩中景",
+          "end_framing": "过肩中景",
+          "easing": "平滑停止"
+        }
+      ],
+      "emotion_arc": {
+        "start": "表面平静",
+        "end": "警觉",
+        "physical_transition": "眼睑下压、笑意与眼神分离、呼吸变浅、手指停止"
+      },
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "餐桌左侧",
+            "pose": "坐姿，右手搭在苹果或桌面",
+            "head_direction": "面向林晚",
+            "eye_target": "桌面划痕",
+            "emotion": "警觉"
+          },
+          "林晚": {
+            "position": "餐桌右侧或门边",
+            "pose": "双脚压地，肩背贴近门边",
+            "head_direction": "向左7度",
+            "eye_target": "陆叔双眼",
+            "emotion": "警觉"
+          }
+        },
+        "props": {
+          "APPLE": {
+            "position": "桌边或陆叔右手",
+            "state": "保持可见，未进入林晚手中"
+          }
+        },
+        "camera": {
+          "framing": "过肩中景",
+          "height": "平视",
+          "movement": "静止在最后1.2秒停止"
+        }
+      },
+      "source_fact_hash": "source-hash-SH_E01_SC002_002",
+      "producer": "DIRECTOR_DECISION_LAYER_V4"
+    },
+    {
+      "shot_id": "SH_E01_SC002_006",
+      "duration_seconds": 8.5,
+      "source_facts": {
+        "shot_id": "SH_E01_SC002_006",
+        "scene_id": "E01_SC002",
+        "character_ids": [
+          "陆叔",
+          "林晚"
+        ],
+        "prop_ids": [],
+        "dialogue": "陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
+        "location": "出租公寓厨房"
+      },
+      "starting_state": {
+        "陆叔": {
+          "position": "餐桌左侧",
+          "eye_target": "桌面划痕"
+        },
+        "林晚": {
+          "position": "餐桌右侧或门边",
+          "eye_target": "陆叔"
+        }
+      },
+      "blocking": [
+        {
+          "identity": "陆叔",
+          "reference_identity": "character://陆叔/v1",
+          "position": "餐桌左侧",
+          "screen_x": "左三分之一",
+          "depth_zone": "中景",
+          "body_pose": "坐姿，躯干前倾2厘米",
+          "weight_distribution": "坐骨平均承重",
+          "torso_direction": "朝向林晚",
+          "head_yaw": "正面",
+          "head_pitch": "0度",
+          "eye_target": "林晚的双眼",
+          "expression": "眉间轻收，嘴角先礼貌后压低，眼睑随威胁逐渐下压",
+          "left_hand": "左手托住苹果或贴在桌边",
+          "right_hand": "右手沿杯沿或托住苹果",
+          "prop_contact": "右手接触杯沿、桌面划痕或苹果"
+        },
+        {
+          "identity": "林晚",
+          "reference_identity": "character://林晚/v1",
+          "position": "餐桌右侧或厨房门边",
+          "screen_x": "右三分之一",
+          "depth_zone": "中景",
+          "body_pose": "坐姿保持或沿门边后退半步",
+          "weight_distribution": "双脚压住地面",
+          "torso_direction": "朝向陆叔",
+          "head_yaw": "向左7度",
+          "head_pitch": "0度",
+          "eye_target": "陆叔的双眼",
+          "expression": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅",
+          "left_hand": "扶住门锁下方或压住包边",
+          "right_hand": "护住包带或压住包边",
+          "prop_contact": "与门锁或手提包接触"
+        }
+      ],
+      "performance_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.8,
+          "actor": "陆叔",
+          "body_action": "陆叔坐在餐桌边，背部离椅背2厘米，胸口吸气后保持",
+          "hand_action": "右手食指在桌面敲两下，第二下后停在划痕旁",
+          "head_action": "下巴先低2度再抬到正面",
+          "eye_action": "看向林晚双眼",
+          "facial_action": "嘴角右侧先抬1毫米，眼睑保持不动，呼吸停半拍",
+          "prop_action": "手指接触桌面划痕边缘",
+          "ending_state": "右手食指停在划痕旁，嘴角出现未完成的笑"
+        },
+        {
+          "start_time": 0.8,
+          "end_time": 2.1,
+          "actor": "陆叔",
+          "body_action": "陆叔上身向暖光前压5厘米，肩膀保持低位",
+          "hand_action": "右手食指沿桌面划痕向前滑3厘米后停住，左手托住苹果不动",
+          "head_action": "头部向林晚转8度，下巴抬3度",
+          "eye_action": "视线从桌面划痕抬到林晚眼睛并锁定",
+          "facial_action": "笑意留在嘴角，眼神不随笑意变软，鼻翼轻张",
+          "prop_action": "苹果停在左手掌心，未递出",
+          "ending_state": "陆叔脸进入暖光，视线锁住林晚"
+        },
+        {
+          "start_time": 2.1,
+          "end_time": 5.8,
+          "actor": "陆叔",
+          "body_action": "陆叔躯干保持前压，只有喉结随对白起伏，双脚不动",
+          "hand_action": "右手食指从划痕移到苹果旁，拇指轻压苹果表面一次后停止",
+          "head_action": "每个问句结尾头部向前微倾2度，句间回到正面",
+          "eye_action": "视线在林晚双眼和她后退的门边之间切换两次",
+          "facial_action": "眉间先松后收，眼睑逐渐压低，嘴角笑意保持不变",
+          "prop_action": "苹果从左掌移到右手掌心，但不递向林晚",
+          "ending_state": "苹果由右手托住，双眼重新锁定林晚"
+        },
+        {
+          "start_time": 5.8,
+          "end_time": 7.2,
+          "actor": "林晚",
+          "body_action": "林晚沿门边后退半步，肩胛贴近门框但不撞击",
+          "hand_action": "左手扶住门锁下方，右手护住手提包带，手指收紧一次",
+          "head_action": "林晚先看门锁，再在0.4秒后抬头看陆叔",
+          "eye_action": "视线从门锁切回陆叔双眼",
+          "facial_action": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅",
+          "prop_action": "手提包带保持在右手，未脱手",
+          "ending_state": "林晚后退半步，左手在门锁下方，视线回到陆叔"
+        },
+        {
+          "start_time": 7.2,
+          "end_time": 8.5,
+          "actor": "陆叔",
+          "body_action": "陆叔保持坐姿，右肩向前2厘米后停止",
+          "hand_action": "右手托苹果向前移动4厘米，手腕停在桌边上方",
+          "head_action": "头部向右转5度，眼睛不离开林晚",
+          "eye_action": "固定看向林晚双眼",
+          "facial_action": "嘴角笑意不变，眼睑压低，呼吸平稳",
+          "prop_action": "苹果停在桌边，未进入林晚手部范围",
+          "ending_state": "陆叔坐在暖光中，苹果停在桌边；林晚贴门站立，双方视线相交"
+        }
+      ],
+      "dialogue_beats": [
+        {
+          "speaker": "陆叔",
+          "authoritative_text": "陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
+          "start_time": 0.35,
+          "end_time": 7.99,
+          "delivery": "slow",
+          "phrase_windows": [
+            {
+              "index": 1,
+              "text": "陆叔：",
+              "start_time": 0.35,
+              "end_time": 1.04
+            },
+            {
+              "index": 2,
+              "text": "伞？",
+              "start_time": 1.04,
+              "end_time": 1.51
+            },
+            {
+              "index": 3,
+              "text": "你哪来的伞？",
+              "start_time": 1.51,
+              "end_time": 2.9
+            },
+            {
+              "index": 4,
+              "text": "你不是一直不喜欢带伞吗？",
+              "start_time": 2.9,
+              "end_time": 5.67
+            },
+            {
+              "index": 5,
+              "text": "嫌麻烦。",
+              "start_time": 5.67,
+              "end_time": 6.6
+            },
+            {
+              "index": 6,
+              "text": "来，",
+              "start_time": 6.6,
+              "end_time": 7.06
+            },
+            {
+              "index": 7,
+              "text": "吃苹果。",
+              "start_time": 7.06,
+              "end_time": 7.99
+            }
+          ],
+          "estimated_minimum_seconds": 7.64,
+          "status": "READY"
+        }
+      ],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 7.3,
+          "movement_type": "缓慢推近",
+          "direction": "沿光轴朝林晚的双眼",
+          "speed": "前段缓慢加速，中段匀速",
+          "distance_or_scale_change": "由近景保持主体在上三分之一",
+          "target": "林晚的双眼",
+          "start_framing": "近景",
+          "end_framing": "近景",
+          "easing": "缓入"
+        },
+        {
+          "start_time": 7.3,
+          "end_time": 8.5,
+          "movement_type": "减速停止",
+          "direction": "沿光轴减速",
+          "speed": "最后1.2秒渐慢",
+          "distance_or_scale_change": "停止在近景",
+          "target": "林晚的双眼",
+          "start_framing": "近景",
+          "end_framing": "近景",
+          "easing": "平滑停止"
+        }
+      ],
+      "emotion_arc": {
+        "start": "表面平静",
+        "end": "警觉",
+        "physical_transition": "眼睑下压、笑意与眼神分离、呼吸变浅、手指停止"
+      },
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "餐桌左侧",
+            "pose": "坐姿，右手搭在苹果或桌面",
+            "head_direction": "面向林晚",
+            "eye_target": "林晚的双眼",
+            "emotion": "警觉"
+          },
+          "林晚": {
+            "position": "餐桌右侧或门边",
+            "pose": "双脚压地，肩背贴近门边",
+            "head_direction": "向左7度",
+            "eye_target": "陆叔双眼",
+            "emotion": "警觉"
+          }
+        },
+        "props": {
+          "APPLE": {
+            "position": "桌边或陆叔右手",
+            "state": "保持可见，未进入林晚手中"
+          }
+        },
+        "camera": {
+          "framing": "近景",
+          "height": "平视",
+          "movement": "缓慢推近在最后1.2秒停止"
+        }
+      },
+      "source_fact_hash": "source-hash-SH_E01_SC002_006",
+      "producer": "DIRECTOR_DECISION_LAYER_V4"
+    },
+    {
+      "shot_id": "SH_E01_SC002_007",
+      "duration_seconds": 5.0,
+      "source_facts": {
+        "shot_id": "SH_E01_SC002_007",
+        "scene_id": "E01_SC002",
+        "character_ids": [
+          "林晚",
+          "陆叔"
+        ],
+        "prop_ids": [],
+        "dialogue": "",
+        "location": "出租公寓厨房"
+      },
+      "starting_state": {
+        "林晚": {
+          "position": "厨房门边",
+          "left_hand": "扶门框"
+        },
+        "陆叔": {
+          "position": "餐桌旁",
+          "pose": "站定"
+        }
+      },
+      "blocking": [
+        {
+          "identity": "林晚",
+          "reference_identity": "character://林晚/v1",
+          "position": "画面左侧厨房门边",
+          "screen_x": "左三分之一",
+          "depth_zone": "前景",
+          "body_pose": "背部贴近门框，右脚在前、左脚在后",
+          "weight_distribution": "后脚六成承重",
+          "torso_direction": "朝向陆叔",
+          "head_yaw": "先看门锁再转回右20度",
+          "head_pitch": "0度",
+          "eye_target": "陆叔双眼",
+          "expression": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸短促",
+          "left_hand": "左手掌根压在门框锁舌下方",
+          "right_hand": "右手护住手提包带，五指收紧",
+          "prop_contact": "左手接触门框，右手接触包带"
+        },
+        {
+          "identity": "陆叔",
+          "reference_identity": "character://陆叔/v1",
+          "position": "画面右侧餐桌旁",
+          "screen_x": "右三分之一",
+          "depth_zone": "中景",
+          "body_pose": "站在餐桌旁，肩膀不追向门口",
+          "weight_distribution": "双脚平均承重",
+          "torso_direction": "朝向林晚",
+          "head_yaw": "向左10度",
+          "head_pitch": "0度",
+          "eye_target": "林晚左手和双眼之间",
+          "expression": "嘴角保持平直，眼睑压低，呼吸均匀",
+          "left_hand": "左手垂在身体侧面",
+          "right_hand": "右手停在桌边上方",
+          "prop_contact": "不接触道具"
+        }
+      ],
+      "performance_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.7,
+          "actor": "林晚",
+          "body_action": "林晚后脚向门外退10厘米，前脚保持贴地，背部更靠近门框",
+          "hand_action": "左手沿门框向下滑2厘米，右手把包带收紧一次",
+          "head_action": "头部先转向门锁8度，再在0.2秒后转回陆叔方向",
+          "eye_action": "从门锁移到陆叔双眼",
+          "facial_action": "眉间收紧，嘴唇闭合，下颌用力，吸气变短",
+          "prop_action": "门锁不转动，包带不脱手",
+          "ending_state": "林晚后退10厘米，左手在门框锁舌下方"
+        },
+        {
+          "start_time": 0.7,
+          "end_time": 2.0,
+          "actor": "林晚",
+          "body_action": "林晚再向后退20厘米，后脚跟碰到门槛后停止，肩背贴住门框",
+          "hand_action": "左手掌根压住门框，右手把包带贴到胸腹前",
+          "head_action": "头部向右转20度，下巴上抬2度",
+          "eye_action": "视线固定在陆叔双眼，不再看门锁",
+          "facial_action": "下眼睑绷紧，鼻翼扩张一次，嘴角向下压",
+          "prop_action": "手提包被右手固定在胸腹前",
+          "ending_state": "林晚距原位置后退30厘米，背贴门框"
+        },
+        {
+          "start_time": 2.0,
+          "end_time": 3.2,
+          "actor": "陆叔",
+          "body_action": "陆叔从餐桌旁向前迈半步，前脚落地后立即停止，不越过桌边",
+          "hand_action": "右手从桌边抬起4厘米，掌心朝下停住，左手仍垂落",
+          "head_action": "头部向左转10度，保持下巴水平",
+          "eye_action": "先看林晚的左手，再回到她双眼",
+          "facial_action": "嘴角保持平直，眼睑压低，呼吸保持均匀",
+          "prop_action": "餐桌和门锁之间没有道具移动",
+          "ending_state": "陆叔停在餐桌边缘，右手悬停"
+        },
+        {
+          "start_time": 3.2,
+          "end_time": 5.0,
+          "actor": "林晚",
+          "body_action": "林晚双脚冻结，胸口呼吸变浅后恢复一次，身体不再后退",
+          "hand_action": "左手继续压门框，右手保持包带在胸腹前，手指不松开",
+          "head_action": "头部保持右20度，不再转动",
+          "eye_action": "固定看向陆叔双眼",
+          "facial_action": "眉间保持收紧，嘴唇闭合，下颌用力维持警觉",
+          "prop_action": "门锁、包带和桌面位置均不改变",
+          "ending_state": "林晚背贴门框、后退30厘米、双手固定；陆叔停在餐桌边缘，双方视线相交"
+        }
+      ],
+      "dialogue_beats": [],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.8,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "林晚左手",
+          "start_framing": "双人中景",
+          "end_framing": "双人中景",
+          "easing": "无"
+        },
+        {
+          "start_time": 0.8,
+          "end_time": 3.8,
+          "movement_type": "环绕",
+          "direction": "从餐桌侧向门边顺时针绕过约20度",
+          "speed": "前0.4秒缓慢加速，中段匀速",
+          "distance_or_scale_change": "林晚由画面左三分之一扩大到左半幅，陆叔保持右侧",
+          "target": "林晚与陆叔视线连线",
+          "start_framing": "双人中景",
+          "end_framing": "双人中景偏近",
+          "easing": "先加速后匀速"
+        },
+        {
+          "start_time": 3.8,
+          "end_time": 4.4,
+          "movement_type": "减速停止",
+          "direction": "绕行减速",
+          "speed": "最后0.6秒减速",
+          "distance_or_scale_change": "固定双人中景偏近",
+          "target": "两人双眼",
+          "start_framing": "双人中景偏近",
+          "end_framing": "双人中景偏近",
+          "easing": "平滑停止"
+        },
+        {
+          "start_time": 4.4,
+          "end_time": 5.0,
+          "movement_type": "静止保持",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "两人双眼",
+          "start_framing": "双人中景偏近",
+          "end_framing": "双人中景偏近",
+          "easing": "无"
+        }
+      ],
+      "emotion_arc": {
+        "start": "压抑疑惑",
+        "end": "明确警觉",
+        "physical_transition": "后退30厘米、门框支撑、包带收紧、视线锁定"
+      },
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "厨房门边，后退30厘米，背贴门框",
+            "pose": "左手压门框，右手护包，双脚冻结",
+            "head_direction": "向右20度",
+            "eye_target": "陆叔双眼",
+            "emotion": "明确警觉"
+          },
+          "陆叔": {
+            "position": "餐桌边缘前半步",
+            "pose": "右手悬停4厘米，左手下垂",
+            "head_direction": "向左10度",
+            "eye_target": "林晚双眼",
+            "emotion": "平静压迫"
+          }
+        },
+        "props": {},
+        "camera": {
+          "framing": "双人中景偏近",
+          "height": "平视",
+          "movement": "4.4秒停止"
+        }
+      },
+      "source_fact_hash": "source-hash-shot-015",
+      "producer": "DIRECTOR_DECISION_LAYER_V4"
+    }
+  ],
+  "llm_canary": {
+    "calls": 0,
+    "status": "BLOCKED",
+    "reason": "REAL_LLM_CREDENTIAL_MISSING_OR_PLACEHOLDER"
+  },
+  "source_fact_conflicts": 0,
+  "status": "PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED"
+}

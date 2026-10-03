@@ -1,0 +1,174 @@
+{
+  "shots": [
+    {
+      "shot_id": "SH_E01_SC001_002",
+      "dialogue": []
+    },
+    {
+      "shot_id": "SH_E01_SC001_005",
+      "dialogue": [
+        {
+          "speaker": "陆叔",
+          "authoritative_text": "顾沉？你……你怎么在这儿？",
+          "start_time": 0.4,
+          "end_time": 3.44,
+          "delivery": "slow",
+          "phrase_windows": [
+            {
+              "index": 1,
+              "text": "顾沉？",
+              "start_time": 0.4,
+              "end_time": 1.1
+            },
+            {
+              "index": 2,
+              "text": "你……你怎么在这儿？",
+              "start_time": 1.1,
+              "end_time": 3.44
+            }
+          ],
+          "estimated_minimum_seconds": 3.04,
+          "status": "READY"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH_E01_SC002_002",
+      "dialogue": [
+        {
+          "speaker": "陆叔",
+          "authoritative_text": "陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+          "start_time": 0.5,
+          "end_time": 13.37,
+          "delivery": "slow",
+          "phrase_windows": [
+            {
+              "index": 1,
+              "text": "陆叔：",
+              "start_time": 0.5,
+              "end_time": 1.17
+            },
+            {
+              "index": 2,
+              "text": "晚晚，",
+              "start_time": 1.17,
+              "end_time": 1.83
+            },
+            {
+              "index": 3,
+              "text": "你看看你，",
+              "start_time": 1.83,
+              "end_time": 2.94
+            },
+            {
+              "index": 4,
+              "text": "跑那么快做什么？",
+              "start_time": 2.94,
+              "end_time": 4.72
+            },
+            {
+              "index": 5,
+              "text": "在车站吓我一跳。",
+              "start_time": 4.72,
+              "end_time": 6.49
+            },
+            {
+              "index": 6,
+              "text": "脸色这么差，",
+              "start_time": 6.49,
+              "end_time": 7.82
+            },
+            {
+              "index": 7,
+              "text": "是不是又没好好吃饭？",
+              "start_time": 7.82,
+              "end_time": 10.04
+            },
+            {
+              "index": 8,
+              "text": "来，",
+              "start_time": 10.04,
+              "end_time": 10.49
+            },
+            {
+              "index": 9,
+              "text": "先坐下，",
+              "start_time": 10.49,
+              "end_time": 11.37
+            },
+            {
+              "index": 10,
+              "text": "陆叔给你洗个苹果。",
+              "start_time": 11.37,
+              "end_time": 13.37
+            }
+          ],
+          "estimated_minimum_seconds": 12.87,
+          "status": "READY"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH_E01_SC002_006",
+      "dialogue": [
+        {
+          "speaker": "陆叔",
+          "authoritative_text": "陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
+          "start_time": 0.35,
+          "end_time": 7.99,
+          "delivery": "slow",
+          "phrase_windows": [
+            {
+              "index": 1,
+              "text": "陆叔：",
+              "start_time": 0.35,
+              "end_time": 1.04
+            },
+            {
+              "index": 2,
+              "text": "伞？",
+              "start_time": 1.04,
+              "end_time": 1.51
+            },
+            {
+              "index": 3,
+              "text": "你哪来的伞？",
+              "start_time": 1.51,
+              "end_time": 2.9
+            },
+            {
+              "index": 4,
+              "text": "你不是一直不喜欢带伞吗？",
+              "start_time": 2.9,
+              "end_time": 5.67
+            },
+            {
+              "index": 5,
+              "text": "嫌麻烦。",
+              "start_time": 5.67,
+              "end_time": 6.6
+            },
+            {
+              "index": 6,
+              "text": "来，",
+              "start_time": 6.6,
+              "end_time": 7.06
+            },
+            {
+              "index": 7,
+              "text": "吃苹果。",
+              "start_time": 7.06,
+              "end_time": 7.99
+            }
+          ],
+          "estimated_minimum_seconds": 7.64,
+          "status": "READY"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH_E01_SC002_007",
+      "dialogue": []
+    }
+  ]
+}

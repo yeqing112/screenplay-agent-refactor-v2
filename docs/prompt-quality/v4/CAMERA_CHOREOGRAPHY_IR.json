@@ -1,0 +1,221 @@
+{
+  "shots": [
+    {
+      "shot_id": "SH_E01_SC001_002",
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.65,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "林晚双眼",
+          "start_framing": "中广角",
+          "end_framing": "中广角",
+          "easing": "无"
+        },
+        {
+          "start_time": 0.65,
+          "end_time": 2.2,
+          "movement_type": "重新构图",
+          "direction": "沿光轴轻推并向右修正",
+          "speed": "前0.3秒缓慢加速",
+          "distance_or_scale_change": "人物从中广角占画面右三分之一变为右半幅",
+          "target": "林晚头部和红伞伞骨",
+          "start_framing": "中广角",
+          "end_framing": "中景",
+          "easing": "先加速后匀速"
+        },
+        {
+          "start_time": 2.2,
+          "end_time": 4.6,
+          "movement_type": "静止保持",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "红伞伞骨",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "无"
+        },
+        {
+          "start_time": 4.6,
+          "end_time": 5.0,
+          "movement_type": "减速停止",
+          "direction": "沿光轴减速",
+          "speed": "最后0.4秒减速",
+          "distance_or_scale_change": "停止在中景",
+          "target": "红伞伞骨",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "平滑停止"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH_E01_SC001_005",
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.5,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "提手",
+          "start_framing": "中广角",
+          "end_framing": "中广角",
+          "easing": "无"
+        },
+        {
+          "start_time": 0.5,
+          "end_time": 3.2,
+          "movement_type": "跟拍",
+          "direction": "沿两人手部连线向左移动",
+          "speed": "0.5秒平滑加速，2.6秒匀速",
+          "distance_or_scale_change": "从双人中广角收至中景",
+          "target": "手提包提手",
+          "start_framing": "中广角",
+          "end_framing": "中景",
+          "easing": "先加速后匀速"
+        },
+        {
+          "start_time": 3.2,
+          "end_time": 5.1,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "包口硬物凸起",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "无"
+        },
+        {
+          "start_time": 5.1,
+          "end_time": 5.5,
+          "movement_type": "减速停止",
+          "direction": "横向减速",
+          "speed": "最后0.4秒减速",
+          "distance_or_scale_change": "固定双人中景",
+          "target": "两人视线交点",
+          "start_framing": "中景",
+          "end_framing": "中景",
+          "easing": "平滑停止"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH_E01_SC002_002",
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 12.3,
+          "movement_type": "静止",
+          "direction": "沿光轴朝桌面划痕",
+          "speed": "前段缓慢加速，中段匀速",
+          "distance_or_scale_change": "由过肩中景保持主体在上三分之一",
+          "target": "桌面划痕",
+          "start_framing": "过肩中景",
+          "end_framing": "过肩中景",
+          "easing": "缓入"
+        },
+        {
+          "start_time": 12.3,
+          "end_time": 13.5,
+          "movement_type": "减速停止",
+          "direction": "沿光轴减速",
+          "speed": "最后1.2秒渐慢",
+          "distance_or_scale_change": "停止在过肩中景",
+          "target": "桌面划痕",
+          "start_framing": "过肩中景",
+          "end_framing": "过肩中景",
+          "easing": "平滑停止"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH_E01_SC002_006",
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 7.3,
+          "movement_type": "缓慢推近",
+          "direction": "沿光轴朝林晚的双眼",
+          "speed": "前段缓慢加速，中段匀速",
+          "distance_or_scale_change": "由近景保持主体在上三分之一",
+          "target": "林晚的双眼",
+          "start_framing": "近景",
+          "end_framing": "近景",
+          "easing": "缓入"
+        },
+        {
+          "start_time": 7.3,
+          "end_time": 8.5,
+          "movement_type": "减速停止",
+          "direction": "沿光轴减速",
+          "speed": "最后1.2秒渐慢",
+          "distance_or_scale_change": "停止在近景",
+          "target": "林晚的双眼",
+          "start_framing": "近景",
+          "end_framing": "近景",
+          "easing": "平滑停止"
+        }
+      ]
+    },
+    {
+      "shot_id": "SH_E01_SC002_007",
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 0.8,
+          "movement_type": "静止",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "林晚左手",
+          "start_framing": "双人中景",
+          "end_framing": "双人中景",
+          "easing": "无"
+        },
+        {
+          "start_time": 0.8,
+          "end_time": 3.8,
+          "movement_type": "环绕",
+          "direction": "从餐桌侧向门边顺时针绕过约20度",
+          "speed": "前0.4秒缓慢加速，中段匀速",
+          "distance_or_scale_change": "林晚由画面左三分之一扩大到左半幅，陆叔保持右侧",
+          "target": "林晚与陆叔视线连线",
+          "start_framing": "双人中景",
+          "end_framing": "双人中景偏近",
+          "easing": "先加速后匀速"
+        },
+        {
+          "start_time": 3.8,
+          "end_time": 4.4,
+          "movement_type": "减速停止",
+          "direction": "绕行减速",
+          "speed": "最后0.6秒减速",
+          "distance_or_scale_change": "固定双人中景偏近",
+          "target": "两人双眼",
+          "start_framing": "双人中景偏近",
+          "end_framing": "双人中景偏近",
+          "easing": "平滑停止"
+        },
+        {
+          "start_time": 4.4,
+          "end_time": 5.0,
+          "movement_type": "静止保持",
+          "direction": "无",
+          "speed": "保持",
+          "distance_or_scale_change": "无变化",
+          "target": "两人双眼",
+          "start_framing": "双人中景偏近",
+          "end_framing": "双人中景偏近",
+          "easing": "无"
+        }
+      ]
+    }
+  ]
+}
