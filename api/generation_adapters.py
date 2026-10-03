@@ -46,6 +46,16 @@ class ModelProfileError(RuntimeError):
         self.external_task_id = external_task_id
 
 
+def _runtime_credential(profile: dict[str, Any], runtime_credential_value: str | None) -> str:
+    """Return the short-lived transport credential.
+
+    Canonical callers must pass ``runtime_credential_value`` because their
+    profile projection is secret-free.  The legacy profile fallback remains
+    for direct adapter compatibility tests and non-canonical callers.
+    """
+    return str(runtime_credential_value or profile.get("api_key") or "").strip()
+
+
 def resolve_generation_profile(capability: str, model_profile_id: str | None = None) -> dict[str, Any]:
     profile = get_profile(model_profile_id) if model_profile_id else get_default_profile(capability)
     if not profile:
@@ -804,8 +814,9 @@ async def submit_75api_minimax_h3_generation(
     profile: dict[str, Any],
     *,
     payload: dict[str, Any],
+    runtime_credential_value: str | None = None,
 ) -> dict[str, Any]:
-    api_key = str(profile.get("api_key") or "").strip()
+    api_key = _runtime_credential(profile, runtime_credential_value)
     base_url = _75api_minimax_h3_base_url(profile)
     if not api_key:
         raise ModelProfileError("75api MiniMax H3 模型配置缺少 API Key。")
@@ -854,8 +865,9 @@ async def poll_75api_minimax_h3_generation(
     profile: dict[str, Any],
     *,
     external_task_id: str,
+    runtime_credential_value: str | None = None,
 ) -> dict[str, Any]:
-    api_key = str(profile.get("api_key") or "").strip()
+    api_key = _runtime_credential(profile, runtime_credential_value)
     base_url = _75api_minimax_h3_base_url(profile)
     poll_interval = max(_coerce_int(_read_default_param(profile, "poll_interval_seconds", 5), 5), 1)
     poll_timeout = max(_coerce_int(_read_default_param(profile, "poll_timeout_seconds", 900), 900), 10)
@@ -912,8 +924,9 @@ async def reconcile_75api_minimax_h3_generation(
     profile: dict[str, Any],
     *,
     external_task_id: str,
+    runtime_credential_value: str | None = None,
 ) -> dict[str, Any]:
-    api_key = str(profile.get("api_key") or "").strip()
+    api_key = _runtime_credential(profile, runtime_credential_value)
     base_url = _75api_minimax_h3_base_url(profile)
     if not api_key or not base_url:
         raise ModelProfileError("75api MiniMax H3 配置缺少 API Key 或 base_url。")
@@ -1671,6 +1684,7 @@ async def generate_video_asset(
     first_frame_url: str | None = None,
     last_frame_url: str | None = None,
     reference_images: list[dict[str, Any]] | None = None,
+    runtime_credential_value: str | None = None,
 ) -> dict[str, Any]:
     if profile.get("provider") == MOCK_PROVIDER:
         raise ModelProfileError("Mock provider 应由原型任务适配器处理。")
@@ -1729,8 +1743,8 @@ async def generate_video_asset(
             first_frame_url=first_frame_url,
             reference_images=reference_images,
         )
-        submitted = await submit_75api_minimax_h3_generation(profile, payload=provider_payload)
-        polled = await poll_75api_minimax_h3_generation(profile, external_task_id=submitted["externalTaskId"])
+        submitted = await submit_75api_minimax_h3_generation(profile, payload=provider_payload, runtime_credential_value=runtime_credential_value)
+        polled = await poll_75api_minimax_h3_generation(profile, external_task_id=submitted["externalTaskId"], runtime_credential_value=runtime_credential_value)
         task_mode = "reference_to_video" if _extract_reference_urls(reference_images) else "image_to_video"
         return {
             **polled,

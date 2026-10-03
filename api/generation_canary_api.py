@@ -59,7 +59,9 @@ from core.provider_transport_registry import (
     ProviderTransportBinding,
     dispatch_provider_transport,
     get_provider_transport_binding,
+    reconcile_provider_transport,
     register_provider_transport_binding,
+    submit_provider_transport,
 )
 from models import (
     GenerationExecutionRecord,
@@ -113,6 +115,13 @@ class CanonicalExecuteRequest(BaseModel):
     preview_execution_id: str = Field(min_length=1)
 
 
+class CanonicalReconcileRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    execution_id: str = Field(min_length=1)
+    confirmation_token: str = Field(min_length=1)
+
+
 class CanaryExecuteRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
@@ -157,6 +166,30 @@ def _redact(value: Any, *, key: str = "") -> Any:
 
 def _response_hash(value: Any) -> str:
     return hashlib.sha256(canonical(_redact(value)).encode("utf-8")).hexdigest()
+
+
+def _video_storage_diagnostic_code(error: Any) -> str:
+    """Map local provider-media failures to stable, secret-free diagnostics."""
+    text = str(error or "").lower()
+    if any(token in text for token in ("401", "403", "unauthorized", "forbidden", "authentication")):
+        return "CONTENT_AUTH_FAILED"
+    if any(token in text for token in ("http_", "status code", "client error", "server error")):
+        return "CONTENT_DOWNLOAD_HTTP_ERROR"
+    if "empty" in text or "no content" in text:
+        return "CONTENT_EMPTY"
+    if "mime" in text or "type" in text:
+        return "INVALID_MIME"
+    if "container" in text or "unsupported_generated_video_type" in text:
+        return "INVALID_MP4_CONTAINER"
+    if "duration" in text:
+        return "INVALID_DURATION"
+    if "dimension" in text:
+        return "INVALID_DIMENSIONS"
+    if "checksum" in text:
+        return "CHECKSUM_FAILURE"
+    if "path" in text or "write" in text or "storage" in text:
+        return "LOCAL_PERSIST_FAILURE"
+    return "LOCAL_PERSIST_FAILURE"
 
 
 def _profile_fingerprint(profile: dict[str, Any], *, adapter_id: str, adapter_version: str) -> str:
@@ -931,24 +964,35 @@ def _persist_candidate_media(*, source_url: str, book_id: int, execution_id: str
     else:
         result = _persist_generated_image_locally(source_url, book_id=book_id, task_id=execution_id, label="phase-f-canary")
     if not result.get("ok"):
-        raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED" if normalized_media == "VIDEO" else "GENERATION_MEDIA_INVALID", "Provider media failed canonical storage validation.", diagnostics=result)
+        if normalized_media == "VIDEO":
+            diagnostics = {
+                "technical_validation_code": _video_storage_diagnostic_code(result.get("error")),
+                "storage_error": _redact(result.get("error") or ""),
+                "source_url_present": bool(source_url),
+            }
+            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Provider media failed canonical storage validation.", diagnostics=diagnostics)
+        raise _error(422, "GENERATION_MEDIA_INVALID", "Provider media failed canonical storage validation.", diagnostics=result)
     local_path = str(result.get("local_path") or "")
     try:
         data, content_type = _load_source_bytes(local_path)
         if normalized_media == "IMAGE":
             data, content_type = _normalize_provider_image_bytes(data, content_type)
     except Exception as exc:
-        raise _error(422, "GENERATION_MEDIA_INVALID", "Stored candidate bytes could not be read.", diagnostics={"error": str(exc)})
+        code = "CONTENT_DOWNLOAD_HTTP_ERROR" if normalized_media == "VIDEO" else "GENERATION_MEDIA_INVALID"
+        raise _error(422, code if normalized_media != "VIDEO" else "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate bytes could not be read.", diagnostics={"technical_validation_code": _video_storage_diagnostic_code(exc) if normalized_media == "VIDEO" else "LOCAL_PERSIST_FAILURE", "error": _redact(str(exc))})
     if not data:
+        if normalized_media == "VIDEO":
+            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate bytes are empty.", diagnostics={"technical_validation_code": "CONTENT_EMPTY"})
         raise _error(422, "GENERATION_MEDIA_INVALID", "Stored candidate bytes are empty.")
     if normalized_media == "VIDEO":
         from core.media_authority import _detect_media
         try:
             observed_mime, width, height, duration_ms = _detect_media(data, content_type)
         except Exception as exc:
-            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate video container could not be validated.", diagnostics={"error": str(exc)}) from exc
+            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate video container could not be validated.", diagnostics={"technical_validation_code": "INVALID_MP4_CONTAINER", "error": _redact(str(exc))}) from exc
         if not observed_mime.startswith("video/") or not duration_ms:
-            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate video has no valid container or duration.")
+            code = "INVALID_DURATION" if observed_mime.startswith("video/") else "INVALID_MP4_CONTAINER"
+            raise _error(422, "VIDEO_TECHNICAL_VALIDATION_FAILED", "Stored candidate video has no valid container or duration.", diagnostics={"technical_validation_code": code, "observed_mime": observed_mime or ""})
         storage_identity = str(result.get("video_url") or "")
         storage_reference = {"video_url": storage_identity, "local_path": local_path, "source_kind": result.get("source_kind") or "provider_url"}
     else:
@@ -1002,6 +1046,8 @@ def _serialize_candidate(row: MediaCandidateRecord | None) -> dict[str, Any] | N
 
 
 def _serialize_execution(row: GenerationExecutionRecord) -> dict[str, Any]:
+    request_snapshot = _json(row.request_snapshot_json, {})
+    attempt_meta = request_snapshot.get("_generation_attempt") if isinstance(request_snapshot, dict) else {}
     return {
         "execution_id": row.execution_id,
         "schema_version": row.schema_version,
@@ -1037,6 +1083,7 @@ def _serialize_execution(row: GenerationExecutionRecord) -> dict[str, Any]:
         "failure_message": row.failure_message,
         "official_promotion_count": row.official_promotion_count,
         "candidate_id": row.candidate_id,
+        "attempt_lineage_id": attempt_meta.get("attempt_lineage_id") if isinstance(attempt_meta, dict) else None,
     }
 
 
@@ -1479,23 +1526,74 @@ async def _execute_generation_canary_impl(
             row.provider_task_id = mock_task_id
             row.updated_at = datetime.utcnow()
             session.commit()
+        binding = get_provider_transport_binding(
+            provider_id=str(context["profile"].get("provider") or ""),
+            target_media=str(context.get("target_media") or row.target_media or "").upper(),
+            binding_id=str(context["profile"].get("transport_binding_id") or "").strip() or None,
+        )
+        # Real async transports stop at the submit boundary.  The persisted
+        # task identity is reconciled by the dedicated endpoint below; this
+        # keeps RUNNING/reload evidence authoritative and prevents a second
+        # POST from being hidden inside a retry or page reload.
+        if binding is not None and binding.mode == "async" and str(context["profile"].get("provider") or "") != MOCK_PROVIDER:
+            started = time.perf_counter()
+            try:
+                submitted = await submit_provider_transport(context)
+                task_id = str(submitted.get("providerTaskId") or submitted.get("externalTaskId") or "").strip()
+                if not task_id:
+                    raise ModelProfileError("Async provider submit returned no task identity.")
+                response_payload = submitted.get("providerResponse") if isinstance(submitted.get("providerResponse"), dict) else {}
+                row.provider = str(context["profile"].get("provider") or "")
+                row.model = str(context["profile"].get("model_name") or "")
+                row.provider_request_id = str(submitted.get("providerRequestId") or task_id)
+                row.provider_task_id = task_id
+                row.provider_response_hash = _response_hash(response_payload)
+                row.logical_provider_calls = 1
+                row.status = "RUNNING"
+                row.updated_at = datetime.utcnow()
+                session.commit()
+                return {"execution": _serialize_execution(row), "candidate": None, "provider_calls": 1, "reused": False, "async_phase": "SUBMIT", "reconcile_required": True}
+            except ModelProfileError as exc:
+                session.rollback()
+                row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.preview_execution_id).first() or row
+                row.status = "FAILED"
+                row.provider = str(context["profile"].get("provider") or "")
+                row.model = str(context["profile"].get("model_name") or "")
+                row.logical_provider_calls = 1
+                row.failure_code = "GENERATION_PROVIDER_CALL_FAILED"
+                row.failure_message = _redact(str(exc))[:500]
+                row.completed_at = datetime.utcnow()
+                row.updated_at = datetime.utcnow()
+                session.commit()
+                raise _error(502, "GENERATION_PROVIDER_CALL_FAILED", _redact(str(exc))[:500], provider_calls=1, diagnostics={"provider_task_id_present": bool(row.provider_task_id)})
         started = time.perf_counter()
         generated: dict[str, Any] = {}
         try:
             generated = await _call_provider(context=context)
             source_url = str(generated.get("uri") or generated.get("previewUrl") or "").strip()
             target_media = str(context.get("target_media") or row.target_media or "IMAGE").upper()
+            # Persist the upstream identity as soon as the provider returns it.
+            # If content retrieval or technical validation fails afterwards,
+            # the FAILED execution still proves which billable task existed.
+            response_payload = generated.get("providerResponse") if isinstance(generated.get("providerResponse"), dict) else {}
+            response_hash = _response_hash(response_payload)
+            row.provider = str(generated.get("provider") or context["profile"].get("provider") or "")
+            row.model = str(generated.get("model") or context["profile"].get("model_name") or "")
+            row.provider_request_id = str(generated.get("providerRequestId") or generated.get("externalTaskId") or "")
+            row.provider_task_id = str(generated.get("providerTaskId") or generated.get("externalTaskId") or "")
+            row.provider_response_hash = response_hash
+            row.logical_provider_calls = 1
+            row.updated_at = datetime.utcnow()
+            session.commit()
             download_headers = None
             if target_media == "VIDEO" and (
                 bool(generated.get("providerContentRequiresAuth"))
                 or str(context.get("profile", {}).get("provider") or "") == "75api-minimax-h3"
             ):
-                provider_key = str(context.get("profile", {}).get("api_key") or "").strip()
+                provider_key = str(context.get("runtime_credential_value") or "").strip()
                 if provider_key:
                     download_headers = {"Authorization": f"Bearer {provider_key}"}
             media = _persist_candidate_media(source_url=source_url, book_id=book_id, execution_id=row.execution_id, target_media=target_media, download_headers=download_headers)
-            response_payload = generated.get("providerResponse") if isinstance(generated.get("providerResponse"), dict) else {}
-            response_hash = _response_hash(response_payload)
             candidate_id = "candidate-" + uuid.uuid4().hex
             candidate = MediaCandidateRecord(
                 candidate_id=candidate_id,
@@ -1582,6 +1680,24 @@ async def _execute_generation_canary_impl(
                 provider_calls=1,
                 retry_calls=0,
             )
+        except ModelProfileError as exc:
+            # Preserve upstream task identity when polling or provider-side
+            # post-processing fails after submission.
+            session.rollback()
+            row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.preview_execution_id).first() or row
+            row.status = "FAILED"
+            row.logical_provider_calls = max(1, int(row.logical_provider_calls or 0))
+            row.transport_retry_count = 0
+            if getattr(exc, "external_task_id", None):
+                row.provider_task_id = str(exc.external_task_id)
+                row.provider_request_id = str(exc.external_task_id)
+            row.latency_ms = int((time.perf_counter() - started) * 1000)
+            row.failure_code = "GENERATION_PROVIDER_CALL_FAILED"
+            row.failure_message = _redact(str(exc))[:500]
+            row.completed_at = datetime.utcnow()
+            row.updated_at = datetime.utcnow()
+            session.commit()
+            raise _error(502, "GENERATION_PROVIDER_CALL_FAILED", _redact(str(exc))[:500], provider_calls=max(1, int(row.logical_provider_calls or 1)), retry_calls=0, diagnostics={"provider_task_id_present": bool(row.provider_task_id), "external_status": getattr(exc, "external_status", None) or ""})
         except Exception as exc:
             session.rollback()
             row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.preview_execution_id).first() or row
@@ -1595,6 +1711,105 @@ async def _execute_generation_canary_impl(
             row.updated_at = datetime.utcnow()
             session.commit()
             raise _error(502, "GENERATION_EXECUTION_FAILED", str(exc)[:500], provider_calls=1, retry_calls=0)
+
+
+async def _reconcile_generation_canary_impl(book_id: int, episode: int, shot_id: int, req: CanonicalReconcileRequest):
+    """Reconcile one persisted async VIDEO task without resubmitting it."""
+    with Session() as session:
+        row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.execution_id, book_id=book_id, episode=episode).first()
+        if row is None:
+            raise _error(404, "GENERATION_EXECUTION_NOT_FOUND", "The async generation execution does not exist.")
+        _validate_url_scope(session, execution=row, shot_id=shot_id)
+        expected_token = _confirmation_token(execution_id=row.execution_id, prompt_ir_version_id=row.prompt_ir_version_id, payload_fp=row.generation_payload_fingerprint, model_profile_id=row.model_profile_id, provider_request_fp=row.provider_request_fingerprint)
+        if req.confirmation_token != expected_token:
+            raise _error(409, "GENERATION_CANARY_CONFIRMATION_MISMATCH", "The confirmation token is not bound to this execution.", provider_calls=0)
+        candidate = session.query(MediaCandidateRecord).filter_by(execution_id=row.execution_id).first()
+        if row.status in {"SUCCEEDED", "REUSED"}:
+            _validate_candidate_lineage(row, candidate)
+            return {"execution": _serialize_execution(row), "candidate": _serialize_candidate(candidate), "provider_calls": 0, "reused": True, "async_phase": "RECONCILE"}
+        if row.status != "RUNNING":
+            raise _error(409, "GENERATION_EXECUTION_NOT_RUNNING", "Only a RUNNING async execution can be reconciled.", provider_calls=0)
+        context = _resolve_canonical_execution_inputs(session, book_id=book_id, episode=episode, shot_id=shot_id, target_media=str(row.target_media or "VIDEO"), model_profile_id=row.model_profile_id)
+        drift = {
+            "prompt_ir_payload_hash": (row.prompt_ir_payload_hash, str(context["resolved"]["version"].payload_hash or "")),
+            "generation_payload_fingerprint": (row.generation_payload_fingerprint, str(context["payload"].get("generation_payload_fingerprint") or "")),
+            "generation_policy_fingerprint": (row.generation_policy_fingerprint, str(context["policy"].get("fingerprint") or "")),
+            "model_profile_fingerprint": (row.model_profile_fingerprint, context["profile_fingerprint"]),
+            "provider_request_fingerprint": (row.provider_request_fingerprint, context["provider_request_fingerprint"]),
+        }
+        changed = [key for key, (before, after) in drift.items() if str(before or "") != str(after or "")]
+        if changed:
+            raise _error(409, "GENERATION_PREVIEW_STALE", "Async execution authority changed before reconcile.", changed=changed, provider_calls=0)
+        try:
+            reconciled = await reconcile_provider_transport(context, external_task_id=str(row.provider_task_id or row.provider_request_id or ""))
+            status = str(reconciled.get("status") or "running").lower()
+            if status not in {"done", "succeeded", "completed", "success"}:
+                row.updated_at = datetime.utcnow()
+                session.commit()
+                return {"execution": _serialize_execution(row), "candidate": None, "provider_calls": 0, "reused": False, "async_phase": "RECONCILE", "external_status": reconciled.get("externalStatus") or status}
+            source_url = str(reconciled.get("uri") or reconciled.get("previewUrl") or "").strip()
+            provider_response = reconciled.get("providerResponse") if isinstance(reconciled.get("providerResponse"), dict) else {}
+            response_hash = _response_hash(provider_response)
+            download_headers = None
+            if str(row.target_media or "").upper() == "VIDEO" and str(context.get("runtime_credential_value") or "").strip():
+                download_headers = {"Authorization": f"Bearer {str(context['runtime_credential_value']).strip()}"}
+            media = _persist_candidate_media(source_url=source_url, book_id=book_id, execution_id=row.execution_id, target_media=str(row.target_media or "VIDEO"), download_headers=download_headers)
+            candidate_id = "candidate-" + uuid.uuid4().hex
+            candidate = MediaCandidateRecord(
+                candidate_id=candidate_id,
+                execution_id=row.execution_id,
+                status="MEDIA_CANDIDATE",
+                media_type=str(row.target_media or "VIDEO"),
+                storage_identity=media["storage_identity"],
+                storage_reference_json=json.dumps(media["storage_reference"], ensure_ascii=False, sort_keys=True),
+                checksum_sha256=media["checksum_sha256"], mime_type=media["mime_type"], byte_size=media["byte_size"], width=media["width"], height=media["height"], duration_ms=media.get("duration_ms"),
+                prompt_ir_version_id=row.prompt_ir_version_id, prompt_ir_payload_hash=row.prompt_ir_payload_hash, generation_payload_fingerprint=row.generation_payload_fingerprint,
+                model_profile_id=row.model_profile_id, model_profile_fingerprint=row.model_profile_fingerprint, provider_request_fingerprint=row.provider_request_fingerprint,
+                provider_response_hash=response_hash, provider_task_id=str(row.provider_task_id or row.provider_request_id or ""), created_at=datetime.utcnow(),
+            )
+            session.add(candidate)
+            row.status = "SUCCEEDED"
+            row.provider_response_hash = response_hash
+            row.candidate_id = candidate_id
+            row.completed_at = datetime.utcnow()
+            row.updated_at = row.completed_at
+            row.failure_code = ""
+            row.failure_message = ""
+            from core.media_authority import validate_media_candidate
+            session.flush()
+            validate_media_candidate(session, candidate_id)
+            session.commit()
+            return {"execution": _serialize_execution(row), "candidate": _serialize_candidate(candidate), "provider_calls": 0, "reused": False, "async_phase": "RECONCILE", "media_generated": True}
+        except HTTPException as exc:
+            session.rollback()
+            row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.execution_id).first() or row
+            row.status = "FAILED"
+            row.failure_code = str((exc.detail or {}).get("code") if isinstance(exc.detail, dict) else "GENERATION_MEDIA_INVALID")
+            row.failure_message = str((exc.detail or {}).get("message") if isinstance(exc.detail, dict) else exc.detail)
+            row.completed_at = datetime.utcnow(); row.updated_at = row.completed_at
+            session.commit()
+            raise
+        except MediaAuthorityError as exc:
+            session.rollback()
+            row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.execution_id).first() or row
+            row.status = "FAILED"
+            row.failure_code = str(exc.code)
+            row.failure_message = _redact(str(exc.message))[:500]
+            row.completed_at = datetime.utcnow(); row.updated_at = row.completed_at
+            session.commit()
+            raise _error(int(getattr(exc, "status_code", 422) or 422), str(exc.code), _redact(str(exc.message))[:500], diagnostics=getattr(exc, "diagnostics", None), provider_calls=0)
+        except ModelProfileError as exc:
+            session.rollback()
+            row = session.query(GenerationExecutionRecord).filter_by(execution_id=req.execution_id).first() or row
+            row.status = "FAILED"; row.failure_code = "GENERATION_PROVIDER_CALL_FAILED"; row.failure_message = _redact(str(exc))[:500]
+            row.completed_at = datetime.utcnow(); row.updated_at = row.completed_at
+            session.commit()
+            raise _error(502, "GENERATION_PROVIDER_CALL_FAILED", _redact(str(exc))[:500], provider_calls=0, diagnostics={"provider_task_id_present": bool(row.provider_task_id)})
+
+
+@router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/reconcile")
+async def reconcile_generation_canary(book_id: int, episode: int, shot_id: int, req: CanonicalReconcileRequest):
+    return await _reconcile_generation_canary_impl(book_id, episode, shot_id, req)
 
 
 @router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation-canary/execute")
@@ -1615,6 +1830,11 @@ async def execute_canonical_generation(book_id: int, episode: int, shot_id: int,
     return await _execute_generation_canary_impl(book_id, episode, shot_id, delegated, _canonical=True)
 
 
+@router.post("/{book_id}/episodes/{episode}/shots/{shot_id}/generation/reconcile")
+async def reconcile_canonical_generation(book_id: int, episode: int, shot_id: int, req: CanonicalReconcileRequest):
+    return await _reconcile_generation_canary_impl(book_id, episode, shot_id, req)
+
+
 # Stable service names for new integrations.  The route handlers retain the
 # explicit canonical wording for backwards compatibility with the J3 review
 # artifacts, while callers do not need to depend on a phase label.
@@ -1622,4 +1842,4 @@ preview_generation = preview_canonical_generation
 execute_generation = execute_canonical_generation
 
 
-__all__ = ["router", "CanaryPreviewRequest", "CanaryExecuteRequest", "CanonicalPreviewRequest", "CanonicalExecuteRequest", "preview_generation", "execute_generation"]
+__all__ = ["router", "CanaryPreviewRequest", "CanaryExecuteRequest", "CanonicalPreviewRequest", "CanonicalExecuteRequest", "CanonicalReconcileRequest", "preview_generation", "execute_generation"]

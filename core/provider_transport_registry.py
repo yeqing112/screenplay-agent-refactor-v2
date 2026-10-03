@@ -21,6 +21,8 @@ from api.generation_adapters import (
     SHAPI_OPENAI_IMAGES_PROVIDER,
     generate_image_asset,
     generate_video_asset,
+    reconcile_75api_minimax_h3_generation,
+    submit_75api_minimax_h3_generation,
 )
 
 
@@ -121,12 +123,83 @@ async def _video_handler(context: dict[str, Any]) -> dict[str, Any]:
         first_frame_url=source_url,
         last_frame_url=last_frame_url,
         reference_images=context.get("reference_images") or [],
+        runtime_credential_value=str(context.get("runtime_credential_value") or "").strip() or None,
     )
     generated.setdefault("provider", context.get("profile", {}).get("provider"))
     generated.setdefault("model", context.get("profile", {}).get("model_name"))
     generated.setdefault("providerRequestId", generated.get("externalTaskId") or "")
     generated.setdefault("providerTaskId", generated.get("externalTaskId") or "")
     return generated
+
+
+async def submit_provider_transport(context: dict[str, Any]) -> dict[str, Any]:
+    """Submit one async generation without polling it to terminal state."""
+    profile = context.get("profile") if isinstance(context.get("profile"), dict) else {}
+    target_media = str(context.get("target_media") or "IMAGE").upper()
+    binding = get_provider_transport_binding(
+        provider_id=str(profile.get("provider") or ""),
+        target_media=target_media,
+        binding_id=str(profile.get("transport_binding_id") or "").strip() or None,
+    )
+    if binding is None:
+        raise LookupError(f"No exact transport binding for provider={profile.get('provider')} target_media={target_media}")
+    if binding.mode != "async" or target_media != "VIDEO":
+        return await binding.handler(context)
+    payload = context.get("payload") if isinstance(context.get("payload"), dict) else {}
+    request = payload.get("request") if isinstance(payload.get("request"), dict) else {}
+    runtime_credential_value = str(context.get("runtime_credential_value") or "").strip() or None
+    transport_profile = _runtime_profile(context)
+    provider = str(profile.get("provider") or "")
+    if provider == MINIMAX_H3_75API_PROVIDER:
+        provider_payload = {
+            "model": transport_profile.get("model_name"),
+            "prompt": str(request.get("prompt") or ""),
+            "seconds": str(request.get("duration_seconds") or ""),
+            "aspect_ratio": request.get("aspect_ratio"),
+            "resolution": transport_profile.get("default_params", {}).get("resolution") if isinstance(transport_profile.get("default_params"), dict) else None,
+            "images": [str(context.get("source_storage_identity") or "")] if str(context.get("source_storage_identity") or "").strip() else [],
+        }
+        provider_payload = {key: value for key, value in provider_payload.items() if value not in (None, "", [])}
+        submitted = await submit_75api_minimax_h3_generation(
+            transport_profile,
+            payload=provider_payload,
+            runtime_credential_value=runtime_credential_value,
+        )
+        response = submitted.get("providerResponse") if isinstance(submitted.get("providerResponse"), dict) else {}
+        task_id = str(submitted.get("providerTaskId") or submitted.get("externalTaskId") or "").strip()
+        return {
+            "status": "submitted",
+            "externalTaskId": task_id,
+            "providerTaskId": task_id,
+            "providerRequestId": str(response.get("request_id") or response.get("requestId") or task_id),
+            "providerResponse": response,
+            "providerRequestPayload": submitted.get("providerRequestPayload") or provider_payload,
+        }
+    raise LookupError(f"Async submit is not implemented for provider={provider}")
+
+
+async def reconcile_provider_transport(context: dict[str, Any], *, external_task_id: str) -> dict[str, Any]:
+    """Reconcile one persisted async task without issuing a new submission."""
+    profile = context.get("profile") if isinstance(context.get("profile"), dict) else {}
+    target_media = str(context.get("target_media") or "IMAGE").upper()
+    binding = get_provider_transport_binding(
+        provider_id=str(profile.get("provider") or ""),
+        target_media=target_media,
+        binding_id=str(profile.get("transport_binding_id") or "").strip() or None,
+    )
+    if binding is None:
+        raise LookupError(f"No exact transport binding for provider={profile.get('provider')} target_media={target_media}")
+    if binding.mode != "async" or target_media != "VIDEO":
+        return await binding.handler(context)
+    runtime_credential_value = str(context.get("runtime_credential_value") or "").strip() or None
+    transport_profile = _runtime_profile(context)
+    if str(profile.get("provider") or "") == MINIMAX_H3_75API_PROVIDER:
+        return await reconcile_75api_minimax_h3_generation(
+            transport_profile,
+            external_task_id=str(external_task_id),
+            runtime_credential_value=runtime_credential_value,
+        )
+    raise LookupError(f"Async reconcile is not implemented for provider={profile.get('provider')}")
 
 
 def dispatch_provider_transport(context: dict[str, Any]) -> Awaitable[dict[str, Any]]:
@@ -166,6 +239,8 @@ _register_builtin_real_bindings()
 __all__ = [
     "ProviderTransportBinding",
     "dispatch_provider_transport",
+    "submit_provider_transport",
+    "reconcile_provider_transport",
     "get_provider_transport_binding",
     "list_provider_transport_bindings",
     "register_provider_transport_binding",
