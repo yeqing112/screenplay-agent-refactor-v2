@@ -1,0 +1,61 @@
+{
+  "asset_type": "SCENE",
+  "identity": "E01_SC002",
+  "fields": {
+    "identity": "E01_SC002",
+    "name": "出租公寓厨房",
+    "description": "夜间室内的出租公寓厨房与餐桌区域，固定餐桌、厨房门和窗口布局，冷色窗外光与室内暖光混合",
+    "space_identity": "出租公寓厨房",
+    "architecture": "狭小公寓厨房连接餐桌区域",
+    "layout": "餐桌居中，厨房门在侧后方，窗户提供外部冷光",
+    "entrance": "厨房门",
+    "exit": "公寓入口方向",
+    "doors_windows": "厨房门与单扇窗",
+    "fixed_furniture": "餐桌、椅子、操作台、厨房门",
+    "materials": "旧木桌面、磨砂墙面、金属水槽",
+    "time": "夜间",
+    "weather": "窗外无明确天气，玻璃呈冷暗色",
+    "lighting": "室内暖色顶灯与窗外冷色光混合",
+    "light_direction": "暖光从上方落在桌面，冷光从窗侧进入",
+    "depth": "前景桌面，中景人物，背景厨房门和窗",
+    "landmarks": "餐桌划痕、厨房门、窗边冷光",
+    "multi_view_policy": "master wide、reverse angle、side angle、key detail 都保持同一建筑、门窗、固定家具和光线逻辑",
+    "source": "SceneIdentity / Visual Asset Authority fixture"
+  },
+  "asset_prompt_ir": {
+    "asset_type": "SCENE",
+    "identity": "E01_SC002",
+    "fields": {
+      "identity": "E01_SC002",
+      "name": "出租公寓厨房",
+      "description": "夜间室内的出租公寓厨房与餐桌区域，固定餐桌、厨房门和窗口布局，冷色窗外光与室内暖光混合",
+      "space_identity": "出租公寓厨房",
+      "architecture": "狭小公寓厨房连接餐桌区域",
+      "layout": "餐桌居中，厨房门在侧后方，窗户提供外部冷光",
+      "entrance": "厨房门",
+      "exit": "公寓入口方向",
+      "doors_windows": "厨房门与单扇窗",
+      "fixed_furniture": "餐桌、椅子、操作台、厨房门",
+      "materials": "旧木桌面、磨砂墙面、金属水槽",
+      "time": "夜间",
+      "weather": "窗外无明确天气，玻璃呈冷暗色",
+      "lighting": "室内暖色顶灯与窗外冷色光混合",
+      "light_direction": "暖光从上方落在桌面，冷光从窗侧进入",
+      "depth": "前景桌面，中景人物，背景厨房门和窗",
+      "landmarks": "餐桌划痕、厨房门、窗边冷光",
+      "multi_view_policy": "master wide、reverse angle、side angle、key detail 都保持同一建筑、门窗、固定家具和光线逻辑",
+      "source": "SceneIdentity / Visual Asset Authority fixture"
+    },
+    "source": "SceneIdentity / Visual Asset Authority fixture"
+  },
+  "provider_prompt": "identity：E01_SC002；name：出租公寓厨房；description：夜间室内的出租公寓厨房与餐桌区域，固定餐桌、厨房门和窗口布局，冷色窗外光与室内暖光混合；space_identity：出租公寓厨房；architecture：狭小公寓厨房连接餐桌区域；layout：餐桌居中，厨房门在侧后方，窗户提供外部冷光；entrance：厨房门；exit：公寓入口方向；doors_windows：厨房门与单扇窗；fixed_furniture：餐桌、椅子、操作台、厨房门；materials：旧木桌面、磨砂墙面、金属水槽；time：夜间；weather：窗外无明确天气，玻璃呈冷暗色；lighting：室内暖色顶灯与窗外冷色光混合；light_direction：暖光从上方落在桌面，冷光从窗侧进入；depth：前景桌面，中景人物，背景厨房门和窗；landmarks：餐桌划痕、厨房门、窗边冷光；multi_view_policy：master wide、reverse angle、side angle、key detail 都保持同一建筑、门窗、固定家具和光线逻辑；source：SceneIdentity / Visual Asset Authority fixture",
+  "negative_prompt": "避免身份漂移、比例变化、错误材质、文字水印、过度风格化",
+  "reference_policy": {
+    "mode": "LOCKED_CANONICAL_REFERENCE",
+    "status": "LOCKED",
+    "stale_status": "FRESH"
+  },
+  "renderer_version": "asset_prompt_renderer_v3",
+  "fingerprint": "073b33745f2cf9a0cea73ff73904840821ffa3e19c3177a40e33e9aedd2696d1",
+  "readiness": "ASSET_PROMPT_READY"
+}

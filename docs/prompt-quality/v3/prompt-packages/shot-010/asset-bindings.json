@@ -1,0 +1,10 @@
+{
+  "characters": [
+    "character://book-990401/陆叔/v1",
+    "character://book-990401/林晚/v1"
+  ],
+  "scene": "scene://book-990401/E01_SC002/v1",
+  "props": [],
+  "style": "style://book-990401/episode-1/v1",
+  "status": "LOCKED/FRESH"
+}

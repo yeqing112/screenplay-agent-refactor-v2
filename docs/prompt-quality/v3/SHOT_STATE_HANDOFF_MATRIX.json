@@ -1,0 +1,520 @@
+{
+  "schema_version": "shot_state_handoff_v3",
+  "shots": [
+    {
+      "shot": 1,
+      "shot_id": "SH_E01_SC001_001",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "售票员": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "车票": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC001_002",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 2,
+      "shot_id": "SH_E01_SC001_002",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "红伞": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC001_003",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 3,
+      "shot_id": "SH_E01_SC001_003",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "顾沉": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "折断的红伞伞骨": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC001_004",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 4,
+      "shot_id": "SH_E01_SC001_004",
+      "ending_state": {
+        "characters": {
+          "顾沉": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {},
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC001_005",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 5,
+      "shot_id": "SH_E01_SC001_005",
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "手提包": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC001_006",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 6,
+      "shot_id": "SH_E01_SC001_006",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "折断的红伞伞骨": "保持本镜最终状态",
+          "红伞": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC001_007",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 7,
+      "shot_id": "SH_E01_SC001_007",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "陆叔": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {},
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC001_008",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 8,
+      "shot_id": "SH_E01_SC001_008",
+      "ending_state": {
+        "characters": {
+          "顾沉": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {},
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC002_001",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 9,
+      "shot_id": "SH_E01_SC002_001",
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "苹果": "保持本镜最终状态",
+          "门锁": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC002_002",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 10,
+      "shot_id": "SH_E01_SC002_002",
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {},
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC002_003",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 11,
+      "shot_id": "SH_E01_SC002_003",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "手提包": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC002_004",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 12,
+      "shot_id": "SH_E01_SC002_004",
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "口袋里的硬物": "保持本镜最终状态",
+          "桌面划痕": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC002_005",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 13,
+      "shot_id": "SH_E01_SC002_005",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {
+          "红色纤维": "保持本镜最终状态"
+        },
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC002_006",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 14,
+      "shot_id": "SH_E01_SC002_006",
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {},
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": "SH_E01_SC002_007",
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    },
+    {
+      "shot": 15,
+      "shot_id": "SH_E01_SC002_007",
+      "ending_state": {
+        "characters": {
+          "林晚": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          },
+          "陆叔": {
+            "position": "保持本镜空间区位",
+            "pose": "完成动作后稳定",
+            "head_direction": "最终头部方向",
+            "eye_direction": "最终视线目标",
+            "emotion": "克制警觉",
+            "costume": "保持锁定变体"
+          }
+        },
+        "props": {},
+        "camera_framing": "current framing"
+      },
+      "next_shot_id": null,
+      "handoff_checks": {
+        "position": true,
+        "pose": true,
+        "prop_possession": true,
+        "costume": true,
+        "emotion": true,
+        "screen_direction": true
+      }
+    }
+  ],
+  "result": "PASS"
+}

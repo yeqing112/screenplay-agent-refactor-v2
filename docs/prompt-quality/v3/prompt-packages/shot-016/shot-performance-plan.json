@@ -1,0 +1,7 @@
+{
+  "shot_number": 16,
+  "classification": "NON_GENERATIVE_TRANSITION",
+  "status": "NOT_APPLICABLE",
+  "reason": "遗留过场镜头没有当前 ShotPlan/PromptIR 生成权威，不伪造资产或媒体提示词。",
+  "provider_calls": 0
+}
