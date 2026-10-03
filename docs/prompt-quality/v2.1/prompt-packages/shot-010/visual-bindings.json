@@ -1,0 +1,72 @@
+{
+  "scene": {
+    "identity": "E01_SC002",
+    "description": "夜间室内的出租公寓厨房与餐桌区域，固定餐桌、厨房门和窗口布局，冷色窗外光与室内暖光混合",
+    "authority_id": "E01_SC002",
+    "authority_fingerprint": "273d622fec03bebb8a5ae0c27bdb6c0335a3829155b2a6279cd5d720d2845e74",
+    "source": "tests/fixtures/prompt-production/red-umbrella/scenes.json"
+  },
+  "character_profiles": [
+    {
+      "identity": "陆叔",
+      "description": "约五十五岁男性，灰黑侧分短发，结实身形，旧棕色工作夹克与深色长裤",
+      "authority_id": "陆叔",
+      "authority_fingerprint": "36870b8009ea72a2e57790410d9521c601200c2cd9ed622d545756bf332fd264",
+      "source": "tests/fixtures/prompt-production/red-umbrella/characters.json"
+    },
+    {
+      "identity": "林晚",
+      "description": "约二十八岁女性，黑色中长直发，清瘦身形，冷白肤色，深色长裤与浅灰蓝外套，佩戴窄表",
+      "authority_id": "林晚",
+      "authority_fingerprint": "5d08c2c9d42c19c8867c8721f28d04e575e8e8491f3588fbe76f88aa0cea6bcb",
+      "source": "tests/fixtures/prompt-production/red-umbrella/characters.json"
+    }
+  ],
+  "visual_style_profile": {
+    "identity": "red-umbrella-style",
+    "description": "电影写实悬疑短剧；中等写实度；低饱和冷灰蓝基调，局部暖色实用光，克制对比，真实材质",
+    "authority_id": "visual-style",
+    "authority_fingerprint": "8c48561926fd9be529ec2ce43efce6518d75e5fa96b8bf499412fc89dbc58dad",
+    "source": "tests/fixtures/prompt-production/red-umbrella/visual-style.json"
+  },
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC002",
+      "reference_token": "scene://book-990401/E01_SC002/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC002",
+      "authority_fingerprint": "ef4af8f60c8e9162d5afc6027d4b92db4f431377095c6f080ae477a61efbb611"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "陆叔",
+      "reference_token": "character://book-990401/陆叔/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "陆叔",
+      "authority_fingerprint": "0870eeb731af397648135a16cb877a9acc5213fa18cce627e08c2acac66bcd2c"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    }
+  ],
+  "authority_status": "BOUND",
+  "stale_status": "FRESH"
+}

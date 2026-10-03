@@ -1,0 +1,68 @@
+{
+  "prompt": "夜间室内的出租公寓厨房与餐桌区域，固定餐桌、厨房门和窗口布局，冷色窗外光与室内暖光混合。。画面中可见人物：陆叔：约五十五岁男性，灰黑侧分短发，结实身形，旧棕色工作夹克与深色长裤；林晚：约二十八岁女性，黑色中长直发，清瘦身形，冷白肤色，深色长裤与浅灰蓝外套，佩戴窄表。。动作与互动：陆叔发现桌面上的硬物并看向林晚。。重要道具：口袋里的硬物、桌面划痕。。构图与摄影：中近景，平视，镜头轻微重新构图，以陆叔为运动目标。。连续性：陆叔位于画面右侧；陆叔看向画面左侧；林晚位于画面左侧；林晚看向画面右侧。。视觉风格：电影写实悬疑短剧；中等写实度；低饱和冷灰蓝基调，局部暖色实用光，克制对比，真实材质。。保持人物身份、服装、场景布局和关键道具状态稳定，不添加未授权人物或道具。",
+  "negative_prompt": "避免多余人物、错误服装、额外道具、过度饱和、夸张HDR、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC002",
+      "reference_token": "scene://book-990401/E01_SC002/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC002",
+      "authority_fingerprint": "ef4af8f60c8e9162d5afc6027d4b92db4f431377095c6f080ae477a61efbb611"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "陆叔",
+      "reference_token": "character://book-990401/陆叔/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "陆叔",
+      "authority_fingerprint": "0870eeb731af397648135a16cb877a9acc5213fa18cce627e08c2acac66bcd2c"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "POCKET_HARD_OBJECT",
+      "reference_token": "prop://book-990401/POCKET_HARD_OBJECT/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "POCKET_HARD_OBJECT",
+      "authority_fingerprint": "b14981f182abae6c4e045dc31b1bb5e54e7061789b14dfaa0a58d6bdb081a247"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "TABLE_SCRATCH",
+      "reference_token": "prop://book-990401/TABLE_SCRATCH/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "TABLE_SCRATCH",
+      "authority_fingerprint": "aaa14e517d89d1ca5a54481151077aa0c6cb3c11fcf672484f1febe9fe190b06"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "TEXT_TO_IMAGE",
+    "target_media": "IMAGE"
+  },
+  "semantic_source_hash": "85dc4c6d5fa20e4d3fce50c55df58287b5871afbe8f1df4134e524ea16679af9",
+  "renderer_version": "image_prompt_renderer_v2",
+  "generation_payload_fingerprint": "279fbfeeb394db5e6a02e281b22a743090d60d18202e9a3799fd7bfccc34db62"
+}

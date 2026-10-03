@@ -1,0 +1,160 @@
+{
+  "plan_shot_id": "SH_E01_SC001_001",
+  "scene_id": "E01_SC001",
+  "beat_refs": [
+    "SC01-B01",
+    "SC01-B02"
+  ],
+  "beat_id": "SC01-B01",
+  "director_decision_refs": [
+    "DBD_SC01-B01",
+    "DBD_SC01-B02"
+  ],
+  "requirement_refs": [
+    "REQ_SC01-B01",
+    "REQ_SC01-B02"
+  ],
+  "shot_purpose": "ESTABLISH_SPACE",
+  "coverage_roles": [
+    "INSERT_EVIDENCE",
+    "PRIMARY_BEAT_COVERAGE"
+  ],
+  "subjects": [
+    "林晚",
+    "售票员"
+  ],
+  "participants": [
+    "售票员",
+    "林晚",
+    "陆叔",
+    "顾沉"
+  ],
+  "reaction_contract_refs": [],
+  "information_refs": [],
+  "spatial_binding": {
+    "blocking_state_refs": [
+      "SC01-B01",
+      "SC01-B02"
+    ],
+    "subject_zones": {
+      "林晚": "ST_TICKET",
+      "顾沉": "ST_REAR",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "prop_refs": [
+      "TICKET"
+    ]
+  },
+  "camera_state": {
+    "framing_class": "WIDE",
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC",
+    "movement": "NONE",
+    "subject_binding": [
+      "林晚",
+      "售票员"
+    ]
+  },
+  "axis_contract": {
+    "axis_applicability": "NOT_APPLICABLE",
+    "axis_ref": null,
+    "axis_refs": [],
+    "axis_policy": "PRESERVE",
+    "screen_side_assignments": {},
+    "look_direction": {}
+  },
+  "temporal_intent": {
+    "duration_mode": "ACTION_COMPLETION",
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS"
+  },
+  "information_visibility": "AUDIENCE_ONLY",
+  "authoring_provenance": {
+    "proposal_origin": "HUMAN_INPUT"
+  },
+  "continuous_take": true,
+  "cut_events": [],
+  "shot_description": "林晚买票逃离。 / 售票员回应车次。",
+  "camera": {
+    "shot_size": "WIDE",
+    "angle": "eye_level",
+    "movement": "none",
+    "speed": "authored",
+    "camera_side": "center"
+  },
+  "duration_hint_seconds": 4,
+  "action_beats": [
+    {
+      "action_id": "SC01-B01_A01",
+      "actor": "林晚",
+      "action": "林晚买票逃离。 / 售票员回应车次。",
+      "start_seconds": 0,
+      "end_seconds": 3
+    }
+  ],
+  "entry_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_001",
+    "characters": {
+      "林晚": "ST_TICKET",
+      "顾沉": "ST_REAR",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "approved_scene_blocking"
+  },
+  "exit_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_001",
+    "characters": {
+      "林晚": "ST_TICKET",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  },
+  "asset_bindings": {
+    "scene": "E01_SC001",
+    "characters": [
+      "林晚",
+      "售票员"
+    ],
+    "props": [
+      "TICKET"
+    ]
+  },
+  "continuity_contract": {
+    "screen_direction": "maintain",
+    "axis_ref": null,
+    "axis_policy": "PRESERVE",
+    "blocking_state_ref": "SC01-B01"
+  },
+  "v2_authority": {
+    "source": "ShotPlan",
+    "read_only": true,
+    "source_fact_policy": "read_only"
+  },
+  "source_exit_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_001",
+    "characters": {
+      "林晚": "ST_TICKET",
+      "顾沉": "ST_REAR",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  },
+  "ending_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_001",
+    "characters": {
+      "林晚": "ST_TICKET",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  }
+}

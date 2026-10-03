@@ -1,0 +1,230 @@
+{
+  "action": {
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC001_006_ACTION_001",
+        "actor_refs": [
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC01-B09"
+        ],
+        "event_ref": "SC01-B09",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      },
+      {
+        "action_id": "SH_E01_SC001_006_ACTION_002",
+        "actor_refs": [
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC01-B10"
+        ],
+        "event_ref": "SC01-B10",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ]
+  },
+  "asset_authority_bindings": {
+    "identity_refs": [
+      "scene:E01_SC001",
+      "character:林晚",
+      "prop:BROKEN_UMBRELLA_RIB",
+      "prop:RED_UMBRELLA"
+    ],
+    "resolved": [
+      {
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "asset_version_id": 10,
+        "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "identity_ref": "scene:E01_SC001",
+        "stale_status": "FRESH"
+      },
+      {
+        "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
+        "asset_version_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+        "asset_version_id": 2,
+        "authority_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+        "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+        "stale_status": "FRESH"
+      },
+      {
+        "asset_authority_ref": "book:990401:prop:RED_UMBRELLA",
+        "asset_version_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
+        "asset_version_id": 7,
+        "authority_fingerprint": "9acdad16c814b59509b3a642246f2019f5b4dbe2b18b3bfb7451e6d2d6af9168",
+        "identity_ref": "prop:RED_UMBRELLA",
+        "stale_status": "FRESH"
+      }
+    ]
+  },
+  "authority_classes": {
+    "adapter_output": "MODEL_ADAPTER_OUTPUT",
+    "asset_bindings": "ASSET_AUTHORITY_BINDING",
+    "generation_policy": "GENERATION_POLICY",
+    "media_metadata": "MEDIA_REQUEST_METADATA",
+    "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+    "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+    "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
+  },
+  "camera": {
+    "framing_class": "INSERT",
+    "movement": "NONE",
+    "movement_end_condition": null,
+    "movement_target": null,
+    "movement_trigger": null,
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC"
+  },
+  "compiler_provenance": {
+    "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+    "compiler_version": "prompt_ir_semantic_compiler_v1",
+    "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+  },
+  "continuity": {
+    "axis_policy": "PRESERVE",
+    "axis_ref": "AXIS_LW_GC",
+    "axis_refs": [
+      "AXIS_LW_GC",
+      "AXIS_LW_LS"
+    ],
+    "look_direction": {
+      "林晚": "SCREEN_RIGHT"
+    },
+    "screen_side_assignments": {
+      "林晚": "LEFT"
+    }
+  },
+  "environment": {
+    "asset_identity_ref": "E01_SC001",
+    "scene_ref": "E01_SC001"
+  },
+  "generation_constraints": {
+    "must_include_prop_refs": [
+      "BROKEN_UMBRELLA_RIB",
+      "RED_UMBRELLA"
+    ],
+    "must_include_subject_refs": [
+      "林晚"
+    ],
+    "must_preserve_axis": true
+  },
+  "generation_policy": {
+    "aspect_ratio": "16:9",
+    "duration_seconds": 5,
+    "fingerprint": "681a050b2aa74a2e68ce08a1ab4abb9efb787dc065bc9b9da9c5ba7f61431c6c",
+    "language": "",
+    "mode": "IMAGE_TO_VIDEO",
+    "optional_asset_classes": [
+      "CHARACTER_REFERENCE",
+      "PROP_REFERENCE",
+      "SCENE_REFERENCE"
+    ],
+    "required_asset_classes": [],
+    "resolution": "768p",
+    "schema_version": "generation_policy_v1",
+    "source": "explicit_request",
+    "source_binding": {
+      "authority_required": true,
+      "mode": "CURRENT_OFFICIAL_IMAGE"
+    },
+    "style_profile_id": "",
+    "target_media": "VIDEO"
+  },
+  "information_visibility": "AUDIENCE_ONLY",
+  "model_generation_ready": false,
+  "payload_hash": "a7bb9e8c168271fc30365441f472d40741683957717648de56827f5ddd217b63",
+  "plan_shot_id": "SH_E01_SC001_006",
+  "prompt_ir_payload_fingerprint": "v2-projection-cae57aea8c57d8409c2795b2",
+  "prompt_ir_semantic_fingerprint": "432da04e7af6ea3b2838118abbe9480e106ba6fd1ab54f2f4566a0708826481a",
+  "prompt_ir_semantic_ready": true,
+  "props": [
+    {
+      "asset_identity_ref": "BROKEN_UMBRELLA_RIB",
+      "prop_ref": "BROKEN_UMBRELLA_RIB"
+    },
+    {
+      "asset_identity_ref": "RED_UMBRELLA",
+      "prop_ref": "RED_UMBRELLA"
+    }
+  ],
+  "qualification_state": "PROMPT_IR_QUALIFIED",
+  "scene_id": "E01_SC001",
+  "schema_version": "prompt_ir_v2_production_projection",
+  "semantic_refs": {
+    "beat_refs": [
+      "SC01-B09",
+      "SC01-B10"
+    ],
+    "coverage_roles": [
+      "INSERT_EVIDENCE",
+      "PRIMARY_BEAT_COVERAGE",
+      "REACTION_COVERAGE"
+    ],
+    "director_decision_refs": [
+      "DBD_SC01-B09",
+      "DBD_SC01-B10"
+    ],
+    "information_refs": [
+      "INFO_SC01_B09_001",
+      "INFO_SC01_B10_001"
+    ],
+    "reaction_contract_refs": [
+      "RC_SC01-B09_林晚",
+      "RC_SC01-B10_林晚"
+    ],
+    "requirement_refs": [
+      "REQ_SC01-B09",
+      "REQ_SC01-B10"
+    ]
+  },
+  "source_authority": {
+    "blocking_authority_fingerprint": "a467f6ed939102fc6c7a0bf14e0fef36fa2fa9fe272807725548b5667d8a0d12",
+    "generation_policy_fingerprint": "681a050b2aa74a2e68ce08a1ab4abb9efb787dc065bc9b9da9c5ba7f61431c6c",
+    "shot_plan_authority_fingerprint": "8b9bc9a7505754c6a3aca34564a1931bb7b4e867424b84bce055bf059416715f",
+    "storyboard_materialization_set_id": 1,
+    "storyboard_projection_fingerprint": "c453b3c8d6e2fc185f321954c99870078c2bf4cc5d1ff76a104f5cd4e7a709b8",
+    "storyboard_set_payload_fingerprint": "0a4145f197f7624c112068c881a7c035045143c92f9a694969377a41f098fa0f",
+    "visual_semantic_handoff_fingerprint": "f928acf09074f3605292452bd5f8625d4afa988f0d2d0ac4dbfe1162ab9d0034"
+  },
+  "spatial": {
+    "blocking_state_refs": [
+      "SC01-B09",
+      "SC01-B10"
+    ],
+    "entry_state_ref": "SC01-B09",
+    "exit_state_ref": "SC01-B10",
+    "prop_refs": [
+      "BROKEN_UMBRELLA_RIB",
+      "RED_UMBRELLA"
+    ],
+    "subject_zones": {
+      "售票员": "ST_TICKET",
+      "林晚": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "顾沉": "ST_CENTER"
+    }
+  },
+  "storyboard_shot_id": 6,
+  "subjects": [
+    {
+      "asset_identity_ref": "林晚",
+      "subject_ref": "林晚"
+    }
+  ],
+  "temporal": {
+    "continuous_take": true,
+    "cut_events": [],
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+    "duration_hint_seconds": 4,
+    "duration_mode": "REACTION_HOLD"
+  },
+  "production_context": {
+    "language": "zh-CN",
+    "semantic_source_hash": "cae57aea8c57d8409c2795b270a94476be18b43f1b101c0c21919c24b096ec6c",
+    "authority_status": "BOUND",
+    "reference_status": "LOCKED",
+    "renderer_boundary": "provider_prompt_projection"
+  }
+}

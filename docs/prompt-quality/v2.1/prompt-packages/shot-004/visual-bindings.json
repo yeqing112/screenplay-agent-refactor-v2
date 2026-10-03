@@ -1,0 +1,72 @@
+{
+  "scene": {
+    "identity": "E01_SC001",
+    "description": "日间阴天的旧火车站售票厅，固定售票窗口、候车座椅与通向站台的入口，湿地面反光，入口有冷色天光，室内暖色灯光轻微对比",
+    "authority_id": "E01_SC001",
+    "authority_fingerprint": "a4ea93a7465b9542b7629dcd855058f8df2e9a42bda153db72ed9258091b4836",
+    "source": "tests/fixtures/prompt-production/red-umbrella/scenes.json"
+  },
+  "character_profiles": [
+    {
+      "identity": "顾沉",
+      "description": "约三十二岁男性，短黑发，修长身形，深灰长风衣与黑色长裤，沉静压迫气质",
+      "authority_id": "顾沉",
+      "authority_fingerprint": "45f2b857f79d38be9367799d826b120fe03263834fbec76d8c3583396cdf76f9",
+      "source": "tests/fixtures/prompt-production/red-umbrella/characters.json"
+    },
+    {
+      "identity": "林晚",
+      "description": "约二十八岁女性，黑色中长直发，清瘦身形，冷白肤色，深色长裤与浅灰蓝外套，佩戴窄表",
+      "authority_id": "林晚",
+      "authority_fingerprint": "5d08c2c9d42c19c8867c8721f28d04e575e8e8491f3588fbe76f88aa0cea6bcb",
+      "source": "tests/fixtures/prompt-production/red-umbrella/characters.json"
+    }
+  ],
+  "visual_style_profile": {
+    "identity": "red-umbrella-style",
+    "description": "电影写实悬疑短剧；中等写实度；低饱和冷灰蓝基调，局部暖色实用光，克制对比，真实材质",
+    "authority_id": "visual-style",
+    "authority_fingerprint": "8c48561926fd9be529ec2ce43efce6518d75e5fa96b8bf499412fc89dbc58dad",
+    "source": "tests/fixtures/prompt-production/red-umbrella/visual-style.json"
+  },
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC001",
+      "reference_token": "scene://book-990401/E01_SC001/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC001",
+      "authority_fingerprint": "29557915beff9d6c062f2b0d52db6be7c95f6df5462bbccf3f5178b0333520e0"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "顾沉",
+      "reference_token": "character://book-990401/顾沉/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "顾沉",
+      "authority_fingerprint": "49fe025a42b15250db5ab392828ae46a15a3152c46bf0f2b5d66c5158c72f686"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    }
+  ],
+  "authority_status": "BOUND",
+  "stale_status": "FRESH"
+}

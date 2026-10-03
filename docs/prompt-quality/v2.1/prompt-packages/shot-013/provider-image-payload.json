@@ -1,0 +1,50 @@
+{
+  "prompt": "夜间室内的出租公寓厨房与餐桌区域，固定餐桌、厨房门和窗口布局，冷色窗外光与室内暖光混合。。画面中可见人物：林晚：约二十八岁女性，黑色中长直发，清瘦身形，冷白肤色，深色长裤与浅灰蓝外套，佩戴窄表。。动作与互动：林晚从手提包中取出红色纤维进行确认。。重要道具：红色纤维。。构图与摄影：特写，平视，镜头静止。。连续性：林晚位于画面左侧；林晚看向画面右侧。。视觉风格：电影写实悬疑短剧；中等写实度；低饱和冷灰蓝基调，局部暖色实用光，克制对比，真实材质。。保持人物身份、服装、场景布局和关键道具状态稳定，不添加未授权人物或道具。",
+  "negative_prompt": "避免多余人物、错误服装、额外道具、过度饱和、夸张HDR、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC002",
+      "reference_token": "scene://book-990401/E01_SC002/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC002",
+      "authority_fingerprint": "ef4af8f60c8e9162d5afc6027d4b92db4f431377095c6f080ae477a61efbb611"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "RED_FIBER",
+      "reference_token": "prop://book-990401/RED_FIBER/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "RED_FIBER",
+      "authority_fingerprint": "7ef10b2151a5e59210b8275dfe361672df68f9dab15c1312d65efaa27999644e"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "TEXT_TO_IMAGE",
+    "target_media": "IMAGE"
+  },
+  "semantic_source_hash": "4e2d8bc06b93ca8c7cf45096d33a69fcb00f14e411cce157386af31aa7f35fb5",
+  "renderer_version": "image_prompt_renderer_v2",
+  "generation_payload_fingerprint": "c88b20511c0a62991f4af5df79a6fac7af14b004fa118183ca862f16b380bf10"
+}

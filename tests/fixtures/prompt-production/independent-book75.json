@@ -1,0 +1,27 @@
+{
+  "book_id": 75,
+  "episode": 1,
+  "fixture_name": "book75-convenience-store-monitoring-room",
+  "characters": {
+    "林小夏": {"identity": "林小夏", "description": "年轻女性，短发，深色便利店制服，疲惫但敏锐"},
+    "神秘男人": {"identity": "神秘男人", "description": "成年男性，深色连帽外套，面部被门外逆光部分遮住"}
+  },
+  "scenes": {
+    "E75_SC001": {"identity": "E75_SC001", "name": "便利店收银台", "description": "深夜便利店收银区，冷白荧光灯压在狭窄收银台上，玻璃门外是黑暗街道"},
+    "E75_SC002": {"identity": "E75_SC002", "name": "监控室", "description": "便利店后方狭小监控室，墙面布满冷蓝绿色监控屏，桌面有主机、键盘和饮料杯"}
+  },
+  "props": {
+    "OLD_PHOTO": {"identity": "OLD_PHOTO", "description": "对折的旧照片"},
+    "ICE_COFFEE": {"identity": "ICE_COFFEE", "description": "冰美式咖啡"},
+    "MONITOR": {"identity": "MONITOR", "description": "监控屏幕"}
+  },
+  "visual_style": {"identity": "book75-style", "description": "写实悬疑短剧，低饱和冷色荧光光线，真实材质，克制阴影"},
+  "shots": [
+    {"plan_shot_id": "E75_SC001_SH001", "scene_id": "E75_SC001", "subjects": ["林小夏"], "props": ["ICE_COFFEE"], "camera": {"framing_class": "MEDIUM", "movement": "NONE", "movement_target": null}, "action_beats": [{"actor_refs": ["林小夏"], "description": "林小夏打哈欠并扫视空无一人的街道"}], "ending_state": {"characters": {"林小夏": "counter"}}},
+    {"plan_shot_id": "E75_SC001_SH002", "scene_id": "E75_SC001", "subjects": ["林小夏", "神秘男人"], "props": [], "camera": {"framing_class": "MEDIUM_WIDE", "movement": "TRACK", "movement_target": "神秘男人"}, "action_beats": [{"actor_refs": ["神秘男人"], "description": "神秘男人从门口缓慢走向收银台"}], "ending_state": {"characters": {"林小夏": "counter", "神秘男人": "counter"}}},
+    {"plan_shot_id": "E75_SC001_SH003", "scene_id": "E75_SC001", "subjects": ["林小夏", "神秘男人"], "props": ["OLD_PHOTO"], "camera": {"framing_class": "INSERT", "movement": "NONE", "movement_target": null}, "action_beats": [{"actor_refs": ["神秘男人"], "description": "神秘男人把对折的旧照片推到林小夏面前"}], "ending_state": {"characters": {"林小夏": "counter", "神秘男人": "counter"}}},
+    {"plan_shot_id": "E75_SC002_SH004", "scene_id": "E75_SC002", "subjects": ["林小夏"], "props": ["MONITOR"], "camera": {"framing_class": "CLOSE", "movement": "DOLLY_IN", "movement_target": "林小夏"}, "action_beats": [{"actor_refs": ["林小夏"], "description": "林小夏的目光从监控屏幕扫过并突然聚焦"}], "ending_state": {"characters": {"林小夏": "desk"}}},
+    {"plan_shot_id": "E75_SC002_SH005", "scene_id": "E75_SC002", "subjects": ["林小夏"], "props": ["MONITOR", "OLD_PHOTO"], "camera": {"framing_class": "INSERT", "movement": "NONE", "movement_target": null}, "action_beats": [{"actor_refs": ["林小夏"], "description": "监控屏幕反光中浮现旧照片的轮廓"}], "ending_state": {"characters": {"林小夏": "desk"}}},
+    {"plan_shot_id": "E75_SC002_SH006", "scene_id": "E75_SC002", "subjects": ["林小夏"], "props": ["MONITOR"], "camera": {"framing_class": "MEDIUM", "movement": "PAN", "movement_target": "林小夏"}, "action_beats": [{"actor_refs": ["林小夏"], "description": "林小夏坐直并快速检查所有监控屏幕"}], "ending_state": {"characters": {"林小夏": "desk"}}}
+  ]
+}

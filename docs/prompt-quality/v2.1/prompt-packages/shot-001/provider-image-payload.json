@@ -1,0 +1,59 @@
+{
+  "prompt": "日间阴天的旧火车站售票厅，固定售票窗口、候车座椅与通向站台的入口，湿地面反光，入口有冷色天光，室内暖色灯光轻微对比。。画面中可见人物：林晚：约二十八岁女性，黑色中长直发，清瘦身形，冷白肤色，深色长裤与浅灰蓝外套，佩戴窄表；售票员：约四十五岁女性，短黑发，深蓝售票员制服，位于售票窗口后。。动作与互动：林晚递出票据买票，售票员在窗口回应车次。。重要道具：车票。。构图与摄影：广角全景，平视，镜头静止。。连续性：保持首帧中的人物关系、视线和空间轴线连续。。视觉风格：电影写实悬疑短剧；中等写实度；低饱和冷灰蓝基调，局部暖色实用光，克制对比，真实材质。。保持人物身份、服装、场景布局和关键道具状态稳定，不添加未授权人物或道具。",
+  "negative_prompt": "避免多余人物、错误服装、额外道具、过度饱和、夸张HDR、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC001",
+      "reference_token": "scene://book-990401/E01_SC001/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC001",
+      "authority_fingerprint": "29557915beff9d6c062f2b0d52db6be7c95f6df5462bbccf3f5178b0333520e0"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "售票员",
+      "reference_token": "character://book-990401/售票员/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "售票员",
+      "authority_fingerprint": "e83691f61dab9e288a5d6bde305d647315d4a4c65a80392696a9d29fd4b0fbf5"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "TICKET",
+      "reference_token": "prop://book-990401/TICKET/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "TICKET",
+      "authority_fingerprint": "314c4d2aa5feb95726604b314321c0b6fb124bbac7df5fa212346ecdb6dad91d"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "TEXT_TO_IMAGE",
+    "target_media": "IMAGE"
+  },
+  "semantic_source_hash": "d7a9a4cd4ef8ea545fff1b481fa2ccaf679f44b6e017c4cdd4920a902572150e",
+  "renderer_version": "image_prompt_renderer_v2",
+  "generation_payload_fingerprint": "3353c95a0cb18ce9157b044bae6e733957a349e77ec01f5713a336d6edf41e2b"
+}

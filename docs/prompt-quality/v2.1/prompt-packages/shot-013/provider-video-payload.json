@@ -1,0 +1,77 @@
+{
+  "prompt": "从当前官方首帧开始，首帧中的人物身份、服装、场景布局和构图保持不变。开始：林晚从手提包中取出红色纤维进行确认。动作：林晚从手提包中取出红色纤维进行确认。表情与反应：人物以克制、连续的表演完成信息传递。镜头：静止，全片只保留这一项镜头运动。结束：林晚保持在原定空间位置，回到稳定画面并保持空间轴线连续。时长五秒，动作简洁真实，不新增人物、道具或叙事事件",
+  "negative_prompt": "避免跳切、变形、人物身份漂移、服装变化、额外动作、额外镜头运动、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC002",
+      "reference_token": "scene://book-990401/E01_SC002/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC002",
+      "authority_fingerprint": "ef4af8f60c8e9162d5afc6027d4b92db4f431377095c6f080ae477a61efbb611"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "RED_FIBER",
+      "reference_token": "prop://book-990401/RED_FIBER/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "RED_FIBER",
+      "authority_fingerprint": "7ef10b2151a5e59210b8275dfe361672df68f9dab15c1312d65efaa27999644e"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    },
+    {
+      "role": "FIRST_FRAME_REFERENCE",
+      "identity": "shot-013-official-image",
+      "reference_token": "frame://book-990401/shot-013/official-image-v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "shot-013-official-image",
+      "authority_fingerprint": "6036181f69d57b1ce2461c1b20215bfeeabcee6ef6fca1ba4a4dcb868fb1ff52"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "first_frame_mode": "CURRENT_OFFICIAL_IMAGE",
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC002_005_ACTION_001",
+        "actor_refs": [
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B06"
+        ],
+        "event_ref": "SC02-B06",
+        "projection_origin": "SHOT_PLAN_PROJECTION",
+        "description": "林晚从手提包中取出红色纤维进行确认"
+      }
+    ]
+  },
+  "semantic_source_hash": "4e2d8bc06b93ca8c7cf45096d33a69fcb00f14e411cce157386af31aa7f35fb5",
+  "renderer_version": "video_i2v_prompt_renderer_v2",
+  "generation_payload_fingerprint": "a06fbee2c3614286690f51506e6f48495926e789c85622278798c3a62b5835a1"
+}

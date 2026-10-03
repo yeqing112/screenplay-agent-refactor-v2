@@ -1,0 +1,14 @@
+{
+  "schema_version": "prompt_continuity_matrix_v2_1",
+  "red_umbrella": {
+    "input_actor_contamination_count": 10,
+    "filtered_actor_contamination_count": 10,
+    "output_actor_contamination_count": 0,
+    "semantic_integrity": "PASS"
+  },
+  "generalization": {
+    "fixture": "book75-convenience-store-monitoring-room",
+    "output_actor_contamination_count": 0,
+    "semantic_integrity": "PASS"
+  }
+}

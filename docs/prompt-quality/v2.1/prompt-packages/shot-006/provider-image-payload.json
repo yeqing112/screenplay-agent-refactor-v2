@@ -1,0 +1,59 @@
+{
+  "prompt": "日间阴天的旧火车站售票厅，固定售票窗口、候车座椅与通向站台的入口，湿地面反光，入口有冷色天光，室内暖色灯光轻微对比。。画面中可见人物：林晚：约二十八岁女性，黑色中长直发，清瘦身形，冷白肤色，深色长裤与浅灰蓝外套，佩戴窄表。。动作与互动：林晚确认红伞已经消失，只留下湿水痕。。重要道具：折断的红伞伞骨、红伞。。构图与摄影：特写，平视，镜头静止。。连续性：林晚位于画面左侧；林晚看向画面右侧。。视觉风格：电影写实悬疑短剧；中等写实度；低饱和冷灰蓝基调，局部暖色实用光，克制对比，真实材质。。保持人物身份、服装、场景布局和关键道具状态稳定，不添加未授权人物或道具。",
+  "negative_prompt": "避免多余人物、错误服装、额外道具、过度饱和、夸张HDR、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC001",
+      "reference_token": "scene://book-990401/E01_SC001/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC001",
+      "authority_fingerprint": "29557915beff9d6c062f2b0d52db6be7c95f6df5462bbccf3f5178b0333520e0"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "BROKEN_UMBRELLA_RIB",
+      "reference_token": "prop://book-990401/BROKEN_UMBRELLA_RIB/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "BROKEN_UMBRELLA_RIB",
+      "authority_fingerprint": "e10f720d25b78c82f8f4cafb0a3eb6ee6f06261fda239c58f85d952cae0de422"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "RED_UMBRELLA",
+      "reference_token": "prop://book-990401/RED_UMBRELLA/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "RED_UMBRELLA",
+      "authority_fingerprint": "5df82d7f892b8c65d4e4bf0c3ae8cd99c36a4d9336d12abc592ae4daed13e4ba"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "TEXT_TO_IMAGE",
+    "target_media": "IMAGE"
+  },
+  "semantic_source_hash": "cae57aea8c57d8409c2795b270a94476be18b43f1b101c0c21919c24b096ec6c",
+  "renderer_version": "image_prompt_renderer_v2",
+  "generation_payload_fingerprint": "d4977af6eac019dae5dae4c333c0df717631b860fdf98a21775a2c3e9ccbcef2"
+}

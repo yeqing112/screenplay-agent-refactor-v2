@@ -1,0 +1,11 @@
+{
+  "TICKET": {"identity": "TICKET", "description": "车票"},
+  "RED_UMBRELLA": {"identity": "RED_UMBRELLA", "description": "红伞"},
+  "BROKEN_UMBRELLA_RIB": {"identity": "BROKEN_UMBRELLA_RIB", "description": "折断的红伞伞骨"},
+  "HANDBAG": {"identity": "HANDBAG", "description": "手提包"},
+  "POCKET_HARD_OBJECT": {"identity": "POCKET_HARD_OBJECT", "description": "口袋里的硬物"},
+  "TABLE_SCRATCH": {"identity": "TABLE_SCRATCH", "description": "桌面划痕"},
+  "RED_FIBER": {"identity": "RED_FIBER", "description": "红色纤维"},
+  "APPLE": {"identity": "APPLE", "description": "苹果"},
+  "DOOR_LOCK": {"identity": "DOOR_LOCK", "description": "门锁"}
+}

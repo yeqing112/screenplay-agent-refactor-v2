@@ -1,0 +1,26 @@
+{
+  "shot_id": "SH_E01_SC001_007",
+  "shot_type": "MEDIUM",
+  "camera": {
+    "framing_class": "MEDIUM",
+    "movement": "PAN",
+    "movement_end_condition": "BEAT_INFORMATION_LANDS",
+    "movement_target": "林晚",
+    "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+    "orientation": "EYE_LEVEL",
+    "support": "DOLLY"
+  },
+  "composition": "保持可读的主体关系与道具位置",
+  "emotion": "克制悬疑表演",
+  "action": "林晚看向站台入口，陆叔示意返回",
+  "ending_state": {
+    "source": "authored_shot_design",
+    "state_ref": "SH_E01_SC001_007",
+    "characters": {
+      "林晚": "ST_CHECK",
+      "陆叔": "ST_CENTER"
+    },
+    "props": []
+  },
+  "revision": "v2"
+}

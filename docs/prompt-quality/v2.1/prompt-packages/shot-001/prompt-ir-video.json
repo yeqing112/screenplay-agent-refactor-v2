@@ -1,0 +1,209 @@
+{
+  "action": {
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC001_001_ACTION_001",
+        "actor_refs": [
+          "林晚",
+          "售票员"
+        ],
+        "beat_refs": [
+          "SC01-B01"
+        ],
+        "event_ref": "SC01-B01",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      },
+      {
+        "action_id": "SH_E01_SC001_001_ACTION_002",
+        "actor_refs": [
+          "林晚",
+          "售票员"
+        ],
+        "beat_refs": [
+          "SC01-B02"
+        ],
+        "event_ref": "SC01-B02",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ]
+  },
+  "asset_authority_bindings": {
+    "identity_refs": [
+      "scene:E01_SC001",
+      "character:林晚",
+      "character:售票员",
+      "prop:TICKET"
+    ],
+    "resolved": [
+      {
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "asset_version_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "asset_version_id": 10,
+        "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "identity_ref": "scene:E01_SC001",
+        "stale_status": "FRESH"
+      },
+      {
+        "asset_authority_ref": "book:990401:prop:TICKET",
+        "asset_version_fingerprint": "19d26788c41cfa0979237951a56d9af2a7a2ef8ee0227b9275b18be7754e7751",
+        "asset_version_id": 9,
+        "authority_fingerprint": "19d26788c41cfa0979237951a56d9af2a7a2ef8ee0227b9275b18be7754e7751",
+        "identity_ref": "prop:TICKET",
+        "stale_status": "FRESH"
+      }
+    ]
+  },
+  "authority_classes": {
+    "adapter_output": "MODEL_ADAPTER_OUTPUT",
+    "asset_bindings": "ASSET_AUTHORITY_BINDING",
+    "generation_policy": "GENERATION_POLICY",
+    "media_metadata": "MEDIA_REQUEST_METADATA",
+    "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+    "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+    "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
+  },
+  "camera": {
+    "framing_class": "WIDE",
+    "movement": "NONE",
+    "movement_end_condition": null,
+    "movement_target": null,
+    "movement_trigger": null,
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC"
+  },
+  "compiler_provenance": {
+    "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+    "compiler_version": "prompt_ir_semantic_compiler_v1",
+    "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+  },
+  "continuity": {
+    "axis_policy": "PRESERVE",
+    "axis_ref": null,
+    "axis_refs": [],
+    "look_direction": {},
+    "screen_side_assignments": {}
+  },
+  "environment": {
+    "asset_identity_ref": "E01_SC001",
+    "scene_ref": "E01_SC001"
+  },
+  "generation_constraints": {
+    "must_include_prop_refs": [
+      "TICKET"
+    ],
+    "must_include_subject_refs": [
+      "林晚",
+      "售票员"
+    ],
+    "must_preserve_axis": false
+  },
+  "generation_policy": {
+    "aspect_ratio": "16:9",
+    "duration_seconds": 5,
+    "fingerprint": "681a050b2aa74a2e68ce08a1ab4abb9efb787dc065bc9b9da9c5ba7f61431c6c",
+    "language": "",
+    "mode": "IMAGE_TO_VIDEO",
+    "optional_asset_classes": [
+      "CHARACTER_REFERENCE",
+      "PROP_REFERENCE",
+      "SCENE_REFERENCE"
+    ],
+    "required_asset_classes": [],
+    "resolution": "768p",
+    "schema_version": "generation_policy_v1",
+    "source": "explicit_request",
+    "source_binding": {
+      "authority_required": true,
+      "mode": "CURRENT_OFFICIAL_IMAGE"
+    },
+    "style_profile_id": "",
+    "target_media": "VIDEO"
+  },
+  "information_visibility": "AUDIENCE_ONLY",
+  "model_generation_ready": false,
+  "payload_hash": "8f3e2978a58a4009a12ddfb55536946b439cb27b83ad3eae0881d8051898b701",
+  "plan_shot_id": "SH_E01_SC001_001",
+  "prompt_ir_payload_fingerprint": "v2-projection-d7a9a4cd4ef8ea545fff1b48",
+  "prompt_ir_semantic_fingerprint": "c3c709d8af114571983d629cc5291a5579b00162fb6f5d5ddbabccc91879a879",
+  "prompt_ir_semantic_ready": true,
+  "props": [
+    {
+      "asset_identity_ref": "TICKET",
+      "prop_ref": "TICKET"
+    }
+  ],
+  "qualification_state": "PROMPT_IR_QUALIFIED",
+  "scene_id": "E01_SC001",
+  "schema_version": "prompt_ir_v2_production_projection",
+  "semantic_refs": {
+    "beat_refs": [
+      "SC01-B01",
+      "SC01-B02"
+    ],
+    "coverage_roles": [
+      "INSERT_EVIDENCE",
+      "PRIMARY_BEAT_COVERAGE"
+    ],
+    "director_decision_refs": [
+      "DBD_SC01-B01",
+      "DBD_SC01-B02"
+    ],
+    "information_refs": [],
+    "reaction_contract_refs": [],
+    "requirement_refs": [
+      "REQ_SC01-B01",
+      "REQ_SC01-B02"
+    ]
+  },
+  "source_authority": {
+    "blocking_authority_fingerprint": "a467f6ed939102fc6c7a0bf14e0fef36fa2fa9fe272807725548b5667d8a0d12",
+    "generation_policy_fingerprint": "681a050b2aa74a2e68ce08a1ab4abb9efb787dc065bc9b9da9c5ba7f61431c6c",
+    "shot_plan_authority_fingerprint": "8b9bc9a7505754c6a3aca34564a1931bb7b4e867424b84bce055bf059416715f",
+    "storyboard_materialization_set_id": 1,
+    "storyboard_projection_fingerprint": "09cd6c0fb1407e8c9d5b2ffabca019b3e485acff7213fc30bad3f7faf2e193a9",
+    "storyboard_set_payload_fingerprint": "0a4145f197f7624c112068c881a7c035045143c92f9a694969377a41f098fa0f",
+    "visual_semantic_handoff_fingerprint": "f81c77f87e6890df0b666340b12dc2dcad22d90221d948bfc40162c48b80ea28"
+  },
+  "spatial": {
+    "blocking_state_refs": [
+      "SC01-B01",
+      "SC01-B02"
+    ],
+    "entry_state_ref": "SC01-B01",
+    "exit_state_ref": "SC01-B02",
+    "prop_refs": [
+      "TICKET"
+    ],
+    "subject_zones": {
+      "售票员": "ST_TICKET",
+      "林晚": "ST_TICKET",
+      "陆叔": "ST_REAR",
+      "顾沉": "ST_REAR"
+    }
+  },
+  "storyboard_shot_id": 1,
+  "subjects": [
+    {
+      "asset_identity_ref": "林晚",
+      "subject_ref": "林晚"
+    },
+    {
+      "asset_identity_ref": "售票员",
+      "subject_ref": "售票员"
+    }
+  ],
+  "temporal": {
+    "continuous_take": true,
+    "cut_events": [],
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+    "duration_hint_seconds": 4,
+    "duration_mode": "ACTION_COMPLETION"
+  },
+  "production_context": {
+    "language": "zh-CN",
+    "semantic_source_hash": "d7a9a4cd4ef8ea545fff1b481fa2ccaf679f44b6e017c4cdd4920a902572150e",
+    "authority_status": "BOUND",
+    "reference_status": "LOCKED",
+    "renderer_boundary": "provider_prompt_projection"
+  }
+}

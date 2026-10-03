@@ -1,0 +1,751 @@
+{
+  "schema_version": "prompt_production_quality_audit_v2_1",
+  "baseline": {
+    "path": "docs/prompt-quality",
+    "immutable": true,
+    "fixture": "Book 990401 / Episode 1 / 红伞倒影",
+    "v2_immutable": true
+  },
+  "scope": {
+    "storyboard_shots": 16,
+    "generative_shots": 15,
+    "non_generative_shots": [
+      16
+    ],
+    "image_payloads": 15,
+    "video_payloads": 15
+  },
+  "gate": {
+    "status": "PROMPT_PRODUCTION_READY_FOR_MEDIA_CANARY",
+    "blocker_count": 0,
+    "structured_json_prompt_count": 0,
+    "internal_token_leak_count": 0,
+    "placeholder_count": 0,
+    "continuity_actor_contamination_count": 0,
+    "reference_lock_rate": 1.0,
+    "pair_alignment": "PASS",
+    "real_image_calls": 0,
+    "real_video_calls": 0,
+    "real_llm_calls": 0,
+    "cross_layer_semantic_consistency": "PASS",
+    "input_actor_contamination_count": 10,
+    "filtered_actor_contamination_count": 10,
+    "output_actor_contamination_count": 0,
+    "actor_mismatch_count": 0,
+    "camera_target_mismatch_count": 0,
+    "ending_state_mismatch_count": 0,
+    "reference_actor_mismatch_count": 0,
+    "pair_semantic_mismatch_count": 0
+  },
+  "video_contract": {
+    "language": "zh-CN",
+    "duration_seconds": 5,
+    "max_primary_actions": 1,
+    "max_reactions": 1,
+    "max_camera_movements": 1,
+    "first_frame_preserved": true,
+    "complexity_errors": 0
+  },
+  "scores": {
+    "image_average": 8.74,
+    "image_lowest": 8.6,
+    "video_average": 8.64,
+    "video_lowest": 8.5,
+    "scoring_method": "recomputed from authority, semantic integrity, and projection checks"
+  },
+  "shot_016": {
+    "shot_number": 16,
+    "classification": "NON_GENERATIVE_TRANSITION",
+    "status": "NOT_APPLICABLE",
+    "reason": "该遗留故事板镜头是过场/情绪连接镜头，当前没有可追溯的 ShotPlan 与 PromptIR 生成权威；保留分类，不伪造媒体提示词。",
+    "source": "episode_01_storyboard.json",
+    "provider_calls": 0
+  },
+  "v1_continuity_contamination_count": 3,
+  "v2_continuity_contamination_count": 0,
+  "records": [
+    {
+      "shot_number": 1,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 2,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 3,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 4,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 5,
+      "plan_shot_id": "SH_E01_SC001_005",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "顾沉"
+        },
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "顾沉"
+        }
+      ],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 2,
+        "filtered_actor_contamination_count": 2,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 6,
+      "plan_shot_id": "SH_E01_SC001_006",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "顾沉"
+        },
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "顾沉"
+        }
+      ],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 2,
+        "filtered_actor_contamination_count": 2,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 7,
+      "plan_shot_id": "SH_E01_SC001_007",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "顾沉"
+        },
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "顾沉"
+        }
+      ],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 2,
+        "filtered_actor_contamination_count": 2,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 8,
+      "plan_shot_id": "SH_E01_SC001_008",
+      "scene_id": "E01_SC001",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 9,
+      "plan_shot_id": "SH_E01_SC002_001",
+      "scene_id": "E01_SC002",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 10,
+      "plan_shot_id": "SH_E01_SC002_002",
+      "scene_id": "E01_SC002",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 11,
+      "plan_shot_id": "SH_E01_SC002_003",
+      "scene_id": "E01_SC002",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "陆叔"
+        },
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "陆叔"
+        }
+      ],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 2,
+        "filtered_actor_contamination_count": 2,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 12,
+      "plan_shot_id": "SH_E01_SC002_004",
+      "scene_id": "E01_SC002",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 13,
+      "plan_shot_id": "SH_E01_SC002_005",
+      "scene_id": "E01_SC002",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "陆叔"
+        },
+        {
+          "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+          "stage": "input",
+          "detected": true,
+          "remediated": true,
+          "survives_to_provider": false,
+          "actor": "陆叔"
+        }
+      ],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 2,
+        "filtered_actor_contamination_count": 2,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 14,
+      "plan_shot_id": "SH_E01_SC002_006",
+      "scene_id": "E01_SC002",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    },
+    {
+      "shot_number": 15,
+      "plan_shot_id": "SH_E01_SC002_007",
+      "scene_id": "E01_SC002",
+      "image_scores": {
+        "semantic_coverage": 8.7,
+        "authority_completeness": 9.0,
+        "action_clarity": 8.5,
+        "camera_readability": 8.4,
+        "continuity": 8.8,
+        "provider_readiness": 8.8
+      },
+      "video_scores": {
+        "start_state": 8.8,
+        "action_clarity": 8.4,
+        "camera_budget": 8.8,
+        "reaction_control": 8.3,
+        "ending_state": 8.5,
+        "pair_alignment": 8.8
+      },
+      "continuity_diagnostics": [],
+      "references_locked": true,
+      "semantic_integrity": {
+        "actor_mismatch_count": 0,
+        "camera_target_mismatch_count": 0,
+        "ending_state_mismatch_count": 0,
+        "reference_actor_mismatch_count": 0,
+        "pair_semantic_mismatch_count": 0,
+        "status": "PASS"
+      },
+      "continuity_audit": {
+        "input_actor_contamination_count": 0,
+        "filtered_actor_contamination_count": 0,
+        "output_actor_contamination_count": 0
+      }
+    }
+  ],
+  "provider_call_ledger": {
+    "IMAGE": 0,
+    "VIDEO": 0,
+    "LLM": 0
+  },
+  "generalization": {
+    "fixture": "book75-convenience-store-monitoring-room",
+    "book_id": 75,
+    "episode": 1,
+    "shots": 6,
+    "image_prompts": 6,
+    "video_prompts": 6,
+    "actor_mismatch": 0,
+    "camera_mismatch": 0,
+    "ending_mismatch": 0,
+    "reference_mismatch": 0,
+    "pair_semantic_mismatch": 0,
+    "structured_json_prompt": 0,
+    "internal_token_leak": 0,
+    "placeholder": 0,
+    "fixture_specific_renderer_branching": 0,
+    "result": "PASS"
+  },
+  "continuity_audit": {
+    "input_actor_contamination_count": 10,
+    "filtered_actor_contamination_count": 10,
+    "output_actor_contamination_count": 0,
+    "semantics": "input diagnostics are detected and remediated; only surviving output contamination blocks the gate"
+  },
+  "shot_008_semantic_integrity": {
+    "authoritative_subjects": [
+      "顾沉",
+      "林晚"
+    ],
+    "action_actors": [
+      "顾沉",
+      "林晚"
+    ],
+    "camera_target": "顾沉",
+    "ending_actors": [
+      "顾沉",
+      "林晚"
+    ],
+    "image_actors": [
+      "顾沉",
+      "林晚"
+    ],
+    "video_actors": [
+      "顾沉",
+      "林晚"
+    ],
+    "status": "PASS",
+    "source_layers": [
+      "PromptIR",
+      "ShotPlan",
+      "ShotDirection"
+    ]
+  }
+}

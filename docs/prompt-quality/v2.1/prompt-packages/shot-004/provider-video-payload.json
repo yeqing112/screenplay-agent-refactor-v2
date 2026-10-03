@@ -1,0 +1,91 @@
+{
+  "prompt": "从当前官方首帧开始，首帧中的人物身份、服装、场景布局和构图保持不变。开始：顾沉指向红伞。动作：顾沉指向红伞，林晚顺着手势看去；随后保留一次自然反应。表情与反应：人物以克制、连续的表演完成信息传递。镜头：静止，全片只保留这一项镜头运动。结束：林晚保持在原定空间位置；顾沉保持在原定空间位置，回到稳定画面并保持空间轴线连续。时长五秒，动作简洁真实，不新增人物、道具或叙事事件",
+  "negative_prompt": "避免跳切、变形、人物身份漂移、服装变化、额外动作、额外镜头运动、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC001",
+      "reference_token": "scene://book-990401/E01_SC001/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC001",
+      "authority_fingerprint": "29557915beff9d6c062f2b0d52db6be7c95f6df5462bbccf3f5178b0333520e0"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "顾沉",
+      "reference_token": "character://book-990401/顾沉/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "顾沉",
+      "authority_fingerprint": "49fe025a42b15250db5ab392828ae46a15a3152c46bf0f2b5d66c5158c72f686"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    },
+    {
+      "role": "FIRST_FRAME_REFERENCE",
+      "identity": "shot-004-official-image",
+      "reference_token": "frame://book-990401/shot-004/official-image-v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "shot-004-official-image",
+      "authority_fingerprint": "d984faca3046614e1511889edf048665ee6f985f09ec3c62a949d0ae8de6d3b8"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "first_frame_mode": "CURRENT_OFFICIAL_IMAGE",
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC001_004_ACTION_001",
+        "actor_refs": [
+          "顾沉",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC01-B05"
+        ],
+        "event_ref": "SC01-B05",
+        "projection_origin": "SHOT_PLAN_PROJECTION",
+        "description": "顾沉指向红伞，林晚顺着手势看去"
+      },
+      {
+        "action_id": "SH_E01_SC001_004_ACTION_002",
+        "actor_refs": [
+          "顾沉",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC01-B06"
+        ],
+        "event_ref": "SC01-B06",
+        "projection_origin": "SHOT_PLAN_PROJECTION",
+        "description": "顾沉指向红伞，林晚顺着手势看去"
+      }
+    ]
+  },
+  "semantic_source_hash": "2210553d5d692c043107abd43a9d3defffb01f2853b43b86088fb91b016d2394",
+  "renderer_version": "video_i2v_prompt_renderer_v2",
+  "generation_payload_fingerprint": "ef025d27213a56e10e3786be5c4539f0493365758c700d943cd6d3d6f2b51ce7"
+}

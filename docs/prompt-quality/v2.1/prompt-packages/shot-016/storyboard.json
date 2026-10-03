@@ -1,0 +1,25 @@
+{
+  "shot_number": 16,
+  "classification": "NON_GENERATIVE_TRANSITION",
+  "status": "NOT_APPLICABLE",
+  "reason": "该遗留故事板镜头是过场/情绪连接镜头，当前没有可追溯的 ShotPlan 与 PromptIR 生成权威；保留分类，不伪造媒体提示词。",
+  "source": "episode_01_storyboard.json",
+  "provider_calls": 0,
+  "storyboard_projection": {
+    "shot_id": 16,
+    "scene_name": "林晚家中",
+    "duration": 4,
+    "camera_angle": "MS",
+    "camera_movement": "static",
+    "camera_speed": "slow",
+    "shot_purpose": "emotion",
+    "transition": "cut",
+    "lighting": "客厅整体光线偏暗，林晚站在中央，被从窗帘缝隙透入的光线部分照亮，形成孤立感",
+    "dialogue": "",
+    "action_process": "固定中景镜头。林晚深吸一口气，快步走向门口（检票口方向），但走到一半又停下，转身看向陆叔，眼神充满挣扎与决断",
+    "start_state": "林晚站在客厅中央，目光从陆叔口袋移开，低头看向茶几上那瓶变形的矿泉水，又抬头看向窗外（暗示看向车站方向）",
+    "end_state": "林晚停在客厅中央，一手紧握水瓶，另一手无意识地攥紧风衣下摆。她看向陆叔的眼神从挣扎变为某种决绝，似乎做出了决定",
+    "visual_prompt_static": "中景，林晚站在客厅中央，被从窗帘缝隙透入的光线部分照亮，形成孤立感。她一手紧握变形水瓶，另一手攥紧风衣下摆。背景是凌乱的客厅和紧闭的房门。",
+    "visual_prompt_motion": "固定机位。林晚深吸一口气，快步走向门口，但走到一半突然停下。她转身看向陆叔，眼神经历从挣扎到决断的变化。最终她停在原地，身体姿态从紧绷转为某种蓄势待发的稳定。"
+  }
+}

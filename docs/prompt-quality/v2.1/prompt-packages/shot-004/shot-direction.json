@@ -1,0 +1,26 @@
+{
+  "shot_id": "SH_E01_SC001_004",
+  "shot_type": "TWO_SHOT",
+  "camera": {
+    "framing_class": "TWO_SHOT",
+    "movement": "NONE",
+    "movement_end_condition": null,
+    "movement_target": null,
+    "movement_trigger": null,
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC"
+  },
+  "composition": "保持可读的主体关系与道具位置",
+  "emotion": "克制悬疑表演",
+  "action": "顾沉指向红伞，林晚顺着手势看去",
+  "ending_state": {
+    "source": "authored_shot_design",
+    "state_ref": "SH_E01_SC001_004",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER"
+    },
+    "props": []
+  },
+  "revision": "v2"
+}

@@ -1,0 +1,109 @@
+{
+  "prompt": "从当前官方首帧开始，首帧中的人物身份、服装、场景布局和构图保持不变。开始：陆叔在出租公寓餐桌旁清洗手。动作：陆叔在出租公寓餐桌旁清洗手，林晚走近询问车站；随后保留一次自然反应。表情与反应：人物以克制、连续的表演完成信息传递。镜头：静止，全片只保留这一项镜头运动。结束：林晚保持在原定空间位置；陆叔保持在原定空间位置，回到稳定画面并保持空间轴线连续。时长五秒，动作简洁真实，不新增人物、道具或叙事事件",
+  "negative_prompt": "避免跳切、变形、人物身份漂移、服装变化、额外动作、额外镜头运动、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC002",
+      "reference_token": "scene://book-990401/E01_SC002/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "E01_SC002",
+      "authority_fingerprint": "ef4af8f60c8e9162d5afc6027d4b92db4f431377095c6f080ae477a61efbb611"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "陆叔",
+      "reference_token": "character://book-990401/陆叔/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "陆叔",
+      "authority_fingerprint": "0870eeb731af397648135a16cb877a9acc5213fa18cce627e08c2acac66bcd2c"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "林晚",
+      "authority_fingerprint": "e9b480674a851a0e35cb3dac2f8be6f30c2a953b5c4befaadca35019b347ae2c"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "APPLE",
+      "reference_token": "prop://book-990401/APPLE/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "APPLE",
+      "authority_fingerprint": "414c7c9f3d49eaae14e882f3fdee03897082ce161b69b8645b08128c0b103942"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "DOOR_LOCK",
+      "reference_token": "prop://book-990401/DOOR_LOCK/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "DOOR_LOCK",
+      "authority_fingerprint": "41d52d6d8e2dbc4dea9607fd7931e705bac5a33ab482ab53457f1ca8446eb097"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "red-umbrella-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "red-umbrella-style",
+      "authority_fingerprint": "19887318e8c84298a9b436ee701fd8044a8c2a6b9d6934aa467df02b3624ce61"
+    },
+    {
+      "role": "FIRST_FRAME_REFERENCE",
+      "identity": "shot-009-official-image",
+      "reference_token": "frame://book-990401/shot-009/official-image-v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_id": "shot-009-official-image",
+      "authority_fingerprint": "d4f99cf6fad31a4d4bbb68f450119725c7c1f8ec2600dcaa1bd0aeed10f33d18"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "first_frame_mode": "CURRENT_OFFICIAL_IMAGE",
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC002_001_ACTION_001",
+        "actor_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B01"
+        ],
+        "event_ref": "SC02-B01",
+        "projection_origin": "SHOT_PLAN_PROJECTION",
+        "description": "陆叔在出租公寓餐桌旁清洗手，林晚走近询问车站"
+      },
+      {
+        "action_id": "SH_E01_SC002_001_ACTION_002",
+        "actor_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B02"
+        ],
+        "event_ref": "SC02-B02",
+        "projection_origin": "SHOT_PLAN_PROJECTION",
+        "description": "陆叔在出租公寓餐桌旁清洗手，林晚走近询问车站"
+      }
+    ]
+  },
+  "semantic_source_hash": "97fe90af0d091c5cb87bad08fccc8a602737d730d7ab17f4737c81503c275eae",
+  "renderer_version": "video_i2v_prompt_renderer_v2",
+  "generation_payload_fingerprint": "0fae28428f572675663714550aa569ee13474291f3751e83118573096cabf6f0"
+}
