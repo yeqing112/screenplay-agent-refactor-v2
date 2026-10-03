@@ -1,0 +1,119 @@
+{
+  "schema_version": "real_provider_video_v4_pre_submit_gate",
+  "generated_at": "2026-10-03T15:17:38.937754+00:00",
+  "status": "PASS",
+  "hard_gate": {
+    "provider": true,
+    "model": true,
+    "capability": true,
+    "adapter": true,
+    "transport": true,
+    "credential_configured": true,
+    "credential_preflight_pass": true,
+    "prompt_ir_current": true,
+    "generation_mode_image_to_video": true,
+    "image_official_current": true,
+    "source_authority_current": true,
+    "source_public_url_configured": true,
+    "no_real_image_provider_calls": true,
+    "browser_direct_provider_calls": 0,
+    "all_pass": true
+  },
+  "registry_profile": {
+    "id": "local-video-ex8l4t",
+    "provider": "75api-minimax-h3",
+    "model_name": "minimax_h3_no_audios",
+    "generation_capability": "VIDEO_GENERATION",
+    "adapter_id": "video_generic",
+    "adapter_version": "video_generic_adapter_v1",
+    "transport_binding_id": "75api-minimax-h3.video.v1",
+    "credential_ref": "profile:local-video-ex8l4t",
+    "credential_configured": true
+  },
+  "credential_preflight": {
+    "profile_id": "local-video-ex8l4t",
+    "provider": "75api-minimax-h3",
+    "model_name": "minimax_h3_no_audios",
+    "credential_configured": true,
+    "credential_ref": "profile:local-video-ex8l4t",
+    "runtime_binding_id": "model-registry-profile-secret",
+    "transport_binding_id": "75api-minimax-h3.video.v1",
+    "generation_capability": "VIDEO_GENERATION",
+    "adapter_id": "video_generic",
+    "adapter_version": "video_generic_adapter_v1",
+    "provider_calls": 0,
+    "external_provider_requests": 0,
+    "secret_leaked": false,
+    "status": "PASS",
+    "credential": {
+      "credential_ref": "profile:local-video-ex8l4t",
+      "configured": true,
+      "resolved": true,
+      "validated": true,
+      "validation_method": "model-registry-secret-presence",
+      "validation_version": "v1"
+    }
+  },
+  "video_projection": {
+    "prompt_ir": {
+      "current": true,
+      "version": 37,
+      "stale": false,
+      "state": "complete",
+      "payload_hash": "8368d6cad52d2d87b23e873c6045b998c92bfee6f3939ba6991fde42d1f9d467",
+      "generation_policy": {
+        "duration_seconds": 5,
+        "fingerprint": "e4305909943baf9223f9bb5dbeb21ba0a47c49b77e8162bc714560329beed9e2",
+        "language": "",
+        "mode": "IMAGE_TO_VIDEO",
+        "optional_asset_classes": [],
+        "required_asset_classes": [],
+        "schema_version": "generation_policy_v1",
+        "source": "shot-studio-ui",
+        "style_profile_id": "",
+        "target_media": "VIDEO"
+      },
+      "reason_codes": []
+    },
+    "generation_mode": "IMAGE_TO_VIDEO",
+    "source_official_image": {
+      "current": true,
+      "currentness": "current",
+      "version": {
+        "id": "omv-6ffa3ac01b568bceb635b1ae0b5f8a1744c24b47",
+        "revision": 1,
+        "media_type": "IMAGE",
+        "storage_identity": "/api/prototyping/manual-media/book-990452-generated-phase-f-canary-1bd13336231742af-431ced6916a2a21a.png",
+        "checksum": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+        "mime": "image/png",
+        "width": 1,
+        "height": 1,
+        "duration_ms": null,
+        "candidate_id": "candidate-5214da378f2747cf8db96000c218d90c",
+        "validation_id": "mvr-8a7d620238aa561bd137cd12c2c7101f2faa2e22"
+      },
+      "authority": {
+        "id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+        "status": "CURRENT",
+        "payload_hash": "6f48fb3a97adf9e28967100a57d953577a3680bf8893a9daa4d95ab882fc9868",
+        "lineage_hash": "5ffa63209b716566f3a624491befcbc058631ec9eb9c33d95bbb0d8ef84a8559",
+        "resolver_error": null
+      },
+      "pointer": {
+        "id": 1,
+        "authority_id": "oma-e05eadb637734d6ed5893d581717b680f1301994",
+        "fingerprint": "9d633352543f9488f1aeedc1e42364fe1d3c03927fbb315d7e917a040d5e559f"
+      },
+      "preview": null,
+      "preview_url": null
+    }
+  },
+  "canonical_payload_requirements": {
+    "target_media": "VIDEO",
+    "mode": "IMAGE_TO_VIDEO",
+    "model": "minimax_h3_no_audios",
+    "source_image_url": "https://dummyimage.com/1024x1024/111/fff.png",
+    "transport": "75api-minimax-h3.video.v1"
+  },
+  "provider_calls_before_submit": 0
+}

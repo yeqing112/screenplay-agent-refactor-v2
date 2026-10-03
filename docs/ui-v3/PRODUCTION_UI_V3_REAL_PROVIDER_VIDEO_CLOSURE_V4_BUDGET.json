@@ -1,0 +1,25 @@
+{
+  "schema_version": "real_provider_video_budget_v4",
+  "budget_id": "REAL_PROVIDER_VIDEO_CLOSURE_BUDGET_V4",
+  "authorized_calls": 3,
+  "normal_required_calls": 2,
+  "emergency_reserve": 1,
+  "starting_used_calls": 0,
+  "provider_attempts_total": 2,
+  "successful_normal_calls": 0,
+  "reserve_used": false,
+  "reserve_remaining": 1,
+  "budget_status": "BLOCKED_TECHNICAL_VALIDATION",
+  "old_budgets_untouched": true,
+  "real_image_provider_calls": 0,
+  "attempt_execution_ids": [
+    "4937fd6aaf13495388dfa2de41cd8bd0",
+    "26c085d1106e4157b595c1e02189a71b"
+  ],
+  "scope": {
+    "book_id": 990452,
+    "shot_id": "1",
+    "profile_id": "local-video-ex8l4t",
+    "initial_and_regenerate_only": true
+  }
+}

@@ -94,3 +94,13 @@ These snapshots carry candidate, execution, attempt, provider-task identity, cur
 - Python compileall: **passed**
 - `git diff --check`: **passed**
 - attempt-facade suite: **16 passed**。测试现在使用显式 test-only media fixtures 与 authority snapshot resolver；生产 URL validation 仍要求公开 `http(s)` URL。
+
+## V4 real 75API VIDEO follow-up
+
+本轮独立 v4 VIDEO 预算已完成两次真实 75API 尝试，均在 canonical media storage validation 失败；没有生成 provider task、candidate 或 Official VIDEO。v4 应急额度未使用，`VIDEO_REAL_PROVIDER_CLOSURE_COMPLETE` 未设置。
+
+- profile/provider/model: `local-video-ex8l4t` / `75api-minimax-h3` / `minimax_h3_no_audios`
+- executions: `4937fd6aaf13495388dfa2de41cd8bd0`, `26c085d1106e4157b595c1e02189a71b`
+- production DB SHA before/after: `d729360fae56fe082729962db48d26de272cd956e500b1cda6702328d424c026`（相同）
+- 代码修复：canonical VIDEO persistence 现在会向 75API 内容 URL 传递解析后的 Bearer credential；该修复尚未用额外真实调用验证。
+- 证据：[V4 VIDEO closure evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_V4_EVIDENCE.json)。

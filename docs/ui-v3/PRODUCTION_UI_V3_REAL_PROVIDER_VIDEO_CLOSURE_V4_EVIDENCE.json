@@ -1,0 +1,95 @@
+{
+  "schema_version": "production-ui-v3-real-provider-video-closure-v4",
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_V4",
+  "status": "BLOCKED_TECHNICAL_VALIDATION",
+  "closure_marker": "VIDEO_REAL_PROVIDER_CLOSURE_COMPLETE_NOT_SET",
+  "final_vertical_slice_marker": "PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE_NOT_SET",
+  "budget": {
+    "budget_id": "REAL_PROVIDER_VIDEO_CLOSURE_BUDGET_V4",
+    "authorized_calls": 3,
+    "normal_required_calls": 2,
+    "actual_real_provider_calls": 2,
+    "successful_normal_calls": 0,
+    "reserve_remaining": 1,
+    "reserve_used": false,
+    "reserve_eligible": false,
+    "reason_reserve_not_used": "Both attempts failed canonical media storage validation; this is not a transient network/5xx/429 failure.",
+    "old_budgets_untouched": true
+  },
+  "selection_gate": {
+    "profile_id": "local-video-ex8l4t",
+    "provider": "75api-minimax-h3",
+    "model": "minimax_h3_no_audios",
+    "generation_capability": "VIDEO_GENERATION",
+    "adapter_id": "video_generic",
+    "adapter_version": "video_generic_adapter_v1",
+    "transport_binding_id": "75api-minimax-h3.video.v1",
+    "credential_ref": "profile:local-video-ex8l4t",
+    "credential_preflight": "PASS",
+    "prompt_ir_current": true,
+    "generation_mode": "IMAGE_TO_VIDEO",
+    "source_official_image_current": true,
+    "source_public_url": "https://dummyimage.com/1024x1024/111/fff.png",
+    "browser_direct_provider_calls": 0,
+    "real_image_provider_calls": 0
+  },
+  "attempts": [
+    {
+      "ordinal": 1,
+      "operation": "initial",
+      "execution_id": "4937fd6aaf13495388dfa2de41cd8bd0",
+      "status": "FAILED",
+      "provider": "75api-minimax-h3",
+      "model": "minimax_h3_no_audios",
+      "failure_code": "VIDEO_TECHNICAL_VALIDATION_FAILED",
+      "failure_message": "Provider media failed canonical storage validation.",
+      "provider_task_id": null,
+      "candidate_id": null,
+      "logical_provider_calls": 1,
+      "technical_classification": "non_transient_canonical_storage_validation"
+    },
+    {
+      "ordinal": 2,
+      "operation": "initial_retry",
+      "execution_id": "26c085d1106e4157b595c1e02189a71b",
+      "status": "FAILED",
+      "provider": "75api-minimax-h3",
+      "model": "minimax_h3_no_audios",
+      "failure_code": "VIDEO_TECHNICAL_VALIDATION_FAILED",
+      "failure_message": "Provider media failed canonical storage validation.",
+      "provider_task_id": null,
+      "candidate_id": null,
+      "logical_provider_calls": 1,
+      "technical_classification": "non_transient_canonical_storage_validation"
+    }
+  ],
+  "video_lifecycle": {
+    "initial": "FAILED_TECHNICAL_VALIDATION",
+    "running_observed": false,
+    "reload_identity_preserved": "NOT_REACHED",
+    "candidate_v1": null,
+    "official_v1": null,
+    "regenerate": "NOT_EXECUTED",
+    "candidate_v2": null,
+    "official_v2": null,
+    "attempt_lineage": "Two canonical provider attempts reached 75API; neither produced a provider task, candidate, or Official VIDEO."
+  },
+  "root_cause": "Canonical 75API VIDEO output retrieval/storage validation failed after provider submission. A code fix now propagates the resolved Bearer credential for 75API content retrieval, but validating that fix would require another real provider call and the v4 normal budget is already consumed.",
+  "isolation": {
+    "production_db_path": "work/db/screenplay.db",
+    "production_db_sha256_before": "d729360fae56fe082729962db48d26de272cd956e500b1cda6702328d424c026",
+    "production_db_sha256_after": "d729360fae56fe082729962db48d26de272cd956e500b1cda6702328d424c026",
+    "production_db_unchanged": true,
+    "production_db_writes": 0,
+    "protected_book_990400_writes": 0,
+    "book_990453_present_after": 0,
+    "orphan_rows": 0,
+    "ambiguous_rows": 0,
+    "secret_leaks": 0
+  },
+  "remaining_blockers": [
+    "VIDEO_TECHNICAL_VALIDATION_FAILED",
+    "IMAGE_REVIEW_PRESERVATION_EVIDENCE_GAP"
+  ],
+  "next_action": "Create a new independently authorized VIDEO budget after resolving the canonical 75API media retrieval/storage issue; do not consume the v4 reserve for this non-transient failure."
+}
