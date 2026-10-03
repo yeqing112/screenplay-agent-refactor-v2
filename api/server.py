@@ -40,6 +40,7 @@ from api.model_registry import (
     MINIMAX_H3_75API_PROVIDER,
     MINIMAX_H3_ASYNC_PROVIDER,
     SHAPI_GEMINI_IMAGE_PROVIDER,
+    list_profiles,
     save_registry,
     serialize_registry_payload,
     test_profile_connection,
@@ -68,6 +69,8 @@ from core.public_asset_storage import (
     public_asset_storage_enabled,
     _load_source_bytes,
 )
+from core.provider_transport_registry import get_provider_transport_binding
+from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
 from core.prompts import load_prompt
 from core.production_skill import (
     build_production_skill_prompt_block,
@@ -3374,6 +3377,60 @@ def get_model_registry_defaults():
         "defaults": payload.get("defaults", {}),
         "default_profiles": payload.get("default_profiles", {}),
     }
+
+
+@app.get("/api/model-registry/credential-preflight/{profile_id}")
+def model_registry_credential_preflight(profile_id: str):
+    """Resolve one canonical credential without contacting its Provider."""
+
+    profile = next((item for item in list_profiles(include_sensitive=False) if item.get("id") == profile_id), None)
+    if not profile:
+        raise HTTPException(status_code=404, detail="模型配置不存在。")
+    provider = str(profile.get("provider") or "")
+    target_media = "VIDEO" if str(profile.get("capability") or "").lower() == "video" else "IMAGE"
+    binding = get_provider_transport_binding(
+        provider_id=provider,
+        target_media=target_media,
+        binding_id=str(profile.get("transport_binding_id") or "").strip() or None,
+    )
+    base = {
+        "profile_id": profile.get("id"),
+        "provider": provider,
+        "model_name": profile.get("model_name"),
+        "credential_configured": bool(profile.get("credential_configured")),
+        "credential_ref": str(profile.get("credential_ref") or ""),
+        "runtime_binding_id": str(profile.get("runtime_binding_id") or ""),
+        "transport_binding_id": binding.binding_id if binding else str(profile.get("transport_binding_id") or ""),
+        "generation_capability": profile.get("generation_capability"),
+        "adapter_id": profile.get("adapter_id"),
+        "adapter_version": profile.get("adapter_version"),
+        "provider_calls": 0,
+        "external_provider_requests": 0,
+        "secret_leaked": False,
+    }
+    try:
+        runtime_credential = resolve_runtime_credential(profile)
+    except RuntimeCredentialError as exc:
+        base.update(
+            {
+                "status": "BLOCKED_RUNTIME_CREDENTIAL",
+                "credential": {
+                    "configured": False,
+                    "resolved": False,
+                    "validated": False,
+                    "credential_ref": exc.credential_ref or base["credential_ref"],
+                },
+                "error_code": exc.code,
+            }
+        )
+        return base
+    base.update(
+        {
+            "status": "PASS",
+            "credential": runtime_credential.audit(),
+        }
+    )
+    return base
 
 
 @app.put("/api/model-registry")

@@ -211,6 +211,17 @@ register_runtime_credential_binding(
     validation_version="v1",
 )
 
+# 75API MiniMax H3 uses its own explicit environment-backed credential.  A
+# legacy registry api_key may remain for migration/compatibility, but it is
+# never used as the canonical credential source.
+register_runtime_credential_binding(
+    "env:API75_API_KEY",
+    resolver=lambda _ref: os.getenv("API75_API_KEY"),
+    validator=lambda value: bool(str(value or "").strip()),
+    validation_method="environment-presence",
+    validation_version="v1",
+)
+
 
 __all__ = [
     "RuntimeCredential",

@@ -6,7 +6,7 @@ import json
 import os
 import uuid
 from copy import deepcopy
-from typing import Any
+from typing import Any, Mapping
 
 import httpx
 
@@ -31,6 +31,8 @@ SHAPI_OPENAI_IMAGES_PROVIDER = "shapi-openai-images"
 SHAPI_GEMINI_IMAGE_PROVIDER = "shapi-gemini-image"
 
 VIDEO_REAL_DEFAULT_ENABLED = True
+API75_API_KEY_ENV = "API75_API_KEY"
+API75_API_KEY_REF = f"env:{API75_API_KEY_ENV}"
 
 
 def _mock_runtime_enabled() -> bool:
@@ -194,6 +196,28 @@ def _profile_uses_mock(profile: dict[str, Any]) -> bool:
     return profile.get("provider") == MOCK_PROVIDER
 
 
+def _runtime_credential_metadata(profile: Mapping[str, Any]) -> tuple[str, str, bool]:
+    """Return a secret-free canonical credential reference and status.
+
+    75API profiles may still contain a legacy plaintext ``api_key`` from the
+    model-management migration.  That value keeps ``key_configured`` true for
+    operator visibility, but canonical generation only accepts the explicit
+    environment binding and checks the environment at runtime.
+    """
+
+    provider = str(profile.get("provider") or "").strip()
+    explicit_ref = str(profile.get("credential_ref") or "").strip()
+    explicit_binding = str(profile.get("runtime_binding_id") or "").strip()
+    if provider == MINIMAX_H3_75API_PROVIDER:
+        # 75API has one canonical secret source.  Ignore persisted legacy
+        # references so an old profile api_key cannot become authority.
+        return API75_API_KEY_REF, API75_API_KEY_REF, bool(os.getenv(API75_API_KEY_ENV))
+    reference = explicit_ref
+    binding_id = explicit_binding
+    configured = bool(profile.get("credential_configured", bool(profile.get("api_key")) or bool(profile.get("key_configured"))))
+    return reference, binding_id, configured
+
+
 def _normalize_default_params(value: Any) -> dict[str, Any]:
     if isinstance(value, dict):
         return value
@@ -202,6 +226,7 @@ def _normalize_default_params(value: Any) -> dict[str, Any]:
 
 def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str, Any]:
     api_key = str(profile.get("api_key") or "").strip()
+    credential_ref, runtime_binding_id, credential_configured = _runtime_credential_metadata(profile)
     out = {
         "id": str(profile.get("id") or uuid.uuid4().hex[:12]),
         "name": str(profile.get("name") or "未命名模型"),
@@ -219,9 +244,9 @@ def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str
         "generation_capability": str(profile.get("generation_capability") or ""),
         "adapter_id": str(profile.get("adapter_id") or ""),
         "adapter_version": str(profile.get("adapter_version") or ""),
-        "credential_ref": str(profile.get("credential_ref") or ""),
-        "credential_configured": bool(profile.get("credential_configured", bool(api_key) or bool(profile.get("key_configured")))),
-        "runtime_binding_id": str(profile.get("runtime_binding_id") or ""),
+        "credential_ref": credential_ref,
+        "credential_configured": credential_configured,
+        "runtime_binding_id": runtime_binding_id,
         "transport_binding_id": _transport_binding_id(profile),
     }
     if api_key:
@@ -269,9 +294,9 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
                 "generation_capability": str(item.get("generation_capability") or ""),
                 "adapter_id": str(item.get("adapter_id") or ""),
                 "adapter_version": str(item.get("adapter_version") or ""),
-                "credential_ref": str(item.get("credential_ref") or ""),
-                "credential_configured": bool(item.get("credential_configured", bool(item.get("api_key")))),
-                "runtime_binding_id": str(item.get("runtime_binding_id") or ""),
+                "credential_ref": API75_API_KEY_REF if item.get("provider") == MINIMAX_H3_75API_PROVIDER else str(item.get("credential_ref") or ""),
+                "credential_configured": bool(os.getenv(API75_API_KEY_ENV)) if item.get("provider") == MINIMAX_H3_75API_PROVIDER else bool(item.get("credential_configured", bool(item.get("api_key")))),
+                "runtime_binding_id": API75_API_KEY_REF if item.get("provider") == MINIMAX_H3_75API_PROVIDER else str(item.get("runtime_binding_id") or ""),
                 "transport_binding_id": _transport_binding_id(item),
             }
         )
@@ -446,9 +471,9 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "generation_capability": str(profile.get("generation_capability") or ""),
         "adapter_id": str(profile.get("adapter_id") or ""),
         "adapter_version": str(profile.get("adapter_version") or ""),
-        "credential_ref": str(profile.get("credential_ref") or ""),
-        "credential_configured": bool(profile.get("credential_configured", bool(profile.get("api_key")))),
-        "runtime_binding_id": str(profile.get("runtime_binding_id") or ""),
+        "credential_ref": API75_API_KEY_REF if provider == MINIMAX_H3_75API_PROVIDER else str(profile.get("credential_ref") or ""),
+        "credential_configured": bool(os.getenv(API75_API_KEY_ENV)) if provider == MINIMAX_H3_75API_PROVIDER else bool(profile.get("credential_configured", bool(profile.get("api_key")))),
+        "runtime_binding_id": API75_API_KEY_REF if provider == MINIMAX_H3_75API_PROVIDER else str(profile.get("runtime_binding_id") or ""),
         "transport_binding_id": _transport_binding_id(profile),
     }
 

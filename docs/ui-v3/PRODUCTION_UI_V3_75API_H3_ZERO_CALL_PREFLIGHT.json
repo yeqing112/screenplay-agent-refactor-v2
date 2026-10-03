@@ -1,0 +1,48 @@
+{
+  "schema_version": "production-ui-v3-75api-h3-zero-call-preflight-v1",
+  "status": "BLOCKED_RUNTIME_CREDENTIAL",
+  "provider_calls": 0,
+  "external_provider_requests": 0,
+  "default_video_profile": "local-video-ex8l4t",
+  "provider": "75api-minimax-h3",
+  "model": "minimax_h3_no_audios",
+  "credential": {
+    "configured": false,
+    "resolved": false,
+    "validated": false,
+    "credential_ref": "env:API75_API_KEY"
+  },
+  "credential_ref": "env:API75_API_KEY",
+  "runtime_binding_id": "env:API75_API_KEY",
+  "transport": "75api-minimax-h3.video.v1",
+  "source_mode": "image_to_video",
+  "source_url": "https://cdn.example.com/zero-call-source.png",
+  "payload_shape": {
+    "model": "minimax_h3_no_audios",
+    "prompt_present": true,
+    "seconds": "5",
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "images_count": 1,
+    "image_url_is_public_http": true
+  },
+  "checks": {
+    "default_profile": true,
+    "provider": true,
+    "model": true,
+    "generation_capability": true,
+    "adapter": true,
+    "transport": true,
+    "source_mode": true,
+    "payload_model": true,
+    "payload_seconds": true,
+    "payload_resolution": true,
+    "payload_aspect_ratio": true,
+    "payload_images": true,
+    "provider_neutral_validation": true,
+    "credential_pass": false
+  },
+  "secret_leaked": false,
+  "generation_submitted": false,
+  "poll_submitted": false
+}
