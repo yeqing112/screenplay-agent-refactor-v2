@@ -1,0 +1,246 @@
+{
+  "schema_version": "prompt_continuity_matrix_v2",
+  "shots": [
+    {
+      "shot_number": 1,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "visible_subjects": [
+        "林晚",
+        "售票员"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 2,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "visible_subjects": [
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 3,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "visible_subjects": [
+        "林晚",
+        "顾沉"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 4,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "visible_subjects": [
+        "顾沉",
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 5,
+      "plan_shot_id": "SH_E01_SC001_005",
+      "visible_subjects": [
+        "陆叔",
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 2,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 6,
+      "plan_shot_id": "SH_E01_SC001_006",
+      "visible_subjects": [
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 2,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 7,
+      "plan_shot_id": "SH_E01_SC001_007",
+      "visible_subjects": [
+        "林晚",
+        "陆叔"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 2,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 8,
+      "plan_shot_id": "SH_E01_SC001_008",
+      "visible_subjects": [
+        "顾沉",
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 9,
+      "plan_shot_id": "SH_E01_SC002_001",
+      "visible_subjects": [
+        "陆叔",
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 10,
+      "plan_shot_id": "SH_E01_SC002_002",
+      "visible_subjects": [
+        "陆叔",
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 11,
+      "plan_shot_id": "SH_E01_SC002_003",
+      "visible_subjects": [
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 2,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 12,
+      "plan_shot_id": "SH_E01_SC002_004",
+      "visible_subjects": [
+        "陆叔",
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 13,
+      "plan_shot_id": "SH_E01_SC002_005",
+      "visible_subjects": [
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 2,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 14,
+      "plan_shot_id": "SH_E01_SC002_006",
+      "visible_subjects": [
+        "陆叔",
+        "林晚"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    },
+    {
+      "shot_number": 15,
+      "plan_shot_id": "SH_E01_SC002_007",
+      "visible_subjects": [
+        "林晚",
+        "陆叔"
+      ],
+      "character_identity": "BOUND",
+      "costume": "BOUND",
+      "state": "BOUND",
+      "scene_identity": "BOUND",
+      "lighting": "BOUND",
+      "screen_side": "BOUND",
+      "out_of_scope_actor_count": 0,
+      "reference_status": "LOCKED/FRESH"
+    }
+  ],
+  "aggregate": {
+    "visible_subject_scope": "PASS",
+    "actor_contamination": 0,
+    "references_locked": true
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "prompt": "从当前官方首帧开始，首帧中的人物身份、服装、场景布局和构图保持不变。开始：售票员望向空荡的站台。动作：售票员望向空荡的站台，林晚转身离开。表情与反应：人物以克制、连续的表演完成信息传递。镜头：缓慢推近，全片只保留这一项镜头运动。结束：林晚保持在原定空间位置；顾沉保持在画面中央，回到稳定画面并保持空间轴线连续。时长五秒，动作简洁真实，不新增人物、道具或叙事事件",
+  "negative_prompt": "避免跳切、变形、人物身份漂移、服装变化、额外动作、额外镜头运动、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC001",
+      "reference_token": "scene://book-990401/E01_SC001/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "1b990418ffcca30053359cc15b250879b0e426f65f762f71093a08bf9a64ac80"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "顾沉",
+      "reference_token": "character://book-990401/顾沉/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "c5d95009400eabfe4436b441046cf5f02c346a9047f7b6daeb8b66ecac96b03b"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "2047862e3793bfa936d5fc2e1434dc4ebb70fc3c0b32634efe1f375d70cce077"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "episode-1-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "a0b7c471c725d5c6483bc347be008fd266c58c79abf560454b5ce1df40e6ffc1"
+    },
+    {
+      "role": "FIRST_FRAME_REFERENCE",
+      "identity": "shot-008-official-image",
+      "reference_token": "frame://book-990401/shot-008/official-image-v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "4567cbcaa2c732ad153e9be13acb7b680d34c3562ea6e64e67965596ab599c90"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "first_frame_mode": "CURRENT_OFFICIAL_IMAGE",
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC001_008_ACTION_001",
+        "actor_refs": [
+          "顾沉",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC01-B13"
+        ],
+        "event_ref": "SC01-B13",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ]
+  },
+  "semantic_source_hash": "bf559b08a023a0b21981ada3c79d33a03dbc825482522e8e69b3057f40e50cf4",
+  "renderer_version": "video_i2v_prompt_renderer_v2",
+  "generation_payload_fingerprint": "a8337bb889244e81eba550105b483045b97263a18ea8d66724bd6b6389f1c92b"
+}

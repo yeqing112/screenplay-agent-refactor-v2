@@ -1,0 +1,54 @@
+{
+  "prompt": "日间阴天的旧火车站售票厅，固定售票窗口、候车座椅与通向站台的入口，湿地面反光，入口有冷色天光，室内暖色灯光轻微对比。。画面中可见人物：林晚：约二十八岁女性，黑色中长直发，清瘦身形，冷白肤色，深色长裤与浅灰蓝外套，佩戴窄表。。动作与互动：林晚确认红伞已经消失，只留下湿水痕。。重要道具：折断的红伞伞骨、红伞。。构图与摄影：特写，平视，镜头静止。。连续性：林晚位于画面左侧；林晚看向画面右侧。。视觉风格：中等写实度，低饱和冷灰蓝基调，局部暖色实用光，克制对比，真实材质。。保持人物身份、服装、场景布局和关键道具状态稳定，不添加未授权人物或道具。",
+  "negative_prompt": "避免多余人物、错误服装、额外道具、过度饱和、夸张HDR、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC001",
+      "reference_token": "scene://book-990401/E01_SC001/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "1b990418ffcca30053359cc15b250879b0e426f65f762f71093a08bf9a64ac80"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "2047862e3793bfa936d5fc2e1434dc4ebb70fc3c0b32634efe1f375d70cce077"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "BROKEN_UMBRELLA_RIB",
+      "reference_token": "prop://book-990401/BROKEN_UMBRELLA_RIB/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "9adc42ab0ad039bf8812bb1d58490ea6e418533c13a0ac5752f96ad5dc074ef2"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "RED_UMBRELLA",
+      "reference_token": "prop://book-990401/RED_UMBRELLA/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "bab473468b797b676885bfcb15f6274dc3dc22146fd15b1c82ad1dc641e30a68"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "episode-1-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "a0b7c471c725d5c6483bc347be008fd266c58c79abf560454b5ce1df40e6ffc1"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "TEXT_TO_IMAGE",
+    "target_media": "IMAGE"
+  },
+  "semantic_source_hash": "a7b1b7d1e2aab64cc69cff377b4404f30d044392a41672042b76eff70c118db1",
+  "renderer_version": "image_prompt_renderer_v2",
+  "generation_payload_fingerprint": "310367c09914fec0f336f4810d96dd187af38e76b0ecacb1cf655d58181c69f9"
+}

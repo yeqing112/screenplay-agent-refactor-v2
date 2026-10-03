@@ -1,0 +1,26 @@
+{
+  "shot_id": "SH_E01_SC002_005",
+  "shot_type": "INSERT",
+  "camera": {
+    "framing_class": "INSERT",
+    "movement": "NONE",
+    "movement_end_condition": null,
+    "movement_target": null,
+    "movement_trigger": null,
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC"
+  },
+  "composition": "保持可读的主体关系与道具位置",
+  "emotion": "克制悬疑表演",
+  "action": "林晚从手提包中取出红色纤维进行确认",
+  "ending_state": {
+    "source": "ShotPlan.exit_state",
+    "state_ref": "SH_E01_SC002_005",
+    "characters": {
+      "林晚": "APT_TABLE",
+      "陆叔": "APT_CENTER"
+    },
+    "props": []
+  },
+  "revision": "v2"
+}

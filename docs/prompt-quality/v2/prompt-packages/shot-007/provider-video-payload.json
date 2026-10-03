@@ -1,0 +1,84 @@
+{
+  "prompt": "从当前官方首帧开始，首帧中的人物身份、服装、场景布局和构图保持不变。开始：林晚看向站台入口。动作：林晚看向站台入口，陆叔示意返回；随后保留一次自然反应。表情与反应：人物以克制、连续的表演完成信息传递。镜头：横摇，全片只保留这一项镜头运动。结束：林晚保持在原定空间位置；陆叔保持在画面中央，回到稳定画面并保持空间轴线连续。时长五秒，动作简洁真实，不新增人物、道具或叙事事件",
+  "negative_prompt": "避免跳切、变形、人物身份漂移、服装变化、额外动作、额外镜头运动、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC001",
+      "reference_token": "scene://book-990401/E01_SC001/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "1b990418ffcca30053359cc15b250879b0e426f65f762f71093a08bf9a64ac80"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "2047862e3793bfa936d5fc2e1434dc4ebb70fc3c0b32634efe1f375d70cce077"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "陆叔",
+      "reference_token": "character://book-990401/陆叔/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "2683b49a613c2317e3e708499c54c27ff935c02336037c67cf12c09e2d5dc0ef"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "episode-1-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "a0b7c471c725d5c6483bc347be008fd266c58c79abf560454b5ce1df40e6ffc1"
+    },
+    {
+      "role": "FIRST_FRAME_REFERENCE",
+      "identity": "shot-007-official-image",
+      "reference_token": "frame://book-990401/shot-007/official-image-v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "1ce3d5aa999c9fb586bd693ca17062cfe8f6c64406edf62c6596acdc6bb90e5a"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "first_frame_mode": "CURRENT_OFFICIAL_IMAGE",
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC001_007_ACTION_001",
+        "actor_refs": [
+          "林晚",
+          "陆叔"
+        ],
+        "beat_refs": [
+          "SC01-B11"
+        ],
+        "event_ref": "SC01-B11",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      },
+      {
+        "action_id": "SH_E01_SC001_007_ACTION_002",
+        "actor_refs": [
+          "林晚",
+          "陆叔"
+        ],
+        "beat_refs": [
+          "SC01-B12"
+        ],
+        "event_ref": "SC01-B12",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ]
+  },
+  "semantic_source_hash": "1dd0b42a5ed9edbd0e326aafafb3749b305883983ef35d6b0ebe24c94a58a8e4",
+  "renderer_version": "video_i2v_prompt_renderer_v2",
+  "generation_payload_fingerprint": "9a98eafc59062e7767f59b70222cd992cd2099c017f89afae7288118ce900e46"
+}

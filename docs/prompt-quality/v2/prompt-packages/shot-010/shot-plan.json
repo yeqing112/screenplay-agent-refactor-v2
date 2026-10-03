@@ -1,0 +1,146 @@
+{
+  "plan_shot_id": "SH_E01_SC002_002",
+  "scene_id": "E01_SC002",
+  "beat_refs": [
+    "SC02-B03"
+  ],
+  "beat_id": "SC02-B03",
+  "director_decision_refs": [
+    "DBD_SC02-B03"
+  ],
+  "requirement_refs": [
+    "REQ_SC02-B03"
+  ],
+  "shot_purpose": "INTRODUCE_INFORMATION",
+  "coverage_roles": [
+    "PRIMARY_BEAT_COVERAGE",
+    "REACTION_COVERAGE"
+  ],
+  "subjects": [
+    "陆叔",
+    "林晚"
+  ],
+  "participants": [
+    "林晚",
+    "陆叔"
+  ],
+  "reaction_contract_refs": [
+    "RC_SC02-B03_陆叔"
+  ],
+  "information_refs": [
+    "INFO_SC02_B03_001"
+  ],
+  "spatial_binding": {
+    "blocking_state_refs": [
+      "SC02-B03"
+    ],
+    "subject_zones": {
+      "林晚": "APT_CENTER",
+      "陆叔": "APT_CENTER"
+    },
+    "prop_refs": []
+  },
+  "camera_state": {
+    "framing_class": "OVER_SHOULDER",
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC",
+    "movement": "NONE",
+    "subject_binding": [
+      "陆叔",
+      "林晚"
+    ]
+  },
+  "axis_contract": {
+    "axis_applicability": "REQUIRED",
+    "axis_ref": "AXIS_LW_LS_APT",
+    "axis_refs": [
+      "AXIS_LW_LS_APT"
+    ],
+    "axis_policy": "PRESERVE",
+    "screen_side_assignments": {
+      "林晚": "LEFT",
+      "陆叔": "RIGHT"
+    },
+    "look_direction": {
+      "林晚": "SCREEN_RIGHT",
+      "陆叔": "SCREEN_LEFT"
+    }
+  },
+  "temporal_intent": {
+    "duration_mode": "REACTION_HOLD",
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS"
+  },
+  "information_visibility": "CHARACTER_AND_AUDIENCE",
+  "authoring_provenance": {
+    "proposal_origin": "HUMAN_INPUT"
+  },
+  "continuous_take": true,
+  "cut_events": [],
+  "shot_description": "陆叔声称一直在一起（Gaslighting）。",
+  "camera": {
+    "shot_size": "OVER_SHOULDER",
+    "angle": "eye_level",
+    "movement": "none",
+    "speed": "authored",
+    "camera_side": "center"
+  },
+  "duration_hint_seconds": 4,
+  "action_beats": [
+    {
+      "action_id": "SC02-B03_A01",
+      "actor": "陆叔",
+      "action": "陆叔声称一直在一起（Gaslighting）。",
+      "start_seconds": 0,
+      "end_seconds": 3
+    }
+  ],
+  "entry_state": {
+    "scene_id": "E01_SC002",
+    "shot_id": "SH_E01_SC002_002",
+    "characters": {
+      "林晚": "APT_CENTER",
+      "陆叔": "APT_CENTER"
+    },
+    "props": [],
+    "source": "approved_scene_blocking"
+  },
+  "exit_state": {
+    "scene_id": "E01_SC002",
+    "shot_id": "SH_E01_SC002_002",
+    "characters": {
+      "林晚": "APT_CENTER",
+      "陆叔": "APT_CENTER"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  },
+  "asset_bindings": {
+    "scene": "E01_SC002",
+    "characters": [
+      "陆叔",
+      "林晚"
+    ],
+    "props": []
+  },
+  "continuity_contract": {
+    "screen_direction": "maintain",
+    "axis_ref": "AXIS_LW_LS_APT",
+    "axis_policy": "PRESERVE",
+    "blocking_state_ref": "SC02-B03"
+  },
+  "v2_authority": {
+    "source": "ShotPlan",
+    "read_only": true,
+    "source_fact_policy": "read_only"
+  },
+  "ending_state": {
+    "scene_id": "E01_SC002",
+    "shot_id": "SH_E01_SC002_002",
+    "characters": {
+      "林晚": "APT_CENTER",
+      "陆叔": "APT_CENTER"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  }
+}

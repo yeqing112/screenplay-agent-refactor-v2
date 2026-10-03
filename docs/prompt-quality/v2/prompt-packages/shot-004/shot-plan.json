@@ -1,0 +1,161 @@
+{
+  "plan_shot_id": "SH_E01_SC001_004",
+  "scene_id": "E01_SC001",
+  "beat_refs": [
+    "SC01-B05",
+    "SC01-B06"
+  ],
+  "beat_id": "SC01-B05",
+  "director_decision_refs": [
+    "DBD_SC01-B05",
+    "DBD_SC01-B06"
+  ],
+  "requirement_refs": [
+    "REQ_SC01-B05",
+    "REQ_SC01-B06"
+  ],
+  "shot_purpose": "INTRODUCE_INFORMATION",
+  "coverage_roles": [
+    "PRIMARY_BEAT_COVERAGE",
+    "REACTION_COVERAGE"
+  ],
+  "subjects": [
+    "顾沉",
+    "林晚"
+  ],
+  "participants": [
+    "售票员",
+    "林晚",
+    "陆叔",
+    "顾沉"
+  ],
+  "reaction_contract_refs": [
+    "RC_SC01-B05_顾沉",
+    "RC_SC01-B06_顾沉"
+  ],
+  "information_refs": [
+    "INFO_SC01_B06_001"
+  ],
+  "spatial_binding": {
+    "blocking_state_refs": [
+      "SC01-B05",
+      "SC01-B06"
+    ],
+    "subject_zones": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "prop_refs": []
+  },
+  "camera_state": {
+    "framing_class": "TWO_SHOT",
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC",
+    "movement": "NONE",
+    "subject_binding": [
+      "顾沉",
+      "林晚"
+    ]
+  },
+  "axis_contract": {
+    "axis_applicability": "REQUIRED",
+    "axis_ref": "AXIS_LW_GC",
+    "axis_refs": [
+      "AXIS_LW_GC"
+    ],
+    "axis_policy": "PRESERVE",
+    "screen_side_assignments": {
+      "林晚": "LEFT",
+      "顾沉": "RIGHT"
+    },
+    "look_direction": {
+      "林晚": "SCREEN_RIGHT",
+      "顾沉": "SCREEN_LEFT"
+    }
+  },
+  "temporal_intent": {
+    "duration_mode": "REACTION_HOLD",
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS"
+  },
+  "information_visibility": "CHARACTER_AND_AUDIENCE",
+  "authoring_provenance": {
+    "proposal_origin": "HUMAN_INPUT"
+  },
+  "continuous_take": true,
+  "cut_events": [],
+  "shot_description": "顾沉出现叫出林晚名字。 / 顾沉指出红伞与断伞骨。",
+  "camera": {
+    "shot_size": "TWO_SHOT",
+    "angle": "eye_level",
+    "movement": "none",
+    "speed": "authored",
+    "camera_side": "center"
+  },
+  "duration_hint_seconds": 4,
+  "action_beats": [
+    {
+      "action_id": "SC01-B05_A01",
+      "actor": "顾沉",
+      "action": "顾沉出现叫出林晚名字。 / 顾沉指出红伞与断伞骨。",
+      "start_seconds": 0,
+      "end_seconds": 3
+    }
+  ],
+  "entry_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_004",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "approved_scene_blocking"
+  },
+  "exit_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_004",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  },
+  "asset_bindings": {
+    "scene": "E01_SC001",
+    "characters": [
+      "顾沉",
+      "林晚"
+    ],
+    "props": []
+  },
+  "continuity_contract": {
+    "screen_direction": "maintain",
+    "axis_ref": "AXIS_LW_GC",
+    "axis_policy": "PRESERVE",
+    "blocking_state_ref": "SC01-B05"
+  },
+  "v2_authority": {
+    "source": "ShotPlan",
+    "read_only": true,
+    "source_fact_policy": "read_only"
+  },
+  "ending_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_004",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  }
+}

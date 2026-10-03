@@ -1,0 +1,28 @@
+{
+  "shot_id": "SH_E01_SC001_005",
+  "shot_type": "MEDIUM_WIDE",
+  "camera": {
+    "framing_class": "MEDIUM_WIDE",
+    "movement": "TRACK",
+    "movement_end_condition": "BEAT_INFORMATION_LANDS",
+    "movement_target": "陆叔",
+    "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+    "orientation": "EYE_LEVEL",
+    "support": "DOLLY"
+  },
+  "composition": "保持可读的主体关系与道具位置",
+  "emotion": "克制悬疑表演",
+  "action": "陆叔从林晚手中接过手提包，随后察觉包内有异常硬物",
+  "ending_state": {
+    "source": "ShotPlan.exit_state",
+    "state_ref": "SH_E01_SC001_005",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "props": []
+  },
+  "revision": "v2"
+}

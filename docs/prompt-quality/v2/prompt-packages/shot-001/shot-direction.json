@@ -1,0 +1,28 @@
+{
+  "shot_id": "SH_E01_SC001_001",
+  "shot_type": "WIDE",
+  "camera": {
+    "framing_class": "WIDE",
+    "movement": "NONE",
+    "movement_end_condition": null,
+    "movement_target": null,
+    "movement_trigger": null,
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC"
+  },
+  "composition": "保持可读的主体关系与道具位置",
+  "emotion": "克制悬疑表演",
+  "action": "林晚递出票据买票，售票员在窗口回应车次",
+  "ending_state": {
+    "source": "ShotPlan.exit_state",
+    "state_ref": "SH_E01_SC001_001",
+    "characters": {
+      "林晚": "ST_TICKET",
+      "顾沉": "ST_REAR",
+      "陆叔": "ST_REAR",
+      "售票员": "ST_TICKET"
+    },
+    "props": []
+  },
+  "revision": "v2"
+}

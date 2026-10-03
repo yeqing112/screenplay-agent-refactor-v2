@@ -1,0 +1,167 @@
+{
+  "plan_shot_id": "SH_E01_SC001_006",
+  "scene_id": "E01_SC001",
+  "beat_refs": [
+    "SC01-B09",
+    "SC01-B10"
+  ],
+  "beat_id": "SC01-B09",
+  "director_decision_refs": [
+    "DBD_SC01-B09",
+    "DBD_SC01-B10"
+  ],
+  "requirement_refs": [
+    "REQ_SC01-B09",
+    "REQ_SC01-B10"
+  ],
+  "shot_purpose": "SHOW_PROP_STATE",
+  "coverage_roles": [
+    "INSERT_EVIDENCE",
+    "PRIMARY_BEAT_COVERAGE",
+    "REACTION_COVERAGE"
+  ],
+  "subjects": [
+    "林晚"
+  ],
+  "participants": [
+    "售票员",
+    "林晚",
+    "陆叔",
+    "顾沉"
+  ],
+  "reaction_contract_refs": [
+    "RC_SC01-B09_林晚",
+    "RC_SC01-B10_林晚"
+  ],
+  "information_refs": [
+    "INFO_SC01_B09_001",
+    "INFO_SC01_B10_001"
+  ],
+  "spatial_binding": {
+    "blocking_state_refs": [
+      "SC01-B09",
+      "SC01-B10"
+    ],
+    "subject_zones": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "prop_refs": [
+      "BROKEN_UMBRELLA_RIB",
+      "RED_UMBRELLA"
+    ]
+  },
+  "camera_state": {
+    "framing_class": "INSERT",
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC",
+    "movement": "NONE",
+    "subject_binding": [
+      "林晚"
+    ]
+  },
+  "axis_contract": {
+    "axis_applicability": "REQUIRED",
+    "axis_ref": "AXIS_LW_GC",
+    "axis_refs": [
+      "AXIS_LW_GC",
+      "AXIS_LW_LS"
+    ],
+    "axis_policy": "PRESERVE",
+    "screen_side_assignments": {
+      "林晚": "LEFT",
+      "顾沉": "RIGHT"
+    },
+    "look_direction": {
+      "林晚": "SCREEN_RIGHT",
+      "顾沉": "SCREEN_LEFT"
+    }
+  },
+  "temporal_intent": {
+    "duration_mode": "REACTION_HOLD",
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS"
+  },
+  "information_visibility": "AUDIENCE_ONLY",
+  "authoring_provenance": {
+    "proposal_origin": "HUMAN_INPUT"
+  },
+  "continuous_take": true,
+  "cut_events": [],
+  "shot_description": "红伞消失仅剩水渍。 / 林晚发现包扣被动过，断伞骨不见。",
+  "camera": {
+    "shot_size": "INSERT",
+    "angle": "eye_level",
+    "movement": "none",
+    "speed": "authored",
+    "camera_side": "center"
+  },
+  "duration_hint_seconds": 4,
+  "action_beats": [
+    {
+      "action_id": "SC01-B09_A01",
+      "actor": "林晚",
+      "action": "红伞消失仅剩水渍。 / 林晚发现包扣被动过，断伞骨不见。",
+      "start_seconds": 0,
+      "end_seconds": 3
+    }
+  ],
+  "entry_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_006",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "approved_scene_blocking"
+  },
+  "exit_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_006",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  },
+  "asset_bindings": {
+    "scene": "E01_SC001",
+    "characters": [
+      "林晚"
+    ],
+    "props": [
+      "BROKEN_UMBRELLA_RIB",
+      "RED_UMBRELLA"
+    ]
+  },
+  "continuity_contract": {
+    "screen_direction": "maintain",
+    "axis_ref": "AXIS_LW_GC",
+    "axis_policy": "PRESERVE",
+    "blocking_state_ref": "SC01-B09"
+  },
+  "v2_authority": {
+    "source": "ShotPlan",
+    "read_only": true,
+    "source_fact_policy": "read_only"
+  },
+  "ending_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_006",
+    "characters": {
+      "林晚": "ST_CENTER",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  }
+}

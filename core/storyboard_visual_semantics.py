@@ -44,6 +44,41 @@ def _dict(value: Any) -> dict[str, Any]:
     return dict(value) if isinstance(value, dict) else {}
 
 
+def validate_continuity_actor_scope(*, subjects: list[Any], screen_side_assignments: Any = None, look_direction: Any = None) -> list[dict[str, Any]]:
+    """Validate that continuity maps only mention visible shot subjects.
+
+    Continuity is authored at shot scope.  Upstream episode or scene maps may
+    contain every participant in a scene, but carrying those entries into a
+    provider prompt makes an off-screen actor look visible.  The validator is
+    deliberately pure so callers can fail closed or scope the maps while
+    retaining a diagnostic for the audit trail.
+    """
+    allowed = {_text(item.get("subject_ref") if isinstance(item, dict) else item) for item in subjects}
+    allowed.discard("")
+    errors: list[dict[str, Any]] = []
+    for field, raw in (("screen_side_assignments", screen_side_assignments), ("look_direction", look_direction)):
+        values = _dict(raw)
+        for actor in values:
+            if actor not in allowed:
+                errors.append({
+                    "code": "CONTINUITY_ACTOR_OUT_OF_SCOPE",
+                    "field": field,
+                    "actor": actor,
+                    "subjects": sorted(allowed),
+                    "severity": "blocked",
+                })
+    return errors
+
+
+def scope_continuity_actor_maps(*, subjects: list[Any], screen_side_assignments: Any = None, look_direction: Any = None) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+    """Return shot-scoped continuity maps and diagnostics."""
+    allowed = {_text(item.get("subject_ref") if isinstance(item, dict) else item) for item in subjects}
+    errors = validate_continuity_actor_scope(subjects=subjects, screen_side_assignments=screen_side_assignments, look_direction=look_direction)
+    sides = {key: value for key, value in _dict(screen_side_assignments).items() if key in allowed}
+    looks = {key: value for key, value in _dict(look_direction).items() if key in allowed}
+    return sides, looks, errors
+
+
 def _asset_identity_bindings(raw: Any, *, scene_id: str, subjects: list[Any], props: list[Any]) -> dict[str, Any]:
     """Normalize only identity references; never select a visual variant."""
     source = _dict(raw)
@@ -74,6 +109,11 @@ def _semantic_payload(*, scene_id: str, plan_shot_id: str, shot_plan_id: Any, ha
     spatial = _dict(handoff_shot.get("spatial_binding"))
     axis = _dict(handoff_shot.get("axis_contract"))
     subjects = _list(handoff_shot.get("subjects"))
+    scoped_sides, scoped_looks, _continuity_scope_diagnostics = scope_continuity_actor_maps(
+        subjects=subjects,
+        screen_side_assignments=axis.get("screen_side_assignments"),
+        look_direction=axis.get("look_direction"),
+    )
     prop_refs = _list(spatial.get("prop_refs"))
     semantic = {
         "schema_version": VISUAL_SEMANTIC_HANDOFF_SCHEMA_VERSION,
@@ -106,8 +146,8 @@ def _semantic_payload(*, scene_id: str, plan_shot_id: str, shot_plan_id: Any, ha
             "axis_refs": _list(axis.get("axis_refs")),
             "axis_policy": axis.get("axis_policy"),
             "axis_applicability": axis.get("axis_applicability"),
-            "screen_side_assignments": _dict(axis.get("screen_side_assignments")),
-            "look_direction": _dict(axis.get("look_direction")),
+            "screen_side_assignments": scoped_sides,
+            "look_direction": scoped_looks,
             "continuous_take": handoff_shot.get("continuous_take") is True,
             "cut_events": _list(handoff_shot.get("cut_events")),
         },

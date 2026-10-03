@@ -1,0 +1,14 @@
+{
+  "projection": "SHOT_PLAN_PROJECTION",
+  "scene_id": "E01_SC002",
+  "plan_shot_id": "SH_E01_SC002_001",
+  "subjects": [
+    "陆叔",
+    "林晚"
+  ],
+  "props": [
+    "APPLE",
+    "DOOR_LOCK"
+  ],
+  "source_fact_policy": "read_only"
+}

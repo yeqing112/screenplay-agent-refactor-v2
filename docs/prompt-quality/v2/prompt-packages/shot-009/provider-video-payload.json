@@ -1,0 +1,100 @@
+{
+  "prompt": "从当前官方首帧开始，首帧中的人物身份、服装、场景布局和构图保持不变。开始：陆叔在出租公寓餐桌旁清洗手。动作：陆叔在出租公寓餐桌旁清洗手，林晚走近询问车站；随后保留一次自然反应。表情与反应：人物以克制、连续的表演完成信息传递。镜头：静止，全片只保留这一项镜头运动。结束：林晚保持在原定空间位置；陆叔保持在原定空间位置，回到稳定画面并保持空间轴线连续。时长五秒，动作简洁真实，不新增人物、道具或叙事事件",
+  "negative_prompt": "避免跳切、变形、人物身份漂移、服装变化、额外动作、额外镜头运动、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC002",
+      "reference_token": "scene://book-990401/E01_SC002/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "d032c651e21080a0165dde52668bd3458156ec421864e397c19c52c30775c57b"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "陆叔",
+      "reference_token": "character://book-990401/陆叔/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "2683b49a613c2317e3e708499c54c27ff935c02336037c67cf12c09e2d5dc0ef"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "2047862e3793bfa936d5fc2e1434dc4ebb70fc3c0b32634efe1f375d70cce077"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "APPLE",
+      "reference_token": "prop://book-990401/APPLE/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "b24cc5d944a7d5efa5b80e27a7ec76aff2d8412a4ff36182d0c4a33ec8297981"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "DOOR_LOCK",
+      "reference_token": "prop://book-990401/DOOR_LOCK/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "e7fec67653d6f98f5fff8409ccf14061aba1c3c6b4b8c8c619b49e328f214ef5"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "episode-1-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "a0b7c471c725d5c6483bc347be008fd266c58c79abf560454b5ce1df40e6ffc1"
+    },
+    {
+      "role": "FIRST_FRAME_REFERENCE",
+      "identity": "shot-009-official-image",
+      "reference_token": "frame://book-990401/shot-009/official-image-v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "4a0cff77811fa043d11d46198bed699101acab73b6139fffc71938b35d9bd0b9"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "first_frame_mode": "CURRENT_OFFICIAL_IMAGE",
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC002_001_ACTION_001",
+        "actor_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B01"
+        ],
+        "event_ref": "SC02-B01",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      },
+      {
+        "action_id": "SH_E01_SC002_001_ACTION_002",
+        "actor_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B02"
+        ],
+        "event_ref": "SC02-B02",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ]
+  },
+  "semantic_source_hash": "a1166e6a3406d42cce155e1118ec8229cfa1320d518f2afcd97f593ef270ff68",
+  "renderer_version": "video_i2v_prompt_renderer_v2",
+  "generation_payload_fingerprint": "ab2b34ed8727bc20dcc53316b499ec85b3a18ef0a410b5669961ed621fc565ff"
+}

@@ -1,0 +1,71 @@
+{
+  "prompt": "从当前官方首帧开始，首帧中的人物身份、服装、场景布局和构图保持不变。开始：林晚压住疑惑。动作：林晚压住疑惑，寻找可以证明记忆的线索。表情与反应：人物以克制、连续的表演完成信息传递。镜头：静止，全片只保留这一项镜头运动。结束：林晚保持在原定空间位置，回到稳定画面并保持空间轴线连续。时长五秒，动作简洁真实，不新增人物、道具或叙事事件",
+  "negative_prompt": "避免跳切、变形、人物身份漂移、服装变化、额外动作、额外镜头运动、文字水印",
+  "language": "zh-CN",
+  "reference_bindings": [
+    {
+      "role": "SCENE_REFERENCE",
+      "identity": "E01_SC002",
+      "reference_token": "scene://book-990401/E01_SC002/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "d032c651e21080a0165dde52668bd3458156ec421864e397c19c52c30775c57b"
+    },
+    {
+      "role": "CHARACTER_REFERENCE",
+      "identity": "林晚",
+      "reference_token": "character://book-990401/林晚/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "2047862e3793bfa936d5fc2e1434dc4ebb70fc3c0b32634efe1f375d70cce077"
+    },
+    {
+      "role": "PROP_REFERENCE",
+      "identity": "HANDBAG",
+      "reference_token": "prop://book-990401/HANDBAG/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "5cf0b60f2b596870e3e20079f28bfcdf970f231df142add070260714f3c131da"
+    },
+    {
+      "role": "STYLE_REFERENCE",
+      "identity": "episode-1-style",
+      "reference_token": "style://book-990401/episode-1/v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "a0b7c471c725d5c6483bc347be008fd266c58c79abf560454b5ce1df40e6ffc1"
+    },
+    {
+      "role": "FIRST_FRAME_REFERENCE",
+      "identity": "shot-011-official-image",
+      "reference_token": "frame://book-990401/shot-011/official-image-v1",
+      "status": "LOCKED",
+      "stale_status": "FRESH",
+      "authority_fingerprint": "465b5a2b373bf3bf504181c0a049fdbb110cf9bd5bd9a9e37cd881c1c16ccb38"
+    }
+  ],
+  "provider_parameters": {
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "first_frame_mode": "CURRENT_OFFICIAL_IMAGE",
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC002_003_ACTION_001",
+        "actor_refs": [
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B04"
+        ],
+        "event_ref": "SC02-B04",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ]
+  },
+  "semantic_source_hash": "6c0bd2bc2f9ba4c7e91b6655f1c76f98781c397e728d5e4781f7bc6886f942a2",
+  "renderer_version": "video_i2v_prompt_renderer_v2",
+  "generation_payload_fingerprint": "89c2acab6f825d833abd6a7e54cf9d893c4e398a292b7e6e38e8836b296019a1"
+}

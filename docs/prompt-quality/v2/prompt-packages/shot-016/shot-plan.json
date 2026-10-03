@@ -1,0 +1,8 @@
+{
+  "shot_number": 16,
+  "classification": "NON_GENERATIVE_TRANSITION",
+  "status": "NOT_APPLICABLE",
+  "reason": "该遗留故事板镜头是过场/情绪连接镜头，当前没有可追溯的 ShotPlan 与 PromptIR 生成权威；保留分类，不伪造媒体提示词。",
+  "source": "episode_01_storyboard.json",
+  "provider_calls": 0
+}
