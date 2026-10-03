@@ -1,0 +1,18 @@
+{
+  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-network-audit-v1",
+  "browser_allowed_hosts": [
+    "127.0.0.1:5176",
+    "127.0.0.1:18768"
+  ],
+  "browser_external_hosts": [],
+  "browser_direct_provider_calls": 0,
+  "provider_calls_server_side_only": true,
+  "real_attempt_http_errors": [
+    {
+      "method": "POST",
+      "path": "/api/books/990454/storyboard/1/1/generate-video",
+      "status": 409
+    }
+  ],
+  "secrets_in_urls": false
+}

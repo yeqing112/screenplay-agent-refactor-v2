@@ -361,7 +361,8 @@ function ReviewDesk({ shot, lane, mode, mutation, generationBusy, onApprove }: {
   const official = selectedLane.official.isCanonicalOfficial ? selectedLane.official : null
   const confirmed = canonicalConfirmed || (isMutationForCurrent && mutation.state === 'confirmed')
   const mutating = isMutationForCurrent && ['confirming', 'validating', 'promoting', 'refreshing'].includes(mutation.state)
-  const approveEnabled = isCurrentReview && !generationBusy && !mutating && mutation.state !== 'confirmed' && !selectedLane.official.current && selectedLane.official.reasonCodes.length === 0 && !shot.stale.isStale
+  const approvingNewCandidate = selectedLane.official.current && String(selectedLane.official.version?.candidate_id ?? '') !== String(candidate?.id ?? '')
+  const approveEnabled = isCurrentReview && !generationBusy && !mutating && mutation.state !== 'confirmed' && (!selectedLane.official.current || approvingNewCandidate) && selectedLane.official.reasonCodes.length === 0 && !shot.stale.isStale
   const canonicalPreview = confirmed ? official?.preview ?? null : null
   const candidatePreview = candidate.preview_url ?? candidate.preview
   const displayedPreview = confirmed ? canonicalPreview : candidatePreview

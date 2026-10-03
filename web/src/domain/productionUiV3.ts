@@ -289,7 +289,7 @@ function normalizeExecution(execution: GenerationExecutionProjection | null | un
   const state: ExecutionUiState =
     RUNNING_EXECUTION_STATES.has(rawState) ? 'running'
       : WAITING_EXECUTION_STATES.has(rawState) ? 'waiting'
-        : rawState === 'SUCCESS' ? 'succeeded'
+        : rawState === 'SUCCESS' || rawState === 'SUCCEEDED' ? 'succeeded'
           : rawState === 'STALE' ? 'stale'
             : FAILED_EXECUTION_STATES.has(rawState) ? 'failed'
               : 'unknown'

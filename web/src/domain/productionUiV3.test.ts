@@ -427,5 +427,12 @@ describe('productionUiV3 canonical state adapters', () => {
     const anomalousSuccess = toMediaLaneViewModel('IMAGE', readyLane({ latest_execution: execution('SUCCESS') }))
     expect(anomalousSuccess.state).toBe('failed')
     expect(anomalousSuccess.reasonCodes).toContain(PRODUCTION_UI_REASON_CODES.EXECUTION_CANDIDATE_MISSING)
+
+    const canonicalSucceeded = toMediaLaneViewModel('IMAGE', readyLane({
+      latest_execution: execution('SUCCEEDED', { candidate_id: validCandidate.id }),
+      candidates: { count: 1, latest: validCandidate, items: [validCandidate] },
+    }))
+    expect(canonicalSucceeded.state).toBe('review')
+    expect(canonicalSucceeded.execution.state).toBe('succeeded')
   })
 })

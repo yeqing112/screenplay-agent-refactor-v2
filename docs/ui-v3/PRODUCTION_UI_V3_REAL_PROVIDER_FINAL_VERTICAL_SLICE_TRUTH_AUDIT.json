@@ -1,0 +1,66 @@
+{
+  "schema_version": "production-ui-v3-real-provider-final-vertical-slice-truth-audit-v1",
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE",
+  "baseline_commit": "ce9c4c93ccd632fe21dd94e0b7c94ff484933205",
+  "status": "BLOCKED_REAL_VIDEO_NOT_CONFIGURED_AFTER_CANARY_BUDGET_GUARD",
+  "phase_budget": {
+    "authorized_calls": 5,
+    "actual_real_provider_calls": 2,
+    "reserve_remaining": 3,
+    "retry": "CONDITIONAL_NOT_EXERCISED"
+  },
+  "staging": {
+    "database": "work/db/phase-production-ui-v3-final-slice-20261003.sqlite",
+    "production_db_distinct": true,
+    "production_sha256_before": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d",
+    "production_sha256_after": "3f04988bfca00ed20233a3a355e381c403409482df176246de32c8451167218d"
+  },
+  "image": {
+    "profile_id": "local-image-mw4y52",
+    "provider": "shapi-openai-images",
+    "model": "grok-imagine-image-quality",
+    "initial": {
+      "execution_id": "ea054b0e7b834f989792e6ffa577adc3",
+      "candidate_id": "candidate-3c1ea83d3ca2457aa9eb93bb9e741990",
+      "official_id": "omv-a44eb0a35c4ca8b6c105e008b89e9dfa51626232",
+      "result": "SUCCEEDED"
+    },
+    "regenerate": {
+      "execution_id": "93ea2c354cfd4a1cbe6b61dbc43ba038",
+      "candidate_id": "candidate-2564a864cf3344919f2451efdc02d88d",
+      "old_official_preservation_during_review": "NOT_PROVEN_BY_FINAL_ARTIFACT",
+      "result": "SUCCEEDED"
+    },
+    "official_v2": {
+      "id": "omv-9cae40c7d65c97022299161fa5f1b0721efca2a6",
+      "current": true,
+      "v1_superseded": true
+    },
+    "final": "PARTIAL_GO"
+  },
+  "video": {
+    "profile_id": "local-video-7deneh",
+    "provider": "minimax-h3-async",
+    "model": "MiniMax-H3",
+    "initial_calls": 0,
+    "running_observed": false,
+    "reload_identity": "NOT_REACHED",
+    "duplicate_submission": false,
+    "candidate_v1": null,
+    "official_v1": null,
+    "regenerate": null,
+    "old_official_preserved": null,
+    "candidate_v2": null,
+    "official_v2": null,
+    "final": "BLOCKED_PROFILE_SELECTION_409"
+  },
+  "protected_book_990400_writes": 0,
+  "writes_outside_canary": 0,
+  "production_db_writes": 0,
+  "browser_direct_provider_calls": 0,
+  "secret_leaks": 0,
+  "orphan_rows": 0,
+  "orphan_media_files": 0,
+  "alembic_head": "p1q2r3s4t5u6",
+  "new_migrations": 0
+}

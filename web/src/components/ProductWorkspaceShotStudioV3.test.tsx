@@ -122,6 +122,22 @@ describe('ProductWorkspaceShotStudioV3', () => {
     expect(html).not.toContain('生成视频</button>')
   })
 
+  it('keeps the previous Official current while enabling review of a newer candidate', () => {
+    const nextCandidate = { ...candidate, id: 'candidate-next', technical_validation: { ...candidate.technical_validation, validation_id: 'validation-next' } }
+    const snapshot = readySnapshot({
+      IMAGE: {
+        ...readySnapshot().shots[0].IMAGE,
+        official,
+        latest_execution: { ...readySnapshot().shots[0].IMAGE.latest_execution!, state: 'SUCCEEDED', candidate_id: nextCandidate.id },
+        candidates: { count: 2, latest: nextCandidate, items: [{ ...candidate, id: 'candidate-promoted' }, nextCandidate] },
+      },
+    })
+    const html = renderSurface(snapshot)
+    const approveButton = html.match(/<button[^>]*>批准并继续<\/button>/)?.[0] || ''
+    expect(html).toContain('候选媒体审核')
+    expect(approveButton).not.toContain('disabled=""')
+  })
+
   it('uses video controls for VIDEO review evidence instead of an image element', () => {
     const snapshot = createProductionWorkspaceV2ReviewFixture({ lane: 'VIDEO' })
     const videoCandidate = snapshot.shots[0].VIDEO.candidates.items[0]
