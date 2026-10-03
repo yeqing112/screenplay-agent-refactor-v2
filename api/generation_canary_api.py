@@ -916,7 +916,7 @@ def _png_dimensions(data: bytes) -> tuple[int | None, int | None]:
         return None, None
 
 
-def _persist_candidate_media(*, source_url: str, book_id: int, execution_id: str, target_media: str = "IMAGE") -> dict[str, Any]:
+def _persist_candidate_media(*, source_url: str, book_id: int, execution_id: str, target_media: str = "IMAGE", download_headers: dict[str, str] | None = None) -> dict[str, Any]:
     if not source_url:
         raise _error(422, "GENERATION_MEDIA_MISSING", "Provider response did not include media bytes or a media URL.")
     # Reuse the existing canonical generated-image storage bridge.  Importing
@@ -927,7 +927,7 @@ def _persist_candidate_media(*, source_url: str, book_id: int, execution_id: str
     normalized_media = str(target_media or "IMAGE").upper()
     if normalized_media == "VIDEO":
         from api.server import _persist_generated_video_locally
-        result = _persist_generated_video_locally(source_url, book_id=book_id, task_id=execution_id, label="phase-j3-canonical")
+        result = _persist_generated_video_locally(source_url, book_id=book_id, task_id=execution_id, label="phase-j3-canonical", download_headers=download_headers)
     else:
         result = _persist_generated_image_locally(source_url, book_id=book_id, task_id=execution_id, label="phase-f-canary")
     if not result.get("ok"):
@@ -1485,7 +1485,15 @@ async def _execute_generation_canary_impl(
             generated = await _call_provider(context=context)
             source_url = str(generated.get("uri") or generated.get("previewUrl") or "").strip()
             target_media = str(context.get("target_media") or row.target_media or "IMAGE").upper()
-            media = _persist_candidate_media(source_url=source_url, book_id=book_id, execution_id=row.execution_id, target_media=target_media)
+            download_headers = None
+            if target_media == "VIDEO" and (
+                bool(generated.get("providerContentRequiresAuth"))
+                or str(context.get("profile", {}).get("provider") or "") == "75api-minimax-h3"
+            ):
+                provider_key = str(context.get("profile", {}).get("api_key") or "").strip()
+                if provider_key:
+                    download_headers = {"Authorization": f"Bearer {provider_key}"}
+            media = _persist_candidate_media(source_url=source_url, book_id=book_id, execution_id=row.execution_id, target_media=target_media, download_headers=download_headers)
             response_payload = generated.get("providerResponse") if isinstance(generated.get("providerResponse"), dict) else {}
             response_hash = _response_hash(response_payload)
             candidate_id = "candidate-" + uuid.uuid4().hex
