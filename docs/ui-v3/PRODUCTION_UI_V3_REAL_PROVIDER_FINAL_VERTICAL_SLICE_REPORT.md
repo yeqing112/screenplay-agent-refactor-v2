@@ -73,4 +73,4 @@ Selector、canonical payload、runtime credential、VIDEO capability、adapter�
 - frontend production build: **passed**
 - Python compileall: **passed**
 - `git diff --check`: **passed**
-- the existing attempt-facade suite still has local fixture validation failures (`local://...`); those failures are recorded as pre-existing and were not counted as closure evidence.
+- the attempt-facade suite currently has local fixture validation failures (`local://...`); they are recorded separately and were not counted as closure evidence.
