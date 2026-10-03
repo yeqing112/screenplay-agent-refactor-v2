@@ -118,7 +118,7 @@
         "fixed_in_staging": false
       }
     ],
-    "note": "The final VIDEO block occurred before Provider submission because the persisted MiniMax default_params contain fields rejected by the canonical ProviderExecutionProfile allowlist."
+    "note": "Canonical projection now filters MiniMax adapter-only default_params; targeted verification passed, but no remaining real budget was spent to re-run VIDEO."
   },
   "attempt_lineage": {
     "status": "PARTIAL_IMAGE_ONLY",
@@ -143,11 +143,11 @@
   "new_migrations": 0,
   "tests": {
     "web_targeted": "63 files / 447 tests passed",
-    "backend_relevant": "60 + 45 passed (105 total)",
+    "backend_relevant": "66 + 45 passed (111 total)",
     "frontend_build": "passed",
     "compileall": "passed",
     "git_diff_check": "passed"
   },
   "blocking_condition": "BLOCKED_INSUFFICIENT_REAL_PROVIDER_BUDGET",
-  "required_next_action": "Obtain a fresh independent real-provider budget before attempting the remaining two VIDEO calls; do not consume the one-call emergency reserve for this application/configuration failure."
+  "required_next_action": "Obtain a fresh independent real-provider budget before attempting the remaining two VIDEO calls; the canonical projection fix is now verified without provider calls."
 }

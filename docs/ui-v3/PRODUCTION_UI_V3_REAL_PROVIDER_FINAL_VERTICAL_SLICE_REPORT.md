@@ -46,7 +46,7 @@ VIDEO selection gate 已经在 mock preflight 中通过，且 real attempt 的�
 
 - `RUNTIME_CREDENTIAL_NOT_RESOLVED`：已修复 staging 环境变量绑定。
 - `MODEL_CAPABILITY_MISMATCH`：已修复 staging profile 的 VIDEO capability/adapter 元数据。
-- 当前剩余阻塞：`GENERATION_PROVIDER_PARAM_INVALID`，MiniMax profile 的旧 default_params 含 canonical allowlist 不接受的字段；Provider calls=0。
+- 当前阻塞已在代码层修复：canonical projection 现在过滤 MiniMax adapter-only 参数，保留 adapter 原始参数；修复后的 canonical/model registry/MiniMax 测试通过。由于当前预算只剩 1 次，未重新消耗真实调用验证 VIDEO。
 
 因此 VIDEO 的 RUNNING、reload identity、candidate v1/v2、Official v1/v2、VIDEO regenerate 均没有真实证据。按照本轮规则，不使用剩余的第 5 次调用。
 
@@ -70,6 +70,7 @@ VIDEO selection gate 已经在 mock preflight 中通过，且 real attempt 的�
 
 - E2E VIDEO submit 前重新选择并断言 model profile，避免 PromptIR rehydrate 清空 selector。
 - Model registry 对旧 image/video profile 自动补齐 canonical capability/adapter metadata。
+- Canonical provider profile projection 过滤 MiniMax adapter-only 参数，避免旧 profile 在 Provider 前置校验阶段被拒绝。
 - 增加 MiniMax environment-backed runtime credential binding。
 - 更新 Truth Audit、Provider Evidence、Network Audit、Data Audit、Browser QA。
 

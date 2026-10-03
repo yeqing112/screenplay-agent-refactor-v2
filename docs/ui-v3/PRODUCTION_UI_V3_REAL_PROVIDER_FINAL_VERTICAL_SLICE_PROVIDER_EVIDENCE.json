@@ -78,5 +78,10 @@
       "fixed_in_staging": false
     }
   ],
-  "secrets_redacted": true
+  "secrets_redacted": true,
+  "video_projection_fix": {
+    "status": "VERIFIED_WITHOUT_PROVIDER_CALL",
+    "change": "adapter-only MiniMax default_params are excluded from canonical provider-neutral projection",
+    "tests": "canonical/model_registry/MiniMax suites passed"
+  }
 }

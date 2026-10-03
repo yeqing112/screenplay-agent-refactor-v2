@@ -40,6 +40,8 @@ from core.prompt_ir_phase_e import (
     resolve_current_authoritative_prompt_ir,
 )
 from core.provider_execution_profile import (
+    CAPABILITY_PARAM_KEYS,
+    GENERATION_PARAM_KEYS,
     PROFILE_SCHEMA_VERSION,
     ProviderExecutionProfileError,
     build_provider_execution_profile,
@@ -448,7 +450,14 @@ def _resolve_canonical_profile(
     profile_for_projection = dict(profile)
     params = dict(profile.get("default_params") or {})
     params.pop("duration_seconds", None)
-    profile_for_projection["default_params"] = params
+    # Legacy provider profiles may carry adapter-only operational settings
+    # (for example MiniMax polling and resolution options). Keep those values
+    # on the adapter input, but exclude them from the canonical typed
+    # execution projection, whose allowlist is intentionally provider-neutral.
+    canonical_param_keys = GENERATION_PARAM_KEYS | CAPABILITY_PARAM_KEYS | {"timeout_seconds"}
+    profile_for_projection["default_params"] = {
+        key: value for key, value in params.items() if key in canonical_param_keys
+    }
     try:
         canonical_profile = build_provider_execution_profile(
             profile_for_projection,
