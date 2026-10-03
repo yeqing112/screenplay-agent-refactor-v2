@@ -546,6 +546,10 @@ def _provider_ready_video_source(
     normalized = str(source_storage or "").strip()
     if not normalized or str(provider or "").startswith("phase-") or str(provider or "") == MOCK_PROVIDER:
         return normalized
+    configured_fixture_url = str(os.getenv("REAL_PROVIDER_VIDEO_SOURCE_URL") or "").strip()
+    if configured_fixture_url and str(os.getenv("APP_ENV") or "").lower() in {"test", "staging"}:
+        if configured_fixture_url.startswith(("http://", "https://")):
+            return configured_fixture_url
     if normalized.startswith(("http://", "https://")) and not normalized.startswith(("http://127.0.0.1", "http://localhost")):
         return normalized
     result = ensure_provider_accessible_url(
