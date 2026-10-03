@@ -5,16 +5,16 @@
   "marker": "PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE_NOT_SET",
   "historical_budget": {
     "authorized_calls": 5,
-    "actual_real_provider_calls": 2,
+    "actual_real_provider_calls": 4,
     "status": "CLOSED"
   },
   "current_budget": {
-    "authorized_calls": 5,
-    "actual_real_provider_calls": 4,
+    "authorized_calls": 3,
+    "actual_real_provider_calls": 2,
     "reserve_remaining": 1,
-    "status": "CLOSED",
+    "status": "CLOSED_BLOCKED_PROVIDER_BALANCE",
     "emergency_reserve_used": false,
-    "note": "Four real IMAGE calls were consumed across two provider-free-to-video-blocked canary attempts; the remaining one call is not used because the unresolved VIDEO issues are application/configuration issues rather than transient Provider failures."
+    "note": "VIDEO closure budget v3 is closed permanently after the Provider balance blocker; the unused reserve does not carry forward."
   },
   "zero_call_final_preflight": {
     "status": "PASS",
@@ -93,6 +93,12 @@
         "output/playwright/real-provider-final-slice-v2-real-final-success/run-1.json"
       ],
       "reason": "Screenshots do not expose an authoritative API/DB snapshot of Official v1 current during Candidate v2 review; run projection explicitly records false."
+    },
+    "future_evidence_closure": {
+      "minimum_real_calls": 2,
+      "reason": "Historical JSON contains provider IDs, candidate identities and checksums, but the corresponding media files/public assets were deleted with disposable canaries. Without bytes that can be verified and imported, seeding Official v1 would fabricate lineage; a new initial plus regenerate pair is required.",
+      "historical_artifact_seed_legal": false,
+      "provider_calls_this_round": 0
     }
   },
   "video": {
@@ -195,14 +201,14 @@
     "git_diff_check": "passed"
   },
   "blocking_condition": "BLOCKED_IMAGE_REVIEW_PRESERVATION_EVIDENCE_GAP",
-  "required_next_action": "Preserve the IMAGE review-state evidence gap as unresolved; after Provider balance is restored, spend only the remaining VIDEO budget on the missing successful initial/regenerate lifecycle.",
+  "required_next_action": "Keep IMAGE preservation gap unresolved; after Provider balance recovery create a new REAL_PROVIDER_VIDEO_CLOSURE_BUDGET_V4 and spend only its two normal VIDEO calls. Do not reuse v3 reserve.",
   "video_only_budget": {
     "authorized_calls": 3,
     "normal_required_calls": 2,
     "starting_used_calls": 0,
     "actual_real_provider_calls": 2,
     "reserve_remaining": 1,
-    "status": "BLOCKED_PROVIDER_INSUFFICIENT_BALANCE",
+    "status": "CLOSED_BLOCKED_PROVIDER_BALANCE",
     "calls": [
       {
         "ordinal": 1,
@@ -231,14 +237,30 @@
         "provider_request_id": ""
       }
     ],
-    "evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json"
+    "evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json",
+    "note": "v3 is closed; create a new independent v4 budget only after balance recovery or a new authorized credential."
   },
   "video_closure_evidence": "docs/ui-v3/PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_CLOSURE_EVIDENCE.json",
   "latest_verification": {
-    "targeted_backend": "51 passed (tests/test_generation_canary_phase_f.py + tests/test_phase_j3_canonical_generation.py)",
+    "web": "63 files / 447 tests passed",
+    "targeted_backend": "77 passed (canonical facade, generation canary, phase J3 and MiniMax H3 suites)",
+    "full_repository_pytest": "1990 passed / 24 failed; existing migration-head and legacy production-slice failures",
     "frontend_build": "passed",
     "python_compileall": "passed",
     "git_diff_check": "passed",
-    "note": "generation_attempt_canonical_facade.py retains pre-existing local:// fixture validation failures and was not counted as a regression from this closure patch."
+    "note": "All verification is provider-free in this continuation; no new real Provider call was made.",
+    "attempt_facade": "16 passed (test-only media fixtures and authority snapshot resolver)"
+  },
+  "evidence_instrumentation": {
+    "implemented": true,
+    "provider_calls": 0,
+    "authoritative_snapshots": [
+      "IMAGE_REGENERATE_PRE_APPROVAL_STATE.json",
+      "VIDEO_REGENERATE_PRE_APPROVAL_STATE.json",
+      "VIDEO_SUBMIT_BOUNDARY_STATE.json",
+      "VIDEO_RELOAD_IDENTITY_STATE.json"
+    ],
+    "capture_point": "before explicit human approval click",
+    "historical_image_gap": "NOT_PROVEN_BY_FINAL_ARTIFACT"
   }
 }

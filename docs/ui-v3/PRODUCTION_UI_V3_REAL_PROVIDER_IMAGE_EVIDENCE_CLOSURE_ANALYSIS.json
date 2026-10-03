@@ -1,0 +1,16 @@
+{
+  "schema_version": "production-ui-v3-image-evidence-closure-analysis-v1",
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE",
+  "provider_calls": 0,
+  "historical_real_image_calls": 4,
+  "historical_provider_evidence": true,
+  "historical_candidate_identity": true,
+  "historical_checksums": true,
+  "historical_media_files_present": false,
+  "historical_public_assets_present": false,
+  "disposable_canary_cleanup_removed_media": true,
+  "legal_historical_seed": false,
+  "image_evidence_closure_minimum_real_calls": 2,
+  "reason": "Only metadata, checksums and screenshots remain. A verifiable media file/public URL is required to seed an imported historical Official v1 without fabricating lineage.",
+  "budget": "IMAGE_EVIDENCE_CLOSURE_BUDGET must be independently authorized; no budget is active."
+}

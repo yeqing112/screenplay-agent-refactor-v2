@@ -6,7 +6,7 @@
 - status: `BLOCKED_IMAGE_REVIEW_PRESERVATION_EVIDENCE_GAP`
 - marker: `PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_COMPLETE` **未设置**
 - historical IMAGE budget: **4/5, CLOSED**
-- VIDEO closure budget v3: **2/3 used**；正常调用链仍未完成；应急额度 **1 次未使用**
+- VIDEO closure budget v3: **CLOSED_BLOCKED_PROVIDER_BALANCE**；真实调用 **2/3**；应急额度 **1 次未使用且永久关闭**
 - IMAGE review preservation evidence: **NOT_PROVEN_BY_FINAL_ARTIFACT**
 
 ## Zero-call preflight
@@ -24,7 +24,13 @@
 
 IMAGE v2 晋级已证明；最终快照没有保留 review 中旧 Official 的 current 字段，因此该项继续记为 **NOT_PROVEN_BY_FINAL_ARTIFACT**，没有补写为通过。
 
+历史 JSON 仍有 execution、candidate identity 和 checksum，但 disposable canary 清理后没有可验证的媒体文件或 public asset，因此不能合法 seed historical Official v1。IMAGE preservation evidence closure 的最小未来真实调用数为 **2 次**（initial + regenerate），且需要独立的 IMAGE budget。
+
+证据：[IMAGE closure analysis](./PRODUCTION_UI_V3_REAL_PROVIDER_IMAGE_EVIDENCE_CLOSURE_ANALYSIS.json)。
+
 ## VIDEO closure attempt
+
+本轮正式关闭 `REAL_PROVIDER_VIDEO_CLOSURE_BUDGET_V3`。剩余 1 次 reserve 不会带入后续工作；余额恢复后必须创建全新的 v4 budget。
 
 本轮 VIDEO 专用 staging canary 使用了保留权威身份的 mock IMAGE。真实传输边界把源图映射到已推送的公开 fixture URL；源 OfficialMedia authority、checksum、PromptIR 和 lineage 没有被改写。
 
@@ -64,13 +70,27 @@ Selector、canonical payload、runtime credential、VIDEO capability、adapter�
 - VIDEO E2E 在 PromptIR/selector refresh 后重新选择 profile，并支持失败 execution 的可见重试入口。
 - 新增公开 fixture：`fixtures/video-canary-source.png`。
 - 更新 Truth Audit、Provider Evidence、Network Audit、Data Audit、Browser QA。
+- 新增零调用 VIDEO resume preflight：[VIDEO resume preflight](./PRODUCTION_UI_V3_REAL_PROVIDER_VIDEO_RESUME_PREFLIGHT.json)。
+
+## Zero-call evidence instrumentation
+
+E2E runner now writes authoritative JSON snapshots before the human approval click:
+
+- `IMAGE_REGENERATE_PRE_APPROVAL_STATE.json`
+- `VIDEO_REGENERATE_PRE_APPROVAL_STATE.json`
+- `VIDEO_SUBMIT_BOUNDARY_STATE.json`
+- `VIDEO_RELOAD_IDENTITY_STATE.json`
+
+These snapshots carry candidate, execution, attempt, provider-task identity, current Official pointer and review state. They are capture-ready for the next authorized run; historical IMAGE evidence remains `NOT_PROVEN_BY_FINAL_ARTIFACT`.
 
 达到 COMPLETE 还需要：恢复 MiniMax H3 可用余额，完成 VIDEO initial 与 VIDEO regenerate 的成功生命周期，并补齐 IMAGE review 期间旧 Official 保持 current 的最终证据。本轮不设置 COMPLETE marker。
 
 ## Verification
 
-- targeted backend generation suite: **51 passed**
+- frontend unit suite: **63 files / 447 tests passed**
+- targeted backend generation suite: **77 passed**
+- full repository pytest: **1990 passed / 24 failed**；失败集中在既有迁移头版本不一致与旧的 episode/keyframe/storyboard/asset 测试，未进入本轮 real Provider evidence。
 - frontend production build: **passed**
 - Python compileall: **passed**
 - `git diff --check`: **passed**
-- the attempt-facade suite currently has local fixture validation failures (`local://...`); they are recorded separately and were not counted as closure evidence.
+- attempt-facade suite: **16 passed**。测试现在使用显式 test-only media fixtures 与 authority snapshot resolver；生产 URL validation 仍要求公开 `http(s)` URL。

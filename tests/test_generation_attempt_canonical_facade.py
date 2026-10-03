@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 from types import SimpleNamespace
+from pathlib import Path
 
 import pytest
 from fastapi import HTTPException
@@ -13,6 +15,7 @@ from sqlalchemy.orm import sessionmaker
 
 import api.generation_attempt_canonical_api as facade
 import api.generation_canary_api as canary
+import core.media_authority as media_authority
 from core.generation_attempt_lineage import GenerationAttemptLineageService
 from models import (
     Base,
@@ -34,6 +37,75 @@ def db(monkeypatch):
     monkeypatch.setattr(canary, "Session", lambda: session)
     yield session
     session.close()
+
+
+@pytest.fixture(autouse=True)
+def _mock_runtime_test_environment(monkeypatch):
+    """Run facade fixtures inside the explicit isolated mock boundary.
+
+    Production canonical validation must keep rejecting mock execution outside
+    test/isolated environments.  These tests exercise the deterministic
+    adapter, so they opt into that boundary explicitly instead of relying on
+    a developer shell environment.
+    """
+    monkeypatch.setenv("E2E_EXTERNAL_RUNTIME", "mock")
+    monkeypatch.setenv("APP_ENV", "test")
+    monkeypatch.setenv("DEPLOYMENT_ENV", "test")
+    # The facade tests provide a minimal in-memory canonical context rather
+    # than a full PromptIR/materialization graph.  Keep byte and container
+    # validation real, and map only the authority snapshot through an explicit
+    # test resolver.  Production URL and authority validation are unchanged.
+    monkeypatch.setattr(
+        media_authority,
+        "_current_authority_snapshot",
+        lambda *args, **kwargs: {
+            "schema_version": "media_authority_snapshot_test_fixture_v1",
+            "prompt_ir": {"currentness_valid": True},
+            "asset": {"declared": False, "bindings": []},
+            "asset_authority": {"declared": False, "bindings": []},
+            "reference": {"bindings": []},
+            "production_asset_binding": {"currentness_valid": True},
+            "generation_policy_fingerprint": "policy",
+            "generation_policy_current_fingerprint": "policy",
+            "generation_policy_matches": True,
+            "image_to_video_source": {"required": False, "valid": True},
+            "reference_bindings_fingerprint": "",
+            "currentness_valid": True,
+        },
+    )
+
+
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+_IMAGE_FIXTURE = str(_REPO_ROOT / "fixtures" / "video-canary-source.png")
+_VIDEO_FIXTURE = str(_REPO_ROOT / "tests" / "fixtures" / "attempt-video.mp4")
+
+
+def _fixture_checksum(path: str) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def _fixture_media(media: str) -> dict[str, object]:
+    if media == "VIDEO":
+        return {
+            "storage_identity": _VIDEO_FIXTURE,
+            "storage_reference": {"video_url": _VIDEO_FIXTURE, "local_path": _VIDEO_FIXTURE, "source_kind": "test_fixture"},
+            "checksum_sha256": _fixture_checksum(_VIDEO_FIXTURE),
+            "mime_type": "video/mp4",
+            "byte_size": Path(_VIDEO_FIXTURE).stat().st_size,
+            "width": 16,
+            "height": 16,
+            "duration_ms": 1000,
+        }
+    return {
+        "storage_identity": _IMAGE_FIXTURE,
+        "storage_reference": {"image_url": _IMAGE_FIXTURE, "local_path": _IMAGE_FIXTURE, "source_kind": "test_fixture"},
+        "checksum_sha256": _fixture_checksum(_IMAGE_FIXTURE),
+        "mime_type": "image/png",
+        "byte_size": Path(_IMAGE_FIXTURE).stat().st_size,
+        "width": 1,
+        "height": 1,
+        "duration_ms": None,
+    }
 
 
 def _context(shot_id: int, *, target_media: str = "IMAGE", generation_mode: str = "TEXT_TO_IMAGE", provider_request_fingerprint: str = "base-request-fp"):
@@ -108,9 +180,7 @@ def test_retry_execute_uses_canonical_executor_and_writes_candidate_only(db, mon
     monkeypatch.setattr(facade, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
     monkeypatch.setattr(canary, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
     monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: {
-        "storage_identity": "local://image", "storage_reference": {"image_url": "local://image"},
-        "checksum_sha256": "checksum", "mime_type": "image/png", "byte_size": 1,
-        "width": 1, "height": 1, "duration_ms": None,
+        **_fixture_media("IMAGE"),
     })
     confirmation = service.build_confirmation(attempt.attempt_lineage_id)
     preview = facade.preview_generation_attempt(1, 1, 101, attempt.attempt_lineage_id, facade.AttemptPreviewRequest(attempt_confirmation_token=confirmation))
@@ -163,17 +233,9 @@ def _patch_execution_runtime(monkeypatch, context, *, media: str):
     monkeypatch.setattr(facade, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
     monkeypatch.setattr(canary, "_resolve_canonical_execution_inputs", lambda *args, **kwargs: context)
     if media == "IMAGE":
-        monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: {
-            "storage_identity": "local://attempt-image", "storage_reference": {"image_url": "local://attempt-image"},
-            "checksum_sha256": "checksum-new", "mime_type": "image/png", "byte_size": 1,
-            "width": 1, "height": 1, "duration_ms": None,
-        })
+        monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: _fixture_media("IMAGE"))
     else:
-        monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: {
-            "storage_identity": "local://attempt-video", "storage_reference": {"video_url": "local://attempt-video"},
-            "checksum_sha256": "checksum-new-video", "mime_type": "video/mp4", "byte_size": 1,
-            "width": 1, "height": 1, "duration_ms": 1000,
-        })
+        monkeypatch.setattr(canary, "_persist_candidate_media", lambda **kwargs: _fixture_media("VIDEO"))
 
 
 @pytest.mark.parametrize(

@@ -1,0 +1,31 @@
+{
+  "schema_version": "production-ui-v3-real-provider-video-resume-preflight-v1",
+  "phase": "PHASE_PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE",
+  "provider_calls": 0,
+  "status": "READY_EXCEPT_PROVIDER_BALANCE",
+  "budget_v3": {
+    "status": "CLOSED_BLOCKED_PROVIDER_BALANCE",
+    "reserve_remaining": 1,
+    "carry_forward": false
+  },
+  "new_budget": {
+    "status": "NOT_ACTIVE",
+    "requires": "MiniMax H3 balance restored or new authorized funded credential"
+  },
+  "expected_profile_id": "local-video-7deneh",
+  "selected_profile_id": "local-video-7deneh",
+  "runtime_credential_resolution": "READY",
+  "generation_capability": "VIDEO_GENERATION",
+  "adapter": "video_generic",
+  "transport": "minimax-h3-async.video.v1",
+  "provider_neutral_validation": "PASS",
+  "public_source_url_gate": "PASS",
+  "canonical_payload": "READY",
+  "only_unknown": "Provider account balance / live acceptance",
+  "forbidden_before_recovery": [
+    "real Provider call",
+    "new active budget",
+    "mocking a Provider task",
+    "manual Candidate or execution success"
+  ]
+}

@@ -1,13 +1,15 @@
 {
   "schema_version": "production-ui-v3-real-provider-video-closure-v1",
   "phase": "REAL_PROVIDER_VIDEO_CLOSURE_BUDGET_V3",
-  "status": "BLOCKED_REAL_VIDEO_PROVIDER_INSUFFICIENT_BALANCE",
+  "status": "CLOSED_BLOCKED_PROVIDER_BALANCE",
   "budget": {
     "authorized_calls": 3,
     "normal_required_calls": 2,
     "actual_real_provider_calls": 2,
     "reserve_remaining": 1,
-    "emergency_reserve_used": false
+    "emergency_reserve_used": false,
+    "status": "CLOSED_BLOCKED_PROVIDER_BALANCE",
+    "note": "Budget v3 is closed permanently. The unused reserve does not carry forward."
   },
   "source_image": {
     "mode": "staged_public_fixture",
@@ -84,5 +86,16 @@
   },
   "image_preservation_evidence": "NOT_PROVEN_BY_FINAL_ARTIFACT",
   "complete_marker": "NOT_SET",
-  "next_action": "Restore Provider balance or use an authorized funded credential, then rerun only the remaining VIDEO initial and regenerate calls; do not rerun IMAGE."
+  "next_action": "After balance recovery or a new authorized credential, create independent REAL_PROVIDER_VIDEO_CLOSURE_BUDGET_V4; do not call Provider before then.",
+  "resume_preflight": {
+    "provider_calls": 0,
+    "selector": "local-video-7deneh",
+    "credential_path": "READY",
+    "capability": "VIDEO_GENERATION",
+    "adapter": "video_generic",
+    "transport": "minimax-h3-async.video.v1",
+    "public_source_url": "PASS",
+    "canonical_validation": "PASS",
+    "only_unknown": "Provider account balance / live acceptance"
+  }
 }

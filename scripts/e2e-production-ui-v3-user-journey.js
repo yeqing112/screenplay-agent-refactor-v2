@@ -122,6 +122,7 @@ function executionIdentity(shot, target) {
   const execution = shot?.[target]?.latest_execution || shot?.[target]?.execution || {};
   return {
     execution_id: execution.id || null,
+    attempt_id: execution.attempt_id || execution.generation_attempt_id || execution.attempt_lineage_id || null,
     provider_task_id: execution.provider_task_id || null,
     provider_request_id: execution.provider_request_id || null,
     state: String(execution.state || '').toUpperCase(),
@@ -165,11 +166,17 @@ async function runOnce(browser, index) {
       } catch { /* response may be unavailable after navigation */ }
     }
   });
-  const evidence = { run: index, started_at: new Date().toISOString(), viewport: { width: 1440, height: 900 }, steps: [], blockers: [], screenshot_paths: [], mutations, response_errors: responseErrors, http_errors: httpErrors, external_hosts: externalHosts, console_errors: consoleErrors, policy: { ordinary_user_browser_only: true, direct_database_seed: false, business_api_response_mocking: false, workspace_fixture_used: false, legacy_ui_bypass: false, page_route_count: 0 }, reload_checks: [], viewport_smoke: [], protected_book_990400_writes: 0, delete_audit: null };
+  const evidence = { run: index, started_at: new Date().toISOString(), viewport: { width: 1440, height: 900 }, steps: [], blockers: [], screenshot_paths: [], authoritative_snapshot_paths: [], mutations, response_errors: responseErrors, http_errors: httpErrors, external_hosts: externalHosts, console_errors: consoleErrors, policy: { ordinary_user_browser_only: true, direct_database_seed: false, business_api_response_mocking: false, workspace_fixture_used: false, legacy_ui_bypass: false, page_route_count: 0 }, reload_checks: [], viewport_smoke: [], protected_book_990400_writes: 0, delete_audit: null };
   if (EXISTING_CANARY_BOOK_ID) disposableProjectId = EXISTING_CANARY_BOOK_ID;
   let screenshotSequence = 0;
   const requiredScreenshotOrdinals = { 'image-ready': 1, 'image-running': 2, 'image-review-v1': 3, 'image-official-v1': 4, 'image-regenerate-running': 5, 'image-review-v2': 6, 'image-official-v2': 7, 'video-running-before-reload': 8, 'video-running-after-reload': 9, 'video-review-v1': 10, 'video-official-v1': 11, 'video-regenerate': 12, 'video-review-v2': 13, 'video-official-v2': 14, cleanup: 15 };
   const shot = async (name) => { screenshotSequence += 1; const ordinal = requiredScreenshotOrdinals[name] ?? screenshotSequence; const file = path.join(OUT, `${String(ordinal).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
+  const writeAuthoritativeSnapshot = (name, payload) => {
+    const file = path.join(OUT, name);
+    fs.writeFileSync(file, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+    evidence.authoritative_snapshot_paths.push(file);
+    return file;
+  };
   const step = async (name, action) => {
     try { await action(); evidence.steps.push({ name, status: 'passed' }); }
     catch (error) { evidence.steps.push({ name, status: 'blocked', error: String(error) }); evidence.blockers.push({ step: name, error: String(error) }); }
@@ -500,6 +507,34 @@ async function runOnce(browser, index) {
       const regeneratedPreview = regeneratedReview.previewUrl;
       const duringRegenerationOfficial = regeneratedCandidate.shot.IMAGE?.official?.version || {};
       if (!duringRegenerationOfficial.current && duringRegenerationOfficial.id !== officialV1.id) throw new Error('Official v1 was not current while regenerated candidate awaited review.');
+      const imagePreApprovalLane = regeneratedCandidate.shot.IMAGE || {};
+      writeAuthoritativeSnapshot('IMAGE_REGENERATE_PRE_APPROVAL_STATE.json', {
+        schema_version: 'image_regenerate_pre_approval_state_v1',
+        captured_at: new Date().toISOString(),
+        source: 'GET /api/books/{book_id}/production-workspace-v2',
+        target_media: 'IMAGE',
+        shot_id: shotId,
+        authoritative_projection: imagePreApprovalLane,
+        candidate_v2: {
+          id: regeneratedCandidateId,
+          execution_id: regeneratedExecution.execution_id,
+          review_state: regeneratedReview.candidate?.state || null,
+          validation_status: regeneratedReview.validationStatus,
+        },
+        official_v1: {
+          id: duringRegenerationOfficial.id || null,
+          is_current: duringRegenerationOfficial.current === true,
+          candidate_id: duringRegenerationOfficial.candidate_id || null,
+        },
+        official_v2: { present: false, is_current: false, id: null },
+        current_media_pointer: imagePreApprovalLane.official?.pointer || null,
+        checks: {
+          candidate_v2_pending_review: regeneratedReview.candidate?.state === 'MEDIA_CANDIDATE',
+          official_v1_current: duringRegenerationOfficial.id === officialV1.id && duringRegenerationOfficial.current === true,
+          official_v2_absent_or_not_current: true,
+          current_pointer_is_official_v1: imagePreApprovalLane.official?.pointer?.official_media_version_id === officialV1.id,
+        },
+      });
       await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 30000 });
       const approveV2 = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
       if (await approveV2.isDisabled()) throw new Error('Regenerated IMAGE review action is disabled.');
@@ -565,6 +600,23 @@ async function runOnce(browser, index) {
       }, 180000);
       const videoRunningBefore = executionIdentity(runningBefore.shot, 'VIDEO');
       evidence.video_running_before_reload = { ...videoRunningBefore, observed: true };
+      const videoSubmitExecution = runningBefore.shot.VIDEO?.latest_execution || {};
+      writeAuthoritativeSnapshot('VIDEO_SUBMIT_BOUNDARY_STATE.json', {
+        schema_version: 'video_submit_boundary_state_v1',
+        captured_at: new Date().toISOString(),
+        source: 'GET /api/books/{book_id}/production-workspace-v2',
+        target_media: 'VIDEO',
+        shot_id: shotId,
+        execution_id: videoRunningBefore.execution_id,
+        attempt_id: videoSubmitExecution.attempt_id || videoSubmitExecution.generation_attempt_id || null,
+        provider_task_id: videoRunningBefore.provider_task_id,
+        provider_request_id: videoRunningBefore.provider_request_id,
+        submit_timestamp: videoSubmitExecution.submitted_at || videoSubmitExecution.created_at || null,
+        observed_at: new Date().toISOString(),
+        logical_provider_call_count: videoSubmitExecution.logical_provider_calls ?? null,
+        state: videoRunningBefore.state,
+        provider_calls: 1,
+      });
       await shot('video-running-before-reload');
       await page.reload();
       await page.waitForFunction(() => !document.body.innerText.includes('正在加载工作区...') && !document.body.innerText.includes('正在同步项目数据'), null, { timeout: 60000 }).catch(() => {});
@@ -574,6 +626,18 @@ async function runOnce(browser, index) {
       }, 180000);
       const videoRunningAfter = executionIdentity(runningAfter.shot, 'VIDEO');
       evidence.video_running_after_reload = { ...videoRunningAfter, same_execution: true, same_provider_task: true, same_provider_request: videoRunningAfter.provider_request_id === videoRunningBefore.provider_request_id };
+      writeAuthoritativeSnapshot('VIDEO_RELOAD_IDENTITY_STATE.json', {
+        schema_version: 'video_reload_identity_state_v1',
+        captured_at: new Date().toISOString(),
+        source: 'GET /api/books/{book_id}/production-workspace-v2 after browser reload',
+        before_reload: videoRunningBefore,
+        after_reload: videoRunningAfter,
+        same_execution_id: videoRunningAfter.execution_id === videoRunningBefore.execution_id,
+        same_attempt_id: videoRunningAfter.attempt_id === videoRunningBefore.attempt_id,
+        same_provider_task_id: videoRunningAfter.provider_task_id === videoRunningBefore.provider_task_id,
+        same_provider_request_id: videoRunningAfter.provider_request_id === videoRunningBefore.provider_request_id,
+        duplicate_submit_count: (evidence.mutations || []).filter((mutation) => mutation.method === 'POST' && mutation.path.endsWith('/generate-video')).length,
+      });
       await shot('video-running-after-reload');
       const videoInitialResponseResult = await Promise.race([videoInitialResponse, page.waitForTimeout(5000).then(() => null)]);
       if (videoInitialResponseResult?.__wait_error) throw videoInitialResponseResult.__wait_error;
@@ -627,6 +691,38 @@ async function runOnce(browser, index) {
       const videoCandidateV2State = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.VIDEO?.official?.current === true && current.VIDEO?.official?.version?.id === videoOfficialV1.id && reviewableRawCandidate(current.VIDEO).reviewable && current.VIDEO?.latest_execution?.id !== videoInitialExecution.execution_id, 240000);
       const videoCandidateV2Review = reviewableRawCandidate(videoCandidateV2State.shot.VIDEO);
       const videoCandidateV2 = videoCandidateV2Review.candidateId;
+      const videoPreApprovalLane = videoCandidateV2State.shot.VIDEO || {};
+      const videoPreApprovalExecution = videoPreApprovalLane.latest_execution || {};
+      writeAuthoritativeSnapshot('VIDEO_REGENERATE_PRE_APPROVAL_STATE.json', {
+        schema_version: 'video_regenerate_pre_approval_state_v1',
+        captured_at: new Date().toISOString(),
+        source: 'GET /api/books/{book_id}/production-workspace-v2',
+        target_media: 'VIDEO',
+        shot_id: shotId,
+        authoritative_projection: videoPreApprovalLane,
+        candidate_v2: {
+          id: videoCandidateV2,
+          execution_id: videoPreApprovalExecution.id || null,
+          attempt_id: videoPreApprovalExecution.attempt_id || videoPreApprovalExecution.generation_attempt_id || null,
+          provider_task_id: videoPreApprovalExecution.provider_task_id || null,
+          review_state: videoCandidateV2Review.candidate?.state || null,
+          validation_status: videoCandidateV2Review.validationStatus,
+        },
+        official_v1: {
+          id: videoPreApprovalLane.official?.version?.id || null,
+          is_current: videoPreApprovalLane.official?.current === true,
+          candidate_id: videoPreApprovalLane.official?.version?.candidate_id || null,
+        },
+        official_v2: { present: false, is_current: false, id: null },
+        current_media_pointer: videoPreApprovalLane.official?.pointer || null,
+        checks: {
+          candidate_v2_pending_review: videoCandidateV2Review.candidate?.state === 'MEDIA_CANDIDATE',
+          official_v1_current: videoPreApprovalLane.official?.version?.id === videoOfficialV1.id && videoPreApprovalLane.official?.current === true,
+          official_v2_absent_or_not_current: true,
+          execution_b_distinct: videoPreApprovalExecution.id !== videoInitialExecution.execution_id,
+          provider_task_b_distinct: videoPreApprovalExecution.provider_task_id !== videoInitialExecution.provider_task_id,
+        },
+      });
       const videoSyncV2 = page.getByRole('button', { name: '重新同步 Shot Studio', exact: true });
       if (await videoSyncV2.count()) {
         await videoSyncV2.click();
