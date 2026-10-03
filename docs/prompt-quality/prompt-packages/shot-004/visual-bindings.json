@@ -1,0 +1,11 @@
+{
+  "asset_links": {
+    "scene": "E01_SC001",
+    "characters": [
+      "顾沉",
+      "林晚"
+    ],
+    "props": []
+  },
+  "prompt_ir_bindings": {}
+}

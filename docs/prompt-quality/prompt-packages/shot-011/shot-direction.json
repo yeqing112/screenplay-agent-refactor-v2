@@ -1,0 +1,98 @@
+{
+  "id": 11,
+  "shot_id": 11,
+  "storyboard_shot_id": 11,
+  "shot_type": "capture_reaction",
+  "camera_profile": {
+    "angle": "eye_level",
+    "distance": "medium",
+    "lens": "50mm",
+    "movement": "static",
+    "speed": "slow"
+  },
+  "movement_profile": {
+    "camera_motion": "static",
+    "continuity": "single continuous take",
+    "direction": "center",
+    "subject_motion": "authored action beat"
+  },
+  "composition_profile": {
+    "background": "authoritative scene layout",
+    "depth": "foreground subject separation",
+    "foreground": "scene foreground from blocking state",
+    "framing": "medium_close",
+    "subject_position": "center"
+  },
+  "performance_profile": {
+    "body_motion": "action beat motion",
+    "expression": "source-authored performance",
+    "eye_direction": "blocking-defined eyeline",
+    "gesture": "beat-defined gesture"
+  },
+  "emotion_profile": {
+    "source_refs": [
+      "SC02-B04"
+    ],
+    "state": "source-authored emotion transition"
+  },
+  "revision": 1,
+  "direction_fingerprint": "sha256:3dac4250b6eb9f9bda6d7c51243eb59555518e903b5957bb90df601467ee4b53",
+  "status": "ACTIVE",
+  "created_at": "2026-10-03T22:12:10.264798",
+  "updated_at": "2026-10-03T22:12:10.264799",
+  "source_layer": "SHOT_PLAN_AND_STORYBOARD_PROJECTION",
+  "validation": {
+    "shot_id": 11,
+    "status": "PASS",
+    "direction": {
+      "id": 11,
+      "shot_id": 11,
+      "storyboard_shot_id": 11,
+      "shot_type": "capture_reaction",
+      "camera_profile": {
+        "angle": "eye_level",
+        "distance": "medium",
+        "lens": "50mm",
+        "movement": "static",
+        "speed": "slow"
+      },
+      "movement_profile": {
+        "camera_motion": "static",
+        "continuity": "single continuous take",
+        "direction": "center",
+        "subject_motion": "authored action beat"
+      },
+      "composition_profile": {
+        "background": "authoritative scene layout",
+        "depth": "foreground subject separation",
+        "foreground": "scene foreground from blocking state",
+        "framing": "medium_close",
+        "subject_position": "center"
+      },
+      "performance_profile": {
+        "body_motion": "action beat motion",
+        "expression": "source-authored performance",
+        "eye_direction": "blocking-defined eyeline",
+        "gesture": "beat-defined gesture"
+      },
+      "emotion_profile": {
+        "source_refs": [
+          "SC02-B04"
+        ],
+        "state": "source-authored emotion transition"
+      },
+      "revision": 1,
+      "direction_fingerprint": "sha256:3dac4250b6eb9f9bda6d7c51243eb59555518e903b5957bb90df601467ee4b53",
+      "status": "ACTIVE",
+      "created_at": "2026-10-03T22:12:10.264798",
+      "updated_at": "2026-10-03T22:12:10.264799"
+    },
+    "errors": [],
+    "checks": {
+      "shot_exists": true,
+      "direction_present": true,
+      "camera_valid": true,
+      "complete": true
+    }
+  }
+}

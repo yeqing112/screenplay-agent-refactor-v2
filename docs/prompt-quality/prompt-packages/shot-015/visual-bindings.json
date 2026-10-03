@@ -1,0 +1,11 @@
+{
+  "asset_links": {
+    "scene": "E01_SC002",
+    "characters": [
+      "林晚",
+      "陆叔"
+    ],
+    "props": []
+  },
+  "prompt_ir_bindings": {}
+}

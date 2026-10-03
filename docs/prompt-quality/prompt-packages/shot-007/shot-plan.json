@@ -1,0 +1,148 @@
+{
+  "plan_shot_id": "SH_E01_SC001_007",
+  "scene_id": "E01_SC001",
+  "beat_refs": [
+    "SC01-B11",
+    "SC01-B12"
+  ],
+  "beat_id": "SC01-B11",
+  "director_decision_refs": [
+    "DBD_SC01-B11",
+    "DBD_SC01-B12"
+  ],
+  "requirement_refs": [
+    "REQ_SC01-B11",
+    "REQ_SC01-B12"
+  ],
+  "shot_purpose": "REDIRECT_ATTENTION",
+  "coverage_roles": [
+    "PRIMARY_BEAT_COVERAGE",
+    "REACTION_COVERAGE"
+  ],
+  "subjects": [
+    "林晚",
+    "陆叔"
+  ],
+  "participants": [
+    "售票员",
+    "林晚",
+    "陆叔",
+    "顾沉"
+  ],
+  "reaction_contract_refs": [
+    "RC_SC01-B11_林晚",
+    "RC_SC01-B12_陆叔"
+  ],
+  "information_refs": [
+    "INFO_SC01_B11_001"
+  ],
+  "spatial_binding": {
+    "blocking_state_refs": [
+      "SC01-B11",
+      "SC01-B12"
+    ],
+    "subject_zones": {
+      "林晚": "ST_CHECK",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "prop_refs": []
+  },
+  "camera_state": {
+    "framing_class": "MEDIUM",
+    "orientation": "EYE_LEVEL",
+    "support": "DOLLY",
+    "movement": "PAN",
+    "movement_trigger": "AUTHORED_BEAT_TRANSITION",
+    "movement_target": "林晚",
+    "movement_end_condition": "BEAT_INFORMATION_LANDS",
+    "subject_binding": [
+      "林晚",
+      "陆叔"
+    ]
+  },
+  "axis_contract": {
+    "axis_applicability": "REQUIRED",
+    "axis_ref": "AXIS_LW_GC",
+    "axis_refs": [
+      "AXIS_LW_GC",
+      "AXIS_LW_LS"
+    ],
+    "axis_policy": "PRESERVE",
+    "screen_side_assignments": {
+      "林晚": "LEFT",
+      "顾沉": "RIGHT"
+    },
+    "look_direction": {
+      "林晚": "SCREEN_RIGHT",
+      "顾沉": "SCREEN_LEFT"
+    }
+  },
+  "temporal_intent": {
+    "duration_mode": "REACTION_HOLD",
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS"
+  },
+  "information_visibility": "CHARACTER_AND_AUDIENCE",
+  "authoring_provenance": {
+    "proposal_origin": "HUMAN_INPUT"
+  },
+  "continuous_take": true,
+  "cut_events": [],
+  "shot_description": "林晚决定不上车，谎称忘东西。 / 陆叔立刻同意返回。",
+  "camera": {
+    "shot_size": "MEDIUM",
+    "angle": "eye_level",
+    "movement": "pan",
+    "speed": "authored",
+    "camera_side": "center"
+  },
+  "duration_hint_seconds": 4,
+  "action_beats": [
+    {
+      "action_id": "SC01-B11_A01",
+      "actor": "林晚",
+      "action": "林晚决定不上车，谎称忘东西。 / 陆叔立刻同意返回。",
+      "start_seconds": 0,
+      "end_seconds": 3
+    }
+  ],
+  "entry_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_007",
+    "characters": {
+      "林晚": "ST_CHECK",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "approved_scene_blocking"
+  },
+  "exit_state": {
+    "scene_id": "E01_SC001",
+    "shot_id": "SH_E01_SC001_007",
+    "characters": {
+      "林晚": "ST_CHECK",
+      "顾沉": "ST_CENTER",
+      "陆叔": "ST_CENTER",
+      "售票员": "ST_TICKET"
+    },
+    "props": [],
+    "source": "authored_shot_design"
+  },
+  "asset_bindings": {
+    "scene": "E01_SC001",
+    "characters": [
+      "林晚",
+      "陆叔"
+    ],
+    "props": []
+  },
+  "continuity_contract": {
+    "screen_direction": "maintain",
+    "axis_ref": "AXIS_LW_GC",
+    "axis_policy": "PRESERVE",
+    "blocking_state_ref": "SC01-B11"
+  }
+}

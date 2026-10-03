@@ -1,0 +1,215 @@
+{
+  "action": {
+    "action_beats": [
+      {
+        "action_id": "SH_E01_SC002_001_ACTION_001",
+        "actor_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B01"
+        ],
+        "event_ref": "SC02-B01",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      },
+      {
+        "action_id": "SH_E01_SC002_001_ACTION_002",
+        "actor_refs": [
+          "陆叔",
+          "林晚"
+        ],
+        "beat_refs": [
+          "SC02-B02"
+        ],
+        "event_ref": "SC02-B02",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ]
+  },
+  "asset_authority_bindings": {
+    "identity_refs": [
+      "scene:E01_SC002",
+      "character:陆叔",
+      "character:林晚",
+      "prop:APPLE",
+      "prop:DOOR_LOCK"
+    ],
+    "resolved": [
+      {
+        "asset_authority_ref": "book:990401:scene:E01_SC002",
+        "asset_version_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "asset_version_id": 11,
+        "authority_fingerprint": "74f6bbdb9ac6c545d20e8e5610d1ad71aff7e270a5ed2df7a103093cc4ef8ef9",
+        "identity_ref": "scene:E01_SC002",
+        "stale_status": "FRESH"
+      },
+      {
+        "asset_authority_ref": "book:990401:prop:APPLE",
+        "asset_version_fingerprint": "10ff684a8071dd7f7d27c276068aabfb962d97e5ab3387ca895dbbff1f06e812",
+        "asset_version_id": 1,
+        "authority_fingerprint": "10ff684a8071dd7f7d27c276068aabfb962d97e5ab3387ca895dbbff1f06e812",
+        "identity_ref": "prop:APPLE",
+        "stale_status": "FRESH"
+      },
+      {
+        "asset_authority_ref": "book:990401:prop:DOOR_LOCK",
+        "asset_version_fingerprint": "bf33b28c4f7995de223faecc547c35a86772d615f7d1f296d782c5bb3a360149",
+        "asset_version_id": 3,
+        "authority_fingerprint": "bf33b28c4f7995de223faecc547c35a86772d615f7d1f296d782c5bb3a360149",
+        "identity_ref": "prop:DOOR_LOCK",
+        "stale_status": "FRESH"
+      }
+    ]
+  },
+  "authority_classes": {
+    "adapter_output": "MODEL_ADAPTER_OUTPUT",
+    "asset_bindings": "ASSET_AUTHORITY_BINDING",
+    "generation_policy": "GENERATION_POLICY",
+    "media_metadata": "MEDIA_REQUEST_METADATA",
+    "semantic_payload": "MODEL_AGNOSTIC_PROMPT_SEMANTIC",
+    "source_authority": "SOURCE_SEMANTIC_PROJECTION",
+    "storyboard_semantics": "STORYBOARD_SEMANTIC_PROJECTION"
+  },
+  "camera": {
+    "framing_class": "WIDE",
+    "movement": "NONE",
+    "movement_end_condition": null,
+    "movement_target": null,
+    "movement_trigger": null,
+    "orientation": "EYE_LEVEL",
+    "support": "STATIC"
+  },
+  "compiler_provenance": {
+    "compiler_policy_version": "prompt_ir_compiler_policy_v1",
+    "compiler_version": "prompt_ir_semantic_compiler_v1",
+    "origin": "STORYBOARD_PRODUCTION_SNAPSHOT"
+  },
+  "continuity": {
+    "axis_policy": "PRESERVE",
+    "axis_ref": "AXIS_LW_LS_APT",
+    "axis_refs": [
+      "AXIS_LW_LS_APT"
+    ],
+    "look_direction": {
+      "林晚": "SCREEN_RIGHT",
+      "陆叔": "SCREEN_LEFT"
+    },
+    "screen_side_assignments": {
+      "林晚": "LEFT",
+      "陆叔": "RIGHT"
+    }
+  },
+  "environment": {
+    "asset_identity_ref": "E01_SC002",
+    "scene_ref": "E01_SC002"
+  },
+  "generation_constraints": {
+    "must_include_prop_refs": [
+      "APPLE",
+      "DOOR_LOCK"
+    ],
+    "must_include_subject_refs": [
+      "陆叔",
+      "林晚"
+    ],
+    "must_preserve_axis": true
+  },
+  "generation_policy": {
+    "fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+    "language": "",
+    "mode": "TEXT_TO_IMAGE",
+    "optional_asset_classes": [],
+    "required_asset_classes": [],
+    "schema_version": "generation_policy_v1",
+    "source": "explicit_request",
+    "style_profile_id": "",
+    "target_media": "IMAGE"
+  },
+  "information_visibility": "AUDIENCE_ONLY",
+  "model_generation_ready": false,
+  "payload_hash": "b803e727af9025cf78042385a8e113cb9d819eafc118685d9bed70fe0323b765",
+  "plan_shot_id": "SH_E01_SC002_001",
+  "prompt_ir_payload_fingerprint": "b803e727af9025cf78042385a8e113cb9d819eafc118685d9bed70fe0323b765",
+  "prompt_ir_semantic_fingerprint": "3fa56b585c33c7ab90040c871d35cce8f3a04598c52ef225268ef84db44ede33",
+  "prompt_ir_semantic_ready": true,
+  "props": [
+    {
+      "asset_identity_ref": "APPLE",
+      "prop_ref": "APPLE"
+    },
+    {
+      "asset_identity_ref": "DOOR_LOCK",
+      "prop_ref": "DOOR_LOCK"
+    }
+  ],
+  "qualification_state": "PROMPT_IR_QUALIFIED",
+  "scene_id": "E01_SC002",
+  "schema_version": "prompt_ir_v2",
+  "semantic_refs": {
+    "beat_refs": [
+      "SC02-B01",
+      "SC02-B02"
+    ],
+    "coverage_roles": [
+      "INSERT_EVIDENCE",
+      "PRIMARY_BEAT_COVERAGE",
+      "REACTION_COVERAGE"
+    ],
+    "director_decision_refs": [
+      "DBD_SC02-B01",
+      "DBD_SC02-B02"
+    ],
+    "information_refs": [],
+    "reaction_contract_refs": [
+      "RC_SC02-B02_林晚"
+    ],
+    "requirement_refs": [
+      "REQ_SC02-B01",
+      "REQ_SC02-B02"
+    ]
+  },
+  "source_authority": {
+    "blocking_authority_fingerprint": "4f6fc1c3bdc21dd848fe028cf81beb3c3a21d10b76e966c8df1c840a427cea39",
+    "generation_policy_fingerprint": "511729bddc769c2138bcbbd4ba50825ae73a559a2ad6af32f4978e439b77ad07",
+    "shot_plan_authority_fingerprint": "2493022db5f142a5fecea0ed1e014d978f99d199f45800553a822442fd2b1fd1",
+    "storyboard_materialization_set_id": 2,
+    "storyboard_projection_fingerprint": "ee7f83c6a84208014f9477445e238ea9510c55e4cc5b5a5ec7a36730c2d56916",
+    "storyboard_set_payload_fingerprint": "240547ad2f3921d4feb30f3eaac25707a72c2df25a2108f1bd8411503525a903",
+    "visual_semantic_handoff_fingerprint": "4fe0486f1ec1884b8585e9cf653ba3a6013f2a57749244f0966744d61518aa13"
+  },
+  "spatial": {
+    "blocking_state_refs": [
+      "SC02-B01",
+      "SC02-B02"
+    ],
+    "entry_state_ref": "SC02-B01",
+    "exit_state_ref": "SC02-B02",
+    "prop_refs": [
+      "APPLE",
+      "DOOR_LOCK"
+    ],
+    "subject_zones": {
+      "林晚": "APT_CENTER",
+      "陆叔": "APT_KITCHEN"
+    }
+  },
+  "storyboard_shot_id": 9,
+  "subjects": [
+    {
+      "asset_identity_ref": "陆叔",
+      "subject_ref": "陆叔"
+    },
+    {
+      "asset_identity_ref": "林晚",
+      "subject_ref": "林晚"
+    }
+  ],
+  "temporal": {
+    "continuous_take": true,
+    "cut_events": [],
+    "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+    "duration_hint_seconds": 4,
+    "duration_mode": "REACTION_HOLD"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "schema_version": "generation_payload_v1",
+  "model_family": "MINIMAX_H3",
+  "prompt_ir_ref": {
+    "storyboard_shot_id": 3,
+    "plan_shot_id": "SH_E01_SC001_003",
+    "fingerprint": "ce94955d13784d49010b71afc7de5f606bcd8fd09de4e8158a6703928e54f6da"
+  },
+  "generation_policy": {
+    "schema_version": "generation_policy_v1",
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "required_asset_classes": [],
+    "optional_asset_classes": [
+      "CHARACTER_REFERENCE",
+      "PROP_REFERENCE",
+      "SCENE_REFERENCE"
+    ],
+    "style_profile_id": "",
+    "language": "",
+    "source": "prompt_quality_audit",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "source_binding": {
+      "mode": "CURRENT_OFFICIAL_IMAGE",
+      "authority_required": true
+    },
+    "fingerprint": "9ac2a53e318784f32c2d171ffc0dd86b8accc3120735d7efcea08c3f5bb4cde7"
+  },
+  "model_profile": {
+    "schema_version": "model_profile_v1",
+    "model_family": "MINIMAX_H3",
+    "adapter_id": "video_generic",
+    "capabilities": {
+      "supports_reference_images": true,
+      "supports_negative_prompt": false
+    },
+    "provider_config_ref": "75api-minimax-h3",
+    "fingerprint": "0b74f22788661053c885d4ae192d2a07a9c18f4bcca8c16bac46b028b6efa625"
+  },
+  "request": {
+    "prompt": "SUBJECT: [\"林晚\",\"顾沉\"]\nENVIRONMENT: {\"asset_identity_ref\":\"E01_SC001\",\"scene_ref\":\"E01_SC001\"}\nPROPS: [\"BROKEN_UMBRELLA_RIB\"]\nACTION: [{\"action_id\":\"SH_E01_SC001_003_ACTION_001\",\"actor_refs\":[\"林晚\",\"顾沉\"],\"beat_refs\":[\"SC01-B04\"],\"event_ref\":\"SC01-B04\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"INSERT\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"REACTION_HOLD\"}\nVISIBILITY: \"CHARACTER_AND_AUDIENCE\"\nCONSTRAINTS: {\"must_include_prop_refs\":[\"BROKEN_UMBRELLA_RIB\"],\"must_include_subject_refs\":[\"林晚\",\"顾沉\"],\"must_preserve_axis\":false}",
+    "motion_prompt": "SUBJECT: [\"林晚\",\"顾沉\"]\nENVIRONMENT: {\"asset_identity_ref\":\"E01_SC001\",\"scene_ref\":\"E01_SC001\"}\nPROPS: [\"BROKEN_UMBRELLA_RIB\"]\nACTION: [{\"action_id\":\"SH_E01_SC001_003_ACTION_001\",\"actor_refs\":[\"林晚\",\"顾沉\"],\"beat_refs\":[\"SC01-B04\"],\"event_ref\":\"SC01-B04\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"INSERT\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"REACTION_HOLD\"}\nVISIBILITY: \"CHARACTER_AND_AUDIENCE\"\nCONSTRAINTS: {\"must_include_prop_refs\":[\"BROKEN_UMBRELLA_RIB\"],\"must_include_subject_refs\":[\"林晚\",\"顾沉\"],\"must_preserve_axis\":false}",
+    "reference_bindings": [
+      {
+        "role": "SCENE_REFERENCE",
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_ref": "",
+        "reference_authority_fingerprint": "",
+        "reference_token": ""
+      },
+      {
+        "role": "PROP_REFERENCE",
+        "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+        "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
+        "authority_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+        "reference_authority_ref": "",
+        "reference_authority_fingerprint": "",
+        "reference_token": ""
+      }
+    ],
+    "mode": "IMAGE_TO_VIDEO",
+    "target_media": "VIDEO",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "resolution": "768p",
+    "source_binding": {
+      "mode": "CURRENT_OFFICIAL_IMAGE",
+      "authority_required": true
+    }
+  },
+  "adapter": {
+    "adapter_id": "video_generic",
+    "adapter_version": "video_generic_adapter_v1"
+  },
+  "semantic_projection": {
+    "SUBJECT": [
+      "林晚",
+      "顾沉"
+    ],
+    "ENVIRONMENT": {
+      "asset_identity_ref": "E01_SC001",
+      "scene_ref": "E01_SC001"
+    },
+    "PROPS": [
+      "BROKEN_UMBRELLA_RIB"
+    ],
+    "ACTION": [
+      {
+        "action_id": "SH_E01_SC001_003_ACTION_001",
+        "actor_refs": [
+          "林晚",
+          "顾沉"
+        ],
+        "beat_refs": [
+          "SC01-B04"
+        ],
+        "event_ref": "SC01-B04",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ],
+    "CAMERA": {
+      "framing_class": "INSERT",
+      "movement": "NONE",
+      "movement_end_condition": null,
+      "movement_target": null,
+      "movement_trigger": null,
+      "orientation": "EYE_LEVEL",
+      "support": "STATIC"
+    },
+    "CONTINUITY": {
+      "axis_policy": "PRESERVE",
+      "axis_ref": null,
+      "axis_refs": [],
+      "look_direction": {},
+      "screen_side_assignments": {}
+    },
+    "TEMPORAL": {
+      "continuous_take": true,
+      "cut_events": [],
+      "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+      "duration_hint_seconds": 4,
+      "duration_mode": "REACTION_HOLD"
+    },
+    "VISIBILITY": "CHARACTER_AND_AUDIENCE",
+    "CONSTRAINTS": {
+      "must_include_prop_refs": [
+        "BROKEN_UMBRELLA_RIB"
+      ],
+      "must_include_subject_refs": [
+        "林晚",
+        "顾沉"
+      ],
+      "must_preserve_axis": false
+    }
+  },
+  "unsupported": [],
+  "readiness": {
+    "ready": true,
+    "reasons": [],
+    "adapter_registered": true,
+    "policy_fingerprint": "9ac2a53e318784f32c2d171ffc0dd86b8accc3120735d7efcea08c3f5bb4cde7",
+    "model_profile_fingerprint": "0b74f22788661053c885d4ae192d2a07a9c18f4bcca8c16bac46b028b6efa625"
+  },
+  "provider_calls": 0,
+  "generation_payload_fingerprint": "88bd010bb0799dc56590ca54d0485853bec26e5d9ba431be27d456b7616f48b4"
+}

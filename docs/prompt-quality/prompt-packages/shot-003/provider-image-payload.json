@@ -1,0 +1,136 @@
+{
+  "schema_version": "generation_payload_v1",
+  "model_family": "GENERIC_IMAGE",
+  "prompt_ir_ref": {
+    "storyboard_shot_id": 3,
+    "plan_shot_id": "SH_E01_SC001_003",
+    "fingerprint": "b986e9fd7a4c7624143cd24cd866ad024b5bdd06f502122dbc327d9e56add972"
+  },
+  "generation_policy": {
+    "schema_version": "generation_policy_v1",
+    "mode": "TEXT_TO_IMAGE",
+    "target_media": "IMAGE",
+    "required_asset_classes": [],
+    "optional_asset_classes": [
+      "CHARACTER_REFERENCE",
+      "PROP_REFERENCE",
+      "SCENE_REFERENCE"
+    ],
+    "style_profile_id": "",
+    "language": "",
+    "source": "prompt_quality_audit",
+    "fingerprint": "6ea4f5101aa4a8443e37a693d0821f804d187f06fead55f9f369dd5c62a32e6c"
+  },
+  "model_profile": {
+    "schema_version": "model_profile_v1",
+    "model_family": "GENERIC_IMAGE",
+    "adapter_id": "image_generic",
+    "capabilities": {
+      "supports_reference_images": true,
+      "supports_negative_prompt": false
+    },
+    "provider_config_ref": "image-provider-unconfigured",
+    "fingerprint": "8dedcc6763d5c9137ff4433ee51a65e33f3f6b654a93ec80e6bb621afec8841d"
+  },
+  "request": {
+    "prompt": "SUBJECT: [\"林晚\",\"顾沉\"]\nENVIRONMENT: {\"asset_identity_ref\":\"E01_SC001\",\"scene_ref\":\"E01_SC001\"}\nPROPS: [\"BROKEN_UMBRELLA_RIB\"]\nACTION: [{\"action_id\":\"SH_E01_SC001_003_ACTION_001\",\"actor_refs\":[\"林晚\",\"顾沉\"],\"beat_refs\":[\"SC01-B04\"],\"event_ref\":\"SC01-B04\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"INSERT\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"REACTION_HOLD\"}\nVISIBILITY: \"CHARACTER_AND_AUDIENCE\"\nCONSTRAINTS: {\"must_include_prop_refs\":[\"BROKEN_UMBRELLA_RIB\"],\"must_include_subject_refs\":[\"林晚\",\"顾沉\"],\"must_preserve_axis\":false}",
+    "motion_prompt": "SUBJECT: [\"林晚\",\"顾沉\"]\nENVIRONMENT: {\"asset_identity_ref\":\"E01_SC001\",\"scene_ref\":\"E01_SC001\"}\nPROPS: [\"BROKEN_UMBRELLA_RIB\"]\nACTION: [{\"action_id\":\"SH_E01_SC001_003_ACTION_001\",\"actor_refs\":[\"林晚\",\"顾沉\"],\"beat_refs\":[\"SC01-B04\"],\"event_ref\":\"SC01-B04\",\"projection_origin\":\"SHOT_PLAN_PROJECTION\"}]\nCAMERA: {\"framing_class\":\"INSERT\",\"movement\":\"NONE\",\"movement_end_condition\":null,\"movement_target\":null,\"movement_trigger\":null,\"orientation\":\"EYE_LEVEL\",\"support\":\"STATIC\"}\nCONTINUITY: {\"axis_policy\":\"PRESERVE\",\"axis_ref\":null,\"axis_refs\":[],\"look_direction\":{},\"screen_side_assignments\":{}}\nTEMPORAL: {\"continuous_take\":true,\"cut_events\":[],\"cut_trigger\":\"AUTHORED_INFORMATION_LANDS\",\"duration_hint_seconds\":4,\"duration_mode\":\"REACTION_HOLD\"}\nVISIBILITY: \"CHARACTER_AND_AUDIENCE\"\nCONSTRAINTS: {\"must_include_prop_refs\":[\"BROKEN_UMBRELLA_RIB\"],\"must_include_subject_refs\":[\"林晚\",\"顾沉\"],\"must_preserve_axis\":false}",
+    "reference_bindings": [
+      {
+        "role": "SCENE_REFERENCE",
+        "identity_ref": "scene:E01_SC001",
+        "asset_authority_ref": "book:990401:scene:E01_SC001",
+        "authority_fingerprint": "ad74364e7df176a61852ea9c98867aae80454ebc014be49c2c875217ccb2c398",
+        "reference_authority_ref": "",
+        "reference_authority_fingerprint": "",
+        "reference_token": ""
+      },
+      {
+        "role": "PROP_REFERENCE",
+        "identity_ref": "prop:BROKEN_UMBRELLA_RIB",
+        "asset_authority_ref": "book:990401:prop:BROKEN_UMBRELLA_RIB",
+        "authority_fingerprint": "ed60d561d9a90d0fca22feb23a8653581a561f900ee5b8d417c731892b2ca5b1",
+        "reference_authority_ref": "",
+        "reference_authority_fingerprint": "",
+        "reference_token": ""
+      }
+    ],
+    "mode": "TEXT_TO_IMAGE",
+    "target_media": "IMAGE"
+  },
+  "adapter": {
+    "adapter_id": "image_generic",
+    "adapter_version": "image_generic_adapter_v1"
+  },
+  "semantic_projection": {
+    "SUBJECT": [
+      "林晚",
+      "顾沉"
+    ],
+    "ENVIRONMENT": {
+      "asset_identity_ref": "E01_SC001",
+      "scene_ref": "E01_SC001"
+    },
+    "PROPS": [
+      "BROKEN_UMBRELLA_RIB"
+    ],
+    "ACTION": [
+      {
+        "action_id": "SH_E01_SC001_003_ACTION_001",
+        "actor_refs": [
+          "林晚",
+          "顾沉"
+        ],
+        "beat_refs": [
+          "SC01-B04"
+        ],
+        "event_ref": "SC01-B04",
+        "projection_origin": "SHOT_PLAN_PROJECTION"
+      }
+    ],
+    "CAMERA": {
+      "framing_class": "INSERT",
+      "movement": "NONE",
+      "movement_end_condition": null,
+      "movement_target": null,
+      "movement_trigger": null,
+      "orientation": "EYE_LEVEL",
+      "support": "STATIC"
+    },
+    "CONTINUITY": {
+      "axis_policy": "PRESERVE",
+      "axis_ref": null,
+      "axis_refs": [],
+      "look_direction": {},
+      "screen_side_assignments": {}
+    },
+    "TEMPORAL": {
+      "continuous_take": true,
+      "cut_events": [],
+      "cut_trigger": "AUTHORED_INFORMATION_LANDS",
+      "duration_hint_seconds": 4,
+      "duration_mode": "REACTION_HOLD"
+    },
+    "VISIBILITY": "CHARACTER_AND_AUDIENCE",
+    "CONSTRAINTS": {
+      "must_include_prop_refs": [
+        "BROKEN_UMBRELLA_RIB"
+      ],
+      "must_include_subject_refs": [
+        "林晚",
+        "顾沉"
+      ],
+      "must_preserve_axis": false
+    }
+  },
+  "unsupported": [],
+  "readiness": {
+    "ready": true,
+    "reasons": [],
+    "adapter_registered": true,
+    "policy_fingerprint": "6ea4f5101aa4a8443e37a693d0821f804d187f06fead55f9f369dd5c62a32e6c",
+    "model_profile_fingerprint": "8dedcc6763d5c9137ff4433ee51a65e33f3f6b654a93ec80e6bb621afec8841d"
+  },
+  "provider_calls": 0,
+  "generation_payload_fingerprint": "452e4e4906c935df1a28de34b00e96fc9cea0eaaa3d09d52e001cfc03579bf92"
+}

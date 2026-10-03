@@ -1,0 +1,13 @@
+{
+  "asset_links": {
+    "scene": "E01_SC001",
+    "characters": [
+      "陆叔",
+      "林晚"
+    ],
+    "props": [
+      "HANDBAG"
+    ]
+  },
+  "prompt_ir_bindings": {}
+}

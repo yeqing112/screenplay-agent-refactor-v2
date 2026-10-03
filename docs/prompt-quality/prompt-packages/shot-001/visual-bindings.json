@@ -1,0 +1,13 @@
+{
+  "asset_links": {
+    "scene": "E01_SC001",
+    "characters": [
+      "林晚",
+      "售票员"
+    ],
+    "props": [
+      "TICKET"
+    ]
+  },
+  "prompt_ir_bindings": {}
+}

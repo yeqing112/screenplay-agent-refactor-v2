@@ -1,0 +1,1409 @@
+{
+  "schema_version": "prompt_production_quality_audit_v1",
+  "episode": {
+    "book_id": 990401,
+    "episode": 1,
+    "title": "红伞倒影",
+    "fixture": "artifacts/e2e-production-pilot"
+  },
+  "flow": {
+    "script": "PASS",
+    "story": "PASS",
+    "storyboard": "PASS",
+    "shot_plan": "PASS",
+    "shot_direction": "PASS",
+    "assets": "PASS_WITH_REFERENCE_AUTHORITY_GAP",
+    "visual_consistency": "WARNING",
+    "prompt_ir": "PASS",
+    "provider_projection": "PASS_SEMANTIC_ONLY",
+    "image_generation": "STOPPED_BEFORE_PROVIDER",
+    "video_generation": "STOPPED_BEFORE_PROVIDER"
+  },
+  "shots": [
+    {
+      "shot": 1,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 2,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 3,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 4,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 5,
+      "plan_shot_id": "SH_E01_SC001_005",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 6,
+      "plan_shot_id": "SH_E01_SC001_006",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 7,
+      "plan_shot_id": "SH_E01_SC001_007",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 8,
+      "plan_shot_id": "SH_E01_SC001_008",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 9,
+      "plan_shot_id": "SH_E01_SC002_001",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 10,
+      "plan_shot_id": "SH_E01_SC002_002",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 11,
+      "plan_shot_id": "SH_E01_SC002_003",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 12,
+      "plan_shot_id": "SH_E01_SC002_004",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 13,
+      "plan_shot_id": "SH_E01_SC002_005",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 14,
+      "plan_shot_id": "SH_E01_SC002_006",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 15,
+      "plan_shot_id": "SH_E01_SC002_007",
+      "image": "CAPTURED",
+      "video": "CAPTURED"
+    },
+    {
+      "shot": 16,
+      "status": "NOT_APPLICABLE",
+      "reason": "Materialized storyboard shot has no current PromptIR authority; generation is blocked fail-closed."
+    }
+  ],
+  "image_prompt_count": 15,
+  "video_prompt_count": 15,
+  "negative_prompt_count": 0,
+  "provider_payload_count": 30,
+  "image_quality": {
+    "average": 4.2,
+    "lowest": 3.2,
+    "scores": {
+      "semantic_completeness": 5,
+      "character_consistency": 3,
+      "scene_consistency": 3,
+      "camera_executability": 7,
+      "visual_style_consistency": 2,
+      "reference_alignment": 3,
+      "conciseness": 7,
+      "conflict_free": 7,
+      "provider_suitability": 2,
+      "production_readiness": 2
+    },
+    "prompt_length": {
+      "min": 907,
+      "median": 1038,
+      "p90": 1162,
+      "max": 1184
+    },
+    "issues": [
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 1,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 1,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 1,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 2,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 2,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 2,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 3,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 3,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 3,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 4,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 4,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 4,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 5,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 5,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 5,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 6,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 6,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 6,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 7,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 7,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 7,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 8,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 8,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 8,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 9,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 9,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 9,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 10,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 10,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 10,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 11,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 11,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 11,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 12,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 12,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 12,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 13,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 13,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 13,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 14,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 14,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 14,
+        "owner": "VISUAL_STYLE"
+      },
+      {
+        "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 15,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "CHARACTER_STATE_NOT_VERBALIZED",
+        "severity": "HIGH",
+        "shot": 15,
+        "owner": "CHARACTER_STATE"
+      },
+      {
+        "code": "VISUAL_STYLE_NOT_BOUND",
+        "severity": "HIGH",
+        "shot": 15,
+        "owner": "VISUAL_STYLE"
+      }
+    ]
+  },
+  "video_quality": {
+    "average": 3.6,
+    "lowest": 2.5,
+    "scores": {
+      "starting_state_alignment": 5,
+      "action_executability": 5,
+      "temporal_continuity": 3,
+      "camera_motion_clarity": 5,
+      "subject_motion_clarity": 5,
+      "character_consistency": 3,
+      "scene_consistency": 3,
+      "reference_alignment": 2,
+      "provider_suitability": 2,
+      "production_readiness": 2
+    },
+    "prompt_length": {
+      "min": 907,
+      "median": 1038,
+      "p90": 1162,
+      "max": 1184
+    },
+    "issues": [
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 1,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 1,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 1,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 2,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 2,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 2,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 3,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 3,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 3,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 4,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 4,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 4,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 5,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 5,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 5,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 6,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 6,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 6,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 7,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 7,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 7,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 8,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 8,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 8,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 9,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 9,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 9,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 10,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 10,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 10,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 11,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 11,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 11,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 12,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 12,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 12,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 13,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 13,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 13,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 14,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 14,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 14,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_REDESCRIBES_STARTING_FRAME",
+        "severity": "HIGH",
+        "shot": 15,
+        "owner": "PROVIDER_PROJECTION"
+      },
+      {
+        "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+        "severity": "HIGH",
+        "shot": 15,
+        "owner": "SHOT_DIRECTION"
+      },
+      {
+        "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+        "severity": "BLOCKER",
+        "shot": 15,
+        "owner": "PROVIDER_PROJECTION"
+      }
+    ]
+  },
+  "pair_alignment": {
+    "result": "WARNING",
+    "pass_count": 0,
+    "warning_count": 15,
+    "fail_count": 0,
+    "entries": [
+      {
+        "shot": 1,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 2,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 3,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 4,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 5,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 6,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 7,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 8,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 9,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 10,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 11,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 12,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 13,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 14,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      },
+      {
+        "shot": 15,
+        "status": "WARNING",
+        "checks": {
+          "subject_consistent": true,
+          "scene_consistent": true,
+          "camera_consistent": true,
+          "starting_state_bound": true,
+          "action_present": true,
+          "ending_state_explicit": false,
+          "provider_projection_semantics_equal": true
+        },
+        "warnings": [
+          "VIDEO_REDESCRIBES_STARTING_FRAME",
+          "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+          "REFERENCE_AUTHORITY_NOT_LOCKED"
+        ]
+      }
+    ]
+  },
+  "continuity": {
+    "matrix_path": "docs/prompt-quality/PROMPT_CONTINUITY_MATRIX.json",
+    "rows": [
+      {
+        "shot": 1,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 2,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 3,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 4,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 5,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 6,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 7,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 8,
+        "scene": "E01_SC001",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC001",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 9,
+        "scene": "E01_SC002",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC002",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": [
+          "SCENE_TRANSITION_EXPECTED"
+        ]
+      },
+      {
+        "shot": 10,
+        "scene": "E01_SC002",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC002",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 11,
+        "scene": "E01_SC002",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC002",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 12,
+        "scene": "E01_SC002",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC002",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 13,
+        "scene": "E01_SC002",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC002",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 14,
+        "scene": "E01_SC002",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC002",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      },
+      {
+        "shot": 15,
+        "scene": "E01_SC002",
+        "character": "UNKNOWN",
+        "face": "UNKNOWN",
+        "hair": "UNKNOWN",
+        "costume": "UNKNOWN",
+        "prop": "BOUND",
+        "scene_state": "E01_SC002",
+        "time": "UNKNOWN",
+        "weather": "UNKNOWN",
+        "lighting": "UNKNOWN",
+        "camera_side": "UNKNOWN",
+        "screen_direction": "UNKNOWN",
+        "story_state": "BOUND",
+        "adjacent_drift": []
+      }
+    ],
+    "unknown_fields": [
+      "face",
+      "hair",
+      "costume",
+      "time",
+      "weather",
+      "lighting",
+      "camera_side",
+      "screen_direction"
+    ]
+  },
+  "blockers": [
+    {
+      "severity": "BLOCKER",
+      "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+      "owner": "PROVIDER_PROJECTION",
+      "detail": "Provider-facing IMAGE and VIDEO prompts are renderer JSON sections, not executable natural-language prompts."
+    },
+    {
+      "severity": "BLOCKER",
+      "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+      "owner": "PROVIDER_PROJECTION",
+      "detail": "75API VIDEO payload receives the same structured semantic surface instead of a short IMAGE_TO_VIDEO action prompt."
+    }
+  ],
+  "warnings": [
+    {
+      "severity": "HIGH",
+      "code": "REFERENCE_AUTHORITY_NOT_LOCKED",
+      "owner": "REFERENCE_BINDING",
+      "detail": "Asset bindings exist, but current reference authority/token is not locked for the provider payload."
+    },
+    {
+      "severity": "HIGH",
+      "code": "CHARACTER_STATE_NOT_VERBALIZED",
+      "owner": "CHARACTER_STATE",
+      "detail": "Face, hair, costume, accessories and state are not represented as provider-readable prose."
+    },
+    {
+      "severity": "HIGH",
+      "code": "SCENE_STATE_NOT_VERBALIZED",
+      "owner": "SCENE_STATE",
+      "detail": "Location layout, time, weather and light direction are absent from the provider-facing prompt."
+    },
+    {
+      "severity": "HIGH",
+      "code": "VISUAL_STYLE_NOT_BOUND",
+      "owner": "VISUAL_STYLE",
+      "detail": "No VisualStyleProfile is bound into the prompt package."
+    },
+    {
+      "severity": "HIGH",
+      "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+      "owner": "SHOT_DIRECTION",
+      "detail": "Video semantic projection has action and duration but no explicit ending state."
+    },
+    {
+      "severity": "MEDIUM",
+      "code": "PROMPT_LANGUAGE_MIXED",
+      "owner": "PROMPT_COMPILER",
+      "detail": "Field labels are English JSON while source values are Chinese; this is not a deliberate provider language strategy."
+    },
+    {
+      "severity": "MEDIUM",
+      "code": "NEGATIVE_PROMPT_UNAVAILABLE",
+      "owner": "PROVIDER_PROJECTION",
+      "detail": "The selected generic adapters do not support negative_prompt; no negative text was sent."
+    },
+    {
+      "severity": "MEDIUM",
+      "code": "PROMPTIR_SCOPE_GAP_SHOT_016",
+      "owner": "PROMPT_IR",
+      "detail": "Materialized shot 016 has no current PromptIR authority and is fail-closed as NOT_APPLICABLE."
+    }
+  ],
+  "top_10_prompt_production_issues": [
+    {
+      "severity": "BLOCKER",
+      "code": "PROVIDER_PROJECTION_STRUCTURED_JSON",
+      "owner": "PROVIDER_PROJECTION",
+      "detail": "Provider-facing IMAGE and VIDEO prompts are renderer JSON sections, not executable natural-language prompts."
+    },
+    {
+      "severity": "BLOCKER",
+      "code": "VIDEO_PROVIDER_PROMPT_IS_STRUCTURED_JSON",
+      "owner": "PROVIDER_PROJECTION",
+      "detail": "75API VIDEO payload receives the same structured semantic surface instead of a short IMAGE_TO_VIDEO action prompt."
+    },
+    {
+      "severity": "HIGH",
+      "code": "REFERENCE_AUTHORITY_NOT_LOCKED",
+      "owner": "REFERENCE_BINDING",
+      "detail": "Asset bindings exist, but current reference authority/token is not locked for the provider payload."
+    },
+    {
+      "severity": "HIGH",
+      "code": "CHARACTER_STATE_NOT_VERBALIZED",
+      "owner": "CHARACTER_STATE",
+      "detail": "Face, hair, costume, accessories and state are not represented as provider-readable prose."
+    },
+    {
+      "severity": "HIGH",
+      "code": "SCENE_STATE_NOT_VERBALIZED",
+      "owner": "SCENE_STATE",
+      "detail": "Location layout, time, weather and light direction are absent from the provider-facing prompt."
+    },
+    {
+      "severity": "HIGH",
+      "code": "VISUAL_STYLE_NOT_BOUND",
+      "owner": "VISUAL_STYLE",
+      "detail": "No VisualStyleProfile is bound into the prompt package."
+    },
+    {
+      "severity": "HIGH",
+      "code": "VIDEO_ENDING_STATE_NOT_EXPLICIT",
+      "owner": "SHOT_DIRECTION",
+      "detail": "Video semantic projection has action and duration but no explicit ending state."
+    },
+    {
+      "severity": "MEDIUM",
+      "code": "PROMPT_LANGUAGE_MIXED",
+      "owner": "PROMPT_COMPILER",
+      "detail": "Field labels are English JSON while source values are Chinese; this is not a deliberate provider language strategy."
+    },
+    {
+      "severity": "MEDIUM",
+      "code": "NEGATIVE_PROMPT_UNAVAILABLE",
+      "owner": "PROVIDER_PROJECTION",
+      "detail": "The selected generic adapters do not support negative_prompt; no negative text was sent."
+    },
+    {
+      "severity": "MEDIUM",
+      "code": "PROMPTIR_SCOPE_GAP_SHOT_016",
+      "owner": "PROMPT_IR",
+      "detail": "Materialized shot 016 has no current PromptIR authority and is fail-closed as NOT_APPLICABLE."
+    }
+  ],
+  "provider_calls": {
+    "llm": 0,
+    "image": 0,
+    "video": 0,
+    "75api": {
+      "post": 0,
+      "poll": 0,
+      "content": 0
+    },
+    "shapi_image": 0
+  },
+  "isolation": {
+    "production_db_writes": 0,
+    "book_990400_writes": 0,
+    "secret_leaks": 0,
+    "orphans": 0
+  },
+  "readiness": {
+    "IMAGE_PROMPT_PRODUCTION_READINESS": "BLOCKED",
+    "VIDEO_PROMPT_PRODUCTION_READINESS": "BLOCKED",
+    "real_media_generation": "PROMPT_QUALITY_BLOCKED"
+  }
+}

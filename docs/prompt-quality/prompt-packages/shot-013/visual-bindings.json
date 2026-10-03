@@ -1,0 +1,12 @@
+{
+  "asset_links": {
+    "scene": "E01_SC002",
+    "characters": [
+      "林晚"
+    ],
+    "props": [
+      "RED_FIBER"
+    ]
+  },
+  "prompt_ir_bindings": {}
+}

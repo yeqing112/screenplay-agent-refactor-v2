@@ -1,0 +1,13 @@
+{
+  "asset_links": {
+    "scene": "E01_SC001",
+    "characters": [
+      "林晚"
+    ],
+    "props": [
+      "BROKEN_UMBRELLA_RIB",
+      "RED_UMBRELLA"
+    ]
+  },
+  "prompt_ir_bindings": {}
+}

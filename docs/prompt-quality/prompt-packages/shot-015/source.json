@@ -1,0 +1,15 @@
+{
+  "book_id": 990401,
+  "episode": 1,
+  "script_ir": {
+    "payload_hash": "87ea8196185b074377e7e46041b2233112f111ea406d9924bdf313bcca43f5db",
+    "title": "红伞倒影"
+  },
+  "scene_id": "E01_SC002",
+  "plan_shot_id": "SH_E01_SC002_007",
+  "beat_refs": [
+    "SC02-B08",
+    "SC02-B09"
+  ],
+  "source_fact_policy": "read_only"
+}
