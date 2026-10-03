@@ -167,7 +167,8 @@ async function runOnce(browser, index) {
   });
   const evidence = { run: index, started_at: new Date().toISOString(), viewport: { width: 1440, height: 900 }, steps: [], blockers: [], screenshot_paths: [], mutations, response_errors: responseErrors, http_errors: httpErrors, external_hosts: externalHosts, console_errors: consoleErrors, policy: { ordinary_user_browser_only: true, direct_database_seed: false, business_api_response_mocking: false, workspace_fixture_used: false, legacy_ui_bypass: false, page_route_count: 0 }, reload_checks: [], viewport_smoke: [], protected_book_990400_writes: 0, delete_audit: null };
   if (EXISTING_CANARY_BOOK_ID) disposableProjectId = EXISTING_CANARY_BOOK_ID;
-  const shot = async (name) => { const file = path.join(OUT, `${String(index).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
+  let screenshotSequence = 0;
+  const shot = async (name) => { screenshotSequence += 1; const file = path.join(OUT, `${String(screenshotSequence).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
   const step = async (name, action) => {
     try { await action(); evidence.steps.push({ name, status: 'passed' }); }
     catch (error) { evidence.steps.push({ name, status: 'blocked', error: String(error) }); evidence.blockers.push({ step: name, error: String(error) }); }
@@ -417,7 +418,6 @@ async function runOnce(browser, index) {
   });
   await step('all-shots-prompt-media-review-through-ui', async () => {
     if (REAL_IMAGE_STAGING) {
-      const imageModel = page.getByLabel('IMAGE 生成模型', { exact: true });
       await selectModelProfile(page, 'IMAGE', REAL_IMAGE_PROFILE_ID);
       const shotId = String((evidence.materialized_shot_ids || [])[0] || '');
       if (!shotId) throw new Error('Real IMAGE staging requires one materialized target shot.');
@@ -431,9 +431,12 @@ async function runOnce(browser, index) {
 
       const generateImage = page.getByRole('button', { name: '生成 IMAGE', exact: true });
       await generateImage.waitFor({ state: 'visible', timeout: 30000 });
-      const initialGeneration = await clickAndWaitForResponse(page, generateImage, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), 180000);
+      await shot('image-ready');
+      const initialResponsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/generate-frame'), { timeout: 180000 });
+      await generateImage.click();
+      await shot('image-running');
+      const initialGeneration = await initialResponsePromise;
       if (!initialGeneration.ok()) throw new Error(`Initial real IMAGE generation failed: HTTP ${initialGeneration.status()} ${await initialGeneration.text()}`);
-      await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 180000 });
       const initialCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => reviewableRawCandidate(current.IMAGE).reviewable);
       const initialExecution = executionIdentity(initialCandidate.shot, 'IMAGE');
       const initialReview = reviewableRawCandidate(initialCandidate.shot.IMAGE);
@@ -450,6 +453,7 @@ async function runOnce(browser, index) {
       const approve = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
       await approve.waitFor({ state: 'visible', timeout: 30000 });
       if (await approve.isDisabled()) throw new Error('Initial IMAGE review action is disabled.');
+      await shot('image-review-v1');
       const initialPromotion = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/api/assets/candidates/') && new URL(response.url()).pathname.endsWith('/promote'), { timeout: 60000 });
       await approve.click();
       const initialPromotionResponse = await initialPromotion;
@@ -457,6 +461,7 @@ async function runOnce(browser, index) {
       await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 }).catch(() => {});
       const officialV1State = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.candidate_id === initialCandidateId);
       const officialV1 = officialV1State.shot.IMAGE?.official?.version || {};
+      await shot('image-official-v1');
 
       if (REAL_IMAGE_SINGLE_CALL && !REAL_PROVIDER_FINAL_SLICE) {
         evidence.real_image_staging = {
@@ -481,12 +486,11 @@ async function runOnce(browser, index) {
         await page.getByRole('button', { name: '图片', exact: true }).click();
       }
       await shot('image-v1-before-regenerate');
-      const imageControls = page.getByTestId('shot-studio-generation-controls');
-      evidence.image_regenerate_debug = { text: await imageControls.innerText().catch(() => ''), buttons: await imageControls.locator('button').evaluateAll((items) => items.map((item) => ({ testid: item.getAttribute('data-testid'), disabled: item.disabled, text: item.textContent }))).catch(() => []) };
       const regenerate = page.getByTestId('shot-studio-regenerate-image');
       await regenerate.waitFor({ state: 'visible', timeout: 30000 });
       const attemptPost = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/generation-attempts'), { timeout: 60000 }).catch(() => null);
       await regenerate.click();
+      await shot('image-regenerate-running');
       await attemptPost;
       const regeneratedCandidate = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.id === officialV1.id && reviewableRawCandidate(current.IMAGE).reviewable && current.IMAGE?.latest_execution?.id !== initialExecution.execution_id, 180000);
       const regeneratedExecution = executionIdentity(regeneratedCandidate.shot, 'IMAGE');
@@ -498,6 +502,7 @@ async function runOnce(browser, index) {
       await page.getByText('候选媒体审核', { exact: true }).waitFor({ timeout: 30000 });
       const approveV2 = page.getByTestId('shot-studio-review-desk').getByRole('button', { name: '批准并继续', exact: true });
       if (await approveV2.isDisabled()) throw new Error('Regenerated IMAGE review action is disabled.');
+      await shot('image-review-v2');
       const v2Promotion = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname.includes('/api/assets/candidates/') && new URL(response.url()).pathname.endsWith('/promote'), { timeout: 60000 });
       await approveV2.click();
       const v2PromotionResponse = await v2Promotion;
@@ -505,6 +510,7 @@ async function runOnce(browser, index) {
       await page.getByText('已建立正式版本', { exact: true }).waitFor({ timeout: 120000 }).catch(() => {});
       const officialV2State = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.IMAGE?.official?.current === true && current.IMAGE?.official?.version?.id !== officialV1.id && current.IMAGE?.official?.version?.candidate_id === regeneratedCandidateId, 120000);
       const officialV2 = officialV2State.shot.IMAGE?.official?.version || {};
+      await shot('image-official-v2');
       evidence.real_image_staging = {
         profile_id: REAL_IMAGE_PROFILE_ID,
         model_name: REAL_IMAGE_MODEL_NAME,
@@ -518,7 +524,6 @@ async function runOnce(browser, index) {
       await shot('real-image-v2-official');
       if (!REAL_PROVIDER_FINAL_SLICE) return;
 
-      const videoModel = page.getByLabel('VIDEO 生成模型', { exact: true });
       await selectModelProfile(page, 'VIDEO', REAL_VIDEO_PROFILE_ID);
       const prepareVideo = page.getByRole('button', { name: '准备 VIDEO PromptIR', exact: true });
       const videoPrompt = await clickAndWaitForResponse(page, prepareVideo, (response) => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/prompt-ir/compile'), 30000);
@@ -596,6 +601,7 @@ async function runOnce(browser, index) {
       const videoRegenerateRunningIdentity = executionIdentity(videoRegenerateRunning.shot, 'VIDEO');
       evidence.video_old_official_preserved_during_regenerate = videoRegenerateRunning.shot.VIDEO?.official?.current === true && videoRegenerateRunning.shot.VIDEO?.official?.version?.id === videoOfficialV1.id;
       await shot('video-regenerate-running');
+      await shot('video-regenerate');
       const videoCandidateV2State = await waitForWorkspaceShot(page, disposableProjectId, shotId, (current) => current.VIDEO?.official?.current === true && current.VIDEO?.official?.version?.id === videoOfficialV1.id && reviewableRawCandidate(current.VIDEO).reviewable && current.VIDEO?.latest_execution?.id !== videoInitialExecution.execution_id, 240000);
       const videoCandidateV2Review = reviewableRawCandidate(videoCandidateV2State.shot.VIDEO);
       const videoCandidateV2 = videoCandidateV2Review.candidateId;
@@ -797,7 +803,7 @@ async function runOnce(browser, index) {
         if (Number(payload?.orphan_rows || 0) !== 0 || Number(payload?.ambiguous_rows || 0) !== 0) throw new Error(`delete cleanup audit failed: ${JSON.stringify(payload)}`);
       }
     }
-    await shot('project-cleanup');
+    await shot('cleanup');
   });
   evidence.disposable_project_id = disposableProjectId;
   evidence.finished_at = new Date().toISOString();
