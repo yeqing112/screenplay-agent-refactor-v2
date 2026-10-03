@@ -48,7 +48,7 @@ VIDEO 尚未完成真实调用。浏览器在 VIDEO 模型选项异步刷新完�
 
 ## 验证
 
-- mock full journey preflight: 1 run, all steps passed
+- mock post-fix preflight: 1 run, all steps passed; sequential Browser QA names present
 - real final attempt: setup steps passed; media step blocked at VIDEO 409
 - Web targeted tests: 72 passed
 - backend relevant suite: 111 passed
@@ -59,7 +59,7 @@ VIDEO 尚未完成真实调用。浏览器在 VIDEO 模型选项异步刷新完�
 
 证据目录：
 
-- [mock preflight](../../output/playwright/real-provider-final-slice-mock-final/summary.json)
+- [mock post-fix preflight](../../output/playwright/real-provider-final-slice-mock-final2/summary.json)
 - [real attempt](../../output/playwright/real-provider-final-slice-real-final2/summary.json)
 - [Truth Audit](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_TRUTH_AUDIT.json)
 - [Provider Evidence](./PRODUCTION_UI_V3_REAL_PROVIDER_FINAL_VERTICAL_SLICE_PROVIDER_EVIDENCE.json)

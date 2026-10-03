@@ -168,7 +168,8 @@ async function runOnce(browser, index) {
   const evidence = { run: index, started_at: new Date().toISOString(), viewport: { width: 1440, height: 900 }, steps: [], blockers: [], screenshot_paths: [], mutations, response_errors: responseErrors, http_errors: httpErrors, external_hosts: externalHosts, console_errors: consoleErrors, policy: { ordinary_user_browser_only: true, direct_database_seed: false, business_api_response_mocking: false, workspace_fixture_used: false, legacy_ui_bypass: false, page_route_count: 0 }, reload_checks: [], viewport_smoke: [], protected_book_990400_writes: 0, delete_audit: null };
   if (EXISTING_CANARY_BOOK_ID) disposableProjectId = EXISTING_CANARY_BOOK_ID;
   let screenshotSequence = 0;
-  const shot = async (name) => { screenshotSequence += 1; const file = path.join(OUT, `${String(screenshotSequence).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
+  const requiredScreenshotOrdinals = { 'image-ready': 1, 'image-running': 2, 'image-review-v1': 3, 'image-official-v1': 4, 'image-regenerate-running': 5, 'image-review-v2': 6, 'image-official-v2': 7, 'video-running-before-reload': 8, 'video-running-after-reload': 9, 'video-review-v1': 10, 'video-official-v1': 11, 'video-regenerate': 12, 'video-review-v2': 13, 'video-official-v2': 14, cleanup: 15 };
+  const shot = async (name) => { screenshotSequence += 1; const ordinal = requiredScreenshotOrdinals[name] ?? screenshotSequence; const file = path.join(OUT, `${String(ordinal).padStart(2, '0')}-${safeName(name)}.png`); await page.screenshot({ path: file, fullPage: true }); evidence.screenshot_paths.push(file); };
   const step = async (name, action) => {
     try { await action(); evidence.steps.push({ name, status: 'passed' }); }
     catch (error) { evidence.steps.push({ name, status: 'blocked', error: String(error) }); evidence.blockers.push({ step: name, error: String(error) }); }

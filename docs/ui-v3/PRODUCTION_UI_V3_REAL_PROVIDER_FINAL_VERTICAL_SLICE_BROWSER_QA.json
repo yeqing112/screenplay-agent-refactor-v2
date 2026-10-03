@@ -5,7 +5,24 @@
     "steps_passed": 17,
     "failures": 0,
     "external_hosts": 0,
-    "artifact": "output/playwright/real-provider-final-slice-mock-final/summary.json"
+    "artifact": "output/playwright/real-provider-final-slice-mock-final2/summary.json",
+    "required_named_screenshots": [
+      "01-image-ready.png",
+      "02-image-running.png",
+      "03-image-review-v1.png",
+      "04-image-official-v1.png",
+      "05-image-regenerate-running.png",
+      "06-image-review-v2.png",
+      "07-image-official-v2.png",
+      "08-video-running-before-reload.png",
+      "09-video-running-after-reload.png",
+      "10-video-review-v1.png",
+      "11-video-official-v1.png",
+      "12-video-regenerate.png",
+      "13-video-review-v2.png",
+      "14-video-official-v2.png",
+      "15-cleanup.png"
+    ]
   },
   "real_attempt": {
     "runs": 1,
