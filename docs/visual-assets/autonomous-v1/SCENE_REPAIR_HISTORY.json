@@ -4,36 +4,127 @@
     {
       "view_id": "REVERSE",
       "previous_prompt": "单张写实电影场景参考图，不要拼图，不要四宫格，不要文字标签，不要人物。这是与 SceneGeometryIR 完全相同的物理房间，只改变相机位置、相机朝向和自然遮挡；禁止改变墙体、门、窗、水槽、餐桌、橱柜、固定家具、材质、时间、天气和灯光方向。\nSceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\nSceneDerivedViewPlan：{\"camera_direction\": \"toward the center foreground and rear-right kitchen door\", \"camera_position\": \"near rear kitchen work zone facing toward dining table\", \"forbidden_changes\": [\"redesigning the room\", \"moving the door\", \"moving the sink below the window\", \"changing fixed furniture\", \"adding people or text\"], \"occluded_landmarks\": [\"back_cabinet_partial\"], \"required_landmarks\": [\"dining_table\", \"rear_right_kitchen_door\", \"left_window_edge\"], \"view_id\": \"REVERSE\", \"view_type\": \"REVERSE\", \"visible_landmarks\": [\"dining_table\", \"rear_right_kitchen_door\", \"left_window_edge\", \"sink_edge\"]}\n输出必须是一张完整可读的单视图，所有可见地标按计划保持相对拓扑。",
-      "failed_output": {},
+      "failed_output": {
+        "view_id": "REVERSE",
+        "execution_id": "714bafa828ee",
+        "provider": "shapi-gemini-image",
+        "model_profile_id": "local-image-mw4y52",
+        "candidate_status": "CANDIDATE",
+        "prompt_fingerprint": "b9fe52ff96228edf2fb9e82d36ab8061e9af6d862768bb0bddf34a982b65c02c",
+        "provider_request_payload": {
+          "contents": [
+            {
+              "role": "user",
+              "parts": [
+                {
+                  "text": "单张写实电影场景参考图，不要拼图，不要四宫格，不要文字标签，不要人物。这是与 SceneGeometryIR 完全相同的物理房间，只改变相机位置、相机朝向和自然遮挡；禁止改变墙体、门、窗、水槽、餐桌、橱柜、固定家具、材质、时间、天气和灯光方向。\nSceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\nSceneDerivedViewPlan：{\"camera_direction\": \"toward the center foreground and rear-right kitchen door\", \"camera_position\": \"near rear kitchen work zone facing toward dining table\", \"forbidden_changes\": [\"redesigning the room\", \"moving the door\", \"moving the sink below the window\", \"changing fixed furniture\", \"adding people or text\"], \"occluded_landmarks\": [\"back_cabinet_partial\"], \"required_landmarks\": [\"dining_table\", \"rear_right_kitchen_door\", \"left_window_edge\"], \"view_id\": \"REVERSE\", \"view_type\": \"REVERSE\", \"visible_landmarks\": [\"dining_table\", \"rear_right_kitchen_door\", \"left_window_edge\", \"sink_edge\"]}\n输出必须是一张完整可读的单视图，所有可见地标按计划保持相对拓扑。\n\nNegative constraints (must not appear): 人物、角色、人脸、文字、标签、Logo、水印、拼图、四宫格、不同房间、移动门窗、水槽漂移、家具新增或消失、超现实建筑"
+                },
+                {
+                  "text": "参考图 1：参考资产 1。角色/用途：scene，same physical room topology。该图是已确认的视觉事实：必须继承其人物身份、脸型、发型、服装、材质或场景布局；不得用提示词中的泛化描述覆盖它，也不得新增冲突设定。"
+                },
+                {
+                  "inlineData": {
+                    "mimeType": "image/jpeg",
+                    "data": "<redacted base64: 3515252 chars>"
+                  }
+                }
+              ]
+            }
+          ],
+          "generationConfig": {
+            "responseModalities": [
+              "IMAGE"
+            ],
+            "imageConfig": {
+              "aspectRatio": "16:9",
+              "imageSize": "2K"
+            }
+          }
+        },
+        "file": {
+          "file": "scene-reverse.jpg",
+          "bytes": 2168582,
+          "sha256": "3c2325eee6d3d1ceb225809b1a66b63984fd7280bdf1db5b63aa4d82487887cd",
+          "width": 2752,
+          "height": 1536,
+          "format": "JPEG"
+        },
+        "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\autonomous-scene-asset-v1\\20261004T033722Z\\scene-reverse.jpg",
+        "visual_review": "PENDING_HUMAN_VISUAL_REVIEW"
+      },
       "violations": [
-        "Cabinet color mismatch: white in MASTER vs green in REVERSE.",
-        "Lighting state mismatch: the pendant bulb is lit in MASTER but unlit in REVERSE.",
-        "Sink unit mismatch: MASTER has a white cabinet base under the sink; REVERSE has a white appliance (dishwasher) base.",
-        "Countertop clutter mismatch: coffee maker present in MASTER, absent in REVERSE."
+        "Window and natural light source absent",
+        "Back wall door placement inconsistent with master view",
+        "Cabinet layout on back wall differs significantly"
       ],
       "required_corrections": [
-        "保持 dining_table 的位置和材质",
-        "保持 rear_right_kitchen_door 的位置和材质",
-        "保持 left_window_edge 的位置和材质",
-        "必须与 MASTER 是同一物理房间，禁止更换门、窗、水槽、橱柜、餐桌"
+        "保持 dining_table",
+        "保持 rear_right_kitchen_door",
+        "保持 left_window_edge",
+        "不得改变 SceneGeometryIR 的门窗水槽餐桌橱柜拓扑"
       ],
-      "attempt_number": 3
+      "attempt_number": 2
     },
     {
       "view_id": "SIDE",
       "previous_prompt": "单张写实电影场景参考图，不要拼图，不要四宫格，不要文字标签，不要人物。这是与 SceneGeometryIR 完全相同的物理房间，只改变相机位置、相机朝向和自然遮挡；禁止改变墙体、门、窗、水槽、餐桌、橱柜、固定家具、材质、时间、天气和灯光方向。\nSceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\nSceneDerivedViewPlan：{\"camera_direction\": \"across the table toward the left window and rear work zone\", \"camera_position\": \"along the long side of the dining table\", \"forbidden_changes\": [\"redesigning the room\", \"changing table orientation\", \"moving the window\", \"changing fixed furniture\", \"adding people or text\"], \"occluded_landmarks\": [\"near chair underside\"], \"required_landmarks\": [\"dining_table\", \"sink_below_window\", \"back_cabinet\"], \"view_id\": \"SIDE\", \"view_type\": \"SIDE\", \"visible_landmarks\": [\"dining_table\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\"]}\n输出必须是一张完整可读的单视图，所有可见地标按计划保持相对拓扑。",
-      "failed_output": {},
+      "failed_output": {
+        "view_id": "SIDE",
+        "execution_id": "a802fc12de26",
+        "provider": "shapi-gemini-image",
+        "model_profile_id": "local-image-mw4y52",
+        "candidate_status": "CANDIDATE",
+        "prompt_fingerprint": "5b29f5ac9cff562ad889512aa4a14760f482e4cce21a7c6c32a4f2c23a144945",
+        "provider_request_payload": {
+          "contents": [
+            {
+              "role": "user",
+              "parts": [
+                {
+                  "text": "单张写实电影场景参考图，不要拼图，不要四宫格，不要文字标签，不要人物。这是与 SceneGeometryIR 完全相同的物理房间，只改变相机位置、相机朝向和自然遮挡；禁止改变墙体、门、窗、水槽、餐桌、橱柜、固定家具、材质、时间、天气和灯光方向。\nSceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\nSceneDerivedViewPlan：{\"camera_direction\": \"across the table toward the left window and rear work zone\", \"camera_position\": \"along the long side of the dining table\", \"forbidden_changes\": [\"redesigning the room\", \"changing table orientation\", \"moving the window\", \"changing fixed furniture\", \"adding people or text\"], \"occluded_landmarks\": [\"near chair underside\"], \"required_landmarks\": [\"dining_table\", \"sink_below_window\", \"back_cabinet\"], \"view_id\": \"SIDE\", \"view_type\": \"SIDE\", \"visible_landmarks\": [\"dining_table\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\"]}\n输出必须是一张完整可读的单视图，所有可见地标按计划保持相对拓扑。\n\nNegative constraints (must not appear): 人物、角色、人脸、文字、标签、Logo、水印、拼图、四宫格、不同房间、移动门窗、水槽漂移、家具新增或消失、超现实建筑"
+                },
+                {
+                  "text": "参考图 1：参考资产 1。角色/用途：scene，same physical room topology。该图是已确认的视觉事实：必须继承其人物身份、脸型、发型、服装、材质或场景布局；不得用提示词中的泛化描述覆盖它，也不得新增冲突设定。"
+                },
+                {
+                  "inlineData": {
+                    "mimeType": "image/jpeg",
+                    "data": "<redacted base64: 3515252 chars>"
+                  }
+                }
+              ]
+            }
+          ],
+          "generationConfig": {
+            "responseModalities": [
+              "IMAGE"
+            ],
+            "imageConfig": {
+              "aspectRatio": "16:9",
+              "imageSize": "2K"
+            }
+          }
+        },
+        "file": {
+          "file": "scene-side.jpg",
+          "bytes": 2101037,
+          "sha256": "29c3538886946aedfaee11c32a3652a0ff7c13bda24996236dd08c136e23aa0c",
+          "width": 2752,
+          "height": 1536,
+          "format": "JPEG"
+        },
+        "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\autonomous-scene-asset-v1\\20261004T033722Z\\scene-side.jpg",
+        "visual_review": "PENDING_HUMAN_VISUAL_REVIEW"
+      },
       "violations": [
-        "Upper cabinet count mismatch: MASTER has 5 cabinets; SIDE has 3 cabinets.",
-        "Cabinet color mismatch: white in MASTER vs cream/off-white in SIDE.",
-        "Countertop clutter mismatch: coffee maker present in MASTER, absent in SIDE.",
-        "Table surface mismatch: MASTER table has dark stains; SIDE table is clean."
+        "Minor cabinet door handle placement variations",
+        "Slight differences in cabinet wear patterns"
       ],
       "required_corrections": [
-        "保持 dining_table 的位置和材质",
-        "保持 sink_below_window 的位置和材质",
-        "保持 back_cabinet 的位置和材质",
-        "必须与 MASTER 是同一物理房间，禁止更换门、窗、水槽、橱柜、餐桌"
+        "保持 dining_table",
+        "保持 sink_below_window",
+        "保持 back_cabinet",
+        "不得改变 SceneGeometryIR 的门窗水槽餐桌橱柜拓扑"
       ],
       "attempt_number": 2
     }
@@ -42,50 +133,57 @@
     {
       "view_id": "MASTER",
       "attempt": 1,
-      "kind": "RESUMED_EXISTING_GENERATION"
+      "kind": "PRIMARY_GENERATING",
+      "call": 1
+    },
+    {
+      "view_id": "REVERSE",
+      "attempt": 1,
+      "kind": "DERIVING",
+      "call": 2,
+      "route": "REFERENCE_IMAGE_DERIVATION",
+      "reference_images": 1
+    },
+    {
+      "view_id": "SIDE",
+      "attempt": 1,
+      "kind": "DERIVING",
+      "call": 3,
+      "route": "REFERENCE_IMAGE_DERIVATION",
+      "reference_images": 1
+    },
+    {
+      "view_id": "DETAIL",
+      "attempt": 1,
+      "kind": "DERIVING",
+      "call": 4,
+      "route": "REFERENCE_IMAGE_DERIVATION",
+      "reference_images": 1
     },
     {
       "view_id": "REVERSE",
       "attempt": 2,
-      "kind": "RESUMED_EXISTING_GENERATION"
-    },
-    {
-      "view_id": "SIDE",
-      "attempt": 3,
-      "kind": "RESUMED_EXISTING_GENERATION"
-    },
-    {
-      "view_id": "DETAIL",
-      "attempt": 4,
-      "kind": "RESUMED_EXISTING_GENERATION"
-    },
-    {
-      "view_id": "REVERSE",
-      "attempt": 5,
-      "kind": "RESUMED_EXISTING_GENERATION"
-    },
-    {
-      "view_id": "REVERSE",
-      "attempt": 3,
       "kind": "REPAIRING",
-      "call": 6,
+      "call": 5,
+      "route": "REFERENCE_IMAGE_DERIVATION",
       "corrections": [
-        "保持 dining_table 的位置和材质",
-        "保持 rear_right_kitchen_door 的位置和材质",
-        "保持 left_window_edge 的位置和材质",
-        "必须与 MASTER 是同一物理房间，禁止更换门、窗、水槽、橱柜、餐桌"
+        "保持 dining_table",
+        "保持 rear_right_kitchen_door",
+        "保持 left_window_edge",
+        "不得改变 SceneGeometryIR 的门窗水槽餐桌橱柜拓扑"
       ]
     },
     {
       "view_id": "SIDE",
       "attempt": 2,
       "kind": "REPAIRING",
-      "call": 7,
+      "call": 6,
+      "route": "REFERENCE_IMAGE_DERIVATION",
       "corrections": [
-        "保持 dining_table 的位置和材质",
-        "保持 sink_below_window 的位置和材质",
-        "保持 back_cabinet 的位置和材质",
-        "必须与 MASTER 是同一物理房间，禁止更换门、窗、水槽、橱柜、餐桌"
+        "保持 dining_table",
+        "保持 sink_below_window",
+        "保持 back_cabinet",
+        "不得改变 SceneGeometryIR 的门窗水槽餐桌橱柜拓扑"
       ]
     }
   ]

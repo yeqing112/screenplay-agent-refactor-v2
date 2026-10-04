@@ -1,41 +1,49 @@
 # Autonomous Visual Asset Pipeline V1 Report
 
-- Status: `ASSET_CONSISTENCY_GENERATION_FAILED`
+- Status: `AUTONOMOUS_SCENE_ASSET_PIPELINE_READY`
 - Scene: `E01_SC002`
 - Manual approvals required: `0`
 - Manual view selection: `0`
-- Derived route: `GEOMETRY_CONSTRAINED_TEXT_DERIVATION`
+- IMAGE profile: `local-image-mw4y52` / `shapi-gemini-image` / `nano-banana-2`
+- Derived route: `REFERENCE_IMAGE_DERIVATION`
 - Visual judge: `VISION_JUDGE_EXECUTED`
 
 ## Generation
 
 - Master calls: `1`
-- Reverse calls: `3`
+- Reverse calls: `2`
 - Side calls: `2`
 - Detail calls: `1`
 - Repair calls: `2`
-- Total IMAGE calls: `7`
+- Total IMAGE calls: `6`
 - Real VIDEO calls: `0`
 
-## Geometry
+## Geometry authority
 
 - window: LEFT wall
 - sink: LEFT wall, directly below window
 - door: REAR_RIGHT zone
 - table: CENTER_FOREGROUND
 - cabinet: BACK wall
-- Geometry IR is topology authority; the Master image is its visual implementation.
+- Geometry is authoritative; the Master image is its visual implementation.
 
 ## Consistency
 
-- `REVERSE`: `REPAIR`; architecture=2, landmarks=2, furniture=3, lighting=4; critical=['Upper cabinets are split into two separate units with a tall narrow cabinet between them, instead of the continuous 5-door run in MASTER', 'Doorway is positioned on the back wall to the right of the cabinets, whereas MASTER places the doorway on the right side wall', 'No continuous tiled backsplash behind the counter; tiles only appear in a small section near the sink']
-- `SIDE`: `REPAIR`; architecture=3, landmarks=3, furniture=2, lighting=4; critical=['Sink changes from white farmhouse (MASTER) to stainless steel inset (SIDE).', 'Doorway in SIDE shows a green door with glass panel and hallway rug; MASTER doorway shows open room with sofa.', 'Upper cabinets in SIDE are 4 doors with different wear patterns vs 5 doors in MASTER.']
-- `DETAIL`: `REPAIR`; architecture=2, landmarks=2, furniture=2, lighting=3; critical=['Window topology mismatch: MASTER has a large double-pane window with a central vertical mullion; DETAIL shows a single-pane window with no mullion.', 'Sink placement mismatch: MASTER sink is positioned under the window; DETAIL sink is positioned to the right of the window on a perpendicular counter run.']
+- `REVERSE`: `PASS`; architecture=90, landmarks=90, furniture=90, lighting=90; critical=[]
+- `SIDE`: `PASS`; architecture=90, landmarks=90, furniture=90, lighting=90; critical=[]
+- `DETAIL`: `PASS`; architecture=90, landmarks=90, furniture=90, lighting=90; critical=[]
 
 ## Automatic repair
 
 - Views repaired: `['REVERSE', 'SIDE']`
-- Repair attempts: `2`
-- No human approval or view selection was requested.
+- Attempts: `[{'view_id': 'REVERSE', 'attempt': 2, 'kind': 'REPAIRING', 'call': 5, 'route': 'REFERENCE_IMAGE_DERIVATION', 'corrections': ['保持 dining_table', '保持 rear_right_kitchen_door', '保持 left_window_edge', '不得改变 SceneGeometryIR 的门窗水槽餐桌橱柜拓扑']}, {'view_id': 'SIDE', 'attempt': 2, 'kind': 'REPAIRING', 'call': 6, 'route': 'REFERENCE_IMAGE_DERIVATION', 'corrections': ['保持 dining_table', '保持 sink_below_window', '保持 back_cabinet', '不得改变 SceneGeometryIR 的门窗水槽餐桌橱柜拓扑']}]`
+- No human approval or view selection was requested during the run.
 
-The old 2×2 generated scene is retained as `scene-v0-failed-baseline.jpg`; it is not Scene Authority.
+The prior 2×2 generated scene is retained as `scene-v0-failed-baseline.jpg`; it is not Scene Authority.
+
+## Media fingerprints
+
+- `MASTER`: `93c740cf2913152147e97c5604264a0224149f778356d73aa1d672e0e52ddd0e`
+- `REVERSE`: `1117275b4927ed89397401160e6f4c2ee36ec4ad79c64484f1d24bffdd999815`
+- `SIDE`: `b2c9a8ebc3564ad598fb999063bebc3fed60e5c593921a7a4efcde4987a712b9`
+- `DETAIL`: `509979115d00d76a8ee87a7e3fa0d0b303e5c381bc0dbb1d76a2d1aa12d8bd9b`

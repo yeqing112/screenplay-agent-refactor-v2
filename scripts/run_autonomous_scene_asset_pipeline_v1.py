@@ -188,12 +188,21 @@ def _compose_board(paths: dict[str, Path], output: Path) -> dict[str, Any]:
     return _image_meta(output)
 
 
-async def _submit_view(client: httpx.AsyncClient, base_url: str, view_id: str, prompt: str, output: Path) -> dict[str, Any]:
+async def _submit_view(
+    client: httpx.AsyncClient,
+    base_url: str,
+    view_id: str,
+    prompt: str,
+    output: Path,
+    *,
+    reference_images: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     payload = {
         "book_id": BOOK_ID, "episode": EPISODE, "shot_id": f"AUTO_SCENE_{SCENE_ID}_{view_id}",
         "source_node_id": f"autonomous-scene-v1:{SCENE_ID}:{view_id}", "source_asset_id": None,
         "asset_scope": "location", "asset_subject": f"{SCENE_ID} {view_id}", "target_kind": "reference-image",
         "prompt": prompt, "model_profile_id": PROFILE_ID, "aspect_ratio": "16:9",
+        "reference_images": reference_images or [],
         "negative_prompt": NEGATIVE, "count": 1, "confirmed": True, "allow_external_call": True,
     }
     response = await client.post(f"{base_url}/api/prototyping/generate-reference-image", json=payload)
@@ -221,6 +230,7 @@ async def _submit_view(client: httpx.AsyncClient, base_url: str, view_id: str, p
     else:
         shutil.copy2(local_path, output)
     meta = _image_meta(output)
+    meta["sha256"] = hashlib.sha256(output.read_bytes()).hexdigest()
     return {
         "view_id": view_id, "execution_id": task_id, "provider": task.get("provider"),
         "model_profile_id": task.get("model_profile_id"), "candidate_status": "CANDIDATE",
@@ -259,6 +269,11 @@ def _normalized_audit(view_id: str, raw: dict[str, Any], attempt: int, judge_sta
     violations = [str(x) for x in (data.get("violations") or [])]
     same = bool(data.get("same_physical_space"))
     scores = {key: int(data.get(key) or 0) for key in ("architecture_score", "landmark_score", "furniture_score", "lighting_score")}
+    # The vision judge historically returned a ten-point scale while the
+    # runtime gate is expressed as percentages. Normalize the former at the
+    # boundary so 9/10 and 10/10 are evaluated as 90 and 100 respectively.
+    if scores and max(scores.values()) <= 10:
+        scores = {key: value * 10 for key, value in scores.items()}
     status = "PASS" if same and min(scores.values()) >= (80 if view_id == "DETAIL" else 85) and not critical else "REPAIR"
     if judge_status != "VISION_JUDGE_EXECUTED":
         status = "FAIL"
@@ -294,13 +309,17 @@ def main() -> int:
         master = _master_prompt()
         async def generate_initial() -> None:
             async with httpx.AsyncClient(timeout=60, trust_env=False) as client:
+                # Count the primary image before submitting it so the seven-call
+                # guard covers MASTER and every derived/repair view uniformly.
+                runtime.claim_image_call()
                 generations["MASTER"] = await _submit_view(client, base_url, "MASTER", master, paths["MASTER"])
                 runtime.record_primary(generations["MASTER"]); generation_events.append({"view_id":"MASTER","attempt":1,"kind":"PRIMARY_GENERATING","call":runtime.image_calls})
                 runtime.begin_derivation()
                 for plan in PLANS:
                     paths[plan.view_id] = work / f"scene-{plan.view_id.lower()}.jpg"
                     prompt = geometry_constrained_prompt(GEOMETRY, plan)
-                    runtime.claim_image_call(); generations[plan.view_id] = await _submit_view(client, base_url, plan.view_id, prompt, paths[plan.view_id]); runtime.record_derived(plan.view_id, generations[plan.view_id]); generation_events.append({"view_id":plan.view_id,"attempt":1,"kind":"DERIVING","call":runtime.image_calls,"route":route})
+                    references = [{"image_url": _data_uri(paths["MASTER"]), "name": "SCENE_MASTER", "role": "scene", "reference_purpose": "same physical room topology"}] if route == "REFERENCE_IMAGE_DERIVATION" else []
+                    runtime.claim_image_call(); generations[plan.view_id] = await _submit_view(client, base_url, plan.view_id, prompt, paths[plan.view_id], reference_images=references); runtime.record_derived(plan.view_id, generations[plan.view_id]); generation_events.append({"view_id":plan.view_id,"attempt":1,"kind":"DERIVING","call":runtime.image_calls,"route":route,"reference_images":len(references)})
         asyncio.run(generate_initial())
 
         # Copy the baseline and the first generated set into the tracked output
@@ -326,7 +345,8 @@ def main() -> int:
                 runtime.prepare_repair(context); runtime.claim_image_call()
                 async def repair_one() -> dict[str, Any]:
                     async with httpx.AsyncClient(timeout=60, trust_env=False) as client:
-                        return await _submit_view(client, base_url, plan.view_id, geometry_constrained_prompt(GEOMETRY, plan, repair=context), paths[plan.view_id])
+                        references = [{"image_url": _data_uri(paths["MASTER"]), "name": "SCENE_MASTER", "role": "scene", "reference_purpose": "same physical room topology"}] if route == "REFERENCE_IMAGE_DERIVATION" else []
+                        return await _submit_view(client, base_url, plan.view_id, geometry_constrained_prompt(GEOMETRY, plan, repair=context), paths[plan.view_id], reference_images=references)
                 generations[plan.view_id] = asyncio.run(repair_one()); runtime.record_derived(plan.view_id, generations[plan.view_id]); generation_events.append({"view_id":plan.view_id,"attempt":attempts+1,"kind":"REPAIRING","call":runtime.image_calls,"route":route,"corrections":corrections})
                 judge_status, judge = _judge(vision_profile, paths)
                 row = _normalized_audit(plan.view_id, (judge.get("views") or {}).get(plan.view_id, {}), attempts + 1, judge_status); runtime.record_audit(row); audit_rows.append(row)
@@ -342,10 +362,10 @@ def main() -> int:
         plans_payload = [asdict(item) for item in PLANS]
         audit_payload = {"schema_version":"scene_consistency_audit_v1","scene_id":SCENE_ID,"judge_status":judge_status,"judge":judge,"views":[asdict(item) for item in audit_rows],"latest_views":{key:asdict(value) for key,value in latest_by_view.items()},"thresholds":asdict(budget)}
         repair_payload = {"schema_version":"asset_repair_history_v1","repairs":[asdict(item) for item in runtime.repairs],"generation_events":generation_events}
-        manifest = {"schema_version":"autonomous_asset_pipeline_audit_v1","status":"AUTONOMOUS_SCENE_ASSET_PIPELINE_READY" if authority else "ASSET_CONSISTENCY_GENERATION_FAILED","scene_id":SCENE_ID,"state":runtime.state.value,"manual_approvals_required":0,"manual_view_selection":0,"result":"READY" if authority else "FAILED","geometry":geometry_payload,"derived_route":route,"image_capabilities":capability,"generation":{"master_calls":1,"reverse_calls":sum(1 for event in generation_events if event['view_id']=='REVERSE'),"side_calls":sum(1 for event in generation_events if event['view_id']=='SIDE'),"detail_calls":sum(1 for event in generation_events if event['view_id']=='DETAIL'),"repair_calls":len(runtime.repairs),"total_image_calls":runtime.image_calls},"consistency":audit_payload,"authority":authority,"final_board":board,"real_image_calls":runtime.image_calls,"real_video_calls":0,"v0_failed_baseline":str(OUT/'scene-v0-failed-baseline.jpg')}
+        manifest = {"schema_version":"autonomous_asset_pipeline_audit_v1","status":"AUTONOMOUS_SCENE_ASSET_PIPELINE_READY" if authority else "ASSET_CONSISTENCY_GENERATION_FAILED","scene_id":SCENE_ID,"state":runtime.state.value,"manual_approvals_required":0,"manual_view_selection":0,"result":"READY" if authority else "FAILED","geometry":geometry_payload,"derived_route":route,"image_profile":{"id":args.profile_id,"provider":(image_profile or {}).get("provider"),"model_name":(image_profile or {}).get("model_name"),"transport_binding_id":(image_profile or {}).get("transport_binding_id")},"image_capabilities":capability,"generation":{"master_calls":1,"reverse_calls":sum(1 for event in generation_events if event['view_id']=='REVERSE'),"side_calls":sum(1 for event in generation_events if event['view_id']=='SIDE'),"detail_calls":sum(1 for event in generation_events if event['view_id']=='DETAIL'),"repair_calls":len(runtime.repairs),"total_image_calls":runtime.image_calls},"consistency":audit_payload,"authority":authority,"final_board":board,"real_image_calls":runtime.image_calls,"real_video_calls":0,"v0_failed_baseline":str(OUT/'scene-v0-failed-baseline.jpg')}
         _write(OUT / "SCENE_GEOMETRY_IR.json", geometry_payload); _write(OUT / "SCENE_DERIVED_VIEW_PLANS.json", plans_payload); _write(OUT / "SCENE_CONSISTENCY_AUDIT.json", audit_payload); _write(OUT / "SCENE_REPAIR_HISTORY.json", repair_payload); _write(OUT / "AUTONOMOUS_ASSET_PIPELINE_AUDIT.json", manifest)
         _write(OUT / "SCENE_AUTHORITY.json", authority or {"status":"FAILED","scene_id":SCENE_ID,"geometry_fingerprint":GEOMETRY.fingerprint})
-        report = ["# Autonomous Visual Asset Pipeline V1 Report", "", f"- Status: `{manifest['status']}`", "- Scene: `E01_SC002`", "- Manual approvals required: `0`", "- Manual view selection: `0`", f"- Derived route: `{route}`", f"- Visual judge: `{judge_status}`", "", "## Generation", "", f"- Master calls: `{manifest['generation']['master_calls']}`", f"- Reverse calls: `{manifest['generation']['reverse_calls']}`", f"- Side calls: `{manifest['generation']['side_calls']}`", f"- Detail calls: `{manifest['generation']['detail_calls']}`", f"- Repair calls: `{manifest['generation']['repair_calls']}`", f"- Total IMAGE calls: `{manifest['generation']['total_image_calls']}`", "- Real VIDEO calls: `0`", "", "## Geometry authority", "", "- window: LEFT wall", "- sink: LEFT wall, directly below window", "- door: REAR_RIGHT zone", "- table: CENTER_FOREGROUND", "- cabinet: BACK wall", "- Geometry is authoritative; the Master image is its visual implementation.", "", "## Consistency", ""]
+        report = ["# Autonomous Visual Asset Pipeline V1 Report", "", f"- Status: `{manifest['status']}`", "- Scene: `E01_SC002`", "- Manual approvals required: `0`", "- Manual view selection: `0`", f"- IMAGE profile: `{args.profile_id}` / `{(image_profile or {}).get('provider')}` / `{(image_profile or {}).get('model_name')}`", f"- Derived route: `{route}`", f"- Visual judge: `{judge_status}`", "", "## Generation", "", f"- Master calls: `{manifest['generation']['master_calls']}`", f"- Reverse calls: `{manifest['generation']['reverse_calls']}`", f"- Side calls: `{manifest['generation']['side_calls']}`", f"- Detail calls: `{manifest['generation']['detail_calls']}`", f"- Repair calls: `{manifest['generation']['repair_calls']}`", f"- Total IMAGE calls: `{manifest['generation']['total_image_calls']}`", "- Real VIDEO calls: `0`", "", "## Geometry authority", "", "- window: LEFT wall", "- sink: LEFT wall, directly below window", "- door: REAR_RIGHT zone", "- table: CENTER_FOREGROUND", "- cabinet: BACK wall", "- Geometry is authoritative; the Master image is its visual implementation.", "", "## Consistency", ""]
         for view_id in ("REVERSE", "SIDE", "DETAIL"):
             row = latest_by_view.get(view_id); report.append(f"- `{view_id}`: `{row.status if row else 'MISSING'}`; architecture={row.architecture_score if row else 0}, landmarks={row.landmark_score if row else 0}, furniture={row.furniture_score if row else 0}, lighting={row.lighting_score if row else 0}; critical={row.critical_topology_violations if row else []}")
         report.extend(["", "## Automatic repair", "", f"- Views repaired: `{sorted({item.view_id for item in runtime.repairs})}`", f"- Attempts: `{[event for event in generation_events if event['kind']=='REPAIRING']}`", "- No human approval or view selection was requested during the run.", "", "The prior 2×2 generated scene is retained as `scene-v0-failed-baseline.jpg`; it is not Scene Authority.", ""])

@@ -1,5 +1,20 @@
 {
-  "status": "FAILED",
   "scene_id": "E01_SC002",
-  "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376"
+  "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+  "views": [
+    "DETAIL",
+    "MASTER",
+    "REVERSE",
+    "SIDE"
+  ],
+  "view_fingerprints": {
+    "MASTER": "93c740cf2913152147e97c5604264a0224149f778356d73aa1d672e0e52ddd0e",
+    "REVERSE": "1117275b4927ed89397401160e6f4c2ee36ec4ad79c64484f1d24bffdd999815",
+    "SIDE": "b2c9a8ebc3564ad598fb999063bebc3fed60e5c593921a7a4efcde4987a712b9",
+    "DETAIL": "509979115d00d76a8ee87a7e3fa0d0b303e5c381bc0dbb1d76a2d1aa12d8bd9b"
+  },
+  "consistency_audit_count": 5,
+  "repair_count": 2,
+  "image_calls": 6,
+  "status": "READY"
 }
