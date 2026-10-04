@@ -11,6 +11,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -117,6 +118,8 @@ async def _run() -> tuple[int, dict[str, Any]]:
     video_profile = get_default_profile("video") or {}
     judge_profile = next((p for p in __import__("api.model_registry", fromlist=["list_profiles"]).list_profiles(include_sensitive=True) if p.get("capability") == "llm" and bool((p.get("default_params") or {}).get("supports_vision"))), {})
     evidence: dict[str, Any] = {"run_id": run_id, "status": "REAL_SHOT_MEDIA_CANARY_BLOCKED", "gate_a": {}, "apple": {}, "keyframes": {}, "videos": {}, "safety": {"production_writes": 0, "book_990400_writes": 0, "shapi_calls": 0, "poyo_calls": 0, "secret_leaks": 0, "orphans": 0, "raw_base64_persisted": 0, "signed_url_query_persisted": 0}, "real_image_calls": 0, "real_video_calls": 0}
+    reuse_base = Path(os.environ.get("SHOT_CANARY_REUSE_BASE", "")).resolve() if os.environ.get("SHOT_CANARY_REUSE_BASE") else None
+    reused = json.loads((reuse_base / "SHOT_CANARY_AUDIT.json").read_text(encoding="utf-8")) if reuse_base and (reuse_base / "SHOT_CANARY_AUDIT.json").exists() else {}
     if not READY.exists() or "SHOT_CANARY_READY_FOR_REAL_MEDIA" not in (READY / "SHOT_READINESS_REPORT.md").read_text(encoding="utf-8"):
         evidence["error"] = "SHOT_READINESS_GATE_NOT_PASS"
         return 2, evidence
@@ -133,9 +136,16 @@ async def _run() -> tuple[int, dict[str, Any]]:
     apple_prompt = "单张写实电影道具 HERO / MASTER：一只完整无切开的红黄自然苹果，果梗清晰可见，单一对象，中性灰背景，无切片、无第二只苹果、无手、无人物、无文字、无水印。"
     evidence["apple"]["prompt"] = apple_prompt
     try:
-        apple = await generate_image_asset(image_profile, prompt=apple_prompt, aspect_ratio="1:1", negative_prompt="切片、切开的水果、第二只苹果、手、人物、文字、水印", reference_images=[])
-        await _save_uri(str(apple.get("previewUrl") or apple.get("uri") or ""), apple_path)
-        evidence["real_image_calls"] += 1
+        if reused.get("apple", {}).get("sha256") and reuse_base:
+            source = reuse_base / "apple-master.jpg"
+            if source.exists():
+                shutil.copy2(source, apple_path)
+            evidence["apple"] = dict(reused["apple"])
+            apple = {"previewUrl": evidence["apple"].get("preview_url", ""), "providerResponseFingerprint": evidence["apple"].get("provider_response_fingerprint", "")}
+        else:
+            apple = await generate_image_asset(image_profile, prompt=apple_prompt, aspect_ratio="1:1", negative_prompt="切片、切开的水果、第二只苹果、手、人物、文字、水印", reference_images=[])
+            await _save_uri(str(apple.get("previewUrl") or apple.get("uri") or ""), apple_path)
+            evidence["real_image_calls"] += 1
         apple_judge = _judge(apple_path, "检查这张图片是否只有一只完整红黄苹果，果梗可见，无切片、无第二只苹果、无手、无文字。只输出JSON {\"status\":\"PASS|FAIL\",\"single_whole_apple\":true,\"stem_visible\":true,\"unauthorized_objects\":[]}", judge_profile)
         evidence["apple"].update({"provider": "75api-image", "model": image_profile.get("model_name"), "sha256": _sha(apple_path), "provider_response_fingerprint": apple.get("providerResponseFingerprint"), "preview_url": str(apple.get("previewUrl") or ""), "judge": apple_judge})
         if apple_judge.get("status") != "PASS" or not apple_judge.get("single_whole_apple") or apple_judge.get("unauthorized_objects"):
@@ -153,9 +163,15 @@ async def _run() -> tuple[int, dict[str, Any]]:
         path = work / f"{shot_id}-keyframe-v1.jpg"
         refs = all_refs if shot_id == "SH_E01_SC002_006" else keyframe_refs
         try:
-            result = await generate_image_asset(image_profile, prompt=_keyframe_prompt(shot_id, duration), aspect_ratio="16:9", negative_prompt="手提包、肩包、包带、额外人物、文字、水印、苹果（SC002_002和SC002_007）", reference_images=refs)
-            await _save_uri(str(result.get("previewUrl") or result.get("uri") or ""), path)
-            evidence["real_image_calls"] += 1
+            prior = reused.get("keyframes", {}).get(shot_id, {}) if shot_id == "SH_E01_SC002_007" else {}
+            prior_path = Path(str(prior.get("path") or ""))
+            if prior.get("sha256") and prior_path.exists():
+                shutil.copy2(prior_path, path)
+                result = {"previewUrl": prior.get("provider_preview_url", ""), "uri": prior.get("provider_preview_url", "")}
+            else:
+                result = await generate_image_asset(image_profile, prompt=_keyframe_prompt(shot_id, duration), aspect_ratio="16:9", negative_prompt="手提包、肩包、包带、额外人物、文字、水印、苹果（SC002_002和SC002_007）", reference_images=refs)
+                await _save_uri(str(result.get("previewUrl") or result.get("uri") or ""), path)
+                evidence["real_image_calls"] += 1
             width = height = 0
             from PIL import Image
             with Image.open(path) as im: width, height = im.size
