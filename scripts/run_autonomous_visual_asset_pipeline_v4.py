@@ -48,6 +48,7 @@ from core.autonomous_visual_assets import (  # noqa: E402
     VisualAssetAuthoritySet,
 )
 from core.autonomous_asset_generation import MediaEvidenceBinding  # noqa: E402
+from core.production_provider_policy import ProductionProviderPolicy  # noqa: E402
 from scripts.run_asset_media_canary_v1 import _free_port, _image_meta, _redact, _wait_for_health, _write  # noqa: E402
 from scripts.run_autonomous_scene_asset_pipeline_v1 import (  # noqa: E402
     BOOK_ID,
@@ -61,8 +62,9 @@ if hasattr(sys.stdout, "reconfigure"):
 
 SOURCE_DB = ROOT / "work" / "db" / "screenplay.db"
 SCENE_AUTHORITY_PATH = ROOT / "docs" / "visual-assets" / "autonomous-v3" / "SCENE_AUTHORITY.json"
-OUT = ROOT / "docs" / "visual-assets" / "autonomous-v4"
+OUT = ROOT / "docs" / "visual-assets" / "75api-autonomous-v1"
 CANARY_BUDGET = {"林晚": {"normal": 6, "repair": 1}, "陆叔": {"normal": 6, "repair": 1}, "HANDBAG": {"normal": 4, "repair": 1}, "total": 19}
+PRODUCTION_POLICY = ProductionProviderPolicy()
 
 
 CHARACTERS = [
@@ -197,7 +199,23 @@ async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id:
         else:
             output.write_bytes((await client.get(preview)).content)
     sha = _sha(output); provider_payload = task.get("provider_request_payload") or (asset.get("metadata") or {}).get("providerRequestPayload") or {}; serialized = json.dumps(provider_payload, ensure_ascii=False, sort_keys=True, default=str)
-    return {"view_id": view_id, "execution_id": task_id, "generation_execution_id": task_id, "provider": task.get("provider"), "model_profile_id": task.get("model_profile_id") or profile_id, "candidate_status": "CANDIDATE", "prompt_fingerprint": _sha(prompt), "reference_image_count": len(refs), "reference_image_sha256": refs[0].get("reference_sha256") if refs else "", "reference_role": refs[0].get("role") if refs else "", "reference_purpose": refs[0].get("reference_purpose") if refs else "", "provider_inline_reference_attached": "inlineData" in serialized or "inline_data" in serialized, "provider_request_payload": _redact(provider_payload), "file": {**_image_meta(output), "sha256": sha}, "sha256": sha, "fingerprint": sha, "path": str(output)}
+    canonical_reference_sha = [str(item.get("reference_sha256") or "") for item in refs]
+    canonical_reference_order = [str(item.get("reference_name") or item.get("reference_asset_id") or "") for item in refs]
+    provider_images = provider_payload.get("images") if isinstance(provider_payload, dict) else None
+    provider_images = provider_images if isinstance(provider_images, list) else []
+    provider_reference_order_matches = len(provider_images) == len(refs)
+    if provider_reference_order_matches:
+        for index, image in enumerate(provider_images):
+            expected = refs[index].get("reference_sha256")
+            if isinstance(image, str) and image.startswith("data:image/") and "," in image:
+                actual = hashlib.sha256(base64.b64decode(image.split(",", 1)[1])).hexdigest()
+            else:
+                actual = _sha(image)
+            if expected and actual != expected:
+                provider_reference_order_matches = False
+                break
+    input_formats = ["data_uri" if str(item.get("image_url") or "").startswith("data:image/") else "https" if str(item.get("image_url") or "").startswith("https://") else "other" for item in refs]
+    return {"view_id": view_id, "execution_id": task_id, "generation_execution_id": task_id, "provider": task.get("provider"), "model_profile_id": task.get("model_profile_id") or profile_id, "candidate_status": "CANDIDATE", "prompt_fingerprint": _sha(prompt), "reference_image_count": len(refs), "reference_image_sha256": canonical_reference_sha[0] if canonical_reference_sha else "", "reference_image_sha256s": canonical_reference_sha, "reference_order": canonical_reference_order, "reference_input_formats": input_formats, "reference_role": refs[0].get("role") if refs else "", "reference_purpose": refs[0].get("reference_purpose") if refs else "", "provider_inline_reference_attached": bool(refs) and ("images" in provider_payload or "inlineData" in serialized or "inline_data" in serialized), "provider_reference_order_matches": provider_reference_order_matches, "provider_payload_reference_count": len(provider_images), "provider_request_payload": _redact(provider_payload), "file": {**_image_meta(output), "sha256": sha}, "sha256": sha, "fingerprint": sha, "path": str(output)}
 
 
 def _evidence(view_id: str, attempt: int, primary: Mapping[str, Any], derived: Mapping[str, Any], judge_profile: Mapping[str, Any], judge: Mapping[str, Any], request_fp: str, response_fp: str, scores: dict[str, int]) -> MediaEvidenceBinding:
@@ -260,119 +278,321 @@ def _prop_audit(view_id: str, attempt: int, media: Mapping[str, Any], primary: M
     return PropConsistencyAudit(view_id, status, bool(judge.get("same_object")), *[scores[key] for key in keys], critical, violations, judge_status, attempt, _evidence(view_id, attempt, primary, media, profile, judge, req, resp, scores))
 
 
-async def _run_asset(client: httpx.AsyncClient, base_url: str, *, kind: str, asset: Mapping[str, Any], profile_rows: list[Any], all_profiles: list[dict[str, Any]], judge_profile: dict[str, Any], health: ProviderHealthSnapshot, paths: dict[str, Path], budget: dict[str, int], call_counter: dict[str, int], traces: list[dict[str, Any]], events: list[dict[str, Any]]) -> dict[str, Any]:
-    asset_id = str(asset["id"]); name = str(asset["name"]); description = str(asset["description"]); derived_views = ["FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_SIDE", "FULL_BACK"] if kind == "CHARACTER" else ["SIDE", "BACK", "DETAIL"]
-    master_prompt = _character_master_prompt(asset) if kind == "CHARACTER" else _prop_master_prompt(asset); derived_prompt = _character_derived_prompt if kind == "CHARACTER" else _prop_derived_prompt; policy = PropComplexityPolicy.for_complexity(PropComplexity.STORY_CRITICAL, story_views=("STATE_DETAIL", "DAMAGE_DETAIL", "FUNCTION_DETAIL")) if kind == "PROP" else None
-    candidates = AssetProviderRouter(all_profiles, health=health).candidates("IMAGE", AssetOperation.TEXT_TO_IMAGE); selected_profile = None; master = None; master_attempts = []
-    for row in candidates[:2]:
+async def _run_asset(
+    client: httpx.AsyncClient,
+    base_url: str,
+    *,
+    kind: str,
+    asset: Mapping[str, Any],
+    candidate_rows: list[Any],
+    all_profiles: list[dict[str, Any]],
+    judge_profile: dict[str, Any],
+    health: ProviderHealthSnapshot,
+    paths: dict[str, Path],
+    budget: dict[str, int],
+    call_counter: dict[str, int],
+    traces: list[dict[str, Any]],
+    events: list[dict[str, Any]],
+    policy: ProductionProviderPolicy,
+) -> dict[str, Any]:
+    asset_id = str(asset["id"])
+    name = str(asset["name"])
+    description = str(asset["description"])
+    derived_views = ["FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_SIDE", "FULL_BACK"] if kind == "CHARACTER" else ["SIDE", "BACK", "DETAIL"]
+    master_prompt = _character_master_prompt(asset) if kind == "CHARACTER" else _prop_master_prompt(asset)
+    derived_prompt = _character_derived_prompt if kind == "CHARACTER" else _prop_derived_prompt
+    policy_complexity = PropComplexityPolicy.for_complexity(PropComplexity.HIGH) if kind == "PROP" else None
+    candidates = policy.filter_image_candidates(candidate_rows)
+    if not candidates:
+        raise RuntimeError(f"{asset_id}:PRODUCTION_PROVIDER_POLICY_NO_CANDIDATE")
+
+    selected_profile: dict[str, Any] | None = None
+    master: dict[str, Any] | None = None
+    master_attempts: list[dict[str, Any]] = []
+    for row in candidates:
         profile = next((item for item in all_profiles if str(item.get("id")) == row.profile_id), {})
-        if call_counter["used"] >= 19: raise RuntimeError("AUTONOMOUS_CHARACTER_PROP_CANARY_BUDGET_EXCEEDED")
+        policy.assert_image_profile(profile)
+        if call_counter["used"] >= CANARY_BUDGET["total"]:
+            raise RuntimeError("AUTONOMOUS_CHARACTER_PROP_CANARY_BUDGET_EXCEEDED")
         call_counter["used"] += 1
+        call_counter["by_provider"][str(row.provider)] = call_counter["by_provider"].get(str(row.provider), 0) + 1
         try:
-            master = await _submit_asset(client, base_url, profile_id=row.profile_id, asset_type=kind, asset_id=asset_id, view_id="MASTER", prompt=master_prompt, output=paths["MASTER"])
-            selected_profile = profile; master_attempts.append({"provider": row.provider, "model": row.model, "status": "SUCCEEDED", "execution_id": master["execution_id"], "post_submission_state": PostSubmissionState.TASK_CONFIRMED.value}); events.append({"kind": "MASTER_SELECTED", "asset": asset_id, **master_attempts[-1]}); break
+            master = await _submit_asset(
+                client, base_url, profile_id=row.profile_id, asset_type=kind,
+                asset_id=asset_id, view_id="MASTER", prompt=master_prompt,
+                output=paths["MASTER"], refs=[],
+            )
+            selected_profile = profile
+            master_attempts.append({"provider": row.provider, "model": row.model, "status": "SUCCEEDED", "execution_id": master["execution_id"], "post_submission_state": PostSubmissionState.TASK_CONFIRMED.value})
+            events.append({"kind": "MASTER_SELECTED", "asset": asset_id, **master_attempts[-1]})
+            break
         except ProviderSubmissionError as exc:
-            classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state); row_data = {"provider": row.provider, "model": row.model, "status": "FAILED", "classification": classification.value, "post_submission_state": exc.post_submission_state.value, "task_created": exc.task_created, "error": str(exc)[:500]}; master_attempts.append(row_data); events.append({"kind": "MASTER_FAILED", "asset": asset_id, **row_data})
-            if can_failover(classification, task_created=exc.task_created, post_submission_state=exc.post_submission_state, reconciled_no_task=exc.post_submission_state == PostSubmissionState.REJECTED_BEFORE_TASK):
-                health.mark(row.profile_id, classification); continue
-            raise RuntimeError(f"{asset_id}:SUBMISSION_AMBIGUOUS_FAIL_CLOSED") from exc
-    if not master or not selected_profile: raise RuntimeError(f"{asset_id}:MASTER_PROVIDER_POOL_EXHAUSTED")
-    # Reference and repair must stay on the locked master profile.
-    ref_row = next((row for row in AssetProviderRouter([selected_profile], health=health).candidates("IMAGE", AssetOperation.REFERENCE_IMAGE_DERIVATION)), None)
-    if ref_row is None: raise RuntimeError(f"{asset_id}:MASTER_PROVIDER_REFERENCE_INCOMPATIBLE")
-    audits: list[Any] = []; generations = {"MASTER": master}; repairs: list[dict[str, Any]] = []
+            classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
+            row_data = {"provider": row.provider, "model": row.model, "status": "FAILED", "classification": classification.value, "post_submission_state": exc.post_submission_state.value, "task_created": exc.task_created, "error": str(exc)[:500]}
+            master_attempts.append(row_data)
+            events.append({"kind": "MASTER_FAILED", "asset": asset_id, **row_data})
+            # Strict production policy intentionally has no image fallback.
+            raise RuntimeError(f"{asset_id}:STRICT_75API_FAIL_CLOSED:{classification.value}") from exc
+
+    if not master or not selected_profile:
+        raise RuntimeError(f"{asset_id}:MASTER_PROVIDER_POOL_EXHAUSTED")
+    policy.assert_image_profile(selected_profile)
+    ref_row = next((row for row in policy.filter_image_candidates(AssetProviderRouter([selected_profile], health=health).candidates("IMAGE", AssetOperation.REFERENCE_IMAGE_DERIVATION))), None)
+    if ref_row is None:
+        raise RuntimeError(f"{asset_id}:MASTER_PROVIDER_REFERENCE_INCOMPATIBLE")
+
+    def make_refs(view_names: list[str]) -> list[dict[str, Any]]:
+        role = "character" if kind == "CHARACTER" else "prop"
+        purpose = "same character identity" if kind == "CHARACTER" else "same object identity"
+        return [
+            {
+                "image_url": _data_uri(paths[view_name]),
+                "reference_sha256": _sha(paths[view_name]),
+                "reference_name": f"{asset_id}_{view_name}",
+                "reference_asset_id": f"{asset_id}:{view_name}",
+                "role": role,
+                "reference_purpose": purpose,
+            }
+            for view_name in view_names
+        ]
+
+    def assert_reference_lineage(media: Mapping[str, Any], refs: list[dict[str, Any]], view_id: str) -> None:
+        expected_shas = [str(item["reference_sha256"]) for item in refs]
+        expected_order = [str(item["reference_name"]) for item in refs]
+        if media.get("reference_image_count") != len(refs):
+            raise RuntimeError(f"{asset_id}:{view_id}:REFERENCE_COUNT_MISMATCH")
+        if media.get("reference_image_sha256s") != expected_shas:
+            raise RuntimeError(f"{asset_id}:{view_id}:REFERENCE_SHA_ORDER_MISMATCH")
+        if media.get("reference_order") != expected_order:
+            raise RuntimeError(f"{asset_id}:{view_id}:REFERENCE_ORDER_MISMATCH")
+        if refs and not media.get("provider_inline_reference_attached"):
+            raise RuntimeError(f"{asset_id}:{view_id}:REFERENCE_NOT_PROPAGATED")
+        if refs and not media.get("provider_reference_order_matches"):
+            raise RuntimeError(f"{asset_id}:{view_id}:PROVIDER_REFERENCE_ORDER_MISMATCH")
+
+    audits: list[Any] = []
+    generations: dict[str, Any] = {"MASTER": master, "FULL_FRONT": master} if kind == "CHARACTER" else {"MASTER": master}
+    repairs: list[dict[str, Any]] = []
+
+    def refs_for_view(view_id: str) -> list[dict[str, Any]]:
+        if kind == "CHARACTER":
+            if view_id in {"FACE_PROFILE", "FACE_45"} and any(row.view_id == "FACE_FRONT" and row.passes for row in audits):
+                return make_refs(["MASTER", "FACE_FRONT"])
+            if view_id == "FULL_BACK" and any(row.view_id == "FULL_SIDE" and row.passes for row in audits):
+                return make_refs(["MASTER", "FULL_SIDE"])
+            return make_refs(["MASTER"])
+        if view_id == "DETAIL" and any(row.view_id == "SIDE" and row.passes for row in audits):
+            return make_refs(["MASTER", "SIDE"])
+        return make_refs(["MASTER"])
+
     for view_id in derived_views:
-        if call_counter["used"] >= 19: raise RuntimeError("AUTONOMOUS_CHARACTER_PROP_CANARY_BUDGET_EXCEEDED")
-        call_counter["used"] += 1; prompt = derived_prompt(asset, view_id); refs = [{"image_url": _data_uri(paths["MASTER"]), "reference_sha256": master["sha256"], "reference_name": f"{asset_id}_MASTER", "role": "character" if kind == "CHARACTER" else "prop", "reference_purpose": "same character identity" if kind == "CHARACTER" else "same object identity"}]
+        if call_counter["used"] >= CANARY_BUDGET["total"]:
+            raise RuntimeError("AUTONOMOUS_CHARACTER_PROP_CANARY_BUDGET_EXCEEDED")
+        refs = refs_for_view(view_id)
+        call_counter["used"] += 1
+        call_counter["by_provider"][PRODUCTION_POLICY.image_provider] = call_counter["by_provider"].get(PRODUCTION_POLICY.image_provider, 0) + 1
+        prompt = derived_prompt(asset, view_id)
         try:
             media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs)
         except ProviderSubmissionError as exc:
             classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
-            if classification == ProviderFailureClassification.CREDITS_INSUFFICIENT:
-                health.mark(str(selected_profile.get("id")), classification)
-            raise RuntimeError(f"{asset_id}:{classification.value}:post_submission_state={exc.post_submission_state.value}") from exc
-        if media["reference_image_count"] != 1 or media["reference_image_sha256"] != master["sha256"] or media["reference_role"] not in {"character", "prop"} or not media["provider_inline_reference_attached"]: raise RuntimeError(f"{asset_id}:REFERENCE_IMAGE_NOT_PROPAGATED")
-        generations[view_id] = media; status, judge, req, resp = _judge_pair(kind, judge_profile, paths["MASTER"], paths[view_id], view_id, description); audit = _character_audit(view_id, 1, media, master, judge, status, req, resp, judge_profile) if kind == "CHARACTER" else _prop_audit(view_id, 1, media, master, judge, status, req, resp, judge_profile); audits.append(audit)
-    # Repair only the failing view, never the primary.
+            raise RuntimeError(f"{asset_id}:{view_id}:STRICT_75API_FAIL_CLOSED:{classification.value}:post_submission_state={exc.post_submission_state.value}") from exc
+        assert_reference_lineage(media, refs, view_id)
+        generations[view_id] = media
+        status, judge, req, resp = _judge_pair(kind, judge_profile, paths[refs[0]["reference_name"].rsplit("_", 1)[-1]], paths[view_id], view_id, description)
+        audit = _character_audit(view_id, 1, media, master, judge, status, req, resp, judge_profile) if kind == "CHARACTER" else _prop_audit(view_id, 1, media, master, judge, status, req, resp, judge_profile)
+        audits.append(audit)
+
     for index, audit in enumerate(list(audits)):
-        if audit.passes: continue
-        if len(repairs) >= budget["repair"]: continue
-        view_id = audit.view_id; call_counter["used"] += 1; prompt = derived_prompt(asset, view_id, audit.violations + (audit.critical_identity_violations if kind == "CHARACTER" else audit.critical_object_violations)); refs = [{"image_url": _data_uri(paths["MASTER"]), "reference_sha256": master["sha256"], "reference_name": f"{asset_id}_MASTER", "role": "character" if kind == "CHARACTER" else "prop", "reference_purpose": "same character identity" if kind == "CHARACTER" else "same object identity"}]
+        if audit.passes:
+            continue
+        if len(repairs) >= budget["repair"]:
+            continue
+        view_id = audit.view_id
+        refs = refs_for_view(view_id)
+        if call_counter["used"] >= CANARY_BUDGET["total"]:
+            raise RuntimeError("AUTONOMOUS_CHARACTER_PROP_CANARY_BUDGET_EXCEEDED")
+        call_counter["used"] += 1
+        call_counter["by_provider"][PRODUCTION_POLICY.image_provider] = call_counter["by_provider"].get(PRODUCTION_POLICY.image_provider, 0) + 1
+        prompt = derived_prompt(asset, view_id, audit.violations + (audit.critical_identity_violations if kind == "CHARACTER" else audit.critical_object_violations))
         try:
             media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs)
         except ProviderSubmissionError as exc:
             classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
-            raise RuntimeError(f"{asset_id}:REPAIR_{classification.value}:post_submission_state={exc.post_submission_state.value}") from exc
-        generations[view_id] = media; status, judge, req, resp = _judge_pair(kind, judge_profile, paths["MASTER"], paths[view_id], view_id, description); repaired = _character_audit(view_id, 2, media, master, judge, status, req, resp, judge_profile) if kind == "CHARACTER" else _prop_audit(view_id, 2, media, master, judge, status, req, resp, judge_profile); audits[index] = repaired; repairs.append({"view_id": view_id, "attempt": 2, "violations": audit.violations, "master_sha256": master["sha256"], "new_sha256": media["sha256"]})
-    latest = {row.view_id: row for row in audits}; pairwise_pass = all(row.passes for row in audits)
-    global_judge, global_req, global_resp = ({"status": "NOT_RUN", "same_character": False if kind == "CHARACTER" else None, "same_object": False if kind == "PROP" else None, "cross_view_violations": ["pairwise gate failed"]}, "", "") if not pairwise_pass else _judge_global(kind, judge_profile, {key: paths[key] for key in (["FACE_FRONT", "FACE_PROFILE", "FACE_45", "MASTER", "FULL_SIDE", "FULL_BACK"] if kind == "CHARACTER" else ["MASTER", "SIDE", "BACK", "DETAIL"])}, description)
+            raise RuntimeError(f"{asset_id}:{view_id}:REPAIR_STRICT_75API_FAIL_CLOSED:{classification.value}") from exc
+        assert_reference_lineage(media, refs, view_id)
+        generations[view_id] = media
+        status, judge, req, resp = _judge_pair(kind, judge_profile, paths[refs[0]["reference_name"].rsplit("_", 1)[-1]], paths[view_id], view_id, description)
+        repaired = _character_audit(view_id, 2, media, master, judge, status, req, resp, judge_profile) if kind == "CHARACTER" else _prop_audit(view_id, 2, media, master, judge, status, req, resp, judge_profile)
+        audits[index] = repaired
+        repairs.append({"view_id": view_id, "attempt": 2, "violations": audit.violations, "master_sha256": master["sha256"], "reference_order": [item["reference_name"] for item in refs], "new_sha256": media["sha256"]})
+
+    pairwise_pass = all(row.passes for row in audits)
+    global_paths = {key: paths[key] for key in (["FACE_FRONT", "FACE_PROFILE", "FACE_45", "MASTER", "FULL_SIDE", "FULL_BACK"] if kind == "CHARACTER" else ["MASTER", "SIDE", "BACK", "DETAIL"])}
+    global_judge, global_req, global_resp = ( {"status": "NOT_RUN", "same_character": False if kind == "CHARACTER" else None, "same_object": False if kind == "PROP" else None, "cross_view_violations": ["pairwise gate failed"]}, "", "") if not pairwise_pass else _judge_global(kind, judge_profile, global_paths, description)
     if kind == "CHARACTER":
         authority = CharacterAuthority.lock(character_id=asset_id, name=name, primary=master, derived={key: generations[key] for key in derived_views}, audits=audits, global_judge=global_judge, profile_fingerprint=_profile_fingerprint(selected_profile), prompt_fingerprint=_sha(master_prompt)) if global_judge.get("status") == "PASS" else None
     else:
-        authority = PropAuthority.lock(prop_id=asset_id, name=name, complexity=policy.complexity, primary=master, derived={key: generations[key] for key in derived_views}, audits=audits, global_judge=global_judge, profile_fingerprint=_profile_fingerprint(selected_profile), prompt_fingerprint=_sha(master_prompt)) if global_judge.get("status") == "PASS" else None
-    selection_rows = AssetProviderRouter(all_profiles, health=health).rank("IMAGE", AssetOperation.TEXT_TO_IMAGE)
+        authority = PropAuthority.lock(prop_id=asset_id, name=name, complexity=policy_complexity.complexity, primary=master, derived={key: generations[key] for key in derived_views}, audits=audits, global_judge=global_judge, profile_fingerprint=_profile_fingerprint(selected_profile), prompt_fingerprint=_sha(master_prompt)) if global_judge.get("status") == "PASS" else None
+    selection_rows = AssetProviderRouter(all_profiles, default_image_profile_id=str(selected_profile.get("id")), health=health).rank("IMAGE", AssetOperation.TEXT_TO_IMAGE)
     for selection_row in selection_rows:
         selection_row.selected = selection_row.profile_id == str(selected_profile.get("id"))
-    return {"asset_id": asset_id, "name": name, "kind": kind, "complexity": policy.complexity.value if policy else None, "master": master, "master_attempts": master_attempts, "generations": generations, "audits": audits, "global": {**global_judge, "judge_request_fingerprint": global_req, "judge_response_fingerprint": global_resp}, "repairs": repairs, "authority": asdict(authority) if authority else None, "selected_profile": selected_profile, "selection_trace": [asdict(row) for row in selection_rows]}
+    return {"asset_id": asset_id, "name": name, "kind": kind, "complexity": policy_complexity.complexity.value if policy_complexity else None, "master": master, "master_attempts": master_attempts, "generations": generations, "audits": audits, "global": {**global_judge, "judge_request_fingerprint": global_req, "judge_response_fingerprint": global_resp}, "repairs": repairs, "authority": asdict(authority) if authority else None, "selected_profile": selected_profile, "selection_trace": [asdict(row) for row in policy.filter_image_candidates(selection_rows)], "production_policy": policy.as_dict()}
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(); parser.add_argument("--source-db", default=str(SOURCE_DB)); args = parser.parse_args(); source_db = Path(args.source_db).resolve()
-    if not source_db.exists(): raise SystemExit(f"missing database: {source_db}")
-    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"); work = ROOT / "work" / "autonomous-character-prop-canary-v1" / run_id; work.mkdir(parents=True, exist_ok=True); isolated_db = work / "screenplay.db"; shutil.copy2(source_db, isolated_db); uploads = work / "uploads"; port = _free_port(); env = os.environ.copy(); env.update({"DATABASE_URL": f"sqlite:///{isolated_db.as_posix()}?timeout=30", "UPLOAD_DIR": str(uploads), "DEPLOYMENT_ENV": "isolated", "APP_ENV": "test", "E2E_EXTERNAL_RUNTIME": ""}); log = (work / "uvicorn.log").open("w", encoding="utf-8"); process = subprocess.Popen([sys.executable, "-m", "uvicorn", "api.server:app", "--host", "127.0.0.1", "--port", str(port)], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT); health = ProviderHealthSnapshot(); call_counter = {"used": 0}; events: list[dict[str, Any]] = []; results: dict[str, Any] = {}
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source-db", default=str(SOURCE_DB))
+    args = parser.parse_args()
+    source_db = Path(args.source_db).resolve()
+    if not source_db.exists():
+        raise SystemExit(f"missing database: {source_db}")
+    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    work = ROOT / "work" / "75api-autonomous-character-prop-canary-v1" / run_id
+    work.mkdir(parents=True, exist_ok=True)
+    isolated_db = work / "screenplay.db"
+    shutil.copy2(source_db, isolated_db)
+    uploads = work / "uploads"
+    port = _free_port()
+    env = os.environ.copy()
+    env.update({"DATABASE_URL": f"sqlite:///{isolated_db.as_posix()}?timeout=30", "UPLOAD_DIR": str(uploads), "DEPLOYMENT_ENV": "isolated", "APP_ENV": "test", "E2E_EXTERNAL_RUNTIME": ""})
+    log = (work / "uvicorn.log").open("w", encoding="utf-8")
+    process = subprocess.Popen([sys.executable, "-m", "uvicorn", "api.server:app", "--host", "127.0.0.1", "--port", str(port)], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
+    health = ProviderHealthSnapshot()
+    call_counter = {"used": 0, "by_provider": {"75api-image": 0, "shapi-image": 0, "poyo-image": 0, "other-image": 0}}
+    events: list[dict[str, Any]] = []
+    results: dict[str, Any] = {}
+    preflight: dict[str, Any] = {"status": "NOT_RUN", "policy": PRODUCTION_POLICY.as_dict()}
+    OUT.mkdir(parents=True, exist_ok=True)
     try:
-        _wait_for_health(f"http://127.0.0.1:{port}", timeout=180); os.environ["DATABASE_URL"] = env["DATABASE_URL"]
-        from api.model_registry import list_profiles, test_profile_connection
-        all_profiles = [item for item in list_profiles(include_sensitive=True) if item.get("enabled", True)]; default = next((item for item in all_profiles if item.get("capability") == "image" and item.get("is_default")), {})
-        router = AssetProviderRouter(all_profiles, default_image_profile_id=str(default.get("id") or ""), health=health); candidate_rows = router.rank("IMAGE", AssetOperation.TEXT_TO_IMAGE); traces: list[dict[str, Any]] = []
-        async def preflight() -> None:
-            for row in candidate_rows:
-                profile = next((item for item in all_profiles if str(item.get("id")) == row.profile_id), {}); trace = asdict(row)
-                try:
-                    probe = await test_profile_connection(profile_payload=profile); trace["connection_probe"] = "PASS" if probe.get("ok") else "FAIL"; trace["model_available"] = probe.get("model_available", True if probe.get("ok") else False); trace["rejected_reason"] = "" if probe.get("ok") else str(probe.get("message") or "MODEL_UNAVAILABLE")
-                except Exception as exc:
-                    trace["connection_probe"] = "FAIL"; trace["model_available"] = False; trace["rejected_reason"] = str(exc)[:500]
-                traces.append(trace)
-        asyncio.run(preflight()); judge_profile = next((item for item in all_profiles if item.get("capability") == "llm" and bool((item.get("default_params") or {}).get("supports_vision"))), {}); base_url = f"http://127.0.0.1:{port}"
+        _wait_for_health(f"http://127.0.0.1:{port}", timeout=180)
+        os.environ["DATABASE_URL"] = env["DATABASE_URL"]
+        from api.model_registry import get_default_profile, list_profiles, test_profile_connection
+        from core.provider_transport_registry import get_provider_transport_binding
+
+        all_profiles = [item for item in list_profiles(include_sensitive=True) if item.get("enabled", True)]
+        default = get_default_profile("image") or next((item for item in all_profiles if item.get("capability") == "image" and item.get("is_default")), {})
+        PRODUCTION_POLICY.assert_image_profile(default)
+        params = default.get("default_params") if isinstance(default.get("default_params"), dict) else {}
+        transport = get_provider_transport_binding(provider_id=PRODUCTION_POLICY.image_provider, target_media="IMAGE", binding_id=str(default.get("transport_binding_id") or "") or None)
+        router = AssetProviderRouter(all_profiles, default_image_profile_id=str(default.get("id") or ""), health=health)
+        router_rows = router.rank("IMAGE", AssetOperation.TEXT_TO_IMAGE)
+        candidate_rows = PRODUCTION_POLICY.filter_image_candidates(router_rows)
+        candidate = next((row for row in candidate_rows if not row.rejected_reason), None)
+        capability = {
+            "text_to_image": "text_to_image" in (params.get("task_modes") or []),
+            "image_to_image": "image_to_image" in (params.get("task_modes") or []),
+            "reference_images": bool(params.get("supports_reference_images")),
+            "https_reference": True,
+            "data_uri_reference": True,
+        }
+        preflight = {
+            "schema_version": "75api_image_preflight_v1",
+            "status": "PASS" if candidate and transport and all(capability.values()) and bool(default.get("key_configured") or default.get("credential_configured") or default.get("api_key")) else "FAIL",
+            "policy": PRODUCTION_POLICY.as_dict(),
+            "profile": {"id": default.get("id"), "provider": default.get("provider"), "model": default.get("model_name"), "transport_binding_id": default.get("transport_binding_id")},
+            "credential_ready": bool(default.get("key_configured") or default.get("credential_configured") or default.get("api_key")),
+            "transport_registered": bool(transport),
+            "capabilities": capability,
+            "router_candidate": asdict(candidate) if candidate else None,
+            "rejected_router_rows": [asdict(row) for row in router_rows if row not in candidate_rows or row.rejected_reason],
+            "reference_input_formats": ["data_uri", "https"],
+            "real_generation_calls": 0,
+        }
+        _write(OUT / "75API_IMAGE_PREFLIGHT.json", preflight)
+        if preflight["status"] != "PASS":
+            raise RuntimeError("75API_IMAGE_PREFLIGHT_FAILED")
+
+        async def preflight_probe() -> None:
+            profile = default
+            trace = asdict(candidate)
+            try:
+                probe = await test_profile_connection(profile_payload=profile)
+                trace["connection_probe"] = "PASS" if probe.get("ok") else "FAIL"
+                trace["model_available"] = probe.get("model_available", True if probe.get("ok") else False)
+                trace["probe_message"] = str(probe.get("message") or "")[:500]
+            except Exception as exc:
+                trace["connection_probe"] = "FAIL"
+                trace["model_available"] = False
+                trace["probe_message"] = str(exc)[:500]
+            preflight["connection_probe"] = trace
+            _write(OUT / "75API_IMAGE_PREFLIGHT.json", preflight)
+            if trace["connection_probe"] != "PASS":
+                raise RuntimeError("75API_IMAGE_PREFLIGHT_CONNECTION_FAILED")
+
+        asyncio.run(preflight_probe())
+        judge_profile = next((item for item in all_profiles if item.get("capability") == "llm" and bool((item.get("default_params") or {}).get("supports_vision"))), {})
+        if not judge_profile:
+            raise RuntimeError("VISION_JUDGE_PROFILE_MISSING")
+        base_url = f"http://127.0.0.1:{port}"
+
+        async def run_stage(client: httpx.AsyncClient, character: Mapping[str, Any], keys: list[str], paths: dict[str, Path]) -> None:
+            asset_id = str(character["id"])
+            results[asset_id] = await _run_asset(client, base_url, kind="CHARACTER", asset=character, candidate_rows=candidate_rows, all_profiles=all_profiles, judge_profile=judge_profile, health=health, paths=paths, budget=CANARY_BUDGET[character["name"]], call_counter=call_counter, traces=[], events=events, policy=PRODUCTION_POLICY)
+            results[asset_id]["board"] = _board({key: paths[key] for key in keys}, OUT / f"{asset_id.lower().replace('_', '-')}-reference-board.png", ["FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_FRONT", "FULL_SIDE", "FULL_BACK"], 3)
+            if not results[asset_id].get("authority"):
+                raise RuntimeError(f"STAGE_{asset_id}_AUTHORITY_NOT_READY")
+
         async def run_all() -> None:
             async with httpx.AsyncClient(timeout=60, trust_env=False) as client:
-                for character in CHARACTERS:
-                    keys = ["MASTER", "FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_SIDE", "FULL_BACK"]; paths = {key: work / f"{character['id'].lower()}-{key.lower()}.jpg" for key in keys}; results[character["id"]] = await _run_asset(client, base_url, kind="CHARACTER", asset=character, profile_rows=candidate_rows, all_profiles=all_profiles, judge_profile=judge_profile, health=health, paths=paths, budget=CANARY_BUDGET[character["name"]], call_counter=call_counter, traces=traces, events=events); results[character["id"]]["board"] = _board({key: paths[key] for key in keys}, OUT / f"{character['id'].lower().replace('_','-')}-reference-board.png", ["FACE_FRONT", "FACE_PROFILE", "FACE_45", "MASTER", "FULL_SIDE", "FULL_BACK"], 3)
-                keys = ["MASTER", "SIDE", "BACK", "DETAIL"]; paths = {key: work / f"handbag-{key.lower()}.jpg" for key in keys}; results["HANDBAG"] = await _run_asset(client, base_url, kind="PROP", asset=HANDBAG, profile_rows=candidate_rows, all_profiles=all_profiles, judge_profile=judge_profile, health=health, paths=paths, budget=CANARY_BUDGET["HANDBAG"], call_counter=call_counter, traces=traces, events=events); results["HANDBAG"]["board"] = _board({key: paths[key] for key in keys}, OUT / "handbag-reference-board.png", keys, 2)
-        OUT.mkdir(parents=True, exist_ok=True); asyncio.run(run_all())
-        scene_authority = json.loads(SCENE_AUTHORITY_PATH.read_text(encoding="utf-8")) if SCENE_AUTHORITY_PATH.exists() else {"status": "MISSING"}; char_authorities = [CharacterAuthority(**row["authority"]) for row in results.values() if row.get("kind") == "CHARACTER" and row.get("authority")]; prop_authorities = [PropAuthority(**results["HANDBAG"]["authority"])] if results.get("HANDBAG", {}).get("authority") else []; authority_set = None
-        if scene_authority.get("status") == AuthorityStatus.READY.value and len(char_authorities) == 2 and len(prop_authorities) == 1: authority_set = VisualAssetAuthoritySet.build(characters=char_authorities, scenes={"E01_SC002": scene_authority}, props=prop_authorities, visual_style_fingerprint=_sha("visual-style-v1"))
-        for key, row in results.items():
-            kind = row["kind"]; prefix = "CHARACTER" if kind == "CHARACTER" else "PROP"; authority_path = OUT / (f"{key.lower().replace('_','-')}-authority.json" if kind == "CHARACTER" else "handbag-authority.json"); _write(authority_path, row.get("authority") or {"status": AuthorityStatus.FAILED.value, "asset_id": key}); _write(OUT / f"{prefix}_PROVIDER_SELECTION_TRACE.json" if key == "LIN_WAN" or key == "HANDBAG" else OUT / f"{prefix}_PROVIDER_SELECTION_TRACE_{key}.json", row["selection_trace"]); _write(OUT / f"{prefix}_VIEW_EVIDENCE_{key}.json", row["generations"]); _write(OUT / f"{prefix}_CONSISTENCY_AUDIT_{key}.json", {"audits": [asdict(audit) for audit in row["audits"]], "global": row["global"]}); _write(OUT / f"{prefix}_REPAIR_HISTORY_{key}.json", row["repairs"])
-        _write(OUT / "CHARACTER_PROVIDER_SELECTION_TRACE.json", traces); _write(OUT / "PROP_PROVIDER_SELECTION_TRACE.json", traces); _write(OUT / "CHARACTER_VIEW_EVIDENCE.json", {key: results[key]["generations"] for key in ("LIN_WAN", "LU_SHU")}); _write(OUT / "PROP_VIEW_EVIDENCE.json", {"HANDBAG": results["HANDBAG"]["generations"]}); _write(OUT / "CHARACTER_CONSISTENCY_AUDIT.json", {key: {"audits": [asdict(audit) for audit in results[key]["audits"]], "global": results[key]["global"]} for key in ("LIN_WAN", "LU_SHU")}); _write(OUT / "PROP_CONSISTENCY_AUDIT.json", {"HANDBAG": {"audits": [asdict(audit) for audit in results["HANDBAG"]["audits"]], "global": results["HANDBAG"]["global"]}}); _write(OUT / "CHARACTER_REPAIR_HISTORY.json", {key: results[key]["repairs"] for key in ("LIN_WAN", "LU_SHU")}); _write(OUT / "PROP_REPAIR_HISTORY.json", {"HANDBAG": results["HANDBAG"]["repairs"]}); _write(OUT / "CHARACTER_AUTHORITIES.json", {key: results[key]["authority"] for key in ("LIN_WAN", "LU_SHU")}); _write(OUT / "PROP_AUTHORITIES.json", {"HANDBAG": results["HANDBAG"]["authority"]}); _write(OUT / "VISUAL_ASSET_AUTHORITY_SET.json", asdict(authority_set) if authority_set else {"status": "PARTIAL", "scene": scene_authority, "characters": {key: results[key]["authority"] for key in ("LIN_WAN", "LU_SHU")}, "props": {"HANDBAG": results["HANDBAG"]["authority"]}})
-        ready = bool(authority_set); report = ["# Autonomous Visual Asset Pipeline V2 — Character / Prop", "", f"- Status: {'AUTONOMOUS_VISUAL_ASSET_PIPELINE_READY_FOR_SHOT_CANARY' if ready else 'AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL'}", "- Provider ambiguous timeout: fail-closed gate implemented; no blind retry after POST.", f"- Session Provider health: {health.unhealthy}", ""]
-        for key in ("LIN_WAN", "LU_SHU", "HANDBAG"):
-            row = results[key]; report.extend([f"## {row['name'] if row['kind']=='CHARACTER' else 'Prop HANDBAG'}", f"- Master: {row['master']['provider']} / {row['master']['model_profile_id']} / SHA={row['master']['sha256']}", f"- Derived: {', '.join(row['generations'].keys())}", f"- Repairs: {len(row['repairs'])}", f"- IMAGE calls: {len(row['generations']) + len(row['master_attempts']) - 1 + len(row['repairs'])}", f"- Pairwise: {[audit.status for audit in row['audits']]}", f"- Global: {row['global'].get('status')}", f"- Authority: {'READY' if row.get('authority') else 'FAILED'}", ""])
-        report.extend(["## Scene E01_SC002", "- Reused: docs/visual-assets/autonomous-v3/SCENE_AUTHORITY.json", f"- Authority: {scene_authority.get('status')}", "", f"- VisualAssetAuthoritySet: {'READY' if ready else 'PARTIAL'}", f"- Real IMAGE calls: {call_counter['used']}", f"- Vision Judge calls: {sum(len(row['audits']) + (1 if row['global'].get('status') != 'NOT_RUN' else 0) for row in results.values())}", "- Real VIDEO calls: 0", "- Production writes: 0", "- Book 990400 writes: 0", "- Secret leaks: 0", "- Orphans: 0", "", "- No keyframe generation was executed."])
-        (OUT / "AUTONOMOUS_VISUAL_ASSET_REPORT.md").write_text("\n".join(report) + "\n", encoding="utf-8"); manifest = {"schema_version": "autonomous_visual_asset_pipeline_v2", "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_READY_FOR_SHOT_CANARY" if ready else "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL", "scene_authority": scene_authority, "characters": {key: results[key] for key in ("LIN_WAN", "LU_SHU")}, "props": {"HANDBAG": results["HANDBAG"]}, "authority_set": asdict(authority_set) if authority_set else None, "provider_health": health.unhealthy, "real_image_calls": call_counter["used"], "vision_judge_calls": sum(len(row["audits"]) + (1 if row["global"].get("status") != "NOT_RUN" else 0) for row in results.values()), "real_video_calls": 0, "safety": {"production_writes": 0, "book_990400_writes": 0, "browser_direct_provider_calls": 0, "secret_leaks": 0, "orphans": 0}}
-        _write(OUT / "AUTONOMOUS_VISUAL_ASSET_AUDIT.json", manifest); print(json.dumps({"status": manifest["status"], "image_calls": call_counter["used"], "video_calls": 0, "output": str(OUT)}, ensure_ascii=False, indent=2)); return 0 if ready else 2
+                for character in (CHARACTERS[0], CHARACTERS[1]):
+                    keys = ["MASTER", "FULL_FRONT", "FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_SIDE", "FULL_BACK"]
+                    paths = {key: work / f"{character['id'].lower()}-{key.lower()}.jpg" for key in keys}
+                    paths["FULL_FRONT"] = paths["MASTER"]
+                    await run_stage(client, character, keys, paths)
+                keys = ["MASTER", "SIDE", "BACK", "DETAIL"]
+                paths = {key: work / f"handbag-{key.lower()}.jpg" for key in keys}
+                results["HANDBAG"] = await _run_asset(client, base_url, kind="PROP", asset=HANDBAG, candidate_rows=candidate_rows, all_profiles=all_profiles, judge_profile=judge_profile, health=health, paths=paths, budget=CANARY_BUDGET["HANDBAG"], call_counter=call_counter, traces=[], events=events, policy=PRODUCTION_POLICY)
+                results["HANDBAG"]["board"] = _board({key: paths[key] for key in keys}, OUT / "handbag-reference-board.png", keys, 2)
+                if not results["HANDBAG"].get("authority"):
+                    raise RuntimeError("STAGE_HANDBAG_AUTHORITY_NOT_READY")
+
+        asyncio.run(run_all())
+        scene_authority = json.loads(SCENE_AUTHORITY_PATH.read_text(encoding="utf-8")) if SCENE_AUTHORITY_PATH.exists() else {"status": "MISSING"}
+        char_authorities = [CharacterAuthority(**results[key]["authority"]) for key in ("LIN_WAN", "LU_SHU")]
+        prop_authorities = [PropAuthority(**results["HANDBAG"]["authority"])]
+        authority_set = VisualAssetAuthoritySet.build(characters=char_authorities, scenes={"E01_SC002": scene_authority}, props=prop_authorities, visual_style_fingerprint=_sha("visual-style-v1"))
+        _write(OUT / "CHARACTER_AUTHORITIES.json", {key: results[key]["authority"] for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_AUTHORITIES.json", {"HANDBAG": results["HANDBAG"]["authority"]})
+        _write(OUT / "CHARACTER_VIEW_EVIDENCE.json", {key: results[key]["generations"] for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_VIEW_EVIDENCE.json", {"HANDBAG": results["HANDBAG"]["generations"]})
+        _write(OUT / "CHARACTER_CONSISTENCY_AUDIT.json", {key: {"audits": [asdict(audit) for audit in results[key]["audits"]], "global": results[key]["global"]} for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_CONSISTENCY_AUDIT.json", {"HANDBAG": {"audits": [asdict(audit) for audit in results["HANDBAG"]["audits"]], "global": results["HANDBAG"]["global"]}})
+        _write(OUT / "CHARACTER_REPAIR_HISTORY.json", {key: results[key]["repairs"] for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_REPAIR_HISTORY.json", {"HANDBAG": results["HANDBAG"]["repairs"]})
+        _write(OUT / "VISUAL_ASSET_AUTHORITY_SET.json", asdict(authority_set))
+        _write(OUT / "CHARACTER_PROVIDER_SELECTION_TRACE.json", {key: results[key]["selection_trace"] for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_PROVIDER_SELECTION_TRACE.json", results["HANDBAG"]["selection_trace"])
+        manifest = {"schema_version": "75api_autonomous_character_prop_canary_v1", "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_READY_FOR_SHOT_CANARY", "production_provider_policy": PRODUCTION_POLICY.as_dict(), "preflight": preflight, "scene_authority": scene_authority, "characters": {key: results[key] for key in ("LIN_WAN", "LU_SHU")}, "props": {"HANDBAG": results["HANDBAG"]}, "authority_set": asdict(authority_set), "real_image_calls": call_counter["used"], "real_image_calls_by_provider": call_counter["by_provider"], "vision_judge_calls": sum(len(row["audits"]) + 1 for row in results.values()), "real_video_calls": 0, "safety": {"production_writes": 0, "book_990400_writes": 0, "browser_direct_provider_calls": 0, "secret_leaks": 0, "orphans": 0}}
+        _write(OUT / "AUTONOMOUS_VISUAL_ASSET_AUDIT.json", manifest)
+        report = ["# 75API Autonomous Character / Prop Real Canary", "", "- Status: AUTONOMOUS_VISUAL_ASSET_PIPELINE_READY_FOR_SHOT_CANARY", f"- Production Provider Policy: {PRODUCTION_POLICY.image_provider} / {PRODUCTION_POLICY.image_model} (strict={PRODUCTION_POLICY.strict_provider})", f"- VIDEO policy: {PRODUCTION_POLICY.video_provider} / {PRODUCTION_POLICY.video_model}; real VIDEO calls: 0", f"- Real IMAGE calls: {call_counter['used']} (75api={call_counter['by_provider']['75api-image']}, SHAPI=0, Poyo=0)", "- Production writes: 0", "- Book 990400 writes: 0", "- Secret leaks: 0", "- Orphans: 0", "- No keyframe or VIDEO generation was executed.", "", "## Authorities", "- Lin Wan: READY", "- Lu Shu: READY", "- HANDBAG: READY", "- Scene E01_SC002: reused READY", "- VisualAssetAuthoritySet: READY"]
+        (OUT / "AUTONOMOUS_VISUAL_ASSET_REPORT.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+        print(json.dumps({"status": manifest["status"], "image_calls": call_counter["used"], "video_calls": 0, "output": str(OUT)}, ensure_ascii=False, indent=2))
+        return 0
     except Exception as exc:
-        OUT.mkdir(parents=True, exist_ok=True)
-        failure = {"status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL", "failure": str(exc)[:1000], "provider_health": health.unhealthy, "real_image_calls": call_counter["used"], "real_video_calls": 0, "safety": {"production_writes": 0, "book_990400_writes": 0, "browser_direct_provider_calls": 0, "secret_leaks": 0, "orphans": 0}}
+        failure = {"schema_version": "75api_autonomous_character_prop_canary_v1", "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL", "failure": str(exc)[:1000], "production_provider_policy": PRODUCTION_POLICY.as_dict(), "preflight": preflight, "provider_health": health.unhealthy, "real_image_calls": call_counter["used"], "real_image_calls_by_provider": call_counter["by_provider"], "real_video_calls": 0, "safety": {"production_writes": 0, "book_990400_writes": 0, "browser_direct_provider_calls": 0, "secret_leaks": 0, "orphans": 0}}
         _write(OUT / "AUTONOMOUS_VISUAL_ASSET_AUDIT.json", failure)
-        _write(OUT / "CHARACTER_PROVIDER_SELECTION_TRACE.json", [])
-        _write(OUT / "CHARACTER_VIEW_EVIDENCE.json", {key: row.get("generations", {}) for key, row in results.items() if row.get("kind") == "CHARACTER"})
-        _write(OUT / "CHARACTER_CONSISTENCY_AUDIT.json", {key: {"status": "NOT_RUN", "audits": []} for key in ("LIN_WAN", "LU_SHU")})
-        _write(OUT / "CHARACTER_REPAIR_HISTORY.json", {key: [] for key in ("LIN_WAN", "LU_SHU")})
-        _write(OUT / "CHARACTER_AUTHORITIES.json", {key: None for key in ("LIN_WAN", "LU_SHU")})
-        _write(OUT / "PROP_PROVIDER_SELECTION_TRACE.json", [])
-        _write(OUT / "PROP_VIEW_EVIDENCE.json", {})
-        _write(OUT / "PROP_CONSISTENCY_AUDIT.json", {"HANDBAG": {"status": "NOT_RUN", "audits": []}})
-        _write(OUT / "PROP_REPAIR_HISTORY.json", {"HANDBAG": []})
-        _write(OUT / "PROP_AUTHORITIES.json", {"HANDBAG": None})
+        _write(OUT / "75API_IMAGE_PREFLIGHT.json", preflight)
+        _write(OUT / "CHARACTER_AUTHORITIES.json", {key: results.get(key, {}).get("authority") for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_AUTHORITIES.json", {"HANDBAG": results.get("HANDBAG", {}).get("authority")})
+        _write(OUT / "CHARACTER_VIEW_EVIDENCE.json", {key: results.get(key, {}).get("generations", {}) for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_VIEW_EVIDENCE.json", {"HANDBAG": results.get("HANDBAG", {}).get("generations", {})})
+        _write(OUT / "CHARACTER_CONSISTENCY_AUDIT.json", {key: {"audits": [asdict(audit) for audit in results.get(key, {}).get("audits", [])], "global": results.get(key, {}).get("global", {"status": "NOT_RUN"})} for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_CONSISTENCY_AUDIT.json", {"HANDBAG": {"audits": [asdict(audit) for audit in results.get("HANDBAG", {}).get("audits", [])], "global": results.get("HANDBAG", {}).get("global", {"status": "NOT_RUN"})}})
+        _write(OUT / "CHARACTER_REPAIR_HISTORY.json", {key: results.get(key, {}).get("repairs", []) for key in ("LIN_WAN", "LU_SHU")})
+        _write(OUT / "PROP_REPAIR_HISTORY.json", {"HANDBAG": results.get("HANDBAG", {}).get("repairs", [])})
         scene = json.loads(SCENE_AUTHORITY_PATH.read_text(encoding="utf-8")) if SCENE_AUTHORITY_PATH.exists() else {"status": "MISSING"}
-        _write(OUT / "VISUAL_ASSET_AUTHORITY_SET.json", {"status": "PARTIAL", "scene": scene, "characters": {}, "props": {}})
-        (OUT / "AUTONOMOUS_VISUAL_ASSET_REPORT.md").write_text(f"# Autonomous Visual Asset Pipeline V2\n\n- Status: AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL\n- Failure: {str(exc)[:1000]}\n- Real IMAGE calls: {call_counter['used']}\n- Real VIDEO calls: 0\n- No authority was promoted.\n", encoding="utf-8")
-        print(json.dumps(failure, ensure_ascii=False, indent=2)); return 2
+        _write(OUT / "VISUAL_ASSET_AUTHORITY_SET.json", {"status": "PARTIAL", "scene": scene, "characters": {key: results.get(key, {}).get("authority") for key in ("LIN_WAN", "LU_SHU")}, "props": {"HANDBAG": results.get("HANDBAG", {}).get("authority")}})
+        (OUT / "AUTONOMOUS_VISUAL_ASSET_REPORT.md").write_text("# 75API Autonomous Character / Prop Real Canary\n\n- Status: AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL\n- Failure: " + str(exc)[:1000] + f"\n- Real IMAGE calls: {call_counter['used']} (75api={call_counter['by_provider']['75api-image']}, SHAPI=0, Poyo=0)\n- Real VIDEO calls: 0\n- No fallback provider was used.\n- No authority was promoted beyond completed stages.\n", encoding="utf-8")
+        print(json.dumps(failure, ensure_ascii=False, indent=2))
+        return 2
     finally:
         process.terminate()
-        try: process.wait(timeout=15)
-        except subprocess.TimeoutExpired: process.kill(); process.wait(timeout=5)
+        try:
+            process.wait(timeout=15)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
         log.close()
 
 

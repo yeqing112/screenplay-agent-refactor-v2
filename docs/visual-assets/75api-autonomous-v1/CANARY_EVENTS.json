@@ -1,0 +1,25 @@
+{
+  "stage": "LIN_WAN",
+  "events": [
+    {
+      "kind": "PREFLIGHT_PASS",
+      "provider": "75api-image",
+      "model": "gpt-image-2-1k"
+    },
+    {
+      "kind": "MASTER_POSTED",
+      "provider": "75api-image",
+      "model": "gpt-image-2-1k",
+      "task_id": "ffa4881c08be"
+    },
+    {
+      "kind": "SUBMISSION_AMBIGUOUS",
+      "post_submission_state": "AMBIGUOUS_AFTER_SEND",
+      "retry_blocked": true
+    },
+    {
+      "kind": "PROGRESSIVE_CANARY_STOP",
+      "reason": "LIN_WAN failed before derived views"
+    }
+  ]
+}

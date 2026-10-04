@@ -78,7 +78,7 @@ def classify_provider_failure(
         submission_state = PostSubmissionState.AMBIGUOUS_AFTER_SEND
     text = str(error or "").lower()
     if submission_state in {PostSubmissionState.AMBIGUOUS_AFTER_SEND, PostSubmissionState.TASK_NOT_CONFIRMED} and any(
-        token in text for token in ("timeout", "timed out", "connection reset", "unknown task", "no task", "request id")
+        token in text for token in ("timeout", "timed out", "超时", "连接超时", "connection reset", "unknown task", "no task", "request id")
     ):
         return ProviderFailureClassification.SUBMISSION_AMBIGUOUS
     if any(token in text for token in ("credits are insufficient", "insufficient credits", "insufficient balance", "余额不足", "credits_insufficient")):
@@ -89,7 +89,7 @@ def classify_provider_failure(
         return ProviderFailureClassification.MODEL_UNAVAILABLE
     if any(token in text for token in ("invalid payload", "payload", "参数错误", "缺少必要字段", "bad request")):
         return ProviderFailureClassification.PAYLOAD_INVALID
-    if any(token in text for token in ("timeout", "timed out", "connecterror", "connection refused", "temporarily unavailable")):
+    if any(token in text for token in ("timeout", "timed out", "超时", "connecterror", "connection refused", "temporarily unavailable")):
         return ProviderFailureClassification.NETWORK_TRANSIENT
     if any(token in text for token in ("connection reset", "possible task", "request id", "submitted but", "提交成功")):
         return ProviderFailureClassification.SUBMISSION_AMBIGUOUS

@@ -1,0 +1,10 @@
+{
+  "status": "HISTORICAL_CANDIDATE",
+  "source": "docs/visual-assets/autonomous-v4",
+  "excluded_from_75api_authority": true,
+  "assets": [
+    "LIN_WAN",
+    "LU_SHU",
+    "HANDBAG"
+  ]
+}

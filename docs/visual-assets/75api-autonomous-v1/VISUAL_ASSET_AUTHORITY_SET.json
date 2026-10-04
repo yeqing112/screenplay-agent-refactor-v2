@@ -1,0 +1,30 @@
+{
+  "status": "PARTIAL",
+  "scene": {
+    "scene_id": "E01_SC002",
+    "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+    "views": [
+      "DETAIL",
+      "MASTER",
+      "REVERSE",
+      "SIDE"
+    ],
+    "view_fingerprints": {
+      "MASTER": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "REVERSE": "2846a6b4afc2e1d7824f92797326243b64ab72cfe43acfcfd3b728f395ebbb0b",
+      "SIDE": "c2a22aae3fe73d51a72ff5356803fd08bdabae8db54b30c2469bd418154510fd",
+      "DETAIL": "742597a64b5ac41fd57468beca1b3df65a58f612951b4229680fc2c36c2ed052"
+    },
+    "consistency_audit_count": 3,
+    "repair_count": 0,
+    "image_calls": 5,
+    "status": "READY"
+  },
+  "characters": {
+    "LIN_WAN": null,
+    "LU_SHU": null
+  },
+  "props": {
+    "HANDBAG": null
+  }
+}

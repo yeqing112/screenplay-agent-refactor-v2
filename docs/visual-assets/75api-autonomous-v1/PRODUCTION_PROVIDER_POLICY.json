@@ -1,0 +1,7 @@
+{
+  "image_provider": "75api-image",
+  "image_model": "gpt-image-2-1k",
+  "video_provider": "75api-minimax-h3",
+  "video_model": "minimax_h3_no_audios",
+  "strict_provider": true
+}

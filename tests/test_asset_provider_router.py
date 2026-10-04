@@ -67,6 +67,7 @@ def test_timeout_before_send_can_failover():
 
 def test_timeout_after_send_is_submission_ambiguous():
     assert classify_provider_failure("request timed out", post_submission_state=PostSubmissionState.AMBIGUOUS_AFTER_SEND) == ProviderFailureClassification.SUBMISSION_AMBIGUOUS
+    assert classify_provider_failure("75api 图片生成失败：请求超时。", post_submission_state=PostSubmissionState.AMBIGUOUS_AFTER_SEND) == ProviderFailureClassification.SUBMISSION_AMBIGUOUS
     assert not can_failover(ProviderFailureClassification.SUBMISSION_AMBIGUOUS, post_submission_state=PostSubmissionState.AMBIGUOUS_AFTER_SEND)
 
 
