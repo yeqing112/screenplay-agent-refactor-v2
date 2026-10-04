@@ -6,7 +6,7 @@
 - Old ambiguous run `de83476`: `CLOSED_SUBMISSION_AMBIGUOUS`; retry/resume/reuse disabled
 - Real IMAGE calls: `1`; real VIDEO calls: `0`
 - Partial run retained under publish-staging; failed authorities have no final board.
-- Lin Wan: status=INCOMPLETE/NOT_STARTED; board=NOT_PUBLISHED
-- Lu Shu: status=INCOMPLETE/NOT_STARTED; board=NOT_PUBLISHED
+- Lin Wan: status=INCOMPLETE; board=NOT_PUBLISHED; reason=PROVIDER_NO_IMAGE_DATA
+- Lu Shu: status=NOT_STARTED; board=NOT_PUBLISHED
 - HANDBAG: status=INCOMPLETE/NOT_STARTED; board=NOT_PUBLISHED
 - Staging retained: `D:\Work\Project\screenplay-agent-refactor-v2\work\75api-autonomous-character-prop-canary-v2\20261004T102258Z\publish-staging`
