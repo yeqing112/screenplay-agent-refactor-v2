@@ -140,6 +140,8 @@ async def _run() -> tuple[int, dict[str, Any]]:
             source = reuse_base / "apple-master.jpg"
             if source.exists():
                 shutil.copy2(source, apple_path)
+            else:
+                await _save_uri(str(reused["apple"].get("preview_url") or ""), apple_path)
             evidence["apple"] = dict(reused["apple"])
             apple = {"previewUrl": evidence["apple"].get("preview_url", ""), "providerResponseFingerprint": evidence["apple"].get("provider_response_fingerprint", "")}
         else:
