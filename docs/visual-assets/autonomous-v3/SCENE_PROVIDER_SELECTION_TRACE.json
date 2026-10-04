@@ -1,0 +1,44 @@
+[
+  {
+    "profile_id": "preset-poyo-image-gpt-image-2",
+    "provider": "poyo-async",
+    "model": "gpt-image-2",
+    "operation": "TEXT_TO_IMAGE",
+    "credential_ready": true,
+    "text_to_image": true,
+    "reference_image": true,
+    "connection_probe": "PASS",
+    "model_available": true,
+    "priority": 1,
+    "selected": false,
+    "rejected_reason": ""
+  },
+  {
+    "profile_id": "local-image-mw4y52",
+    "provider": "shapi-gemini-image",
+    "model": "nano-banana-2",
+    "operation": "TEXT_TO_IMAGE",
+    "credential_ready": true,
+    "text_to_image": true,
+    "reference_image": true,
+    "connection_probe": "PASS",
+    "model_available": true,
+    "priority": 1,
+    "selected": true,
+    "rejected_reason": ""
+  },
+  {
+    "profile_id": "local-image-c4a7yu",
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k",
+    "operation": "TEXT_TO_IMAGE",
+    "credential_ready": true,
+    "text_to_image": true,
+    "reference_image": false,
+    "connection_probe": "PASS",
+    "model_available": true,
+    "priority": 2,
+    "selected": false,
+    "rejected_reason": ""
+  }
+]

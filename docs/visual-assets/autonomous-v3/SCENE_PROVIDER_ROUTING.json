@@ -1,0 +1,39 @@
+{
+  "master": {
+    "id": "local-image-mw4y52",
+    "provider": "shapi-gemini-image",
+    "model_name": "nano-banana-2",
+    "supports_reference_images": true,
+    "supports_image_url": false,
+    "supports_file_upload": false,
+    "transport_binding_id": "shapi-gemini-image.image.v1"
+  },
+  "derived": {
+    "id": "local-image-mw4y52",
+    "provider": "shapi-gemini-image",
+    "model_name": "nano-banana-2",
+    "supports_reference_images": true,
+    "supports_image_url": false,
+    "supports_file_upload": false,
+    "transport_binding_id": "shapi-gemini-image.image.v1"
+  },
+  "repair": {
+    "id": "local-image-mw4y52",
+    "provider": "shapi-gemini-image",
+    "model_name": "nano-banana-2",
+    "supports_reference_images": true,
+    "supports_image_url": false,
+    "supports_file_upload": false,
+    "transport_binding_id": "shapi-gemini-image.image.v1"
+  },
+  "judge": {
+    "id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model_name": "mimo-v2.5",
+    "supports_reference_images": false,
+    "supports_image_url": false,
+    "supports_file_upload": false,
+    "transport_binding_id": ""
+  },
+  "master_locked": true
+}

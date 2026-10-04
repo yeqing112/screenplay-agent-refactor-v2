@@ -1,0 +1,525 @@
+{
+  "schema_version": "autonomous_asset_pipeline_audit_v3",
+  "status": "AUTONOMOUS_SCENE_ASSET_PIPELINE_READY",
+  "scene_id": "E01_SC002",
+  "result": "READY",
+  "previous_v2_closure": {
+    "status": "CLOSED_MASTER_PROVIDER_CREDITS_INSUFFICIENT",
+    "attempts": 1,
+    "derived": 0,
+    "repairs": 0,
+    "video": 0
+  },
+  "provider_selection_trace": [
+    {
+      "profile_id": "preset-poyo-image-gpt-image-2",
+      "provider": "poyo-async",
+      "model": "gpt-image-2",
+      "operation": "TEXT_TO_IMAGE",
+      "credential_ready": true,
+      "text_to_image": true,
+      "reference_image": true,
+      "connection_probe": "PASS",
+      "model_available": true,
+      "priority": 1,
+      "selected": false,
+      "rejected_reason": ""
+    },
+    {
+      "profile_id": "local-image-mw4y52",
+      "provider": "shapi-gemini-image",
+      "model": "nano-banana-2",
+      "operation": "TEXT_TO_IMAGE",
+      "credential_ready": true,
+      "text_to_image": true,
+      "reference_image": true,
+      "connection_probe": "PASS",
+      "model_available": true,
+      "priority": 1,
+      "selected": true,
+      "rejected_reason": ""
+    },
+    {
+      "profile_id": "local-image-c4a7yu",
+      "provider": "75api-image",
+      "model": "gpt-image-2-1k",
+      "operation": "TEXT_TO_IMAGE",
+      "credential_ready": true,
+      "text_to_image": true,
+      "reference_image": false,
+      "connection_probe": "PASS",
+      "model_available": true,
+      "priority": 2,
+      "selected": false,
+      "rejected_reason": ""
+    }
+  ],
+  "provider_routing": {
+    "master": {
+      "id": "local-image-mw4y52",
+      "provider": "shapi-gemini-image",
+      "model_name": "nano-banana-2",
+      "supports_reference_images": true,
+      "supports_image_url": false,
+      "supports_file_upload": false,
+      "transport_binding_id": "shapi-gemini-image.image.v1"
+    },
+    "derived": {
+      "id": "local-image-mw4y52",
+      "provider": "shapi-gemini-image",
+      "model_name": "nano-banana-2",
+      "supports_reference_images": true,
+      "supports_image_url": false,
+      "supports_file_upload": false,
+      "transport_binding_id": "shapi-gemini-image.image.v1"
+    },
+    "repair": {
+      "id": "local-image-mw4y52",
+      "provider": "shapi-gemini-image",
+      "model_name": "nano-banana-2",
+      "supports_reference_images": true,
+      "supports_image_url": false,
+      "supports_file_upload": false,
+      "transport_binding_id": "shapi-gemini-image.image.v1"
+    },
+    "judge": {
+      "id": "local-llm-2vydoz",
+      "provider": "openai-compatible",
+      "model_name": "mimo-v2.5",
+      "supports_reference_images": false,
+      "supports_image_url": false,
+      "supports_file_upload": false,
+      "transport_binding_id": ""
+    },
+    "master_locked": true
+  },
+  "generation": {
+    "master_attempts": 2,
+    "derived_calls": 3,
+    "repair_calls": 0,
+    "total_image_calls": 5,
+    "real_video_calls": 0
+  },
+  "scene_view_evidence": {
+    "MASTER": {
+      "view_id": "MASTER",
+      "execution_id": "800c912780ab",
+      "provider": "shapi-gemini-image",
+      "model_profile_id": "local-image-mw4y52",
+      "candidate_status": "CANDIDATE",
+      "prompt_fingerprint": "62346d52b2ec8e8434af2557f503e2ea348edd918807efc3d3a7d53956f1d2db",
+      "reference_image_count": 0,
+      "reference_image_sha256": "",
+      "reference_role": "",
+      "provider_inline_reference_attached": false,
+      "provider_request_payload": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "单张写实电影场景空间主参考图，16:9横向，不要拼图，不要四宫格，不要人物，不要文字标签。这是E01_SC002旧出租公寓厨房的完整master wide，必须清楚表现真实房间比例和拓扑：左墙窗户，水槽严格位于左墙窗户正下方，后墙橱柜和工作台，前景中央餐桌与两把椅子，右后方厨房门通往客厅。旧白瓷砖、磨损木台面、哑光柜体、旧木餐桌；傍晚阴天雨后，左侧冷色天光与顶部单盏暖灯并存。画面要让门、窗、水槽、橱柜、餐桌的相对位置一次看清。\n权威SceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\n\nNegative constraints (must not appear): 人物、角色、人脸、文字、标签、Logo、水印、拼图、四宫格、不同房间、移动门窗、水槽漂移、家具新增或消失、超现实建筑"
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9",
+            "imageSize": "2K"
+          }
+        }
+      },
+      "file": {
+        "file": "scene-master.jpg",
+        "bytes": 2787112,
+        "sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "generation_execution_id": "800c912780ab",
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\autonomous-scene-provider-failover-canary-v3\\20261004T070016Z\\scene-master.jpg"
+    },
+    "REVERSE": {
+      "view_id": "REVERSE",
+      "execution_id": "75e13c551377",
+      "provider": "shapi-gemini-image",
+      "model_profile_id": "local-image-mw4y52",
+      "candidate_status": "CANDIDATE",
+      "prompt_fingerprint": "bfdc1e3e1d9ec0fcd56a40f70086db5930cc5eeb15e644ae5be3ff4ce9840f8c",
+      "reference_image_count": 1,
+      "reference_image_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "reference_role": "scene",
+      "provider_inline_reference_attached": true,
+      "provider_request_payload": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "这是同一间厨房。参考图是 MASTER 权威空间。保持门窗、水槽、连续橱柜、餐桌、瓷砖、台面、灯具和磨损状态完全不变，只改变摄影机位置和自然遮挡。禁止重新设计厨房。\n单张写实电影场景参考图，不要拼图，不要四宫格，不要文字标签，不要人物。这是与 SceneGeometryIR 完全相同的物理房间，只改变相机位置、相机朝向和自然遮挡；禁止改变墙体、门、窗、水槽、餐桌、橱柜、固定家具、材质、时间、天气和灯光方向。\nSceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\nSceneDerivedViewPlan：{\"camera_direction\": \"toward the center foreground and rear-right kitchen door\", \"camera_position\": \"near rear kitchen work zone facing toward dining table\", \"forbidden_changes\": [\"redesigning the room\", \"moving the door\", \"moving the sink below the window\", \"changing fixed furniture\", \"adding people or text\"], \"occluded_landmarks\": [\"back_cabinet_partial\"], \"required_landmarks\": [\"dining_table\", \"rear_right_kitchen_door\", \"left_window_edge\"], \"view_id\": \"REVERSE\", \"view_type\": \"REVERSE\", \"visible_landmarks\": [\"dining_table\", \"rear_right_kitchen_door\", \"left_window_edge\", \"sink_edge\"]}\n输出必须是一张完整可读的单视图，所有可见地标按计划保持相对拓扑。\n\nNegative constraints (must not appear): 人物、角色、人脸、文字、标签、Logo、水印、拼图、四宫格、不同房间、移动门窗、水槽漂移、家具新增或消失、超现实建筑"
+              },
+              {
+                "text": "参考图 1：SCENE_MASTER。角色/用途：scene，same physical room topology。该图是已确认的视觉事实：必须继承其人物身份、脸型、发型、服装、材质或场景布局；不得用提示词中的泛化描述覆盖它，也不得新增冲突设定。"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/jpeg",
+                  "data": "<redacted base64: 3716152 chars>"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9",
+            "imageSize": "2K"
+          }
+        }
+      },
+      "file": {
+        "file": "scene-reverse.jpg",
+        "bytes": 2508213,
+        "sha256": "2846a6b4afc2e1d7824f92797326243b64ab72cfe43acfcfd3b728f395ebbb0b",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "2846a6b4afc2e1d7824f92797326243b64ab72cfe43acfcfd3b728f395ebbb0b",
+      "generation_execution_id": "75e13c551377",
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\autonomous-scene-provider-failover-canary-v3\\20261004T070016Z\\scene-reverse.jpg"
+    },
+    "SIDE": {
+      "view_id": "SIDE",
+      "execution_id": "a031bbae4893",
+      "provider": "shapi-gemini-image",
+      "model_profile_id": "local-image-mw4y52",
+      "candidate_status": "CANDIDATE",
+      "prompt_fingerprint": "047112a0144411223dbaefc436c6179d2c781c43319aba66fcd9702fa3a1ffe0",
+      "reference_image_count": 1,
+      "reference_image_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "reference_role": "scene",
+      "provider_inline_reference_attached": true,
+      "provider_request_payload": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "这是同一间厨房。参考图是 MASTER 权威空间。保持门窗、水槽、连续橱柜、餐桌、瓷砖、台面、灯具和磨损状态完全不变，只改变摄影机位置和自然遮挡。禁止重新设计厨房。\n单张写实电影场景参考图，不要拼图，不要四宫格，不要文字标签，不要人物。这是与 SceneGeometryIR 完全相同的物理房间，只改变相机位置、相机朝向和自然遮挡；禁止改变墙体、门、窗、水槽、餐桌、橱柜、固定家具、材质、时间、天气和灯光方向。\nSceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\nSceneDerivedViewPlan：{\"camera_direction\": \"across the table toward the left window and rear work zone\", \"camera_position\": \"along the long side of the dining table\", \"forbidden_changes\": [\"redesigning the room\", \"changing table orientation\", \"moving the window\", \"changing fixed furniture\", \"adding people or text\"], \"occluded_landmarks\": [\"near chair underside\"], \"required_landmarks\": [\"dining_table\", \"sink_below_window\", \"back_cabinet\"], \"view_id\": \"SIDE\", \"view_type\": \"SIDE\", \"visible_landmarks\": [\"dining_table\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\"]}\n输出必须是一张完整可读的单视图，所有可见地标按计划保持相对拓扑。\n\nNegative constraints (must not appear): 人物、角色、人脸、文字、标签、Logo、水印、拼图、四宫格、不同房间、移动门窗、水槽漂移、家具新增或消失、超现实建筑"
+              },
+              {
+                "text": "参考图 1：SCENE_MASTER。角色/用途：scene，same physical room topology。该图是已确认的视觉事实：必须继承其人物身份、脸型、发型、服装、材质或场景布局；不得用提示词中的泛化描述覆盖它，也不得新增冲突设定。"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/jpeg",
+                  "data": "<redacted base64: 3716152 chars>"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9",
+            "imageSize": "2K"
+          }
+        }
+      },
+      "file": {
+        "file": "scene-side.jpg",
+        "bytes": 2495675,
+        "sha256": "c2a22aae3fe73d51a72ff5356803fd08bdabae8db54b30c2469bd418154510fd",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "c2a22aae3fe73d51a72ff5356803fd08bdabae8db54b30c2469bd418154510fd",
+      "generation_execution_id": "a031bbae4893",
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\autonomous-scene-provider-failover-canary-v3\\20261004T070016Z\\scene-side.jpg"
+    },
+    "DETAIL": {
+      "view_id": "DETAIL",
+      "execution_id": "2dedc9fcdc4c",
+      "provider": "shapi-gemini-image",
+      "model_profile_id": "local-image-mw4y52",
+      "candidate_status": "CANDIDATE",
+      "prompt_fingerprint": "a16cb5c9ec0b8ce4e38f4f0073ae3cf71bcf7f4d43fe91571c379a4e9c173874",
+      "reference_image_count": 1,
+      "reference_image_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "reference_role": "scene",
+      "provider_inline_reference_attached": true,
+      "provider_request_payload": {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "这是同一间厨房。参考图是 MASTER 权威空间。保持门窗、水槽、连续橱柜、餐桌、瓷砖、台面、灯具和磨损状态完全不变，只改变摄影机位置和自然遮挡。禁止重新设计厨房。\n单张写实电影场景参考图，不要拼图，不要四宫格，不要文字标签，不要人物。这是与 SceneGeometryIR 完全相同的物理房间，只改变相机位置、相机朝向和自然遮挡；禁止改变墙体、门、窗、水槽、餐桌、橱柜、固定家具、材质、时间、天气和灯光方向。\nSceneGeometryIR：{\"adjacency\": [{\"a\": \"window_left\", \"b\": \"sink\", \"relation\": \"vertical_adjacent\"}, {\"a\": \"sink\", \"b\": \"back_cabinet\", \"relation\": \"same_rear_work_zone\"}, {\"a\": \"dining_table\", \"b\": \"kitchen_door\", \"relation\": \"door_visible_beyond_table_right\"}], \"doors\": [{\"id\": \"kitchen_door\", \"opens_to\": \"living_room\", \"wall\": \"RIGHT\", \"zone\": \"REAR_RIGHT\"}], \"fixed_furniture\": [{\"id\": \"sink\", \"relation\": \"directly_below_left_window\", \"wall\": \"LEFT\"}, {\"id\": \"cabinet\", \"relation\": \"behind_sink_and_counter\", \"wall\": \"BACK\"}, {\"id\": \"dining_table\", \"relation\": \"between_camera_and_sink\", \"zone\": \"CENTER_FOREGROUND\"}, {\"id\": \"two_chairs\", \"relation\": \"opposite_long_edges_of_table\", \"zone\": \"CENTER_FOREGROUND\"}], \"fixed_props\": [{\"id\": \"dish_rack\", \"relation\": \"near_sink\", \"zone\": \"LEFT_COUNTER\"}, {\"id\": \"small_kitchen_items\", \"relation\": \"fixed_sparse_cluster\", \"zone\": \"BACK_COUNTER\"}], \"landmarks\": [\"left_window\", \"sink_below_window\", \"back_cabinet\", \"rear_right_kitchen_door\", \"center_foreground_dining_table\"], \"lighting_directions\": [\"cool light from LEFT toward CENTER\", \"warm light from CEILING downward\"], \"lighting_sources\": [\"cool overcast daylight through left window\", \"single warm ceiling bulb\"], \"materials\": [\"old white ceramic wall tile\", \"worn wood countertop\", \"matte painted cabinet\", \"scuffed wood dining table\", \"aged apartment plaster\"], \"relative_positions\": [{\"object\": \"left_window\", \"relation\": \"below\", \"subject\": \"sink\"}, {\"object\": \"sink\", \"relation\": \"in_front_of\", \"subject\": \"dining_table\"}, {\"object\": \"dining_table\", \"relation\": \"rear_right_of\", \"subject\": \"kitchen_door\"}, {\"object\": \"sink\", \"relation\": \"behind\", \"subject\": \"cabinet\"}], \"scene_id\": \"E01_SC002\", \"time\": \"early evening\", \"walls\": [\"LEFT\", \"BACK\", \"RIGHT\", \"FRONT\"], \"weather\": \"overcast after rain\", \"windows\": [{\"daylight\": \"cool_overcast\", \"id\": \"left_window\", \"wall\": \"LEFT\", \"zone\": \"WINDOW_LEFT\"}], \"zones\": [\"KITCHEN_REAR\", \"DINING_CENTER_FOREGROUND\", \"KITCHEN_DOOR_RIGHT\", \"WINDOW_LEFT\"]}\nSceneDerivedViewPlan：{\"camera_direction\": \"toward sink, worn counter, left window lower frame and cabinet edge\", \"camera_position\": \"close camera at the left counter beside the sink\", \"forbidden_changes\": [\"inventing another kitchen\", \"moving the sink away from the window\", \"changing tile or counter material\", \"adding people or text\"], \"occluded_landmarks\": [\"dining_table\", \"kitchen_door\"], \"required_landmarks\": [\"sink_below_window\", \"worn_counter\", \"left_window\"], \"view_id\": \"DETAIL\", \"view_type\": \"DETAIL\", \"visible_landmarks\": [\"sink_below_window\", \"left_window\", \"worn_counter\", \"back_cabinet_edge\"]}\n输出必须是一张完整可读的单视图，所有可见地标按计划保持相对拓扑。\n\nNegative constraints (must not appear): 人物、角色、人脸、文字、标签、Logo、水印、拼图、四宫格、不同房间、移动门窗、水槽漂移、家具新增或消失、超现实建筑"
+              },
+              {
+                "text": "参考图 1：SCENE_MASTER。角色/用途：scene，same physical room topology。该图是已确认的视觉事实：必须继承其人物身份、脸型、发型、服装、材质或场景布局；不得用提示词中的泛化描述覆盖它，也不得新增冲突设定。"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/jpeg",
+                  "data": "<redacted base64: 3716152 chars>"
+                }
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "responseModalities": [
+            "IMAGE"
+          ],
+          "imageConfig": {
+            "aspectRatio": "16:9",
+            "imageSize": "2K"
+          }
+        }
+      },
+      "file": {
+        "file": "scene-detail.jpg",
+        "bytes": 2560756,
+        "sha256": "742597a64b5ac41fd57468beca1b3df65a58f612951b4229680fc2c36c2ed052",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "742597a64b5ac41fd57468beca1b3df65a58f612951b4229680fc2c36c2ed052",
+      "generation_execution_id": "2dedc9fcdc4c",
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\autonomous-scene-provider-failover-canary-v3\\20261004T070016Z\\scene-detail.jpg"
+    }
+  },
+  "pairwise_consistency": {
+    "schema_version": "scene_pairwise_consistency_audit_v3",
+    "audits": [
+      {
+        "view_id": "REVERSE",
+        "status": "PASS",
+        "same_physical_space": true,
+        "architecture_score": 92,
+        "landmark_score": 90,
+        "furniture_score": 88,
+        "lighting_score": 90,
+        "critical_topology_violations": [],
+        "violations": [
+          "DERIVED view shows the sink and left window at a different relative angle than MASTER, but this is consistent with the planned REVERSE camera position near the rear work zone",
+          "Back cabinet partially occluded as planned in the derived view plan",
+          "Minor perspective differences in cabinet alignment are consistent with the new camera position"
+        ],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "REVERSE",
+          "attempt_number": 1,
+          "master_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+          "derived_sha256": "2846a6b4afc2e1d7824f92797326243b64ab72cfe43acfcfd3b728f395ebbb0b",
+          "master_generation_execution_id": "800c912780ab",
+          "derived_generation_execution_id": "75e13c551377",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "ab5db4ea85fc20dbb7ed309240c99ef39f066125bba2bec72fe629ad972b18b2",
+          "judge_response_fingerprint": "b51932b1078c99bff2b8361480fab91eddefb41d89b0baab68bbdbfa5eb6822a",
+          "judge_raw_scores": {
+            "architecture_score": 92,
+            "landmark_score": 90,
+            "furniture_score": 88,
+            "lighting_score": 90
+          },
+          "judge_normalized_scores": {
+            "architecture_score": 92,
+            "landmark_score": 90,
+            "furniture_score": 88,
+            "lighting_score": 90
+          },
+          "generated_at": "2026-10-04T07:02:59.636457+00:00",
+          "judged_at": "2026-10-04T07:02:59.636457+00:00"
+        },
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "SIDE",
+        "status": "PASS",
+        "same_physical_space": true,
+        "architecture_score": 98,
+        "landmark_score": 97,
+        "furniture_score": 96,
+        "lighting_score": 97,
+        "critical_topology_violations": [],
+        "violations": [
+          "minor: table surface wear pattern differs slightly between views (texture variation)"
+        ],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "SIDE",
+          "attempt_number": 1,
+          "master_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+          "derived_sha256": "c2a22aae3fe73d51a72ff5356803fd08bdabae8db54b30c2469bd418154510fd",
+          "master_generation_execution_id": "800c912780ab",
+          "derived_generation_execution_id": "a031bbae4893",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "ed8c984090cc067b19b0bcaaf0ad8004d074709a776119153061ee7d5d29d1e7",
+          "judge_response_fingerprint": "c4ae577b5d6b07ea935fa756fa9b3fd2a909d6106d1c316760b36feaa18e1520",
+          "judge_raw_scores": {
+            "architecture_score": 98,
+            "landmark_score": 97,
+            "furniture_score": 96,
+            "lighting_score": 97
+          },
+          "judge_normalized_scores": {
+            "architecture_score": 98,
+            "landmark_score": 97,
+            "furniture_score": 96,
+            "lighting_score": 97
+          },
+          "generated_at": "2026-10-04T07:03:09.885686+00:00",
+          "judged_at": "2026-10-04T07:03:09.885686+00:00"
+        },
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "DETAIL",
+        "status": "PASS",
+        "same_physical_space": true,
+        "architecture_score": 95,
+        "landmark_score": 92,
+        "furniture_score": 90,
+        "lighting_score": 88,
+        "critical_topology_violations": [],
+        "violations": [
+          "Minor: dish rack position relative to sink appears slightly shifted between views (acceptable for detail crop)",
+          "Minor: window frame handle orientation appears different due to perspective change"
+        ],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "DETAIL",
+          "attempt_number": 1,
+          "master_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+          "derived_sha256": "742597a64b5ac41fd57468beca1b3df65a58f612951b4229680fc2c36c2ed052",
+          "master_generation_execution_id": "800c912780ab",
+          "derived_generation_execution_id": "2dedc9fcdc4c",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "cb4a0c877804522e6e958915c9848b43d0eee03edc12261e07781223ba0a68a7",
+          "judge_response_fingerprint": "4100ddee4107a6ad8faeaa8dc4435c4ef756225d099f2819093388eea2ba4b87",
+          "judge_raw_scores": {
+            "architecture_score": 95,
+            "landmark_score": 92,
+            "furniture_score": 90,
+            "lighting_score": 88
+          },
+          "judge_normalized_scores": {
+            "architecture_score": 95,
+            "landmark_score": 92,
+            "furniture_score": 90,
+            "lighting_score": 88
+          },
+          "generated_at": "2026-10-04T07:03:20.695212+00:00",
+          "judged_at": "2026-10-04T07:03:20.695212+00:00"
+        },
+        "score_scale": "0-100"
+      }
+    ]
+  },
+  "global_consistency": {
+    "schema_version": "scene_global_consistency_audit_v3",
+    "status": "PASS",
+    "same_physical_space": true,
+    "cross_derived_violations": [],
+    "judge_request_fingerprint": "7fdc9cd4163dc38ddca64aaebde30765aa229414952418d20092916a8bfc1b7d",
+    "judge_response_fingerprint": "fac00ba57dbe0d1bd83b0779453e73a7d312d22f5156c8d91c4401d0d1cdfa0e"
+  },
+  "authority": {
+    "scene_id": "E01_SC002",
+    "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+    "views": [
+      "DETAIL",
+      "MASTER",
+      "REVERSE",
+      "SIDE"
+    ],
+    "view_fingerprints": {
+      "MASTER": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "REVERSE": "2846a6b4afc2e1d7824f92797326243b64ab72cfe43acfcfd3b728f395ebbb0b",
+      "SIDE": "c2a22aae3fe73d51a72ff5356803fd08bdabae8db54b30c2469bd418154510fd",
+      "DETAIL": "742597a64b5ac41fd57468beca1b3df65a58f612951b4229680fc2c36c2ed052"
+    },
+    "consistency_audit_count": 3,
+    "repair_count": 0,
+    "image_calls": 5,
+    "status": "READY"
+  },
+  "final_board": {
+    "file": "scene-reference-board.png",
+    "bytes": 1942393,
+    "sha256": "3a17faf50ff8686df1c61c54448bb60f4b04baea2098596ea491ee8c0482e29c",
+    "width": 1680,
+    "height": 1136,
+    "format": "PNG"
+  },
+  "budget": {
+    "normal_calls_max": 8,
+    "max_attempts_per_view": 2,
+    "architecture_threshold": 85,
+    "landmarks_threshold": 85,
+    "furniture_threshold": 80,
+    "lighting_threshold": 80
+  },
+  "safety": {
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "browser_direct_calls": 0,
+    "secret_leaks": 0,
+    "orphan_candidates": 0
+  },
+  "provider_health": {
+    "preset-poyo-image-gpt-image-2": "CREDITS_INSUFFICIENT"
+  },
+  "master_attempts": [
+    {
+      "kind": "MASTER_FAILED",
+      "attempt": 1,
+      "profile_id": "preset-poyo-image-gpt-image-2",
+      "provider": "poyo-async",
+      "model": "gpt-image-2",
+      "task_created": false,
+      "status": "FAILED",
+      "classification": "CREDITS_INSUFFICIENT",
+      "error": "MASTER generation failed: Your credits are insufficient. Please top up to continue."
+    },
+    {
+      "kind": "MASTER_SELECTED",
+      "attempt": 2,
+      "profile_id": "local-image-mw4y52",
+      "provider": "shapi-gemini-image",
+      "model": "nano-banana-2",
+      "task_created": false,
+      "status": "SUCCEEDED",
+      "execution_id": "800c912780ab",
+      "sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f"
+    }
+  ],
+  "failover": {
+    "triggered": true,
+    "max_attempts": 2,
+    "terminal": false
+  }
+}

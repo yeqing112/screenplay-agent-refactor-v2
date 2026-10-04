@@ -1,0 +1,134 @@
+{
+  "schema_version": "scene_pairwise_consistency_audit_v3",
+  "audits": [
+    {
+      "view_id": "REVERSE",
+      "status": "PASS",
+      "same_physical_space": true,
+      "architecture_score": 92,
+      "landmark_score": 90,
+      "furniture_score": 88,
+      "lighting_score": 90,
+      "critical_topology_violations": [],
+      "violations": [
+        "DERIVED view shows the sink and left window at a different relative angle than MASTER, but this is consistent with the planned REVERSE camera position near the rear work zone",
+        "Back cabinet partially occluded as planned in the derived view plan",
+        "Minor perspective differences in cabinet alignment are consistent with the new camera position"
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1,
+      "media_evidence": {
+        "view_id": "REVERSE",
+        "attempt_number": 1,
+        "master_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+        "derived_sha256": "2846a6b4afc2e1d7824f92797326243b64ab72cfe43acfcfd3b728f395ebbb0b",
+        "master_generation_execution_id": "800c912780ab",
+        "derived_generation_execution_id": "75e13c551377",
+        "judge_profile_id": "local-llm-2vydoz",
+        "judge_model": "mimo-v2.5",
+        "judge_request_fingerprint": "ab5db4ea85fc20dbb7ed309240c99ef39f066125bba2bec72fe629ad972b18b2",
+        "judge_response_fingerprint": "b51932b1078c99bff2b8361480fab91eddefb41d89b0baab68bbdbfa5eb6822a",
+        "judge_raw_scores": {
+          "architecture_score": 92,
+          "landmark_score": 90,
+          "furniture_score": 88,
+          "lighting_score": 90
+        },
+        "judge_normalized_scores": {
+          "architecture_score": 92,
+          "landmark_score": 90,
+          "furniture_score": 88,
+          "lighting_score": 90
+        },
+        "generated_at": "2026-10-04T07:02:59.636457+00:00",
+        "judged_at": "2026-10-04T07:02:59.636457+00:00"
+      },
+      "score_scale": "0-100"
+    },
+    {
+      "view_id": "SIDE",
+      "status": "PASS",
+      "same_physical_space": true,
+      "architecture_score": 98,
+      "landmark_score": 97,
+      "furniture_score": 96,
+      "lighting_score": 97,
+      "critical_topology_violations": [],
+      "violations": [
+        "minor: table surface wear pattern differs slightly between views (texture variation)"
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1,
+      "media_evidence": {
+        "view_id": "SIDE",
+        "attempt_number": 1,
+        "master_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+        "derived_sha256": "c2a22aae3fe73d51a72ff5356803fd08bdabae8db54b30c2469bd418154510fd",
+        "master_generation_execution_id": "800c912780ab",
+        "derived_generation_execution_id": "a031bbae4893",
+        "judge_profile_id": "local-llm-2vydoz",
+        "judge_model": "mimo-v2.5",
+        "judge_request_fingerprint": "ed8c984090cc067b19b0bcaaf0ad8004d074709a776119153061ee7d5d29d1e7",
+        "judge_response_fingerprint": "c4ae577b5d6b07ea935fa756fa9b3fd2a909d6106d1c316760b36feaa18e1520",
+        "judge_raw_scores": {
+          "architecture_score": 98,
+          "landmark_score": 97,
+          "furniture_score": 96,
+          "lighting_score": 97
+        },
+        "judge_normalized_scores": {
+          "architecture_score": 98,
+          "landmark_score": 97,
+          "furniture_score": 96,
+          "lighting_score": 97
+        },
+        "generated_at": "2026-10-04T07:03:09.885686+00:00",
+        "judged_at": "2026-10-04T07:03:09.885686+00:00"
+      },
+      "score_scale": "0-100"
+    },
+    {
+      "view_id": "DETAIL",
+      "status": "PASS",
+      "same_physical_space": true,
+      "architecture_score": 95,
+      "landmark_score": 92,
+      "furniture_score": 90,
+      "lighting_score": 88,
+      "critical_topology_violations": [],
+      "violations": [
+        "Minor: dish rack position relative to sink appears slightly shifted between views (acceptable for detail crop)",
+        "Minor: window frame handle orientation appears different due to perspective change"
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1,
+      "media_evidence": {
+        "view_id": "DETAIL",
+        "attempt_number": 1,
+        "master_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+        "derived_sha256": "742597a64b5ac41fd57468beca1b3df65a58f612951b4229680fc2c36c2ed052",
+        "master_generation_execution_id": "800c912780ab",
+        "derived_generation_execution_id": "2dedc9fcdc4c",
+        "judge_profile_id": "local-llm-2vydoz",
+        "judge_model": "mimo-v2.5",
+        "judge_request_fingerprint": "cb4a0c877804522e6e958915c9848b43d0eee03edc12261e07781223ba0a68a7",
+        "judge_response_fingerprint": "4100ddee4107a6ad8faeaa8dc4435c4ef756225d099f2819093388eea2ba4b87",
+        "judge_raw_scores": {
+          "architecture_score": 95,
+          "landmark_score": 92,
+          "furniture_score": 90,
+          "lighting_score": 88
+        },
+        "judge_normalized_scores": {
+          "architecture_score": 95,
+          "landmark_score": 92,
+          "furniture_score": 90,
+          "lighting_score": 88
+        },
+        "generated_at": "2026-10-04T07:03:20.695212+00:00",
+        "judged_at": "2026-10-04T07:03:20.695212+00:00"
+      },
+      "score_scale": "0-100"
+    }
+  ]
+}

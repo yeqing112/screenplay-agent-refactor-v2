@@ -1,0 +1,48 @@
+{
+  "repairs": [],
+  "events": [
+    {
+      "kind": "MASTER_FAILED",
+      "attempt": 1,
+      "profile_id": "preset-poyo-image-gpt-image-2",
+      "provider": "poyo-async",
+      "model": "gpt-image-2",
+      "task_created": false,
+      "status": "FAILED",
+      "classification": "CREDITS_INSUFFICIENT",
+      "error": "MASTER generation failed: Your credits are insufficient. Please top up to continue."
+    },
+    {
+      "kind": "MASTER_SELECTED",
+      "attempt": 2,
+      "profile_id": "local-image-mw4y52",
+      "provider": "shapi-gemini-image",
+      "model": "nano-banana-2",
+      "task_created": false,
+      "status": "SUCCEEDED",
+      "execution_id": "800c912780ab",
+      "sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f"
+    },
+    {
+      "kind": "DERIVED",
+      "view_id": "REVERSE",
+      "execution_id": "75e13c551377",
+      "reference_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "provider_inline_reference_attached": true
+    },
+    {
+      "kind": "DERIVED",
+      "view_id": "SIDE",
+      "execution_id": "a031bbae4893",
+      "reference_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "provider_inline_reference_attached": true
+    },
+    {
+      "kind": "DERIVED",
+      "view_id": "DETAIL",
+      "execution_id": "2dedc9fcdc4c",
+      "reference_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "provider_inline_reference_attached": true
+    }
+  ]
+}

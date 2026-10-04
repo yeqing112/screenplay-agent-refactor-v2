@@ -1,0 +1,8 @@
+{
+  "schema_version": "scene_global_consistency_audit_v3",
+  "status": "PASS",
+  "same_physical_space": true,
+  "cross_derived_violations": [],
+  "judge_request_fingerprint": "7fdc9cd4163dc38ddca64aaebde30765aa229414952418d20092916a8bfc1b7d",
+  "judge_response_fingerprint": "fac00ba57dbe0d1bd83b0779453e73a7d312d22f5156c8d91c4401d0d1cdfa0e"
+}
