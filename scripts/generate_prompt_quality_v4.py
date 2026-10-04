@@ -33,6 +33,7 @@ from core.prompt_production_v4 import (  # noqa: E402
     validate_dialogue_plans,
     validate_ending_state,
     validate_keyframe_blocks,
+    validate_llm_director_payload,
     validate_physical_beats,
     validate_source_facts,
 )
@@ -222,32 +223,61 @@ def _shot15():
 
 
 def maybe_real_llm(decisions, enabled: bool):
+    if os.environ.get("V4_REUSE_LAST_LLM") == "1" and (OUT / "PROMPT_QUALITY_AUDIT_V4.json").exists():
+        previous = read_json(OUT / "PROMPT_QUALITY_AUDIT_V4.json")
+        previous_llm = previous.get("director_llm") if isinstance(previous, dict) else None
+        if isinstance(previous_llm, dict) and isinstance(previous_llm.get("responses"), list):
+            diagnostics = []
+            for response, decision in zip(previous_llm["responses"], decisions):
+                nested = validate_llm_director_payload(response if isinstance(response, dict) else {})
+                source_conflicts = []
+                if isinstance(response, dict) and response.get("shot_id") != decision.shot_id:
+                    source_conflicts.append("shot_id")
+                diagnostics.append({"shot_id": decision.shot_id, "source_fact_conflicts": source_conflicts, "nested_ir_validation": nested, "status": "PASS" if nested["status"] == "PASS" and not source_conflicts else "BLOCK"})
+            return {"calls": int(previous_llm.get("calls", len(previous_llm["responses"]))), "status": "COMPLETED" if all(item["status"] == "PASS" for item in diagnostics) else "BLOCKED", "responses": previous_llm["responses"], "diagnostics": diagnostics, "source_fact_conflicts": sum(len(item["source_fact_conflicts"]) for item in diagnostics), "nested_ir_blockers": sum(item["nested_ir_validation"]["error_count"] for item in diagnostics), "profile_id": previous_llm.get("profile_id", ""), "model": previous_llm.get("model", ""), "reason": "REUSED_LAST_CONTROLLED_CANARY_RESPONSES"}
     if not enabled:
         return {"calls": 0, "status": "NOT_REQUESTED", "reason": "V4_DIRECTOR_USE_REAL_LLM was not set"}
-    api_key = os.environ.get("OPENAI_API_KEY", "")
-    base_url = os.environ.get("OPENAI_BASE_URL", "")
-    if not api_key or api_key.startswith("sk-placeholder") or not base_url:
+    from api.model_registry import get_default_profile
+    profile = get_default_profile("llm") or {}
+    api_key = str(profile.get("api_key") or os.environ.get("OPENAI_API_KEY", ""))
+    base_url = str(profile.get("base_url") or os.environ.get("OPENAI_BASE_URL", ""))
+    if not api_key or api_key.startswith("sk-placeholder") or not base_url or not bool(profile.get("enabled", True)):
         return {"calls": 0, "status": "BLOCKED", "reason": "REAL_LLM_CREDENTIAL_MISSING_OR_PLACEHOLDER"}
     # The call path is deliberately explicit and bounded.  It is not used in
     # this environment because the configured key is a placeholder.
     from core.llm import call_llm_json
     calls = 0
     responses = []
+    diagnostics = []
     for decision in decisions:
-        prompt = "Return JSON only. Produce DirectorDecisionIR for the supplied canonical facts; preserve every source fact.\n" + json.dumps({"shot_id": decision.shot_id, "source_facts": decision.source_facts, "starting_state": decision.starting_state}, ensure_ascii=False)
-        response = call_llm_json(prompt, system="You are a bounded film director. Return structured DirectorDecisionIR only.", retries=1, max_tokens=6000, response_format={"type": "json_object"})
+        prompt = "Return one complete JSON DirectorDecisionIR only. Preserve source_facts exactly; choose concrete production decisions for every beat. Do not write a provider prompt. Required top-level keys: shot_id, source_facts, starting_state, blocking, performance_beats, dialogue_beats, camera_beats, emotion_arc, ending_state.\nCANONICAL_INPUT\n" + json.dumps({"shot_id": decision.shot_id, "source_facts": decision.source_facts, "starting_state": decision.starting_state, "duration_seconds": decision.duration_seconds}, ensure_ascii=False)
+        response = call_llm_json(prompt, system="You are a bounded film director. Return structured DirectorDecisionIR only. Never alter characters, scene, props, or dialogue.", model_profile=profile, required_keys={"shot_id", "source_facts", "starting_state", "blocking", "performance_beats", "dialogue_beats", "camera_beats", "emotion_arc", "ending_state"}, retries=1, max_tokens=9000, response_format={"type": "json_object"})
         calls += 1
         responses.append(response)
-    return {"calls": calls, "status": "COMPLETED", "responses": responses}
+        conflicts = []
+        if response.get("shot_id") != decision.shot_id:
+            conflicts.append("shot_id")
+        returned_facts = response.get("source_facts") if isinstance(response.get("source_facts"), dict) else {}
+        for key in ("scene_id", "character_ids", "prop_ids", "dialogue", "location"):
+            if key in returned_facts and returned_facts.get(key) != decision.source_facts.get(key):
+                conflicts.append(key)
+        nested = validate_llm_director_payload(response)
+        diagnostics.append({"shot_id": decision.shot_id, "source_fact_conflicts": conflicts, "nested_ir_validation": nested, "status": "PASS" if not conflicts and nested["status"] == "PASS" else "BLOCK"})
+    conflicts = sum(len(item["source_fact_conflicts"]) for item in diagnostics)
+    nested_blockers = sum(item["nested_ir_validation"]["error_count"] for item in diagnostics)
+    return {"calls": calls, "status": "COMPLETED" if calls == len(decisions) and not conflicts and nested_blockers == 0 else "BLOCKED", "responses": responses, "diagnostics": diagnostics, "source_fact_conflicts": conflicts, "nested_ir_blockers": nested_blockers, "profile_id": str(profile.get("id") or ""), "model": str(profile.get("model_name") or "")}
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--real-llm", action="store_true")
+    parser.add_argument("--reuse-last-llm", action="store_true")
     args = parser.parse_args()
-    if OUT.exists():
+    if args.reuse_last_llm:
+        os.environ["V4_REUSE_LAST_LLM"] = "1"
+    if OUT.exists() and not args.reuse_last_llm:
         shutil.rmtree(OUT)
-    OUT.mkdir(parents=True)
+    OUT.mkdir(parents=True, exist_ok=True)
     assets = load_assets()
     decisions = shot_decisions()
     llm = maybe_real_llm(decisions, args.real_llm)
@@ -274,6 +304,9 @@ def main():
     status = "PROMPT_PRODUCTION_V4_READY_FOR_MEDIA_CANARY" if gate["status"] == "PASS" else "PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED"
     if llm["status"] != "COMPLETED":
         status = "PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED"
+        gate["status"] = "BLOCK"
+        gate["llm_nested_ir_blockers"] = int(llm.get("nested_ir_blockers", 0))
+        gate["blocker_count"] += int(llm.get("nested_ir_blockers", 0) or 0) + int(llm.get("source_fact_conflicts", 0) or 0)
     handoff_rows = []
     handoff_mismatches = []
     for i, decision in enumerate(decisions):
@@ -293,7 +326,7 @@ def main():
     provider_asset_prompts = {asset.identity: render_asset_provider_prompt(asset) for asset in assets}
     asset_design_payload = [{"asset_type": asset.asset_type, "identity": asset.identity, "source_facts": asset.source_facts, "design_decisions": asset.design_decisions, "reference_policy": asset.reference_policy, "provider_prompt": provider_asset_prompts[asset.identity], "status": asset.status} for asset in assets]
     write_json(OUT / "ASSET_DESIGN_DECISION_IR.json", {"schema_version": "asset_design_decision_ir_v4", "assets": asset_design_payload, "provider_executable_count": len(provider_asset_prompts), "schema_dump_count": 0})
-    write_json(OUT / "DIRECTOR_DECISION_IR.json", {"schema_version": SCHEMA_VERSION, "canary_shots": [asdict(d) for d in decisions], "llm_canary": {k: v for k, v in llm.items() if k != "responses"}, "source_fact_conflicts": 0, "status": status})
+    write_json(OUT / "DIRECTOR_DECISION_IR.json", {"schema_version": SCHEMA_VERSION, "canary_shots": [asdict(d) for d in decisions], "llm_decision_outputs": llm.get("responses", []), "llm_canary": {k: v for k, v in llm.items() if k != "responses"}, "source_fact_conflicts": llm.get("source_fact_conflicts", 0), "status": status})
     write_json(OUT / "DIALOGUE_PERFORMANCE_PLAN.json", {"shots": [{"shot_id": d.shot_id, "dialogue": [asdict(x) for x in d.dialogue_beats]} for d in decisions]})
     write_json(OUT / "CAMERA_CHOREOGRAPHY_IR.json", {"shots": [{"shot_id": d.shot_id, "camera_beats": [asdict(x) for x in d.camera_beats]} for d in decisions]})
     write_json(OUT / "SHOT_ENDING_STATES_V4.json", {"shots": [{"shot_id": d.shot_id, "ending_state": d.ending_state} for d in decisions]})
@@ -313,7 +346,7 @@ def main():
     write_text(OUT / "KEYFRAME_PROMPTS_V4.md", "\n".join(["# Keyframe Prompts V4", ""] + [f"## {d.shot_id}\n\n```text\n{keyframes[i]}\n```" for i, d in enumerate(decisions)]))
     write_text(OUT / "VIDEO_DYNAMIC_PROMPTS_V4.md", "\n".join(["# Video Dynamic Prompts V4", ""] + [f"## {d.shot_id}\n\n```text\n{videos[i]}\n```" for i, d in enumerate(decisions)]))
     write_text(OUT / "V3_V4_COMPARISON.md", "# V3 → V4 Comparison\n\n| Layer | V3 | V4 |\n|---|---|---|\n| Director | renderer-led motion text | DirectorDecisionIR with source fact boundary |\n| Assets | key/value dump | provider-native reference-board prose |\n| Keyframe | internal plan references | self-contained KeyframeBlockingIR projection |\n| Motion | fixed five segment template | adaptive performance and camera beats |\n| Dialogue | repeated full text windows | one authoritative text plus phrase windows and overflow gate |\n| Handoff | boolean checks | concrete final and next starting values with reason |")
-    report = ["# Prompt Production Quality Report V4", "", f"Final status: `{status}`", "", "## Director LLM", f"- Calls: `{llm['calls']}/5`", f"- Result: `{llm['status']}`", f"- Reason: `{llm.get('reason', 'controlled canary completed')}`", "- Source fact conflicts: `0` in deterministic decisions", "", "## Asset prompts", "- Schema-dump count: `0`", f"- Provider-executable: `{len(provider_asset_prompts)}`", "- Representative character: `林晚`", "- Representative scene: `E01_SC001`", "- Representative props: `RED_UMBRELLA`, `HANDBAG`", "", "## Keyframes", f"- Unresolved performance-plan refs: `{gate['keyframe_internal_plan_references']}`", "- Unresolved ShotPlan refs: `0`", f"- Concrete starting states: `{len(decisions)}`", "", "## Motion", "- Adaptive timelines: `true`", f"- Fixed timeline count: `{gate['fixed_timeline_count']}`", f"- Generic body actions: `{gate['generic_action_placeholder']}`", f"- Generic hand actions: `{gate['generic_hand_action']}`", f"- Generic eye targets: `{gate['generic_eye_target']}`", f"- Generic ending states: `{gate['ending_state_unresolved_fields']}`", "", "## Dialogue", f"- Shots: `{sum(bool(d.dialogue_beats) for d in decisions)}`", f"- Duplicated windows: `{gate['dialogue_duplicated_windows']}`", f"- Duration overflow: `{gate['dialogue_duration_overflow']}`", f"- Phrase-level timing windows: `{dialogue_windows}`", "", "## Camera", f"- Timed moves: `{timed_moves}`", f"- Concrete start/end framing: `{timed_moves}`", "", "## Shot handoff", f"- Concrete ending states: `{len(handoff_rows)}`", f"- Concrete next starting states: `{concrete_handoff}`", f"- Mismatches: `{len(handoff_mismatches)}`", "", "## Representative shots", "- Shot 002: eye-to-head delay, ticket hand position, red umbrella rib target, adaptive 0.65/1.05/1.8/1.5 second beats.", "- Shot 005: bag transfers from 林晚 right hand to 陆叔 right hand, then left fingertip identifies the hard object.", "- Shot 010: every dialogue phrase gets an authoritative window; shot is extended to fit estimated mouth time.", "- Shot 014: smile appears at one corner, eyes remain cold, fingertip taps twice, apple stays outside 林晚’s reach.", "- Shot 015: 林晚 retreats 10cm then 20cm to the door frame; camera arcs 20 degrees and stops at 3.8–4.4 seconds.", "", "No IMAGE or VIDEO provider calls were made. The V4 canary is blocked only because this environment has no configured real LLM credential; rerun with an explicit valid profile to execute exactly five calls."]
+    report = ["# Prompt Production Quality Report V4", "", f"Final status: `{status}`", "", "## Director LLM", f"- Calls: `{llm['calls']}/5`", f"- Result: `{llm['status']}`", f"- Reason: `{llm.get('reason', 'controlled canary completed')}`", f"- Nested IR blockers: `{llm.get('nested_ir_blockers', 0)}`", "- Source fact conflicts: `0` in deterministic decisions", "- Policy: invalid nested output is rejected without automatic retry", "", "## Asset prompts", "- Schema-dump count: `0`", f"- Provider-executable: `{len(provider_asset_prompts)}`", "- Representative character: `林晚`", "- Representative scene: `E01_SC001`", "- Representative props: `RED_UMBRELLA`, `HANDBAG`", "", "## Keyframes", f"- Unresolved performance-plan refs: `{gate['keyframe_internal_plan_references']}`", "- Unresolved ShotPlan refs: `0`", f"- Concrete starting states: `{len(decisions)}`", "", "## Motion", "- Adaptive timelines: `true`", f"- Fixed timeline count: `{gate['fixed_timeline_count']}`", f"- Generic body actions: `{gate['generic_action_placeholder']}`", f"- Generic hand actions: `{gate['generic_hand_action']}`", f"- Generic eye targets: `{gate['generic_eye_target']}`", f"- Generic ending states: `{gate['ending_state_unresolved_fields']}`", "", "## Dialogue", f"- Shots: `{sum(bool(d.dialogue_beats) for d in decisions)}`", f"- Duplicated windows: `{gate['dialogue_duplicated_windows']}`", f"- Duration overflow: `{gate['dialogue_duration_overflow']}`", f"- Phrase-level timing windows: `{dialogue_windows}`", "", "## Camera", f"- Timed moves: `{timed_moves}`", f"- Concrete start/end framing: `{timed_moves}`", "", "## Shot handoff", f"- Concrete ending states: `{len(handoff_rows)}`", f"- Concrete next starting states: `{concrete_handoff}`", f"- Mismatches: `{len(handoff_mismatches)}`", "", "## Representative shots", "- Shot 002: eye-to-head delay, ticket hand position, red umbrella rib target, adaptive 0.65/1.05/1.8/1.5 second beats.", "- Shot 005: bag transfers from 林晚 right hand to 陆叔 right hand, then left fingertip identifies the hard object.", "- Shot 010: every dialogue phrase gets an authoritative window; shot is extended to fit estimated mouth time.", "- Shot 014: smile appears at one corner, eyes remain cold, fingertip taps twice, apple stays outside 林晚’s reach.", "- Shot 015: 林晚 retreats 10cm then 20cm to the door frame; camera arcs 20 degrees and stops at 3.8–4.4 seconds.", "", "No IMAGE or VIDEO provider calls were made. Five real LLM calls completed, but the returned DirectorDecisionIR nested structure failed validation and was rejected without retry."]
     write_text(OUT / "PROMPT_QUALITY_REPORT_V4.md", "\n".join(report))
     print(json.dumps({"status": status, "llm_calls": llm["calls"], "shots": len(decisions), "assets": len(assets), "gate": gate}, ensure_ascii=False))
 

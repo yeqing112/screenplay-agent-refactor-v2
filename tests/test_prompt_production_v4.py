@@ -12,6 +12,7 @@ from core.prompt_production_v4 import (
     render_keyframe_provider_prompt,
     render_video_provider_prompt,
     validate_source_facts,
+    validate_llm_director_payload,
     validate_dialogue_plans,
 )
 
@@ -128,3 +129,20 @@ def test_source_fact_validator_blocks_identity_or_dialogue_drift():
     result = validate_source_facts(decision, changed)
     assert result["status"] == "BLOCK"
     assert result["count"] >= 1
+
+
+def test_llm_nested_ir_validator_fails_closed_on_renderer_shorthand():
+    payload = {
+        "shot_id": "shot-1",
+        "source_facts": {},
+        "starting_state": {},
+        "blocking": {"actor": {"movement": "完成主要动作"}},
+        "performance_beats": [{"time": "0-2s", "action": "自然反应", "emotion": "紧张"}],
+        "dialogue_beats": [],
+        "camera_beats": [{"time": "0-2s", "movement": "轻微推近"}],
+        "emotion_arc": {},
+        "ending_state": {},
+    }
+    result = validate_llm_director_payload(payload)
+    assert result["status"] == "BLOCK"
+    assert any("blocking_must_be_array" in error for error in result["errors"])

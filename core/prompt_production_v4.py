@@ -192,6 +192,61 @@ def validate_source_facts(decision: DirectorDecisionIR, source_facts: Mapping[st
     return {"source_fact_conflicts": conflicts, "count": len(conflicts), "status": "PASS" if not conflicts else "BLOCK"}
 
 
+def validate_llm_director_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate the nested DirectorDecisionIR contract before projection."""
+    errors: list[str] = []
+    if not isinstance(payload.get("shot_id"), str) or not _text(payload.get("shot_id")):
+        errors.append("DIRECTOR_PLAN_SCHEMA_INVALID:shot_id")
+    if not isinstance(payload.get("source_facts"), Mapping):
+        errors.append("DIRECTOR_PLAN_SCHEMA_INVALID:source_facts")
+    blocks = payload.get("blocking")
+    if not isinstance(blocks, list) or not blocks:
+        errors.append("DIRECTOR_PLAN_SCHEMA_INVALID:blocking_must_be_array")
+    else:
+        required = {"identity", "reference_identity", "position", "screen_x", "depth_zone", "body_pose", "weight_distribution", "torso_direction", "head_yaw", "head_pitch", "eye_target", "expression", "left_hand", "right_hand", "prop_contact"}
+        for index, item in enumerate(blocks):
+            if not isinstance(item, Mapping):
+                errors.append(f"DIRECTOR_PLAN_SCHEMA_INVALID:blocking[{index}]")
+                continue
+            errors.extend(f"DIRECTOR_PLAN_SCHEMA_INVALID:blocking[{index}].{key}" for key in sorted(required - set(item)))
+    beats = payload.get("performance_beats")
+    if not isinstance(beats, list) or not beats:
+        errors.append("DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats")
+    else:
+        required = {"start_time", "end_time", "actor", "body_action", "hand_action", "head_action", "eye_action", "facial_action", "ending_state"}
+        for index, item in enumerate(beats):
+            if not isinstance(item, Mapping):
+                errors.append(f"DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[{index}]")
+                continue
+            errors.extend(f"DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[{index}].{key}" for key in sorted(required - set(item)))
+            errors.extend(f"UNRESOLVED_LLM_BEAT:{index}:{reason}" for reason in semantic_placeholder_reasons(item))
+    camera = payload.get("camera_beats")
+    if not isinstance(camera, list) or not camera:
+        errors.append("DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats")
+    else:
+        required = {"start_time", "end_time", "movement_type", "direction", "speed", "distance_or_scale_change", "target", "start_framing", "end_framing", "easing"}
+        for index, item in enumerate(camera):
+            if not isinstance(item, Mapping):
+                errors.append(f"DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[{index}]")
+                continue
+            errors.extend(f"DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[{index}].{key}" for key in sorted(required - set(item)))
+    dialogue = payload.get("dialogue_beats")
+    if not isinstance(dialogue, list):
+        errors.append("DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats")
+    else:
+        for index, item in enumerate(dialogue):
+            if not isinstance(item, Mapping):
+                errors.append(f"DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[{index}]")
+            elif not _text(item.get("authoritative_text")) or not isinstance(item.get("phrase_windows"), list):
+                errors.append(f"DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[{index}].authoritative_text_or_phrase_windows")
+    if not isinstance(payload.get("emotion_arc"), Mapping):
+        errors.append("DIRECTOR_PLAN_SCHEMA_INVALID:emotion_arc")
+    ending = payload.get("ending_state")
+    if not isinstance(ending, Mapping) or not ending.get("characters") or not ending.get("camera"):
+        errors.append("DIRECTOR_PLAN_UNRESOLVED_ENDING_STATE")
+    return {"status": "PASS" if not errors else "BLOCK", "errors": sorted(set(errors)), "error_count": len(set(errors))}
+
+
 def validate_dialogue_plans(plans: list[DialoguePerformancePlan], duration: float) -> dict[str, Any]:
     duplicated = []
     overflow = []
@@ -379,6 +434,7 @@ def quality_gate_v4(*, assets: list[AssetDesignDecisionIR], decisions: list[Dire
 __all__ = [
     "AssetDesignDecisionIR", "KeyframeBlockingIR", "DialoguePerformancePlan", "CameraChoreographyIR", "DirectorDecisionIR",
     "estimate_dialogue_duration", "split_dialogue_phrases", "build_dialogue_performance_plan", "validate_source_facts",
+    "validate_llm_director_payload",
     "validate_dialogue_plans", "validate_physical_beats", "validate_camera_beats", "validate_keyframe_blocks", "validate_ending_state",
     "cross_shot_repetition_audit", "timeline_repetition_audit", "semantic_placeholder_reasons", "render_asset_provider_prompt",
     "render_keyframe_provider_prompt", "render_video_provider_prompt", "quality_gate_v4", "fingerprint", "SCHEMA_DUMP_RE",
