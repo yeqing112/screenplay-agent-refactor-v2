@@ -2083,7 +2083,8 @@
     "source_fact_conflicts": 1,
     "nested_ir_blockers": 8,
     "profile_id": "local-llm-2vydoz",
-    "model": "mimo-v2.5"
+    "model": "mimo-v2.5",
+    "reason": "REUSED_LAST_CONTROLLED_CANARY_RESPONSES"
   },
   "source_fact_conflicts": 1,
   "status": "PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED"

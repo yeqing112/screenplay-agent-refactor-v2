@@ -1,0 +1,11 @@
+{
+  "attempt": 3,
+  "profile_id": "local-llm-dd0m0l",
+  "model": "doubao-seed-2-0-lite-260428",
+  "calls_completed": 0,
+  "status": "BLOCKED",
+  "reason": "REAL_LLM_TRANSPORT_FAILED",
+  "error": "HTTPStatusError: 404 Not Found at provider chat completions endpoint",
+  "image_calls": 0,
+  "video_calls": 0
+}

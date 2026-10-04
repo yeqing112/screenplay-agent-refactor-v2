@@ -5,10 +5,12 @@ Final status: `PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED`
 ## Director LLM
 - Calls: `5/5`
 - Result: `BLOCKED`
-- Reason: `controlled canary completed`
+- Profile/model: `local-llm-2vydoz / mimo-v2.5`
+- Reason: `REUSED_LAST_CONTROLLED_CANARY_RESPONSES`
 - Nested IR blockers: `8`
 - Source fact conflicts: `0` in deterministic decisions
 - Policy: invalid nested output is rejected without automatic retry
+- Alternate configured Doubao profile: transport returned HTTP 404; no call was counted
 
 ## Asset prompts
 - Schema-dump count: `0`
@@ -52,4 +54,4 @@ Final status: `PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED`
 - Shot 014: smile appears at one corner, eyes remain cold, fingertip taps twice, apple stays outside 林晚’s reach.
 - Shot 015: 林晚 retreats 10cm then 20cm to the door frame; camera arcs 20 degrees and stops at 3.8–4.4 seconds.
 
-No IMAGE or VIDEO provider calls were made. Five real LLM calls completed, but the returned DirectorDecisionIR nested structure failed validation and was rejected without retry.
+No IMAGE or VIDEO provider calls were made. Five Mimo LLM calls completed, but the returned DirectorDecisionIR nested structure failed validation and was rejected without retry.
