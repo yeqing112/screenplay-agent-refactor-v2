@@ -160,7 +160,8 @@ async def _run() -> tuple[int, dict[str, Any]]:
             from PIL import Image
             with Image.open(path) as im: width, height = im.size
             ratio_ok = abs((width / height) - (16 / 9)) < 0.02 if height else False
-            judge_prompt = "检查关键帧。输出JSON {\"status\":\"PASS|FAIL\",\"scene_identity\":true,\"character_identity\":true,\"unauthorized_props\":[],\"apple_in_lu_shu_right_hand\":true,\"extra_people\":false,\"text_or_watermark\":false}. " + ("此镜头严禁苹果、手提包、包带。" if shot_id == "SH_E01_SC002_002" else "此镜头严禁剧情道具。" if shot_id == "SH_E01_SC002_007" else "此镜头必须有一只完整苹果在陆叔右手，林晚不接触苹果。")
+            condition = ("此镜头严禁苹果、手提包、包带；apple_in_lu_shu_right_hand 必须为 false。" if shot_id == "SH_E01_SC002_002" else "此镜头严禁剧情道具；apple_in_lu_shu_right_hand 必须为 false。" if shot_id == "SH_E01_SC002_007" else "此镜头必须有一只完整苹果在陆叔右手，林晚不接触苹果；apple_in_lu_shu_right_hand 必须为 true。")
+            judge_prompt = "检查关键帧。输出JSON {\"status\":\"PASS|FAIL\",\"scene_identity\":true,\"character_identity\":true,\"unauthorized_props\":[],\"apple_in_lu_shu_right_hand\":false,\"extra_people\":false,\"text_or_watermark\":false}. " + condition
             judge = _judge(path, judge_prompt, judge_profile)
             evidence["keyframes"][shot_id] = {"status": "PASS" if ratio_ok and judge.get("status") == "PASS" and not judge.get("unauthorized_props") else "FAIL", "version": 1, "path": str(path), "sha256": _sha(path), "provider_preview_url": str(result.get("previewUrl") or result.get("uri") or ""), "requested_aspect_ratio": "16:9", "submitted_aspect_ratio": "16:9", "observed_width": width, "observed_height": height, "observed_aspect_ratio": f"{width}:{height}", "geometry_valid": ratio_ok, "judge": judge, "review_decision": "APPROVE" if ratio_ok and judge.get("status") == "PASS" and not judge.get("unauthorized_props") else "BLOCK"}
             if evidence["keyframes"][shot_id]["status"] != "PASS":
