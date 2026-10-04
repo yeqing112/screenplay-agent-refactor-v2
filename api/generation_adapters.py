@@ -1606,9 +1606,11 @@ def _build_75api_image_payload(
     if reference_urls:
         if not bool(params.get("supports_reference_images")):
             raise ModelProfileError("75api 图片模型当前配置未声明参考图能力；系统不会静默丢弃参考图。")
-        max_references = max(_coerce_int(params.get("max_reference_images"), 1), 1)
-        if len(reference_urls) > max_references:
-            raise ModelProfileError(f"75api 图片模型最多支持 {max_references} 张参考图，当前收到 {len(reference_urls)} 张；系统不会静默丢弃参考图。")
+        configured_max = params.get("max_reference_images")
+        if configured_max is not None:
+            max_references = max(_coerce_int(configured_max, len(reference_urls)), 1)
+            if len(reference_urls) > max_references:
+                raise ModelProfileError(f"75api 图片模型最多支持 {max_references} 张参考图，当前收到 {len(reference_urls)} 张；系统不会静默丢弃参考图。")
         reference_field = str(params.get("reference_field") or "images").strip() or "images"
         payload[reference_field] = reference_urls if len(reference_urls) > 1 or reference_field == "images" else reference_urls[0]
     return payload

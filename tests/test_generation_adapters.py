@@ -70,6 +70,40 @@ class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
             )
         self.assertIn("不会静默丢弃参考图", str(ctx.exception))
 
+    async def test_75api_image_posts_multiple_reference_images_to_images_array(self):
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {"id": "img-75api-ref-1", "data": [{"url": "https://cdn.example.com/result.png"}]}
+        client = AsyncMock()
+        client.__aenter__.return_value = client
+        client.post.return_value = response
+
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=client):
+            await generate_image_asset(
+                {
+                    "provider": "75api-image",
+                    "base_url": "https://www.75api.com",
+                    "model_name": "gpt-image-2-1k",
+                    "api_key": "secret-test-key",
+                    "default_params": {
+                        "supports_reference_images": True,
+                        "task_modes": ["text_to_image", "image_to_image"],
+                    },
+                },
+                prompt="保持人物和手提包的身份一致",
+                aspect_ratio="16:9",
+                reference_images=[
+                    {"image_url": "https://cdn.example.com/character.png"},
+                    {"image_url": "data:image/png;base64,ZmFrZQ=="},
+                ],
+            )
+
+        payload = client.post.await_args.kwargs["json"]
+        self.assertEqual(payload["images"], [
+            "https://cdn.example.com/character.png",
+            "data:image/png;base64,ZmFrZQ==",
+        ])
+
     async def test_shapi_openai_images_uses_allowlisted_payload_and_maps_size(self):
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None

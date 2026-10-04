@@ -233,6 +233,28 @@ def _normalize_default_params(value: Any) -> dict[str, Any]:
     return {}
 
 
+def _normalize_provider_default_params(provider: str, capability: str, value: Any) -> dict[str, Any]:
+    """Apply provider facts that are part of the canonical model contract.
+
+    The 75api GPT-image-2 endpoint accepts both text-to-image and multi-image
+    reference generation through its ``images`` array.  Older saved rows were
+    created before that fact was recorded and advertised reference support as
+    false, which caused the router to skip an otherwise valid provider.
+    """
+
+    params = dict(_normalize_default_params(value))
+    if provider == API75_IMAGE_PROVIDER and capability == "image":
+        modes = params.get("task_modes")
+        normalized_modes = list(modes) if isinstance(modes, list) else []
+        for mode in ("text_to_image", "image_to_image"):
+            if mode not in normalized_modes:
+                normalized_modes.append(mode)
+        params["task_modes"] = normalized_modes
+        params["supports_reference_images"] = True
+        params["supports_image_url"] = True
+    return params
+
+
 def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str, Any]:
     api_key = str(profile.get("api_key") or "").strip()
     credential_ref, runtime_binding_id, credential_configured = _runtime_credential_metadata(profile)
@@ -295,7 +317,9 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
                 "provider": str(item.get("provider") or ""),
                 "base_url": str(item.get("base_url") or ""),
                 "model_name": str(item.get("model_name") or ""),
-                "default_params": _normalize_default_params(item.get("default_params")),
+                "default_params": _normalize_provider_default_params(
+                    str(item.get("provider") or ""), capability, item.get("default_params")
+                ),
                 "enabled": bool(item.get("enabled", True)),
                 "builtin": False,
                 "source": "user",
@@ -472,7 +496,7 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "provider": provider,
         "base_url": str(profile.get("base_url") or "").strip().rstrip("/"),
         "model_name": str(profile.get("model_name") or "").strip(),
-        "default_params": _normalize_default_params(profile.get("default_params")),
+        "default_params": _normalize_provider_default_params(provider, capability, profile.get("default_params")),
         "enabled": bool(profile.get("enabled", True)),
         "builtin": False,
         "source": "user",

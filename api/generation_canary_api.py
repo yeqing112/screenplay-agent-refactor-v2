@@ -28,7 +28,7 @@ from api.generation_adapters import (
     SHAPI_OPENAI_IMAGES_PROVIDER,
     generate_image_asset,
 )
-from api.model_registry import MOCK_PROVIDER, get_profile, list_profiles
+from api.model_registry import API75_IMAGE_PROVIDER, MOCK_PROVIDER, get_profile, list_profiles
 from core.prompt_ir_phase_e import (
     MODEL_ADAPTER_REGISTRY,
     PromptIRPhaseEError,
@@ -87,6 +87,7 @@ _SYNC_IMAGE_PROVIDERS = {
     "openai-compatible",
     SHAPI_OPENAI_IMAGES_PROVIDER,
     SHAPI_GEMINI_IMAGE_PROVIDER,
+    API75_IMAGE_PROVIDER,
 }
 
 
@@ -308,8 +309,17 @@ def _resolve_profile(req: CanaryPreviewRequest, adapter: dict[str, Any]) -> tupl
         raise _error(409, "GENERATION_PROVIDER_NOT_CONFIGURED", "The explicit image provider has no configured credential.")
     if provider != "prototype-task-adapter" and (not str(profile.get("base_url") or "").strip() or not str(profile.get("model_name") or "").strip()):
         raise _error(409, "GENERATION_PROVIDER_NOT_CONFIGURED", "The explicit image provider is missing base_url or model_name.")
+    # Registry rows may carry provider-specific operational metadata.  Keep
+    # that metadata on the transport profile, but only project the typed,
+    # provider-neutral allowlist into Phase F execution evidence.
+    profile_for_projection = dict(profile)
+    raw_params = profile.get("default_params") if isinstance(profile.get("default_params"), dict) else {}
+    profile_for_projection["default_params"] = {
+        key: value for key, value in raw_params.items()
+        if key in GENERATION_PARAM_KEYS | CAPABILITY_PARAM_KEYS | {"timeout_seconds"}
+    }
     try:
-        canonical_profile = build_provider_execution_profile(profile, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
+        canonical_profile = build_provider_execution_profile(profile_for_projection, adapter_id=req.adapter_id, adapter_version=str(adapter.get("adapter_version") or ""))
     except ProviderExecutionProfileError as exc:
         raise _error(409, exc.code, str(exc), field=exc.field, provider_calls=0)
     if provider != "prototype-task-adapter":

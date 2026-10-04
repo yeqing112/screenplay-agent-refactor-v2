@@ -165,7 +165,11 @@ class AssetProviderRouter:
             model = str(profile.get("model_name") or "")
             params = _params(profile)
             text_to_image = "text_to_image" in (params.get("task_modes") or []) or provider in {"openai-compatible", "75api-image"}
-            reference = bool(params.get("supports_reference_images")) and provider != "75api-image"
+            # Reference support is declared by the model profile.  75api
+            # GPT-image-2 accepts the canonical `images` array, so it must
+            # participate in reference derivation when the profile declares
+            # that capability.
+            reference = bool(params.get("supports_reference_images"))
             credential_ready = _credential_ready(profile)
             reasons: list[str] = []
             if not profile_id or not model:
@@ -180,10 +184,12 @@ class AssetProviderRouter:
                 reasons.append("REFERENCE_IMAGE_NOT_SUPPORTED")
             if op == AssetOperation.TEXT_TO_IMAGE and not text_to_image:
                 reasons.append("TEXT_TO_IMAGE_NOT_SUPPORTED")
-            if reference and text_to_image:
+            if profile_id == self.default_image_profile_id and reference and text_to_image:
                 priority = 1
-            elif profile_id == self.default_image_profile_id and text_to_image:
+            elif reference and text_to_image:
                 priority = 2
+            elif profile_id == self.default_image_profile_id and text_to_image:
+                priority = 3
             elif text_to_image:
                 priority = 3
             else:

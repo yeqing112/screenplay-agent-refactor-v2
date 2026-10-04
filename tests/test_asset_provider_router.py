@@ -25,16 +25,16 @@ def _profile(profile_id, provider, model, *, reference=False, modes=None, defaul
     }
 
 
-def test_reference_capable_provider_is_preferred_for_master_and_75api_is_text_only():
+def test_reference_capable_providers_are_eligible_for_master_and_derivation():
     profiles = [
-        _profile("75", "75api-image", "gpt-image-2-1k"),
+        _profile("75", "75api-image", "gpt-image-2-1k", reference=True),
         _profile("shapi", "shapi-gemini-image", "nano-banana-2", reference=True),
     ]
     router = AssetProviderRouter(profiles, default_image_profile_id="75")
     master = router.candidates("IMAGE", AssetOperation.TEXT_TO_IMAGE)
-    assert [row.profile_id for row in master] == ["shapi", "75"]
+    assert [row.profile_id for row in master] == ["75", "shapi"]
     derived = router.candidates("IMAGE", AssetOperation.REFERENCE_IMAGE_DERIVATION)
-    assert [row.profile_id for row in derived] == ["shapi"]
+    assert [row.profile_id for row in derived] == ["75", "shapi"]
 
 
 def test_health_cache_is_session_scoped_and_skips_unhealthy_provider():

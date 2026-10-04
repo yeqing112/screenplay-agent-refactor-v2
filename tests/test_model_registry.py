@@ -363,6 +363,8 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(saved["provider"], "75api-image")
         self.assertEqual(saved["model_name"], "gpt-image-2-2k")
         self.assertEqual(saved["credential_ref"], "profile:image-75api-gpt-2k")
+        self.assertTrue(saved["default_params"]["supports_reference_images"])
+        self.assertTrue(saved["default_params"]["supports_image_url"])
         serialized = next(item for item in payload["profiles"] if item["id"] == "image-75api-gpt-2k")
         self.assertTrue(serialized["key_configured"])
         self.assertNotIn("api_key", serialized)
