@@ -1,0 +1,32 @@
+{
+  "schema_version": "execution_code_provenance_v1",
+  "run_id": "20261004T141537Z",
+  "execution_base_commit_sha": "47a24df226c5bd266a5d10b8d15f57e14acf61d8",
+  "working_tree_clean_at_start": true,
+  "runner_path": "scripts\\run_75api_autonomous_asset_canary_v4.py",
+  "runner_sha256": "f1d002f845816eb9730511e46c7c3305f1e33f75622c5a529208c68105add0c4",
+  "core_runtime_file_sha256": [
+    {
+      "path": "scripts\\run_autonomous_visual_asset_pipeline_v4.py",
+      "sha256": "d317d5910d17500e66962c9064de38030ec0013751b37b6c7da27ac6f613c3b6"
+    },
+    {
+      "path": "core\\asset_semantic_compliance.py",
+      "sha256": "713bd64171c08e4e110d81071b4bf3e7765bf037985779518860913f1ac62951"
+    },
+    {
+      "path": "core\\autonomous_visual_assets.py",
+      "sha256": "95c42ad66f509fc909074097faa130b35e083c878cda2e6635ef6731a393afaa"
+    },
+    {
+      "path": "core\\asset_provider_router.py",
+      "sha256": "e49090ab05d35f77b12a9b3436a7e61ac89b5f2d61c879d7cced93c063ea130e"
+    },
+    {
+      "path": "core\\provider_transport_registry.py",
+      "sha256": "fa80665139791d4d406226d2e543dc88d4a0308b13f0c78f5fc971505b4967c1"
+    }
+  ],
+  "provider_adapter_sha256": "fa80665139791d4d406226d2e543dc88d4a0308b13f0c78f5fc971505b4967c1",
+  "recorded_before_first_real_image_call": true
+}

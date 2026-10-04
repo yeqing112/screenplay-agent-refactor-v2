@@ -243,7 +243,7 @@ def _character_master_prompt(character: Mapping[str, Any]) -> str:
 def _character_derived_prompt(character: Mapping[str, Any], view_id: str, violations: list[str] | None = None) -> str:
     view = {
         "FACE_FRONT": "标准正脸近景",
-        "FACE_PROFILE": "标准侧脸近景，摄影机转到人物标准侧面",
+        "FACE_PROFILE": "严格90度真侧脸近景，只允许看到一只眼睛，清晰呈现鼻梁、额头、嘴唇和下巴的侧面轮廓；禁止3/4角度、禁止同时看到两只眼睛",
         "FACE_45": "右前方45度脸部近景",
         "FULL_SIDE": "全身标准侧面，保持脚部完整",
         "FULL_BACK": "全身标准背面，展示同一头发长度、服装背面和鞋子",

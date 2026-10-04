@@ -1,0 +1,9 @@
+{
+  "run_id": "20261004T130026Z",
+  "media_evidence": "VALID",
+  "lin_wan_generation_lineage": "VALID",
+  "execution_code_proven": false,
+  "reason": "committed runner did not contain the recorded progressive-stop path",
+  "recorded_audit_status": "PROGRESSIVE_STOP_AFTER_LIN_WAN_STAGE",
+  "current_artifact_run_id": "20261004T141537Z"
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "provider": "75api-image",
+  "model": "gpt-image-2-1k",
+  "strict_policy": {
+    "image_provider": "75api-image",
+    "image_model": "gpt-image-2-1k",
+    "video_provider": "75api-minimax-h3",
+    "video_model": "minimax_h3_no_audios",
+    "strict_provider": true
+  },
+  "real_image_calls_before_stages": 0
+}

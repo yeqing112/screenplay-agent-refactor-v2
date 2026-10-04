@@ -212,28 +212,37 @@ async def _run_asset(client: httpx.AsyncClient, base_url: str, *, kind: str, ass
         if kind == "PROP" and view == "DETAIL" and "SIDE" in generations: names = ["MASTER", "SIDE"]
         return [{"image_url": _data_uri(paths[n]), "reference_sha256": _sha(paths[n]), "reference_name": f"{asset_id}_{n}", "reference_asset_id": f"{asset_id}:{n}", "role": "character" if kind == "CHARACTER" else "prop", "reference_purpose": "same character identity" if kind == "CHARACTER" else "same object identity"} for n in names]
     for view in views:
-        refs = refs_for(view); calls["image"] += 1; calls["by_provider"]["75api-image"] += 1
+        refs = refs_for(view)
         prompt = _character_derived_prompt(asset, view) if kind == "CHARACTER" else _prop_derived_prompt(asset, view)
-        if kind == "CHARACTER": prompt += " 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。"
-        media = await _submit_asset(client, base_url, profile_id=str(profile["id"]), asset_type=kind, asset_id=asset_id, view_id=view, prompt=prompt, output=paths[view], refs=refs, timeout_hierarchy=GenerationTimeoutHierarchy.from_profile(profile))
-        semantic, sreq, sresp, sraw = _judge_semantic(paths[view], semantic_authority, asset_type=kind, view_id=view, description=description, judge_profile=judge_profile, counter=calls["judge"])
-        # Semantic compliance is evaluated before identity consistency.
-        if not semantic.passes:
+        if kind == "CHARACTER":
+            prompt += " 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。"
+        semantic = None
+        media = None
+        sreq = sresp = ""
+        view_attempt = 0
+        while True:
+            view_attempt += 1
+            calls["image"] += 1; calls["by_provider"]["75api-image"] += 1
+            media = await _submit_asset(client, base_url, profile_id=str(profile["id"]), asset_type=kind, asset_id=asset_id, view_id=view, prompt=prompt, output=paths[view], refs=refs, timeout_hierarchy=GenerationTimeoutHierarchy.from_profile(profile))
+            semantic, sreq, sresp, sraw = _judge_semantic(paths[view], semantic_authority, asset_type=kind, view_id=view, description=description, judge_profile=judge_profile, counter=calls["judge"])
+            if semantic.passes:
+                break
             if repairs >= int(budget.get("repair") or 0):
                 raise RuntimeError(f"{asset_id}:{view}:SEMANTIC_GATE_FAILED")
-            repairs += 1; repair_history.append({"view_id": view, "reason": semantic.violations or semantic.unauthorized_props, "attempt": 2})
-            calls["image"] += 1; calls["by_provider"]["75api-image"] += 1
-            repair_prompt = ("只修复语义污染，保持 canonical 人物身份和指定视图。删除所有未声明道具、包、包带、肩带、手机、雨伞、文件；不得新增物体。" if kind == "CHARACTER" else "只修复道具身份，保持深棕色、窄提手、两个黄铜扣件和皮革材质；删除黑色肩包特征。")
-            media = await _submit_asset(client, base_url, profile_id=str(profile["id"]), asset_type=kind, asset_id=asset_id, view_id=view, prompt=repair_prompt + " " + prompt, output=paths[view], refs=refs, timeout_hierarchy=GenerationTimeoutHierarchy.from_profile(profile))
-            semantic, sreq, sresp, sraw = _judge_semantic(paths[view], semantic_authority, asset_type=kind, view_id=view, description=description, judge_profile=judge_profile, counter=calls["judge"])
-            semantic = AssetSemanticComplianceAudit(view, kind, semantic.status, semantic.canonical_identity_match, semantic.canonical_costume_match, semantic.allowed_accessories, semantic.detected_accessories, semantic.detected_props, semantic.unauthorized_accessories, semantic.unauthorized_props, semantic.extra_people, semantic.text_or_watermark, semantic.view_pose_compliance, semantic.framing_compliance, semantic.critical_view_violation, semantic.violations, semantic.judge_status, 2, semantic.semantic_authority_fingerprint)
+            repairs += 1
+            repair_history.append({"view_id": view, "reason": semantic.violations or semantic.unauthorized_props or semantic.critical_view_violation, "attempt": view_attempt + 1})
+            if view == "FACE_PROFILE":
+                prompt = "严格90度真侧脸，面向左侧，只看到一只眼睛和一只耳朵，鼻梁额头嘴唇下巴形成清晰侧面剪影；禁止3/4、禁止同时看到两只眼睛。保持人物本人和衣着，不得出现任何包、肩带、手机或未声明物体。"
+            elif kind == "CHARACTER":
+                prompt = "只修复语义和视图姿态，保持 canonical 人物身份。删除所有未声明道具、包、包带、肩带、手机、雨伞、文件；不得新增物体。" + prompt
+            else:
+                prompt = "只修复道具身份，保持深棕色、窄提手、两个黄铜扣件和皮革材质；删除黑色肩包特征。" + prompt
+        assert semantic is not None and media is not None
         media["semantic_audit"] = asdict(semantic); media["semantic_request_fingerprint"] = sreq; media["semantic_response_fingerprint"] = sresp; generations[view] = media; semantic_audits.append(semantic)
         pose_audits.append({"view_id": view, "status": "PASS" if semantic.view_pose_compliance >= 85 and semantic.framing_compliance >= 85 and not semantic.critical_view_violation else "FAIL", "view_pose_compliance": semantic.view_pose_compliance, "framing_compliance": semantic.framing_compliance, "critical_view_violation": semantic.critical_view_violation})
-        if not semantic.passes:
-            raise RuntimeError(f"{asset_id}:{view}:SEMANTIC_GATE_FAILED")
         primary_ref = refs[0]["reference_name"].rsplit("_", 1)[-1]
         status, judge, req, resp = _judge_pair(kind, judge_profile, paths[primary_ref], paths[view], view, description); calls["judge"]["used"] += 1
-        identity_audits.append(_character_audit(view, 1 if not repair_history or repair_history[-1].get("view_id") != view else 2, media, master, judge, status, req, resp, judge_profile) if kind == "CHARACTER" else _prop_audit(view, 1 if not repair_history or repair_history[-1].get("view_id") != view else 2, media, master, judge, status, req, resp, judge_profile))
+        identity_audits.append(_character_audit(view, view_attempt, media, master, judge, status, req, resp, judge_profile) if kind == "CHARACTER" else _prop_audit(view, view_attempt, media, master, judge, status, req, resp, judge_profile))
     if not all(row.passes for row in identity_audits):
         raise RuntimeError(f"{asset_id}:IDENTITY_GATE_FAILED")
     global_paths = {key: paths[key] for key in (["FACE_FRONT", "FACE_PROFILE", "FACE_45", "MASTER", "FULL_SIDE", "FULL_BACK"] if kind == "CHARACTER" else ["MASTER", "SIDE", "BACK", "DETAIL"])}

@@ -1,0 +1,126 @@
+{
+  "schema_version": "asset_semantic_purity_audit_v1",
+  "run_id": "20261004T141537Z",
+  "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL",
+  "failure": "LIN_WAN:FACE_PROFILE:SEMANTIC_GATE_FAILED",
+  "production_provider_policy": {
+    "image_provider": "75api-image",
+    "image_model": "gpt-image-2-1k",
+    "video_provider": "75api-minimax-h3",
+    "video_model": "minimax_h3_no_audios",
+    "strict_provider": true
+  },
+  "previous_lin_wan_negative_regression": {
+    "run_id": "20261004T130026Z",
+    "media_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+    "identity_consistency": "PASS",
+    "semantic_purity": "FAIL",
+    "unauthorized_props": [
+      "black shoulder bag"
+    ],
+    "audit": {
+      "view_id": "MASTER",
+      "asset_type": "CHARACTER",
+      "status": "FAIL",
+      "canonical_identity_match": true,
+      "canonical_costume_match": true,
+      "allowed_accessories": [
+        "narrow wristwatch"
+      ],
+      "detected_accessories": [
+        "narrow wristwatch"
+      ],
+      "detected_props": [
+        "black shoulder bag"
+      ],
+      "unauthorized_accessories": [],
+      "unauthorized_props": [
+        "black shoulder bag"
+      ],
+      "extra_people": false,
+      "text_or_watermark": false,
+      "view_pose_compliance": 100,
+      "framing_compliance": 100,
+      "critical_view_violation": [],
+      "violations": [
+        "unauthorized prop: black shoulder bag (shoulder bag is explicitly forbidden)"
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1,
+      "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+      "score_scale": "0-100"
+    },
+    "request_fingerprint": "850051ed29d51443400950727663dbf875efbd62bb88a906629606188c2d04ba",
+    "response_fingerprint": "951bb72886cfd46012482ce4dfd36fac2149ce783db48ab87e3801cc80e3e520",
+    "raw_judge": {
+      "status": "FAIL",
+      "canonical_identity_match": 95,
+      "canonical_costume_match": 95,
+      "allowed_accessories": [
+        "narrow wristwatch"
+      ],
+      "detected_accessories": [
+        "narrow wristwatch"
+      ],
+      "detected_props": [
+        "black shoulder bag"
+      ],
+      "unauthorized_accessories": [],
+      "unauthorized_props": [
+        "black shoulder bag"
+      ],
+      "extra_people": 0,
+      "text_or_watermark": 0,
+      "view_pose_compliance": 100,
+      "framing_compliance": 100,
+      "critical_view_violation": false,
+      "violations": [
+        "unauthorized prop: black shoulder bag (shoulder bag is explicitly forbidden)"
+      ]
+    }
+  },
+  "characters": {},
+  "scene": {
+    "scene_id": "E01_SC002",
+    "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+    "views": [
+      "DETAIL",
+      "MASTER",
+      "REVERSE",
+      "SIDE"
+    ],
+    "view_fingerprints": {
+      "MASTER": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+      "REVERSE": "2846a6b4afc2e1d7824f92797326243b64ab72cfe43acfcfd3b728f395ebbb0b",
+      "SIDE": "c2a22aae3fe73d51a72ff5356803fd08bdabae8db54b30c2469bd418154510fd",
+      "DETAIL": "742597a64b5ac41fd57468beca1b3df65a58f612951b4229680fc2c36c2ed052"
+    },
+    "consistency_audit_count": 3,
+    "repair_count": 0,
+    "image_calls": 5,
+    "status": "READY"
+  },
+  "board_publication": {
+    "LIN_WAN": "NOT_PUBLISHED",
+    "LU_SHU": "NOT_PUBLISHED",
+    "HANDBAG": "NOT_PUBLISHED"
+  },
+  "real_image_calls": 4,
+  "real_image_calls_by_provider": {
+    "75api-image": 4,
+    "shapi-image": 0,
+    "poyo-image": 0,
+    "other-image": 0
+  },
+  "vision_judge_calls": 6,
+  "real_video_calls": 0,
+  "shot_keyframe_calls": 0,
+  "safety": {
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "raw_base64_persisted": 0,
+    "signed_url_query_persisted": 0,
+    "secret_leaks": 0,
+    "orphans": 0
+  }
+}
