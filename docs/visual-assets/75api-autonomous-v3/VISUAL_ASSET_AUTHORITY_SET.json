@@ -1,0 +1,39 @@
+{
+  "status": "PARTIAL",
+  "characters": {
+    "LIN_WAN": {
+      "character_id": "LIN_WAN",
+      "name": "林晚",
+      "status": "READY",
+      "primary_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+      "primary_execution_id": "c880b07f4c0c",
+      "derived_shas": {
+        "FACE_FRONT": "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8",
+        "FACE_PROFILE": "16846ea528d88c71a93d56f0e060fa4e7964fc8ef76b73501c3992e6831aa258",
+        "FACE_45": "8dc5f650a76312426f7ff5691f294c0c365c11bd56c99926202ff6ba0572616d",
+        "FULL_SIDE": "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114",
+        "FULL_BACK": "f87f5bed2a270ed606529635753e0feae5b41488aae8e006ed35da5de91c9495"
+      },
+      "derived_execution_ids": {
+        "FACE_FRONT": "5e0bb213c849",
+        "FACE_PROFILE": "e480058baf2b",
+        "FACE_45": "f312e91b167d",
+        "FULL_SIDE": "a8a2a7913b13",
+        "FULL_BACK": "589d003811ac"
+      },
+      "pairwise_audit_count": 5,
+      "global_judge_status": "PASS",
+      "profile_fingerprint": "a38e5a20552fabe582681f5899291ee0ffdecf4bfc206409c6643ffae672943e",
+      "prompt_fingerprint": "035ae5a38a54ba9e2c2e5dd761f9c86fb5588d966ab338c972139bdbd3a0e62d"
+    },
+    "LU_SHU": null
+  },
+  "props": {
+    "HANDBAG": null
+  },
+  "board_publication": {
+    "LIN_WAN": "PUBLISHED",
+    "LU_SHU": "NOT_PUBLISHED",
+    "HANDBAG": "NOT_PUBLISHED"
+  }
+}

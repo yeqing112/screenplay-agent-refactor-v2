@@ -1,0 +1,40 @@
+{
+  "run_id": "20261004T130026Z",
+  "events": [
+    {
+      "kind": "RUN_STARTED",
+      "run_id": "20261004T130026Z",
+      "isolated_db": true,
+      "staging": "work/75api-autonomous-asset-canary-v3/20261004T130026Z/publish-staging"
+    },
+    {
+      "kind": "MASTER_REUSED",
+      "asset": "LIN_WAN",
+      "execution_id": "c880b07f4c0c",
+      "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b"
+    },
+    {
+      "kind": "DERIVED_STAGE_COMPLETED",
+      "asset": "LIN_WAN",
+      "views": [
+        "FACE_FRONT",
+        "FACE_PROFILE",
+        "FACE_45",
+        "FULL_SIDE",
+        "FULL_BACK"
+      ],
+      "provider": "75api-image",
+      "real_image_calls": 5
+    },
+    {
+      "kind": "BOARD_PUBLISHED",
+      "asset": "LIN_WAN",
+      "board": "lin-wan-reference-board.png",
+      "board_sha256": "ca26235c48bfa1028700a57a67315d079f7b7a5ccd380caab7b8c35cd628a0bf"
+    },
+    {
+      "kind": "PROGRESSIVE_STOP",
+      "reason": "Lu Shu and HANDBAG were not started after local board repair; no provider retry."
+    }
+  ]
+}

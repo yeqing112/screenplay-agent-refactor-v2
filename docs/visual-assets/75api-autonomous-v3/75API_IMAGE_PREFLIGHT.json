@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "policy": {
+    "image_provider": "75api-image",
+    "image_model": "gpt-image-2-1k",
+    "video_provider": "75api-minimax-h3",
+    "video_model": "minimax_h3_no_audios",
+    "strict_provider": true
+  },
+  "profile": {
+    "id": "local-image-c4a7yu",
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k"
+  },
+  "capabilities": {
+    "text_to_image": true,
+    "image_to_image": true,
+    "reference_images": true,
+    "data_uri_reference": true
+  },
+  "timeout_hierarchy": {
+    "provider_timeout_seconds": 120,
+    "orchestration_read_timeout_seconds": 180,
+    "connect_timeout_seconds": 10,
+    "write_timeout_seconds": 60,
+    "pool_timeout_seconds": 30,
+    "margin_seconds": 60
+  },
+  "router_candidate": {
+    "profile_id": "local-image-c4a7yu",
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k",
+    "operation": "TEXT_TO_IMAGE",
+    "credential_ready": true,
+    "text_to_image": true,
+    "reference_image": true,
+    "connection_probe": "NOT_RUN",
+    "model_available": null,
+    "priority": 1,
+    "selected": false,
+    "rejected_reason": ""
+  },
+  "connection_probe": {
+    "status": "PASS",
+    "message": "75api 连接成功；未发起任何计费图片生成。"
+  }
+}

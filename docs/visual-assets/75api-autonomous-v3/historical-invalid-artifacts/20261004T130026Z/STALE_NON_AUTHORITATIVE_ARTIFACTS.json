@@ -1,0 +1,8 @@
+{
+  "status": "STALE_NON_AUTHORITATIVE_ARTIFACT",
+  "run_id": "20261004T130026Z",
+  "files": [
+    "FULL_SUITE_FAILURE_BASELINE.json"
+  ],
+  "excluded_from_authorities": true
+}

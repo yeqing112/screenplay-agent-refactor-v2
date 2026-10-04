@@ -1,0 +1,1183 @@
+{
+  "run_id": "20261004T130026Z",
+  "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL",
+  "real_image_calls": 5,
+  "real_image_calls_by_provider": {
+    "75api-image": 5,
+    "shapi-image": 0,
+    "poyo-image": 0,
+    "other-image": 0
+  },
+  "vision_judge_calls": 6,
+  "real_video_calls": 0,
+  "failure": "PROGRESSIVE_STOP_AFTER_LIN_WAN_STAGE",
+  "preflight": {
+    "status": "PASS",
+    "policy": {
+      "image_provider": "75api-image",
+      "image_model": "gpt-image-2-1k",
+      "video_provider": "75api-minimax-h3",
+      "video_model": "minimax_h3_no_audios",
+      "strict_provider": true
+    },
+    "profile": {
+      "id": "local-image-c4a7yu",
+      "provider": "75api-image",
+      "model": "gpt-image-2-1k"
+    },
+    "capabilities": {
+      "text_to_image": true,
+      "image_to_image": true,
+      "reference_images": true,
+      "data_uri_reference": true
+    },
+    "timeout_hierarchy": {
+      "provider_timeout_seconds": 120,
+      "orchestration_read_timeout_seconds": 180,
+      "connect_timeout_seconds": 10,
+      "write_timeout_seconds": 60,
+      "pool_timeout_seconds": 30,
+      "margin_seconds": 60
+    },
+    "router_candidate": {
+      "profile_id": "local-image-c4a7yu",
+      "provider": "75api-image",
+      "model": "gpt-image-2-1k",
+      "operation": "TEXT_TO_IMAGE",
+      "credential_ready": true,
+      "text_to_image": true,
+      "reference_image": true,
+      "connection_probe": "NOT_RUN",
+      "model_available": null,
+      "priority": 1,
+      "selected": false,
+      "rejected_reason": ""
+    },
+    "connection_probe": {
+      "status": "PASS",
+      "message": "75api 连接成功；未发起任何计费图片生成。"
+    }
+  },
+  "master_reuse": {
+    "status": "MASTER_REUSE_ALLOWED",
+    "checks": {
+      "file_exists": true,
+      "png_decodable": true,
+      "media_sha256": true,
+      "run_id": true,
+      "generation_execution_id": true,
+      "provider": true,
+      "model": true
+    },
+    "file": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\provider-contract\\75api-image-v1\\LIN_WAN_MASTER.png",
+    "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+    "provenance": {
+      "run_id": "20261004T105249Z",
+      "generation_execution_id": "c880b07f4c0c",
+      "provider": "75api-image",
+      "model": "gpt-image-2-1k",
+      "matched_response_path": "url",
+      "media_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+      "authority_status": "READY",
+      "derived_generation_allowed_in_this_phase": false
+    }
+  },
+  "characters": {
+    "LIN_WAN": {
+      "asset_id": "LIN_WAN",
+      "kind": "CHARACTER",
+      "authority": {
+        "character_id": "LIN_WAN",
+        "name": "林晚",
+        "status": "READY",
+        "primary_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+        "primary_execution_id": "c880b07f4c0c",
+        "derived_shas": {
+          "FACE_FRONT": "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8",
+          "FACE_PROFILE": "16846ea528d88c71a93d56f0e060fa4e7964fc8ef76b73501c3992e6831aa258",
+          "FACE_45": "8dc5f650a76312426f7ff5691f294c0c365c11bd56c99926202ff6ba0572616d",
+          "FULL_SIDE": "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114",
+          "FULL_BACK": "f87f5bed2a270ed606529635753e0feae5b41488aae8e006ed35da5de91c9495"
+        },
+        "derived_execution_ids": {
+          "FACE_FRONT": "5e0bb213c849",
+          "FACE_PROFILE": "e480058baf2b",
+          "FACE_45": "f312e91b167d",
+          "FULL_SIDE": "a8a2a7913b13",
+          "FULL_BACK": "589d003811ac"
+        },
+        "pairwise_audit_count": 5,
+        "global_judge_status": "PASS",
+        "profile_fingerprint": "a38e5a20552fabe582681f5899291ee0ffdecf4bfc206409c6643ffae672943e",
+        "prompt_fingerprint": "035ae5a38a54ba9e2c2e5dd761f9c86fb5588d966ab338c972139bdbd3a0e62d"
+      },
+      "master": {
+        "view_id": "MASTER",
+        "execution_id": "c880b07f4c0c",
+        "generation_execution_id": "c880b07f4c0c",
+        "provider": "75api-image",
+        "model_profile_id": "local-image-c4a7yu",
+        "model": "gpt-image-2-1k",
+        "candidate_status": "IMPORTED_IMMUTABLE_PRIMARY_REFERENCE",
+        "prompt_fingerprint": "035ae5a38a54ba9e2c2e5dd761f9c86fb5588d966ab338c972139bdbd3a0e62d",
+        "reference_image_count": 0,
+        "reference_image_sha256s": [],
+        "reference_order": [],
+        "reference_input_formats": [],
+        "provider_inline_reference_attached": false,
+        "provider_reference_order_matches": true,
+        "provider_payload_reference_count": 0,
+        "requested_aspect_ratio": "2:3",
+        "provider_aspect_ratio": "9:16",
+        "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+        "framing_class": "FULL",
+        "provider_response_shape": {
+          "response_type": "dict",
+          "top_level_keys": [
+            "model",
+            "url"
+          ],
+          "candidate_media_paths": [
+            "url"
+          ]
+        },
+        "provider_response_fingerprint": "69d07cc83e184d82cd7a6bbc7b641868f9441899d6f556bc562861b91cdd1c2f",
+        "provider_response_media_path": "url",
+        "provider_http_status": 200,
+        "file": {
+          "file": "lin-wan-master-imported.png",
+          "bytes": 1974063,
+          "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "width": 1024,
+          "height": 1536,
+          "format": "PNG"
+        },
+        "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+        "fingerprint": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+        "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v3\\20261004T130026Z\\lin-wan-master-imported.png"
+      },
+      "master_attempts": [
+        {
+          "provider": "75api-image",
+          "model": "gpt-image-2-1k",
+          "status": "IMPORTED_IMMUTABLE_PRIMARY_REFERENCE",
+          "execution_id": "c880b07f4c0c",
+          "post_submission_state": "TASK_CONFIRMED"
+        }
+      ],
+      "generations": {
+        "MASTER": {
+          "view_id": "MASTER",
+          "execution_id": "c880b07f4c0c",
+          "generation_execution_id": "c880b07f4c0c",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "model": "gpt-image-2-1k",
+          "candidate_status": "IMPORTED_IMMUTABLE_PRIMARY_REFERENCE",
+          "prompt_fingerprint": "035ae5a38a54ba9e2c2e5dd761f9c86fb5588d966ab338c972139bdbd3a0e62d",
+          "reference_image_count": 0,
+          "reference_image_sha256s": [],
+          "reference_order": [],
+          "reference_input_formats": [],
+          "provider_inline_reference_attached": false,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 0,
+          "requested_aspect_ratio": "2:3",
+          "provider_aspect_ratio": "9:16",
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL",
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "candidate_media_paths": [
+              "url"
+            ]
+          },
+          "provider_response_fingerprint": "69d07cc83e184d82cd7a6bbc7b641868f9441899d6f556bc562861b91cdd1c2f",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "file": {
+            "file": "lin-wan-master.png",
+            "bytes": 1974063,
+            "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "fingerprint": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "path": "docs/visual-assets/75api-autonomous-v3/lin-wan-master.png"
+        },
+        "FULL_FRONT": {
+          "view_id": "MASTER",
+          "execution_id": "c880b07f4c0c",
+          "generation_execution_id": "c880b07f4c0c",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "model": "gpt-image-2-1k",
+          "candidate_status": "IMPORTED_IMMUTABLE_PRIMARY_REFERENCE",
+          "prompt_fingerprint": "035ae5a38a54ba9e2c2e5dd761f9c86fb5588d966ab338c972139bdbd3a0e62d",
+          "reference_image_count": 0,
+          "reference_image_sha256s": [],
+          "reference_order": [],
+          "reference_input_formats": [],
+          "provider_inline_reference_attached": false,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 0,
+          "requested_aspect_ratio": "2:3",
+          "provider_aspect_ratio": "9:16",
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL",
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "candidate_media_paths": [
+              "url"
+            ]
+          },
+          "provider_response_fingerprint": "69d07cc83e184d82cd7a6bbc7b641868f9441899d6f556bc562861b91cdd1c2f",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "file": {
+            "file": "lin-wan-master-imported.png",
+            "bytes": 1974063,
+            "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "fingerprint": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v3\\20261004T130026Z\\lin-wan-master-imported.png"
+        },
+        "FACE_FRONT": {
+          "view_id": "FACE_FRONT",
+          "execution_id": "5e0bb213c849",
+          "generation_execution_id": "5e0bb213c849",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "9c9e216b1334792d1bf8dc59eecdfcf1b7783bb0eb8727e695e20dcb3c9af9ed",
+          "reference_image_count": 1,
+          "reference_image_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "reference_image_sha256s": [
+            "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER"
+          ],
+          "reference_input_formats": [
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 1,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。标准正脸近景。头肩构图，脸部占据一致视觉尺度，眼睛位于一致的垂直区域，不出现全身。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "1:1",
+            "images": [
+              "<redacted large value: 2632106 chars>"
+            ]
+          },
+          "requested_aspect_ratio": "1:1",
+          "provider_aspect_ratio": "1:1",
+          "projection_reason": "requested_ratio_supported",
+          "framing_class": "FACE",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 458726.2305411,
+            "request_finished_at": 458778.6835412,
+            "elapsed_seconds": 52.453,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin-wan-face-front.jpg",
+            "bytes": 2288039,
+            "sha256": "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8",
+          "fingerprint": "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8",
+          "path": "docs/visual-assets/75api-autonomous-v3/lin-wan-face-front.jpg",
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "d587bcc7b8c08b09654de57097119f627c985ee00ac5976f917a7fd68e8b65f3",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "d0683a3470f4c9106f5064d0d47f293014907116ab5cbc3483e8caf9269b1f49",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "reference_asset_ids": [
+            "LIN_WAN_MASTER"
+          ]
+        },
+        "FACE_PROFILE": {
+          "view_id": "FACE_PROFILE",
+          "execution_id": "e480058baf2b",
+          "generation_execution_id": "e480058baf2b",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "5001445b4044c1c72129d974033f250342ee23e1397a5de53d22032afd2e1c7a",
+          "reference_image_count": 2,
+          "reference_image_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "reference_image_sha256s": [
+            "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FACE_FRONT"
+          ],
+          "reference_input_formats": [
+            "data_uri",
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 2,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。标准侧脸近景，摄影机转到人物标准侧面。头肩构图，脸部占据一致视觉尺度，眼睛位于一致的垂直区域，不出现全身。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "1:1",
+            "images": [
+              "<redacted large value: 2632106 chars>",
+              "<redacted large value: 3050743 chars>"
+            ]
+          },
+          "requested_aspect_ratio": "1:1",
+          "provider_aspect_ratio": "1:1",
+          "projection_reason": "requested_ratio_supported",
+          "framing_class": "FACE",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 458787.6670107,
+            "request_finished_at": 458833.2302035,
+            "elapsed_seconds": 45.563,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin-wan-face-profile.jpg",
+            "bytes": 2175715,
+            "sha256": "16846ea528d88c71a93d56f0e060fa4e7964fc8ef76b73501c3992e6831aa258",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "16846ea528d88c71a93d56f0e060fa4e7964fc8ef76b73501c3992e6831aa258",
+          "fingerprint": "16846ea528d88c71a93d56f0e060fa4e7964fc8ef76b73501c3992e6831aa258",
+          "path": "docs/visual-assets/75api-autonomous-v3/lin-wan-face-profile.jpg",
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "f342c6191b3b518e3c0f87f74dce3b975ff3d4e4988ba2dd3bc4aac7d24c955d",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "5038abf0b0a4e5f1e7c507d5e20dc3270012e8bf5f89faceb60b3e33493f4142",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "reference_asset_ids": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FACE_FRONT"
+          ]
+        },
+        "FACE_45": {
+          "view_id": "FACE_45",
+          "execution_id": "f312e91b167d",
+          "generation_execution_id": "f312e91b167d",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "d71fc5de36e566caed1d99e3727bb41c98e6055af8f5a228720c9f06127cde92",
+          "reference_image_count": 2,
+          "reference_image_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "reference_image_sha256s": [
+            "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FACE_FRONT"
+          ],
+          "reference_input_formats": [
+            "data_uri",
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 2,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。右前方45度脸部近景。头肩构图，脸部占据一致视觉尺度，眼睛位于一致的垂直区域，不出现全身。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "1:1",
+            "images": [
+              "<redacted large value: 2632106 chars>",
+              "<redacted large value: 3050743 chars>"
+            ]
+          },
+          "requested_aspect_ratio": "1:1",
+          "provider_aspect_ratio": "1:1",
+          "projection_reason": "requested_ratio_supported",
+          "framing_class": "FACE",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 458843.333524,
+            "request_finished_at": 458964.9607078,
+            "elapsed_seconds": 121.627,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin-wan-face-45.jpg",
+            "bytes": 2141575,
+            "sha256": "8dc5f650a76312426f7ff5691f294c0c365c11bd56c99926202ff6ba0572616d",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "8dc5f650a76312426f7ff5691f294c0c365c11bd56c99926202ff6ba0572616d",
+          "fingerprint": "8dc5f650a76312426f7ff5691f294c0c365c11bd56c99926202ff6ba0572616d",
+          "path": "docs/visual-assets/75api-autonomous-v3/lin-wan-face-45.jpg",
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "4610fe7d4949a1188b90b017d4c2e126277ab9ca6e5f08cabb737e0f3deb3344",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "f92deda54d317f8e3c6c881d4b55c820c252dd33291ae489773c0db2eba04601",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "reference_asset_ids": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FACE_FRONT"
+          ]
+        },
+        "FULL_SIDE": {
+          "view_id": "FULL_SIDE",
+          "execution_id": "a8a2a7913b13",
+          "generation_execution_id": "a8a2a7913b13",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "4887ea352d3682e70215d954a6785db132fd1de8fac23bc0b5c79555baa96517",
+          "reference_image_count": 1,
+          "reference_image_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "reference_image_sha256s": [
+            "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER"
+          ],
+          "reference_input_formats": [
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 1,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。全身标准侧面，保持脚部完整。完整头部和完整鞋脚必须在画面内，保持中性标准站姿和一致的全身高度。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "9:16",
+            "images": [
+              "<redacted large value: 2632106 chars>"
+            ]
+          },
+          "requested_aspect_ratio": "2:3",
+          "provider_aspect_ratio": "9:16",
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL_BODY",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 458972.7439429,
+            "request_finished_at": 459021.4105499,
+            "elapsed_seconds": 48.667,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin-wan-full-side.jpg",
+            "bytes": 1729467,
+            "sha256": "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114",
+          "fingerprint": "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114",
+          "path": "docs/visual-assets/75api-autonomous-v3/lin-wan-full-side.jpg",
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "bcb8aa41ced75ab907e40b4a43980783b4f577c1672b5015987ae7ac22709239",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "639c16425d4b368bf1934b86cca8abb88f519352aac6dd7d5432f8ca8ecbfd67",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "reference_asset_ids": [
+            "LIN_WAN_MASTER"
+          ]
+        },
+        "FULL_BACK": {
+          "view_id": "FULL_BACK",
+          "execution_id": "589d003811ac",
+          "generation_execution_id": "589d003811ac",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "81e2d7a0075432f532f0cb7100bbdf7434753cd855a65d80ae9d9d6c237a92ac",
+          "reference_image_count": 2,
+          "reference_image_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "reference_image_sha256s": [
+            "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FULL_SIDE"
+          ],
+          "reference_input_formats": [
+            "data_uri",
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 2,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。全身标准背面，展示同一头发长度、服装背面和鞋子。完整头部和完整鞋脚必须在画面内，保持中性标准站姿和一致的全身高度。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "9:16",
+            "images": [
+              "<redacted large value: 2632106 chars>",
+              "<redacted large value: 2305979 chars>"
+            ]
+          },
+          "requested_aspect_ratio": "2:3",
+          "provider_aspect_ratio": "9:16",
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL_BODY",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 459029.9220802,
+            "request_finished_at": 459106.5262924,
+            "elapsed_seconds": 76.604,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin-wan-full-back.jpg",
+            "bytes": 1748058,
+            "sha256": "f87f5bed2a270ed606529635753e0feae5b41488aae8e006ed35da5de91c9495",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "f87f5bed2a270ed606529635753e0feae5b41488aae8e006ed35da5de91c9495",
+          "fingerprint": "f87f5bed2a270ed606529635753e0feae5b41488aae8e006ed35da5de91c9495",
+          "path": "docs/visual-assets/75api-autonomous-v3/lin-wan-full-back.jpg",
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "8fbb0563e6bf0d72581b38c5fe641cedc3159030556e7d9de642d68fd0c97ec3",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "c70de722ffbb9e318b4ad238b8422319fbf51e771de9236fb604e9cf9b963c2d",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "reference_asset_ids": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FULL_SIDE"
+          ]
+        }
+      },
+      "audits": [
+        {
+          "view_id": "FACE_FRONT",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 98,
+          "face_score": 98,
+          "hair_score": 99,
+          "body_proportion_score": 96,
+          "costume_score": 99,
+          "accessory_score": 97,
+          "critical_identity_violations": [],
+          "violations": [
+            "minor accessory visibility difference (watch visible in full body, obscured in close-up)"
+          ],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FACE_FRONT",
+            "attempt_number": 1,
+            "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "derived_sha256": "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8",
+            "master_generation_execution_id": "c880b07f4c0c",
+            "derived_generation_execution_id": "5e0bb213c849",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "a145e10b8222fc597f5962899529a644748379be7f5438548e8a82527026525a",
+            "judge_response_fingerprint": "e854e6c030d119a1285d8371ec5a57b0768eb10d1e81103e045597c7926ab5fc",
+            "judge_raw_scores": {
+              "identity_score": 98,
+              "face_score": 98,
+              "hair_score": 99,
+              "body_proportion_score": 96,
+              "costume_score": 99,
+              "accessory_score": 97
+            },
+            "judge_normalized_scores": {
+              "identity_score": 98,
+              "face_score": 98,
+              "hair_score": 99,
+              "body_proportion_score": 96,
+              "costume_score": 99,
+              "accessory_score": 97
+            },
+            "generated_at": "2026-10-04T13:01:36.573910+00:00",
+            "judged_at": "2026-10-04T13:01:36.573910+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FACE_PROFILE",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 95,
+          "face_score": 95,
+          "hair_score": 95,
+          "body_proportion_score": 90,
+          "costume_score": 95,
+          "accessory_score": 90,
+          "critical_identity_violations": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FACE_PROFILE",
+            "attempt_number": 1,
+            "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "derived_sha256": "16846ea528d88c71a93d56f0e060fa4e7964fc8ef76b73501c3992e6831aa258",
+            "master_generation_execution_id": "c880b07f4c0c",
+            "derived_generation_execution_id": "e480058baf2b",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "9745bda3ba753b2305ac2c7ee89d2119e1ec91a1722485de1307de63bec6bc99",
+            "judge_response_fingerprint": "a3de448126e0cc74e6db4d306494b0c815565dcf83cc77882ba7d68208eaed47",
+            "judge_raw_scores": {
+              "identity_score": 95,
+              "face_score": 95,
+              "hair_score": 95,
+              "body_proportion_score": 90,
+              "costume_score": 95,
+              "accessory_score": 90
+            },
+            "judge_normalized_scores": {
+              "identity_score": 95,
+              "face_score": 95,
+              "hair_score": 95,
+              "body_proportion_score": 90,
+              "costume_score": 95,
+              "accessory_score": 90
+            },
+            "generated_at": "2026-10-04T13:02:32.242398+00:00",
+            "judged_at": "2026-10-04T13:02:32.242398+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FACE_45",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 98,
+          "face_score": 98,
+          "hair_score": 99,
+          "body_proportion_score": 97,
+          "costume_score": 99,
+          "accessory_score": 96,
+          "critical_identity_violations": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FACE_45",
+            "attempt_number": 1,
+            "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "derived_sha256": "8dc5f650a76312426f7ff5691f294c0c365c11bd56c99926202ff6ba0572616d",
+            "master_generation_execution_id": "c880b07f4c0c",
+            "derived_generation_execution_id": "f312e91b167d",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "ebea7f7f3cd05d1fc9949da68e3fd0d708909af99c2a6200b69a084ee071fae5",
+            "judge_response_fingerprint": "46f5c1915b6ceda464b5632f328f043f626cebff94acd72778c523ad3d637907",
+            "judge_raw_scores": {
+              "identity_score": 98,
+              "face_score": 98,
+              "hair_score": 99,
+              "body_proportion_score": 97,
+              "costume_score": 99,
+              "accessory_score": 96
+            },
+            "judge_normalized_scores": {
+              "identity_score": 98,
+              "face_score": 98,
+              "hair_score": 99,
+              "body_proportion_score": 97,
+              "costume_score": 99,
+              "accessory_score": 96
+            },
+            "generated_at": "2026-10-04T13:04:41.661596+00:00",
+            "judged_at": "2026-10-04T13:04:41.661596+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FULL_SIDE",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 96,
+          "face_score": 95,
+          "hair_score": 98,
+          "body_proportion_score": 97,
+          "costume_score": 98,
+          "accessory_score": 96,
+          "critical_identity_violations": [],
+          "violations": [
+            "bag_strap_position_differs_between_views"
+          ],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FULL_SIDE",
+            "attempt_number": 1,
+            "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "derived_sha256": "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114",
+            "master_generation_execution_id": "c880b07f4c0c",
+            "derived_generation_execution_id": "a8a2a7913b13",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "713613c2f03241346365262941278e2d495c135f02c11057b6071d1d70e77150",
+            "judge_response_fingerprint": "173178dc200fc17a577386273e017c2552f3f8321af6a38a60056754cc6c21c6",
+            "judge_raw_scores": {
+              "identity_score": 96,
+              "face_score": 95,
+              "hair_score": 98,
+              "body_proportion_score": 97,
+              "costume_score": 98,
+              "accessory_score": 96
+            },
+            "judge_normalized_scores": {
+              "identity_score": 96,
+              "face_score": 95,
+              "hair_score": 98,
+              "body_proportion_score": 97,
+              "costume_score": 98,
+              "accessory_score": 96
+            },
+            "generated_at": "2026-10-04T13:05:38.832302+00:00",
+            "judged_at": "2026-10-04T13:05:38.832302+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FULL_BACK",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 96,
+          "face_score": 95,
+          "hair_score": 98,
+          "body_proportion_score": 97,
+          "costume_score": 98,
+          "accessory_score": 95,
+          "critical_identity_violations": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FULL_BACK",
+            "attempt_number": 1,
+            "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+            "derived_sha256": "f87f5bed2a270ed606529635753e0feae5b41488aae8e006ed35da5de91c9495",
+            "master_generation_execution_id": "c880b07f4c0c",
+            "derived_generation_execution_id": "589d003811ac",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "1c53751d3b71a7d861e893ad53cff4f258c66e42db1009384a8392042271ee56",
+            "judge_response_fingerprint": "5c4cf3b0afc66d2ccbd94f84c8c9f2c92182b846122044a1bb6845912e18b5ee",
+            "judge_raw_scores": {
+              "identity_score": 96,
+              "face_score": 95,
+              "hair_score": 98,
+              "body_proportion_score": 97,
+              "costume_score": 98,
+              "accessory_score": 95
+            },
+            "judge_normalized_scores": {
+              "identity_score": 96,
+              "face_score": 95,
+              "hair_score": 98,
+              "body_proportion_score": 97,
+              "costume_score": 98,
+              "accessory_score": 95
+            },
+            "generated_at": "2026-10-04T13:07:03.018263+00:00",
+            "judged_at": "2026-10-04T13:07:03.018263+00:00"
+          },
+          "score_scale": "0-100"
+        }
+      ],
+      "global": {
+        "status": "PASS",
+        "same_character": true,
+        "same_costume": true,
+        "same_body_proportions": true,
+        "cross_view_violations": [],
+        "judge_request_fingerprint": "949002a112aa226ce6fd41d52c4df48f70c66a380990739785a7eed52e683902",
+        "judge_response_fingerprint": "4e4b1b5b8b538885c0105eeda2ef969752c50dc25f3d89e7ea7be804a77bcc04"
+      },
+      "repairs": [],
+      "selected_profile": {
+        "id": "local-image-c4a7yu",
+        "name": "75api gpt-image-2-1k",
+        "capability": "image",
+        "provider": "75api-image",
+        "base_url": "https://www.75api.com",
+        "model_name": "gpt-image-2-1k",
+        "default_params": {
+          "task_modes": [
+            "text_to_image",
+            "image_to_image"
+          ],
+          "supports_reference_images": true,
+          "supports_image_url": true,
+          "supports_file_upload": false,
+          "supports_negative_prompt": false,
+          "supports_async_tasks": false,
+          "n": 1,
+          "size": "auto",
+          "quality": "high",
+          "response_format": "url",
+          "allowed_models": [
+            "gpt-image-2-1k",
+            "gpt-image-2-2k"
+          ],
+          "transport": "75api-images-generations",
+          "evidence_status": "provider_probe_required"
+        },
+        "enabled": true,
+        "is_default": true,
+        "key_configured": true,
+        "builtin": false,
+        "source": "user",
+        "uses_mock": false,
+        "generation_capability": "IMAGE_GENERATION",
+        "adapter_id": "image_generic",
+        "adapter_version": "image_generic_adapter_v1",
+        "credential_ref": "profile:local-image-c4a7yu",
+        "credential_configured": true,
+        "runtime_binding_id": "model-registry-profile-secret",
+        "transport_binding_id": "75api-image.image.v1"
+      },
+      "selection_trace": [
+        {
+          "profile_id": "local-image-c4a7yu",
+          "provider": "75api-image",
+          "model": "gpt-image-2-1k",
+          "operation": "TEXT_TO_IMAGE",
+          "credential_ready": true,
+          "text_to_image": true,
+          "reference_image": true,
+          "connection_probe": "NOT_RUN",
+          "model_available": null,
+          "priority": 1,
+          "selected": true,
+          "rejected_reason": ""
+        }
+      ]
+    }
+  },
+  "multi_reference": {
+    "real_multi_reference_calls": [
+      {
+        "asset_id": "LIN_WAN",
+        "view_id": "FACE_PROFILE",
+        "reference_count": 2,
+        "reference_order": [
+          "LIN_WAN_MASTER",
+          "LIN_WAN_FACE_FRONT"
+        ],
+        "reference_asset_ids": [],
+        "reference_sha256s": [
+          "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8"
+        ],
+        "reference_input_formats": [
+          "data_uri",
+          "data_uri"
+        ],
+        "provider_payload_images_count": 2,
+        "provider_reference_order_matches": true,
+        "provider_response_media_path": null,
+        "provider_response_fingerprint": null
+      },
+      {
+        "asset_id": "LIN_WAN",
+        "view_id": "FACE_45",
+        "reference_count": 2,
+        "reference_order": [
+          "LIN_WAN_MASTER",
+          "LIN_WAN_FACE_FRONT"
+        ],
+        "reference_asset_ids": [],
+        "reference_sha256s": [
+          "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8"
+        ],
+        "reference_input_formats": [
+          "data_uri",
+          "data_uri"
+        ],
+        "provider_payload_images_count": 2,
+        "provider_reference_order_matches": true,
+        "provider_response_media_path": null,
+        "provider_response_fingerprint": null
+      },
+      {
+        "asset_id": "LIN_WAN",
+        "view_id": "FULL_BACK",
+        "reference_count": 2,
+        "reference_order": [
+          "LIN_WAN_MASTER",
+          "LIN_WAN_FULL_SIDE"
+        ],
+        "reference_asset_ids": [],
+        "reference_sha256s": [
+          "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114"
+        ],
+        "reference_input_formats": [
+          "data_uri",
+          "data_uri"
+        ],
+        "provider_payload_images_count": 2,
+        "provider_reference_order_matches": true,
+        "provider_response_media_path": null,
+        "provider_response_fingerprint": null
+      }
+    ],
+    "count": 3,
+    "data_uri_real_calls": 3
+  },
+  "safety": {
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "browser_direct_provider_calls": 0,
+    "raw_base64_persisted": 0,
+    "signed_url_query_persisted": 0,
+    "secret_leaks": 0,
+    "orphans": 0
+  },
+  "historical_failure": "REFERENCE_BOARD_SOURCE_MISSING",
+  "board_publication": {
+    "LIN_WAN": "PUBLISHED",
+    "LU_SHU": "NOT_PUBLISHED",
+    "HANDBAG": "NOT_PUBLISHED"
+  },
+  "post_run_repair": {
+    "status": "BOARD_REPUBLISHED_WITHOUT_PROVIDER_CALLS",
+    "reason": "Corrected board source mapping to include immutable MASTER; no IMAGE/VIDEO call was made during repair.",
+    "historical_failure": "REFERENCE_BOARD_SOURCE_MISSING"
+  }
+}

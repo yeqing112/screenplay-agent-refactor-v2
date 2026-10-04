@@ -1,0 +1,243 @@
+{
+  "LIN_WAN": {
+    "audits": [
+      {
+        "view_id": "FACE_FRONT",
+        "status": "PASS",
+        "same_character": true,
+        "identity_score": 98,
+        "face_score": 98,
+        "hair_score": 99,
+        "body_proportion_score": 96,
+        "costume_score": 99,
+        "accessory_score": 97,
+        "critical_identity_violations": [],
+        "violations": [
+          "minor accessory visibility difference (watch visible in full body, obscured in close-up)"
+        ],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "FACE_FRONT",
+          "attempt_number": 1,
+          "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "derived_sha256": "c0cc1546322dff9458820cfe88b6810c69f58eb831a7167a8dfab89a73f713c8",
+          "master_generation_execution_id": "c880b07f4c0c",
+          "derived_generation_execution_id": "5e0bb213c849",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "a145e10b8222fc597f5962899529a644748379be7f5438548e8a82527026525a",
+          "judge_response_fingerprint": "e854e6c030d119a1285d8371ec5a57b0768eb10d1e81103e045597c7926ab5fc",
+          "judge_raw_scores": {
+            "identity_score": 98,
+            "face_score": 98,
+            "hair_score": 99,
+            "body_proportion_score": 96,
+            "costume_score": 99,
+            "accessory_score": 97
+          },
+          "judge_normalized_scores": {
+            "identity_score": 98,
+            "face_score": 98,
+            "hair_score": 99,
+            "body_proportion_score": 96,
+            "costume_score": 99,
+            "accessory_score": 97
+          },
+          "generated_at": "2026-10-04T13:01:36.573910+00:00",
+          "judged_at": "2026-10-04T13:01:36.573910+00:00"
+        },
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FACE_PROFILE",
+        "status": "PASS",
+        "same_character": true,
+        "identity_score": 95,
+        "face_score": 95,
+        "hair_score": 95,
+        "body_proportion_score": 90,
+        "costume_score": 95,
+        "accessory_score": 90,
+        "critical_identity_violations": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "FACE_PROFILE",
+          "attempt_number": 1,
+          "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "derived_sha256": "16846ea528d88c71a93d56f0e060fa4e7964fc8ef76b73501c3992e6831aa258",
+          "master_generation_execution_id": "c880b07f4c0c",
+          "derived_generation_execution_id": "e480058baf2b",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "9745bda3ba753b2305ac2c7ee89d2119e1ec91a1722485de1307de63bec6bc99",
+          "judge_response_fingerprint": "a3de448126e0cc74e6db4d306494b0c815565dcf83cc77882ba7d68208eaed47",
+          "judge_raw_scores": {
+            "identity_score": 95,
+            "face_score": 95,
+            "hair_score": 95,
+            "body_proportion_score": 90,
+            "costume_score": 95,
+            "accessory_score": 90
+          },
+          "judge_normalized_scores": {
+            "identity_score": 95,
+            "face_score": 95,
+            "hair_score": 95,
+            "body_proportion_score": 90,
+            "costume_score": 95,
+            "accessory_score": 90
+          },
+          "generated_at": "2026-10-04T13:02:32.242398+00:00",
+          "judged_at": "2026-10-04T13:02:32.242398+00:00"
+        },
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FACE_45",
+        "status": "PASS",
+        "same_character": true,
+        "identity_score": 98,
+        "face_score": 98,
+        "hair_score": 99,
+        "body_proportion_score": 97,
+        "costume_score": 99,
+        "accessory_score": 96,
+        "critical_identity_violations": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "FACE_45",
+          "attempt_number": 1,
+          "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "derived_sha256": "8dc5f650a76312426f7ff5691f294c0c365c11bd56c99926202ff6ba0572616d",
+          "master_generation_execution_id": "c880b07f4c0c",
+          "derived_generation_execution_id": "f312e91b167d",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "ebea7f7f3cd05d1fc9949da68e3fd0d708909af99c2a6200b69a084ee071fae5",
+          "judge_response_fingerprint": "46f5c1915b6ceda464b5632f328f043f626cebff94acd72778c523ad3d637907",
+          "judge_raw_scores": {
+            "identity_score": 98,
+            "face_score": 98,
+            "hair_score": 99,
+            "body_proportion_score": 97,
+            "costume_score": 99,
+            "accessory_score": 96
+          },
+          "judge_normalized_scores": {
+            "identity_score": 98,
+            "face_score": 98,
+            "hair_score": 99,
+            "body_proportion_score": 97,
+            "costume_score": 99,
+            "accessory_score": 96
+          },
+          "generated_at": "2026-10-04T13:04:41.661596+00:00",
+          "judged_at": "2026-10-04T13:04:41.661596+00:00"
+        },
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FULL_SIDE",
+        "status": "PASS",
+        "same_character": true,
+        "identity_score": 96,
+        "face_score": 95,
+        "hair_score": 98,
+        "body_proportion_score": 97,
+        "costume_score": 98,
+        "accessory_score": 96,
+        "critical_identity_violations": [],
+        "violations": [
+          "bag_strap_position_differs_between_views"
+        ],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "FULL_SIDE",
+          "attempt_number": 1,
+          "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "derived_sha256": "c6ad83caf65a22858f84ce811bf8236ea28e985eceaee856b76a7f2158176114",
+          "master_generation_execution_id": "c880b07f4c0c",
+          "derived_generation_execution_id": "a8a2a7913b13",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "713613c2f03241346365262941278e2d495c135f02c11057b6071d1d70e77150",
+          "judge_response_fingerprint": "173178dc200fc17a577386273e017c2552f3f8321af6a38a60056754cc6c21c6",
+          "judge_raw_scores": {
+            "identity_score": 96,
+            "face_score": 95,
+            "hair_score": 98,
+            "body_proportion_score": 97,
+            "costume_score": 98,
+            "accessory_score": 96
+          },
+          "judge_normalized_scores": {
+            "identity_score": 96,
+            "face_score": 95,
+            "hair_score": 98,
+            "body_proportion_score": 97,
+            "costume_score": 98,
+            "accessory_score": 96
+          },
+          "generated_at": "2026-10-04T13:05:38.832302+00:00",
+          "judged_at": "2026-10-04T13:05:38.832302+00:00"
+        },
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FULL_BACK",
+        "status": "PASS",
+        "same_character": true,
+        "identity_score": 96,
+        "face_score": 95,
+        "hair_score": 98,
+        "body_proportion_score": 97,
+        "costume_score": 98,
+        "accessory_score": 95,
+        "critical_identity_violations": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "media_evidence": {
+          "view_id": "FULL_BACK",
+          "attempt_number": 1,
+          "master_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+          "derived_sha256": "f87f5bed2a270ed606529635753e0feae5b41488aae8e006ed35da5de91c9495",
+          "master_generation_execution_id": "c880b07f4c0c",
+          "derived_generation_execution_id": "589d003811ac",
+          "judge_profile_id": "local-llm-2vydoz",
+          "judge_model": "mimo-v2.5",
+          "judge_request_fingerprint": "1c53751d3b71a7d861e893ad53cff4f258c66e42db1009384a8392042271ee56",
+          "judge_response_fingerprint": "5c4cf3b0afc66d2ccbd94f84c8c9f2c92182b846122044a1bb6845912e18b5ee",
+          "judge_raw_scores": {
+            "identity_score": 96,
+            "face_score": 95,
+            "hair_score": 98,
+            "body_proportion_score": 97,
+            "costume_score": 98,
+            "accessory_score": 95
+          },
+          "judge_normalized_scores": {
+            "identity_score": 96,
+            "face_score": 95,
+            "hair_score": 98,
+            "body_proportion_score": 97,
+            "costume_score": 98,
+            "accessory_score": 95
+          },
+          "generated_at": "2026-10-04T13:07:03.018263+00:00",
+          "judged_at": "2026-10-04T13:07:03.018263+00:00"
+        },
+        "score_scale": "0-100"
+      }
+    ]
+  },
+  "LU_SHU": {
+    "audits": []
+  }
+}
