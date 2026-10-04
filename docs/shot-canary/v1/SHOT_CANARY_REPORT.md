@@ -28,3 +28,8 @@ Run: `20261004T162533Z`
 - Real VIDEO calls: `1`.
 - Production writes: `0`; Book 990400 writes: `0`; SHAPI: `0`; Poyo: `0`; secret leaks: `0`; orphans: `0`.
 - No automatic regeneration after the quality failure.
+
+## Tests
+
+- Targeted: `78 passed`.
+- Full suite: `2086 passed / 24 failed`; exact baseline failure nodes retained; new failed nodes `0`.
