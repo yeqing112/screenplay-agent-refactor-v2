@@ -1,0 +1,1465 @@
+{
+  "schema_version": "prompt_production_v4",
+  "status": "PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED",
+  "director_llm": {
+    "calls": 5,
+    "status": "BLOCKED",
+    "responses": [
+      {
+        "shot_id": "SH_E01_SC001_002",
+        "source_facts": {
+          "shot_id": "SH_E01_SC001_002",
+          "scene_id": "E01_SC001",
+          "character_ids": [
+            "林晚"
+          ],
+          "prop_ids": [
+            "RED_UMBRELLA"
+          ],
+          "dialogue": "",
+          "location": "旧火车站售票厅"
+        },
+        "starting_state": {
+          "林晚": {
+            "position": "售票窗口前一步，右手持车票",
+            "eye_target": "车票票面",
+            "pose": "站直"
+          }
+        },
+        "blocking": {
+          "林晚": {
+            "position": "售票窗口前一步，右手持车票",
+            "pose": "站直",
+            "eye_target": "车票票面",
+            "movement": "0-2s：保持站姿不动，右手将车票举至眼前约30cm处，拇指轻压票角；2-3.5s：左手从身侧抬起，指尖轻触票面下缘，头微低约5度；3.5-5s：右手缓缓放下车票至胸前，视线从票面移向售票窗口玻璃，身体重心微向左脚偏移，肩膀轻微下沉。"
+          },
+          "RED_UMBRELLA": {
+            "position": "林晚左手侧，收拢状态，伞尖朝下",
+            "pose": "收拢",
+            "movement": "全程保持收拢，随左手抬起时伞身轻微晃动约2度，无开合动作。"
+          }
+        },
+        "performance_beats": [
+          {
+            "time": "0-2s",
+            "action": "凝视车票，呼吸平稳，拇指无意识摩挲票角",
+            "emotion": "专注中带一丝迟疑"
+          },
+          {
+            "time": "2-3.5s",
+            "action": "左手轻触票面，头微低，嘴角极轻抿一下",
+            "emotion": "确认与克制的紧张"
+          },
+          {
+            "time": "3.5-5s",
+            "action": "放下车票，视线转向窗口，肩膀微沉，喉部轻微吞咽",
+            "emotion": "释然与未决的期待"
+          }
+        ],
+        "dialogue_beats": [],
+        "camera_beats": [
+          {
+            "time": "0-2s",
+            "shot_type": "中近景",
+            "lens": "50mm",
+            "framing": "林晚上半身居中偏右，售票窗口玻璃在画面左侧形成反射层，车票在右手前景清晰",
+            "movement": "固定机位，轻微手持呼吸感",
+            "focus": "焦点在车票票面，背景售票厅纵深虚化"
+          },
+          {
+            "time": "2-3.5s",
+            "shot_type": "近景",
+            "lens": "85mm",
+            "framing": "收紧至面部与双手，车票占画面下三分之一，左手入画",
+            "movement": "缓慢推近约10%，保持稳定",
+            "focus": "焦点从票面转移至林晚眼睛，浅景深"
+          },
+          {
+            "time": "3.5-5s",
+            "shot_type": "中景",
+            "lens": "50mm",
+            "framing": "拉回至起始构图，售票窗口玻璃反射的站台灯光在背景形成光斑",
+            "movement": "缓慢拉回，结束于固定",
+            "focus": "焦点在林晚面部，窗口反射层轻微失焦"
+          }
+        ],
+        "emotion_arc": {
+          "start": "专注而克制的迟疑",
+          "middle": "确认票面信息时的轻微紧张与自我安抚",
+          "end": "放下车票后的释然，但视线转向窗口时仍留有未决的期待"
+        },
+        "ending_state": {
+          "林晚": {
+            "position": "售票窗口前一步，右手持车票于胸前",
+            "eye_target": "售票窗口玻璃",
+            "pose": "站直，重心微偏左脚，肩膀微沉"
+          },
+          "RED_UMBRELLA": {
+            "position": "林晚左手侧，收拢状态，伞尖朝下",
+            "pose": "收拢"
+          }
+        }
+      },
+      {
+        "shot_id": "SH_E01_SC001_005",
+        "source_facts": {
+          "shot_id": "SH_E01_SC001_005",
+          "scene_id": "E01_SC001",
+          "character_ids": [
+            "陆叔",
+            "林晚"
+          ],
+          "prop_ids": [
+            "HANDBAG"
+          ],
+          "dialogue": "顾沉？你……你怎么在这儿？",
+          "location": "旧火车站售票厅"
+        },
+        "starting_state": {
+          "陆叔": {
+            "position": "林晚左前方半步",
+            "right_hand": "尚未接触手提包提手"
+          },
+          "林晚": {
+            "position": "售票台侧前方",
+            "right_hand": "握住手提包提手"
+          }
+        },
+        "blocking": {
+          "陆叔": {
+            "position": "林晚左前方半步",
+            "right_hand": "尚未接触手提包提手",
+            "movement": "0.0-1.2s: 保持原位，身体微向林晚侧转约15度，目光锁定林晚面部；1.2-2.4s: 右手缓慢抬起至手提包提手上方约10cm处悬停，不接触；2.4-4.0s: 右手轻触提手但不抓握，手指搭在提手上缘；4.0-5.5s: 保持手部悬停姿态，身体重心微前倾，头部微偏，视线在林晚与手提包之间快速切换一次后回到林晚面部"
+          },
+          "林晚": {
+            "position": "售票台侧前方",
+            "right_hand": "握住手提包提手",
+            "movement": "0.0-0.8s: 保持原位，右手紧握手提包提手，身体因惊讶微向后缩约5cm；0.8-2.0s: 左手无意识抬起至胸前约15cm处悬停，手指微张；2.0-3.5s: 身体重心回正，左手缓缓放下至身侧；3.5-5.5s: 保持站立姿态，右手始终未松开手提包提手，肩部微沉"
+          },
+          "prop": {
+            "HANDBAG": "全程由林晚右手握持提手，位置随林晚身体微动，无位移或掉落"
+          }
+        },
+        "performance_beats": [
+          {
+            "beat_id": "PB_01",
+            "time_range": "0.0-1.2s",
+            "character": "林晚",
+            "action": "瞳孔骤然放大，嘴唇微启，身体因震惊微向后缩，右手紧握手提包提手，指节因用力而泛白",
+            "emotion": "震惊、难以置信"
+          },
+          {
+            "beat_id": "PB_02",
+            "time_range": "0.0-1.2s",
+            "character": "陆叔",
+            "action": "目光锁定林晚面部，表情凝重，身体微向林晚侧转，右手保持未接触手提包提手的状态",
+            "emotion": "警觉、审视"
+          },
+          {
+            "beat_id": "PB_03",
+            "time_range": "1.2-2.4s",
+            "character": "陆叔",
+            "action": "右手缓慢抬起至手提包提手上方悬停，手指微曲，视线在林晚面部与手提包之间快速切换一次",
+            "emotion": "犹豫、试探"
+          },
+          {
+            "beat_id": "PB_04",
+            "time_range": "1.2-2.4s",
+            "character": "林晚",
+            "action": "左手无意识抬起至胸前悬停，手指微张，嘴唇微颤，准备开口",
+            "emotion": "紧张、不安"
+          },
+          {
+            "beat_id": "PB_05",
+            "time_range": "2.4-4.0s",
+            "character": "林晚",
+            "action": "说出台词，声音微颤，身体重心回正，左手缓缓放下，右手始终未松开手提包提手",
+            "emotion": "质问、困惑"
+          },
+          {
+            "beat_id": "PB_06",
+            "time_range": "2.4-4.0s",
+            "character": "陆叔",
+            "action": "右手轻触手提包提手但不抓握，手指搭在提手上缘，身体重心微前倾，目光回到林晚面部",
+            "emotion": "克制、隐忍"
+          },
+          {
+            "beat_id": "PB_07",
+            "time_range": "4.0-5.5s",
+            "character": "陆叔",
+            "action": "保持手部悬停姿态，头部微偏，视线在林晚面部停留，表情复杂",
+            "emotion": "欲言又止"
+          },
+          {
+            "beat_id": "PB_08",
+            "time_range": "4.0-5.5s",
+            "character": "林晚",
+            "action": "保持站立姿态，右手紧握手提包提手，肩部微沉，目光直视陆叔，等待回应",
+            "emotion": "执拗、等待"
+          }
+        ],
+        "dialogue_beats": [
+          {
+            "beat_id": "DB_01",
+            "time_range": "2.4-4.0s",
+            "character": "林晚",
+            "line": "顾沉？你……你怎么在这儿？",
+            "delivery": "声音微颤，语速中等偏慢，'顾沉'二字音调上扬带疑问，'你……'处有明显停顿与气息不稳，'你怎么在这儿'语速略快，尾音上扬，整体情绪为震惊中夹杂质问与困惑"
+          }
+        ],
+        "camera_beats": [
+          {
+            "beat_id": "CB_01",
+            "time_range": "0.0-1.2s",
+            "shot_type": "中景双人镜头",
+            "framing": "陆叔位于画面左侧约1/3处，林晚位于画面右侧约2/3处，两人之间留有约一个身位的空间，手提包位于画面右下角",
+            "movement": "固定机位，轻微手持晃动感，模拟呼吸节奏",
+            "lens": "35mm",
+            "focus": "焦点在林晚面部，陆叔面部略虚",
+            "lighting": "售票厅顶灯冷白光从上方打下，两人面部有明显顶光阴影，背景售票窗口透出微弱暖黄光"
+          },
+          {
+            "beat_id": "CB_02",
+            "time_range": "1.2-2.4s",
+            "shot_type": "中近景陆叔",
+            "framing": "陆叔面部与右手占据画面主体，手提包提手位于画面下缘，林晚肩部在画面右侧边缘虚化",
+            "movement": "缓慢推镜，从35mm推至50mm等效焦距，推进速度约每秒5%",
+            "lens": "35mm-50mm变焦推进",
+            "focus": "焦点跟随陆叔右手移动，从面部转移至手部悬停位置",
+            "lighting": "顶光不变，陆叔右手在手提包上方投下清晰阴影"
+          },
+          {
+            "beat_id": "CB_03",
+            "time_range": "2.4-4.0s",
+            "shot_type": "中近景林晚",
+            "framing": "林晚面部与上半身占据画面主体，右手握持手提包提手位于画面下缘，陆叔右手在画面左侧边缘虚化",
+            "movement": "固定机位，轻微手持晃动感",
+            "lens": "50mm",
+            "focus": "焦点在林晚面部，台词期间焦点稳定",
+            "lighting": "顶光不变，林晚面部有明显阴影，背景售票窗口暖黄光在画面右侧形成光斑"
+          },
+          {
+            "beat_id": "CB_04",
+            "time_range": "4.0-5.5s",
+            "shot_type": "中景双人镜头",
+            "framing": "恢复至CB_01构图，陆叔位于画面左侧约1/3处，林晚位于画面右侧约2/3处，两人之间留有约一个身位的空间，手提包位于画面右下角",
+            "movement": "缓慢拉镜，从50mm拉回至35mm等效焦距，拉回速度约每秒5%",
+            "lens": "50mm-35mm变焦拉回",
+            "focus": "焦点在两人面部之间，陆叔面部略实，林晚面部略虚",
+            "lighting": "顶光不变，两人面部阴影加深，背景售票窗口暖黄光在画面右侧形成光斑"
+          }
+        ],
+        "emotion_arc": {
+          "start": "震惊与警觉并存",
+          "middle": "质问与克制的对峙",
+          "end": "欲言又止的僵持",
+          "trajectory": "林晚从震惊后缩到执拗等待，陆叔从警觉审视到克制试探再到欲言又止，两人情绪在对峙中形成张力，未爆发但暗流涌动"
+        },
+        "ending_state": {
+          "陆叔": {
+            "position": "林晚左前方半步，身体重心微前倾",
+            "right_hand": "轻触手提包提手但不抓握，手指搭在提手上缘",
+            "emotion": "欲言又止"
+          },
+          "林晚": {
+            "position": "售票台侧前方，身体重心回正",
+            "right_hand": "紧握手提包提手，指节泛白",
+            "emotion": "执拗、等待"
+          },
+          "prop": {
+            "HANDBAG": "由林晚右手握持提手，位置稳定，无位移"
+          }
+        }
+      },
+      {
+        "shot_id": "SH_E01_SC002_002",
+        "source_facts": {
+          "shot_id": "SH_E01_SC002_002",
+          "scene_id": "E01_SC002",
+          "character_ids": [
+            "陆叔",
+            "林晚"
+          ],
+          "prop_ids": [],
+          "dialogue": "陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+          "location": "出租公寓厨房"
+        },
+        "starting_state": {
+          "陆叔": {
+            "position": "餐桌左侧",
+            "eye_target": "桌面划痕"
+          },
+          "林晚": {
+            "position": "餐桌右侧或门边",
+            "eye_target": "陆叔"
+          }
+        },
+        "blocking": {
+          "陆叔": {
+            "position": "餐桌左侧",
+            "eye_target": "桌面划痕",
+            "action": "低头看桌面划痕，手指无意识摩挲桌面；听到林晚进门声后抬头，起身绕过餐桌走向她",
+            "movement": "从餐桌左侧起身，绕桌走到林晚面前半步距离，停住，双手自然垂放后轻拍她手臂示意坐下",
+            "final_position": "林晚身旁，餐桌左侧偏前"
+          },
+          "林晚": {
+            "position": "餐桌右侧或门边",
+            "eye_target": "陆叔",
+            "action": "站在门边或餐桌右侧，呼吸略急促，眼神疲惫地看向陆叔，被陆叔拉着手臂引向餐桌旁的椅子",
+            "movement": "从门边/餐桌右侧被引导至餐桌旁椅子，缓缓坐下，双手放在膝上",
+            "final_position": "餐桌旁椅子上"
+          }
+        },
+        "performance_beats": [
+          {
+            "beat": 1,
+            "duration_seconds": 2.0,
+            "陆叔": "低头看桌面划痕，神情若有所思，手指轻摩挲桌面",
+            "林晚": "站在门边/餐桌右侧，胸口微起伏，疲惫地看向陆叔"
+          },
+          {
+            "beat": 2,
+            "duration_seconds": 3.5,
+            "陆叔": "闻声抬头，眉头微皱，快步绕过餐桌走向林晚，语气带着心疼的责备",
+            "林晚": "被陆叔的目光和话语触动，眼神闪躲，嘴唇微动但未出声"
+          },
+          {
+            "beat": 3,
+            "duration_seconds": 3.0,
+            "陆叔": "停在林晚面前，上下打量她脸色，语气转为担忧，轻拍她手臂",
+            "林晚": "垂下眼帘，肩膀微微塌下，显出疲态"
+          },
+          {
+            "beat": 4,
+            "duration_seconds": 3.0,
+            "陆叔": "侧身引林晚到餐桌旁椅子，语气转为温和，示意她坐下",
+            "林晚": "顺从地被引到椅子旁，缓缓坐下，双手放膝，抬眼看向陆叔"
+          },
+          {
+            "beat": 5,
+            "duration_seconds": 2.0,
+            "陆叔": "转身走向厨房水池方向，边走边说洗苹果，背影透着关切",
+            "林晚": "坐在椅子上，目送陆叔背影，神情复杂，疲惫中带一丝暖意"
+          }
+        ],
+        "dialogue_beats": [
+          {
+            "beat": 1,
+            "speaker": "陆叔",
+            "line": "晚晚，你看看你，跑那么快做什么？在车站吓我一跳。",
+            "delivery": "语气带着心疼的责备，语速略快，眉头微皱",
+            "duration_seconds": 3.5
+          },
+          {
+            "beat": 2,
+            "speaker": "陆叔",
+            "line": "脸色这么差，是不是又没好好吃饭？",
+            "delivery": "语气转为担忧，声音放轻，目光落在林晚脸上",
+            "duration_seconds": 3.0
+          },
+          {
+            "beat": 3,
+            "speaker": "陆叔",
+            "line": "来，先坐下，陆叔给你洗个苹果。",
+            "delivery": "语气转为温和安抚，边说边引林晚坐下，随后转身走向水池",
+            "duration_seconds": 3.0
+          }
+        ],
+        "camera_beats": [
+          {
+            "beat": 1,
+            "duration_seconds": 2.0,
+            "shot_type": "中景",
+            "framing": "餐桌左侧的陆叔，前景带桌面划痕虚化",
+            "movement": "固定机位，轻微手持呼吸感",
+            "focus": "陆叔低头看桌面划痕的手部与侧脸"
+          },
+          {
+            "beat": 2,
+            "duration_seconds": 3.5,
+            "shot_type": "中景转中近景",
+            "framing": "陆叔起身绕桌走向林晚，林晚在门边/餐桌右侧入画",
+            "movement": "缓慢横移跟随陆叔移动，逐渐推近至两人中近景",
+            "focus": "陆叔抬头看向林晚的面部，随后转为两人对峙构图"
+          },
+          {
+            "beat": 3,
+            "duration_seconds": 3.0,
+            "shot_type": "近景",
+            "framing": "陆叔与林晚面对面，陆叔在画面左侧，林晚在右侧",
+            "movement": "固定机位，轻微推近",
+            "focus": "陆叔担忧的表情与林晚垂眼的疲态"
+          },
+          {
+            "beat": 4,
+            "duration_seconds": 3.0,
+            "shot_type": "中近景",
+            "framing": "陆叔侧身引林晚到餐桌旁椅子，两人同框",
+            "movement": "缓慢跟随两人移动至餐桌旁",
+            "focus": "陆叔引导的手势与林晚顺从坐下的动作"
+          },
+          {
+            "beat": 5,
+            "duration_seconds": 2.0,
+            "shot_type": "中景",
+            "framing": "林晚坐在椅子上目送陆叔背影走向厨房水池方向",
+            "movement": "固定机位，轻微推近林晚面部",
+            "focus": "林晚目送陆叔背影时的神情变化"
+          }
+        ],
+        "emotion_arc": {
+          "陆叔": "从若有所思的沉静，到看到林晚时的心疼责备，再到担忧询问，最后转为温和安抚，情绪由内敛转向外放的关切",
+          "林晚": "从疲惫进门时的强撑，到被陆叔话语触动时的闪躲与动容，再到坐下时的顺从与复杂暖意，情绪由紧绷转向松弛"
+        },
+        "ending_state": {
+          "陆叔": {
+            "position": "厨房水池方向，背对林晚",
+            "eye_target": "水池/苹果",
+            "action": "走向水池准备洗苹果"
+          },
+          "林晚": {
+            "position": "餐桌旁椅子上",
+            "eye_target": "陆叔背影",
+            "action": "坐在椅子上，目送陆叔，神情疲惫中带一丝暖意"
+          }
+        }
+      },
+      {
+        "shot_id": "SH_E01_SC002_006",
+        "source_facts": {
+          "shot_id": "SH_E01_SC002_006",
+          "scene_id": "E01_SC002",
+          "character_ids": [
+            "陆叔",
+            "林晚"
+          ],
+          "prop_ids": [],
+          "dialogue": "陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
+          "location": "出租公寓厨房"
+        },
+        "starting_state": {
+          "陆叔": {
+            "position": "餐桌左侧",
+            "eye_target": "桌面划痕"
+          },
+          "林晚": {
+            "position": "餐桌右侧或门边",
+            "eye_target": "陆叔"
+          }
+        },
+        "blocking": {
+          "陆叔": "起始坐于餐桌左侧，右手食指无意识摩挲桌面划痕；0.5秒处抬头，视线从划痕抬到林晚脸上；2.0秒处身体前倾约15度，双肘撑桌；4.5秒处右手从桌下摸出一只苹果（无道具登记，以手部虚握+视线暗示呈现，不新增实体道具），推到桌面中央；6.0秒处收回手，身体靠回椅背，双手交叠置于腹前。",
+          "林晚": "起始立于餐桌右侧，重心偏右脚，左肩略靠门框方向；0.5秒处被陆叔视线锁定后，右手不自觉攥紧衣角；2.0秒处被问话时，视线短暂下垂至桌面，随即抬回陆叔眼睛；4.5秒处听到'来，吃苹果'时，右手从衣角松开，向前半步，指尖轻触桌面边缘但未取苹果；6.0秒处保持半步前倾的犹豫姿态，喉部微动，不接话。"
+        },
+        "performance_beats": [
+          {
+            "time": "0.0-0.5",
+            "陆叔": "低头看划痕，手指缓慢摩挲，眉头微蹙，是自言自语式的低语前奏。",
+            "林晚": "静立，呼吸浅，肩膀微绷，等待被点名。"
+          },
+          {
+            "time": "0.5-2.0",
+            "陆叔": "抬头，眉头挑起，语速偏快，'伞？你哪来的伞？'——惊讶中带一丝被戳破的慌乱，眼神在林晚脸上快速扫过。",
+            "林晚": "被视线击中，肩膀一缩，右手攥衣角，嘴唇抿紧，不回应。"
+          },
+          {
+            "time": "2.0-4.5",
+            "陆叔": "语速放缓，'你不是一直不喜欢带伞吗？嫌麻烦。'——语气转为熟稔的嗔怪，尾音拖长，身体前倾，试图拉近距离。",
+            "林晚": "视线先垂后抬，喉结滚动一次，眼神里是被看穿的窘迫与一丝不易察觉的暖意。"
+          },
+          {
+            "time": "4.5-6.0",
+            "陆叔": "'来，吃苹果。'——语气突然放软，右手推苹果的动作干脆利落，不给对方拒绝的余地，眼神却带着小心翼翼的讨好。",
+            "林晚": "半步上前，指尖触桌，动作停在半途，眼眶微热但不落泪，是想接又不敢接的僵持。"
+          },
+          {
+            "time": "6.0-8.5",
+            "陆叔": "收回手，靠回椅背，双手交叠，视线从苹果移到林晚脸上，再移到窗外，假装不在意，实则在等回应。",
+            "林晚": "保持半步前倾，指尖仍悬在桌沿上方，最终轻轻落在苹果旁，没有拿起，也没有推开，沉默收尾。"
+          }
+        ],
+        "dialogue_beats": [
+          {
+            "time": "0.5-1.2",
+            "speaker": "陆叔",
+            "line": "伞？你哪来的伞？",
+            "delivery": "语速快，音调上扬，尾字轻收，带惊讶与追问，不给对方插话空隙。"
+          },
+          {
+            "time": "1.2-2.0",
+            "speaker": "陆叔",
+            "line": "你不是一直不喜欢带伞吗？嫌麻烦。",
+            "delivery": "语速放缓，'嫌麻烦'三字压低音量，近乎耳语，是熟人间的嗔怪而非质问。"
+          },
+          {
+            "time": "4.5-5.2",
+            "speaker": "陆叔",
+            "line": "来，吃苹果。",
+            "delivery": "语气放软，'来'字拖长半拍，'吃苹果'三字轻快，带着不容拒绝的温柔。"
+          }
+        ],
+        "camera_beats": [
+          {
+            "time": "0.0-0.5",
+            "framing": "中景双人，机位在餐桌斜侧45度，略高于桌面10厘米，陆叔在画面左三分之一，林晚在右三分之一，中间留出桌面划痕的负空间。",
+            "movement": "静止，手持微晃，幅度极小，模拟呼吸感。",
+            "lens": "35mm，光圈f/2.8，景深覆盖双人但背景出租公寓厨房的瓷砖墙轻微虚化。"
+          },
+          {
+            "time": "0.5-2.0",
+            "framing": "缓慢推近至陆叔单人中近景，构图偏左，右侧留出林晚的肩部虚影。",
+            "movement": "匀速推轨，0.5秒内推进约15厘米，停在陆叔眉眼高度。",
+            "lens": "35mm→50mm等效，光圈收到f/2.0，背景虚化加深，突出陆叔挑眉的微表情。"
+          },
+          {
+            "time": "2.0-4.5",
+            "framing": "切至林晚单人中近景，机位略低于其视线，仰角约5度，右侧门框入画形成压迫感。",
+            "movement": "静止，仅保留手持微晃，让林晚攥衣角的手部动作自然入画。",
+            "lens": "50mm，光圈f/2.0，焦点在林晚眼睛，手部轻微失焦。"
+          },
+          {
+            "time": "4.5-6.0",
+            "framing": "回到双人中景，机位降至桌面高度，苹果位于画面下三分之一中央，成为视觉锚点。",
+            "movement": "极缓慢下移约5厘米，让苹果从画面边缘升入构图中心。",
+            "lens": "35mm，光圈f/2.8，苹果清晰，双人面部处于焦平面边缘，营造'物'与'人'的张力。"
+          },
+          {
+            "time": "6.0-8.5",
+            "framing": "拉回起始中景双人构图，但机位右移约20厘米，让林晚更靠近画面中心，陆叔退至左侧边缘。",
+            "movement": "匀速后拉，0.5秒内拉回约20厘米，静止收尾。",
+            "lens": "35mm，光圈f/2.8，恢复起始景深，让沉默的双人关系在构图中重新平衡。"
+          }
+        ],
+        "emotion_arc": {
+          "陆叔": "自言自语的低落 → 被戳破的慌乱 → 熟稔的嗔怪 → 讨好的温柔 → 假装不在意的等待",
+          "林晚": "静立的紧绷 → 被看穿的窘迫 → 想接又不敢接的僵持 → 沉默的接受",
+          "scene_tension": "从单向的自语，到双向的对视，再到物（苹果）介入后的三方张力，最终收束于一个未完成的动作，留白大于言说。"
+        },
+        "ending_state": {
+          "陆叔": {
+            "position": "餐桌左侧，靠回椅背，双手交叠于腹前",
+            "eye_target": "窗外（假装不在意，实则余光仍在林晚身上）"
+          },
+          "林晚": {
+            "position": "餐桌右侧，半步前倾，指尖轻触苹果旁的桌面",
+            "eye_target": "苹果（未拿起，也未推开）"
+          },
+          "prop_state": "苹果位于桌面中央，未被取走，成为双方沉默的见证物。",
+          "scene_mood": "克制的温情，未说出口的关心悬在空气中。"
+        }
+      },
+      {
+        "shot_id": "SH_E01_SC002_007",
+        "source_facts": {
+          "shot_id": "SH_E01_SC002_007",
+          "scene_id": "E01_SC002",
+          "character_ids": [
+            "林晚",
+            "陆叔"
+          ],
+          "prop_ids": [],
+          "dialogue": "",
+          "location": "出租公寓厨房"
+        },
+        "starting_state": {
+          "林晚": {
+            "position": "厨房门边",
+            "left_hand": "扶门框"
+          },
+          "陆叔": {
+            "position": "餐桌旁",
+            "pose": "站定"
+          }
+        },
+        "blocking": {
+          "林晚": {
+            "position": "厨房门边",
+            "left_hand": "扶门框",
+            "action": "保持扶门框的姿势，身体重心微向门框一侧偏移，右臂自然垂落，视线越过门框投向餐桌方向，呼吸浅而克制，脚尖不移动，仅肩部有极轻微的起伏",
+            "movement_notes": "全程不离开门边，不改变手部位置，仅允许头部角度在 5 秒内做一次极小幅度的转向（约 5 度），从正对门框内侧转向餐桌方向"
+          },
+          "陆叔": {
+            "position": "餐桌旁",
+            "pose": "站定",
+            "action": "保持站定姿势，双手自然垂于体侧或轻搭在餐桌边缘（若无桌面接触则垂于体侧），头部微低，视线落在桌面或地面某一点，肩部放松但不塌陷，呼吸平稳",
+            "movement_notes": "全程不移动脚步，不改变站位，仅允许一次极小幅度的抬头动作（约 3 度），从低头转为平视门边方向"
+          },
+          "spatial_relationship": "两人之间保持约 2.5 至 3 米的对角距离，林晚位于画面左侧门边，陆叔位于画面右侧餐桌旁，中间留出一条可见的厨房通道作为视觉留白"
+        },
+        "performance_beats": [
+          {
+            "beat_id": "PB_01",
+            "time_range": "0.0s - 1.5s",
+            "character": "林晚",
+            "action": "扶门框站立，视线从门框内侧缓缓移向餐桌方向，嘴唇微抿，下颌线绷紧",
+            "subtext": "她在观察，也在克制自己不走进去",
+            "notes": "表演重点在眼神的移动速度——缓慢、谨慎，避免任何突然的动作"
+          },
+          {
+            "beat_id": "PB_02",
+            "time_range": "0.0s - 1.5s",
+            "character": "陆叔",
+            "action": "站定于餐桌旁，头部微低，视线落在桌面，双手自然垂落或轻搭桌沿",
+            "subtext": "他察觉到了门边的动静，但选择不先开口",
+            "notes": "表演重点在静止中的张力——不移动，但通过呼吸和肩部的微小起伏传达存在感"
+          },
+          {
+            "beat_id": "PB_03",
+            "time_range": "1.5s - 3.5s",
+            "character": "林晚",
+            "action": "视线完全落在陆叔身上，扶门框的手指微微收紧（指节泛白），身体重心不变",
+            "subtext": "她想说什么，但还没有准备好",
+            "notes": "手指收紧是本段唯一允许的肢体细节变化，幅度极小，仅在特写或中景中可见"
+          },
+          {
+            "beat_id": "PB_04",
+            "time_range": "1.5s - 3.5s",
+            "character": "陆叔",
+            "action": "头部极缓慢地抬起约 3 度，视线从桌面移向门边方向，但不与林晚直接对视，落在她身侧的门框或墙面",
+            "subtext": "他回应了她的存在，但回避了直接的目光接触",
+            "notes": "抬头动作必须极慢，避免任何表演性的停顿或强调"
+          },
+          {
+            "beat_id": "PB_05",
+            "time_range": "3.5s - 5.0s",
+            "character": "林晚",
+            "action": "保持扶门框姿势，视线停留在陆叔身上，呼吸一次加深（可见肩部微起伏），随后恢复平稳",
+            "subtext": "她决定暂时不打破沉默",
+            "notes": "呼吸加深是本段唯一的动态元素，用于在结尾处制造一个微小的情绪落点"
+          },
+          {
+            "beat_id": "PB_06",
+            "time_range": "3.5s - 5.0s",
+            "character": "陆叔",
+            "action": "保持抬头后的姿势，视线停留在门边方向，嘴唇微动但未张开，随后恢复静止",
+            "subtext": "他也在等待，但同样选择了沉默",
+            "notes": "嘴唇微动是可选细节，若导演认为过于表演化可省略，仅保留视线的停留"
+          }
+        ],
+        "dialogue_beats": [],
+        "camera_beats": [
+          {
+            "beat_id": "CB_01",
+            "time_range": "0.0s - 2.5s",
+            "shot_type": "中景双人镜头（Two-Shot）",
+            "framing": "画面左侧三分之一为林晚（门边），右侧三分之一为陆叔（餐桌旁），中间留出厨房通道作为视觉留白，两人均完整入画",
+            "lens": "35mm",
+            "aperture": "f/2.8",
+            "camera_movement": "固定机位，无移动",
+            "focus": "焦点落在林晚身上，陆叔处于轻微失焦状态（约 1 档柔化）",
+            "lighting": "厨房顶灯为主光源，色温偏暖（约 3200K），从画面上方偏右照射，林晚所在门边区域光线略暗，形成明暗对比",
+            "notes": "本段建立空间关系和两人之间的距离感，焦点选择暗示观众的主观视角更接近林晚"
+          },
+          {
+            "beat_id": "CB_02",
+            "time_range": "2.5s - 4.0s",
+            "shot_type": "中近景（Medium Close-Up）",
+            "framing": "画面以林晚的上半身为主体，门框作为前景框架元素占据画面左侧边缘，陆叔在背景中处于失焦状态",
+            "lens": "50mm",
+            "aperture": "f/2.0",
+            "camera_movement": "极缓慢的推镜（Dolly In），从 2.5s 开始，至 4.0s 结束，推进幅度约 15 厘米，速度均匀无加速",
+            "focus": "焦点锁定林晚的眼睛，背景陆叔完全虚化",
+            "lighting": "保持顶灯主光，林晚面部受光面为右侧（靠近餐桌方向），左侧脸颊处于阴影中，形成半明半暗的面部光效",
+            "notes": "推镜幅度极小，目的是在不破坏静止感的前提下增加情绪的压迫感，避免任何戏剧化的运镜"
+          },
+          {
+            "beat_id": "CB_03",
+            "time_range": "4.0s - 5.0s",
+            "shot_type": "中近景（延续）",
+            "framing": "与 CB_02 相同构图，推镜已停止，画面保持静止",
+            "lens": "50mm",
+            "aperture": "f/2.0",
+            "camera_movement": "固定，无移动",
+            "focus": "焦点保持在林晚眼睛，背景陆叔仍处于虚化状态",
+            "lighting": "与 CB_02 一致，无变化",
+            "notes": "结尾段落保持完全静止，让观众的注意力停留在林晚的表情和呼吸上，为下一个镜头的切换留出空间"
+          }
+        ],
+        "emotion_arc": {
+          "overall_tone": "克制的紧张与未言明的对峙",
+          "arc_description": "本镜头是一个静态的、充满张力的对峙时刻。情绪从林晚的谨慎观察开始，经过双方无声的相互确认，最终落在一种悬而未决的沉默中。没有爆发，没有和解，只有两个角色在同一空间中各自承受着未说出口的东西。",
+          "beats": [
+            {
+              "time_range": "0.0s - 1.5s",
+              "emotion": "警觉与克制",
+              "description": "林晚扶门框观察，陆叔静立不动，双方都处于一种准备状态，情绪是紧绷但未释放的"
+            },
+            {
+              "time_range": "1.5s - 3.5s",
+              "emotion": "无声的确认",
+              "description": "林晚的手指收紧，陆叔抬头回避目光，双方通过极小的动作确认了彼此的存在，情绪从警觉转向一种更深层的、不愿面对的默契"
+            },
+            {
+              "time_range": "3.5s - 5.0s",
+              "emotion": "悬置的沉默",
+              "description": "林晚的呼吸加深，陆叔嘴唇微动但未开口，情绪停留在一个没有答案的点上，为后续剧情保留了张力"
+            }
+          ],
+          "character_arcs": {
+            "林晚": "从谨慎的观察者转变为一个主动选择沉默的人——她想说，但她决定不说",
+            "陆叔": "从静止的被动状态转变为一个回避目光的主动者——他察觉到了，但他选择不回应"
+          }
+        },
+        "ending_state": {
+          "林晚": {
+            "position": "厨房门边",
+            "left_hand": "扶门框",
+            "pose": "保持扶门框姿势，视线停留在陆叔方向，呼吸已恢复平稳",
+            "emotional_state": "克制的沉默，未说出口的话仍在她心里"
+          },
+          "陆叔": {
+            "position": "餐桌旁",
+            "pose": "站定，头部微抬，视线停留在门边方向但未与林晚直接对视",
+            "emotional_state": "回避中的等待，同样选择了沉默"
+          },
+          "spatial_relationship": "两人位置未发生任何变化，仍保持约 2.5 至 3 米的对角距离，中间的厨房通道作为视觉留白持续存在",
+          "continuity_notes": "本镜头结束时，林晚仍扶门框，陆叔仍站定于餐桌旁，两人均未移动脚步，为下一个镜头的衔接保留了完整的空间连续性"
+        }
+      }
+    ],
+    "diagnostics": [
+      {
+        "shot_id": "SH_E01_SC001_002",
+        "source_fact_conflicts": [],
+        "nested_ir_validation": {
+          "status": "BLOCK",
+          "errors": [
+            "DIRECTOR_PLAN_SCHEMA_INVALID:blocking_must_be_array",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].start_time",
+            "DIRECTOR_PLAN_UNRESOLVED_ENDING_STATE"
+          ],
+          "error_count": 59
+        },
+        "status": "BLOCK"
+      },
+      {
+        "shot_id": "SH_E01_SC001_005",
+        "source_fact_conflicts": [],
+        "nested_ir_validation": {
+          "status": "BLOCK",
+          "errors": [
+            "DIRECTOR_PLAN_SCHEMA_INVALID:blocking_must_be_array",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[0].authoritative_text_or_phrase_windows",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[6].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[7].start_time",
+            "DIRECTOR_PLAN_UNRESOLVED_ENDING_STATE"
+          ],
+          "error_count": 115
+        },
+        "status": "BLOCK"
+      },
+      {
+        "shot_id": "SH_E01_SC002_002",
+        "source_fact_conflicts": [],
+        "nested_ir_validation": {
+          "status": "BLOCK",
+          "errors": [
+            "DIRECTOR_PLAN_SCHEMA_INVALID:blocking_must_be_array",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[0].authoritative_text_or_phrase_windows",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[1].authoritative_text_or_phrase_windows",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[2].authoritative_text_or_phrase_windows",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].start_time",
+            "DIRECTOR_PLAN_UNRESOLVED_ENDING_STATE"
+          ],
+          "error_count": 100
+        },
+        "status": "BLOCK"
+      },
+      {
+        "shot_id": "SH_E01_SC002_006",
+        "source_fact_conflicts": [],
+        "nested_ir_validation": {
+          "status": "BLOCK",
+          "errors": [
+            "DIRECTOR_PLAN_SCHEMA_INVALID:blocking_must_be_array",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[3].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[4].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[0].authoritative_text_or_phrase_windows",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[1].authoritative_text_or_phrase_windows",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:dialogue_beats[2].authoritative_text_or_phrase_windows",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].start_time",
+            "DIRECTOR_PLAN_UNRESOLVED_ENDING_STATE"
+          ],
+          "error_count": 100
+        },
+        "status": "BLOCK"
+      },
+      {
+        "shot_id": "SH_E01_SC002_007",
+        "source_fact_conflicts": [],
+        "nested_ir_validation": {
+          "status": "BLOCK",
+          "errors": [
+            "DIRECTOR_PLAN_SCHEMA_INVALID:blocking_must_be_array",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[0].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[1].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].direction",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].distance_or_scale_change",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].easing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].movement_type",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].speed",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_framing",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:camera_beats[2].target",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[0].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[1].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[2].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[3].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[4].start_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].actor",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].body_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].end_time",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].ending_state",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].eye_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].facial_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].hand_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].head_action",
+            "DIRECTOR_PLAN_SCHEMA_INVALID:performance_beats[5].start_time",
+            "DIRECTOR_PLAN_UNRESOLVED_ENDING_STATE"
+          ],
+          "error_count": 86
+        },
+        "status": "BLOCK"
+      }
+    ],
+    "source_fact_conflicts": 0,
+    "nested_ir_blockers": 460,
+    "profile_id": "local-llm-2vydoz",
+    "model": "mimo-v2.5",
+    "reason": "REUSED_LAST_CONTROLLED_CANARY_RESPONSES"
+  },
+  "asset_prompts": {
+    "schema_dump_count": 0,
+    "provider_executable": 6,
+    "representative_character": "林晚",
+    "representative_scene": "E01_SC001",
+    "representative_props": [
+      "RED_UMBRELLA",
+      "HANDBAG"
+    ]
+  },
+  "keyframes": {
+    "unresolved_performance_plan_refs": 0,
+    "unresolved_shot_plan_refs": 0,
+    "concrete_starting_states": 5
+  },
+  "motion": {
+    "adaptive_timelines": true,
+    "fixed_timeline_count": 0,
+    "generic_body_actions": 0,
+    "generic_hand_actions": 0,
+    "generic_eye_targets": 0,
+    "generic_ending_states": 0
+  },
+  "dialogue": {
+    "shots": 3,
+    "duplicated_windows": 0,
+    "duration_overflow": 0,
+    "phrase_level_timing": 19
+  },
+  "camera": {
+    "timed_moves": 16,
+    "concrete_start_end_framing": 16
+  },
+  "shot_handoff": {
+    "concrete_ending_states": 5,
+    "concrete_next_starting_states": 5,
+    "mismatches": []
+  },
+  "gate": {
+    "unresolved_semantic_placeholder": 0,
+    "generic_action_placeholder": 0,
+    "generic_hand_action": 0,
+    "generic_eye_target": 0,
+    "dialogue_duplicated_windows": 0,
+    "dialogue_duration_overflow": 0,
+    "fixed_timeline_count": 0,
+    "cross_shot_action_template_collapse": false,
+    "keyframe_internal_plan_references": 0,
+    "ending_state_unresolved_fields": 0,
+    "asset_schema_dump_count": 0,
+    "source_fact_conflicts": 0,
+    "real_llm_calls": 5,
+    "expected_llm_calls": 5,
+    "status": "BLOCK",
+    "blocker_count": 460,
+    "llm_nested_ir_blockers": 460
+  },
+  "shots": [
+    {
+      "shot_id": "SH_E01_SC001_002",
+      "source_fact_validation": {
+        "source_fact_conflicts": [],
+        "count": 0,
+        "status": "PASS"
+      },
+      "blocking_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "physical_action_validation": {
+        "reasons": [],
+        "status": "PASS"
+      },
+      "dialogue_validation": {
+        "duplicated_windows": [],
+        "overflow": [],
+        "status": "PASS"
+      },
+      "camera_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "ending_validation": {
+        "missing": [],
+        "placeholder_reasons": [],
+        "status": "PASS"
+      },
+      "keyframe_prompt": "生成一张可直接作为视频首帧的16:9电影写实画面。场景：旧火车站售票厅；空间布局：售票窗口、候车座椅和站台入口；时间：日间；天气：阴天地面有雨水反光。人物 blocking：林晚（reference identity: character://林晚/v1）：位于售票窗口前一步，画面横向画面右侧三分之一、中景；双脚与肩同宽，上身从直立向站台入口前倾3厘米，重心重心从双脚平均转到左脚六成，躯干朝向站台入口；头部水平转向从正面转到右12度、俯仰由0度抬到5度，双眼看向先看手中车票，再看站台入口的红伞伞骨；表情为眉间从平展收紧，下眼睑绷紧，嘴唇闭合，下颌略用力，呼吸停顿半拍；左手左手垂在大腿外侧，五指自然弯曲，右手右手拇指与食指捏住车票右下角，拇指停止摩擦纸面，其余三指弯曲，与道具关系：右手夹住车票，车票距胸腹约20厘米。道具：红伞：伞面半收，左侧伞骨折断且暴露，位于站台入口右侧。摄影机：中景，平视，正面，焦段感自然焦段；构图：前景售票台或门框，中景人物与关键道具，背景站台入口或厨房门，保留人物视线方向。灯光：主光入口冷光与室内暖光的明确分区，方向从入口或窗侧斜入，阴影手部和眼神仍可辨；视觉风格：低饱和冷灰蓝、局部暖光、真实皮肤和旧材质纹理。画面必须完整包含上述人物、手部、眼神、道具接触和空间关系，不添加人物、文字、水印或未授权道具。",
+      "video_prompt": "从首帧开始，保持人物身份、服装、场景结构和道具状态连续；视频时长 5.0 秒。\n0.00–0.65 秒，林晚：林晚双脚不动，右肩保持水平，胸口吸气后停半拍；右手拇指停止摩擦车票边角，食指与拇指夹持点不变；头部保持正面，只有眼球向右上方跳转；从车票票面移到站台入口红伞伞骨；眉间由平展变为轻微收紧，嘴唇仍闭合；道具动作：车票不移动；结束：视线落在红伞伞骨，双脚原位。\n0.65–1.70 秒，林晚：林晚上身向右前方倾斜约3厘米，左脚承重增加，右脚脚跟不抬起；右手把车票抬高约2厘米，拇指仍压住右下角；眼球转移后约0.3秒，头部向右转12度、下巴上抬5度；固定看向站台入口红伞伞骨的折断处；下眼睑略绷紧，鼻翼扩张一次，呼吸变短；道具动作：车票保持在胸腹前，不遮挡脸部；结束：头向右12度，眼睛停在折断伞骨。\n1.70–3.50 秒，林晚：林晚向站台入口迈出半步，前脚掌落地后立即停止；右手下降1厘米，车票仍夹在拇指与食指之间，左手抬到外套下摆并停住；头部再向右转3度，肩线保持水平；从伞骨沿伞柄移动到伞面边缘；眉心进一步收紧，嘴角向下压1毫米，下颌保持用力；道具动作：红伞伞面半收，折断伞骨仍暴露；结束：林晚前移半步，车票仍在右手，视线在伞面边缘。\n3.50–5.00 秒，林晚：林晚停止迈步，胸口缓慢呼出一口气，身体保持前倾3厘米；右手固定车票于胸腹前，左手从外套下摆落回大腿侧；头部保持右15度，不再追随视线；最终固定在站台入口的红伞；眉间保持轻收，嘴唇闭合，下颌放松一半但警觉不退；道具动作：红伞位置和折断伞骨不改变；结束：林晚在窗口至站台入口之间停住，右手持票，头向右15度，视线锁定红伞。\n镜头 0.00–0.65 秒：静止，无，保持，无变化，目标林晚双眼，由中广角到中广角，无。\n镜头 0.65–2.20 秒：重新构图，沿光轴轻推并向右修正，前0.3秒缓慢加速，人物从中广角占画面右三分之一变为右半幅，目标林晚头部和红伞伞骨，由中广角到中景，先加速后匀速。\n镜头 2.20–4.60 秒：静止保持，无，保持，无变化，目标红伞伞骨，由中景到中景，无。\n镜头 4.60–5.00 秒：减速停止，沿光轴减速，最后0.4秒减速，停止在中景，目标红伞伞骨，由中景到中景，平滑停止。\n结束状态：{\"camera\":{\"framing\":\"中景\",\"height\":\"平视\",\"movement\":\"4.6秒后停止\"},\"characters\":{\"林晚\":{\"emotion\":\"警觉\",\"eye_target\":\"站台入口红伞伞骨\",\"head_direction\":\"向右15度、下巴上抬5度\",\"pose\":\"身体前倾3厘米，双脚冻结\",\"position\":\"售票窗口与站台入口之间，向前半步\",\"right_hand\":\"胸腹前夹住车票\"}},\"props\":{\"RED_UMBRELLA\":{\"position\":\"站台入口右侧\",\"state\":\"伞面半收，左侧伞骨折断且暴露\"}}}。禁止跳切、额外人物、身份漂移、未授权道具变化和音频生成。"
+    },
+    {
+      "shot_id": "SH_E01_SC001_005",
+      "source_fact_validation": {
+        "source_fact_conflicts": [],
+        "count": 0,
+        "status": "PASS"
+      },
+      "blocking_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "physical_action_validation": {
+        "reasons": [],
+        "status": "PASS"
+      },
+      "dialogue_validation": {
+        "duplicated_windows": [],
+        "overflow": [],
+        "status": "PASS"
+      },
+      "camera_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "ending_validation": {
+        "missing": [],
+        "placeholder_reasons": [],
+        "status": "PASS"
+      },
+      "keyframe_prompt": "生成一张可直接作为视频首帧的16:9电影写实画面。场景：旧火车站售票厅；空间布局：售票窗口、候车座椅和站台入口；时间：日间；天气：阴天地面有雨水反光。人物 blocking：陆叔（reference identity: character://陆叔/v1）：位于画面左侧中景，画面横向左三分之一、中景；上身向手提包倾斜8厘米，左脚向前半步，重心左脚六成、右脚四成，躯干朝向手提包；头部水平转向先低头10度再抬回正面、俯仰先低10度再回0度，双眼看向手提包内露出的硬物，再移到林晚双眼；表情为礼貌笑意消失，眉间收紧，嘴唇压平，下颌略紧，呼吸停半拍；左手左手悬在包口上方3厘米，不接触，右手右手拇指和食指捏住提手中段，其余三指托住提手下方，与道具关系：右手接管手提包提手；林晚（reference identity: character://林晚/v1）：位于画面右侧中景，画面横向右三分之一、中景；肩线保持水平，手臂从伸展回收至身侧，重心双脚平均，接着右脚后移5厘米，躯干由包转向陆叔；头部水平转向向左8度、俯仰0度，双眼看向陆叔右手提手，再看陆叔双眼；表情为嘴唇抿住，下颌收紧，眼神短暂避开；左手左手离开包身落在外套侧缝，右手右手松开提手但手指保留半秒弯曲，与道具关系：0.8秒后不再接触手提包。道具：手提包：包口闭合，硬物轮廓可见，位于陆叔腹前。摄影机：中景，平视，正面，焦段感自然焦段；构图：前景售票台或门框，中景人物与关键道具，背景站台入口或厨房门，保留人物视线方向。灯光：主光入口冷光与室内暖光的明确分区，方向从入口或窗侧斜入，阴影手部和眼神仍可辨；视觉风格：低饱和冷灰蓝、局部暖光、真实皮肤和旧材质纹理。画面必须完整包含上述人物、手部、眼神、道具接触和空间关系，不添加人物、文字、水印或未授权道具。",
+      "video_prompt": "从首帧开始，保持人物身份、服装、场景结构和道具状态连续；视频时长 5.5 秒。\n0.00–0.55 秒，林晚：林晚把手提包向陆叔方向送出约10厘米，肩膀不抬；林晚右手拇指从提手内侧松开，食指最后离开提手顶部；林晚头部向左偏5度但眼睛仍看包；看向两人之间的提手；嘴唇从放松变为闭合，下颌收紧；道具动作：手提包仍由林晚右手承重；结束：包带位于两人之间，林晚仍有最后接触。\n0.55–1.35 秒，陆叔：陆叔左脚向前半步，右肩下降2厘米靠近包带；陆叔右手拇指和食指捏住提手中段，掌心随后托住提手下方；陆叔先低头10度确认提手，再抬头5度；先看提手，再看林晚的右手；礼貌笑意消失，眉间收紧，嘴角压平；道具动作：手提包承重从林晚右手转到陆叔右手；结束：陆叔右手独立承重，林晚手指仍悬在提手旁。\n1.35–2.40 秒，林晚：林晚右脚向后退5厘米，肩线向后收3厘米；林晚食指从提手旁收回，五指贴近外套侧缝；头部延迟0.3秒向左转8度；视线从陆叔右手移到陆叔眼睛；下眼睑略绷紧，嘴角向下压；道具动作：手提包完全脱离林晚手部；结束：林晚后退5厘米，陆叔持包，双方视线相交。\n2.40–3.60 秒，陆叔：陆叔把包向自己腹前收回8厘米，左肩保持不动；陆叔左手食指隔着包口布料点到硬物凸起后停住，右手继续握提手；头部向下10度看硬物，随后回到0度；从包内硬物移到林晚双眼；眉间进一步收紧，鼻翼张开一次，呼吸变慢；道具动作：包口不打开，硬物轮廓保持可见；结束：包在陆叔腹前，左手指尖停在硬物凸起上方。\n3.60–5.50 秒，林晚：林晚保持后退5厘米的位置，胸口吸气后缓慢呼出；双手回到身体两侧，右手手指仍保持刚松开提手后的弯曲；头部向右回正5度，停在面对陆叔的角度；固定看向陆叔左手触碰的包口位置；嘴唇闭合、下颌保持紧、眼神不再回避；道具动作：手提包继续由陆叔右手持有，硬物不取出；结束：陆叔持包站在左侧，林晚后退5厘米站在右侧，双方视线落在包口。\n对白视觉口型：陆叔完整对白仅出现一次：‘顾沉？你……你怎么在这儿？’；0.40–1.10 秒说‘顾沉？’；1.10–3.44 秒说‘你……你怎么在这儿？’；不生成音频。\n镜头 0.00–0.50 秒：静止，无，保持，无变化，目标提手，由中广角到中广角，无。\n镜头 0.50–3.20 秒：跟拍，沿两人手部连线向左移动，0.5秒平滑加速，2.6秒匀速，从双人中广角收至中景，目标手提包提手，由中广角到中景，先加速后匀速。\n镜头 3.20–5.10 秒：静止，无，保持，无变化，目标包口硬物凸起，由中景到中景，无。\n镜头 5.10–5.50 秒：减速停止，横向减速，最后0.4秒减速，固定双人中景，目标两人视线交点，由中景到中景，平滑停止。\n结束状态：{\"camera\":{\"framing\":\"双人中景\",\"height\":\"平视\",\"movement\":\"5.1秒后停止\"},\"characters\":{\"林晚\":{\"emotion\":\"警觉\",\"eye_target\":\"包口硬物\",\"head_direction\":\"向左5度\",\"pose\":\"双手落在身体两侧\",\"position\":\"画面右侧后退5厘米\"},\"陆叔\":{\"emotion\":\"警觉\",\"eye_target\":\"包口硬物\",\"head_direction\":\"正面\",\"pose\":\"右手持包，左手指尖停在包口凸起上\",\"position\":\"画面左侧，距林晚约一步\"}},\"props\":{\"HANDBAG\":{\"owner\":\"陆叔右手\",\"state\":\"包口闭合，硬物轮廓可见\"}}}。禁止跳切、额外人物、身份漂移、未授权道具变化和音频生成。"
+    },
+    {
+      "shot_id": "SH_E01_SC002_002",
+      "source_fact_validation": {
+        "source_fact_conflicts": [],
+        "count": 0,
+        "status": "PASS"
+      },
+      "blocking_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "physical_action_validation": {
+        "reasons": [],
+        "status": "PASS"
+      },
+      "dialogue_validation": {
+        "duplicated_windows": [],
+        "overflow": [],
+        "status": "PASS"
+      },
+      "camera_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "ending_validation": {
+        "missing": [],
+        "placeholder_reasons": [],
+        "status": "PASS"
+      },
+      "keyframe_prompt": "生成一张可直接作为视频首帧的16:9电影写实画面。场景：夜间出租公寓厨房；空间布局：餐桌、厨房门和窗户；时间：夜间；天气：窗外冷暗。人物 blocking：陆叔（reference identity: character://陆叔/v1）：位于餐桌左侧，画面横向左三分之一、中景；坐姿，躯干前倾2厘米，重心坐骨平均承重，躯干朝向林晚；头部水平转向正面、俯仰0度，双眼看向桌面划痕；表情为眉间轻收，嘴角先礼貌后压低，眼睑随威胁逐渐下压；左手左手托住苹果或贴在桌边，右手右手沿杯沿或托住苹果，与道具关系：右手接触杯沿、桌面划痕或苹果；林晚（reference identity: character://林晚/v1）：位于餐桌右侧或厨房门边，画面横向右三分之一、中景；坐姿保持或沿门边后退半步，重心双脚压住地面，躯干朝向陆叔；头部水平转向向左7度、俯仰0度，双眼看向陆叔的双眼；表情为眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅；左手扶住门锁下方或压住包边，右手护住包带或压住包边，与道具关系：与门锁或手提包接触。道具：无额外道具。摄影机：近景/双人中景，平视，正面，焦段感自然焦段；构图：前景售票台或门框，中景人物与关键道具，背景站台入口或厨房门，保留人物视线方向。灯光：主光入口冷光与室内暖光的明确分区，方向从入口或窗侧斜入，阴影手部和眼神仍可辨；视觉风格：低饱和冷灰蓝、局部暖光、真实皮肤和旧材质纹理。画面必须完整包含上述人物、手部、眼神、道具接触和空间关系，不添加人物、文字、水印或未授权道具。",
+      "video_prompt": "从首帧开始，保持人物身份、服装、场景结构和道具状态连续；视频时长 13.5 秒。\n0.00–1.20 秒，陆叔：陆叔坐在餐桌左侧，背部离椅背2厘米，双脚不动；右手指腹沿杯沿顺时针移动四分之一圈后停住；头部从桌面抬到正面，抬升6度；先看桌面划痕，再看林晚双眼；嘴角保持礼貌弧度，眼睑平稳，呼吸均匀；道具动作：杯子留在桌面，右手不抬起；结束：陆叔正面看向林晚，右手停在杯沿。\n1.20–3.20 秒，陆叔：陆叔躯干向前倾2厘米，林晚身体略前倾但双脚不动；陆叔右手离开杯沿3厘米，掌心向上示意桌旁座位；关键词前头部保持，问句结尾向林晚倾2度；锁定林晚眼睛，不看镜头；眉间轻收，嘴角弧度减小，鼻翼张开一次；道具动作：桌面划痕保持可见；结束：右手掌心向上停在桌面上方。\n3.20–6.00 秒，陆叔：陆叔保持躯干前倾，胸口随长句连续起伏两次；右手掌心向上收回5厘米，拇指压住食指根部；每个逗号处头部回正，句末下巴下降2度；先看林晚双眼，再短暂看向她的脸色，最后回到双眼；眉间由收紧变为平展，嘴唇随对白张合，句末下颌放松；道具动作：杯子和桌面划痕位置不变；结束：右手收回腹前，目光停在林晚脸上。\n6.00–9.70 秒，林晚：林晚保持坐姿但上身向后退2厘米，双脚压住地面；双手压住手提包边缘，拇指交替按压两次后停止；听到‘吃饭’后头部向左偏7度，再回到正面；一直看陆叔双眼，最后看向桌面苹果位置；眉间收紧，嘴唇抿住0.5秒后放松，呼吸变浅；道具动作：手提包不离开腿面；结束：林晚双手仍压包边，视线落在桌面苹果。\n9.70–12.50 秒，陆叔：陆叔从椅面起身前移5厘米但不站起，肩膀保持水平；陆叔右手拿起苹果，拇指擦过果皮一次后停住；头部向桌面苹果下压5度，再抬回林晚方向；先看苹果，再看林晚嘴角；眼睑放松，嘴角恢复礼貌弧度，下颌不再用力；道具动作：苹果离开桌面，位于陆叔右手胸腹前；结束：苹果在陆叔右手，林晚仍坐在桌边。\n12.50–13.50 秒，陆叔：陆叔停止前移，胸口呼气后保持；右手把苹果放回桌边但不松手；头部保持面向林晚；固定看向林晚双眼；嘴角保持弧度，眼神停住，呼吸恢复均匀；道具动作：苹果与桌面接触，右手仍搭在果皮上；结束：陆叔手搭苹果，林晚双手压包，双方保持桌边对视。\n对白视觉口型：陆叔完整对白仅出现一次：‘陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。’；0.50–1.17 秒说‘陆叔：’；1.17–1.83 秒说‘晚晚，’；1.83–2.94 秒说‘你看看你，’；2.94–4.72 秒说‘跑那么快做什么？’；4.72–6.49 秒说‘在车站吓我一跳。’；6.49–7.82 秒说‘脸色这么差，’；7.82–10.04 秒说‘是不是又没好好吃饭？’；10.04–10.49 秒说‘来，’；10.49–11.37 秒说‘先坐下，’；11.37–13.37 秒说‘陆叔给你洗个苹果。’；不生成音频。\n镜头 0.00–12.30 秒：静止，沿光轴朝桌面划痕，前段缓慢加速，中段匀速，由过肩中景保持主体在上三分之一，目标桌面划痕，由过肩中景到过肩中景，缓入。\n镜头 12.30–13.50 秒：减速停止，沿光轴减速，最后1.2秒渐慢，停止在过肩中景，目标桌面划痕，由过肩中景到过肩中景，平滑停止。\n结束状态：{\"camera\":{\"framing\":\"过肩中景\",\"height\":\"平视\",\"movement\":\"静止在最后1.2秒停止\"},\"characters\":{\"林晚\":{\"emotion\":\"警觉\",\"eye_target\":\"陆叔双眼\",\"head_direction\":\"向左7度\",\"pose\":\"双脚压地，肩背贴近门边\",\"position\":\"餐桌右侧或门边\"},\"陆叔\":{\"emotion\":\"警觉\",\"eye_target\":\"桌面划痕\",\"head_direction\":\"面向林晚\",\"pose\":\"坐姿，右手搭在苹果或桌面\",\"position\":\"餐桌左侧\"}},\"props\":{\"APPLE\":{\"position\":\"桌边或陆叔右手\",\"state\":\"保持可见，未进入林晚手中\"}}}。禁止跳切、额外人物、身份漂移、未授权道具变化和音频生成。"
+    },
+    {
+      "shot_id": "SH_E01_SC002_006",
+      "source_fact_validation": {
+        "source_fact_conflicts": [],
+        "count": 0,
+        "status": "PASS"
+      },
+      "blocking_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "physical_action_validation": {
+        "reasons": [],
+        "status": "PASS"
+      },
+      "dialogue_validation": {
+        "duplicated_windows": [],
+        "overflow": [],
+        "status": "PASS"
+      },
+      "camera_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "ending_validation": {
+        "missing": [],
+        "placeholder_reasons": [],
+        "status": "PASS"
+      },
+      "keyframe_prompt": "生成一张可直接作为视频首帧的16:9电影写实画面。场景：夜间出租公寓厨房；空间布局：餐桌、厨房门和窗户；时间：夜间；天气：窗外冷暗。人物 blocking：陆叔（reference identity: character://陆叔/v1）：位于餐桌左侧，画面横向左三分之一、中景；坐姿，躯干前倾2厘米，重心坐骨平均承重，躯干朝向林晚；头部水平转向正面、俯仰0度，双眼看向林晚的双眼；表情为眉间轻收，嘴角先礼貌后压低，眼睑随威胁逐渐下压；左手左手托住苹果或贴在桌边，右手右手沿杯沿或托住苹果，与道具关系：右手接触杯沿、桌面划痕或苹果；林晚（reference identity: character://林晚/v1）：位于餐桌右侧或厨房门边，画面横向右三分之一、中景；坐姿保持或沿门边后退半步，重心双脚压住地面，躯干朝向陆叔；头部水平转向向左7度、俯仰0度，双眼看向陆叔的双眼；表情为眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅；左手扶住门锁下方或压住包边，右手护住包带或压住包边，与道具关系：与门锁或手提包接触。道具：无额外道具。摄影机：近景/双人中景，平视，正面，焦段感自然焦段；构图：前景售票台或门框，中景人物与关键道具，背景站台入口或厨房门，保留人物视线方向。灯光：主光入口冷光与室内暖光的明确分区，方向从入口或窗侧斜入，阴影手部和眼神仍可辨；视觉风格：低饱和冷灰蓝、局部暖光、真实皮肤和旧材质纹理。画面必须完整包含上述人物、手部、眼神、道具接触和空间关系，不添加人物、文字、水印或未授权道具。",
+      "video_prompt": "从首帧开始，保持人物身份、服装、场景结构和道具状态连续；视频时长 8.5 秒。\n0.00–0.80 秒，陆叔：陆叔坐在餐桌边，背部离椅背2厘米，胸口吸气后保持；右手食指在桌面敲两下，第二下后停在划痕旁；下巴先低2度再抬到正面；看向林晚双眼；嘴角右侧先抬1毫米，眼睑保持不动，呼吸停半拍；道具动作：手指接触桌面划痕边缘；结束：右手食指停在划痕旁，嘴角出现未完成的笑。\n0.80–2.10 秒，陆叔：陆叔上身向暖光前压5厘米，肩膀保持低位；右手食指沿桌面划痕向前滑3厘米后停住，左手托住苹果不动；头部向林晚转8度，下巴抬3度；视线从桌面划痕抬到林晚眼睛并锁定；笑意留在嘴角，眼神不随笑意变软，鼻翼轻张；道具动作：苹果停在左手掌心，未递出；结束：陆叔脸进入暖光，视线锁住林晚。\n2.10–5.80 秒，陆叔：陆叔躯干保持前压，只有喉结随对白起伏，双脚不动；右手食指从划痕移到苹果旁，拇指轻压苹果表面一次后停止；每个问句结尾头部向前微倾2度，句间回到正面；视线在林晚双眼和她后退的门边之间切换两次；眉间先松后收，眼睑逐渐压低，嘴角笑意保持不变；道具动作：苹果从左掌移到右手掌心，但不递向林晚；结束：苹果由右手托住，双眼重新锁定林晚。\n5.80–7.20 秒，林晚：林晚沿门边后退半步，肩胛贴近门框但不撞击；左手扶住门锁下方，右手护住手提包带，手指收紧一次；林晚先看门锁，再在0.4秒后抬头看陆叔；视线从门锁切回陆叔双眼；眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅；道具动作：手提包带保持在右手，未脱手；结束：林晚后退半步，左手在门锁下方，视线回到陆叔。\n7.20–8.50 秒，陆叔：陆叔保持坐姿，右肩向前2厘米后停止；右手托苹果向前移动4厘米，手腕停在桌边上方；头部向右转5度，眼睛不离开林晚；固定看向林晚双眼；嘴角笑意不变，眼睑压低，呼吸平稳；道具动作：苹果停在桌边，未进入林晚手部范围；结束：陆叔坐在暖光中，苹果停在桌边；林晚贴门站立，双方视线相交。\n对白视觉口型：陆叔完整对白仅出现一次：‘陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。’；0.35–1.04 秒说‘陆叔：’；1.04–1.51 秒说‘伞？’；1.51–2.90 秒说‘你哪来的伞？’；2.90–5.67 秒说‘你不是一直不喜欢带伞吗？’；5.67–6.60 秒说‘嫌麻烦。’；6.60–7.06 秒说‘来，’；7.06–7.99 秒说‘吃苹果。’；不生成音频。\n镜头 0.00–7.30 秒：缓慢推近，沿光轴朝林晚的双眼，前段缓慢加速，中段匀速，由近景保持主体在上三分之一，目标林晚的双眼，由近景到近景，缓入。\n镜头 7.30–8.50 秒：减速停止，沿光轴减速，最后1.2秒渐慢，停止在近景，目标林晚的双眼，由近景到近景，平滑停止。\n结束状态：{\"camera\":{\"framing\":\"近景\",\"height\":\"平视\",\"movement\":\"缓慢推近在最后1.2秒停止\"},\"characters\":{\"林晚\":{\"emotion\":\"警觉\",\"eye_target\":\"陆叔双眼\",\"head_direction\":\"向左7度\",\"pose\":\"双脚压地，肩背贴近门边\",\"position\":\"餐桌右侧或门边\"},\"陆叔\":{\"emotion\":\"警觉\",\"eye_target\":\"林晚的双眼\",\"head_direction\":\"面向林晚\",\"pose\":\"坐姿，右手搭在苹果或桌面\",\"position\":\"餐桌左侧\"}},\"props\":{\"APPLE\":{\"position\":\"桌边或陆叔右手\",\"state\":\"保持可见，未进入林晚手中\"}}}。禁止跳切、额外人物、身份漂移、未授权道具变化和音频生成。"
+    },
+    {
+      "shot_id": "SH_E01_SC002_007",
+      "source_fact_validation": {
+        "source_fact_conflicts": [],
+        "count": 0,
+        "status": "PASS"
+      },
+      "blocking_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "physical_action_validation": {
+        "reasons": [],
+        "status": "PASS"
+      },
+      "dialogue_validation": {
+        "duplicated_windows": [],
+        "overflow": [],
+        "status": "PASS"
+      },
+      "camera_validation": {
+        "missing": [],
+        "status": "PASS"
+      },
+      "ending_validation": {
+        "missing": [],
+        "placeholder_reasons": [],
+        "status": "PASS"
+      },
+      "keyframe_prompt": "生成一张可直接作为视频首帧的16:9电影写实画面。场景：夜间出租公寓厨房；空间布局：餐桌、厨房门和窗户；时间：夜间；天气：窗外冷暗。人物 blocking：林晚（reference identity: character://林晚/v1）：位于画面左侧厨房门边，画面横向左三分之一、前景；背部贴近门框，右脚在前、左脚在后，重心后脚六成承重，躯干朝向陆叔；头部水平转向先看门锁再转回右20度、俯仰0度，双眼看向陆叔双眼；表情为眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸短促；左手左手掌根压在门框锁舌下方，右手右手护住手提包带，五指收紧，与道具关系：左手接触门框，右手接触包带；陆叔（reference identity: character://陆叔/v1）：位于画面右侧餐桌旁，画面横向右三分之一、中景；站在餐桌旁，肩膀不追向门口，重心双脚平均承重，躯干朝向林晚；头部水平转向向左10度、俯仰0度，双眼看向林晚左手和双眼之间；表情为嘴角保持平直，眼睑压低，呼吸均匀；左手左手垂在身体侧面，右手右手停在桌边上方，与道具关系：不接触道具。道具：无额外道具。摄影机：近景/双人中景，平视，正面，焦段感自然焦段；构图：前景售票台或门框，中景人物与关键道具，背景站台入口或厨房门，保留人物视线方向。灯光：主光入口冷光与室内暖光的明确分区，方向从入口或窗侧斜入，阴影手部和眼神仍可辨；视觉风格：低饱和冷灰蓝、局部暖光、真实皮肤和旧材质纹理。画面必须完整包含上述人物、手部、眼神、道具接触和空间关系，不添加人物、文字、水印或未授权道具。",
+      "video_prompt": "从首帧开始，保持人物身份、服装、场景结构和道具状态连续；视频时长 5.0 秒。\n0.00–0.70 秒，林晚：林晚后脚向门外退10厘米，前脚保持贴地，背部更靠近门框；左手沿门框向下滑2厘米，右手把包带收紧一次；头部先转向门锁8度，再在0.2秒后转回陆叔方向；从门锁移到陆叔双眼；眉间收紧，嘴唇闭合，下颌用力，吸气变短；道具动作：门锁不转动，包带不脱手；结束：林晚后退10厘米，左手在门框锁舌下方。\n0.70–2.00 秒，林晚：林晚再向后退20厘米，后脚跟碰到门槛后停止，肩背贴住门框；左手掌根压住门框，右手把包带贴到胸腹前；头部向右转20度，下巴上抬2度；视线固定在陆叔双眼，不再看门锁；下眼睑绷紧，鼻翼扩张一次，嘴角向下压；道具动作：手提包被右手固定在胸腹前；结束：林晚距原位置后退30厘米，背贴门框。\n2.00–3.20 秒，陆叔：陆叔从餐桌旁向前迈半步，前脚落地后立即停止，不越过桌边；右手从桌边抬起4厘米，掌心朝下停住，左手仍垂落；头部向左转10度，保持下巴水平；先看林晚的左手，再回到她双眼；嘴角保持平直，眼睑压低，呼吸保持均匀；道具动作：餐桌和门锁之间没有道具移动；结束：陆叔停在餐桌边缘，右手悬停。\n3.20–5.00 秒，林晚：林晚双脚冻结，胸口呼吸变浅后恢复一次，身体不再后退；左手继续压门框，右手保持包带在胸腹前，手指不松开；头部保持右20度，不再转动；固定看向陆叔双眼；眉间保持收紧，嘴唇闭合，下颌用力维持警觉；道具动作：门锁、包带和桌面位置均不改变；结束：林晚背贴门框、后退30厘米、双手固定；陆叔停在餐桌边缘，双方视线相交。\n镜头 0.00–0.80 秒：静止，无，保持，无变化，目标林晚左手，由双人中景到双人中景，无。\n镜头 0.80–3.80 秒：环绕，从餐桌侧向门边顺时针绕过约20度，前0.4秒缓慢加速，中段匀速，林晚由画面左三分之一扩大到左半幅，陆叔保持右侧，目标林晚与陆叔视线连线，由双人中景到双人中景偏近，先加速后匀速。\n镜头 3.80–4.40 秒：减速停止，绕行减速，最后0.6秒减速，固定双人中景偏近，目标两人双眼，由双人中景偏近到双人中景偏近，平滑停止。\n镜头 4.40–5.00 秒：静止保持，无，保持，无变化，目标两人双眼，由双人中景偏近到双人中景偏近，无。\n结束状态：{\"camera\":{\"framing\":\"双人中景偏近\",\"height\":\"平视\",\"movement\":\"4.4秒停止\"},\"characters\":{\"林晚\":{\"emotion\":\"明确警觉\",\"eye_target\":\"陆叔双眼\",\"head_direction\":\"向右20度\",\"pose\":\"左手压门框，右手护包，双脚冻结\",\"position\":\"厨房门边，后退30厘米，背贴门框\"},\"陆叔\":{\"emotion\":\"平静压迫\",\"eye_target\":\"林晚双眼\",\"head_direction\":\"向左10度\",\"pose\":\"右手悬停4厘米，左手下垂\",\"position\":\"餐桌边缘前半步\"}},\"props\":{}}。禁止跳切、额外人物、身份漂移、未授权道具变化和音频生成。"
+    }
+  ],
+  "real_llm_calls": 5,
+  "real_image_calls": 0,
+  "real_video_calls": 0
+}

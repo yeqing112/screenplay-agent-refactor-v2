@@ -250,8 +250,17 @@ def maybe_real_llm(decisions, enabled: bool):
     responses = []
     diagnostics = []
     for decision in decisions:
-        prompt = "Return one complete JSON DirectorDecisionIR only. Preserve source_facts exactly; choose concrete production decisions for every beat. Do not write a provider prompt. Required top-level keys: shot_id, source_facts, starting_state, blocking, performance_beats, dialogue_beats, camera_beats, emotion_arc, ending_state.\nCANONICAL_INPUT\n" + json.dumps({"shot_id": decision.shot_id, "source_facts": decision.source_facts, "starting_state": decision.starting_state, "duration_seconds": decision.duration_seconds}, ensure_ascii=False)
-        response = call_llm_json(prompt, system="You are a bounded film director. Return structured DirectorDecisionIR only. Never alter characters, scene, props, or dialogue.", model_profile=profile, required_keys={"shot_id", "source_facts", "starting_state", "blocking", "performance_beats", "dialogue_beats", "camera_beats", "emotion_arc", "ending_state"}, retries=1, max_tokens=9000, response_format={"type": "json_object"})
+        prompt = """Return exactly one complete JSON DirectorDecisionIR object and nothing else. Preserve every source_fact exactly; never alter characters, scene, props, location, or dialogue. Do not write a provider prompt and do not use shorthand director notes.
+
+The evaluator rejects any missing nested field. `blocking` MUST be a JSON array. Every blocking item MUST contain these exact keys: identity, reference_identity, position, screen_x, depth_zone, body_pose, weight_distribution, torso_direction, head_yaw, head_pitch, eye_target, expression, left_hand, right_hand, prop_contact.
+`performance_beats` MUST be a JSON array. Every beat MUST contain exact keys: start_time (number), end_time (number), actor, body_action, hand_action, head_action, eye_action, facial_action, ending_state. Each action must name a body part, its movement from a starting state, direction or amount, and its concrete ending state. Do not use `time`, `action`, `emotion`, `natural reaction`, `current target`, or `complete the main action` as substitutes.
+`camera_beats` MUST be a JSON array. Every item MUST contain exact keys: start_time (number), end_time (number), movement_type, direction, speed, distance_or_scale_change, target, start_framing, end_framing, easing.
+`dialogue_beats` MUST be an array. Each dialogue item MUST contain speaker, authoritative_text, start_time, end_time, delivery, estimated_minimum_seconds, status, and phrase_windows. The full authoritative_text may appear once only; phrase_windows must split it into non-overlapping clauses. Use [] when there is no dialogue.
+`ending_state` MUST contain concrete `characters` and `camera` objects. Do not return any field called provider_prompt.
+
+CANONICAL_INPUT
+""" + json.dumps({"shot_id": decision.shot_id, "source_facts": decision.source_facts, "starting_state": decision.starting_state, "duration_seconds": decision.duration_seconds}, ensure_ascii=False)
+        response = call_llm_json(prompt, system="You are a bounded film director and structured-output compiler. Return only the requested DirectorDecisionIR JSON. A shorthand answer is invalid and will be rejected without repair.", model_profile=profile, required_keys={"shot_id", "source_facts", "starting_state", "blocking", "performance_beats", "dialogue_beats", "camera_beats", "emotion_arc", "ending_state"}, retries=1, max_tokens=14000, response_format={"type": "json_object"})
         calls += 1
         responses.append(response)
         conflicts = []

@@ -5,8 +5,8 @@ Final status: `PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED`
 ## Director LLM
 - Calls: `5/5`
 - Result: `BLOCKED`
-- Reason: `REUSED_LAST_CONTROLLED_CANARY_RESPONSES`
-- Nested IR blockers: `460`
+- Reason: `controlled canary completed`
+- Nested IR blockers: `8`
 - Source fact conflicts: `0` in deterministic decisions
 - Policy: invalid nested output is rejected without automatic retry
 
