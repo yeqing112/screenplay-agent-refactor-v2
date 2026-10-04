@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "migration": "MODEL_PROFILE_COMPILER_BINDING_MIGRATION",
+  "changes": [
+    {
+      "profile_id": "local-video-ex8l4t",
+      "provider": "75api-minimax-h3",
+      "model_name": "minimax_h3",
+      "before": {
+        "id": "local-video-ex8l4t",
+        "provider": "75api-minimax-h3",
+        "model_name": "minimax_h3_no_audios",
+        "video_compiler_id": "",
+        "model_family": ""
+      },
+      "after": {
+        "id": "local-video-ex8l4t",
+        "provider": "75api-minimax-h3",
+        "model_name": "minimax_h3",
+        "video_compiler_id": "minimax-h3",
+        "model_family": "minimax-h3"
+      }
+    }
+  ],
+  "api_keys_recorded": false,
+  "real_image_calls": 0,
+  "real_video_calls": 0
+}

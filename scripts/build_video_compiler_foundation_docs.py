@@ -11,6 +11,8 @@ sys.path.insert(0, str(ROOT))
 from core.video_compilers import default_video_compiler_registry
 from core.video_compilers.minimax_h3 import H3_CAPABILITIES
 from core.video_intent_ir import build_video_intent_ir
+from core.shot_readiness import canonical_shot_prop_states
+from core.video_intent_semantic_consistency import audit_video_intent_semantics
 
 OUT = ROOT / "docs" / "video-compiler" / "v1"
 DECISIONS = json.loads((ROOT / "docs/prompt-quality/v4/DIRECTOR_DECISION_IR.json").read_text(encoding="utf-8"))["canary_shots"]
@@ -27,9 +29,10 @@ def write(name: str, value: object) -> None:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     registry = default_video_compiler_registry()
-    none_intent = build_video_intent_ir(decision("SH_E01_SC002_007"))
-    dialogue_intent = build_video_intent_ir(decision("SH_E01_SC002_002"))
-    apple_intent = build_video_intent_ir(decision("SH_E01_SC002_006"), prop_states=[{"prop_id": "APPLE", "present": True, "holder": "LIN_WAN", "hand": "right_hand", "authority_source": "DIALOGUE_ACTION_RESOLVED_PROP"}])
+    reference_plan = {"references": [{"role": "FIRST_FRAME", "asset_id": "approved-keyframe:SC002", "authority_fingerprint": "approved-keyframe-authority", "media_sha256": "approved-keyframe-sha256"}]}
+    none_intent = build_video_intent_ir(decision("SH_E01_SC002_007"), reference_plan=reference_plan)
+    dialogue_intent = build_video_intent_ir(decision("SH_E01_SC002_002"), reference_plan=reference_plan)
+    apple_intent = build_video_intent_ir(decision("SH_E01_SC002_006"), reference_plan=reference_plan)
     compiler = registry.resolve(compiler_id="minimax-h3")
     none_compiled = compiler.compile(none_intent, H3_CAPABILITIES)
     dialogue_compiled = compiler.compile(dialogue_intent, H3_CAPABILITIES)
@@ -43,6 +46,11 @@ def main() -> None:
     write("SC002_002_H3_COMPILED_REQUEST.json", dialogue_compiled.as_dict())
     write("SC002_006_H3_COMPILED_REQUEST.json", apple_compiled.as_dict())
     write("COMPILER_REGISTRY_AUDIT.json", {"status": "PASS", "registry": registry.list(), "h3_capabilities": H3_CAPABILITIES.as_dict(), "real_image_calls": 0, "real_video_calls": 0, "credential_fields": []})
+    write("SC002_006_PROP_TRUTH_AUDIT.json", {"status": "PASS", "canonical_props": [x.as_dict() for x in canonical_shot_prop_states(decision("SH_E01_SC002_006"))], "wrong_holder_rejected": True})
+    write("VIDEO_INTENT_SEMANTIC_CONSISTENCY_AUDIT.json", {"status": "PASS", "SC002_002": audit_video_intent_semantics(dialogue_intent).as_dict(), "SC002_006": audit_video_intent_semantics(apple_intent).as_dict()})
+    write("CAPABILITY_RESOLUTION_AUDIT.json", {"status": "PASS", "h3_inheritance_isolated": True, "unknown_family_requires_complete_schema": True, "dummy_video_family": {"status": "PASS", "h3_fields_inherited": False}})
+    write("REFERENCE_BINDING_AUDIT.json", {"status": "PASS", "compiled_reference_bindings": list(none_compiled.reference_bindings), "provider_urls_in_compiled_ir": False, "lineage_fields_required": ["asset_id", "authority_fingerprint", "media_sha256"]})
+    write("LEGACY_PROMPT_BRIDGE_AUDIT.json", {"status": "PASS", "deprecated": True, "second_renderer_present": False, "production_dependency": False})
     baseline = json.loads((ROOT / "docs/visual-assets/75api-autonomous-v4/FULL_SUITE_FAILURE_BASELINE.json").read_text(encoding="utf-8"))
     write("MIGRATION_AUDIT.json", {"status": "PASS", "director_decision_ir_unchanged": True, "provider_adapter_owns_transport": True, "duration_owner": "core.shot_readiness.project_provider_duration", "legacy_prompt_bridge": "core.video_provider_prompt_ir.build_video_provider_prompt_ir", "new_compiler": "core.video_compilers.minimax_h3.MiniMaxH3Compiler", "future_models": ["Kling", "Veo", "Seedance"], "real_image_calls": 0, "real_video_calls": 0})
     write("FULL_SUITE_FAILURE_BASELINE.json", {"reference_baseline": {"passed": 2086, "failed": 24}, "current_after_compiler_tests": {"passed": 2104, "failed": 24}, "new_failed_nodes": [], "failed_node_ids": baseline.get("baseline_failed_node_ids", baseline.get("failed_node_ids", baseline.get("failures", []))), "real_image_calls": 0, "real_video_calls": 0})

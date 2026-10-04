@@ -214,96 +214,21 @@ def validate_no_dialogue_mouth_contract(prompt: str, dialogue_contract: Dialogue
 
 
 def build_video_provider_prompt_ir(decision: Mapping[str, Any], projection: ProviderDurationProjection, prop_states: list[Mapping[str, Any]] | None = None) -> VideoProviderPromptIR:
-    # Compatibility bridge: all prompt text now comes from VideoIntentIR and
-    # the selected model compiler.  The legacy return shape remains for older
-    # callers while preventing a second provider prompt renderer.
+    """DEPRECATED_COMPATIBILITY_BRIDGE; production runtime must use a persisted profile."""
     from core.video_compilers import default_video_compiler_registry
-    from core.video_compilers.minimax_h3 import H3_CAPABILITIES
     from core.video_intent_ir import build_video_intent_ir
-
+    from core.video_compilers.minimax_h3 import H3_CAPABILITIES
     intent = build_video_intent_ir(decision, prop_states=prop_states)
-    compiled = default_video_compiler_registry().resolve(compiler_id="minimax-h3").compile(intent, H3_CAPABILITIES)
+    compiled = default_video_compiler_registry().resolve(compiler_id='minimax-h3').compile(intent, H3_CAPABILITIES)
     dialogue = build_dialogue_contract(decision)
     mouth_projection = project_no_dialogue_mouth_state(decision)
-    source = decision.get("source_facts") if isinstance(decision.get("source_facts"), dict) else {}
-    blocking = tuple(dict(x) for x in (decision.get("blocking") or []) if isinstance(x, dict))
-    props = tuple(dict(x) for x in (prop_states or []) if isinstance(x, dict) and x.get("present"))
-    projected_beats = mouth_projection.sanitized_performance_beats if dialogue.dialogue_mode == "NONE" else tuple(dict(x) for x in (decision.get("performance_beats") or []) if isinstance(x, dict))
-    projected_ending_state = _sanitize_structure(decision.get("ending_state") or {}) if dialogue.dialogue_mode == "NONE" else (decision.get("ending_state") or {})
+    source = decision.get('source_facts') if isinstance(decision.get('source_facts'), dict) else {}
+    blocking = tuple(dict(x) for x in (decision.get('blocking') or []) if isinstance(x, dict))
+    props = tuple(dict(x) for x in (intent.props or ()))
+    projected_beats = mouth_projection.sanitized_performance_beats if dialogue.dialogue_mode == 'NONE' else tuple(dict(x) for x in (decision.get('performance_beats') or []) if isinstance(x, dict))
+    projected_ending_state = _sanitize_structure(decision.get('ending_state') or {}) if dialogue.dialogue_mode == 'NONE' else (decision.get('ending_state') or {})
     validate_no_dialogue_mouth_contract(compiled.prompt, dialogue)
-    return VideoProviderPromptIR(
-        intent.shot_id,
-        {"scene_id": source.get("scene_id"), "location": source.get("location")},
-        blocking,
-        props,
-        projection.as_dict(),
-        dialogue,
-        projected_beats,
-        tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, dict)),
-        projected_ending_state,
-        terminal_hold_text(projection),
-        tuple(intent.negative_constraints),
-        compiled.prompt,
-        compiled.compiled_prompt_sha256,
-    )
-
-    # Kept below only as a source-compatible historical reference during the
-    # migration; execution never reaches this renderer.
-    shot_id = str(decision.get("shot_id") or "")
-    source = decision.get("source_facts") if isinstance(decision.get("source_facts"), dict) else {}
-    blocking = tuple(dict(x) for x in (decision.get("blocking") or []) if isinstance(x, dict))
-    props = tuple(dict(x) for x in (prop_states or []) if isinstance(x, dict) and x.get("present"))
-    dialogue = build_dialogue_contract(decision)
-    mouth_projection = project_no_dialogue_mouth_state(decision)
-    duration = projection.as_dict()
-    hold = terminal_hold_text(projection)
-    negatives = ["不得新增人物、道具、事件、摄影事件或场景拓扑变化", "不得文生视频，必须使用输入首帧作为第一帧"]
-    if dialogue.dialogue_mode == "NONE":
-        negatives += ["禁止对白、台词、旁白、语音、人声、歌声和说话口型", "两位角色全程保持沉默，嘴部自然放松，仅允许呼吸、吞咽或极轻微非语言表情"]
-    else:
-        negatives += ["只有指定 speaker 在 phrase_windows 内做说话口型", f"{dialogue.silent_characters[0] if dialogue.silent_characters else '其他角色'} 全程不说话，不得产生连续说话口型"]
-    lines = [
-        f"镜头 {shot_id}。", f"场景：{source.get('location') or source.get('scene_id') or 'E01_SC002'}。保持场景身份和空间拓扑。",
-        f"导演时长 {projection.director_duration_seconds:g} 秒；Provider 时长 {projection.provider_duration_seconds} 秒。",
-    ]
-    if dialogue.dialogue_mode == "NONE":
-        lines += ["这是一个完全无对白镜头。", "林晚和陆叔全程保持沉默。", "两人都不得说话，不得出现明显的对白式张嘴、闭嘴循环。", "嘴部保持自然放松；仅允许正常呼吸、吞咽或极轻微非语言表情变化。", "人物仅通过眼神、表情、头部运动和身体动作完成表演。"]
-    else:
-        lines += [f"对白说话人：{dialogue.speaker}。", f"完整权威对白：{dialogue.authoritative_text}", "对白时间轴："]
-        for item in dialogue.phrase_windows:
-            lines.append(f"[{item.get('start_time')}–{item.get('end_time')}] {dialogue.speaker}：{item.get('text')}")
-        if dialogue.silent_characters:
-            lines.append(f"{dialogue.silent_characters[0]}全程无对白，只做倾听、眼神、表情和身体反应。")
-    lines.append("起始人物状态：")
-    for item in blocking:
-        identity = item.get("identity") or item.get("character") or "角色"
-        lines.append(_human_state(str(identity), {k: item.get(k) for k in ("position", "body_pose", "weight_distribution", "torso_direction", "head_yaw", "head_pitch", "eye_target", "expression", "left_hand", "right_hand", "prop_contact") if item.get(k) is not None}))
-    if props:
-        lines.append("起始道具状态：" + "；".join(_human_state(str(x.get("prop_id")), x) for x in props))
-    else:
-        lines.append("起始道具状态：无剧情道具。")
-    lines.append("时间化表演动作：")
-    projected_beats = mouth_projection.sanitized_performance_beats if dialogue.dialogue_mode == "NONE" else tuple(dict(x) for x in (decision.get("performance_beats") or []) if isinstance(x, dict))
-    for beat in projected_beats:
-        if isinstance(beat, dict):
-            actor = beat.get("actor") or "角色"
-            details = "；".join(f"{key}={beat.get(key)}" for key in ("body_action", "hand_action", "head_action", "eye_action", "facial_action", "prop_action", "ending_state") if beat.get(key))
-            lines.append(f"[{beat.get('start_time')}–{beat.get('end_time')}] {actor}：{details}")
-    lines.append("时间化摄影动作：")
-    for beat in (decision.get("camera_beats") or []):
-        if isinstance(beat, dict):
-            lines.append(f"[{beat.get('start_time')}–{beat.get('end_time')}] {beat.get('movement_type')}；方向={beat.get('direction')}；速度={beat.get('speed')}；目标={beat.get('target')}；起始构图={beat.get('start_framing')}；结束构图={beat.get('end_framing')}；缓动={beat.get('easing')}")
-    projected_ending_state = _sanitize_structure(decision.get("ending_state") or {}) if dialogue.dialogue_mode == "NONE" else (decision.get("ending_state") or {})
-    lines.append("最终状态：" + _json(projected_ending_state))
-    if hold:
-        lines.append(hold)
-    lines.append("负向时间约束：" + "；".join(negatives))
-    if dialogue.dialogue_mode == "NONE":
-        lines.insert(5, "嘴部状态合同：CLOSED_RELAXED_STABLE；嘴唇自然闭合，下颌放松，不产生说话运动。")
-    rendered = "\n".join(lines)
-    validate_no_dialogue_mouth_contract(rendered, dialogue)
-    return VideoProviderPromptIR(shot_id, {"scene_id": source.get("scene_id"), "location": source.get("location")}, blocking, props, duration, dialogue, projected_beats, tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, dict)), projected_ending_state, hold, tuple(negatives), rendered, hashlib.sha256(rendered.encode("utf-8")).hexdigest())
-
+    return VideoProviderPromptIR(intent.shot_id, {'scene_id': source.get('scene_id'), 'location': source.get('location')}, blocking, props, projection.as_dict(), dialogue, projected_beats, tuple(dict(x) for x in (decision.get('camera_beats') or []) if isinstance(x, dict)), projected_ending_state, terminal_hold_text(projection), tuple(intent.negative_constraints), compiled.prompt, compiled.compiled_prompt_sha256)
 
 def build_prompt_truth_chain(canonical_prompt: str, submission_prompt: str, provider_recorded_prompt: str | None) -> dict[str, Any]:
     def digest(value: str | None) -> str:

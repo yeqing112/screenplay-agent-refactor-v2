@@ -1,0 +1,29 @@
+{
+  "status": "VIDEO_MODEL_COMPILER_FOUNDATION_CONTRACT_CLOSED",
+  "gate": "A",
+  "profile_binding": {
+    "id": "local-video-ex8l4t",
+    "provider": "75api-minimax-h3",
+    "model_name": "minimax_h3",
+    "video_compiler_id": "minimax-h3",
+    "model_family": "minimax-h3"
+  },
+  "hardcoded_compiler_selection": false,
+  "hardcoded_h3_capabilities_in_runner": false,
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "production_writes": 0,
+  "book_990400_writes": 0,
+  "secret_leaks": 0,
+  "orphans": 0,
+  "compiled_prompt_sha256": "38ff2def6f72ffc5d7fe096fc3d5de6d9acc98ef79c9ca45138450f3cb40c9b2",
+  "compiled_request_fingerprint": "9be63e67152e225686333626985ea2f3291b5cd48db1dcdf1eedb2e6dea41f1f",
+  "tests": {
+    "targeted": "98 passed",
+    "full_passed": 2106,
+    "full_failed": 24,
+    "new_failed_nodes": []
+  }
+}

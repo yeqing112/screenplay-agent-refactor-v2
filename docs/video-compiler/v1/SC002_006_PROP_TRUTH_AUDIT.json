@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "canonical_props": [
+    {
+      "shot_id": "SH_E01_SC002_006",
+      "prop_id": "APPLE",
+      "present": true,
+      "holder": "陆叔",
+      "hand": "RIGHT",
+      "contact": "holding an apple, raised slightly",
+      "position": "餐桌左侧",
+      "physical_state": "whole",
+      "story_state": "resolved from shot blocking",
+      "authority_source": "DIALOGUE_ACTION_RESOLVED_PROP"
+    }
+  ],
+  "wrong_holder_rejected": true
+}

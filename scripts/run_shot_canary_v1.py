@@ -25,13 +25,12 @@ sys.path.insert(0, str(ROOT))
 from api.generation_adapters import (  # noqa: E402
     generate_image_asset, submit_75api_minimax_h3_generation,
     poll_75api_minimax_h3_generation, reconcile_75api_minimax_h3_generation,
-    _build_75api_minimax_h3_video_payload,
+    build_75api_h3_payload_from_compiled_request,
 )
 from api.model_registry import get_default_profile
 from core.shot_readiness import project_provider_duration
-from core.video_provider_prompt_ir import build_video_provider_prompt_ir
-from core.video_compilers import default_video_compiler_registry
-from core.video_compilers.minimax_h3 import H3_CAPABILITIES
+from core.video_provider_prompt_ir import build_dialogue_contract
+from core.video_compiler_runtime import compile_video_intent
 from core.video_intent_ir import build_video_intent_ir
 
 OUT = ROOT / "docs" / "shot-canary" / "v1"
@@ -224,11 +223,11 @@ async def _run() -> tuple[int, dict[str, Any]]:
             projection = project_provider_duration(director)
             director_ir = json.loads((ROOT / "docs" / "prompt-quality" / "v4" / "DIRECTOR_DECISION_IR.json").read_text(encoding="utf-8"))
             decision = next(item for item in director_ir.get("canary_shots", []) if item.get("shot_id") == shot_id)
-            intent = build_video_intent_ir(decision)
-            compiled = default_video_compiler_registry().resolve(compiler_id="minimax-h3").compile(intent, H3_CAPABILITIES)
-            provider_ir = build_video_provider_prompt_ir(decision, projection)
+            frame_sha = _sha(frame_path)
+            intent = build_video_intent_ir(decision, reference_plan={"references": [{"role": "FIRST_FRAME", "asset_id": f"{shot_id}:official-keyframe", "authority_fingerprint": str(kf.get("authority_fingerprint") or "approved-keyframe-authority"), "media_sha256": frame_sha}]})
+            compiled = compile_video_intent(intent, video_profile)
             prompt = compiled.prompt
-            payload = _build_75api_minimax_h3_video_payload(video_profile, prompt=prompt, duration_seconds=int(projection.provider_duration_seconds), aspect_ratio="16:9", first_frame_url=first_frame_url, reference_images=[])
+            payload = build_75api_h3_payload_from_compiled_request(video_profile, compiled, resolved_references=[{"role": "FIRST_FRAME", "asset_id": f"{shot_id}:official-keyframe", "authority_fingerprint": str(kf.get("authority_fingerprint") or "approved-keyframe-authority"), "media_sha256": frame_sha, "url": first_frame_url}])
             submitted = await submit_75api_minimax_h3_generation(video_profile, payload=payload)
             evidence["real_video_calls"] += 1
             task_id = str(submitted["externalTaskId"])
@@ -240,7 +239,7 @@ async def _run() -> tuple[int, dict[str, Any]]:
             await _save_uri(url, video_path, headers=headers)
             probe = _ffprobe(video_path)
             qa = {"status": "PASS" if probe.get("status") == "PASS" and int(probe.get("audio_streams") or 0) == 0 else "FAIL", "ffprobe": probe, "sampled_frames": ["first", "middle", "final_director", "final_provider"], "unauthorized_props": []}
-            row = {"version": version, "provider": "75api-minimax-h3", "model": str(video_profile.get("model_name") or "minimax_h3"), "director_duration_seconds": director, "provider_seconds": compiled.duration_seconds, "provider_padding_seconds": projection.provider_padding_seconds, "prompt_sha256": compiled.compiled_prompt_sha256, "dialogue_contract": provider_ir.dialogue_contract.as_dict(), "submit_post_count": 1, "task_id": task_id, "reload": True, "reconcile_get": reconcile, "poll": polled, "candidate": {"status": "CANDIDATE", "path": str(video_path), "sha256": _sha(video_path)}, "media_qa": qa, "review_decision": "APPROVE" if qa["status"] == "PASS" else "BLOCK", "official_version": version}
+            row = {"version": version, "provider": "75api-minimax-h3", "model": str(video_profile.get("model_name") or "minimax_h3"), "director_duration_seconds": director, "provider_seconds": compiled.duration_seconds, "provider_padding_seconds": projection.provider_padding_seconds, "prompt_sha256": compiled.compiled_prompt_sha256, "dialogue_contract": build_dialogue_contract(decision).as_dict(), "submit_post_count": 1, "task_id": task_id, "reload": True, "reconcile_get": reconcile, "poll": polled, "candidate": {"status": "CANDIDATE", "path": str(video_path), "sha256": _sha(video_path)}, "media_qa": qa, "review_decision": "APPROVE" if qa["status"] == "PASS" else "BLOCK", "official_version": version}
             evidence["videos"].setdefault(shot_id, []).append(row)
             if qa["status"] != "PASS":
                 evidence["status"] = "REAL_SHOT_MEDIA_CANARY_MEDIA_QUALITY_FAILED"

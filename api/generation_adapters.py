@@ -791,6 +791,34 @@ def _build_75api_minimax_h3_video_payload(
     }
 
 
+def build_75api_h3_payload_from_compiled_request(
+    profile: dict[str, Any],
+    compiled_request: Any,
+    *,
+    resolved_references: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Map a compiled request without changing its semantic fields."""
+    prompt = str(getattr(compiled_request, "prompt", "") or "")
+    prompt_sha = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+    expected_sha = str(getattr(compiled_request, "compiled_prompt_sha256", "") or "")
+    if not prompt or prompt_sha != expected_sha:
+        raise ModelProfileError("COMPILED_PROMPT_SHA_MISMATCH")
+    references = [dict(item) for item in (resolved_references or []) if isinstance(item, dict)]
+    first_frame = next((str(item.get("url") or "") for item in references if item.get("role") == "FIRST_FRAME"), "")
+    image_refs = [{"url": str(item.get("url") or ""), "role": item.get("role"), "asset_id": item.get("asset_id"), "media_sha256": item.get("media_sha256"), "authority_fingerprint": item.get("authority_fingerprint")} for item in references if item.get("role") != "FIRST_FRAME" and item.get("url")]
+    payload = _build_75api_minimax_h3_video_payload(
+        profile,
+        prompt=prompt,
+        duration_seconds=int(getattr(compiled_request, "duration_seconds", 0)),
+        aspect_ratio=str(getattr(compiled_request, "aspect_ratio", "16:9")),
+        first_frame_url=first_frame or None,
+        reference_images=image_refs,
+    )
+    if hashlib.sha256(str(payload.get("prompt") or "").encode("utf-8")).hexdigest() != expected_sha:
+        raise ModelProfileError("COMPILED_PROMPT_SHA_MISMATCH")
+    return payload
+
+
 def _extract_75api_minimax_h3_video_url(data: dict[str, Any]) -> str | None:
     candidates: list[Any] = [
         data.get("video_url"),
@@ -1848,7 +1876,11 @@ async def generate_video_asset(
     last_frame_url: str | None = None,
     reference_images: list[dict[str, Any]] | None = None,
     runtime_credential_value: str | None = None,
+    compiled_request: Any | None = None,
+    resolved_references: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
+    if compiled_request is not None:
+        return await generate_compiled_video_asset(profile, compiled_request=compiled_request, resolved_references=resolved_references or [], runtime_credential_value=runtime_credential_value)
     if profile.get("provider") == MOCK_PROVIDER:
         raise ModelProfileError("Mock provider 应由原型任务适配器处理。")
     if profile.get("provider") == POYO_ASYNC_PROVIDER:
@@ -1921,6 +1953,26 @@ async def generate_video_asset(
         raise ModelProfileError(f"暂不支持的视频 provider：{profile.get('provider')}")
 
     raise ModelProfileError("真实视频 provider 仍未接入当前工作台，请继续使用 Mock 视频模型。")
+
+
+async def generate_compiled_video_asset(
+    profile: dict[str, Any],
+    *,
+    compiled_request: Any,
+    resolved_references: list[dict[str, Any]],
+    runtime_credential_value: str | None = None,
+) -> dict[str, Any]:
+    """Canonical compiled-request submit path for 75api H3.
+
+    Reference resolution happens before this boundary. The adapter maps URLs
+    only and never changes the compiled prompt, duration, ratio, or model.
+    """
+    if profile.get("provider") != MINIMAX_H3_75API_PROVIDER:
+        raise ModelProfileError("COMPILED_VIDEO_PROVIDER_UNSUPPORTED")
+    payload = build_75api_h3_payload_from_compiled_request(profile, compiled_request, resolved_references=resolved_references)
+    submitted = await submit_75api_minimax_h3_generation(profile, payload=payload, runtime_credential_value=runtime_credential_value)
+    polled = await poll_75api_minimax_h3_generation(profile, external_task_id=submitted["externalTaskId"], runtime_credential_value=runtime_credential_value)
+    return {**polled, "externalTaskId": submitted["externalTaskId"], "providerResponse": polled.get("providerResponse") or submitted.get("providerResponse"), "providerRequestPayload": payload, "payload_prompt_sha256": hashlib.sha256(str(payload.get("prompt") or "").encode("utf-8")).hexdigest()}
 
 
 def build_task_adapter_asset(

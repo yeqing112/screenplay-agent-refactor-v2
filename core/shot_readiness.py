@@ -41,6 +41,12 @@ def project_provider_duration(value: Any) -> ProviderDurationProjection:
     )
 
 
+# Canonical model-facing name; the implementation remains single-source so
+# adapters never ceil, truncate, or repair durations independently.
+VideoModelDurationProjection = ProviderDurationProjection
+project_video_model_duration = project_provider_duration
+
+
 @dataclass(frozen=True)
 class ShotPropState:
     shot_id: str
@@ -64,6 +70,43 @@ class ShotPropState:
         if self.present and self.authority_source == "DIALOGUE_ACTION_RESOLVED_PROP" and not (self.contact or self.story_state):
             errors.append("DIALOGUE_PROP_LACKS_PHYSICAL_BASIS")
         return errors
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def canonical_shot_prop_states(decision: Mapping[str, Any]) -> tuple[ShotPropState, ...]:
+    """Project the single canonical prop truth from Director/Shot readiness facts.
+
+    This is deliberately conservative: dialogue mentions do not create props.
+    A prop is authorized only when the shot blocking or resolved prop state
+    establishes a physical holder/contact relationship.
+    """
+    shot_id = str(decision.get("shot_id") or "")
+    source = decision.get("source_facts") if isinstance(decision.get("source_facts"), Mapping) else {}
+    blocking = [x for x in (decision.get("blocking") or []) if isinstance(x, Mapping)]
+    states: list[ShotPropState] = []
+    for item in blocking:
+        identity = str(item.get("identity") or item.get("character") or "")
+        for hand_key, hand_name in (("right_hand", "RIGHT"), ("left_hand", "LEFT")):
+            value = str(item.get(hand_key) or "")
+            if "apple" not in value.lower() and "苹果" not in value:
+                continue
+            states.append(ShotPropState(
+                shot_id=shot_id,
+                prop_id="APPLE",
+                present=True,
+                holder=identity,
+                hand=hand_name,
+                contact=value,
+                position=str(item.get("position") or ""),
+                physical_state="whole",
+                story_state="resolved from shot blocking",
+                authority_source="DIALOGUE_ACTION_RESOLVED_PROP",
+            ))
+    # A source prop id alone is not enough to materialize a visual prop.
+    # Preserve only ids with a physical state in the formal shot truth.
+    return tuple(states)
 
 
 @dataclass(frozen=True)

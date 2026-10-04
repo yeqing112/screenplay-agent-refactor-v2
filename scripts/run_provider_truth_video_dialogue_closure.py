@@ -16,13 +16,12 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from api.generation_adapters import (_build_75api_minimax_h3_video_payload, poll_75api_minimax_h3_generation, reconcile_75api_minimax_h3_generation, submit_75api_minimax_h3_generation)
+from api.generation_adapters import (build_75api_h3_payload_from_compiled_request, poll_75api_minimax_h3_generation, reconcile_75api_minimax_h3_generation, submit_75api_minimax_h3_generation)
 from api.model_registry import get_default_profile
 from core.shot_readiness import project_provider_duration
 from core.video_dialogue_visual_audit import hard_audio_gate
-from core.video_provider_prompt_ir import build_prompt_truth_chain, build_video_provider_prompt_ir, extract_provider_truth, validate_no_dialogue_mouth_contract
-from core.video_compilers import default_video_compiler_registry
-from core.video_compilers.minimax_h3 import H3_CAPABILITIES
+from core.video_provider_prompt_ir import build_dialogue_contract, build_prompt_truth_chain, extract_provider_truth, validate_no_dialogue_mouth_contract
+from core.video_compiler_runtime import compile_video_intent
 from core.video_intent_ir import build_video_intent_ir
 
 OUT = ROOT / "docs" / "shot-canary" / "v2-dialogue-truth"
@@ -116,12 +115,12 @@ async def _run() -> int:
         raise RuntimeError("CLEAN_TREE_REQUIRED_BEFORE_REAL_CALL")
     decision = next(x for x in json.loads(DECISIONS.read_text(encoding="utf-8")).get("canary_shots", []) if x.get("shot_id") == "SH_E01_SC002_007")
     projection = project_provider_duration(decision.get("duration_seconds") or 5.0)
-    intent = build_video_intent_ir(decision)
-    compiled = default_video_compiler_registry().resolve(compiler_id="minimax-h3").compile(intent, H3_CAPABILITIES)
-    ir = build_video_provider_prompt_ir(decision, projection)
     profile = get_default_profile("video") or {}
-    validate_no_dialogue_mouth_contract(compiled.prompt, ir.dialogue_contract)
-    payload = _build_75api_minimax_h3_video_payload(profile, prompt=compiled.prompt, duration_seconds=compiled.duration_seconds, aspect_ratio=compiled.aspect_ratio, first_frame_url=KEYFRAME_URL, reference_images=[])
+    intent = build_video_intent_ir(decision, reference_plan={"references": [{"role": "FIRST_FRAME", "asset_id": "SH_E01_SC002_007:official-keyframe", "authority_fingerprint": "approved-keyframe-authority", "media_sha256": ""}]})
+    compiled = compile_video_intent(intent, profile)
+    dialogue_contract = build_dialogue_contract(decision)
+    validate_no_dialogue_mouth_contract(compiled.prompt, dialogue_contract)
+    payload = build_75api_h3_payload_from_compiled_request(profile, compiled, resolved_references=[{"role": "FIRST_FRAME", "asset_id": "SH_E01_SC002_007:official-keyframe", "authority_fingerprint": "approved-keyframe-authority", "media_sha256": "", "url": KEYFRAME_URL}])
     if payload.get("prompt") != compiled.prompt:
         raise RuntimeError("SUBMISSION_PROMPT_SHA_MISMATCH_BEFORE_POST")
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -141,18 +140,18 @@ async def _run() -> int:
     visual = _visual_audit(video_path, run_dir)
     audio_count = len(probe["audio_streams"])
     speech_like = bool((visual.get("judge") or {}).get("lin_wan_speech_like_motion") or (visual.get("judge") or {}).get("lu_shu_speech_like_motion"))
-    audio_gate = hard_audio_gate(audio_count, audio_generation_allowed=ir.dialogue_contract.audio_generation_allowed)
+    audio_gate = hard_audio_gate(audio_count, audio_generation_allowed=dialogue_contract.audio_generation_allowed)
     if audio_gate["status"] == "FAIL":
         status = "75API_MINIMAX_H3_NO_AUDIO_OUTPUT_CONTRACT_VIOLATION"
     elif speech_like:
         status = "VIDEO_NO_DIALOGUE_VISUAL_COMPLIANCE_FAILED"
     else:
         status = "VIDEO_NO_DIALOGUE_CONTRACT_PROVEN"
-    evidence = {"status": status, "run_id": run_id, "shot_id": ir.shot_id, "real_image_calls": 0, "real_video_calls": 1, "task_id": task_id, "execution_code_provenance": {"execution_base_commit_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), "working_tree_clean_at_start": True}, "prompt_sha256": ir.prompt_sha256, "video_path": str(video_path.relative_to(ROOT)), "video_sha256": _sha(video_path.read_bytes()), "ffprobe": probe, "audio_gate": audio_gate, "visual_audit": visual, "dialogue_contract": ir.dialogue_contract.as_dict(), "safety": {"production_writes": 0, "book_990400_writes": 0, "shapi_calls": 0, "poyo_calls": 0, "secret_leaks": 0, "orphan_rows": 0}, "provider_responses": {"submit": _safe(submitted.get("providerResponse") or {}), "reconcile": _safe(reconciled), "poll": _safe(polled)}}
+    evidence = {"status": status, "run_id": run_id, "shot_id": compiled.shot_id, "real_image_calls": 0, "real_video_calls": 1, "task_id": task_id, "execution_code_provenance": {"execution_base_commit_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), "working_tree_clean_at_start": True}, "prompt_sha256": compiled.compiled_prompt_sha256, "video_path": str(video_path.relative_to(ROOT)), "video_sha256": _sha(video_path.read_bytes()), "ffprobe": probe, "audio_gate": audio_gate, "visual_audit": visual, "dialogue_contract": dialogue_contract.as_dict(), "safety": {"production_writes": 0, "book_990400_writes": 0, "shapi_calls": 0, "poyo_calls": 0, "secret_leaks": 0, "orphan_rows": 0}, "provider_responses": {"submit": _safe(submitted.get("providerResponse") or {}), "reconcile": _safe(reconciled), "poll": _safe(polled)}}
     provider_truth_doc = {"status": "PASS" if provider_truth.get("properties_input") else "MISSING_PROVIDER_PROPERTIES_INPUT", "run_id": run_id, "task_id": task_id, "truth": provider_truth, "provider_model_mapping": {"requested_model": profile.get("model_name"), "origin_model_name": provider_truth.get("origin_model_name"), "upstream_model_name": provider_truth.get("upstream_model_name"), "reported_completion_model": provider_truth.get("reported_completion_model")}}
     (OUT / "FRESH_SC002_007_VIDEO_EVIDENCE.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "FRESH_SC002_007_PROVIDER_TRUTH.json").write_text(json.dumps(provider_truth_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (OUT / "VIDEO_PROMPT_TRUTH_CHAIN.json").write_text(json.dumps({"fresh_run_id": run_id, "fresh_shot_id": ir.shot_id, **chain}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (OUT / "VIDEO_PROMPT_TRUTH_CHAIN.json").write_text(json.dumps({"fresh_run_id": run_id, "fresh_shot_id": compiled.shot_id, **chain}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     audit = json.loads((OUT / "VIDEO_DIALOGUE_CONTRACT_AUDIT.json").read_text(encoding="utf-8"))
     audit["status"] = status
     audit["fresh_run"] = {"status": status, "truth_chain": chain, "audio_streams": audio_count, "speech_like_motion": speech_like, "real_image_calls": 0, "real_video_calls": 1}

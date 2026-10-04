@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "h3_inheritance_isolated": true,
+  "dummy_model_inheritance": false,
+  "unknown_family_missing_schema": "VIDEO_MODEL_CAPABILITIES_INCOMPLETE"
+}

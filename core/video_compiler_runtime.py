@@ -9,18 +9,22 @@ from .video_compilers.minimax_h3 import H3_CAPABILITIES
 
 
 def capabilities_for_profile(profile: dict[str, Any]) -> VideoModelCapabilities:
-    """Return declared capabilities; never infer a compiler binding silently."""
+    """Resolve capabilities with H3 inheritance isolated to the H3 family."""
     params = profile.get("default_params") if isinstance(profile.get("default_params"), dict) else {}
     declared = params.get("video_capabilities") if isinstance(params.get("video_capabilities"), dict) else None
     family = str(profile.get("model_family") or "")
-    if declared:
-        values = dict(H3_CAPABILITIES.as_dict()) | declared
-        values["model_family"] = family or str(values.get("model_family") or "")
+    if family == H3_CAPABILITIES.model_family:
+        values = H3_CAPABILITIES.as_dict() | (declared or {})
+        values["model_family"] = family
         values["allowed_aspect_ratios"] = tuple(values.get("allowed_aspect_ratios") or ())
         return VideoModelCapabilities(**values)
-    if family == H3_CAPABILITIES.model_family:
-        return H3_CAPABILITIES
-    raise LookupError("VIDEO_MODEL_CAPABILITIES_NOT_DECLARED")
+    required = {"model_family", "supports_text_to_video", "supports_first_frame", "supports_reference_images", "supports_native_dialogue", "supports_native_audio", "supports_first_last_frame", "min_duration", "max_duration", "allowed_aspect_ratios", "max_reference_images"}
+    if not declared or not required <= set(declared):
+        raise LookupError("VIDEO_MODEL_CAPABILITIES_INCOMPLETE")
+    values = dict(declared)
+    values["model_family"] = family
+    values["allowed_aspect_ratios"] = tuple(values.get("allowed_aspect_ratios") or ())
+    return VideoModelCapabilities(**values)
 
 
 def compile_video_intent(intent: VideoIntentIR, profile: dict[str, Any], *, registry=None) -> CompiledVideoRequestIR:

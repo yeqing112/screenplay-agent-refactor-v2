@@ -6,8 +6,9 @@ import json
 import re
 from typing import Any
 
-from core.shot_readiness import project_provider_duration
+from core.shot_readiness import project_video_model_duration
 from core.video_intent_ir import VideoIntentIR
+from core.video_intent_semantic_consistency import audit_video_intent_semantics
 from .base import CompiledVideoRequestIR, CompilerSupportResult, PromptComplexityAudit, VideoModelCapabilities
 
 
@@ -58,13 +59,16 @@ class MiniMaxH3Compiler:
             return CompilerSupportResult(False, "NATIVE_DIALOGUE_UNSUPPORTED")
         if intent.director_duration_seconds <= 0:
             return CompilerSupportResult(False, "DIRECTOR_DURATION_INVALID")
+        semantic = audit_video_intent_semantics(intent)
+        if semantic.status != "PASS":
+            return CompilerSupportResult(False, semantic.conflicts[0] if semantic.conflicts else "VIDEO_INTENT_SEMANTIC_CONSISTENCY_FAILED")
         return CompilerSupportResult(True)
 
     def compile(self, intent: VideoIntentIR, target: VideoModelCapabilities = H3_CAPABILITIES) -> CompiledVideoRequestIR:
         support = self.supports(intent, target)
         if not support.supported:
             raise ValueError(support.code or "VIDEO_COMPILER_UNSUPPORTED")
-        projection = project_provider_duration(intent.director_duration_seconds)
+        projection = project_video_model_duration(intent.director_duration_seconds)
         if projection.status != "PASS" or projection.provider_duration_seconds is None:
             raise ValueError("VIDEO_MODEL_DURATION_UNSUPPORTED")
         if target.min_duration > projection.provider_duration_seconds or target.max_duration < projection.provider_duration_seconds:
@@ -116,7 +120,9 @@ class MiniMaxH3Compiler:
         if words > 3000:
             complexity = PromptComplexityAudit(complexity.characters, words, complexity.performance_beats, complexity.camera_beats, complexity.dialogue_length, True, "COMPILER_PROMPT_COMPLEXITY_BLOCKED")
             raise CompilerPromptComplexityError("COMPILER_PROMPT_COMPLEXITY_BLOCKED")
-        references = tuple({"role": str(role), "asset_id": ""} for role in intent.reference_requirements.get("roles") or [])
-        audio_mode = "NATIVE_AUDIO_EXPECTED" if intent.dialogue.mode == "AUTHORITATIVE" else "SILENCE_REQUESTED"
+        references = tuple(dict(item) for item in (intent.reference_requirements.get("bindings") or []) if isinstance(item, dict))
+        if not references:
+            references = tuple({"role": str(role), "asset_id": "", "authority_fingerprint": "", "media_sha256": ""} for role in intent.reference_requirements.get("roles") or [])
+        audio_mode = "NATIVE_AUDIO_EXPECTED" if intent.audio_intent.dialogue_required and target.supports_native_dialogue and target.supports_native_audio else "SILENCE_REQUESTED"
         request_basis = {"compiler_id": self.compiler_id, "compiler_version": self.compiler_version, "model_family": self.model_family, "shot_id": intent.shot_id, "source": intent.source_fingerprint, "prompt": prompt, "duration": projection.provider_duration_seconds, "aspect_ratio": "16:9", "reference_mode": intent.reference_requirements.get("mode"), "audio_generation_mode": audio_mode}
         return CompiledVideoRequestIR(self.compiler_id, self.compiler_version, self.model_family, intent.shot_id, intent.source_fingerprint, prompt, int(projection.provider_duration_seconds), "16:9", str(intent.reference_requirements.get("mode") or "FIRST_FRAME"), references, audio_mode, {"supports_native_audio": target.supports_native_audio, "supports_first_frame": target.supports_first_frame}, support.warnings, _sha(prompt), _sha(json.dumps(request_basis, ensure_ascii=False, sort_keys=True, separators=(",", ":"))), complexity)

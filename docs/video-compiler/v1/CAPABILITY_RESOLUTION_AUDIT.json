@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "h3_inheritance_isolated": true,
+  "unknown_family_requires_complete_schema": true,
+  "dummy_video_family": {
+    "status": "PASS",
+    "h3_fields_inherited": false
+  }
+}

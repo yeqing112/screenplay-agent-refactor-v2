@@ -12,6 +12,8 @@ import json
 import re
 from typing import Any, Mapping
 
+from .shot_readiness import ShotPropState, canonical_shot_prop_states
+
 
 @dataclass(frozen=True)
 class CharacterIntent:
@@ -35,7 +37,6 @@ class DialogueIntent:
     language: str | None
     phrase_windows: tuple[Mapping[str, Any], ...]
     silent_character_ids: tuple[str, ...]
-    audio_policy: str
     visual_lipsync_policy: str
 
     def as_dict(self) -> dict[str, Any]:
@@ -162,9 +163,15 @@ def build_video_intent_ir(
     speaker = str(dialogue_beat.get("speaker") or "") or None
     authoritative_text = str(dialogue_beat.get("authoritative_text") or source_text or "") if mode == "AUTHORITATIVE" else ""
     characters_raw = [x for x in (decision.get("blocking") or []) if isinstance(x, Mapping)]
-    allowed_prop_ids = {str(x.get("prop_id") or x.get("id") or "") for x in (prop_states or []) if x.get("present")}
-    if prop_states is None:
-        allowed_prop_ids = {str(x) for x in (source.get("prop_ids") or []) if str(x)}
+    canonical_props = canonical_shot_prop_states(decision)
+    if prop_states is not None:
+        supplied = tuple(dict(x) for x in prop_states if isinstance(x, Mapping) and x.get("present"))
+        canonical_keys = {(x.prop_id, x.holder, x.hand) for x in canonical_props}
+        supplied_keys = {(str(x.get("prop_id") or x.get("id") or ""), str(x.get("holder") or ""), str(x.get("hand") or "")) for x in supplied}
+        if supplied_keys != canonical_keys:
+            raise ValueError("VIDEO_INTENT_PROP_HOLDER_CONFLICT")
+    effective_props = canonical_props
+    allowed_prop_ids = {x.prop_id for x in effective_props if x.present}
     characters: list[CharacterIntent] = []
     for item in characters_raw:
         cid = str(item.get("identity") or item.get("character") or "")
@@ -174,11 +181,12 @@ def build_video_intent_ir(
         role = "speaker" if mode == "AUTHORITATIVE" and cid == speaker else "listener"
         characters.append(CharacterIntent(cid, cid, state, role, role != "speaker", str(item.get("authority_fingerprint") or _fingerprint(state)), ("CHARACTER_FULL", "CHARACTER_FACE")))
     silent_ids = tuple(x.character_id for x in characters if x.character_id != speaker) if mode == "AUTHORITATIVE" else tuple(x.character_id for x in characters)
-    dialogue = DialogueIntent(mode, speaker, authoritative_text, _language(authoritative_text), tuple(dict(x) for x in (dialogue_beat.get("phrase_windows") or [])), silent_ids, "NATIVE_DIALOGUE" if mode == "AUTHORITATIVE" else "SILENCE_REQUESTED", "TIMED_SPEAKER_ONLY" if mode == "AUTHORITATIVE" else "NO_SPEAKING_MOTION")
-    props = tuple(dict(x) for x in (prop_states or []) if isinstance(x, Mapping) and x.get("present"))
-    references = {"mode": "FIRST_FRAME", "roles": ["SCENE_MASTER", "CHARACTER_FULL", "CHARACTER_FACE"]}
+    dialogue = DialogueIntent(mode, speaker, authoritative_text, _language(authoritative_text), tuple(dict(x) for x in (dialogue_beat.get("phrase_windows") or [])), silent_ids, "TIMED_SPEAKER_ONLY" if mode == "AUTHORITATIVE" else "NO_SPEAKING_MOTION")
+    props = tuple(x.as_dict() for x in effective_props if x.present)
+    references = {"mode": "FIRST_FRAME", "bindings": [], "roles": ["SCENE_MASTER", "CHARACTER_FULL", "CHARACTER_FACE"]}
     if reference_plan:
-        references["roles"] = [str(x.get("role") or "") for x in (reference_plan.get("references") or []) if isinstance(x, Mapping)]
+        references["bindings"] = [dict(x) for x in (reference_plan.get("references") or []) if isinstance(x, Mapping)]
+        references["roles"] = [str(x.get("role") or "") for x in references["bindings"]]
     audio = AudioIntent(mode == "AUTHORITATIVE", mode == "AUTHORITATIVE", False, False)
     negative = ("no additional characters", "no unauthorized props", "preserve scene topology")
     performance_raw = list(decision.get("performance_beats") or [])

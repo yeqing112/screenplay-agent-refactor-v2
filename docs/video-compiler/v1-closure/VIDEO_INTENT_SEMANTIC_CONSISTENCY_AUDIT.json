@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "SC002_002": {
+    "status": "PASS",
+    "checks": {
+      "prop_holder": "PASS",
+      "prop_hand": "PASS",
+      "performance_beats": "PASS",
+      "ending_state": "PASS",
+      "authority": "PASS"
+    },
+    "conflicts": []
+  },
+  "SC002_006": {
+    "status": "PASS",
+    "checks": {
+      "prop_holder": "PASS",
+      "prop_hand": "PASS",
+      "performance_beats": "PASS",
+      "ending_state": "PASS",
+      "authority": "PASS"
+    },
+    "conflicts": []
+  }
+}

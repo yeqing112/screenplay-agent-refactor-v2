@@ -57,8 +57,12 @@ def test_dialogue_golden_preserves_exact_text_and_stable_speaker_ids():
 def test_unauthorized_props_are_not_carried_into_sc002_002_but_apple_is_explicit():
     no_props = build_video_intent_ir(decision("SH_E01_SC002_002"), prop_states=[])
     assert "bag" not in json.dumps(no_props.as_dict(), ensure_ascii=False).lower()
-    apple = build_video_intent_ir(decision("SH_E01_SC002_006"), prop_states=[{"prop_id": "APPLE", "present": True, "holder": "LIN_WAN"}])
+    apple = build_video_intent_ir(decision("SH_E01_SC002_006"))
     assert "APPLE" in json.dumps(apple.as_dict(), ensure_ascii=False)
+    assert next(x for x in apple.props if x["prop_id"] == "APPLE")["hand"] == "RIGHT"
+    assert next(x for x in apple.props if x["prop_id"] == "APPLE")["holder"] == decision("SH_E01_SC002_006")["blocking"][0]["identity"]
+    with pytest.raises(ValueError, match="VIDEO_INTENT_PROP_HOLDER_CONFLICT"):
+        build_video_intent_ir(decision("SH_E01_SC002_006"), prop_states=[{"prop_id": "APPLE", "present": True, "holder": "LIN_WAN", "hand": "RIGHT"}])
 
 
 def test_registry_and_profile_binding_fail_closed_when_missing():
@@ -75,12 +79,35 @@ def test_capability_gates_are_explicit():
         MiniMaxH3Compiler().compile(intent, unsupported)
 
 
+def test_unknown_family_does_not_inherit_h3_defaults_and_complete_dummy_works():
+    from core.video_compiler_runtime import capabilities_for_profile
+    with pytest.raises(LookupError, match="VIDEO_MODEL_CAPABILITIES_INCOMPLETE"):
+        capabilities_for_profile({"model_family": "dummy-video-family", "default_params": {}})
+    dummy = H3_CAPABILITIES.as_dict() | {"model_family": "dummy-video-family"}
+    resolved = capabilities_for_profile({"model_family": "dummy-video-family", "default_params": {"video_capabilities": dummy}})
+    assert resolved.model_family == "dummy-video-family"
+
+
 def test_compiled_request_contains_no_credentials_or_transport_fields():
     compiled = MiniMaxH3Compiler().compile(build_video_intent_ir(decision("SH_E01_SC002_007")), H3_CAPABILITIES)
     payload = compiled.as_dict()
     text = json.dumps(payload, ensure_ascii=False).lower()
     for token in ("api_key", "authorization", "credential", "base_url", "http://", "https://"):
         assert token not in text
+
+
+def test_profile_runtime_binding_and_adapter_preserve_compiled_fields():
+    from api.generation_adapters import build_75api_h3_payload_from_compiled_request
+    from core.video_compiler_runtime import compile_video_intent
+    intent = build_video_intent_ir(decision("SH_E01_SC002_002"), reference_plan={"references": [{"role": "FIRST_FRAME", "asset_id": "kf-002", "authority_fingerprint": "authority-002", "media_sha256": "sha-002"}]})
+    bound = profile() | {"provider": "75api-minimax-h3"}
+    compiled = compile_video_intent(intent, bound)
+    payload = build_75api_h3_payload_from_compiled_request(bound, compiled, resolved_references=[{"role": "FIRST_FRAME", "asset_id": "kf-002", "authority_fingerprint": "authority-002", "media_sha256": "sha-002", "url": "https://example.invalid/keyframe.png"}])
+    assert payload["prompt"] == compiled.prompt
+    assert payload["seconds"] == str(compiled.duration_seconds)
+    assert payload["model"] == "minimax_h3"
+    with pytest.raises(LookupError, match="VIDEO_COMPILER_NOT_CONFIGURED"):
+        compile_video_intent(intent, {"provider": "75api-minimax-h3", "model_name": "minimax_h3"})
 
 
 def test_fractional_duration_uses_canonical_terminal_hold_projection():

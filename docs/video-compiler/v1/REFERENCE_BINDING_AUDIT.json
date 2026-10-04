@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "compiled_reference_bindings": [
+    {
+      "role": "FIRST_FRAME",
+      "asset_id": "approved-keyframe:SC002",
+      "authority_fingerprint": "approved-keyframe-authority",
+      "media_sha256": "approved-keyframe-sha256"
+    }
+  ],
+  "provider_urls_in_compiled_ir": false,
+  "lineage_fields_required": [
+    "asset_id",
+    "authority_fingerprint",
+    "media_sha256"
+  ]
+}

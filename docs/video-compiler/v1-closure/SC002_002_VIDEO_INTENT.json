@@ -1,7 +1,7 @@
 {
   "shot_id": "SH_E01_SC002_002",
   "source_revision": "DIRECTOR_DECISION_IR",
-  "source_fingerprint": "b924db7a7c94b4cbfc3e53caf1de7e2137abc618c7ac0dd4df9aff7a01bc8666",
+  "source_fingerprint": "83d941cea145d61d28a3b39038afb28c5691d4564f8fa34546bd8fda02804785",
   "director_duration_seconds": 13.5,
   "scene": {
     "scene_id": "E01_SC002",
@@ -320,7 +320,7 @@
     "bindings": [
       {
         "role": "FIRST_FRAME",
-        "asset_id": "approved-keyframe:SC002",
+        "asset_id": "approved-keyframe:SC002_002",
         "authority_fingerprint": "approved-keyframe-authority",
         "media_sha256": "approved-keyframe-sha256"
       }
