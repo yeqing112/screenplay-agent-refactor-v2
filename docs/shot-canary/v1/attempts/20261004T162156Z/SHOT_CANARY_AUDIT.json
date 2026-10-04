@@ -1,0 +1,72 @@
+{
+  "run_id": "20261004T162156Z",
+  "status": "REAL_SHOT_MEDIA_CANARY_BLOCKED",
+  "gate_a": {},
+  "apple": {
+    "prompt": "单张写实电影道具 HERO / MASTER：一只完整无切开的红黄自然苹果，果梗清晰可见，单一对象，中性灰背景，无切片、无第二只苹果、无手、无人物、无文字、无水印。",
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k",
+    "sha256": "f01165183d6b4dc8ae4bff4896f343163662204c6d59f32c50d901642a5973ae",
+    "provider_response_fingerprint": "050545da5d455758121cbd834efe61726b2f5867c4ace0da94d7f3d9326f4aba",
+    "preview_url": "https://pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev/images/2026/10/04/1791130942216302433-f01165183d6b4dc8.png",
+    "judge": {
+      "status": "PASS",
+      "single_whole_apple": true,
+      "stem_visible": true,
+      "unauthorized_objects": [],
+      "response_sha256": "249656bf0651ea2432d2203ce2f9a84dfd11d90f051176116e91cc70c5ce0a01"
+    },
+    "authority": {
+      "status": "READY",
+      "prop_id": "APPLE",
+      "complexity": "LOW",
+      "media_sha256": "f01165183d6b4dc8ae4bff4896f343163662204c6d59f32c50d901642a5973ae",
+      "authority_fingerprint": "afeb563b6473d43f292dcb247583257083af76d7cab989e0d58b28bf7e8c5ee7"
+    }
+  },
+  "keyframes": {
+    "SH_E01_SC002_007": {
+      "status": "FAIL",
+      "version": 1,
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\shot-canary\\v1\\20261004T162156Z\\SH_E01_SC002_007-keyframe-v1.jpg",
+      "sha256": "ea82ecbf583a9221d17562f66943b4b4f0b366874f739089a3fcd33f185355f1",
+      "provider_preview_url": "https://pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev/images/2026/10/04/1791131012191783767-ea82ecbf583a9221.png",
+      "requested_aspect_ratio": "16:9",
+      "submitted_aspect_ratio": "16:9",
+      "observed_width": 1672,
+      "observed_height": 941,
+      "observed_aspect_ratio": "1672:941",
+      "geometry_valid": true,
+      "judge": {
+        "status": "FAIL",
+        "scene_identity": true,
+        "character_identity": true,
+        "unauthorized_props": [],
+        "apple_in_lu_shu_right_hand": false,
+        "extra_people": false,
+        "text_or_watermark": false,
+        "response_sha256": "978f2b2b7a73d95b8b00c7716f232235310ab4a5be5425e396836f92f9f5d1b2"
+      },
+      "review_decision": "BLOCK"
+    }
+  },
+  "videos": {},
+  "safety": {
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "shapi_calls": 0,
+    "poyo_calls": 0,
+    "secret_leaks": 0,
+    "orphans": 0,
+    "raw_base64_persisted": 0,
+    "signed_url_query_persisted": 0
+  },
+  "real_image_calls": 2,
+  "real_video_calls": 0,
+  "execution_code_provenance": {
+    "execution_base_commit_sha": "2ceade697dc4a92cfb72c10ccd2163b1ed85dec0",
+    "working_tree_clean_at_start": true,
+    "runner_path": "scripts/run_shot_canary_v1.py"
+  },
+  "error": "KEYFRAME_COMPLIANCE_FAILED:SH_E01_SC002_007"
+}
