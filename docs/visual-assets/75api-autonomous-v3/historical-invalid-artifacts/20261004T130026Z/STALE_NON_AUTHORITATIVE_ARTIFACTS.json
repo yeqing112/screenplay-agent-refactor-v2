@@ -1,8 +1,10 @@
 {
   "status": "STALE_NON_AUTHORITATIVE_ARTIFACT",
-  "run_id": "20261004T130026Z",
+  "source_run": "20261004T130026Z",
+  "reason": "UNAUTHORIZED_STORY_PROP_IN_CHARACTER_AUTHORITY",
   "files": [
-    "FULL_SUITE_FAILURE_BASELINE.json"
+    "lin-wan-reference-board.png",
+    "lin-wan-reference-board.provenance.json"
   ],
   "excluded_from_authorities": true
 }

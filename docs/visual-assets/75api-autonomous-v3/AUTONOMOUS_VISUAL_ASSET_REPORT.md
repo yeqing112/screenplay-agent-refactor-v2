@@ -18,3 +18,5 @@
 - Shot Keyframe generation: `0`
 - Historical orchestration issue: `REFERENCE_BOARD_SOURCE_MISSING`; repaired locally by including immutable MASTER in the board source mapping. No provider call was made during repair.
 - Safety: no raw base64 or signed URL persisted; no production writes; no Book 990400 writes; no secret leaks.
+
+- Closure: old Lin Wan Authority and board are `INVALID_SEMANTIC_CONTAMINATION`; retained under `historical-invalid-artifacts/20261004T130026Z/` and excluded from production consumers.

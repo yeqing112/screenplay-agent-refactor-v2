@@ -2,7 +2,7 @@
   "LIN_WAN": {
     "character_id": "LIN_WAN",
     "name": "林晚",
-    "status": "READY",
+    "status": "INVALID_SEMANTIC_CONTAMINATION",
     "primary_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
     "primary_execution_id": "c880b07f4c0c",
     "derived_shas": {
@@ -22,7 +22,9 @@
     "pairwise_audit_count": 5,
     "global_judge_status": "PASS",
     "profile_fingerprint": "a38e5a20552fabe582681f5899291ee0ffdecf4bfc206409c6643ffae672943e",
-    "prompt_fingerprint": "035ae5a38a54ba9e2c2e5dd761f9c86fb5588d966ab338c972139bdbd3a0e62d"
+    "prompt_fingerprint": "035ae5a38a54ba9e2c2e5dd761f9c86fb5588d966ab338c972139bdbd3a0e62d",
+    "semantic_status": "FAIL",
+    "semantic_failure_reason": "UNAUTHORIZED_STORY_PROP_IN_CHARACTER_AUTHORITY"
   },
   "LU_SHU": null
 }

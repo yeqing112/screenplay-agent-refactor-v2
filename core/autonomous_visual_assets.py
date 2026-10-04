@@ -13,6 +13,7 @@ import json
 from typing import Any, Iterable, Mapping
 
 from core.autonomous_asset_generation import MediaEvidenceBinding
+from core.asset_semantic_compliance import AssetSemanticComplianceAudit
 
 
 class PropComplexity(str, Enum):
@@ -153,9 +154,13 @@ class CharacterAuthority:
     global_judge_status: str
     profile_fingerprint: str
     prompt_fingerprint: str
+    semantic_status: str = "NOT_EVALUATED"
+    semantic_authority_fingerprint: str = ""
+    semantic_audit_count: int = 0
+    view_pose_status: str = "NOT_EVALUATED"
 
     @classmethod
-    def lock(cls, *, character_id: str, name: str, primary: Mapping[str, Any], derived: Mapping[str, Mapping[str, Any]], audits: Iterable[CharacterConsistencyAudit], global_judge: Mapping[str, Any], profile_fingerprint: str = "", prompt_fingerprint: str = "") -> "CharacterAuthority":
+    def lock(cls, *, character_id: str, name: str, primary: Mapping[str, Any], derived: Mapping[str, Mapping[str, Any]], audits: Iterable[CharacterConsistencyAudit], global_judge: Mapping[str, Any], profile_fingerprint: str = "", prompt_fingerprint: str = "", semantic_audits: Iterable[AssetSemanticComplianceAudit] | None = None, master_semantic: AssetSemanticComplianceAudit | None = None, semantic_authority: Mapping[str, Any] | None = None, view_pose_audits: Iterable[Mapping[str, Any]] | None = None) -> "CharacterAuthority":
         rows = list(audits)
         if not primary.get("sha256") or not primary.get("generation_execution_id"):
             raise ValueError("CHARACTER_PRIMARY_EVIDENCE_MISSING")
@@ -174,6 +179,19 @@ class CharacterAuthority:
                 raise ValueError("CHARACTER_JUDGE_EVIDENCE_STALE")
             if evidence.master_generation_execution_id != str(primary["generation_execution_id"]) or evidence.derived_generation_execution_id != str(media.get("generation_execution_id") or ""):
                 raise ValueError("CHARACTER_EVIDENCE_LINEAGE_MISMATCH")
+        semantic_rows = list(semantic_audits) if semantic_audits is not None else None
+        if semantic_rows is not None:
+            if master_semantic is None or not master_semantic.passes:
+                raise ValueError("CHARACTER_MASTER_SEMANTIC_GATE_FAILED")
+            if not semantic_rows or not all(row.passes for row in semantic_rows):
+                raise ValueError("CHARACTER_SEMANTIC_GATE_FAILED")
+            pose_rows = list(view_pose_audits or [])
+            if pose_rows and any(str(row.get("status") or "") != "PASS" for row in pose_rows):
+                raise ValueError("CHARACTER_VIEW_POSE_GATE_FAILED")
+            semantic_status = "PASS"
+            semantic_fp = str((semantic_authority or {}).get("source_fingerprint") or "")
+            pose_status = "PASS" if not pose_rows or all(str(row.get("status") or "") == "PASS" for row in pose_rows) else "FAIL"
+            return cls(character_id, name, AuthorityStatus.READY.value, master_sha, str(primary["generation_execution_id"]), {key: str(value.get("sha256") or "") for key, value in derived.items()}, {key: str(value.get("generation_execution_id") or "") for key, value in derived.items()}, len(rows), "PASS", profile_fingerprint, prompt_fingerprint, semantic_status, semantic_fp, len(semantic_rows) + 1, pose_status)
         return cls(character_id, name, AuthorityStatus.READY.value, master_sha, str(primary["generation_execution_id"]), {key: str(value.get("sha256") or "") for key, value in derived.items()}, {key: str(value.get("generation_execution_id") or "") for key, value in derived.items()}, len(rows), "PASS", profile_fingerprint, prompt_fingerprint)
 
 
@@ -191,9 +209,12 @@ class PropAuthority:
     global_judge_status: str
     profile_fingerprint: str
     prompt_fingerprint: str
+    semantic_status: str = "NOT_EVALUATED"
+    semantic_authority_fingerprint: str = ""
+    semantic_audit_count: int = 0
 
     @classmethod
-    def lock(cls, *, prop_id: str, name: str, complexity: PropComplexity | str, primary: Mapping[str, Any], derived: Mapping[str, Mapping[str, Any]], audits: Iterable[PropConsistencyAudit], global_judge: Mapping[str, Any], profile_fingerprint: str = "", prompt_fingerprint: str = "") -> "PropAuthority":
+    def lock(cls, *, prop_id: str, name: str, complexity: PropComplexity | str, primary: Mapping[str, Any], derived: Mapping[str, Mapping[str, Any]], audits: Iterable[PropConsistencyAudit], global_judge: Mapping[str, Any], profile_fingerprint: str = "", prompt_fingerprint: str = "", semantic_audits: Iterable[AssetSemanticComplianceAudit] | None = None, master_semantic: AssetSemanticComplianceAudit | None = None, semantic_authority: Mapping[str, Any] | None = None) -> "PropAuthority":
         rows = list(audits)
         if not primary.get("sha256") or not primary.get("generation_execution_id"):
             raise ValueError("PROP_PRIMARY_EVIDENCE_MISSING")
@@ -208,6 +229,13 @@ class PropAuthority:
             media = derived[row.view_id]
             if evidence is None or evidence.master_sha256 != str(primary["sha256"]) or evidence.derived_sha256 != str(media.get("sha256") or ""):
                 raise ValueError("PROP_JUDGE_EVIDENCE_STALE")
+        semantic_rows = list(semantic_audits) if semantic_audits is not None else None
+        if semantic_rows is not None:
+            if master_semantic is None or not master_semantic.passes:
+                raise ValueError("PROP_MASTER_SEMANTIC_GATE_FAILED")
+            if not semantic_rows or not all(row.passes for row in semantic_rows):
+                raise ValueError("PROP_SEMANTIC_GATE_FAILED")
+            return cls(prop_id, name, PropComplexity(complexity).value, AuthorityStatus.READY.value, str(primary["sha256"]), str(primary["generation_execution_id"]), {key: str(value.get("sha256") or "") for key, value in derived.items()}, {key: str(value.get("generation_execution_id") or "") for key, value in derived.items()}, len(rows), "PASS", profile_fingerprint, prompt_fingerprint, "PASS", str((semantic_authority or {}).get("source_fingerprint") or ""), len(semantic_rows) + 1)
         return cls(prop_id, name, PropComplexity(complexity).value, AuthorityStatus.READY.value, str(primary["sha256"]), str(primary["generation_execution_id"]), {key: str(value.get("sha256") or "") for key, value in derived.items()}, {key: str(value.get("generation_execution_id") or "") for key, value in derived.items()}, len(rows), "PASS", profile_fingerprint, prompt_fingerprint)
 
 

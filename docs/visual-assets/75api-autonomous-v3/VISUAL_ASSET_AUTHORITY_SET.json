@@ -32,8 +32,14 @@
     "HANDBAG": null
   },
   "board_publication": {
-    "LIN_WAN": "PUBLISHED",
+    "LIN_WAN": "HISTORICAL_INVALID_ARTIFACT",
     "LU_SHU": "NOT_PUBLISHED",
     "HANDBAG": "NOT_PUBLISHED"
+  },
+  "excluded_authorities": {
+    "LIN_WAN": {
+      "status": "INVALID_SEMANTIC_CONTAMINATION",
+      "reason": "UNAUTHORIZED_STORY_PROP_IN_CHARACTER_AUTHORITY"
+    }
   }
 }
