@@ -23,6 +23,7 @@ from typing import Any, Mapping
 
 import httpx
 from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -49,6 +50,7 @@ from core.autonomous_visual_assets import (  # noqa: E402
 )
 from core.autonomous_asset_generation import MediaEvidenceBinding  # noqa: E402
 from core.production_provider_policy import ProductionProviderPolicy  # noqa: E402
+from core.asset_view_framing import AssetViewFramingPolicy  # noqa: E402
 from scripts.run_asset_media_canary_v1 import _free_port, _image_meta, _redact, _wait_for_health, _write  # noqa: E402
 from scripts.run_autonomous_scene_asset_pipeline_v1 import (  # noqa: E402
     BOOK_ID,
@@ -109,21 +111,120 @@ def _font(size: int) -> ImageFont.ImageFont:
     return ImageFont.load_default()
 
 
-def _board(paths: Mapping[str, Path], output: Path, order: list[str], columns: int) -> dict[str, Any]:
-    tile_w, tile_h, label_h = 720, 480, 42
+def _authority_fingerprint(authority: Mapping[str, Any]) -> str:
+    return _sha(json.dumps(dict(authority), ensure_ascii=False, sort_keys=True, default=str))
+
+
+def _fit_semantic_tile(image: Image.Image, *, role: str, tile_size: tuple[int, int]) -> Image.Image:
+    """Normalize visual scale with padding while preserving image geometry."""
+
+    image = image.convert("RGB")
+    # Use a conservative content crop only to remove uniform outer padding;
+    # never stretch the subject. If segmentation is inconclusive, retain the
+    # full image and letterbox it.
+    probe = image.resize((min(image.width, 240), min(image.height, 240)))
+    pixels = list(probe.getdata())
+    edge = pixels[: max(1, probe.width)] + pixels[-max(1, probe.width):]
+    background = tuple(sum(pixel[channel] for pixel in edge) // len(edge) for channel in range(3))
+    mask = Image.new("L", probe.size, 0)
+    mask_data = []
+    for pixel in pixels:
+        distance = sum(abs(int(pixel[channel]) - int(background[channel])) for channel in range(3))
+        mask_data.append(255 if distance > 42 else 0)
+    mask.putdata(mask_data)
+    bbox = mask.getbbox()
+    if bbox and bbox[2] - bbox[0] > probe.width * 0.18 and bbox[3] - bbox[1] > probe.height * 0.18:
+        scale_x = image.width / probe.width
+        scale_y = image.height / probe.height
+        pad = 0.12 if role == "FACE" else 0.06
+        left = max(0, int(bbox[0] * scale_x - image.width * pad))
+        top = max(0, int(bbox[1] * scale_y - image.height * pad))
+        right = min(image.width, int(bbox[2] * scale_x + image.width * pad))
+        bottom = min(image.height, int(bbox[3] * scale_y + image.height * pad))
+        if right > left and bottom > top:
+            image = image.crop((left, top, right, bottom))
+    target = Image.new("RGB", tile_size, "#20282A")
+    fitted = ImageOps.contain(image, tile_size, method=Image.Resampling.LANCZOS)
+    target.paste(fitted, ((tile_size[0] - fitted.width) // 2, (tile_size[1] - fitted.height) // 2))
+    return target
+
+
+def _board(paths: Mapping[str, Path], output: Path, order: list[str], columns: int, *, run_id: str, authority: Mapping[str, Any]) -> dict[str, Any]:
+    if str(authority.get("status") or "") != AuthorityStatus.READY.value:
+        raise ValueError("REFERENCE_BOARD_REQUIRES_READY_AUTHORITY")
+    expected = {"FULL_FRONT": str(authority.get("primary_sha256") or ""), **{str(key): str(value) for key, value in (authority.get("derived_shas") or {}).items()}}
+    source_view_sha256: list[dict[str, str]] = []
+    derived_execution_ids = {str(key): str(value) for key, value in (authority.get("derived_execution_ids") or {}).items()}
+    primary_execution_id = str(authority.get("primary_execution_id") or "")
+    for key in order:
+        source_key = "MASTER" if key in {"MASTER", "FULL_FRONT", "HERO"} else key
+        source = paths.get(source_key)
+        if source is None or not source.exists():
+            raise ValueError("REFERENCE_BOARD_SOURCE_MISSING")
+        actual = _sha(source)
+        expected_sha = str(authority.get("primary_sha256") or "") if key in {"MASTER", "FULL_FRONT", "HERO"} else expected.get(key) or expected.get(source_key)
+        if not expected_sha or actual != expected_sha:
+            raise ValueError("REFERENCE_BOARD_SOURCE_SHA_MISMATCH")
+        execution_id = primary_execution_id if key in {"MASTER", "FULL_FRONT", "HERO"} else derived_execution_ids.get(key, "")
+        if not execution_id:
+            raise ValueError("REFERENCE_BOARD_SOURCE_EXECUTION_ID_MISSING")
+        source_view_sha256.append({"view_id": key, "sha256": actual, "generation_execution_id": execution_id})
+    tile_w, tile_h, label_h = 520, 420, 48
     rows = (len(order) + columns - 1) // columns
     canvas = Image.new("RGB", (tile_w * columns, (tile_h + label_h) * rows), "#101719")
     draw = ImageDraw.Draw(canvas); title = _font(24); small = _font(15)
     for index, key in enumerate(order):
-        with Image.open(paths[key]).convert("RGB") as image:
-            image.thumbnail((tile_w - 24, tile_h - 24), Image.Resampling.LANCZOS)
-            x = (index % columns) * tile_w + (tile_w - image.width) // 2
-            y = (index // columns) * (tile_h + label_h) + (tile_h - image.height) // 2
-            canvas.paste(image, (x, y)); dims = f"{image.width}×{image.height}"
+        with Image.open(paths["MASTER" if key in {"MASTER", "FULL_FRONT", "HERO"} else key]) as raw:
+            role = "FACE" if key.startswith("FACE_") else "FULL" if key.startswith("FULL_") else "OBJECT"
+            image = _fit_semantic_tile(raw, role=role, tile_size=(tile_w - 32, tile_h - 28))
+        x = (index % columns) * tile_w + 16
+        y = (index // columns) * (tile_h + label_h) + 12
+        canvas.paste(image, (x, y)); dims = f"{image.width}×{image.height}"
         lx = (index % columns) * tile_w + 16; ly = (index // columns) * (tile_h + label_h) + tile_h + 5
-        draw.text((lx, ly), key, fill="#F4F7F7", font=title); draw.text((lx + 180, ly + 5), dims, fill="#9FB4B5", font=small)
+        draw.text((lx, ly), key, fill="#F4F7F7", font=title); draw.text((lx + 220, ly + 5), dims, fill="#9FB4B5", font=small)
+    output.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(output, format="PNG", optimize=True)
-    return _image_meta(output) | {"sha256": _sha(output)}
+    board_sha256 = _sha(output)
+    provenance = {"board_run_id": run_id, "authority_fingerprint": _authority_fingerprint(authority), "source_view_sha256": source_view_sha256, "board_sha256": board_sha256}
+    output.with_suffix(".provenance.json").write_text(json.dumps(provenance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return _image_meta(output) | {"sha256": board_sha256, **provenance}
+
+
+def _atomic_publish_board(staging_png: Path, final_png: Path) -> None:
+    provenance = staging_png.with_suffix(".provenance.json")
+    if not staging_png.exists() or not provenance.exists():
+        raise ValueError("REFERENCE_BOARD_PROVENANCE_MISSING")
+    data = json.loads(provenance.read_text(encoding="utf-8"))
+    if data.get("board_sha256") != _sha(staging_png) or not data.get("authority_fingerprint") or data.get("board_run_id") == "" or not all(item.get("sha256") and item.get("generation_execution_id") for item in data.get("source_view_sha256", [])):
+        raise ValueError("REFERENCE_BOARD_PROVENANCE_MISSING")
+    final_png.parent.mkdir(parents=True, exist_ok=True)
+    temp_png = final_png.with_suffix(final_png.suffix + ".tmp")
+    temp_prov = final_png.with_suffix(".provenance.json.tmp")
+    shutil.copy2(staging_png, temp_png); shutil.copy2(provenance, temp_prov)
+    os.replace(temp_png, final_png); os.replace(temp_prov, final_png.with_suffix(".provenance.json"))
+
+
+def _prepare_run_output(run_id: str, *, work_dir: Path | None = None) -> Path:
+    """Archive stale media and return an isolated publish directory."""
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    historical = OUT / "historical-invalid-artifacts" / str(run_id)
+    stale = [
+        item for item in OUT.iterdir()
+        if item.name != "historical-invalid-artifacts"
+        and (item.name.endswith("reference-board.png") or item.name.endswith(".provenance.json") or item.suffix.lower() in {".jpg", ".jpeg", ".webp"})
+    ]
+    if stale:
+        historical.mkdir(parents=True, exist_ok=True)
+        for item in stale:
+            shutil.move(str(item), str(historical / item.name))
+        (historical / "STALE_NON_AUTHORITATIVE_ARTIFACTS.json").write_text(
+            json.dumps({"status": "STALE_NON_AUTHORITATIVE_ARTIFACT", "run_id": str(run_id), "files": [item.name for item in stale]}, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    staging = (work_dir or (ROOT / "work" / str(run_id))) / "publish-staging"
+    staging.mkdir(parents=True, exist_ok=True)
+    return staging
 
 
 def _character_master_prompt(character: Mapping[str, Any]) -> str:
@@ -139,7 +240,8 @@ def _character_derived_prompt(character: Mapping[str, Any], view_id: str, violat
         "FULL_BACK": "全身标准背面，展示同一头发长度、服装背面和鞋子",
     }[view_id]
     repair = f"这是自动修复，只修正以下问题：{'；'.join(violations)}。" if violations else ""
-    return f"参考图是{character['name']}同一人物的权威定妆。{character['description']}。{view}。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。{repair}"
+    framing = "头肩构图，脸部占据一致视觉尺度，眼睛位于一致的垂直区域，不出现全身。" if view_id.startswith("FACE_") else "完整头部和完整鞋脚必须在画面内，保持中性标准站姿和一致的全身高度。"
+    return f"参考图是{character['name']}同一人物的权威定妆。{character['description']}。{view}。{framing}严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。{repair}"
 
 
 def _prop_master_prompt(prop: Mapping[str, Any]) -> str:
@@ -152,13 +254,14 @@ def _prop_derived_prompt(prop: Mapping[str, Any], view_id: str, violations: list
     return f"参考图是同一只 HANDBAG 的权威 HERO。{prop['description']}。{view}。严格保持同一包型、同一比例、同一材质、同一深棕色、同一提手、同一对黄铜扣件、同一金属件和同一磨损状态，只改变摄影机角度和裁切。不得重新设计道具。单张图，不要人物、手、多个包、拼图、文字或水印。{repair}"
 
 
-async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id: str, asset_type: str, asset_id: str, view_id: str, prompt: str, output: Path, refs: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id: str, asset_type: str, asset_id: str, view_id: str, prompt: str, output: Path, refs: list[dict[str, Any]] | None = None, framing: Mapping[str, Any] | None = None) -> dict[str, Any]:
     refs = refs or []
+    framing = dict(framing or AssetViewFramingPolicy.for_view(asset_type, view_id).as_dict())
     payload = {
         "book_id": BOOK_ID, "episode": EPISODE, "shot_id": f"AUTO_ASSET_V4_{asset_type}_{asset_id}_{view_id}",
         "source_node_id": f"autonomous-asset-v4:{asset_type}:{asset_id}:{view_id}", "source_asset_id": None,
         "asset_scope": asset_type.lower(), "asset_subject": f"{asset_id} {view_id}", "target_kind": "reference-image",
-        "prompt": prompt, "model_profile_id": profile_id, "aspect_ratio": "16:9", "reference_images": refs,
+        "prompt": prompt, "model_profile_id": profile_id, "aspect_ratio": framing["provider_aspect_ratio"], "reference_images": refs,
         "negative_prompt": "文字、Logo、水印、拼图、四宫格、额外人物、重复对象、身份漂移、材质漂移、颜色漂移",
         "count": 1, "confirmed": True, "allow_external_call": True,
     }
@@ -215,7 +318,7 @@ async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id:
                 provider_reference_order_matches = False
                 break
     input_formats = ["data_uri" if str(item.get("image_url") or "").startswith("data:image/") else "https" if str(item.get("image_url") or "").startswith("https://") else "other" for item in refs]
-    return {"view_id": view_id, "execution_id": task_id, "generation_execution_id": task_id, "provider": task.get("provider"), "model_profile_id": task.get("model_profile_id") or profile_id, "candidate_status": "CANDIDATE", "prompt_fingerprint": _sha(prompt), "reference_image_count": len(refs), "reference_image_sha256": canonical_reference_sha[0] if canonical_reference_sha else "", "reference_image_sha256s": canonical_reference_sha, "reference_order": canonical_reference_order, "reference_input_formats": input_formats, "reference_role": refs[0].get("role") if refs else "", "reference_purpose": refs[0].get("reference_purpose") if refs else "", "provider_inline_reference_attached": bool(refs) and ("images" in provider_payload or "inlineData" in serialized or "inline_data" in serialized), "provider_reference_order_matches": provider_reference_order_matches, "provider_payload_reference_count": len(provider_images), "provider_request_payload": _redact(provider_payload), "file": {**_image_meta(output), "sha256": sha}, "sha256": sha, "fingerprint": sha, "path": str(output)}
+    return {"view_id": view_id, "execution_id": task_id, "generation_execution_id": task_id, "provider": task.get("provider"), "model_profile_id": task.get("model_profile_id") or profile_id, "candidate_status": "CANDIDATE", "prompt_fingerprint": _sha(prompt), "reference_image_count": len(refs), "reference_image_sha256": canonical_reference_sha[0] if canonical_reference_sha else "", "reference_image_sha256s": canonical_reference_sha, "reference_order": canonical_reference_order, "reference_input_formats": input_formats, "reference_role": refs[0].get("role") if refs else "", "reference_purpose": refs[0].get("reference_purpose") if refs else "", "provider_inline_reference_attached": bool(refs) and ("images" in provider_payload or "inlineData" in serialized or "inline_data" in serialized), "provider_reference_order_matches": provider_reference_order_matches, "provider_payload_reference_count": len(provider_images), "provider_request_payload": _redact(provider_payload), "requested_aspect_ratio": framing["requested_aspect_ratio"], "provider_aspect_ratio": framing["provider_aspect_ratio"], "projection_reason": framing["projection_reason"], "framing_class": framing["framing_class"], "file": {**_image_meta(output), "sha256": sha}, "sha256": sha, "fingerprint": sha, "path": str(output)}
 
 
 def _evidence(view_id: str, attempt: int, primary: Mapping[str, Any], derived: Mapping[str, Any], judge_profile: Mapping[str, Any], judge: Mapping[str, Any], request_fp: str, response_fp: str, scores: dict[str, int]) -> MediaEvidenceBinding:
@@ -320,7 +423,7 @@ async def _run_asset(
             master = await _submit_asset(
                 client, base_url, profile_id=row.profile_id, asset_type=kind,
                 asset_id=asset_id, view_id="MASTER", prompt=master_prompt,
-                output=paths["MASTER"], refs=[],
+                output=paths["MASTER"], refs=[], framing=AssetViewFramingPolicy.for_view(kind, "MASTER").as_dict(),
             )
             selected_profile = profile
             master_attempts.append({"provider": row.provider, "model": row.model, "status": "SUCCEEDED", "execution_id": master["execution_id"], "post_submission_state": PostSubmissionState.TASK_CONFIRMED.value})
@@ -393,7 +496,7 @@ async def _run_asset(
         call_counter["by_provider"][PRODUCTION_POLICY.image_provider] = call_counter["by_provider"].get(PRODUCTION_POLICY.image_provider, 0) + 1
         prompt = derived_prompt(asset, view_id)
         try:
-            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs)
+            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs, framing=AssetViewFramingPolicy.for_view(kind, view_id).as_dict())
         except ProviderSubmissionError as exc:
             classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
             raise RuntimeError(f"{asset_id}:{view_id}:STRICT_75API_FAIL_CLOSED:{classification.value}:post_submission_state={exc.post_submission_state.value}") from exc
@@ -416,7 +519,7 @@ async def _run_asset(
         call_counter["by_provider"][PRODUCTION_POLICY.image_provider] = call_counter["by_provider"].get(PRODUCTION_POLICY.image_provider, 0) + 1
         prompt = derived_prompt(asset, view_id, audit.violations + (audit.critical_identity_violations if kind == "CHARACTER" else audit.critical_object_violations))
         try:
-            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs)
+            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs, framing=AssetViewFramingPolicy.for_view(kind, view_id).as_dict())
         except ProviderSubmissionError as exc:
             classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
             raise RuntimeError(f"{asset_id}:{view_id}:REPAIR_STRICT_75API_FAIL_CLOSED:{classification.value}") from exc
@@ -463,6 +566,7 @@ def main() -> int:
     events: list[dict[str, Any]] = []
     results: dict[str, Any] = {}
     preflight: dict[str, Any] = {"status": "NOT_RUN", "policy": PRODUCTION_POLICY.as_dict()}
+    staging = _prepare_run_output(run_id, work_dir=work)
     OUT.mkdir(parents=True, exist_ok=True)
     try:
         _wait_for_health(f"http://127.0.0.1:{port}", timeout=180)
@@ -529,9 +633,9 @@ def main() -> int:
         async def run_stage(client: httpx.AsyncClient, character: Mapping[str, Any], keys: list[str], paths: dict[str, Path]) -> None:
             asset_id = str(character["id"])
             results[asset_id] = await _run_asset(client, base_url, kind="CHARACTER", asset=character, candidate_rows=candidate_rows, all_profiles=all_profiles, judge_profile=judge_profile, health=health, paths=paths, budget=CANARY_BUDGET[character["name"]], call_counter=call_counter, traces=[], events=events, policy=PRODUCTION_POLICY)
-            results[asset_id]["board"] = _board({key: paths[key] for key in keys}, OUT / f"{asset_id.lower().replace('_', '-')}-reference-board.png", ["FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_FRONT", "FULL_SIDE", "FULL_BACK"], 3)
             if not results[asset_id].get("authority"):
                 raise RuntimeError(f"STAGE_{asset_id}_AUTHORITY_NOT_READY")
+            results[asset_id]["board"] = _board({key: paths[key] for key in keys}, staging / f"{asset_id.lower().replace('_', '-')}-reference-board.png", ["FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_FRONT", "FULL_SIDE", "FULL_BACK"], 3, run_id=run_id, authority=results[asset_id]["authority"])
 
         async def run_all() -> None:
             async with httpx.AsyncClient(timeout=60, trust_env=False) as client:
@@ -543,15 +647,18 @@ def main() -> int:
                 keys = ["MASTER", "SIDE", "BACK", "DETAIL"]
                 paths = {key: work / f"handbag-{key.lower()}.jpg" for key in keys}
                 results["HANDBAG"] = await _run_asset(client, base_url, kind="PROP", asset=HANDBAG, candidate_rows=candidate_rows, all_profiles=all_profiles, judge_profile=judge_profile, health=health, paths=paths, budget=CANARY_BUDGET["HANDBAG"], call_counter=call_counter, traces=[], events=events, policy=PRODUCTION_POLICY)
-                results["HANDBAG"]["board"] = _board({key: paths[key] for key in keys}, OUT / "handbag-reference-board.png", keys, 2)
                 if not results["HANDBAG"].get("authority"):
                     raise RuntimeError("STAGE_HANDBAG_AUTHORITY_NOT_READY")
+                results["HANDBAG"]["board"] = _board({key: paths[key] for key in keys}, staging / "handbag-reference-board.png", keys, 2, run_id=run_id, authority=results["HANDBAG"]["authority"])
 
         asyncio.run(run_all())
         scene_authority = json.loads(SCENE_AUTHORITY_PATH.read_text(encoding="utf-8")) if SCENE_AUTHORITY_PATH.exists() else {"status": "MISSING"}
         char_authorities = [CharacterAuthority(**results[key]["authority"]) for key in ("LIN_WAN", "LU_SHU")]
         prop_authorities = [PropAuthority(**results["HANDBAG"]["authority"])]
         authority_set = VisualAssetAuthoritySet.build(characters=char_authorities, scenes={"E01_SC002": scene_authority}, props=prop_authorities, visual_style_fingerprint=_sha("visual-style-v1"))
+        _atomic_publish_board(staging / "lin-wan-reference-board.png", OUT / "lin-wan-reference-board.png")
+        _atomic_publish_board(staging / "lu-shu-reference-board.png", OUT / "lu-shu-reference-board.png")
+        _atomic_publish_board(staging / "handbag-reference-board.png", OUT / "handbag-reference-board.png")
         _write(OUT / "CHARACTER_AUTHORITIES.json", {key: results[key]["authority"] for key in ("LIN_WAN", "LU_SHU")})
         _write(OUT / "PROP_AUTHORITIES.json", {"HANDBAG": results["HANDBAG"]["authority"]})
         _write(OUT / "CHARACTER_VIEW_EVIDENCE.json", {key: results[key]["generations"] for key in ("LIN_WAN", "LU_SHU")})
@@ -570,7 +677,7 @@ def main() -> int:
         print(json.dumps({"status": manifest["status"], "image_calls": call_counter["used"], "video_calls": 0, "output": str(OUT)}, ensure_ascii=False, indent=2))
         return 0
     except Exception as exc:
-        failure = {"schema_version": "75api_autonomous_character_prop_canary_v1", "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL", "failure": str(exc)[:1000], "production_provider_policy": PRODUCTION_POLICY.as_dict(), "preflight": preflight, "provider_health": health.unhealthy, "real_image_calls": call_counter["used"], "real_image_calls_by_provider": call_counter["by_provider"], "real_video_calls": 0, "safety": {"production_writes": 0, "book_990400_writes": 0, "browser_direct_provider_calls": 0, "secret_leaks": 0, "orphans": 0}}
+        failure = {"schema_version": "75api_autonomous_character_prop_canary_v1", "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL", "failure": str(exc)[:1000], "production_provider_policy": PRODUCTION_POLICY.as_dict(), "preflight": preflight, "provider_health": health.unhealthy, "real_image_calls": call_counter["used"], "real_image_calls_by_provider": call_counter["by_provider"], "real_video_calls": 0, "publish_staging": str(staging), "board_publication": {"LIN_WAN": "NOT_PUBLISHED" if not results.get("LIN_WAN", {}).get("authority") else "STAGED_ONLY", "LU_SHU": "NOT_PUBLISHED", "HANDBAG": "NOT_PUBLISHED"}, "safety": {"production_writes": 0, "book_990400_writes": 0, "browser_direct_provider_calls": 0, "secret_leaks": 0, "orphans": 0}}
         _write(OUT / "AUTONOMOUS_VISUAL_ASSET_AUDIT.json", failure)
         _write(OUT / "75API_IMAGE_PREFLIGHT.json", preflight)
         _write(OUT / "CHARACTER_AUTHORITIES.json", {key: results.get(key, {}).get("authority") for key in ("LIN_WAN", "LU_SHU")})
@@ -583,7 +690,9 @@ def main() -> int:
         _write(OUT / "PROP_REPAIR_HISTORY.json", {"HANDBAG": results.get("HANDBAG", {}).get("repairs", [])})
         scene = json.loads(SCENE_AUTHORITY_PATH.read_text(encoding="utf-8")) if SCENE_AUTHORITY_PATH.exists() else {"status": "MISSING"}
         _write(OUT / "VISUAL_ASSET_AUTHORITY_SET.json", {"status": "PARTIAL", "scene": scene, "characters": {key: results.get(key, {}).get("authority") for key in ("LIN_WAN", "LU_SHU")}, "props": {"HANDBAG": results.get("HANDBAG", {}).get("authority")}})
-        (OUT / "AUTONOMOUS_VISUAL_ASSET_REPORT.md").write_text("# 75API Autonomous Character / Prop Real Canary\n\n- Status: AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL\n- Failure: " + str(exc)[:1000] + f"\n- Real IMAGE calls: {call_counter['used']} (75api={call_counter['by_provider']['75api-image']}, SHAPI=0, Poyo=0)\n- Real VIDEO calls: 0\n- No fallback provider was used.\n- No authority was promoted beyond completed stages.\n", encoding="utf-8")
+        lin_status = "READY/STAGED_ONLY" if results.get("LIN_WAN", {}).get("authority") else "INCOMPLETE"
+        lin_reason = "SUBMISSION_AMBIGUOUS" if "SUBMISSION_AMBIGUOUS" in str(exc) else str(exc)[:300]
+        (OUT / "AUTONOMOUS_VISUAL_ASSET_REPORT.md").write_text("# 75API Autonomous Character / Prop Real Canary\n\n- Status: AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL\n- Failure: " + str(exc)[:1000] + f"\n- Lin Wan: status={lin_status}; board=NOT_PUBLISHED; reason={lin_reason}\n- Lu Shu: status=NOT_STARTED; board=NOT_PUBLISHED\n- HANDBAG: status=NOT_STARTED; board=NOT_PUBLISHED\n- Staging retained: {staging}\n- Real IMAGE calls: {call_counter['used']} (75api={call_counter['by_provider']['75api-image']}, SHAPI=0, Poyo=0)\n- Real VIDEO calls: 0\n- No fallback provider was used.\n- No final board was published from a partial run.\n", encoding="utf-8")
         print(json.dumps(failure, ensure_ascii=False, indent=2))
         return 2
     finally:

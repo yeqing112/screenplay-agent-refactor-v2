@@ -1,0 +1,1 @@
+{"status":"STALE_NON_AUTHORITATIVE_ARTIFACT","source_commit":"de83476","reason":"Partial run had no READY CharacterAuthority or PropAuthority","files":["lin-wan-reference-board.png","lu-shu-reference-board.png","handbag-reference-board.png"],"excluded_from_authorities":true}

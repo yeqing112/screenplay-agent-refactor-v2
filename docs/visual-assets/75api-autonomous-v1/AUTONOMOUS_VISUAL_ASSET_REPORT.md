@@ -52,3 +52,12 @@ Existing `READY` SceneAuthority was preserved and not regenerated.
 - Keyframes: 0
 
 The timeout occurred after the 75API POST was sent, so the run was deliberately not retried and no alternate provider was used.
+
+## Board hygiene
+
+- Existing de83476 boards: `STALE_NON_AUTHORITATIVE_ARTIFACT`, moved to `historical-invalid-artifacts/de83476/`.
+- Partial run publication: `NOT_PUBLISHED`.
+- New run media: staged under `work/<run_id>/publish-staging/`; publication requires READY Authority and provenance.
+- Character FACE framing: requested `1:1`.
+- Character FULL framing: requested `2:3`, projected to provider `9:16` with recorded reason.
+- Prop framing: `1:1`. Scene framing remains `16:9`.

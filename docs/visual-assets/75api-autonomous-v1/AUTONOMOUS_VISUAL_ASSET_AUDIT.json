@@ -125,5 +125,29 @@
     "multi_reference_real_call_completed": false,
     "data_uri_real_call_completed": false,
     "reason": "MASTER timed out before any derived reference call"
+  },
+  "stale_board_handling": {
+    "status": "STALE_NON_AUTHORITATIVE_ARTIFACT",
+    "source_commit": "de83476",
+    "formal_directory_boards_present": false,
+    "historical_path": "historical-invalid-artifacts/de83476",
+    "authority_inclusion": false
+  },
+  "publication_rule": {
+    "partial_run": "NOT_PUBLISHED",
+    "ready_authority": "ATOMIC_PUBLISH_ONLY"
+  },
+  "framing_policy": {
+    "character_face": {
+      "requested": "1:1",
+      "provider": "1:1"
+    },
+    "character_full": {
+      "requested": "2:3",
+      "provider": "9:16",
+      "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio"
+    },
+    "prop": "1:1",
+    "scene": "16:9"
   }
 }
