@@ -107,6 +107,17 @@ class MediaEvidenceBinding:
         )
         return self.attempt_number >= 1 and all(str(value).strip() for value in required_text)
 
+    # CHARACTER and PROP terminology uses primary/derived; SCENE keeps its
+    # historical master/derived names.  These aliases keep one evidence
+    # contract across all three asset types without duplicating bindings.
+    @property
+    def primary_sha256(self) -> str:
+        return self.master_sha256
+
+    @property
+    def primary_generation_execution_id(self) -> str:
+        return self.master_generation_execution_id
+
 
 @dataclass
 class AssetRepairContext:

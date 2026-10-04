@@ -1,0 +1,10 @@
+{
+  "LIN_WAN": {
+    "status": "NOT_RUN_AFTER_PARTIAL_GENERATION",
+    "audits": []
+  },
+  "LU_SHU": {
+    "status": "NOT_RUN",
+    "audits": []
+  }
+}

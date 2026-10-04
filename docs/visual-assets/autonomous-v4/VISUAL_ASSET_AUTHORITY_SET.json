@@ -1,0 +1,25 @@
+{
+  "status": "PARTIAL",
+  "scene": {
+    "scene_id": "E01_SC002",
+    "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+    "views": [
+      "DETAIL",
+      "MASTER",
+      "REVERSE",
+      "SIDE"
+    ],
+    "view_fingerprints": {
+      "MASTER": "",
+      "REVERSE": "",
+      "SIDE": "",
+      "DETAIL": ""
+    },
+    "consistency_audit_count": 3,
+    "repair_count": 0,
+    "image_calls": 5,
+    "status": "READY"
+  },
+  "characters": {},
+  "props": {}
+}

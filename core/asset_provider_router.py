@@ -30,6 +30,16 @@ class ProviderFailureClassification(str, Enum):
     UNKNOWN = "UNKNOWN"
 
 
+class PostSubmissionState(str, Enum):
+    """What the client knows about a provider submission at failure time."""
+
+    NOT_SENT = "NOT_SENT"
+    REJECTED_BEFORE_TASK = "REJECTED_BEFORE_TASK"
+    TASK_CONFIRMED = "TASK_CONFIRMED"
+    TASK_NOT_CONFIRMED = "TASK_NOT_CONFIRMED"
+    AMBIGUOUS_AFTER_SEND = "AMBIGUOUS_AFTER_SEND"
+
+
 @dataclass
 class ProviderSelectionTrace:
     profile_id: str
@@ -57,8 +67,20 @@ class ProviderHealthSnapshot:
         return str(profile_id) not in self.unhealthy
 
 
-def classify_provider_failure(error: BaseException | str) -> ProviderFailureClassification:
+def classify_provider_failure(
+    error: BaseException | str,
+    *,
+    post_submission_state: PostSubmissionState | str = PostSubmissionState.NOT_SENT,
+) -> ProviderFailureClassification:
+    try:
+        submission_state = PostSubmissionState(post_submission_state)
+    except ValueError:
+        submission_state = PostSubmissionState.AMBIGUOUS_AFTER_SEND
     text = str(error or "").lower()
+    if submission_state in {PostSubmissionState.AMBIGUOUS_AFTER_SEND, PostSubmissionState.TASK_NOT_CONFIRMED} and any(
+        token in text for token in ("timeout", "timed out", "connection reset", "unknown task", "no task", "request id")
+    ):
+        return ProviderFailureClassification.SUBMISSION_AMBIGUOUS
     if any(token in text for token in ("credits are insufficient", "insufficient credits", "insufficient balance", "余额不足", "credits_insufficient")):
         return ProviderFailureClassification.CREDITS_INSUFFICIENT
     if any(token in text for token in ("401", "403", "认证未通过", "invalid api key", "unauthorized", "forbidden")):
@@ -85,14 +107,36 @@ _TERMINAL_FAILOVER = {
 }
 
 
-def can_failover(classification: ProviderFailureClassification | str, *, task_created: bool = False) -> bool:
+def can_failover(
+    classification: ProviderFailureClassification | str,
+    *,
+    task_created: bool = False,
+    post_submission_state: PostSubmissionState | str = PostSubmissionState.NOT_SENT,
+    reconciled_no_task: bool = False,
+) -> bool:
     """Return whether another provider may be tried without risking a duplicate task."""
 
     try:
         value = ProviderFailureClassification(classification)
     except ValueError:
         value = ProviderFailureClassification.UNKNOWN
-    return not task_created and value in _TERMINAL_FAILOVER
+    try:
+        state = PostSubmissionState(post_submission_state)
+    except ValueError:
+        state = PostSubmissionState.AMBIGUOUS_AFTER_SEND
+    if state == PostSubmissionState.TASK_CONFIRMED:
+        return False
+    if task_created and state != PostSubmissionState.REJECTED_BEFORE_TASK:
+        return False
+    if value == ProviderFailureClassification.SUBMISSION_AMBIGUOUS:
+        return reconciled_no_task and state in {
+            PostSubmissionState.REJECTED_BEFORE_TASK,
+            PostSubmissionState.TASK_NOT_CONFIRMED,
+            PostSubmissionState.AMBIGUOUS_AFTER_SEND,
+        }
+    if state in {PostSubmissionState.AMBIGUOUS_AFTER_SEND, PostSubmissionState.TASK_NOT_CONFIRMED}:
+        return False
+    return value in _TERMINAL_FAILOVER
 
 
 def _params(profile: dict[str, Any]) -> dict[str, Any]:
@@ -162,6 +206,7 @@ __all__ = [
     "ProviderFailureClassification",
     "ProviderHealthSnapshot",
     "ProviderSelectionTrace",
+    "PostSubmissionState",
     "classify_provider_failure",
     "can_failover",
 ]

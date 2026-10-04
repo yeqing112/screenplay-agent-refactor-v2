@@ -1,0 +1,14 @@
+[
+  {
+    "provider": "poyo-async",
+    "model": "gpt-image-2",
+    "selected": false,
+    "rejected_reason": "CREDITS_INSUFFICIENT"
+  },
+  {
+    "provider": "shapi-gemini-image",
+    "model": "nano-banana-2",
+    "selected": true,
+    "rejected_reason": "CREDITS_INSUFFICIENT_DURING_BATCH"
+  }
+]

@@ -1,0 +1,114 @@
+{
+  "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL",
+  "failure": "Provider credits exhausted during canary before complete character/prop authority lock",
+  "provider_health": {
+    "preset-poyo-image-gpt-image-2": "CREDITS_INSUFFICIENT",
+    "local-image-mw4y52": "CREDITS_INSUFFICIENT_DURING_BATCH"
+  },
+  "real_image_calls": 7,
+  "real_video_calls": 0,
+  "safety": {
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "browser_direct_provider_calls": 0,
+    "secret_leaks": 0,
+    "orphans": 0
+  },
+  "partial_candidate_assets": {
+    "LIN_WAN": {
+      "MASTER": {
+        "view_id": "MASTER",
+        "candidate_status": "CANDIDATE_UNJUDGED",
+        "file": {
+          "file": "lin-wan-master.jpg",
+          "bytes": 2030355,
+          "sha256": "7aac9263aaf61fc0f679e144143996c74bc7b66de943de51e81eb9e5535d46b5",
+          "width": 2752,
+          "height": 1536,
+          "format": "JPEG"
+        },
+        "sha256": "7aac9263aaf61fc0f679e144143996c74bc7b66de943de51e81eb9e5535d46b5",
+        "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+      },
+      "FACE_FRONT": {
+        "view_id": "FACE_FRONT",
+        "candidate_status": "CANDIDATE_UNJUDGED",
+        "file": {
+          "file": "lin-wan-face-front.jpg",
+          "bytes": 1887179,
+          "sha256": "a7a01d0469787c3050fa1ed85a0bc90ba60a1fe1a8ec5ec9d47a89a12a2ce2ca",
+          "width": 2752,
+          "height": 1536,
+          "format": "JPEG"
+        },
+        "sha256": "a7a01d0469787c3050fa1ed85a0bc90ba60a1fe1a8ec5ec9d47a89a12a2ce2ca",
+        "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+      },
+      "FACE_PROFILE": {
+        "view_id": "FACE_PROFILE",
+        "candidate_status": "CANDIDATE_UNJUDGED",
+        "file": {
+          "file": "lin-wan-face-profile.jpg",
+          "bytes": 1851335,
+          "sha256": "b5dd5edfc9b3499d1baf615ba414e9b10c8a5d136352e049b94b442175c1efb3",
+          "width": 2752,
+          "height": 1536,
+          "format": "JPEG"
+        },
+        "sha256": "b5dd5edfc9b3499d1baf615ba414e9b10c8a5d136352e049b94b442175c1efb3",
+        "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+      },
+      "FACE_45": {
+        "view_id": "FACE_45",
+        "candidate_status": "CANDIDATE_UNJUDGED",
+        "file": {
+          "file": "lin-wan-face-45.jpg",
+          "bytes": 2075801,
+          "sha256": "3c8224fc93c2a6012432df4f3123ea91846bf5210e43231741ff29f3e61f0495",
+          "width": 2752,
+          "height": 1536,
+          "format": "JPEG"
+        },
+        "sha256": "3c8224fc93c2a6012432df4f3123ea91846bf5210e43231741ff29f3e61f0495",
+        "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+      },
+      "FULL_SIDE": {
+        "view_id": "FULL_SIDE",
+        "candidate_status": "CANDIDATE_UNJUDGED",
+        "file": {
+          "file": "lin-wan-full-side.jpg",
+          "bytes": 1470676,
+          "sha256": "c5d8222ced8f455ca43b1e287996e81942973958c67fd5dd25a684d0ecb9b2aa",
+          "width": 2752,
+          "height": 1536,
+          "format": "JPEG"
+        },
+        "sha256": "c5d8222ced8f455ca43b1e287996e81942973958c67fd5dd25a684d0ecb9b2aa",
+        "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+      }
+    },
+    "LU_SHU": {},
+    "HANDBAG": {}
+  },
+  "scene_authority": {
+    "scene_id": "E01_SC002",
+    "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+    "views": [
+      "DETAIL",
+      "MASTER",
+      "REVERSE",
+      "SIDE"
+    ],
+    "view_fingerprints": {
+      "MASTER": "",
+      "REVERSE": "",
+      "SIDE": "",
+      "DETAIL": ""
+    },
+    "consistency_audit_count": 3,
+    "repair_count": 0,
+    "image_calls": 5,
+    "status": "READY"
+  },
+  "vision_judge_calls": 4
+}

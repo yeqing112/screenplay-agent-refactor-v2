@@ -5,6 +5,7 @@ from core.asset_provider_router import (
     ProviderHealthSnapshot,
     can_failover,
     classify_provider_failure,
+    PostSubmissionState,
 )
 
 
@@ -57,3 +58,25 @@ def test_failure_classification_and_failover_policy_are_fail_closed():
     assert not can_failover(ProviderFailureClassification.SUBMISSION_AMBIGUOUS)
     assert not can_failover(ProviderFailureClassification.PAYLOAD_INVALID)
     assert not can_failover(ProviderFailureClassification.CREDITS_INSUFFICIENT, task_created=True)
+
+
+def test_timeout_before_send_can_failover():
+    assert classify_provider_failure("timeout", post_submission_state=PostSubmissionState.NOT_SENT) == ProviderFailureClassification.NETWORK_TRANSIENT
+    assert can_failover(ProviderFailureClassification.NETWORK_TRANSIENT, post_submission_state=PostSubmissionState.NOT_SENT)
+
+
+def test_timeout_after_send_is_submission_ambiguous():
+    assert classify_provider_failure("request timed out", post_submission_state=PostSubmissionState.AMBIGUOUS_AFTER_SEND) == ProviderFailureClassification.SUBMISSION_AMBIGUOUS
+    assert not can_failover(ProviderFailureClassification.SUBMISSION_AMBIGUOUS, post_submission_state=PostSubmissionState.AMBIGUOUS_AFTER_SEND)
+
+
+def test_unknown_task_after_post_does_not_blind_failover():
+    state = PostSubmissionState.TASK_NOT_CONFIRMED
+    classification = classify_provider_failure("unknown task id after POST", post_submission_state=state)
+    assert classification == ProviderFailureClassification.SUBMISSION_AMBIGUOUS
+    assert not can_failover(classification, post_submission_state=state)
+    assert can_failover(classification, post_submission_state=state, reconciled_no_task=True)
+
+
+def test_confirmed_provider_task_never_fails_over():
+    assert not can_failover(ProviderFailureClassification.CREDITS_INSUFFICIENT, task_created=True, post_submission_state=PostSubmissionState.TASK_CONFIRMED)

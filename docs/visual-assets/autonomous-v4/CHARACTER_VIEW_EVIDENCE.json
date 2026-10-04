@@ -1,0 +1,75 @@
+{
+  "LIN_WAN": {
+    "MASTER": {
+      "view_id": "MASTER",
+      "candidate_status": "CANDIDATE_UNJUDGED",
+      "file": {
+        "file": "lin-wan-master.jpg",
+        "bytes": 2030355,
+        "sha256": "7aac9263aaf61fc0f679e144143996c74bc7b66de943de51e81eb9e5535d46b5",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "7aac9263aaf61fc0f679e144143996c74bc7b66de943de51e81eb9e5535d46b5",
+      "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+    },
+    "FACE_FRONT": {
+      "view_id": "FACE_FRONT",
+      "candidate_status": "CANDIDATE_UNJUDGED",
+      "file": {
+        "file": "lin-wan-face-front.jpg",
+        "bytes": 1887179,
+        "sha256": "a7a01d0469787c3050fa1ed85a0bc90ba60a1fe1a8ec5ec9d47a89a12a2ce2ca",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "a7a01d0469787c3050fa1ed85a0bc90ba60a1fe1a8ec5ec9d47a89a12a2ce2ca",
+      "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+    },
+    "FACE_PROFILE": {
+      "view_id": "FACE_PROFILE",
+      "candidate_status": "CANDIDATE_UNJUDGED",
+      "file": {
+        "file": "lin-wan-face-profile.jpg",
+        "bytes": 1851335,
+        "sha256": "b5dd5edfc9b3499d1baf615ba414e9b10c8a5d136352e049b94b442175c1efb3",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "b5dd5edfc9b3499d1baf615ba414e9b10c8a5d136352e049b94b442175c1efb3",
+      "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+    },
+    "FACE_45": {
+      "view_id": "FACE_45",
+      "candidate_status": "CANDIDATE_UNJUDGED",
+      "file": {
+        "file": "lin-wan-face-45.jpg",
+        "bytes": 2075801,
+        "sha256": "3c8224fc93c2a6012432df4f3123ea91846bf5210e43231741ff29f3e61f0495",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "3c8224fc93c2a6012432df4f3123ea91846bf5210e43231741ff29f3e61f0495",
+      "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+    },
+    "FULL_SIDE": {
+      "view_id": "FULL_SIDE",
+      "candidate_status": "CANDIDATE_UNJUDGED",
+      "file": {
+        "file": "lin-wan-full-side.jpg",
+        "bytes": 1470676,
+        "sha256": "c5d8222ced8f455ca43b1e287996e81942973958c67fd5dd25a684d0ecb9b2aa",
+        "width": 2752,
+        "height": 1536,
+        "format": "JPEG"
+      },
+      "sha256": "c5d8222ced8f455ca43b1e287996e81942973958c67fd5dd25a684d0ecb9b2aa",
+      "generation_execution_id": "UNRECORDED_PARTIAL_RUN"
+    }
+  },
+  "LU_SHU": {}
+}
