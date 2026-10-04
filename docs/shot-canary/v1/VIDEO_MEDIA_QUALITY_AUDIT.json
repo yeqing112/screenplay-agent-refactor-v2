@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "reason": "audio_streams must equal 0",
+  "shot_id": "SH_E01_SC002_007",
+  "video_version": 1,
+  "ffprobe": {
+    "status": "PASS",
+    "duration_seconds": 5.167,
+    "width": 1312,
+    "height": 736,
+    "audio_streams": 1
+  }
+}

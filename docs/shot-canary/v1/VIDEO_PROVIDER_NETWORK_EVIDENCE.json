@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "provider": "75api-minimax-h3",
+  "model": "minimax_h3_no_audios",
+  "post_count": 1,
+  "provider_task_id": "task_mISK67FllLAtVTBslUYomTqW86kJglky",
+  "provider_content_requires_auth": true
+}

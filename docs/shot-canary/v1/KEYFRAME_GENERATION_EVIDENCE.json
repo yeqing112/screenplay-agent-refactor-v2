@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "run_id": "20261004T162533Z",
+  "real_image_calls": 3,
+  "keyframes": {
+    "SH_E01_SC002_007": {
+      "status": "PASS",
+      "version": 1,
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\shot-canary\\v1\\20261004T162533Z\\SH_E01_SC002_007-keyframe-v1.jpg",
+      "sha256": "ea82ecbf583a9221d17562f66943b4b4f0b366874f739089a3fcd33f185355f1",
+      "provider_preview_url": "https://pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev/images/2026/10/04/1791131012191783767-ea82ecbf583a9221.png",
+      "requested_aspect_ratio": "16:9",
+      "submitted_aspect_ratio": "16:9",
+      "observed_width": 1672,
+      "observed_height": 941,
+      "observed_aspect_ratio": "1672:941",
+      "geometry_valid": true,
+      "judge": {
+        "status": "PASS",
+        "scene_identity": true,
+        "character_identity": true,
+        "unauthorized_props": [],
+        "apple_in_lu_shu_right_hand": false,
+        "extra_people": false,
+        "text_or_watermark": false,
+        "response_sha256": "fdfca2f472ca2e098a7fa005aef5b840f44928cf68253ae4541d8ae1c930aaae"
+      },
+      "review_decision": "APPROVE",
+      "regenerate": {
+        "candidate_version": 2,
+        "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\shot-canary\\v1\\20261004T162533Z\\SH_E01_SC002_007-keyframe-v2.jpg",
+        "sha256": "75577da2c08c071141abff288adf91e522449b97de7f2103fbdd2063571b6bf9",
+        "provider_preview_url": "https://pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev/images/2026/10/04/1791131359514911381-75577da2c08c0711.png",
+        "new_execution": true,
+        "old_official_preserved_during_review": true,
+        "review_decision": "APPROVE",
+        "official_version": 2,
+        "artifact_path": "D:/Work/Project/screenplay-agent-refactor-v2/docs/shot-canary/v1/media/20261004T162533Z/SH_E01_SC002_007-keyframe-v2.jpg"
+      },
+      "artifact_path": "D:/Work/Project/screenplay-agent-refactor-v2/docs/shot-canary/v1/media/20261004T162533Z/SH_E01_SC002_007-keyframe-v1.jpg"
+    },
+    "SH_E01_SC002_002": {
+      "status": "PASS",
+      "version": 1,
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\shot-canary\\v1\\20261004T162533Z\\SH_E01_SC002_002-keyframe-v1.jpg",
+      "sha256": "f039112c1a3eb0d7d24785a684b9c104989a549df235a4fdd52c72956e1472c1",
+      "provider_preview_url": "https://pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev/images/2026/10/04/1791131206434910959-f039112c1a3eb0d7.png",
+      "requested_aspect_ratio": "16:9",
+      "submitted_aspect_ratio": "16:9",
+      "observed_width": 1672,
+      "observed_height": 941,
+      "observed_aspect_ratio": "1672:941",
+      "geometry_valid": true,
+      "judge": {
+        "status": "PASS",
+        "scene_identity": true,
+        "character_identity": true,
+        "unauthorized_props": [],
+        "apple_in_lu_shu_right_hand": false,
+        "extra_people": false,
+        "text_or_watermark": false,
+        "response_sha256": "fdfca2f472ca2e098a7fa005aef5b840f44928cf68253ae4541d8ae1c930aaae"
+      },
+      "review_decision": "APPROVE",
+      "artifact_path": "D:/Work/Project/screenplay-agent-refactor-v2/docs/shot-canary/v1/media/20261004T162533Z/SH_E01_SC002_002-keyframe-v1.jpg"
+    },
+    "SH_E01_SC002_006": {
+      "status": "PASS",
+      "version": 1,
+      "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\shot-canary\\v1\\20261004T162533Z\\SH_E01_SC002_006-keyframe-v1.jpg",
+      "sha256": "e8a06de3a03a3170abd21c02e46ffdc0c8476416efbaa224da8c86f53e759f57",
+      "provider_preview_url": "https://pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev/images/2026/10/04/1791131278268970596-e8a06de3a03a3170.png",
+      "requested_aspect_ratio": "16:9",
+      "submitted_aspect_ratio": "16:9",
+      "observed_width": 1672,
+      "observed_height": 941,
+      "observed_aspect_ratio": "1672:941",
+      "geometry_valid": true,
+      "judge": {
+        "status": "PASS",
+        "scene_identity": true,
+        "character_identity": true,
+        "unauthorized_props": [],
+        "apple_in_lu_shu_right_hand": true,
+        "extra_people": false,
+        "text_or_watermark": false,
+        "response_sha256": "53c0b67871562caeec43c74d8b3912ecd1d3bdcb79155c79764a12dee9679f6d"
+      },
+      "review_decision": "APPROVE",
+      "artifact_path": "D:/Work/Project/screenplay-agent-refactor-v2/docs/shot-canary/v1/media/20261004T162533Z/SH_E01_SC002_006-keyframe-v1.jpg"
+    }
+  }
+}

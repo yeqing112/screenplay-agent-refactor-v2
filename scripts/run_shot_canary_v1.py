@@ -183,6 +183,7 @@ async def _run() -> tuple[int, dict[str, Any]]:
             judge = _judge(path, judge_prompt, judge_profile)
             evidence["keyframes"][shot_id] = {"status": "PASS" if ratio_ok and judge.get("status") == "PASS" and not judge.get("unauthorized_props") else "FAIL", "version": 1, "path": str(path), "sha256": _sha(path), "provider_preview_url": str(result.get("previewUrl") or result.get("uri") or ""), "requested_aspect_ratio": "16:9", "submitted_aspect_ratio": "16:9", "observed_width": width, "observed_height": height, "observed_aspect_ratio": f"{width}:{height}", "geometry_valid": ratio_ok, "judge": judge, "review_decision": "APPROVE" if ratio_ok and judge.get("status") == "PASS" and not judge.get("unauthorized_props") else "BLOCK"}
             if evidence["keyframes"][shot_id]["status"] != "PASS":
+                evidence["status"] = "REAL_SHOT_MEDIA_CANARY_MEDIA_QUALITY_FAILED"
                 evidence["error"] = f"KEYFRAME_COMPLIANCE_FAILED:{shot_id}"
                 return 2, evidence
         except Exception as exc:
@@ -233,6 +234,7 @@ async def _run() -> tuple[int, dict[str, Any]]:
             row = {"version": version, "provider": "75api-minimax-h3", "model": "minimax_h3_no_audios", "director_duration_seconds": director, "provider_seconds": int(projection.provider_duration_seconds), "provider_padding_seconds": projection.provider_padding_seconds, "submit_post_count": 1, "task_id": task_id, "reload": True, "reconcile_get": reconcile, "poll": polled, "candidate": {"status": "CANDIDATE", "path": str(video_path), "sha256": _sha(video_path)}, "media_qa": qa, "review_decision": "APPROVE" if qa["status"] == "PASS" else "BLOCK", "official_version": version}
             evidence["videos"].setdefault(shot_id, []).append(row)
             if qa["status"] != "PASS":
+                evidence["status"] = "REAL_SHOT_MEDIA_CANARY_MEDIA_QUALITY_FAILED"
                 evidence["error"] = f"MEDIA_QUALITY_FAILED:{shot_id}:v{version}"
                 return 2, evidence
         if shot_id == "SH_E01_SC002_007":

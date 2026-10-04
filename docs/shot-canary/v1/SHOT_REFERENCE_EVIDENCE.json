@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "run_id": "20261004T162533Z",
+  "shots": {
+    "SH_E01_SC002_007": {
+      "allowed_props": []
+    },
+    "SH_E01_SC002_002": {
+      "allowed_props": []
+    },
+    "SH_E01_SC002_006": {
+      "allowed_props": [
+        "APPLE"
+      ]
+    }
+  }
+}

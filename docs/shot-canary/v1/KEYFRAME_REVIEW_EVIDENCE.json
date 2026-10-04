@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "run_id": "20261004T162533Z",
+  "reviews": {
+    "SH_E01_SC002_007": {
+      "status": "PASS",
+      "scene_identity": true,
+      "character_identity": true,
+      "unauthorized_props": [],
+      "apple_in_lu_shu_right_hand": false,
+      "extra_people": false,
+      "text_or_watermark": false,
+      "response_sha256": "fdfca2f472ca2e098a7fa005aef5b840f44928cf68253ae4541d8ae1c930aaae"
+    },
+    "SH_E01_SC002_002": {
+      "status": "PASS",
+      "scene_identity": true,
+      "character_identity": true,
+      "unauthorized_props": [],
+      "apple_in_lu_shu_right_hand": false,
+      "extra_people": false,
+      "text_or_watermark": false,
+      "response_sha256": "fdfca2f472ca2e098a7fa005aef5b840f44928cf68253ae4541d8ae1c930aaae"
+    },
+    "SH_E01_SC002_006": {
+      "status": "PASS",
+      "scene_identity": true,
+      "character_identity": true,
+      "unauthorized_props": [],
+      "apple_in_lu_shu_right_hand": true,
+      "extra_people": false,
+      "text_or_watermark": false,
+      "response_sha256": "53c0b67871562caeec43c74d8b3912ecd1d3bdcb79155c79764a12dee9679f6d"
+    }
+  }
+}

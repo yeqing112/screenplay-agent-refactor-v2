@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "candidate_review": "BLOCK",
+  "reason": "MEDIA_QUALITY_FAILED",
+  "sampled_frames": [
+    "first",
+    "middle",
+    "final_director",
+    "final_provider"
+  ]
+}

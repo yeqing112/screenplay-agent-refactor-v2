@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "same_task_across_reload_reconcile": true,
+  "videos": {
+    "SH_E01_SC002_007": [
+      {
+        "version": 1,
+        "provider": "75api-minimax-h3",
+        "model": "minimax_h3_no_audios",
+        "director_duration_seconds": 5.0,
+        "provider_seconds": 5,
+        "provider_padding_seconds": 0.0,
+        "submit_post_count": 1,
+        "task_id": "task_mISK67FllLAtVTBslUYomTqW86kJglky",
+        "reload": true,
+        "reconcile_get": {
+          "status": "running",
+          "externalStatus": "processing",
+          "pollAttempts": 1,
+          "providerResponse": {
+            "created_at": 1791131368,
+            "error": null,
+            "id": "task_mISK67FllLAtVTBslUYomTqW86kJglky",
+            "model": "75api-minimax-h3-fast-20260911",
+            "object": "video.generation",
+            "progress": 0,
+            "status": "processing",
+            "task_id": "04fbffdc-f9c0-4cdf-8b61-cd18f51e36c7",
+            "video_url": null
+          },
+          "externalTaskId": "task_mISK67FllLAtVTBslUYomTqW86kJglky"
+        },
+        "poll": {
+          "externalStatus": "succeeded",
+          "pollAttempts": 17,
+          "previewUrl": "https://www.75api.com/v1/videos/task_mISK67FllLAtVTBslUYomTqW86kJglky/content",
+          "uri": "https://www.75api.com/v1/videos/task_mISK67FllLAtVTBslUYomTqW86kJglky/content",
+          "providerResponse": {
+            "completed_at": 1791131464,
+            "created_at": 1791131368,
+            "error": null,
+            "id": "task_mISK67FllLAtVTBslUYomTqW86kJglky",
+            "model": "75api-minimax-h3-fast-20260911",
+            "object": "https://www.75api.com/v1/videos/task_mISK67FllLAtVTBslUYomTqW86kJglky/content",
+            "progress": 100,
+            "status": "completed",
+            "task_id": "04fbffdc-f9c0-4cdf-8b61-cd18f51e36c7",
+            "video_url": "https://www.75api.com/v1/videos/task_mISK67FllLAtVTBslUYomTqW86kJglky/content"
+          },
+          "providerContentRequiresAuth": true
+        },
+        "candidate": {
+          "status": "CANDIDATE",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\shot-canary\\v1\\20261004T162533Z\\SH_E01_SC002_007-video-v1.mp4",
+          "sha256": "5d9ca1f5029ab95b9304c08ca688583f3830b84e45281b7aec51cee02bd3a5af",
+          "artifact_path": "D:/Work/Project/screenplay-agent-refactor-v2/docs/shot-canary/v1/media/20261004T162533Z/SH_E01_SC002_007-video-v1.mp4"
+        },
+        "media_qa": {
+          "status": "FAIL",
+          "ffprobe": {
+            "status": "PASS",
+            "duration_seconds": 5.167,
+            "width": 1312,
+            "height": 736,
+            "audio_streams": 1
+          },
+          "sampled_frames": [
+            "first",
+            "middle",
+            "final_director",
+            "final_provider"
+          ],
+          "unauthorized_props": []
+        },
+        "review_decision": "BLOCK",
+        "official_version": 1
+      }
+    ]
+  }
+}

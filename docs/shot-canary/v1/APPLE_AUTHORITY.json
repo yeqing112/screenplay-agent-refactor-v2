@@ -1,0 +1,22 @@
+{
+  "prompt": "单张写实电影道具 HERO / MASTER：一只完整无切开的红黄自然苹果，果梗清晰可见，单一对象，中性灰背景，无切片、无第二只苹果、无手、无人物、无文字、无水印。",
+  "provider": "75api-image",
+  "model": "gpt-image-2-1k",
+  "sha256": "f01165183d6b4dc8ae4bff4896f343163662204c6d59f32c50d901642a5973ae",
+  "provider_response_fingerprint": "050545da5d455758121cbd834efe61726b2f5867c4ace0da94d7f3d9326f4aba",
+  "preview_url": "https://pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev/images/2026/10/04/1791130942216302433-f01165183d6b4dc8.png",
+  "judge": {
+    "status": "PASS",
+    "single_whole_apple": true,
+    "stem_visible": true,
+    "unauthorized_objects": [],
+    "response_sha256": "249656bf0651ea2432d2203ce2f9a84dfd11d90f051176116e91cc70c5ce0a01"
+  },
+  "authority": {
+    "status": "READY",
+    "prop_id": "APPLE",
+    "complexity": "LOW",
+    "media_sha256": "f01165183d6b4dc8ae4bff4896f343163662204c6d59f32c50d901642a5973ae",
+    "authority_fingerprint": "f620d620b18659ffc8c65026f36447496897514da6b9793deeaa09c5706537cb"
+  }
+}
