@@ -8,27 +8,30 @@
       "shot_id": "SH_E01_SC001_005",
       "dialogue": [
         {
-          "speaker": "陆叔",
+          "speaker": "林晚",
           "authoritative_text": "顾沉？你……你怎么在这儿？",
-          "start_time": 0.4,
-          "end_time": 3.44,
-          "delivery": "slow",
+          "start_time": 1.8,
+          "end_time": 3.6,
+          "delivery": "语速偏快，音调上扬，声音中带着明显的惊讶与颤抖，'顾沉？'二字短促而急切，'你……'处有明显的停顿与结巴，'你怎么在这儿？'语速加快，尾音上扬，带着困惑与不安",
           "phrase_windows": [
             {
-              "index": 1,
               "text": "顾沉？",
-              "start_time": 0.4,
-              "end_time": 1.1
+              "start_time": 1.8,
+              "end_time": 2.3
             },
             {
-              "index": 2,
-              "text": "你……你怎么在这儿？",
-              "start_time": 1.1,
-              "end_time": 3.44
+              "text": "你……",
+              "start_time": 2.3,
+              "end_time": 2.7
+            },
+            {
+              "text": "你怎么在这儿？",
+              "start_time": 2.7,
+              "end_time": 3.6
             }
           ],
-          "estimated_minimum_seconds": 3.04,
-          "status": "READY"
+          "estimated_minimum_seconds": 1.8,
+          "status": "authoritative"
         }
       ]
     },
@@ -37,74 +40,34 @@
       "dialogue": [
         {
           "speaker": "陆叔",
-          "authoritative_text": "陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
-          "start_time": 0.5,
-          "end_time": 13.37,
-          "delivery": "slow",
+          "authoritative_text": "晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+          "start_time": 0.0,
+          "end_time": 13.5,
+          "delivery": "warm, worried, gently scolding, spoken at a moderate pace with a soft, concerned tone that rises slightly on the questions and settles into a gentle, inviting cadence at the end",
           "phrase_windows": [
             {
-              "index": 1,
-              "text": "陆叔：",
-              "start_time": 0.5,
-              "end_time": 1.17
+              "text": "晚晚，你看看你，跑那么快做什么？",
+              "start_time": 0.0,
+              "end_time": 3.6
             },
             {
-              "index": 2,
-              "text": "晚晚，",
-              "start_time": 1.17,
-              "end_time": 1.83
-            },
-            {
-              "index": 3,
-              "text": "你看看你，",
-              "start_time": 1.83,
-              "end_time": 2.94
-            },
-            {
-              "index": 4,
-              "text": "跑那么快做什么？",
-              "start_time": 2.94,
-              "end_time": 4.72
-            },
-            {
-              "index": 5,
               "text": "在车站吓我一跳。",
-              "start_time": 4.72,
-              "end_time": 6.49
+              "start_time": 3.6,
+              "end_time": 5.4
             },
             {
-              "index": 6,
-              "text": "脸色这么差，",
-              "start_time": 6.49,
-              "end_time": 7.82
+              "text": "脸色这么差，是不是又没好好吃饭？",
+              "start_time": 5.4,
+              "end_time": 9.0
             },
             {
-              "index": 7,
-              "text": "是不是又没好好吃饭？",
-              "start_time": 7.82,
-              "end_time": 10.04
-            },
-            {
-              "index": 8,
-              "text": "来，",
-              "start_time": 10.04,
-              "end_time": 10.49
-            },
-            {
-              "index": 9,
-              "text": "先坐下，",
-              "start_time": 10.49,
-              "end_time": 11.37
-            },
-            {
-              "index": 10,
-              "text": "陆叔给你洗个苹果。",
-              "start_time": 11.37,
-              "end_time": 13.37
+              "text": "来，先坐下，陆叔给你洗个苹果。",
+              "start_time": 9.0,
+              "end_time": 13.5
             }
           ],
-          "estimated_minimum_seconds": 12.87,
-          "status": "READY"
+          "estimated_minimum_seconds": 13.5,
+          "status": "authoritative"
         }
       ]
     },
@@ -113,56 +76,39 @@
       "dialogue": [
         {
           "speaker": "陆叔",
-          "authoritative_text": "陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
-          "start_time": 0.35,
-          "end_time": 7.99,
-          "delivery": "slow",
+          "authoritative_text": "伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
+          "start_time": 0.0,
+          "end_time": 8.5,
+          "delivery": "teasing then warm, rising pitch on the questions, softening into a gentle invitation",
           "phrase_windows": [
             {
-              "index": 1,
-              "text": "陆叔：",
-              "start_time": 0.35,
-              "end_time": 1.04
-            },
-            {
-              "index": 2,
               "text": "伞？",
-              "start_time": 1.04,
-              "end_time": 1.51
+              "start_time": 0.0,
+              "end_time": 1.2
             },
             {
-              "index": 3,
               "text": "你哪来的伞？",
-              "start_time": 1.51,
-              "end_time": 2.9
+              "start_time": 1.2,
+              "end_time": 2.6
             },
             {
-              "index": 4,
               "text": "你不是一直不喜欢带伞吗？",
-              "start_time": 2.9,
-              "end_time": 5.67
+              "start_time": 2.6,
+              "end_time": 4.4
             },
             {
-              "index": 5,
               "text": "嫌麻烦。",
-              "start_time": 5.67,
-              "end_time": 6.6
+              "start_time": 4.4,
+              "end_time": 5.4
             },
             {
-              "index": 6,
-              "text": "来，",
-              "start_time": 6.6,
-              "end_time": 7.06
-            },
-            {
-              "index": 7,
-              "text": "吃苹果。",
-              "start_time": 7.06,
-              "end_time": 7.99
+              "text": "来，吃苹果。",
+              "start_time": 5.4,
+              "end_time": 8.5
             }
           ],
-          "estimated_minimum_seconds": 7.64,
-          "status": "READY"
+          "estimated_minimum_seconds": 8.5,
+          "status": "authoritative"
         }
       ]
     },

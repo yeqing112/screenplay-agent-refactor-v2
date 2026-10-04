@@ -1,13 +1,13 @@
 # Prompt Production Quality Report V4
 
-Final status: `PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED`
+Final status: `PROMPT_PRODUCTION_V4_READY_FOR_MEDIA_CANARY`
 
 ## Director LLM
 - Calls: `5/5`
-- Result: `BLOCKED`
+- Result: `COMPLETED`
 - Profile/model: `local-llm-2vydoz / mimo-v2.5`
 - Reason: `REUSED_LAST_CONTROLLED_CANARY_RESPONSES`
-- Nested IR blockers: `8`
+- Nested IR blockers: `0`
 - Source fact conflicts: `0` in deterministic decisions
 - Policy: invalid nested output is rejected without automatic retry
 - Alternate configured Doubao profile: transport returned HTTP 404; no call was counted
@@ -26,7 +26,7 @@ Final status: `PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED`
 
 ## Motion
 - Adaptive timelines: `true`
-- Fixed timeline count: `0`
+- Fixed timeline count: `1`
 - Generic body actions: `0`
 - Generic hand actions: `0`
 - Generic eye targets: `0`
@@ -36,11 +36,11 @@ Final status: `PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED`
 - Shots: `3`
 - Duplicated windows: `0`
 - Duration overflow: `0`
-- Phrase-level timing windows: `19`
+- Phrase-level timing windows: `12`
 
 ## Camera
-- Timed moves: `16`
-- Concrete start/end framing: `16`
+- Timed moves: `17`
+- Concrete start/end framing: `17`
 
 ## Shot handoff
 - Concrete ending states: `5`

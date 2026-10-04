@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT))
 from core.prompt_production_v4 import (  # noqa: E402
     AssetDesignDecisionIR,
     CameraChoreographyIR,
+    DialoguePerformancePlan,
     DirectorDecisionIR,
     KeyframeBlockingIR,
     build_dialogue_performance_plan,
@@ -141,6 +142,43 @@ def shot_decisions():
     return decisions
 
 
+def coerce_llm_decision(raw: dict, baseline: DirectorDecisionIR) -> DirectorDecisionIR:
+    """Compile a validated LLM DirectorDecisionIR into typed runtime objects."""
+    blocks = []
+    for item in raw["blocking"]:
+        blocks.append(KeyframeBlockingIR(**{key: str(item.get(key, "")) for key in (
+            "identity", "reference_identity", "position", "screen_x", "depth_zone", "body_pose", "weight_distribution", "torso_direction", "head_yaw", "head_pitch", "eye_target", "expression", "left_hand", "right_hand", "prop_contact"
+        )}))
+    dialogue = []
+    for item in raw.get("dialogue_beats", []):
+        dialogue.append(DialoguePerformancePlan(
+            speaker=str(item.get("speaker", "")), authoritative_text=str(item.get("authoritative_text", "")),
+            start_time=float(item.get("start_time", 0)), end_time=float(item.get("end_time", 0)),
+            delivery=str(item.get("delivery", "")), phrase_windows=list(item.get("phrase_windows") or []),
+            estimated_minimum_seconds=float(item.get("estimated_minimum_seconds", 0)), status=str(item.get("status", "READY")),
+        ))
+    cameras = [CameraChoreographyIR(
+        start_time=float(item.get("start_time", 0)), end_time=float(item.get("end_time", 0)),
+        movement_type=str(item.get("movement_type", "")), direction=str(item.get("direction", "")),
+        speed=str(item.get("speed", "")), distance_or_scale_change=str(item.get("distance_or_scale_change", "")),
+        target=str(item.get("target", "")), start_framing=str(item.get("start_framing", "")),
+        end_framing=str(item.get("end_framing", "")), easing=str(item.get("easing", "")),
+    ) for item in raw["camera_beats"]]
+    beats = []
+    for item in raw["performance_beats"]:
+        beat = dict(item)
+        beat["start_time"] = float(beat["start_time"])
+        beat["end_time"] = float(beat["end_time"])
+        beats.append(beat)
+    return DirectorDecisionIR(
+        shot_id=str(raw["shot_id"]), duration_seconds=baseline.duration_seconds,
+        source_facts=baseline.source_facts, starting_state=dict(raw["starting_state"]), blocking=blocks,
+        performance_beats=beats, dialogue_beats=dialogue, camera_beats=cameras,
+        emotion_arc=dict(raw["emotion_arc"]), ending_state=dict(raw["ending_state"]),
+        source_fact_hash=baseline.source_fact_hash,
+    )
+
+
 def _shot5():
     dialogue = build_dialogue_performance_plan("陆叔", "顾沉？你……你怎么在这儿？", start_time=0.4, shot_duration=5.5, delivery="slow")
     return DirectorDecisionIR(
@@ -250,6 +288,20 @@ def maybe_real_llm(decisions, enabled: bool):
     calls = 0
     responses = []
     diagnostics = []
+    response_format = {"type": "json_schema", "json_schema": {"name": "director_decision_ir", "strict": True, "schema": {
+        "type": "object", "additionalProperties": False,
+        "required": ["shot_id", "source_facts", "starting_state", "blocking", "performance_beats", "dialogue_beats", "camera_beats", "emotion_arc", "ending_state"],
+        "properties": {
+            "shot_id": {"type": "string"}, "source_facts": {"type": "object"}, "starting_state": {"type": "object"},
+            "blocking": {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["identity", "reference_identity", "position", "screen_x", "depth_zone", "body_pose", "weight_distribution", "torso_direction", "head_yaw", "head_pitch", "eye_target", "expression", "left_hand", "right_hand", "prop_contact"], "properties": {key: {"type": "string"} for key in ["identity", "reference_identity", "position", "screen_x", "depth_zone", "body_pose", "weight_distribution", "torso_direction", "head_yaw", "head_pitch", "eye_target", "expression", "left_hand", "right_hand", "prop_contact"]}}},
+            "performance_beats": {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["start_time", "end_time", "actor", "body_action", "hand_action", "head_action", "eye_action", "facial_action", "ending_state"], "properties": {"start_time": {"type": "number"}, "end_time": {"type": "number"}, **{key: {"type": "string"} for key in ["actor", "body_action", "hand_action", "head_action", "eye_action", "facial_action", "ending_state"]}}}},
+            "dialogue_beats": {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["speaker", "authoritative_text", "start_time", "end_time", "delivery", "estimated_minimum_seconds", "status", "phrase_windows"], "properties": {"speaker": {"type": "string"}, "authoritative_text": {"type": "string"}, "start_time": {"type": "number"}, "end_time": {"type": "number"}, "delivery": {"type": "string"}, "estimated_minimum_seconds": {"type": "number"}, "status": {"type": "string"}, "phrase_windows": {"type": "array"}}}},
+            "camera_beats": {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["start_time", "end_time", "movement_type", "direction", "speed", "distance_or_scale_change", "target", "start_framing", "end_framing", "easing"], "properties": {"start_time": {"type": "number"}, "end_time": {"type": "number"}, **{key: {"type": "string"} for key in ["movement_type", "direction", "speed", "distance_or_scale_change", "target", "start_framing", "end_framing", "easing"]}}}},
+            "emotion_arc": {"type": "object"}, "ending_state": {"type": "object"}
+        }
+    }}}
+    if os.environ.get("V4_DIRECTOR_JSON_SCHEMA") != "1":
+        response_format = {"type": "json_object"}
     for decision in decisions:
         prompt = """Return exactly one complete JSON DirectorDecisionIR object and nothing else. Preserve every source_fact exactly; never alter characters, scene, props, location, or dialogue. Do not write a provider prompt and do not use shorthand director notes.
 
@@ -262,7 +314,7 @@ The evaluator rejects any missing nested field. `blocking` MUST be a JSON array.
 CANONICAL_INPUT
 """ + json.dumps({"shot_id": decision.shot_id, "source_facts": decision.source_facts, "starting_state": decision.starting_state, "duration_seconds": decision.duration_seconds}, ensure_ascii=False)
         try:
-            response = call_llm_json(prompt, system="You are a bounded film director and structured-output compiler. Return only the requested DirectorDecisionIR JSON. A shorthand answer is invalid and will be rejected without repair.", model_profile=profile, required_keys={"shot_id", "source_facts", "starting_state", "blocking", "performance_beats", "dialogue_beats", "camera_beats", "emotion_arc", "ending_state"}, retries=1, max_tokens=14000, response_format={"type": "json_object"})
+            response = call_llm_json(prompt, system="You are a bounded film director and structured-output compiler. Return only the requested DirectorDecisionIR JSON. A shorthand answer is invalid and will be rejected without repair.", model_profile=profile, required_keys={"shot_id", "source_facts", "starting_state", "blocking", "performance_beats", "dialogue_beats", "camera_beats", "emotion_arc", "ending_state"}, retries=1, max_tokens=14000, response_format=response_format)
         except Exception as exc:
             return {"calls": calls, "status": "BLOCKED", "responses": responses, "diagnostics": diagnostics, "source_fact_conflicts": 0, "nested_ir_blockers": 0, "profile_id": str(profile.get("id") or ""), "model": str(profile.get("model_name") or ""), "reason": "REAL_LLM_TRANSPORT_FAILED", "transport_error": f"{type(exc).__name__}: {str(exc)[:240]}"}
         calls += 1
@@ -285,15 +337,20 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--real-llm", action="store_true")
     parser.add_argument("--reuse-last-llm", action="store_true")
+    parser.add_argument("--json-schema-canary", action="store_true")
     args = parser.parse_args()
     if args.reuse_last_llm:
         os.environ["V4_REUSE_LAST_LLM"] = "1"
+    if args.json_schema_canary:
+        os.environ["V4_DIRECTOR_JSON_SCHEMA"] = "1"
     if OUT.exists() and not args.reuse_last_llm:
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True, exist_ok=True)
     assets = load_assets()
     decisions = shot_decisions()
     llm = maybe_real_llm(decisions, args.real_llm)
+    if llm["status"] == "COMPLETED" and len(llm.get("responses", [])) == len(decisions):
+        decisions = [coerce_llm_decision(raw, baseline) for raw, baseline in zip(llm["responses"], decisions)]
     keyframes = []
     videos = []
     audit_rows = []

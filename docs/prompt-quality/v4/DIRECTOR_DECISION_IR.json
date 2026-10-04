@@ -26,149 +26,143 @@
       "blocking": [
         {
           "identity": "林晚",
-          "reference_identity": "character://林晚/v1",
-          "position": "售票窗口前一步",
-          "screen_x": "画面右侧三分之一",
+          "reference_identity": "售票窗口",
+          "position": "售票窗口前一步，右手持车票",
+          "screen_x": "0.50",
           "depth_zone": "中景",
-          "body_pose": "双脚与肩同宽，上身从直立向站台入口前倾3厘米",
-          "weight_distribution": "重心从双脚平均转到左脚六成",
-          "torso_direction": "朝向站台入口",
-          "head_yaw": "从正面转到右12度",
-          "head_pitch": "由0度抬到5度",
-          "eye_target": "先看手中车票，再看站台入口的红伞伞骨",
-          "expression": "眉间从平展收紧，下眼睑绷紧，嘴唇闭合，下颌略用力，呼吸停顿半拍",
-          "left_hand": "左手垂在大腿外侧，五指自然弯曲",
-          "right_hand": "右手拇指与食指捏住车票右下角，拇指停止摩擦纸面，其余三指弯曲",
-          "prop_contact": "右手夹住车票，车票距胸腹约20厘米"
+          "body_pose": "站直",
+          "weight_distribution": "双脚平均承重，重心居中",
+          "torso_direction": "正对售票窗口",
+          "head_yaw": "0度，面向售票窗口",
+          "head_pitch": "下倾约15度，看向车票票面",
+          "eye_target": "车票票面",
+          "expression": "平静专注",
+          "left_hand": "自然垂于体侧，手指微曲",
+          "right_hand": "持车票，手臂微屈抬于胸前",
+          "prop_contact": "右手拇指与食指捏住车票边缘"
         }
       ],
       "performance_beats": [
         {
           "start_time": 0.0,
-          "end_time": 0.65,
+          "end_time": 1.2,
           "actor": "林晚",
-          "body_action": "林晚双脚不动，右肩保持水平，胸口吸气后停半拍",
-          "hand_action": "右手拇指停止摩擦车票边角，食指与拇指夹持点不变",
-          "head_action": "头部保持正面，只有眼球向右上方跳转",
-          "eye_action": "从车票票面移到站台入口红伞伞骨",
-          "facial_action": "眉间由平展变为轻微收紧，嘴唇仍闭合",
-          "prop_action": "车票不移动",
-          "ending_state": "视线落在红伞伞骨，双脚原位"
+          "body_action": "躯干保持站直，从正对售票窗口的静止状态开始，肩部轻微下沉约2厘米，结束时肩线放松下沉并保持站直",
+          "hand_action": "右手从持车票于胸前的静止状态开始，手腕向上翻转约20度，将车票票面朝向自己，结束时右手停在胸前、车票票面朝向面部",
+          "head_action": "头部从面向售票窗口的正中位置开始，向下低头约15度，结束时头部下倾、下巴靠近胸口、视线落在车票票面",
+          "eye_action": "双眼从平视售票窗口的状态开始，视线向下移动至车票票面，结束时双眼聚焦于车票票面文字",
+          "facial_action": "面部从平静无表情的状态开始，眉心轻微收紧约1毫米，结束时眉头微蹙、嘴唇轻抿、神情专注",
+          "ending_state": "林晚站直于售票窗口前一步，右手持车票于胸前，车票票面朝向面部，头部下倾约15度，视线聚焦车票票面，眉头微蹙"
         },
         {
-          "start_time": 0.65,
-          "end_time": 1.7,
+          "start_time": 1.2,
+          "end_time": 2.6,
           "actor": "林晚",
-          "body_action": "林晚上身向右前方倾斜约3厘米，左脚承重增加，右脚脚跟不抬起",
-          "hand_action": "右手把车票抬高约2厘米，拇指仍压住右下角",
-          "head_action": "眼球转移后约0.3秒，头部向右转12度、下巴上抬5度",
-          "eye_action": "固定看向站台入口红伞伞骨的折断处",
-          "facial_action": "下眼睑略绷紧，鼻翼扩张一次，呼吸变短",
-          "prop_action": "车票保持在胸腹前，不遮挡脸部",
-          "ending_state": "头向右12度，眼睛停在折断伞骨"
+          "body_action": "躯干从站直状态开始，向左侧缓慢转动约10度，结束时躯干朝向售票窗口左侧、仍保持站直",
+          "hand_action": "右手从持车票于胸前的状态开始，将车票向左前方送出约15厘米，结束时右手伸向售票窗口方向、车票前伸",
+          "head_action": "头部从下倾15度的状态开始，向左转动约10度并抬起约5度，结束时头部朝向售票窗口左侧、下倾约10度",
+          "eye_action": "双眼从聚焦车票票面的状态开始，视线沿车票向左前方移动，结束时视线落在售票窗口方向",
+          "facial_action": "面部从眉头微蹙的状态开始，眉头逐渐舒展约1毫米，结束时眉头放松、嘴唇微启、神情转为询问",
+          "ending_state": "林晚躯干向左转约10度，右手持车票向售票窗口方向前伸约15厘米，头部朝向售票窗口左侧、下倾约10度，视线落在售票窗口方向，眉头舒展、嘴唇微启"
         },
         {
-          "start_time": 1.7,
-          "end_time": 3.5,
+          "start_time": 2.6,
+          "end_time": 3.8,
           "actor": "林晚",
-          "body_action": "林晚向站台入口迈出半步，前脚掌落地后立即停止",
-          "hand_action": "右手下降1厘米，车票仍夹在拇指与食指之间，左手抬到外套下摆并停住",
-          "head_action": "头部再向右转3度，肩线保持水平",
-          "eye_action": "从伞骨沿伞柄移动到伞面边缘",
-          "facial_action": "眉心进一步收紧，嘴角向下压1毫米，下颌保持用力",
-          "prop_action": "红伞伞面半收，折断伞骨仍暴露",
-          "ending_state": "林晚前移半步，车票仍在右手，视线在伞面边缘"
+          "body_action": "躯干从向左转10度的状态开始，回转约10度回到正对售票窗口，结束时躯干重新正对售票窗口、保持站直",
+          "hand_action": "右手从前伸持车票的状态开始，收回约15厘米至胸前，结束时右手持车票回到胸前、车票票面朝向面部",
+          "head_action": "头部从朝向售票窗口左侧的状态开始，回转约10度至正中并下倾约5度，结束时头部正对售票窗口、下倾约15度",
+          "eye_action": "双眼从落在售票窗口方向的状态开始，视线收回至车票票面，结束时双眼重新聚焦车票票面",
+          "facial_action": "面部从嘴唇微启的状态开始，嘴唇轻抿约2毫米，结束时嘴唇抿合、眉头微蹙、神情恢复专注",
+          "ending_state": "林晚躯干回转正对售票窗口，右手持车票收回胸前、车票票面朝向面部，头部正对售票窗口、下倾约15度，视线聚焦车票票面，嘴唇抿合、眉头微蹙"
         },
         {
-          "start_time": 3.5,
+          "start_time": 3.8,
           "end_time": 5.0,
           "actor": "林晚",
-          "body_action": "林晚停止迈步，胸口缓慢呼出一口气，身体保持前倾3厘米",
-          "hand_action": "右手固定车票于胸腹前，左手从外套下摆落回大腿侧",
-          "head_action": "头部保持右15度，不再追随视线",
-          "eye_action": "最终固定在站台入口的红伞",
-          "facial_action": "眉间保持轻收，嘴唇闭合，下颌放松一半但警觉不退",
-          "prop_action": "红伞位置和折断伞骨不改变",
-          "ending_state": "林晚在窗口至站台入口之间停住，右手持票，头向右15度，视线锁定红伞"
+          "body_action": "躯干从正对售票窗口的状态开始，保持站直并轻微前倾约3厘米，结束时躯干微前倾、重心略向售票窗口方向偏移",
+          "hand_action": "右手从持车票于胸前的状态开始，将车票向前送出约10厘米至售票窗口方向，结束时右手持车票前伸、车票接近售票窗口",
+          "head_action": "头部从下倾15度的状态开始，抬起约5度并保持正对售票窗口，结束时头部下倾约10度、朝向售票窗口",
+          "eye_action": "双眼从聚焦车票票面的状态开始，视线沿车票向前移动至售票窗口方向，结束时视线落在售票窗口方向",
+          "facial_action": "面部从眉头微蹙的状态开始，眉头进一步收紧约1毫米，结束时眉头紧蹙、嘴唇紧抿、神情凝重",
+          "ending_state": "林晚躯干微前倾约3厘米、重心偏向售票窗口，右手持车票前伸约10厘米、车票接近售票窗口，头部下倾约10度、朝向售票窗口，视线落在售票窗口方向，眉头紧蹙、嘴唇紧抿"
         }
       ],
       "dialogue_beats": [],
       "camera_beats": [
         {
           "start_time": 0.0,
-          "end_time": 0.65,
-          "movement_type": "静止",
-          "direction": "无",
-          "speed": "保持",
-          "distance_or_scale_change": "无变化",
-          "target": "林晚双眼",
-          "start_framing": "中广角",
-          "end_framing": "中广角",
+          "end_time": 1.2,
+          "movement_type": "固定机位",
+          "direction": "无位移，镜头静止",
+          "speed": "0",
+          "distance_or_scale_change": "无变化，保持原景别",
+          "target": "林晚",
+          "start_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "end_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
           "easing": "无"
         },
         {
-          "start_time": 0.65,
-          "end_time": 2.2,
-          "movement_type": "重新构图",
-          "direction": "沿光轴轻推并向右修正",
-          "speed": "前0.3秒缓慢加速",
-          "distance_or_scale_change": "人物从中广角占画面右三分之一变为右半幅",
-          "target": "林晚头部和红伞伞骨",
-          "start_framing": "中广角",
-          "end_framing": "中景",
-          "easing": "先加速后匀速"
+          "start_time": 1.2,
+          "end_time": 2.6,
+          "movement_type": "缓慢推轨",
+          "direction": "向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.3米",
+          "distance_or_scale_change": "镜头与林晚距离缩短约0.4米，林晚在画面中占比增大约10%",
+          "target": "林晚及手中车票",
+          "start_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "end_framing": "中近景，林晚上半身占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "线性匀速"
         },
         {
-          "start_time": 2.2,
-          "end_time": 4.6,
-          "movement_type": "静止保持",
-          "direction": "无",
-          "speed": "保持",
-          "distance_or_scale_change": "无变化",
-          "target": "红伞伞骨",
-          "start_framing": "中景",
-          "end_framing": "中景",
-          "easing": "无"
+          "start_time": 2.6,
+          "end_time": 3.8,
+          "movement_type": "缓慢推轨",
+          "direction": "继续向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.2米",
+          "distance_or_scale_change": "镜头与林晚距离再缩短约0.25米，林晚在画面中占比再增大约8%",
+          "target": "林晚面部及手中车票",
+          "start_framing": "中近景，林晚上半身占据画面主体，售票窗口在画面右侧边缘",
+          "end_framing": "近景，林晚面部及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "线性匀速"
         },
         {
-          "start_time": 4.6,
+          "start_time": 3.8,
           "end_time": 5.0,
-          "movement_type": "减速停止",
-          "direction": "沿光轴减速",
-          "speed": "最后0.4秒减速",
-          "distance_or_scale_change": "停止在中景",
-          "target": "红伞伞骨",
-          "start_framing": "中景",
-          "end_framing": "中景",
-          "easing": "平滑停止"
+          "movement_type": "缓慢推轨",
+          "direction": "继续向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.15米",
+          "distance_or_scale_change": "镜头与林晚距离再缩短约0.18米，林晚面部在画面中占比再增大约6%",
+          "target": "林晚面部表情及持车票的右手",
+          "start_framing": "近景，林晚面部及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "end_framing": "近景，林晚面部表情及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "缓入缓出"
         }
       ],
       "emotion_arc": {
-        "start": "平静",
-        "end": "警觉",
-        "physical_transition": "眉间收紧、下眼睑绷紧、呼吸变短、下颌用力"
+        "start": "平静专注",
+        "middle": "询问与确认",
+        "end": "凝重与决断"
       },
       "ending_state": {
         "characters": {
           "林晚": {
-            "position": "售票窗口与站台入口之间，向前半步",
-            "pose": "身体前倾3厘米，双脚冻结",
-            "head_direction": "向右15度、下巴上抬5度",
-            "eye_target": "站台入口红伞伞骨",
-            "emotion": "警觉",
-            "right_hand": "胸腹前夹住车票"
-          }
-        },
-        "props": {
-          "RED_UMBRELLA": {
-            "position": "站台入口右侧",
-            "state": "伞面半收，左侧伞骨折断且暴露"
+            "position": "售票窗口前一步，右手持车票前伸约10厘米、车票接近售票窗口",
+            "pose": "站直，躯干微前倾约3厘米，重心偏向售票窗口",
+            "eye_target": "售票窗口方向",
+            "expression": "眉头紧蹙、嘴唇紧抿、神情凝重",
+            "prop_contact": "右手拇指与食指捏住车票边缘，车票前伸接近售票窗口"
           }
         },
         "camera": {
-          "framing": "中景",
-          "height": "平视",
-          "movement": "4.6秒后停止"
+          "movement_type": "缓慢推轨",
+          "direction": "向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.15米",
+          "distance_or_scale_change": "镜头与林晚距离较起始缩短约0.83米，林晚面部在画面中占比增大约24%",
+          "target": "林晚面部表情及持车票的右手",
+          "start_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "end_framing": "近景，林晚面部表情及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "缓入缓出"
         }
       },
       "source_fact_hash": "source-hash-shot-002",
@@ -203,208 +197,183 @@
       "blocking": [
         {
           "identity": "陆叔",
-          "reference_identity": "character://陆叔/v1",
-          "position": "画面左侧中景",
-          "screen_x": "左三分之一",
-          "depth_zone": "中景",
-          "body_pose": "上身向手提包倾斜8厘米，左脚向前半步",
-          "weight_distribution": "左脚六成、右脚四成",
-          "torso_direction": "朝向手提包",
-          "head_yaw": "先低头10度再抬回正面",
-          "head_pitch": "先低10度再回0度",
-          "eye_target": "手提包内露出的硬物，再移到林晚双眼",
-          "expression": "礼貌笑意消失，眉间收紧，嘴唇压平，下颌略紧，呼吸停半拍",
-          "left_hand": "左手悬在包口上方3厘米，不接触",
-          "right_hand": "右手拇指和食指捏住提手中段，其余三指托住提手下方",
-          "prop_contact": "右手接管手提包提手"
+          "reference_identity": "林晚",
+          "position": "林晚左前方半步",
+          "screen_x": "0.38",
+          "depth_zone": "midground",
+          "body_pose": "站立，上身微前倾，双臂自然垂于体侧，右臂向林晚手提包方向半抬",
+          "weight_distribution": "重心落在左脚，右脚脚跟微抬准备上前半步",
+          "torso_direction": "朝向林晚及手提包，躯干向右前方偏转约20度",
+          "head_yaw": "向右转约15度，朝向林晚面部与手提包",
+          "head_pitch": "微低头约5度，视线落向手提包提手",
+          "eye_target": "林晚的面部，随后下移至手提包提手",
+          "expression": "警觉、克制，眉头微蹙，嘴唇紧抿",
+          "left_hand": "垂于体侧，手指微张，未接触任何物体",
+          "right_hand": "从体侧抬起，手掌张开，尚未接触手提包提手",
+          "prop_contact": "无接触，手提包由林晚右手握住提手"
         },
         {
           "identity": "林晚",
-          "reference_identity": "character://林晚/v1",
-          "position": "画面右侧中景",
-          "screen_x": "右三分之一",
-          "depth_zone": "中景",
-          "body_pose": "肩线保持水平，手臂从伸展回收至身侧",
-          "weight_distribution": "双脚平均，接着右脚后移5厘米",
-          "torso_direction": "由包转向陆叔",
-          "head_yaw": "向左8度",
-          "head_pitch": "0度",
-          "eye_target": "陆叔右手提手，再看陆叔双眼",
-          "expression": "嘴唇抿住，下颌收紧，眼神短暂避开",
-          "left_hand": "左手离开包身落在外套侧缝",
-          "right_hand": "右手松开提手但手指保留半秒弯曲",
-          "prop_contact": "0.8秒后不再接触手提包"
+          "reference_identity": "陆叔",
+          "position": "售票台侧前方",
+          "screen_x": "0.62",
+          "depth_zone": "midground",
+          "body_pose": "站立于售票台侧前方，上身略向后撤半步，右手握住手提包提手，左手垂于身侧",
+          "weight_distribution": "重心后移至左脚，右脚脚尖点地，呈后撤姿态",
+          "torso_direction": "朝向售票台方向，随后转向陆叔，躯干向左偏转约10度",
+          "head_yaw": "先朝向售票台，随后向左转约25度朝向陆叔",
+          "head_pitch": "微抬头约3度，视线从售票台移向陆叔面部",
+          "eye_target": "陆叔的面部，随后短暂下移至手提包",
+          "expression": "惊讶、错愕，双唇微启，眉头轻扬",
+          "left_hand": "垂于体侧，手指微曲，未接触任何物体",
+          "right_hand": "握住手提包提手，手指收紧，指节因用力而微微泛白",
+          "prop_contact": "右手持续握住手提包提手，手提包悬于体侧"
         }
       ],
       "performance_beats": [
         {
           "start_time": 0.0,
-          "end_time": 0.55,
-          "actor": "林晚",
-          "body_action": "林晚把手提包向陆叔方向送出约10厘米，肩膀不抬",
-          "hand_action": "林晚右手拇指从提手内侧松开，食指最后离开提手顶部",
-          "head_action": "林晚头部向左偏5度但眼睛仍看包",
-          "eye_action": "看向两人之间的提手",
-          "facial_action": "嘴唇从放松变为闭合，下颌收紧",
-          "prop_action": "手提包仍由林晚右手承重",
-          "ending_state": "包带位于两人之间，林晚仍有最后接触"
-        },
-        {
-          "start_time": 0.55,
-          "end_time": 1.35,
+          "end_time": 1.2,
           "actor": "陆叔",
-          "body_action": "陆叔左脚向前半步，右肩下降2厘米靠近包带",
-          "hand_action": "陆叔右手拇指和食指捏住提手中段，掌心随后托住提手下方",
-          "head_action": "陆叔先低头10度确认提手，再抬头5度",
-          "eye_action": "先看提手，再看林晚的右手",
-          "facial_action": "礼貌笑意消失，眉间收紧，嘴角压平",
-          "prop_action": "手提包承重从林晚右手转到陆叔右手",
-          "ending_state": "陆叔右手独立承重，林晚手指仍悬在提手旁"
+          "body_action": "上身从直立状态向前倾斜约10度，右脚从脚跟落地状态向前迈出半步，右臂从体侧垂落状态抬起至腰部高度，手掌张开朝向手提包提手，最终停在距提手约十厘米处未接触",
+          "hand_action": "右手从垂落状态抬起，五指从并拢状态张开，手掌朝向手提包提手方向，最终停在距提手约十厘米处，手指保持微张",
+          "head_action": "头部从朝向林晚面部的状态向右转约15度并微低头约5度，最终视线落向手提包提手",
+          "eye_action": "视线从林晚面部下移至手提包提手，最终定格在提手位置",
+          "facial_action": "眉头从舒展状态微蹙，嘴唇从微启状态收紧抿平，最终保持警觉克制的表情",
+          "ending_state": "陆叔右脚向前迈出半步，右臂抬起至腰部高度，右手悬停在手提包提手上方约十厘米处，视线落在提手上，表情警觉克制"
         },
         {
-          "start_time": 1.35,
-          "end_time": 2.4,
+          "start_time": 1.2,
+          "end_time": 2.6,
           "actor": "林晚",
-          "body_action": "林晚右脚向后退5厘米，肩线向后收3厘米",
-          "hand_action": "林晚食指从提手旁收回，五指贴近外套侧缝",
-          "head_action": "头部延迟0.3秒向左转8度",
-          "eye_action": "视线从陆叔右手移到陆叔眼睛",
-          "facial_action": "下眼睑略绷紧，嘴角向下压",
-          "prop_action": "手提包完全脱离林晚手部",
-          "ending_state": "林晚后退5厘米，陆叔持包，双方视线相交"
+          "body_action": "上身从朝向售票台的状态向后撤半步，躯干从向右偏转状态向左偏转约10度转向陆叔，右手从自然握持状态收紧手指握住手提包提手",
+          "hand_action": "右手五指从轻握状态收紧，指节因用力而微微泛白，手提包从体侧微晃状态稳定悬于体侧",
+          "head_action": "头部从朝向售票台的状态向左转约25度并微抬头约3度，最终朝向陆叔面部",
+          "eye_action": "视线从售票台移向陆叔面部，随后短暂下移至手提包，最终回到陆叔面部",
+          "facial_action": "双唇从闭合状态微启，眉头从舒展状态轻扬，最终保持惊讶错愕的表情",
+          "ending_state": "林晚上身后撤半步，躯干转向陆叔，右手收紧握住手提包提手，头部转向陆叔，表情惊讶错愕"
         },
         {
-          "start_time": 2.4,
-          "end_time": 3.6,
+          "start_time": 2.6,
+          "end_time": 4.0,
           "actor": "陆叔",
-          "body_action": "陆叔把包向自己腹前收回8厘米，左肩保持不动",
-          "hand_action": "陆叔左手食指隔着包口布料点到硬物凸起后停住，右手继续握提手",
-          "head_action": "头部向下10度看硬物，随后回到0度",
-          "eye_action": "从包内硬物移到林晚双眼",
-          "facial_action": "眉间进一步收紧，鼻翼张开一次，呼吸变慢",
-          "prop_action": "包口不打开，硬物轮廓保持可见",
-          "ending_state": "包在陆叔腹前，左手指尖停在硬物凸起上方"
+          "body_action": "上身从微前倾状态回正约5度，右臂从悬停状态收回至体侧，右手从张开状态收拢，最终停在体侧未接触手提包",
+          "hand_action": "右手五指从张开状态收拢并垂回体侧，最终停在大腿外侧，未接触任何物体",
+          "head_action": "头部从低头状态微抬约3度，视线从手提包提手上移至林晚面部",
+          "eye_action": "视线从手提包提手上移至林晚面部，最终定格在林晚眼睛",
+          "facial_action": "眉头从微蹙状态略微舒展，嘴唇保持紧抿，表情从警觉转为克制的询问",
+          "ending_state": "陆叔上身回正，右臂收回体侧，右手垂于大腿外侧，视线落在林晚面部，表情克制询问"
         },
         {
-          "start_time": 3.6,
+          "start_time": 4.0,
           "end_time": 5.5,
           "actor": "林晚",
-          "body_action": "林晚保持后退5厘米的位置，胸口吸气后缓慢呼出",
-          "hand_action": "双手回到身体两侧，右手手指仍保持刚松开提手后的弯曲",
-          "head_action": "头部向右回正5度，停在面对陆叔的角度",
-          "eye_action": "固定看向陆叔左手触碰的包口位置",
-          "facial_action": "嘴唇闭合、下颌保持紧、眼神不再回避",
-          "prop_action": "手提包继续由陆叔右手持有，硬物不取出",
-          "ending_state": "陆叔持包站在左侧，林晚后退5厘米站在右侧，双方视线落在包口"
+          "body_action": "上身从后撤状态微向前倾约5度，右手从紧握状态略微放松但仍握住手提包提手，左手从垂落状态微抬至腰侧",
+          "hand_action": "右手五指从收紧状态略微放松，仍保持握住手提包提手，左手从垂落状态微抬至腰侧，手指微曲",
+          "head_action": "头部保持朝向陆叔的状态，微低头约2度，视线从陆叔面部短暂下移至手提包后回到陆叔面部",
+          "eye_action": "视线从陆叔面部下移至手提包约0.5秒，随后回到陆叔面部，最终定格在陆叔眼睛",
+          "facial_action": "双唇从微启状态轻微颤动，眉头保持轻扬，表情从惊讶转为困惑与不安",
+          "ending_state": "林晚上身微前倾，右手仍握住手提包提手，左手微抬至腰侧，视线落在陆叔面部，表情困惑不安"
         }
       ],
       "dialogue_beats": [
         {
-          "speaker": "陆叔",
+          "speaker": "林晚",
           "authoritative_text": "顾沉？你……你怎么在这儿？",
-          "start_time": 0.4,
-          "end_time": 3.44,
-          "delivery": "slow",
+          "start_time": 1.8,
+          "end_time": 3.6,
+          "delivery": "语速偏快，音调上扬，声音中带着明显的惊讶与颤抖，'顾沉？'二字短促而急切，'你……'处有明显的停顿与结巴，'你怎么在这儿？'语速加快，尾音上扬，带着困惑与不安",
           "phrase_windows": [
             {
-              "index": 1,
               "text": "顾沉？",
-              "start_time": 0.4,
-              "end_time": 1.1
+              "start_time": 1.8,
+              "end_time": 2.3
             },
             {
-              "index": 2,
-              "text": "你……你怎么在这儿？",
-              "start_time": 1.1,
-              "end_time": 3.44
+              "text": "你……",
+              "start_time": 2.3,
+              "end_time": 2.7
+            },
+            {
+              "text": "你怎么在这儿？",
+              "start_time": 2.7,
+              "end_time": 3.6
             }
           ],
-          "estimated_minimum_seconds": 3.04,
-          "status": "READY"
+          "estimated_minimum_seconds": 1.8,
+          "status": "authoritative"
         }
       ],
       "camera_beats": [
         {
           "start_time": 0.0,
-          "end_time": 0.5,
-          "movement_type": "静止",
-          "direction": "无",
-          "speed": "保持",
-          "distance_or_scale_change": "无变化",
-          "target": "提手",
-          "start_framing": "中广角",
-          "end_framing": "中广角",
-          "easing": "无"
+          "end_time": 2.6,
+          "movement_type": "dolly_in",
+          "direction": "沿镜头轴线向人物推进，同时向右微移以保持陆叔与林晚的双人构图",
+          "speed": "缓慢匀速，约每秒推进0.3米",
+          "distance_or_scale_change": "景别从中景推进至中近景，画面中人物高度占比从约60%增至约75%",
+          "target": "陆叔与林晚的双人关系，焦点保持在两人之间的手提包与面部之间",
+          "start_framing": "中景，陆叔位于画面左侧约38%处，林晚位于画面右侧约62%处，手提包位于两人之间的下方",
+          "end_framing": "中近景，陆叔位于画面左侧约40%处，林晚位于画面右侧约60%处，手提包位于画面下方约30%处",
+          "easing": "ease_in_out"
         },
         {
-          "start_time": 0.5,
-          "end_time": 3.2,
-          "movement_type": "跟拍",
-          "direction": "沿两人手部连线向左移动",
-          "speed": "0.5秒平滑加速，2.6秒匀速",
-          "distance_or_scale_change": "从双人中广角收至中景",
-          "target": "手提包提手",
-          "start_framing": "中广角",
-          "end_framing": "中景",
-          "easing": "先加速后匀速"
+          "start_time": 2.6,
+          "end_time": 4.0,
+          "movement_type": "pan",
+          "direction": "镜头向左微摇约5度，跟随陆叔回正上身与收回右臂的动作",
+          "speed": "缓慢，约每秒摇动2度",
+          "distance_or_scale_change": "景别保持中近景，无明显推进或拉远",
+          "target": "陆叔的面部与收回的右臂，同时保持林晚在画面右侧",
+          "start_framing": "中近景，陆叔位于画面左侧约40%处，林晚位于画面右侧约60%处",
+          "end_framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处",
+          "easing": "ease_out"
         },
         {
-          "start_time": 3.2,
-          "end_time": 5.1,
-          "movement_type": "静止",
-          "direction": "无",
-          "speed": "保持",
-          "distance_or_scale_change": "无变化",
-          "target": "包口硬物凸起",
-          "start_framing": "中景",
-          "end_framing": "中景",
-          "easing": "无"
-        },
-        {
-          "start_time": 5.1,
+          "start_time": 4.0,
           "end_time": 5.5,
-          "movement_type": "减速停止",
-          "direction": "横向减速",
-          "speed": "最后0.4秒减速",
-          "distance_or_scale_change": "固定双人中景",
-          "target": "两人视线交点",
-          "start_framing": "中景",
-          "end_framing": "中景",
-          "easing": "平滑停止"
+          "movement_type": "static",
+          "direction": "镜头保持静止，无移动",
+          "speed": "静止",
+          "distance_or_scale_change": "景别保持中近景，无变化",
+          "target": "林晚的面部表情与右手握住的手提包提手",
+          "start_framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处",
+          "end_framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处",
+          "easing": "none"
         }
       ],
       "emotion_arc": {
-        "start": "礼貌平静",
-        "end": "互相警觉",
-        "physical_transition": "笑意消失、后退5厘米、下颌收紧、视线落在包口"
+        "陆叔": "警觉克制 → 克制询问",
+        "林晚": "惊讶错愕 → 困惑不安"
       },
       "ending_state": {
         "characters": {
           "陆叔": {
-            "position": "画面左侧，距林晚约一步",
-            "pose": "右手持包，左手指尖停在包口凸起上",
-            "head_direction": "正面",
-            "eye_target": "包口硬物",
-            "emotion": "警觉"
+            "position": "林晚左前方半步，右脚已向前迈出半步",
+            "right_hand": "垂于大腿外侧，未接触手提包提手",
+            "left_hand": "垂于体侧，手指微张",
+            "torso_direction": "朝向林晚，躯干向右前方偏转约15度",
+            "head_yaw": "朝向林晚面部，向右转约10度",
+            "head_pitch": "微低头约2度",
+            "eye_target": "林晚的面部",
+            "expression": "克制询问，眉头微蹙，嘴唇紧抿"
           },
           "林晚": {
-            "position": "画面右侧后退5厘米",
-            "pose": "双手落在身体两侧",
-            "head_direction": "向左5度",
-            "eye_target": "包口硬物",
-            "emotion": "警觉"
-          }
-        },
-        "props": {
-          "HANDBAG": {
-            "owner": "陆叔右手",
-            "state": "包口闭合，硬物轮廓可见"
+            "position": "售票台侧前方，上身微前倾",
+            "right_hand": "握住手提包提手，手指略微放松但仍保持握持",
+            "left_hand": "微抬至腰侧，手指微曲",
+            "torso_direction": "朝向陆叔，躯干向左偏转约10度",
+            "head_yaw": "朝向陆叔面部，向左转约25度",
+            "head_pitch": "微低头约2度",
+            "eye_target": "陆叔的面部",
+            "expression": "困惑不安，双唇微颤，眉头轻扬"
           }
         },
         "camera": {
-          "framing": "双人中景",
-          "height": "平视",
-          "movement": "5.1秒后停止"
+          "position": "镜头位于两人前方约2.5米处，高度约与人物胸部齐平",
+          "framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处，手提包位于画面下方约30%处",
+          "movement": "静止，无移动",
+          "focus_target": "林晚的面部与右手握住的手提包提手"
         }
       },
       "source_fact_hash": "source-hash-shot-005",
@@ -437,244 +406,291 @@
       "blocking": [
         {
           "identity": "陆叔",
-          "reference_identity": "character://陆叔/v1",
+          "reference_identity": "餐桌左侧",
           "position": "餐桌左侧",
-          "screen_x": "左三分之一",
-          "depth_zone": "中景",
-          "body_pose": "坐姿，躯干前倾2厘米",
-          "weight_distribution": "坐骨平均承重",
-          "torso_direction": "朝向林晚",
-          "head_yaw": "正面",
-          "head_pitch": "0度",
+          "screen_x": "0.32",
+          "depth_zone": "midground",
+          "body_pose": "standing, torso leaning slightly forward over the table edge",
+          "weight_distribution": "weight on left leg, right leg relaxed and slightly back",
+          "torso_direction": "torso angled toward 林晚 at approximately 30 degrees",
+          "head_yaw": "head turned toward 林晚, yaw approximately 25 degrees to screen right",
+          "head_pitch": "head tilted down approximately 10 degrees toward the table surface",
           "eye_target": "桌面划痕",
-          "expression": "眉间轻收，嘴角先礼貌后压低，眼睑随威胁逐渐下压",
-          "left_hand": "左手托住苹果或贴在桌边",
-          "right_hand": "右手沿杯沿或托住苹果",
-          "prop_contact": "右手接触杯沿、桌面划痕或苹果"
+          "expression": "concerned, brows slightly drawn together, mouth softly set",
+          "left_hand": "left hand resting flat on the table edge near the tabletop scratch",
+          "right_hand": "right hand hanging at side, fingers loosely curled",
+          "prop_contact": "left palm in contact with the table surface"
         },
         {
           "identity": "林晚",
-          "reference_identity": "character://林晚/v1",
-          "position": "餐桌右侧或厨房门边",
-          "screen_x": "右三分之一",
-          "depth_zone": "中景",
-          "body_pose": "坐姿保持或沿门边后退半步",
-          "weight_distribution": "双脚压住地面",
-          "torso_direction": "朝向陆叔",
-          "head_yaw": "向左7度",
-          "head_pitch": "0度",
-          "eye_target": "陆叔的双眼",
-          "expression": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅",
-          "left_hand": "扶住门锁下方或压住包边",
-          "right_hand": "护住包带或压住包边",
-          "prop_contact": "与门锁或手提包接触"
+          "reference_identity": "餐桌右侧或门边",
+          "position": "餐桌右侧或门边",
+          "screen_x": "0.68",
+          "depth_zone": "midground",
+          "body_pose": "standing upright, shoulders slightly hunched, weight shifted onto the back foot",
+          "weight_distribution": "weight on right leg, left foot slightly forward and unweighted",
+          "torso_direction": "torso facing 陆叔 at approximately 20 degrees to screen left",
+          "head_yaw": "head turned toward 陆叔, yaw approximately 15 degrees to screen left",
+          "head_pitch": "head level, chin slightly tucked",
+          "eye_target": "陆叔",
+          "expression": "pale and tired, eyes slightly wide, lips pressed together",
+          "left_hand": "left hand gripping the strap of a bag at her side, knuckles whitened",
+          "right_hand": "right hand hanging at her side, fingers slightly curled inward",
+          "prop_contact": "left hand gripping bag strap"
         }
       ],
       "performance_beats": [
         {
           "start_time": 0.0,
-          "end_time": 1.2,
+          "end_time": 1.8,
           "actor": "陆叔",
-          "body_action": "陆叔坐在餐桌左侧，背部离椅背2厘米，双脚不动",
-          "hand_action": "右手指腹沿杯沿顺时针移动四分之一圈后停住",
-          "head_action": "头部从桌面抬到正面，抬升6度",
-          "eye_action": "先看桌面划痕，再看林晚双眼",
-          "facial_action": "嘴角保持礼貌弧度，眼睑平稳，呼吸均匀",
-          "prop_action": "杯子留在桌面，右手不抬起",
-          "ending_state": "陆叔正面看向林晚，右手停在杯沿"
+          "body_action": "torso starts leaning over the table edge and straightens upward by approximately 10 degrees, ending with the torso upright and angled toward 林晚",
+          "hand_action": "left hand starts flat on the table edge and slides 5 cm toward 林晚 across the tabletop, ending with the palm open and fingers spread on the table surface",
+          "head_action": "head starts tilted down toward the tabletop scratch and lifts by approximately 10 degrees, ending with the head level and turned toward 林晚",
+          "eye_action": "eyes start fixed on the tabletop scratch and shift upward to 林晚's face, ending with a steady gaze on 林晚",
+          "facial_action": "brows start relaxed and draw together by approximately 3 mm, ending with a furrowed, concerned brow line",
+          "ending_state": "陆叔 standing upright at the table, left palm open on the table, gaze fixed on 林晚, brow furrowed with concern"
         },
         {
-          "start_time": 1.2,
-          "end_time": 3.2,
+          "start_time": 1.8,
+          "end_time": 3.6,
           "actor": "陆叔",
-          "body_action": "陆叔躯干向前倾2厘米，林晚身体略前倾但双脚不动",
-          "hand_action": "陆叔右手离开杯沿3厘米，掌心向上示意桌旁座位",
-          "head_action": "关键词前头部保持，问句结尾向林晚倾2度",
-          "eye_action": "锁定林晚眼睛，不看镜头",
-          "facial_action": "眉间轻收，嘴角弧度减小，鼻翼张开一次",
-          "prop_action": "桌面划痕保持可见",
-          "ending_state": "右手掌心向上停在桌面上方"
+          "body_action": "torso starts upright and leans forward approximately 15 degrees toward 林晚, ending with the torso inclined over the table edge",
+          "hand_action": "right hand starts hanging at the side and rises to chest height, ending with the palm open and facing upward in a beckoning gesture",
+          "head_action": "head starts level and tilts down approximately 8 degrees, ending with the chin lowered toward 林晚",
+          "eye_action": "eyes start on 林晚's face and drop to her shoulders and back, ending with a scanning gaze over her upper body",
+          "facial_action": "mouth starts closed and corners drop by approximately 2 mm, ending with a soft, worried frown",
+          "ending_state": "陆叔 leaning over the table, right hand raised in an open beckoning palm, gaze scanning 林晚's shoulders, worried frown set"
         },
         {
-          "start_time": 3.2,
-          "end_time": 6.0,
+          "start_time": 3.6,
+          "end_time": 5.4,
           "actor": "陆叔",
-          "body_action": "陆叔保持躯干前倾，胸口随长句连续起伏两次",
-          "hand_action": "右手掌心向上收回5厘米，拇指压住食指根部",
-          "head_action": "每个逗号处头部回正，句末下巴下降2度",
-          "eye_action": "先看林晚双眼，再短暂看向她的脸色，最后回到双眼",
-          "facial_action": "眉间由收紧变为平展，嘴唇随对白张合，句末下颌放松",
-          "prop_action": "杯子和桌面划痕位置不变",
-          "ending_state": "右手收回腹前，目光停在林晚脸上"
+          "body_action": "torso starts inclined forward and straightens back by approximately 10 degrees, ending with the torso upright and shoulders squared toward 林晚",
+          "hand_action": "right hand starts raised at chest height and lowers by 15 cm, ending with the hand at waist height, palm still open and facing upward",
+          "head_action": "head starts tilted down and lifts by approximately 5 degrees, ending with the head level and eyes locked on 林晚",
+          "eye_action": "eyes start scanning 林晚's shoulders and fix on her face, ending with a direct, steady gaze into her eyes",
+          "facial_action": "brows start furrowed and lift by approximately 2 mm at the inner corners, ending with a softened, questioning brow line",
+          "ending_state": "陆叔 upright at the table, right hand at waist height with open palm, direct steady gaze on 林晚, brow softened into a question"
         },
         {
-          "start_time": 6.0,
-          "end_time": 9.7,
-          "actor": "林晚",
-          "body_action": "林晚保持坐姿但上身向后退2厘米，双脚压住地面",
-          "hand_action": "双手压住手提包边缘，拇指交替按压两次后停止",
-          "head_action": "听到‘吃饭’后头部向左偏7度，再回到正面",
-          "eye_action": "一直看陆叔双眼，最后看向桌面苹果位置",
-          "facial_action": "眉间收紧，嘴唇抿住0.5秒后放松，呼吸变浅",
-          "prop_action": "手提包不离开腿面",
-          "ending_state": "林晚双手仍压包边，视线落在桌面苹果"
-        },
-        {
-          "start_time": 9.7,
-          "end_time": 12.5,
+          "start_time": 5.4,
+          "end_time": 7.2,
           "actor": "陆叔",
-          "body_action": "陆叔从椅面起身前移5厘米但不站起，肩膀保持水平",
-          "hand_action": "陆叔右手拿起苹果，拇指擦过果皮一次后停住",
-          "head_action": "头部向桌面苹果下压5度，再抬回林晚方向",
-          "eye_action": "先看苹果，再看林晚嘴角",
-          "facial_action": "眼睑放松，嘴角恢复礼貌弧度，下颌不再用力",
-          "prop_action": "苹果离开桌面，位于陆叔右手胸腹前",
-          "ending_state": "苹果在陆叔右手，林晚仍坐在桌边"
+          "body_action": "torso starts upright and rotates approximately 20 degrees toward the kitchen counter behind him, ending with the torso angled away from 林晚 toward the counter",
+          "hand_action": "right hand starts at waist height with open palm and closes into a loose fist, ending with the fist resting against his own chest",
+          "head_action": "head starts facing 林晚 and turns approximately 25 degrees toward the kitchen counter, ending with the head angled toward the counter",
+          "eye_action": "eyes start on 林晚 and shift to the kitchen counter, ending with a gaze fixed on the counter surface",
+          "facial_action": "mouth starts in a soft frown and relaxes by approximately 1 mm, ending with a neutral, thoughtful mouth line",
+          "ending_state": "陆叔 angled toward the kitchen counter, right fist against his chest, gaze on the counter, mouth neutral and thoughtful"
         },
         {
-          "start_time": 12.5,
+          "start_time": 7.2,
+          "end_time": 9.0,
+          "actor": "陆叔",
+          "body_action": "torso starts angled toward the counter and rotates back approximately 20 degrees toward 林晚, ending with the torso facing her squarely",
+          "hand_action": "right hand starts against his chest and extends forward toward 林晚 by approximately 20 cm, ending with the palm open and facing upward in an offering gesture",
+          "head_action": "head starts angled toward the counter and turns back approximately 25 degrees toward 林晚, ending with the head facing her directly",
+          "eye_action": "eyes start on the counter and shift back to 林晚's face, ending with a warm, direct gaze on her",
+          "facial_action": "mouth starts neutral and corners lift by approximately 2 mm, ending with a gentle, encouraging half-smile",
+          "ending_state": "陆叔 facing 林晚 squarely, right hand extended forward with open offering palm, warm direct gaze, gentle half-smile"
+        },
+        {
+          "start_time": 9.0,
+          "end_time": 11.0,
+          "actor": "陆叔",
+          "body_action": "torso starts facing 林晚 and leans forward approximately 10 degrees, ending with the torso inclined toward her in an inviting posture",
+          "hand_action": "right hand starts extended forward with open palm and sweeps downward and to the side by approximately 15 cm, ending with the hand gesturing toward the chair beside the table",
+          "head_action": "head starts facing 林晚 and tilts down approximately 5 degrees toward the chair, ending with the head angled toward the seating spot",
+          "eye_action": "eyes start on 林晚's face and shift down to the chair, ending with a gaze directed at the chair beside the table",
+          "facial_action": "mouth starts in a half-smile and opens slightly by approximately 3 mm, ending with a soft, inviting mouth shape",
+          "ending_state": "陆叔 leaning toward 林晚, right hand gesturing toward the chair, gaze on the chair, soft inviting mouth"
+        },
+        {
+          "start_time": 11.0,
           "end_time": 13.5,
           "actor": "陆叔",
-          "body_action": "陆叔停止前移，胸口呼气后保持",
-          "hand_action": "右手把苹果放回桌边但不松手",
-          "head_action": "头部保持面向林晚",
-          "eye_action": "固定看向林晚双眼",
-          "facial_action": "嘴角保持弧度，眼神停住，呼吸恢复均匀",
-          "prop_action": "苹果与桌面接触，右手仍搭在果皮上",
-          "ending_state": "陆叔手搭苹果，林晚双手压包，双方保持桌边对视"
+          "body_action": "torso starts inclined toward the chair and straightens by approximately 8 degrees, ending with the torso upright and weight shifting onto the back foot as he prepares to move toward the kitchen",
+          "hand_action": "right hand starts gesturing toward the chair and lowers to his side, ending with the hand relaxed at his hip, fingers loosely curled",
+          "head_action": "head starts angled toward the chair and lifts by approximately 5 degrees, ending with the head level and turned slightly toward the kitchen",
+          "eye_action": "eyes start on the chair and shift toward the kitchen, ending with a gaze directed at the kitchen workspace",
+          "facial_action": "mouth starts open in an inviting shape and closes by approximately 2 mm, ending with a settled, warm mouth line",
+          "ending_state": "陆叔 upright with weight shifting back, right hand relaxed at hip, gaze toward the kitchen, warm settled mouth"
+        },
+        {
+          "start_time": 0.0,
+          "end_time": 2.4,
+          "actor": "林晚",
+          "body_action": "torso starts upright with shoulders hunched and lowers by approximately 5 degrees as her shoulders drop, ending with the shoulders relaxed downward",
+          "hand_action": "left hand starts gripping the bag strap tightly and loosens by approximately 2 mm of grip pressure, ending with the fingers still on the strap but relaxed",
+          "head_action": "head starts level and tilts down approximately 5 degrees, ending with the chin slightly lowered",
+          "eye_action": "eyes start fixed on 陆叔 and blink once, ending with the eyes open and still fixed on 陆叔",
+          "facial_action": "lips start pressed together and part by approximately 1 mm, ending with a slightly parted, tired mouth",
+          "ending_state": "林晚 standing with shoulders dropped, left hand relaxed on the bag strap, chin slightly lowered, eyes on 陆叔, mouth slightly parted"
+        },
+        {
+          "start_time": 2.4,
+          "end_time": 4.8,
+          "actor": "林晚",
+          "body_action": "torso starts upright and shifts weight from the back foot to the front foot by approximately 3 cm, ending with the weight centered between both feet",
+          "hand_action": "right hand starts hanging at the side and rises by approximately 5 cm, ending with the hand resting against her own abdomen, fingers lightly curled",
+          "head_action": "head starts tilted down and lifts by approximately 3 degrees, ending with the head level and eyes still on 陆叔",
+          "eye_action": "eyes start on 陆叔 and narrow slightly by approximately 1 mm, ending with a tired, attentive gaze on him",
+          "facial_action": "brows start relaxed and lift by approximately 1 mm at the inner corners, ending with a faintly questioning brow line",
+          "ending_state": "林晚 with weight centered, right hand on her abdomen, head level, tired attentive gaze on 陆叔, faintly questioning brow"
+        },
+        {
+          "start_time": 4.8,
+          "end_time": 7.2,
+          "actor": "林晚",
+          "body_action": "torso starts upright and rotates approximately 10 degrees toward the chair beside the table, ending with the torso angled toward the seating spot",
+          "hand_action": "right hand starts on her abdomen and lowers by approximately 8 cm, ending with the hand hanging at her side, fingers loosely curled",
+          "head_action": "head starts facing 陆叔 and turns approximately 10 degrees toward the chair, ending with the head angled toward the chair",
+          "eye_action": "eyes start on 陆叔 and shift to the chair, ending with a gaze directed at the chair beside the table",
+          "facial_action": "mouth starts slightly parted and closes by approximately 1 mm, ending with a soft, closed mouth line",
+          "ending_state": "林晚 angled toward the chair, right hand at her side, gaze on the chair, soft closed mouth"
+        },
+        {
+          "start_time": 7.2,
+          "end_time": 9.6,
+          "actor": "林晚",
+          "body_action": "torso starts angled toward the chair and rotates back approximately 10 degrees toward 陆叔, ending with the torso facing him again",
+          "hand_action": "left hand starts on the bag strap and releases it by opening the fingers approximately 5 mm, ending with the hand hanging free at her side",
+          "head_action": "head starts angled toward the chair and turns back approximately 10 degrees toward 陆叔, ending with the head facing him directly",
+          "eye_action": "eyes start on the chair and shift back to 陆叔's face, ending with a steady gaze on him",
+          "facial_action": "brows start faintly questioning and draw together by approximately 1 mm, ending with a slightly worried brow line",
+          "ending_state": "林晚 facing 陆叔, left hand free at her side, steady gaze on him, slightly worried brow"
+        },
+        {
+          "start_time": 9.6,
+          "end_time": 11.8,
+          "actor": "林晚",
+          "body_action": "torso starts facing 陆叔 and leans forward approximately 5 degrees, ending with the torso inclined slightly toward him",
+          "hand_action": "right hand starts at her side and rises by approximately 10 cm, ending with the hand resting lightly on the edge of the table",
+          "head_action": "head starts facing 陆叔 and tilts down approximately 3 degrees, ending with the chin slightly lowered toward the table",
+          "eye_action": "eyes start on 陆叔's face and shift down to the table surface, ending with a gaze directed at the tabletop",
+          "facial_action": "mouth starts soft and closed and corners drop by approximately 1 mm, ending with a faint, tired downturn of the lips",
+          "ending_state": "林晚 leaning slightly forward, right hand on the table edge, chin lowered, gaze on the tabletop, faint tired downturn of the lips"
+        },
+        {
+          "start_time": 11.8,
+          "end_time": 13.5,
+          "actor": "林晚",
+          "body_action": "torso starts leaning forward and straightens by approximately 4 degrees, ending with the torso upright and shoulders settling downward",
+          "hand_action": "right hand starts on the table edge and slides 3 cm toward her own body, ending with the hand resting flat on the table near her own side",
+          "head_action": "head starts tilted down and lifts by approximately 2 degrees, ending with the head level and eyes still directed downward",
+          "eye_action": "eyes start on the tabletop and blink once, ending with the eyes open and still directed at the tabletop",
+          "facial_action": "mouth starts with a faint downturn and relaxes by approximately 1 mm, ending with a neutral, tired mouth line",
+          "ending_state": "林晚 upright with shoulders settled, right hand flat on the table near her side, head level, eyes on the tabletop, neutral tired mouth"
         }
       ],
       "dialogue_beats": [
         {
           "speaker": "陆叔",
-          "authoritative_text": "陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
-          "start_time": 0.5,
-          "end_time": 13.37,
-          "delivery": "slow",
+          "authoritative_text": "晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+          "start_time": 0.0,
+          "end_time": 13.5,
+          "delivery": "warm, worried, gently scolding, spoken at a moderate pace with a soft, concerned tone that rises slightly on the questions and settles into a gentle, inviting cadence at the end",
           "phrase_windows": [
             {
-              "index": 1,
-              "text": "陆叔：",
-              "start_time": 0.5,
-              "end_time": 1.17
+              "text": "晚晚，你看看你，跑那么快做什么？",
+              "start_time": 0.0,
+              "end_time": 3.6
             },
             {
-              "index": 2,
-              "text": "晚晚，",
-              "start_time": 1.17,
-              "end_time": 1.83
-            },
-            {
-              "index": 3,
-              "text": "你看看你，",
-              "start_time": 1.83,
-              "end_time": 2.94
-            },
-            {
-              "index": 4,
-              "text": "跑那么快做什么？",
-              "start_time": 2.94,
-              "end_time": 4.72
-            },
-            {
-              "index": 5,
               "text": "在车站吓我一跳。",
-              "start_time": 4.72,
-              "end_time": 6.49
+              "start_time": 3.6,
+              "end_time": 5.4
             },
             {
-              "index": 6,
-              "text": "脸色这么差，",
-              "start_time": 6.49,
-              "end_time": 7.82
+              "text": "脸色这么差，是不是又没好好吃饭？",
+              "start_time": 5.4,
+              "end_time": 9.0
             },
             {
-              "index": 7,
-              "text": "是不是又没好好吃饭？",
-              "start_time": 7.82,
-              "end_time": 10.04
-            },
-            {
-              "index": 8,
-              "text": "来，",
-              "start_time": 10.04,
-              "end_time": 10.49
-            },
-            {
-              "index": 9,
-              "text": "先坐下，",
-              "start_time": 10.49,
-              "end_time": 11.37
-            },
-            {
-              "index": 10,
-              "text": "陆叔给你洗个苹果。",
-              "start_time": 11.37,
-              "end_time": 13.37
+              "text": "来，先坐下，陆叔给你洗个苹果。",
+              "start_time": 9.0,
+              "end_time": 13.5
             }
           ],
-          "estimated_minimum_seconds": 12.87,
-          "status": "READY"
+          "estimated_minimum_seconds": 13.5,
+          "status": "authoritative"
         }
       ],
       "camera_beats": [
         {
           "start_time": 0.0,
-          "end_time": 12.3,
-          "movement_type": "静止",
-          "direction": "沿光轴朝桌面划痕",
-          "speed": "前段缓慢加速，中段匀速",
-          "distance_or_scale_change": "由过肩中景保持主体在上三分之一",
-          "target": "桌面划痕",
-          "start_framing": "过肩中景",
-          "end_framing": "过肩中景",
-          "easing": "缓入"
+          "end_time": 3.6,
+          "movement_type": "static",
+          "direction": "none",
+          "speed": "stationary",
+          "distance_or_scale_change": "no change in distance or scale",
+          "target": "two-shot of 陆叔 and 林晚 at the kitchen table",
+          "start_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "easing": "none"
         },
         {
-          "start_time": 12.3,
+          "start_time": 3.6,
+          "end_time": 7.2,
+          "movement_type": "slow push-in",
+          "direction": "forward toward the two characters",
+          "speed": "slow, steady",
+          "distance_or_scale_change": "distance decreases by approximately 15 percent, subjects scale up slightly within the frame",
+          "target": "陆叔's upper body and face as he speaks",
+          "start_framing": "medium two-shot, both characters framed from mid-torso up",
+          "end_framing": "medium close-up favoring 陆叔, framed from chest up, 林晚 partially visible at the frame edge",
+          "easing": "linear"
+        },
+        {
+          "start_time": 7.2,
+          "end_time": 10.8,
+          "movement_type": "slow lateral drift",
+          "direction": "drifting slightly to the right, shifting emphasis toward 林晚",
+          "speed": "slow, gentle",
+          "distance_or_scale_change": "distance remains constant, framing shifts laterally by approximately 10 percent of frame width",
+          "target": "林晚's face and upper body as she listens",
+          "start_framing": "medium close-up favoring 陆叔, framed from chest up",
+          "end_framing": "medium close-up favoring 林晚, framed from chest up, 陆叔 partially visible at the frame edge",
+          "easing": "ease-in-out"
+        },
+        {
+          "start_time": 10.8,
           "end_time": 13.5,
-          "movement_type": "减速停止",
-          "direction": "沿光轴减速",
-          "speed": "最后1.2秒渐慢",
-          "distance_or_scale_change": "停止在过肩中景",
-          "target": "桌面划痕",
-          "start_framing": "过肩中景",
-          "end_framing": "过肩中景",
-          "easing": "平滑停止"
+          "movement_type": "slow pull-back",
+          "direction": "backward, widening the frame",
+          "speed": "slow, settling",
+          "distance_or_scale_change": "distance increases by approximately 12 percent, subjects scale down slightly within the frame",
+          "target": "both 陆叔 and 林晚 at the kitchen table",
+          "start_framing": "medium close-up favoring 林晚, framed from chest up",
+          "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "easing": "ease-out"
         }
       ],
       "emotion_arc": {
-        "start": "表面平静",
-        "end": "警觉",
-        "physical_transition": "眼睑下压、笑意与眼神分离、呼吸变浅、手指停止"
+        "陆叔": "concerned and gently scolding, softening into warm, inviting care as he offers to wash an apple",
+        "林晚": "tired and guarded, gradually relaxing her posture and attention as she listens to 陆叔"
       },
       "ending_state": {
         "characters": {
           "陆叔": {
-            "position": "餐桌左侧",
-            "pose": "坐姿，右手搭在苹果或桌面",
-            "head_direction": "面向林晚",
-            "eye_target": "桌面划痕",
-            "emotion": "警觉"
+            "position": "餐桌左侧, torso upright with weight shifting back toward the kitchen",
+            "eye_target": "kitchen workspace",
+            "body_pose": "standing upright, right hand relaxed at hip, torso angled slightly toward the kitchen",
+            "expression": "warm, settled, gently caring"
           },
           "林晚": {
-            "position": "餐桌右侧或门边",
-            "pose": "双脚压地，肩背贴近门边",
-            "head_direction": "向左7度",
-            "eye_target": "陆叔双眼",
-            "emotion": "警觉"
-          }
-        },
-        "props": {
-          "APPLE": {
-            "position": "桌边或陆叔右手",
-            "state": "保持可见，未进入林晚手中"
+            "position": "餐桌右侧或门边, torso upright with shoulders settled",
+            "eye_target": "tabletop",
+            "body_pose": "standing upright, right hand flat on the table near her side, left hand hanging free at her side",
+            "expression": "tired but softened, neutral and receptive"
           }
         },
         "camera": {
-          "framing": "过肩中景",
-          "height": "平视",
-          "movement": "静止在最后1.2秒停止"
+          "position": "medium two-shot, pulled back to the original framing distance",
+          "framing": "both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "movement": "camera has settled into a static hold after the slow pull-back",
+          "target": "both 陆叔 and 林晚 at the kitchen table"
         }
       },
       "source_fact_hash": "source-hash-SH_E01_SC002_002",
@@ -707,214 +723,210 @@
       "blocking": [
         {
           "identity": "陆叔",
-          "reference_identity": "character://陆叔/v1",
+          "reference_identity": "餐桌左侧",
           "position": "餐桌左侧",
-          "screen_x": "左三分之一",
-          "depth_zone": "中景",
-          "body_pose": "坐姿，躯干前倾2厘米",
-          "weight_distribution": "坐骨平均承重",
-          "torso_direction": "朝向林晚",
-          "head_yaw": "正面",
-          "head_pitch": "0度",
-          "eye_target": "林晚的双眼",
-          "expression": "眉间轻收，嘴角先礼貌后压低，眼睑随威胁逐渐下压",
-          "left_hand": "左手托住苹果或贴在桌边",
-          "right_hand": "右手沿杯沿或托住苹果",
-          "prop_contact": "右手接触杯沿、桌面划痕或苹果"
+          "screen_x": "0.32",
+          "depth_zone": "midground",
+          "body_pose": "standing, torso leaning slightly forward over the table edge",
+          "weight_distribution": "weight on left leg, right foot slightly back",
+          "torso_direction": "angled toward 林晚 at the table's right side",
+          "head_yaw": "turned toward 林晚, about 25 degrees right",
+          "head_pitch": "slightly down toward the table surface",
+          "eye_target": "桌面划痕",
+          "expression": "curious, faintly teasing",
+          "left_hand": "resting flat on the table near the scratch",
+          "right_hand": "holding an apple, raised slightly",
+          "prop_contact": "right hand grips the apple; left palm contacts the tabletop"
         },
         {
           "identity": "林晚",
-          "reference_identity": "character://林晚/v1",
-          "position": "餐桌右侧或厨房门边",
-          "screen_x": "右三分之一",
-          "depth_zone": "中景",
-          "body_pose": "坐姿保持或沿门边后退半步",
-          "weight_distribution": "双脚压住地面",
-          "torso_direction": "朝向陆叔",
-          "head_yaw": "向左7度",
-          "head_pitch": "0度",
-          "eye_target": "陆叔的双眼",
-          "expression": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅",
-          "left_hand": "扶住门锁下方或压住包边",
-          "right_hand": "护住包带或压住包边",
-          "prop_contact": "与门锁或手提包接触"
+          "reference_identity": "餐桌右侧或门边",
+          "position": "餐桌右侧或门边",
+          "screen_x": "0.68",
+          "depth_zone": "midground",
+          "body_pose": "standing upright, shoulders squared toward 陆叔",
+          "weight_distribution": "evenly balanced on both feet",
+          "torso_direction": "facing 陆叔 across the table",
+          "head_yaw": "turned toward 陆叔, about 10 degrees left",
+          "head_pitch": "level",
+          "eye_target": "陆叔",
+          "expression": "guarded, quietly attentive",
+          "left_hand": "hanging at side, fingers slightly curled",
+          "right_hand": "hanging at side, relaxed",
+          "prop_contact": "no prop contact"
         }
       ],
       "performance_beats": [
         {
           "start_time": 0.0,
-          "end_time": 0.8,
+          "end_time": 1.2,
           "actor": "陆叔",
-          "body_action": "陆叔坐在餐桌边，背部离椅背2厘米，胸口吸气后保持",
-          "hand_action": "右手食指在桌面敲两下，第二下后停在划痕旁",
-          "head_action": "下巴先低2度再抬到正面",
-          "eye_action": "看向林晚双眼",
-          "facial_action": "嘴角右侧先抬1毫米，眼睑保持不动，呼吸停半拍",
-          "prop_action": "手指接触桌面划痕边缘",
-          "ending_state": "右手食指停在划痕旁，嘴角出现未完成的笑"
+          "body_action": "torso rises from a slight forward lean over the table to a more upright stance, ending with shoulders squared toward 林晚",
+          "hand_action": "right hand lifts the apple from the tabletop up to chest height, ending with the apple held steady at chest level",
+          "head_action": "head lifts from a downward tilt toward the table scratch to level, ending with chin parallel to the floor",
+          "eye_action": "gaze shifts from the 桌面划痕 up to 林晚's face, ending focused on 林晚's eyes",
+          "facial_action": "eyebrows raise from neutral to lifted, mouth corners lift slightly, ending in a faint teasing smile",
+          "ending_state": "陆叔 upright, apple at chest height, eyes on 林晚, faint smile"
         },
         {
-          "start_time": 0.8,
-          "end_time": 2.1,
+          "start_time": 1.2,
+          "end_time": 2.6,
           "actor": "陆叔",
-          "body_action": "陆叔上身向暖光前压5厘米，肩膀保持低位",
-          "hand_action": "右手食指沿桌面划痕向前滑3厘米后停住，左手托住苹果不动",
-          "head_action": "头部向林晚转8度，下巴抬3度",
-          "eye_action": "视线从桌面划痕抬到林晚眼睛并锁定",
-          "facial_action": "笑意留在嘴角，眼神不随笑意变软，鼻翼轻张",
-          "prop_action": "苹果停在左手掌心，未递出",
-          "ending_state": "陆叔脸进入暖光，视线锁住林晚"
+          "body_action": "torso leans forward about 10 degrees toward 林晚 across the table, ending with chest closer to the table edge",
+          "hand_action": "right hand pushes the apple forward about 15 centimeters toward 林晚, ending with the apple extended over the table",
+          "head_action": "head tilts slightly to the right about 8 degrees, ending with the tilt held",
+          "eye_action": "gaze holds on 林晚's face without shifting, ending fixed on 林晚",
+          "facial_action": "eyebrows lift higher, mouth opens slightly as if speaking, ending with an open, questioning expression",
+          "ending_state": "陆叔 leaning forward, apple extended toward 林晚, questioning expression"
         },
         {
-          "start_time": 2.1,
-          "end_time": 5.8,
+          "start_time": 2.6,
+          "end_time": 4.4,
           "actor": "陆叔",
-          "body_action": "陆叔躯干保持前压，只有喉结随对白起伏，双脚不动",
-          "hand_action": "右手食指从划痕移到苹果旁，拇指轻压苹果表面一次后停止",
-          "head_action": "每个问句结尾头部向前微倾2度，句间回到正面",
-          "eye_action": "视线在林晚双眼和她后退的门边之间切换两次",
-          "facial_action": "眉间先松后收，眼睑逐渐压低，嘴角笑意保持不变",
-          "prop_action": "苹果从左掌移到右手掌心，但不递向林晚",
-          "ending_state": "苹果由右手托住，双眼重新锁定林晚"
+          "body_action": "torso straightens back from the forward lean to upright, ending with shoulders back over the hips",
+          "hand_action": "right hand retracts the apple back toward his own chest about 10 centimeters, ending with the apple held close again",
+          "head_action": "head returns from the right tilt to level, ending with the head upright",
+          "eye_action": "gaze drops briefly to the apple then returns to 林晚, ending back on 林晚's face",
+          "facial_action": "mouth closes from the open questioning shape into a small knowing smirk, ending with the smirk held",
+          "ending_state": "陆叔 upright, apple back at chest, knowing smirk, eyes on 林晚"
         },
         {
-          "start_time": 5.8,
-          "end_time": 7.2,
-          "actor": "林晚",
-          "body_action": "林晚沿门边后退半步，肩胛贴近门框但不撞击",
-          "hand_action": "左手扶住门锁下方，右手护住手提包带，手指收紧一次",
-          "head_action": "林晚先看门锁，再在0.4秒后抬头看陆叔",
-          "eye_action": "视线从门锁切回陆叔双眼",
-          "facial_action": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸变浅",
-          "prop_action": "手提包带保持在右手，未脱手",
-          "ending_state": "林晚后退半步，左手在门锁下方，视线回到陆叔"
+          "start_time": 4.4,
+          "end_time": 6.2,
+          "actor": "陆叔",
+          "body_action": "torso leans forward again about 12 degrees toward 林晚, ending with the chest over the table edge",
+          "hand_action": "right hand extends the apple forward again about 20 centimeters toward 林晚, ending with the apple offered at arm's length",
+          "head_action": "head dips slightly forward about 5 degrees, ending with the chin angled down toward the offered apple",
+          "eye_action": "gaze shifts from 林晚's face down to the apple then back up to 林晚, ending on 林晚's face",
+          "facial_action": "eyebrows soften from raised to relaxed, mouth opens into a warm inviting shape, ending with a gentle encouraging expression",
+          "ending_state": "陆叔 leaning forward, apple offered at arm's length, warm inviting expression"
         },
         {
-          "start_time": 7.2,
+          "start_time": 6.2,
           "end_time": 8.5,
           "actor": "陆叔",
-          "body_action": "陆叔保持坐姿，右肩向前2厘米后停止",
-          "hand_action": "右手托苹果向前移动4厘米，手腕停在桌边上方",
-          "head_action": "头部向右转5度，眼睛不离开林晚",
-          "eye_action": "固定看向林晚双眼",
-          "facial_action": "嘴角笑意不变，眼睑压低，呼吸平稳",
-          "prop_action": "苹果停在桌边，未进入林晚手部范围",
-          "ending_state": "陆叔坐在暖光中，苹果停在桌边；林晚贴门站立，双方视线相交"
+          "body_action": "torso holds the forward lean steady without further movement, ending in the same leaning stance",
+          "hand_action": "right hand holds the apple steady at arm's length toward 林晚, ending with the apple unmoving in the offered position",
+          "head_action": "head holds level with the slight forward dip, ending unmoving",
+          "eye_action": "gaze holds steady on 林晚's face, ending fixed and waiting",
+          "facial_action": "warm inviting expression holds without change, ending with the gentle encouraging look sustained",
+          "ending_state": "陆叔 holding the offer, apple steady at arm's length, warm expectant expression, eyes on 林晚"
         }
       ],
       "dialogue_beats": [
         {
           "speaker": "陆叔",
-          "authoritative_text": "陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
-          "start_time": 0.35,
-          "end_time": 7.99,
-          "delivery": "slow",
+          "authoritative_text": "伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
+          "start_time": 0.0,
+          "end_time": 8.5,
+          "delivery": "teasing then warm, rising pitch on the questions, softening into a gentle invitation",
           "phrase_windows": [
             {
-              "index": 1,
-              "text": "陆叔：",
-              "start_time": 0.35,
-              "end_time": 1.04
-            },
-            {
-              "index": 2,
               "text": "伞？",
-              "start_time": 1.04,
-              "end_time": 1.51
+              "start_time": 0.0,
+              "end_time": 1.2
             },
             {
-              "index": 3,
               "text": "你哪来的伞？",
-              "start_time": 1.51,
-              "end_time": 2.9
+              "start_time": 1.2,
+              "end_time": 2.6
             },
             {
-              "index": 4,
               "text": "你不是一直不喜欢带伞吗？",
-              "start_time": 2.9,
-              "end_time": 5.67
+              "start_time": 2.6,
+              "end_time": 4.4
             },
             {
-              "index": 5,
               "text": "嫌麻烦。",
-              "start_time": 5.67,
-              "end_time": 6.6
+              "start_time": 4.4,
+              "end_time": 5.4
             },
             {
-              "index": 6,
-              "text": "来，",
-              "start_time": 6.6,
-              "end_time": 7.06
-            },
-            {
-              "index": 7,
-              "text": "吃苹果。",
-              "start_time": 7.06,
-              "end_time": 7.99
+              "text": "来，吃苹果。",
+              "start_time": 5.4,
+              "end_time": 8.5
             }
           ],
-          "estimated_minimum_seconds": 7.64,
-          "status": "READY"
+          "estimated_minimum_seconds": 8.5,
+          "status": "authoritative"
         }
       ],
       "camera_beats": [
         {
           "start_time": 0.0,
-          "end_time": 7.3,
-          "movement_type": "缓慢推近",
-          "direction": "沿光轴朝林晚的双眼",
-          "speed": "前段缓慢加速，中段匀速",
-          "distance_or_scale_change": "由近景保持主体在上三分之一",
-          "target": "林晚的双眼",
-          "start_framing": "近景",
-          "end_framing": "近景",
-          "easing": "缓入"
+          "end_time": 2.6,
+          "movement_type": "slow push-in",
+          "direction": "forward along the axis between the two characters",
+          "speed": "slow, steady",
+          "distance_or_scale_change": "scale increases from 1.0 to 1.08",
+          "target": "陆叔's upper body and face",
+          "start_framing": "medium two-shot, both characters visible across the table",
+          "end_framing": "medium close-up favoring 陆叔, 林晚's shoulder at frame edge",
+          "easing": "ease-in-out"
         },
         {
-          "start_time": 7.3,
+          "start_time": 2.6,
+          "end_time": 4.4,
+          "movement_type": "subtle lateral drift",
+          "direction": "sliding right toward 林晚's side of the table",
+          "speed": "very slow",
+          "distance_or_scale_change": "scale holds at 1.08",
+          "target": "the space between 陆叔's face and 林晚's face",
+          "start_framing": "medium close-up favoring 陆叔",
+          "end_framing": "balanced two-shot close-up, both faces in frame",
+          "easing": "linear"
+        },
+        {
+          "start_time": 4.4,
+          "end_time": 6.2,
+          "movement_type": "gentle tilt down and push-in",
+          "direction": "downward toward the offered apple, then forward",
+          "speed": "slow",
+          "distance_or_scale_change": "scale increases from 1.08 to 1.15",
+          "target": "陆叔's hand holding the apple and 林晚's reaction",
+          "start_framing": "balanced two-shot close-up",
+          "end_framing": "close-up on the offered apple with 陆叔's face soft in background",
+          "easing": "ease-out"
+        },
+        {
+          "start_time": 6.2,
           "end_time": 8.5,
-          "movement_type": "减速停止",
-          "direction": "沿光轴减速",
-          "speed": "最后1.2秒渐慢",
-          "distance_or_scale_change": "停止在近景",
-          "target": "林晚的双眼",
-          "start_framing": "近景",
-          "end_framing": "近景",
-          "easing": "平滑停止"
+          "movement_type": "held frame with micro drift",
+          "direction": "barely perceptible drift toward 林晚",
+          "speed": "near-static",
+          "distance_or_scale_change": "scale holds at 1.15",
+          "target": "林晚's face receiving the offer",
+          "start_framing": "close-up on the offered apple with 陆叔's face soft in background",
+          "end_framing": "close-up holding on 林晚's guarded attentive expression with the apple at frame edge",
+          "easing": "linear"
         }
       ],
       "emotion_arc": {
-        "start": "表面平静",
-        "end": "警觉",
-        "physical_transition": "眼睑下压、笑意与眼神分离、呼吸变浅、手指停止"
+        "start": "curious, faintly teasing",
+        "middle": "questioning, knowing",
+        "end": "warm, gently inviting"
       },
       "ending_state": {
         "characters": {
           "陆叔": {
             "position": "餐桌左侧",
-            "pose": "坐姿，右手搭在苹果或桌面",
-            "head_direction": "面向林晚",
-            "eye_target": "林晚的双眼",
-            "emotion": "警觉"
+            "pose": "leaning forward about 12 degrees over the table edge",
+            "expression": "warm inviting, gentle encouraging",
+            "eye_target": "林晚",
+            "prop_state": "right hand holds the apple offered at arm's length toward 林晚"
           },
           "林晚": {
             "position": "餐桌右侧或门边",
-            "pose": "双脚压地，肩背贴近门边",
-            "head_direction": "向左7度",
-            "eye_target": "陆叔双眼",
-            "emotion": "警觉"
-          }
-        },
-        "props": {
-          "APPLE": {
-            "position": "桌边或陆叔右手",
-            "state": "保持可见，未进入林晚手中"
+            "pose": "standing upright, shoulders squared toward 陆叔",
+            "expression": "guarded, quietly attentive",
+            "eye_target": "陆叔",
+            "prop_state": "no prop held"
           }
         },
         "camera": {
-          "framing": "近景",
-          "height": "平视",
-          "movement": "缓慢推近在最后1.2秒停止"
+          "framing": "close-up holding on 林晚's guarded attentive expression with the apple at frame edge",
+          "movement": "near-static micro drift toward 林晚",
+          "scale": 1.15
         }
       },
       "source_fact_hash": "source-hash-SH_E01_SC002_006",
@@ -947,167 +959,139 @@
       "blocking": [
         {
           "identity": "林晚",
-          "reference_identity": "character://林晚/v1",
-          "position": "画面左侧厨房门边",
-          "screen_x": "左三分之一",
-          "depth_zone": "前景",
-          "body_pose": "背部贴近门框，右脚在前、左脚在后",
-          "weight_distribution": "后脚六成承重",
-          "torso_direction": "朝向陆叔",
-          "head_yaw": "先看门锁再转回右20度",
-          "head_pitch": "0度",
-          "eye_target": "陆叔双眼",
-          "expression": "眉间收紧，下眼睑绷紧，嘴唇闭合，呼吸短促",
-          "left_hand": "左手掌根压在门框锁舌下方",
-          "right_hand": "右手护住手提包带，五指收紧",
-          "prop_contact": "左手接触门框，右手接触包带"
+          "reference_identity": "厨房门边",
+          "position": "厨房门边",
+          "screen_x": "0.32",
+          "depth_zone": "midground",
+          "body_pose": "standing, left hand resting on door frame, body angled slightly toward the dining table",
+          "weight_distribution": "weight on right leg, left leg relaxed",
+          "torso_direction": "torso turned approximately 30 degrees toward the dining table",
+          "head_yaw": "head turned approximately 20 degrees toward 陆叔",
+          "head_pitch": "head level, chin slightly lowered",
+          "eye_target": "eyes on 陆叔 at the dining table",
+          "expression": "quiet, attentive, slightly guarded",
+          "left_hand": "left hand resting on the door frame",
+          "right_hand": "right hand relaxed at her side",
+          "prop_contact": "left hand in contact with the door frame"
         },
         {
           "identity": "陆叔",
-          "reference_identity": "character://陆叔/v1",
-          "position": "画面右侧餐桌旁",
-          "screen_x": "右三分之一",
-          "depth_zone": "中景",
-          "body_pose": "站在餐桌旁，肩膀不追向门口",
-          "weight_distribution": "双脚平均承重",
-          "torso_direction": "朝向林晚",
-          "head_yaw": "向左10度",
-          "head_pitch": "0度",
-          "eye_target": "林晚左手和双眼之间",
-          "expression": "嘴角保持平直，眼睑压低，呼吸均匀",
-          "left_hand": "左手垂在身体侧面",
-          "right_hand": "右手停在桌边上方",
-          "prop_contact": "不接触道具"
+          "reference_identity": "餐桌旁",
+          "position": "餐桌旁",
+          "screen_x": "0.68",
+          "depth_zone": "midground",
+          "body_pose": "standing upright beside the dining table",
+          "weight_distribution": "weight evenly distributed on both feet",
+          "torso_direction": "torso facing toward the kitchen door",
+          "head_yaw": "head turned toward 林晚 at the kitchen door",
+          "head_pitch": "head level",
+          "eye_target": "eyes on 林晚",
+          "expression": "steady, composed, expectant",
+          "left_hand": "left hand relaxed at his side",
+          "right_hand": "right hand resting near the edge of the dining table",
+          "prop_contact": "right hand near the edge of the dining table"
         }
       ],
       "performance_beats": [
         {
           "start_time": 0.0,
-          "end_time": 0.7,
+          "end_time": 1.2,
           "actor": "林晚",
-          "body_action": "林晚后脚向门外退10厘米，前脚保持贴地，背部更靠近门框",
-          "hand_action": "左手沿门框向下滑2厘米，右手把包带收紧一次",
-          "head_action": "头部先转向门锁8度，再在0.2秒后转回陆叔方向",
-          "eye_action": "从门锁移到陆叔双眼",
-          "facial_action": "眉间收紧，嘴唇闭合，下颌用力，吸气变短",
-          "prop_action": "门锁不转动，包带不脱手",
-          "ending_state": "林晚后退10厘米，左手在门框锁舌下方"
+          "body_action": "林晚's torso rotates from facing the kitchen door toward the dining table, ending with her body angled approximately 30 degrees toward 陆叔",
+          "hand_action": "林晚's left hand remains resting on the door frame, maintaining contact without sliding, ending with the palm flat against the frame",
+          "head_action": "林晚's head turns from facing the door frame toward 陆叔, ending with her face directed at him",
+          "eye_action": "林晚's eyes shift from the door frame to 陆叔's face, ending with a steady gaze on him",
+          "facial_action": "林晚's expression settles from neutral into a quiet, attentive look, ending with her lips closed and brows relaxed",
+          "ending_state": "林晚 stands at the kitchen door, torso angled toward the dining table, left hand on the door frame, eyes on 陆叔"
         },
         {
-          "start_time": 0.7,
-          "end_time": 2.0,
-          "actor": "林晚",
-          "body_action": "林晚再向后退20厘米，后脚跟碰到门槛后停止，肩背贴住门框",
-          "hand_action": "左手掌根压住门框，右手把包带贴到胸腹前",
-          "head_action": "头部向右转20度，下巴上抬2度",
-          "eye_action": "视线固定在陆叔双眼，不再看门锁",
-          "facial_action": "下眼睑绷紧，鼻翼扩张一次，嘴角向下压",
-          "prop_action": "手提包被右手固定在胸腹前",
-          "ending_state": "林晚距原位置后退30厘米，背贴门框"
-        },
-        {
-          "start_time": 2.0,
-          "end_time": 3.2,
+          "start_time": 1.2,
+          "end_time": 2.6,
           "actor": "陆叔",
-          "body_action": "陆叔从餐桌旁向前迈半步，前脚落地后立即停止，不越过桌边",
-          "hand_action": "右手从桌边抬起4厘米，掌心朝下停住，左手仍垂落",
-          "head_action": "头部向左转10度，保持下巴水平",
-          "eye_action": "先看林晚的左手，再回到她双眼",
-          "facial_action": "嘴角保持平直，眼睑压低，呼吸保持均匀",
-          "prop_action": "餐桌和门锁之间没有道具移动",
-          "ending_state": "陆叔停在餐桌边缘，右手悬停"
+          "body_action": "陆叔's torso shifts from facing the kitchen door toward 林晚, ending with his shoulders squared toward her",
+          "hand_action": "陆叔's right hand lifts slightly from the table edge and settles back down, ending with the fingertips resting on the table surface",
+          "head_action": "陆叔's head tilts slightly downward toward 林晚, ending with his chin lowered a few degrees",
+          "eye_action": "陆叔's eyes hold steady on 林晚's face, ending with an unbroken gaze",
+          "facial_action": "陆叔's expression firms from composed to expectant, ending with his mouth set in a calm line",
+          "ending_state": "陆叔 stands at the dining table, shoulders squared toward 林晚, right hand resting on the table, eyes fixed on her"
         },
         {
-          "start_time": 3.2,
-          "end_time": 5.0,
+          "start_time": 2.6,
+          "end_time": 3.8,
           "actor": "林晚",
-          "body_action": "林晚双脚冻结，胸口呼吸变浅后恢复一次，身体不再后退",
-          "hand_action": "左手继续压门框，右手保持包带在胸腹前，手指不松开",
-          "head_action": "头部保持右20度，不再转动",
-          "eye_action": "固定看向陆叔双眼",
-          "facial_action": "眉间保持收紧，嘴唇闭合，下颌用力维持警觉",
-          "prop_action": "门锁、包带和桌面位置均不改变",
-          "ending_state": "林晚背贴门框、后退30厘米、双手固定；陆叔停在餐桌边缘，双方视线相交"
+          "body_action": "林晚's torso leans slightly forward from the door frame, ending with her weight shifted onto her right foot",
+          "hand_action": "林晚's left hand tightens its grip on the door frame, ending with her fingers curled more firmly around the edge",
+          "head_action": "林晚's head lowers slightly, ending with her chin tucked a few degrees toward her chest",
+          "eye_action": "林晚's eyes drop briefly toward the floor, ending with her gaze returning to 陆叔",
+          "facial_action": "林晚's expression softens from guarded to hesitant, ending with her lips slightly parted",
+          "ending_state": "林晚 leans slightly forward at the kitchen door, left hand gripping the frame, eyes returning to 陆叔"
+        },
+        {
+          "start_time": 3.8,
+          "end_time": 5.0,
+          "actor": "陆叔",
+          "body_action": "陆叔's torso straightens from the slight forward lean, ending with his posture fully upright",
+          "hand_action": "陆叔's right hand slides a short distance along the table edge, ending with his palm flat on the surface",
+          "head_action": "陆叔's head lifts from the slight downward tilt, ending level with his gaze on 林晚",
+          "eye_action": "陆叔's eyes remain fixed on 林晚, ending with a steady, unwavering look",
+          "facial_action": "陆叔's expression settles from expectant into calm resolve, ending with his features relaxed but firm",
+          "ending_state": "陆叔 stands upright at the dining table, right hand flat on the table, eyes steady on 林晚"
         }
       ],
       "dialogue_beats": [],
       "camera_beats": [
         {
           "start_time": 0.0,
-          "end_time": 0.8,
-          "movement_type": "静止",
-          "direction": "无",
-          "speed": "保持",
-          "distance_or_scale_change": "无变化",
-          "target": "林晚左手",
-          "start_framing": "双人中景",
-          "end_framing": "双人中景",
-          "easing": "无"
+          "end_time": 2.5,
+          "movement_type": "slow push-in",
+          "direction": "toward the two characters, drifting slightly toward 陆叔",
+          "speed": "slow and steady",
+          "distance_or_scale_change": "frame tightens from a two-shot to a medium two-shot, scale increasing approximately 10 percent",
+          "target": "林晚 and 陆叔",
+          "start_framing": "wide two-shot, 林晚 at the kitchen door on the left, 陆叔 at the dining table on the right",
+          "end_framing": "medium two-shot, both characters filling more of the frame with the kitchen door and dining table visible",
+          "easing": "linear"
         },
         {
-          "start_time": 0.8,
-          "end_time": 3.8,
-          "movement_type": "环绕",
-          "direction": "从餐桌侧向门边顺时针绕过约20度",
-          "speed": "前0.4秒缓慢加速，中段匀速",
-          "distance_or_scale_change": "林晚由画面左三分之一扩大到左半幅，陆叔保持右侧",
-          "target": "林晚与陆叔视线连线",
-          "start_framing": "双人中景",
-          "end_framing": "双人中景偏近",
-          "easing": "先加速后匀速"
-        },
-        {
-          "start_time": 3.8,
-          "end_time": 4.4,
-          "movement_type": "减速停止",
-          "direction": "绕行减速",
-          "speed": "最后0.6秒减速",
-          "distance_or_scale_change": "固定双人中景偏近",
-          "target": "两人双眼",
-          "start_framing": "双人中景偏近",
-          "end_framing": "双人中景偏近",
-          "easing": "平滑停止"
-        },
-        {
-          "start_time": 4.4,
+          "start_time": 2.5,
           "end_time": 5.0,
-          "movement_type": "静止保持",
-          "direction": "无",
-          "speed": "保持",
-          "distance_or_scale_change": "无变化",
-          "target": "两人双眼",
-          "start_framing": "双人中景偏近",
-          "end_framing": "双人中景偏近",
-          "easing": "无"
+          "movement_type": "slow lateral drift",
+          "direction": "drifting left toward 林晚",
+          "speed": "very slow",
+          "distance_or_scale_change": "scale held steady, framing shifts so 林晚 gains more prominence",
+          "target": "林晚, with 陆叔 held in the right of frame",
+          "start_framing": "medium two-shot centered between both characters",
+          "end_framing": "medium shot weighted toward 林晚 at the kitchen door, 陆叔 still visible at the right edge",
+          "easing": "ease-in-out"
         }
       ],
       "emotion_arc": {
-        "start": "压抑疑惑",
-        "end": "明确警觉",
-        "physical_transition": "后退30厘米、门框支撑、包带收紧、视线锁定"
+        "start": "quiet, guarded attention",
+        "middle": "hesitation and softening",
+        "end": "calm resolve on both sides"
       },
       "ending_state": {
         "characters": {
           "林晚": {
-            "position": "厨房门边，后退30厘米，背贴门框",
-            "pose": "左手压门框，右手护包，双脚冻结",
-            "head_direction": "向右20度",
-            "eye_target": "陆叔双眼",
-            "emotion": "明确警觉"
+            "position": "厨房门边",
+            "left_hand": "扶门框",
+            "body_pose": "standing, torso angled toward the dining table, left hand gripping the door frame",
+            "eye_target": "eyes on 陆叔",
+            "expression": "hesitant, attentive"
           },
           "陆叔": {
-            "position": "餐桌边缘前半步",
-            "pose": "右手悬停4厘米，左手下垂",
-            "head_direction": "向左10度",
-            "eye_target": "林晚双眼",
-            "emotion": "平静压迫"
+            "position": "餐桌旁",
+            "pose": "站定",
+            "body_pose": "standing upright beside the dining table, right hand flat on the table surface",
+            "eye_target": "eyes on 林晚",
+            "expression": "calm resolve"
           }
         },
-        "props": {},
         "camera": {
-          "framing": "双人中景偏近",
-          "height": "平视",
-          "movement": "4.4秒停止"
+          "position": "medium shot weighted toward 林晚 at the kitchen door",
+          "framing": "林晚 on the left of frame, 陆叔 visible at the right edge, kitchen door and dining table in frame",
+          "movement": "camera has completed a slow push-in followed by a slow lateral drift left",
+          "focus": "focus held on 林晚, with 陆叔 softly present in the right of frame"
         }
       },
       "source_fact_hash": "source-hash-shot-015",
@@ -1129,23 +1113,30 @@
         "dialogue": "",
         "location": "旧火车站售票厅"
       },
+      "starting_state": {
+        "林晚": {
+          "position": "售票窗口前一步，右手持车票",
+          "eye_target": "车票票面",
+          "pose": "站直"
+        }
+      },
       "blocking": [
         {
           "identity": "林晚",
           "reference_identity": "售票窗口",
           "position": "售票窗口前一步，右手持车票",
-          "screen_x": 0.42,
-          "depth_zone": "midground",
+          "screen_x": "0.50",
+          "depth_zone": "中景",
           "body_pose": "站直",
-          "weight_distribution": "重心落在右脚，左脚微前半步",
-          "torso_direction": "朝向售票窗口，躯干正对窗口",
-          "head_yaw": "向左偏转约15度，朝向车票票面",
-          "head_pitch": "向下约20度，视线落在车票票面",
+          "weight_distribution": "双脚平均承重，重心居中",
+          "torso_direction": "正对售票窗口",
+          "head_yaw": "0度，面向售票窗口",
+          "head_pitch": "下倾约15度，看向车票票面",
           "eye_target": "车票票面",
-          "expression": "平静专注，眉间微收",
+          "expression": "平静专注",
           "left_hand": "自然垂于体侧，手指微曲",
-          "right_hand": "右手持车票，拇指与食指捏住票角，举于胸前偏右",
-          "prop_contact": "右手拇指与食指接触车票边缘，车票票面朝向林晚面部"
+          "right_hand": "持车票，手臂微屈抬于胸前",
+          "prop_contact": "右手拇指与食指捏住车票边缘"
         }
       ],
       "performance_beats": [
@@ -1153,89 +1144,122 @@
           "start_time": 0.0,
           "end_time": 1.2,
           "actor": "林晚",
-          "body_action": "躯干从站直状态保持不动，肩线由放松状态轻微下沉约1厘米，结束于肩部完全放松的站直姿态",
-          "hand_action": "右手从举于胸前偏右的状态保持持票不动，手指由微紧状态放松至轻捏车票边缘，结束于拇指与食指轻捏车票票角",
-          "head_action": "头部由向左偏转15度、下倾20度的状态保持不动，结束于维持朝向车票票面的低头姿态",
-          "eye_action": "视线由车票票面开始，沿票面从左上角向右下角缓慢扫过约3厘米，结束于凝视车票票面中央",
-          "facial_action": "眉间由微收状态逐渐舒展，结束于眉间平展、神情平静的专注面容",
-          "ending_state": "林晚站直于售票窗口前一步，右手持车票于胸前偏右，视线凝视车票票面中央，神情平静专注"
+          "body_action": "躯干保持站直，从正对售票窗口的静止状态开始，肩部轻微下沉约2厘米，结束时肩线放松下沉并保持站直",
+          "hand_action": "右手从持车票于胸前的静止状态开始，手腕向上翻转约20度，将车票票面朝向自己，结束时右手停在胸前、车票票面朝向面部",
+          "head_action": "头部从面向售票窗口的正中位置开始，向下低头约15度，结束时头部下倾、下巴靠近胸口、视线落在车票票面",
+          "eye_action": "双眼从平视售票窗口的状态开始，视线向下移动至车票票面，结束时双眼聚焦于车票票面文字",
+          "facial_action": "面部从平静无表情的状态开始，眉心轻微收紧约1毫米，结束时眉头微蹙、嘴唇轻抿、神情专注",
+          "ending_state": "林晚站直于售票窗口前一步，右手持车票于胸前，车票票面朝向面部，头部下倾约15度，视线聚焦车票票面，眉头微蹙"
         },
         {
           "start_time": 1.2,
           "end_time": 2.6,
           "actor": "林晚",
-          "body_action": "躯干由站直状态向左微转约5度，结束于躯干朝向售票窗口略偏左的站姿",
-          "hand_action": "右手由轻捏车票票角的状态将车票向左上方抬起约4厘米，结束于车票举至与视线平齐的高度",
-          "head_action": "头部由下倾20度的状态抬起至下倾约10度，结束于头部微抬、仍朝向车票票面的姿态",
-          "eye_action": "视线由车票票面中央向上移动约2厘米至票面上缘，结束于凝视车票票面上缘的车次信息",
-          "facial_action": "嘴唇由闭合状态轻微抿紧，结束于双唇轻抿、神情专注的面容",
-          "ending_state": "林晚站直于售票窗口前一步，右手将车票举至与视线平齐，视线凝视车票票面上缘，双唇轻抿"
+          "body_action": "躯干从站直状态开始，向左侧缓慢转动约10度，结束时躯干朝向售票窗口左侧、仍保持站直",
+          "hand_action": "右手从持车票于胸前的状态开始，将车票向左前方送出约15厘米，结束时右手伸向售票窗口方向、车票前伸",
+          "head_action": "头部从下倾15度的状态开始，向左转动约10度并抬起约5度，结束时头部朝向售票窗口左侧、下倾约10度",
+          "eye_action": "双眼从聚焦车票票面的状态开始，视线沿车票向左前方移动，结束时视线落在售票窗口方向",
+          "facial_action": "面部从眉头微蹙的状态开始，眉头逐渐舒展约1毫米，结束时眉头放松、嘴唇微启、神情转为询问",
+          "ending_state": "林晚躯干向左转约10度，右手持车票向售票窗口方向前伸约15厘米，头部朝向售票窗口左侧、下倾约10度，视线落在售票窗口方向，眉头舒展、嘴唇微启"
         },
         {
           "start_time": 2.6,
           "end_time": 3.8,
           "actor": "林晚",
-          "body_action": "躯干由微左转5度的状态回正至正对售票窗口，结束于躯干完全朝向售票窗口的站姿",
-          "hand_action": "右手由举至视线平齐的状态将车票向右下方回落约3厘米，结束于车票回到胸前偏右的持票位置",
-          "head_action": "头部由下倾10度的状态再次下倾至约18度，结束于头部低垂、朝向车票票面的姿态",
-          "eye_action": "视线由车票票面上缘向下移动约2厘米至票面下缘，结束于凝视车票票面下缘的日期信息",
-          "facial_action": "眉间由平展状态再次轻微收拢，结束于眉间微收、神情专注的面容",
-          "ending_state": "林晚站直于售票窗口前一步，右手持车票于胸前偏右，视线凝视车票票面下缘，眉间微收"
+          "body_action": "躯干从向左转10度的状态开始，回转约10度回到正对售票窗口，结束时躯干重新正对售票窗口、保持站直",
+          "hand_action": "右手从前伸持车票的状态开始，收回约15厘米至胸前，结束时右手持车票回到胸前、车票票面朝向面部",
+          "head_action": "头部从朝向售票窗口左侧的状态开始，回转约10度至正中并下倾约5度，结束时头部正对售票窗口、下倾约15度",
+          "eye_action": "双眼从落在售票窗口方向的状态开始，视线收回至车票票面，结束时双眼重新聚焦车票票面",
+          "facial_action": "面部从嘴唇微启的状态开始，嘴唇轻抿约2毫米，结束时嘴唇抿合、眉头微蹙、神情恢复专注",
+          "ending_state": "林晚躯干回转正对售票窗口，右手持车票收回胸前、车票票面朝向面部，头部正对售票窗口、下倾约15度，视线聚焦车票票面，嘴唇抿合、眉头微蹙"
         },
         {
           "start_time": 3.8,
           "end_time": 5.0,
           "actor": "林晚",
-          "body_action": "躯干由正对售票窗口的状态保持不动，肩线由放松状态轻微前送约0.5厘米，结束于肩部微前送的站直姿态",
-          "hand_action": "右手由持车票于胸前偏右的状态将车票向售票窗口方向前送约5厘米，结束于车票举至售票窗口前、票面朝向窗口的姿态",
-          "head_action": "头部由下倾18度的状态抬起至下倾约5度，结束于头部微抬、朝向售票窗口的姿态",
-          "eye_action": "视线由车票票面下缘移开，向前上方移动至售票窗口方向，结束于凝视售票窗口内侧",
-          "facial_action": "嘴唇由轻抿状态微微张开约2毫米，结束于双唇微启、神情平静的面容",
-          "ending_state": "林晚站直于售票窗口前一步，右手将车票举至售票窗口前，视线凝视售票窗口内侧，双唇微启"
-        }
-      ],
-      "camera_beats": [
-        {
-          "start_time": 0.0,
-          "end_time": 2.6,
-          "movement_type": "dolly_in",
-          "direction": "沿视轴向前，朝向林晚与售票窗口",
-          "speed": "缓慢匀速，约每秒推进0.15米",
-          "distance_or_scale_change": "景别由中景推进至中近景，林晚在画面中的高度占比由约55%增至约70%",
-          "target": "林晚上半身与右手所持车票",
-          "start_framing": "中景，林晚位于画面中央偏左，售票窗口位于画面右侧，旧火车站售票厅环境可见",
-          "end_framing": "中近景，林晚上半身占据画面中央，右手持车票位于画面右下三分之一处",
-          "easing": "ease_in_out"
-        },
-        {
-          "start_time": 2.6,
-          "end_time": 5.0,
-          "movement_type": "dolly_in",
-          "direction": "沿视轴继续向前，朝向林晚面部与车票",
-          "speed": "缓慢匀速，约每秒推进0.1米",
-          "distance_or_scale_change": "景别由中近景推进至近景，林晚在画面中的高度占比由约70%增至约85%",
-          "target": "林晚面部表情与右手所持车票",
-          "start_framing": "中近景，林晚上半身占据画面中央，右手持车票位于画面右下三分之一处",
-          "end_framing": "近景，林晚面部与右手持车票占据画面主体，售票窗口边缘位于画面右侧",
-          "easing": "ease_out"
+          "body_action": "躯干从正对售票窗口的状态开始，保持站直并轻微前倾约3厘米，结束时躯干微前倾、重心略向售票窗口方向偏移",
+          "hand_action": "右手从持车票于胸前的状态开始，将车票向前送出约10厘米至售票窗口方向，结束时右手持车票前伸、车票接近售票窗口",
+          "head_action": "头部从下倾15度的状态开始，抬起约5度并保持正对售票窗口，结束时头部下倾约10度、朝向售票窗口",
+          "eye_action": "双眼从聚焦车票票面的状态开始，视线沿车票向前移动至售票窗口方向，结束时视线落在售票窗口方向",
+          "facial_action": "面部从眉头微蹙的状态开始，眉头进一步收紧约1毫米，结束时眉头紧蹙、嘴唇紧抿、神情凝重",
+          "ending_state": "林晚躯干微前倾约3厘米、重心偏向售票窗口，右手持车票前伸约10厘米、车票接近售票窗口，头部下倾约10度、朝向售票窗口，视线落在售票窗口方向，眉头紧蹙、嘴唇紧抿"
         }
       ],
       "dialogue_beats": [],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 1.2,
+          "movement_type": "固定机位",
+          "direction": "无位移，镜头静止",
+          "speed": "0",
+          "distance_or_scale_change": "无变化，保持原景别",
+          "target": "林晚",
+          "start_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "end_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "easing": "无"
+        },
+        {
+          "start_time": 1.2,
+          "end_time": 2.6,
+          "movement_type": "缓慢推轨",
+          "direction": "向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.3米",
+          "distance_or_scale_change": "镜头与林晚距离缩短约0.4米，林晚在画面中占比增大约10%",
+          "target": "林晚及手中车票",
+          "start_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "end_framing": "中近景，林晚上半身占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "线性匀速"
+        },
+        {
+          "start_time": 2.6,
+          "end_time": 3.8,
+          "movement_type": "缓慢推轨",
+          "direction": "继续向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.2米",
+          "distance_or_scale_change": "镜头与林晚距离再缩短约0.25米，林晚在画面中占比再增大约8%",
+          "target": "林晚面部及手中车票",
+          "start_framing": "中近景，林晚上半身占据画面主体，售票窗口在画面右侧边缘",
+          "end_framing": "近景，林晚面部及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "线性匀速"
+        },
+        {
+          "start_time": 3.8,
+          "end_time": 5.0,
+          "movement_type": "缓慢推轨",
+          "direction": "继续向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.15米",
+          "distance_or_scale_change": "镜头与林晚距离再缩短约0.18米，林晚面部在画面中占比再增大约6%",
+          "target": "林晚面部表情及持车票的右手",
+          "start_framing": "近景，林晚面部及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "end_framing": "近景，林晚面部表情及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "缓入缓出"
+        }
+      ],
+      "emotion_arc": {
+        "start": "平静专注",
+        "middle": "询问与确认",
+        "end": "凝重与决断"
+      },
       "ending_state": {
         "characters": {
           "林晚": {
-            "position": "售票窗口前一步，右手持车票举至售票窗口前",
-            "pose": "站直，躯干正对售票窗口，肩部微前送",
-            "eye_target": "售票窗口内侧",
-            "expression": "神情平静，双唇微启",
-            "prop_contact": "右手拇指与食指捏住车票边缘，车票票面朝向售票窗口"
+            "position": "售票窗口前一步，右手持车票前伸约10厘米、车票接近售票窗口",
+            "pose": "站直，躯干微前倾约3厘米，重心偏向售票窗口",
+            "eye_target": "售票窗口方向",
+            "expression": "眉头紧蹙、嘴唇紧抿、神情凝重",
+            "prop_contact": "右手拇指与食指捏住车票边缘，车票前伸接近售票窗口"
           }
         },
         "camera": {
-          "position": "沿视轴位于林晚正前方，距林晚面部约1.2米",
-          "framing": "近景，林晚面部与右手持车票占据画面主体",
-          "movement": "缓慢推进后静止",
-          "target": "林晚面部表情与右手所持车票"
+          "movement_type": "缓慢推轨",
+          "direction": "向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.15米",
+          "distance_or_scale_change": "镜头与林晚距离较起始缩短约0.83米，林晚面部在画面中占比增大约24%",
+          "target": "林晚面部表情及持车票的右手",
+          "start_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "end_framing": "近景，林晚面部表情及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "缓入缓出"
         }
       }
     },
@@ -1254,40 +1278,50 @@
         "dialogue": "顾沉？你……你怎么在这儿？",
         "location": "旧火车站售票厅"
       },
+      "starting_state": {
+        "陆叔": {
+          "position": "林晚左前方半步",
+          "right_hand": "尚未接触手提包提手"
+        },
+        "林晚": {
+          "position": "售票台侧前方",
+          "right_hand": "握住手提包提手"
+        }
+      },
       "blocking": [
         {
           "identity": "陆叔",
           "reference_identity": "林晚",
           "position": "林晚左前方半步",
-          "screen_x": 0.38,
+          "screen_x": "0.38",
           "depth_zone": "midground",
-          "body_pose": "standing, torso angled 20 degrees toward 林晚, knees slightly bent",
-          "weight_distribution": "weight on left foot, right foot stepping forward",
-          "torso_direction": "toward 林晚",
-          "head_yaw": "15 degrees toward 林晚",
-          "head_pitch": "0 degrees",
-          "eye_target": "林晚's face",
-          "expression": "startled recognition, mouth slightly open",
-          "left_hand": "at side, fingers relaxed",
-          "right_hand": "reaching from side toward HANDBAG handle, not yet touching",
-          "prop_contact": "none yet, right hand approaching HANDBAG handle"
+          "body_pose": "站立，上身微前倾，双臂自然垂于体侧，右臂向林晚手提包方向半抬",
+          "weight_distribution": "重心落在左脚，右脚脚跟微抬准备上前半步",
+          "torso_direction": "朝向林晚及手提包，躯干向右前方偏转约20度",
+          "head_yaw": "向右转约15度，朝向林晚面部与手提包",
+          "head_pitch": "微低头约5度，视线落向手提包提手",
+          "eye_target": "林晚的面部，随后下移至手提包提手",
+          "expression": "警觉、克制，眉头微蹙，嘴唇紧抿",
+          "left_hand": "垂于体侧，手指微张，未接触任何物体",
+          "right_hand": "从体侧抬起，手掌张开，尚未接触手提包提手",
+          "prop_contact": "无接触，手提包由林晚右手握住提手"
         },
         {
           "identity": "林晚",
-          "reference_identity": "售票台",
+          "reference_identity": "陆叔",
           "position": "售票台侧前方",
-          "screen_x": 0.62,
+          "screen_x": "0.62",
           "depth_zone": "midground",
-          "body_pose": "standing upright, shoulders squared to 陆叔",
-          "weight_distribution": "even weight on both feet",
-          "torso_direction": "toward 陆叔",
-          "head_yaw": "10 degrees toward 陆叔",
-          "head_pitch": "0 degrees",
-          "eye_target": "陆叔's face",
-          "expression": "surprise, eyebrows raised, lips parted",
-          "left_hand": "at side, slightly raised",
-          "right_hand": "gripping HANDBAG handle",
-          "prop_contact": "right hand gripping HANDBAG handle"
+          "body_pose": "站立于售票台侧前方，上身略向后撤半步，右手握住手提包提手，左手垂于身侧",
+          "weight_distribution": "重心后移至左脚，右脚脚尖点地，呈后撤姿态",
+          "torso_direction": "朝向售票台方向，随后转向陆叔，躯干向左偏转约10度",
+          "head_yaw": "先朝向售票台，随后向左转约25度朝向陆叔",
+          "head_pitch": "微抬头约3度，视线从售票台移向陆叔面部",
+          "eye_target": "陆叔的面部，随后短暂下移至手提包",
+          "expression": "惊讶、错愕，双唇微启，眉头轻扬",
+          "left_hand": "垂于体侧，手指微曲，未接触任何物体",
+          "right_hand": "握住手提包提手，手指收紧，指节因用力而微微泛白",
+          "prop_contact": "右手持续握住手提包提手，手提包悬于体侧"
         }
       ],
       "performance_beats": [
@@ -1295,367 +1329,464 @@
           "start_time": 0.0,
           "end_time": 1.2,
           "actor": "陆叔",
-          "body_action": "torso rotates from angled 20 degrees toward 林晚 to fully squared toward 林晚, ending with shoulders square to her",
-          "hand_action": "right hand moves from at-side position toward HANDBAG handle, ending with fingertips 2cm from the handle",
-          "head_action": "head lifts from neutral to 15 degrees toward 林晚, ending with chin level",
-          "eye_action": "eyes shift from scanning the hall to locking onto 林晚's face, ending with steady gaze",
-          "facial_action": "eyebrows rise from neutral to raised, mouth opens from closed to slightly parted, ending with startled recognition",
-          "ending_state": "standing squared to 林晚, right hand hovering near HANDBAG handle, expression of startled recognition"
+          "body_action": "上身从直立状态向前倾斜约10度，右脚从脚跟落地状态向前迈出半步，右臂从体侧垂落状态抬起至腰部高度，手掌张开朝向手提包提手，最终停在距提手约十厘米处未接触",
+          "hand_action": "右手从垂落状态抬起，五指从并拢状态张开，手掌朝向手提包提手方向，最终停在距提手约十厘米处，手指保持微张",
+          "head_action": "头部从朝向林晚面部的状态向右转约15度并微低头约5度，最终视线落向手提包提手",
+          "eye_action": "视线从林晚面部下移至手提包提手，最终定格在提手位置",
+          "facial_action": "眉头从舒展状态微蹙，嘴唇从微启状态收紧抿平，最终保持警觉克制的表情",
+          "ending_state": "陆叔右脚向前迈出半步，右臂抬起至腰部高度，右手悬停在手提包提手上方约十厘米处，视线落在提手上，表情警觉克制"
         },
         {
           "start_time": 1.2,
-          "end_time": 2.8,
+          "end_time": 2.6,
           "actor": "林晚",
-          "body_action": "torso leans back 5 degrees from upright, ending with weight shifted to back foot",
-          "hand_action": "right hand tightens grip on HANDBAG handle from loose to firm, ending with knuckles whitened",
-          "head_action": "head tilts back 5 degrees from neutral, ending with chin slightly raised",
-          "eye_action": "eyes widen from normal to wide, ending with fixed stare on 陆叔",
-          "facial_action": "eyebrows raise from neutral to high, lips part from closed to open, ending with shock",
-          "ending_state": "leaning back slightly, right hand gripping HANDBAG handle firmly, expression of shock"
+          "body_action": "上身从朝向售票台的状态向后撤半步，躯干从向右偏转状态向左偏转约10度转向陆叔，右手从自然握持状态收紧手指握住手提包提手",
+          "hand_action": "右手五指从轻握状态收紧，指节因用力而微微泛白，手提包从体侧微晃状态稳定悬于体侧",
+          "head_action": "头部从朝向售票台的状态向左转约25度并微抬头约3度，最终朝向陆叔面部",
+          "eye_action": "视线从售票台移向陆叔面部，随后短暂下移至手提包，最终回到陆叔面部",
+          "facial_action": "双唇从闭合状态微启，眉头从舒展状态轻扬，最终保持惊讶错愕的表情",
+          "ending_state": "林晚上身后撤半步，躯干转向陆叔，右手收紧握住手提包提手，头部转向陆叔，表情惊讶错愕"
         },
         {
-          "start_time": 2.8,
-          "end_time": 4.2,
+          "start_time": 2.6,
+          "end_time": 4.0,
           "actor": "陆叔",
-          "body_action": "right arm extends from bent to fully extended toward HANDBAG handle, ending with hand touching the handle",
-          "hand_action": "right hand moves from hovering 2cm away to gripping HANDBAG handle, ending with fingers wrapped around it",
-          "head_action": "head dips 5 degrees from level, ending with chin slightly down",
-          "eye_action": "eyes shift from 林晚's face to HANDBAG handle, ending with gaze on the handle",
-          "facial_action": "mouth closes from parted to set, ending with determined expression",
-          "ending_state": "right hand gripping HANDBAG handle, gaze on the handle, determined expression"
+          "body_action": "上身从微前倾状态回正约5度，右臂从悬停状态收回至体侧，右手从张开状态收拢，最终停在体侧未接触手提包",
+          "hand_action": "右手五指从张开状态收拢并垂回体侧，最终停在大腿外侧，未接触任何物体",
+          "head_action": "头部从低头状态微抬约3度，视线从手提包提手上移至林晚面部",
+          "eye_action": "视线从手提包提手上移至林晚面部，最终定格在林晚眼睛",
+          "facial_action": "眉头从微蹙状态略微舒展，嘴唇保持紧抿，表情从警觉转为克制的询问",
+          "ending_state": "陆叔上身回正，右臂收回体侧，右手垂于大腿外侧，视线落在林晚面部，表情克制询问"
         },
         {
-          "start_time": 4.2,
+          "start_time": 4.0,
           "end_time": 5.5,
           "actor": "林晚",
-          "body_action": "torso rotates 10 degrees away from 陆叔, ending with body angled toward the exit",
-          "hand_action": "right hand pulls HANDBAG handle from firm grip to releasing, ending with hand lifting off the handle",
-          "head_action": "head turns 20 degrees from facing 陆叔 to facing the exit, ending with chin toward the door",
-          "eye_action": "eyes shift from 陆叔 to the exit, ending with gaze toward the door",
-          "facial_action": "eyebrows lower from high to furrowed, lips press together, ending with fear",
-          "ending_state": "body angled toward exit, right hand releasing HANDBAG handle, expression of fear"
-        }
-      ],
-      "camera_beats": [
-        {
-          "start_time": 0.0,
-          "end_time": 1.5,
-          "movement_type": "dolly in",
-          "direction": "toward 陆叔 and 林晚",
-          "speed": "slow",
-          "distance_or_scale_change": "closing 10% of distance to subjects",
-          "target": "陆叔 and 林晚 midground two-shot",
-          "start_framing": "wide two-shot, both characters full body, 旧火车站售票厅 visible",
-          "end_framing": "medium two-shot, both characters from waist up",
-          "easing": "ease-in"
-        },
-        {
-          "start_time": 1.5,
-          "end_time": 3.0,
-          "movement_type": "static",
-          "direction": "none",
-          "speed": "none",
-          "distance_or_scale_change": "no change",
-          "target": "林晚's face",
-          "start_framing": "medium two-shot",
-          "end_framing": "medium two-shot",
-          "easing": "none"
-        },
-        {
-          "start_time": 3.0,
-          "end_time": 4.5,
-          "movement_type": "pan right",
-          "direction": "toward HANDBAG",
-          "speed": "slow",
-          "distance_or_scale_change": "no change in distance",
-          "target": "HANDBAG handle and 陆叔's hand",
-          "start_framing": "medium two-shot",
-          "end_framing": "medium close-up on HANDBAG handle and 陆叔's hand",
-          "easing": "ease-in-out"
-        },
-        {
-          "start_time": 4.5,
-          "end_time": 5.5,
-          "movement_type": "static",
-          "direction": "none",
-          "speed": "none",
-          "distance_or_scale_change": "no change",
-          "target": "林晚's face",
-          "start_framing": "medium close-up on HANDBAG handle and 陆叔's hand",
-          "end_framing": "medium close-up on 林晚's face",
-          "easing": "none"
+          "body_action": "上身从后撤状态微向前倾约5度，右手从紧握状态略微放松但仍握住手提包提手，左手从垂落状态微抬至腰侧",
+          "hand_action": "右手五指从收紧状态略微放松，仍保持握住手提包提手，左手从垂落状态微抬至腰侧，手指微曲",
+          "head_action": "头部保持朝向陆叔的状态，微低头约2度，视线从陆叔面部短暂下移至手提包后回到陆叔面部",
+          "eye_action": "视线从陆叔面部下移至手提包约0.5秒，随后回到陆叔面部，最终定格在陆叔眼睛",
+          "facial_action": "双唇从微启状态轻微颤动，眉头保持轻扬，表情从惊讶转为困惑与不安",
+          "ending_state": "林晚上身微前倾，右手仍握住手提包提手，左手微抬至腰侧，视线落在陆叔面部，表情困惑不安"
         }
       ],
       "dialogue_beats": [
         {
           "speaker": "林晚",
           "authoritative_text": "顾沉？你……你怎么在这儿？",
-          "start_time": 0.8,
-          "end_time": 3.2,
-          "delivery": "shocked, voice trembling, rising pitch on the question",
-          "estimated_minimum_seconds": 2.4,
+          "start_time": 1.8,
+          "end_time": 3.6,
+          "delivery": "语速偏快，音调上扬，声音中带着明显的惊讶与颤抖，'顾沉？'二字短促而急切，'你……'处有明显的停顿与结巴，'你怎么在这儿？'语速加快，尾音上扬，带着困惑与不安",
+          "estimated_minimum_seconds": 1.8,
           "status": "authoritative",
           "phrase_windows": [
             {
               "text": "顾沉？",
-              "start_time": 0.8,
-              "end_time": 1.4
+              "start_time": 1.8,
+              "end_time": 2.3
             },
             {
-              "text": "你……你怎么在这儿？",
-              "start_time": 1.6,
-              "end_time": 3.2
+              "text": "你……",
+              "start_time": 2.3,
+              "end_time": 2.7
+            },
+            {
+              "text": "你怎么在这儿？",
+              "start_time": 2.7,
+              "end_time": 3.6
             }
           ]
-        }
-      ],
-      "ending_state": {
-        "characters": {
-          "陆叔": {
-            "position": "林晚左前方半步",
-            "right_hand": "gripping HANDBAG handle",
-            "expression": "determined",
-            "torso_direction": "toward 林晚",
-            "eye_target": "HANDBAG handle"
-          },
-          "林晚": {
-            "position": "售票台侧前方, body angled toward exit",
-            "right_hand": "releasing HANDBAG handle",
-            "expression": "fear",
-            "torso_direction": "toward exit",
-            "eye_target": "exit door"
-          }
-        },
-        "camera": {
-          "position": "medium close-up on 林晚's face",
-          "movement": "static",
-          "target": "林晚's face",
-          "framing": "medium close-up"
-        }
-      }
-    },
-    {
-      "shot_id": "SH_E01_SC002_002",
-      "scene_id": "E01_SC002",
-      "location": "出租公寓厨房",
-      "duration_seconds": 13.5,
-      "blocking": [
-        {
-          "identity": "陆叔",
-          "reference_identity": "餐桌左侧",
-          "position": "餐桌左侧",
-          "screen_x": 0.32,
-          "depth_zone": "midground",
-          "body_pose": "站立，上身微前倾，双臂自然垂于体侧",
-          "weight_distribution": "重心落在左脚，右脚略向后半步",
-          "torso_direction": "朝向餐桌右侧的林晚",
-          "head_yaw": "向右偏约20度看向林晚",
-          "head_pitch": "微向下约5度",
-          "eye_target": "桌面划痕",
-          "expression": "关切中带责备，眉头微皱",
-          "left_hand": "垂于体侧，手指微张",
-          "right_hand": "垂于体侧，手指微张",
-          "prop_contact": "无"
-        },
-        {
-          "identity": "林晚",
-          "reference_identity": "餐桌右侧或门边",
-          "position": "餐桌右侧或门边",
-          "screen_x": 0.68,
-          "depth_zone": "midground",
-          "body_pose": "站立，肩部微内收，身体略侧向陆叔",
-          "weight_distribution": "重心偏右脚，左脚虚点地",
-          "torso_direction": "朝向餐桌左侧的陆叔",
-          "head_yaw": "向左偏约15度看向陆叔",
-          "head_pitch": "微向下约8度",
-          "eye_target": "陆叔",
-          "expression": "疲惫，面色差，眼神闪躲",
-          "left_hand": "垂于体侧，手指轻握",
-          "right_hand": "垂于体侧，手指轻握",
-          "prop_contact": "无"
-        }
-      ],
-      "performance_beats": [
-        {
-          "start_time": 0.0,
-          "end_time": 2.2,
-          "actor": "陆叔",
-          "body_action": "上身从直立状态向前倾斜约15度，朝向林晚方向，结束时保持前倾姿态",
-          "hand_action": "双手从体侧自然垂放状态抬起至胸前约10厘米，手掌朝上摊开，结束时停在胸前",
-          "head_action": "头部从看向桌面划痕的状态向右转动约20度，结束时视线落在林晚脸上",
-          "eye_action": "视线从桌面划痕移向林晚面部，结束时定在林晚脸上",
-          "facial_action": "眉头从舒展状态收紧，嘴角从平直状态微向下撇，结束时呈现责备又关切的表情",
-          "ending_state": "上身前倾，双手摊在胸前，目光锁定林晚，眉头微皱"
-        },
-        {
-          "start_time": 2.2,
-          "end_time": 5.0,
-          "actor": "陆叔",
-          "body_action": "上身从前倾状态回正约10度，同时右臂向林晚方向伸出约30厘米，结束时右臂悬停在两人之间",
-          "hand_action": "右手从胸前摊开状态向林晚方向前伸，手指微张，结束时手掌朝向林晚",
-          "head_action": "头部保持向右偏约20度，随右臂前伸微向右再偏约5度，结束时头朝向林晚",
-          "eye_action": "视线保持在林晚面部，随右臂前伸微向右移动约5度，结束时仍锁定林晚",
-          "facial_action": "眉头从收紧状态再加深约2成，嘴角保持微向下撇，结束时责备神情更明显",
-          "ending_state": "右臂前伸悬停，手掌朝向林晚，眉头加深，目光锁定"
-        },
-        {
-          "start_time": 5.0,
-          "end_time": 7.5,
-          "actor": "陆叔",
-          "body_action": "上身从回正状态再次前倾约10度，同时左手从体侧抬起指向餐桌，结束时左手指向餐桌",
-          "hand_action": "左手从体侧垂放状态抬起至腰高，食指伸出指向餐桌方向，结束时食指指向餐桌",
-          "head_action": "头部从朝向林晚的状态微向左转约10度，视线扫向餐桌，结束时头微偏向餐桌",
-          "eye_action": "视线从林晚面部扫向餐桌，结束时落在餐桌面上",
-          "facial_action": "眉头从加深状态略微舒展约1成，嘴角从微向下撇转为平直，结束时神情转为担忧",
-          "ending_state": "左手指向餐桌，头微偏向餐桌，眉头略舒展，神情担忧"
-        },
-        {
-          "start_time": 7.5,
-          "end_time": 10.0,
-          "actor": "陆叔",
-          "body_action": "上身从前倾状态直立，同时双手从指向和悬停状态收回至体侧，结束时双臂垂于体侧",
-          "hand_action": "双手从抬起状态收回，左手收回体侧，右手收回体侧，结束时双手垂放",
-          "head_action": "头部从偏向餐桌的状态转回朝向林晚，结束时头正对林晚",
-          "eye_action": "视线从餐桌移回林晚面部，结束时重新锁定林晚",
-          "facial_action": "眉头从舒展状态再次收紧约2成，嘴角从平直状态微向下撇，结束时关切神情重现",
-          "ending_state": "双臂垂于体侧，头正对林晚，眉头收紧，目光锁定"
-        },
-        {
-          "start_time": 10.0,
-          "end_time": 13.5,
-          "actor": "陆叔",
-          "body_action": "上身从直立状态微前倾约5度，同时右手从体侧抬起至腰高，结束时右手悬在腰侧",
-          "hand_action": "右手从垂放状态抬起至腰高，手指微张，结束时手掌朝向林晚",
-          "head_action": "头部保持朝向林晚，微向右偏约5度，结束时头微偏向林晚",
-          "eye_action": "视线保持在林晚面部，结束时仍锁定林晚",
-          "facial_action": "眉头从收紧状态舒展约1成，嘴角从微向下撇转为微向上扬，结束时神情转为温和",
-          "ending_state": "右手悬在腰侧，头微偏向林晚，眉头舒展，神情温和"
         }
       ],
       "camera_beats": [
         {
           "start_time": 0.0,
-          "end_time": 4.5,
+          "end_time": 2.6,
           "movement_type": "dolly_in",
-          "direction": "向餐桌方向缓慢推进",
-          "speed": "慢速",
-          "distance_or_scale_change": "景别从全景推至中景，画面缩放约1.2倍",
-          "target": "陆叔与林晚之间的餐桌区域",
-          "start_framing": "全景，两人分立餐桌两侧，厨房环境可见",
-          "end_framing": "中景，两人上半身入画，餐桌占据画面下缘",
+          "direction": "沿镜头轴线向人物推进，同时向右微移以保持陆叔与林晚的双人构图",
+          "speed": "缓慢匀速，约每秒推进0.3米",
+          "distance_or_scale_change": "景别从中景推进至中近景，画面中人物高度占比从约60%增至约75%",
+          "target": "陆叔与林晚的双人关系，焦点保持在两人之间的手提包与面部之间",
+          "start_framing": "中景，陆叔位于画面左侧约38%处，林晚位于画面右侧约62%处，手提包位于两人之间的下方",
+          "end_framing": "中近景，陆叔位于画面左侧约40%处，林晚位于画面右侧约60%处，手提包位于画面下方约30%处",
           "easing": "ease_in_out"
         },
         {
-          "start_time": 4.5,
-          "end_time": 8.0,
+          "start_time": 2.6,
+          "end_time": 4.0,
           "movement_type": "pan",
-          "direction": "从陆叔向林晚方向缓慢横摇",
-          "speed": "慢速",
-          "distance_or_scale_change": "景别保持中景，画面横向移动约15度",
-          "target": "林晚面部",
-          "start_framing": "中景偏陆叔一侧，陆叔上半身居中",
-          "end_framing": "中景偏林晚一侧，林晚上半身居中",
-          "easing": "ease_in_out"
+          "direction": "镜头向左微摇约5度，跟随陆叔回正上身与收回右臂的动作",
+          "speed": "缓慢，约每秒摇动2度",
+          "distance_or_scale_change": "景别保持中近景，无明显推进或拉远",
+          "target": "陆叔的面部与收回的右臂，同时保持林晚在画面右侧",
+          "start_framing": "中近景，陆叔位于画面左侧约40%处，林晚位于画面右侧约60%处",
+          "end_framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处",
+          "easing": "ease_out"
         },
         {
-          "start_time": 8.0,
+          "start_time": 4.0,
+          "end_time": 5.5,
+          "movement_type": "static",
+          "direction": "镜头保持静止，无移动",
+          "speed": "静止",
+          "distance_or_scale_change": "景别保持中近景，无变化",
+          "target": "林晚的面部表情与右手握住的手提包提手",
+          "start_framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处",
+          "end_framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处",
+          "easing": "none"
+        }
+      ],
+      "emotion_arc": {
+        "陆叔": "警觉克制 → 克制询问",
+        "林晚": "惊讶错愕 → 困惑不安"
+      },
+      "ending_state": {
+        "characters": {
+          "陆叔": {
+            "position": "林晚左前方半步，右脚已向前迈出半步",
+            "right_hand": "垂于大腿外侧，未接触手提包提手",
+            "left_hand": "垂于体侧，手指微张",
+            "torso_direction": "朝向林晚，躯干向右前方偏转约15度",
+            "head_yaw": "朝向林晚面部，向右转约10度",
+            "head_pitch": "微低头约2度",
+            "eye_target": "林晚的面部",
+            "expression": "克制询问，眉头微蹙，嘴唇紧抿"
+          },
+          "林晚": {
+            "position": "售票台侧前方，上身微前倾",
+            "right_hand": "握住手提包提手，手指略微放松但仍保持握持",
+            "left_hand": "微抬至腰侧，手指微曲",
+            "torso_direction": "朝向陆叔，躯干向左偏转约10度",
+            "head_yaw": "朝向陆叔面部，向左转约25度",
+            "head_pitch": "微低头约2度",
+            "eye_target": "陆叔的面部",
+            "expression": "困惑不安，双唇微颤，眉头轻扬"
+          }
+        },
+        "camera": {
+          "position": "镜头位于两人前方约2.5米处，高度约与人物胸部齐平",
+          "framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处，手提包位于画面下方约30%处",
+          "movement": "静止，无移动",
+          "focus_target": "林晚的面部与右手握住的手提包提手"
+        }
+      }
+    },
+    {
+      "shot_id": "SH_E01_SC002_002",
+      "source_facts": {
+        "shot_id": "SH_E01_SC002_002",
+        "scene_id": "E01_SC002",
+        "character_ids": [
+          "陆叔",
+          "林晚"
+        ],
+        "prop_ids": [],
+        "dialogue": "陆叔：晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+        "location": "出租公寓厨房"
+      },
+      "starting_state": {
+        "陆叔": {
+          "position": "餐桌左侧",
+          "eye_target": "桌面划痕"
+        },
+        "林晚": {
+          "position": "餐桌右侧或门边",
+          "eye_target": "陆叔"
+        }
+      },
+      "blocking": [
+        {
+          "identity": "陆叔",
+          "reference_identity": "餐桌左侧",
+          "position": "餐桌左侧",
+          "screen_x": "0.32",
+          "depth_zone": "midground",
+          "body_pose": "standing, torso leaning slightly forward over the table edge",
+          "weight_distribution": "weight on left leg, right leg relaxed and slightly back",
+          "torso_direction": "torso angled toward 林晚 at approximately 30 degrees",
+          "head_yaw": "head turned toward 林晚, yaw approximately 25 degrees to screen right",
+          "head_pitch": "head tilted down approximately 10 degrees toward the table surface",
+          "eye_target": "桌面划痕",
+          "expression": "concerned, brows slightly drawn together, mouth softly set",
+          "left_hand": "left hand resting flat on the table edge near the tabletop scratch",
+          "right_hand": "right hand hanging at side, fingers loosely curled",
+          "prop_contact": "left palm in contact with the table surface"
+        },
+        {
+          "identity": "林晚",
+          "reference_identity": "餐桌右侧或门边",
+          "position": "餐桌右侧或门边",
+          "screen_x": "0.68",
+          "depth_zone": "midground",
+          "body_pose": "standing upright, shoulders slightly hunched, weight shifted onto the back foot",
+          "weight_distribution": "weight on right leg, left foot slightly forward and unweighted",
+          "torso_direction": "torso facing 陆叔 at approximately 20 degrees to screen left",
+          "head_yaw": "head turned toward 陆叔, yaw approximately 15 degrees to screen left",
+          "head_pitch": "head level, chin slightly tucked",
+          "eye_target": "陆叔",
+          "expression": "pale and tired, eyes slightly wide, lips pressed together",
+          "left_hand": "left hand gripping the strap of a bag at her side, knuckles whitened",
+          "right_hand": "right hand hanging at her side, fingers slightly curled inward",
+          "prop_contact": "left hand gripping bag strap"
+        }
+      ],
+      "performance_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 1.8,
+          "actor": "陆叔",
+          "body_action": "torso starts leaning over the table edge and straightens upward by approximately 10 degrees, ending with the torso upright and angled toward 林晚",
+          "hand_action": "left hand starts flat on the table edge and slides 5 cm toward 林晚 across the tabletop, ending with the palm open and fingers spread on the table surface",
+          "head_action": "head starts tilted down toward the tabletop scratch and lifts by approximately 10 degrees, ending with the head level and turned toward 林晚",
+          "eye_action": "eyes start fixed on the tabletop scratch and shift upward to 林晚's face, ending with a steady gaze on 林晚",
+          "facial_action": "brows start relaxed and draw together by approximately 3 mm, ending with a furrowed, concerned brow line",
+          "ending_state": "陆叔 standing upright at the table, left palm open on the table, gaze fixed on 林晚, brow furrowed with concern"
+        },
+        {
+          "start_time": 1.8,
+          "end_time": 3.6,
+          "actor": "陆叔",
+          "body_action": "torso starts upright and leans forward approximately 15 degrees toward 林晚, ending with the torso inclined over the table edge",
+          "hand_action": "right hand starts hanging at the side and rises to chest height, ending with the palm open and facing upward in a beckoning gesture",
+          "head_action": "head starts level and tilts down approximately 8 degrees, ending with the chin lowered toward 林晚",
+          "eye_action": "eyes start on 林晚's face and drop to her shoulders and back, ending with a scanning gaze over her upper body",
+          "facial_action": "mouth starts closed and corners drop by approximately 2 mm, ending with a soft, worried frown",
+          "ending_state": "陆叔 leaning over the table, right hand raised in an open beckoning palm, gaze scanning 林晚's shoulders, worried frown set"
+        },
+        {
+          "start_time": 3.6,
+          "end_time": 5.4,
+          "actor": "陆叔",
+          "body_action": "torso starts inclined forward and straightens back by approximately 10 degrees, ending with the torso upright and shoulders squared toward 林晚",
+          "hand_action": "right hand starts raised at chest height and lowers by 15 cm, ending with the hand at waist height, palm still open and facing upward",
+          "head_action": "head starts tilted down and lifts by approximately 5 degrees, ending with the head level and eyes locked on 林晚",
+          "eye_action": "eyes start scanning 林晚's shoulders and fix on her face, ending with a direct, steady gaze into her eyes",
+          "facial_action": "brows start furrowed and lift by approximately 2 mm at the inner corners, ending with a softened, questioning brow line",
+          "ending_state": "陆叔 upright at the table, right hand at waist height with open palm, direct steady gaze on 林晚, brow softened into a question"
+        },
+        {
+          "start_time": 5.4,
+          "end_time": 7.2,
+          "actor": "陆叔",
+          "body_action": "torso starts upright and rotates approximately 20 degrees toward the kitchen counter behind him, ending with the torso angled away from 林晚 toward the counter",
+          "hand_action": "right hand starts at waist height with open palm and closes into a loose fist, ending with the fist resting against his own chest",
+          "head_action": "head starts facing 林晚 and turns approximately 25 degrees toward the kitchen counter, ending with the head angled toward the counter",
+          "eye_action": "eyes start on 林晚 and shift to the kitchen counter, ending with a gaze fixed on the counter surface",
+          "facial_action": "mouth starts in a soft frown and relaxes by approximately 1 mm, ending with a neutral, thoughtful mouth line",
+          "ending_state": "陆叔 angled toward the kitchen counter, right fist against his chest, gaze on the counter, mouth neutral and thoughtful"
+        },
+        {
+          "start_time": 7.2,
+          "end_time": 9.0,
+          "actor": "陆叔",
+          "body_action": "torso starts angled toward the counter and rotates back approximately 20 degrees toward 林晚, ending with the torso facing her squarely",
+          "hand_action": "right hand starts against his chest and extends forward toward 林晚 by approximately 20 cm, ending with the palm open and facing upward in an offering gesture",
+          "head_action": "head starts angled toward the counter and turns back approximately 25 degrees toward 林晚, ending with the head facing her directly",
+          "eye_action": "eyes start on the counter and shift back to 林晚's face, ending with a warm, direct gaze on her",
+          "facial_action": "mouth starts neutral and corners lift by approximately 2 mm, ending with a gentle, encouraging half-smile",
+          "ending_state": "陆叔 facing 林晚 squarely, right hand extended forward with open offering palm, warm direct gaze, gentle half-smile"
+        },
+        {
+          "start_time": 9.0,
           "end_time": 11.0,
-          "movement_type": "dolly_out",
-          "direction": "从餐桌方向缓慢后退",
-          "speed": "慢速",
-          "distance_or_scale_change": "景别从中景拉回中全景，画面缩放约0.85倍",
-          "target": "陆叔与林晚之间的餐桌区域",
-          "start_framing": "中景，林晚上半身居中",
-          "end_framing": "中全景，两人上半身均入画，餐桌完整可见",
-          "easing": "ease_in_out"
+          "actor": "陆叔",
+          "body_action": "torso starts facing 林晚 and leans forward approximately 10 degrees, ending with the torso inclined toward her in an inviting posture",
+          "hand_action": "right hand starts extended forward with open palm and sweeps downward and to the side by approximately 15 cm, ending with the hand gesturing toward the chair beside the table",
+          "head_action": "head starts facing 林晚 and tilts down approximately 5 degrees toward the chair, ending with the head angled toward the seating spot",
+          "eye_action": "eyes start on 林晚's face and shift down to the chair, ending with a gaze directed at the chair beside the table",
+          "facial_action": "mouth starts in a half-smile and opens slightly by approximately 3 mm, ending with a soft, inviting mouth shape",
+          "ending_state": "陆叔 leaning toward 林晚, right hand gesturing toward the chair, gaze on the chair, soft inviting mouth"
         },
         {
           "start_time": 11.0,
           "end_time": 13.5,
-          "movement_type": "static",
-          "direction": "无位移",
-          "speed": "静止",
-          "distance_or_scale_change": "景别保持中全景，无缩放变化",
-          "target": "陆叔与林晚之间的餐桌区域",
-          "start_framing": "中全景，两人上半身均入画",
-          "end_framing": "中全景，两人上半身均入画，画面保持稳定",
-          "easing": "none"
+          "actor": "陆叔",
+          "body_action": "torso starts inclined toward the chair and straightens by approximately 8 degrees, ending with the torso upright and weight shifting onto the back foot as he prepares to move toward the kitchen",
+          "hand_action": "right hand starts gesturing toward the chair and lowers to his side, ending with the hand relaxed at his hip, fingers loosely curled",
+          "head_action": "head starts angled toward the chair and lifts by approximately 5 degrees, ending with the head level and turned slightly toward the kitchen",
+          "eye_action": "eyes start on the chair and shift toward the kitchen, ending with a gaze directed at the kitchen workspace",
+          "facial_action": "mouth starts open in an inviting shape and closes by approximately 2 mm, ending with a settled, warm mouth line",
+          "ending_state": "陆叔 upright with weight shifting back, right hand relaxed at hip, gaze toward the kitchen, warm settled mouth"
+        },
+        {
+          "start_time": 0.0,
+          "end_time": 2.4,
+          "actor": "林晚",
+          "body_action": "torso starts upright with shoulders hunched and lowers by approximately 5 degrees as her shoulders drop, ending with the shoulders relaxed downward",
+          "hand_action": "left hand starts gripping the bag strap tightly and loosens by approximately 2 mm of grip pressure, ending with the fingers still on the strap but relaxed",
+          "head_action": "head starts level and tilts down approximately 5 degrees, ending with the chin slightly lowered",
+          "eye_action": "eyes start fixed on 陆叔 and blink once, ending with the eyes open and still fixed on 陆叔",
+          "facial_action": "lips start pressed together and part by approximately 1 mm, ending with a slightly parted, tired mouth",
+          "ending_state": "林晚 standing with shoulders dropped, left hand relaxed on the bag strap, chin slightly lowered, eyes on 陆叔, mouth slightly parted"
+        },
+        {
+          "start_time": 2.4,
+          "end_time": 4.8,
+          "actor": "林晚",
+          "body_action": "torso starts upright and shifts weight from the back foot to the front foot by approximately 3 cm, ending with the weight centered between both feet",
+          "hand_action": "right hand starts hanging at the side and rises by approximately 5 cm, ending with the hand resting against her own abdomen, fingers lightly curled",
+          "head_action": "head starts tilted down and lifts by approximately 3 degrees, ending with the head level and eyes still on 陆叔",
+          "eye_action": "eyes start on 陆叔 and narrow slightly by approximately 1 mm, ending with a tired, attentive gaze on him",
+          "facial_action": "brows start relaxed and lift by approximately 1 mm at the inner corners, ending with a faintly questioning brow line",
+          "ending_state": "林晚 with weight centered, right hand on her abdomen, head level, tired attentive gaze on 陆叔, faintly questioning brow"
+        },
+        {
+          "start_time": 4.8,
+          "end_time": 7.2,
+          "actor": "林晚",
+          "body_action": "torso starts upright and rotates approximately 10 degrees toward the chair beside the table, ending with the torso angled toward the seating spot",
+          "hand_action": "right hand starts on her abdomen and lowers by approximately 8 cm, ending with the hand hanging at her side, fingers loosely curled",
+          "head_action": "head starts facing 陆叔 and turns approximately 10 degrees toward the chair, ending with the head angled toward the chair",
+          "eye_action": "eyes start on 陆叔 and shift to the chair, ending with a gaze directed at the chair beside the table",
+          "facial_action": "mouth starts slightly parted and closes by approximately 1 mm, ending with a soft, closed mouth line",
+          "ending_state": "林晚 angled toward the chair, right hand at her side, gaze on the chair, soft closed mouth"
+        },
+        {
+          "start_time": 7.2,
+          "end_time": 9.6,
+          "actor": "林晚",
+          "body_action": "torso starts angled toward the chair and rotates back approximately 10 degrees toward 陆叔, ending with the torso facing him again",
+          "hand_action": "left hand starts on the bag strap and releases it by opening the fingers approximately 5 mm, ending with the hand hanging free at her side",
+          "head_action": "head starts angled toward the chair and turns back approximately 10 degrees toward 陆叔, ending with the head facing him directly",
+          "eye_action": "eyes start on the chair and shift back to 陆叔's face, ending with a steady gaze on him",
+          "facial_action": "brows start faintly questioning and draw together by approximately 1 mm, ending with a slightly worried brow line",
+          "ending_state": "林晚 facing 陆叔, left hand free at her side, steady gaze on him, slightly worried brow"
+        },
+        {
+          "start_time": 9.6,
+          "end_time": 11.8,
+          "actor": "林晚",
+          "body_action": "torso starts facing 陆叔 and leans forward approximately 5 degrees, ending with the torso inclined slightly toward him",
+          "hand_action": "right hand starts at her side and rises by approximately 10 cm, ending with the hand resting lightly on the edge of the table",
+          "head_action": "head starts facing 陆叔 and tilts down approximately 3 degrees, ending with the chin slightly lowered toward the table",
+          "eye_action": "eyes start on 陆叔's face and shift down to the table surface, ending with a gaze directed at the tabletop",
+          "facial_action": "mouth starts soft and closed and corners drop by approximately 1 mm, ending with a faint, tired downturn of the lips",
+          "ending_state": "林晚 leaning slightly forward, right hand on the table edge, chin lowered, gaze on the tabletop, faint tired downturn of the lips"
+        },
+        {
+          "start_time": 11.8,
+          "end_time": 13.5,
+          "actor": "林晚",
+          "body_action": "torso starts leaning forward and straightens by approximately 4 degrees, ending with the torso upright and shoulders settling downward",
+          "hand_action": "right hand starts on the table edge and slides 3 cm toward her own body, ending with the hand resting flat on the table near her own side",
+          "head_action": "head starts tilted down and lifts by approximately 2 degrees, ending with the head level and eyes still directed downward",
+          "eye_action": "eyes start on the tabletop and blink once, ending with the eyes open and still directed at the tabletop",
+          "facial_action": "mouth starts with a faint downturn and relaxes by approximately 1 mm, ending with a neutral, tired mouth line",
+          "ending_state": "林晚 upright with shoulders settled, right hand flat on the table near her side, head level, eyes on the tabletop, neutral tired mouth"
         }
       ],
       "dialogue_beats": [
         {
           "speaker": "陆叔",
           "authoritative_text": "晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
-          "start_time": 0.5,
-          "end_time": 12.5,
-          "delivery": "关切中带责备，语速中等偏慢，语气由责备渐转温和",
-          "estimated_minimum_seconds": 12.0,
+          "start_time": 0.0,
+          "end_time": 13.5,
+          "delivery": "warm, worried, gently scolding, spoken at a moderate pace with a soft, concerned tone that rises slightly on the questions and settles into a gentle, inviting cadence at the end",
+          "estimated_minimum_seconds": 13.5,
           "status": "authoritative",
           "phrase_windows": [
             {
               "text": "晚晚，你看看你，跑那么快做什么？",
-              "start_time": 0.5,
-              "end_time": 3.5
+              "start_time": 0.0,
+              "end_time": 3.6
             },
             {
               "text": "在车站吓我一跳。",
-              "start_time": 3.5,
-              "end_time": 5.0
+              "start_time": 3.6,
+              "end_time": 5.4
             },
             {
               "text": "脸色这么差，是不是又没好好吃饭？",
-              "start_time": 5.0,
-              "end_time": 8.0
+              "start_time": 5.4,
+              "end_time": 9.0
             },
             {
               "text": "来，先坐下，陆叔给你洗个苹果。",
-              "start_time": 8.0,
-              "end_time": 12.5
+              "start_time": 9.0,
+              "end_time": 13.5
             }
           ]
         }
       ],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 3.6,
+          "movement_type": "static",
+          "direction": "none",
+          "speed": "stationary",
+          "distance_or_scale_change": "no change in distance or scale",
+          "target": "two-shot of 陆叔 and 林晚 at the kitchen table",
+          "start_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "easing": "none"
+        },
+        {
+          "start_time": 3.6,
+          "end_time": 7.2,
+          "movement_type": "slow push-in",
+          "direction": "forward toward the two characters",
+          "speed": "slow, steady",
+          "distance_or_scale_change": "distance decreases by approximately 15 percent, subjects scale up slightly within the frame",
+          "target": "陆叔's upper body and face as he speaks",
+          "start_framing": "medium two-shot, both characters framed from mid-torso up",
+          "end_framing": "medium close-up favoring 陆叔, framed from chest up, 林晚 partially visible at the frame edge",
+          "easing": "linear"
+        },
+        {
+          "start_time": 7.2,
+          "end_time": 10.8,
+          "movement_type": "slow lateral drift",
+          "direction": "drifting slightly to the right, shifting emphasis toward 林晚",
+          "speed": "slow, gentle",
+          "distance_or_scale_change": "distance remains constant, framing shifts laterally by approximately 10 percent of frame width",
+          "target": "林晚's face and upper body as she listens",
+          "start_framing": "medium close-up favoring 陆叔, framed from chest up",
+          "end_framing": "medium close-up favoring 林晚, framed from chest up, 陆叔 partially visible at the frame edge",
+          "easing": "ease-in-out"
+        },
+        {
+          "start_time": 10.8,
+          "end_time": 13.5,
+          "movement_type": "slow pull-back",
+          "direction": "backward, widening the frame",
+          "speed": "slow, settling",
+          "distance_or_scale_change": "distance increases by approximately 12 percent, subjects scale down slightly within the frame",
+          "target": "both 陆叔 and 林晚 at the kitchen table",
+          "start_framing": "medium close-up favoring 林晚, framed from chest up",
+          "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "easing": "ease-out"
+        }
+      ],
+      "emotion_arc": {
+        "陆叔": "concerned and gently scolding, softening into warm, inviting care as he offers to wash an apple",
+        "林晚": "tired and guarded, gradually relaxing her posture and attention as she listens to 陆叔"
+      },
       "ending_state": {
         "characters": {
           "陆叔": {
-            "position": "餐桌左侧",
-            "body_pose": "站立，上身微前倾约5度，右手悬在腰侧",
-            "torso_direction": "朝向餐桌右侧的林晚",
-            "head_yaw": "向右偏约25度看向林晚",
-            "head_pitch": "微向下约5度",
-            "eye_target": "林晚面部",
-            "expression": "眉头舒展，嘴角微向上扬，神情温和",
-            "left_hand": "垂于体侧，手指微张",
-            "right_hand": "悬在腰侧，手掌朝向林晚",
-            "prop_contact": "无"
+            "position": "餐桌左侧, torso upright with weight shifting back toward the kitchen",
+            "eye_target": "kitchen workspace",
+            "body_pose": "standing upright, right hand relaxed at hip, torso angled slightly toward the kitchen",
+            "expression": "warm, settled, gently caring"
           },
           "林晚": {
-            "position": "餐桌右侧或门边",
-            "body_pose": "站立，肩部微内收，身体略侧向陆叔",
-            "torso_direction": "朝向餐桌左侧的陆叔",
-            "head_yaw": "向左偏约15度看向陆叔",
-            "head_pitch": "微向下约8度",
-            "eye_target": "陆叔",
-            "expression": "疲惫，面色差，眼神闪躲",
-            "left_hand": "垂于体侧，手指轻握",
-            "right_hand": "垂于体侧，手指轻握",
-            "prop_contact": "无"
+            "position": "餐桌右侧或门边, torso upright with shoulders settled",
+            "eye_target": "tabletop",
+            "body_pose": "standing upright, right hand flat on the table near her side, left hand hanging free at her side",
+            "expression": "tired but softened, neutral and receptive"
           }
         },
         "camera": {
-          "position": "餐桌正前方偏左，与两人视线大致齐平",
-          "framing": "中全景，两人上半身均入画，餐桌完整可见",
-          "movement": "静止",
-          "target": "陆叔与林晚之间的餐桌区域",
-          "lens": "标准焦段，景深覆盖两人及餐桌"
+          "position": "medium two-shot, pulled back to the original framing distance",
+          "framing": "both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "movement": "camera has settled into a static hold after the slow pull-back",
+          "target": "both 陆叔 and 林晚 at the kitchen table"
         }
       }
     },
     {
       "shot_id": "SH_E01_SC002_006",
-      "scene_id": "E01_SC002",
-      "location": "出租公寓厨房",
-      "duration_seconds": 8.5,
       "source_facts": {
         "shot_id": "SH_E01_SC002_006",
         "scene_id": "E01_SC002",
@@ -1667,40 +1798,50 @@
         "dialogue": "陆叔：伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
         "location": "出租公寓厨房"
       },
+      "starting_state": {
+        "陆叔": {
+          "position": "餐桌左侧",
+          "eye_target": "桌面划痕"
+        },
+        "林晚": {
+          "position": "餐桌右侧或门边",
+          "eye_target": "陆叔"
+        }
+      },
       "blocking": [
         {
           "identity": "陆叔",
           "reference_identity": "餐桌左侧",
           "position": "餐桌左侧",
-          "screen_x": 0.32,
+          "screen_x": "0.32",
           "depth_zone": "midground",
           "body_pose": "standing, torso leaning slightly forward over the table edge",
-          "weight_distribution": "weight on left leg, right leg relaxed and slightly bent",
-          "torso_direction": "facing right toward 林晚 at approximately 35 degrees",
-          "head_yaw": "turned right toward 林晚, approximately 30 degrees",
-          "head_pitch": "tilted slightly down toward the table surface, approximately 8 degrees",
+          "weight_distribution": "weight on left leg, right foot slightly back",
+          "torso_direction": "angled toward 林晚 at the table's right side",
+          "head_yaw": "turned toward 林晚, about 25 degrees right",
+          "head_pitch": "slightly down toward the table surface",
           "eye_target": "桌面划痕",
-          "expression": "mildly puzzled, brow faintly furrowed, mouth relaxed",
-          "left_hand": "resting flat on the table edge near the apple, fingers slightly curled",
-          "right_hand": "raised slightly off the table, palm open and facing up in a questioning gesture",
-          "prop_contact": "left fingertips touching the table surface beside the apple"
+          "expression": "curious, faintly teasing",
+          "left_hand": "resting flat on the table near the scratch",
+          "right_hand": "holding an apple, raised slightly",
+          "prop_contact": "right hand grips the apple; left palm contacts the tabletop"
         },
         {
           "identity": "林晚",
           "reference_identity": "餐桌右侧或门边",
-          "position": "餐桌右侧",
-          "screen_x": 0.68,
+          "position": "餐桌右侧或门边",
+          "screen_x": "0.68",
           "depth_zone": "midground",
           "body_pose": "standing upright, shoulders squared toward 陆叔",
-          "weight_distribution": "weight evenly distributed on both feet, feet shoulder-width apart",
-          "torso_direction": "facing left toward 陆叔 at approximately 20 degrees",
-          "head_yaw": "turned left toward 陆叔, approximately 15 degrees",
-          "head_pitch": "level, chin parallel to the floor",
+          "weight_distribution": "evenly balanced on both feet",
+          "torso_direction": "facing 陆叔 across the table",
+          "head_yaw": "turned toward 陆叔, about 10 degrees left",
+          "head_pitch": "level",
           "eye_target": "陆叔",
-          "expression": "quietly attentive, lips pressed together, eyes steady",
-          "left_hand": "hanging relaxed at her side, fingers loosely closed",
-          "right_hand": "holding a closed umbrella at her side, grip firm near the handle",
-          "prop_contact": "right hand gripping the umbrella handle, umbrella tip resting near the floor"
+          "expression": "guarded, quietly attentive",
+          "left_hand": "hanging at side, fingers slightly curled",
+          "right_hand": "hanging at side, relaxed",
+          "prop_contact": "no prop contact"
         }
       ],
       "performance_beats": [
@@ -1708,105 +1849,56 @@
           "start_time": 0.0,
           "end_time": 1.2,
           "actor": "陆叔",
-          "body_action": "torso starts leaning over the table at 35 degrees toward 林晚 and straightens upward by approximately 10 degrees, ending with the torso upright but still angled toward her",
-          "hand_action": "right hand starts resting on the table and lifts approximately 15 centimeters upward, ending with the palm open and facing up in a questioning gesture",
-          "head_action": "head starts tilted down at the table scratch and rotates right toward 林晚 by approximately 30 degrees, ending with the chin level and eyes on her face",
-          "eye_action": "gaze starts on the 桌面划痕 and shifts upward and right to 林晚's face, ending with steady eye contact",
-          "facial_action": "brow starts relaxed and draws together into a faint furrow, mouth corners pull slightly inward, ending with a puzzled, questioning look",
-          "ending_state": "陆叔 upright at the table, right hand raised palm-up, gaze fixed on 林晚, expression puzzled"
+          "body_action": "torso rises from a slight forward lean over the table to a more upright stance, ending with shoulders squared toward 林晚",
+          "hand_action": "right hand lifts the apple from the tabletop up to chest height, ending with the apple held steady at chest level",
+          "head_action": "head lifts from a downward tilt toward the table scratch to level, ending with chin parallel to the floor",
+          "eye_action": "gaze shifts from the 桌面划痕 up to 林晚's face, ending focused on 林晚's eyes",
+          "facial_action": "eyebrows raise from neutral to lifted, mouth corners lift slightly, ending in a faint teasing smile",
+          "ending_state": "陆叔 upright, apple at chest height, eyes on 林晚, faint smile"
         },
         {
           "start_time": 1.2,
           "end_time": 2.6,
           "actor": "陆叔",
-          "body_action": "torso remains angled toward 林晚 and leans forward an additional 5 degrees, ending with the shoulders squared toward her",
-          "hand_action": "right hand starts palm-up at chest height and rotates outward by approximately 20 degrees, ending with the palm open and tilted toward the umbrella in her hand",
-          "head_action": "head starts level and tilts down approximately 5 degrees toward the umbrella, ending with the chin slightly lowered",
-          "eye_action": "gaze starts on 林晚's face and drops to the umbrella she is holding, ending with eyes fixed on the umbrella",
-          "facial_action": "brow furrow deepens slightly, lips part by a few millimeters, ending with an expression of surprised recognition",
-          "ending_state": "陆叔 leaning toward 林晚, right hand gesturing toward the umbrella, gaze on the umbrella, expression surprised"
+          "body_action": "torso leans forward about 10 degrees toward 林晚 across the table, ending with chest closer to the table edge",
+          "hand_action": "right hand pushes the apple forward about 15 centimeters toward 林晚, ending with the apple extended over the table",
+          "head_action": "head tilts slightly to the right about 8 degrees, ending with the tilt held",
+          "eye_action": "gaze holds on 林晚's face without shifting, ending fixed on 林晚",
+          "facial_action": "eyebrows lift higher, mouth opens slightly as if speaking, ending with an open, questioning expression",
+          "ending_state": "陆叔 leaning forward, apple extended toward 林晚, questioning expression"
         },
         {
           "start_time": 2.6,
-          "end_time": 4.2,
+          "end_time": 4.4,
           "actor": "陆叔",
-          "body_action": "torso starts angled toward 林晚 and straightens back to a neutral standing angle, ending with the weight settled on both legs",
-          "hand_action": "right hand starts raised and open and lowers approximately 10 centimeters toward the table, ending with the hand hovering just above the table surface",
-          "head_action": "head starts tilted toward the umbrella and lifts back to level, ending with the chin parallel to the floor",
-          "eye_action": "gaze starts on the umbrella and returns to 林晚's face, ending with steady eye contact",
-          "facial_action": "brow furrow softens, mouth corners relax downward slightly, ending with a look of mild reproach",
-          "ending_state": "陆叔 standing neutral at the table, right hand hovering above the table, gaze on 林晚, expression mildly reproachful"
+          "body_action": "torso straightens back from the forward lean to upright, ending with shoulders back over the hips",
+          "hand_action": "right hand retracts the apple back toward his own chest about 10 centimeters, ending with the apple held close again",
+          "head_action": "head returns from the right tilt to level, ending with the head upright",
+          "eye_action": "gaze drops briefly to the apple then returns to 林晚, ending back on 林晚's face",
+          "facial_action": "mouth closes from the open questioning shape into a small knowing smirk, ending with the smirk held",
+          "ending_state": "陆叔 upright, apple back at chest, knowing smirk, eyes on 林晚"
         },
         {
-          "start_time": 4.2,
-          "end_time": 5.4,
+          "start_time": 4.4,
+          "end_time": 6.2,
           "actor": "陆叔",
-          "body_action": "torso starts upright and leans forward approximately 8 degrees toward the apple on the table, ending with the shoulders rounded slightly over the table",
-          "hand_action": "left hand starts resting flat on the table and slides approximately 10 centimeters right toward the apple, ending with the fingertips touching the apple's skin",
-          "head_action": "head starts level and tilts down approximately 12 degrees toward the apple, ending with the chin tucked slightly",
-          "eye_action": "gaze starts on 林晚 and drops to the apple on the table, ending with eyes fixed on the apple",
-          "facial_action": "brow relaxes fully, mouth corners lift into a small warm smile, ending with an expression of gentle invitation",
-          "ending_state": "陆叔 leaning over the apple, left fingertips on the apple, gaze on the apple, expression warmly inviting"
+          "body_action": "torso leans forward again about 12 degrees toward 林晚, ending with the chest over the table edge",
+          "hand_action": "right hand extends the apple forward again about 20 centimeters toward 林晚, ending with the apple offered at arm's length",
+          "head_action": "head dips slightly forward about 5 degrees, ending with the chin angled down toward the offered apple",
+          "eye_action": "gaze shifts from 林晚's face down to the apple then back up to 林晚, ending on 林晚's face",
+          "facial_action": "eyebrows soften from raised to relaxed, mouth opens into a warm inviting shape, ending with a gentle encouraging expression",
+          "ending_state": "陆叔 leaning forward, apple offered at arm's length, warm inviting expression"
         },
         {
-          "start_time": 5.4,
-          "end_time": 7.0,
-          "actor": "陆叔",
-          "body_action": "torso starts leaning over the apple and straightens upward by approximately 10 degrees, ending with the torso upright and angled toward 林晚",
-          "hand_action": "left hand starts touching the apple and lifts it approximately 15 centimeters off the table, ending with the apple held out toward 林晚 at chest height",
-          "head_action": "head starts tilted down at the apple and lifts back to level, ending with the chin parallel to the floor",
-          "eye_action": "gaze starts on the apple and shifts up to 林晚's face, ending with steady eye contact",
-          "facial_action": "small smile holds, cheeks lift slightly, ending with an expression of warm, expectant invitation",
-          "ending_state": "陆叔 holding the apple out toward 林晚 at chest height, gaze on her face, expression warmly expectant"
-        },
-        {
-          "start_time": 7.0,
+          "start_time": 6.2,
           "end_time": 8.5,
           "actor": "陆叔",
-          "body_action": "torso remains upright and angled toward 林晚 and settles into stillness, ending with the weight balanced and the pose held",
-          "hand_action": "left hand starts holding the apple out and steadies it with no further movement, ending with the apple held still at chest height toward 林晚",
-          "head_action": "head remains level and turns approximately 5 degrees further toward 林晚, ending with the chin parallel to the floor and the face fully oriented to her",
-          "eye_action": "gaze remains fixed on 林晚's face and holds without shifting, ending with steady, patient eye contact",
-          "facial_action": "warm smile holds steady with no further change, ending with an expression of patient, gentle expectation",
-          "ending_state": "陆叔 holding the apple out toward 林晚, gaze steady on her face, expression of patient gentle expectation, pose held still"
-        }
-      ],
-      "camera_beats": [
-        {
-          "start_time": 0.0,
-          "end_time": 2.6,
-          "movement_type": "slow push-in",
-          "direction": "forward along the lens axis toward the two characters at the table",
-          "speed": "slow, approximately 0.4 meters per second",
-          "distance_or_scale_change": "camera distance decreases by approximately 1.0 meter, subject scale increases by approximately 8 percent",
-          "target": "陆叔 and 林晚 at the kitchen table",
-          "start_framing": "medium two-shot, both characters visible from the waist up, table edge in the lower frame",
-          "end_framing": "medium close two-shot, both characters visible from the chest up, table edge still in the lower frame",
-          "easing": "ease-in-out"
-        },
-        {
-          "start_time": 2.6,
-          "end_time": 5.4,
-          "movement_type": "slow lateral drift",
-          "direction": "drifting left toward 陆叔's side of the table",
-          "speed": "slow, approximately 0.2 meters per second",
-          "distance_or_scale_change": "camera distance unchanged, subject scale unchanged, framing shifts horizontally by approximately 0.3 meters",
-          "target": "陆叔's face and upper body as he reacts and reaches for the apple",
-          "start_framing": "medium close two-shot centered between both characters",
-          "end_framing": "medium close shot weighted toward 陆叔, 林晚 still visible at the right edge of frame",
-          "easing": "ease-in-out"
-        },
-        {
-          "start_time": 5.4,
-          "end_time": 8.5,
-          "movement_type": "slow push-in",
-          "direction": "forward along the lens axis toward 陆叔's face and the outstretched apple",
-          "speed": "slow, approximately 0.3 meters per second",
-          "distance_or_scale_change": "camera distance decreases by approximately 0.6 meters, subject scale increases by approximately 6 percent",
-          "target": "陆叔's face and the apple held out toward 林晚",
-          "start_framing": "medium close shot weighted toward 陆叔, apple visible at chest height",
-          "end_framing": "close shot on 陆叔's face and the apple, 林晚's shoulder visible at the right edge of frame",
-          "easing": "ease-out"
+          "body_action": "torso holds the forward lean steady without further movement, ending in the same leaning stance",
+          "hand_action": "right hand holds the apple steady at arm's length toward 林晚, ending with the apple unmoving in the offered position",
+          "head_action": "head holds level with the slight forward dip, ending unmoving",
+          "eye_action": "gaze holds steady on 林晚's face, ending fixed and waiting",
+          "facial_action": "warm inviting expression holds without change, ending with the gentle encouraging look sustained",
+          "ending_state": "陆叔 holding the offer, apple steady at arm's length, warm expectant expression, eyes on 林晚"
         }
       ],
       "dialogue_beats": [
@@ -1815,8 +1907,8 @@
           "authoritative_text": "伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
           "start_time": 0.0,
           "end_time": 8.5,
-          "delivery": "puzzled and mildly reproachful at first, softening into a warm, gentle invitation by the end",
-          "estimated_minimum_seconds": 4.2,
+          "delivery": "teasing then warm, rising pitch on the questions, softening into a gentle invitation",
+          "estimated_minimum_seconds": 8.5,
           "status": "authoritative",
           "phrase_windows": [
             {
@@ -1832,11 +1924,11 @@
             {
               "text": "你不是一直不喜欢带伞吗？",
               "start_time": 2.6,
-              "end_time": 4.2
+              "end_time": 4.4
             },
             {
               "text": "嫌麻烦。",
-              "start_time": 4.2,
+              "start_time": 4.4,
               "end_time": 5.4
             },
             {
@@ -1847,66 +1939,142 @@
           ]
         }
       ],
+      "camera_beats": [
+        {
+          "start_time": 0.0,
+          "end_time": 2.6,
+          "movement_type": "slow push-in",
+          "direction": "forward along the axis between the two characters",
+          "speed": "slow, steady",
+          "distance_or_scale_change": "scale increases from 1.0 to 1.08",
+          "target": "陆叔's upper body and face",
+          "start_framing": "medium two-shot, both characters visible across the table",
+          "end_framing": "medium close-up favoring 陆叔, 林晚's shoulder at frame edge",
+          "easing": "ease-in-out"
+        },
+        {
+          "start_time": 2.6,
+          "end_time": 4.4,
+          "movement_type": "subtle lateral drift",
+          "direction": "sliding right toward 林晚's side of the table",
+          "speed": "very slow",
+          "distance_or_scale_change": "scale holds at 1.08",
+          "target": "the space between 陆叔's face and 林晚's face",
+          "start_framing": "medium close-up favoring 陆叔",
+          "end_framing": "balanced two-shot close-up, both faces in frame",
+          "easing": "linear"
+        },
+        {
+          "start_time": 4.4,
+          "end_time": 6.2,
+          "movement_type": "gentle tilt down and push-in",
+          "direction": "downward toward the offered apple, then forward",
+          "speed": "slow",
+          "distance_or_scale_change": "scale increases from 1.08 to 1.15",
+          "target": "陆叔's hand holding the apple and 林晚's reaction",
+          "start_framing": "balanced two-shot close-up",
+          "end_framing": "close-up on the offered apple with 陆叔's face soft in background",
+          "easing": "ease-out"
+        },
+        {
+          "start_time": 6.2,
+          "end_time": 8.5,
+          "movement_type": "held frame with micro drift",
+          "direction": "barely perceptible drift toward 林晚",
+          "speed": "near-static",
+          "distance_or_scale_change": "scale holds at 1.15",
+          "target": "林晚's face receiving the offer",
+          "start_framing": "close-up on the offered apple with 陆叔's face soft in background",
+          "end_framing": "close-up holding on 林晚's guarded attentive expression with the apple at frame edge",
+          "easing": "linear"
+        }
+      ],
+      "emotion_arc": {
+        "start": "curious, faintly teasing",
+        "middle": "questioning, knowing",
+        "end": "warm, gently inviting"
+      },
       "ending_state": {
         "characters": {
           "陆叔": {
             "position": "餐桌左侧",
-            "body_pose": "standing upright at the table, torso angled toward 林晚, left arm extended holding the apple out at chest height",
+            "pose": "leaning forward about 12 degrees over the table edge",
+            "expression": "warm inviting, gentle encouraging",
             "eye_target": "林晚",
-            "expression": "warm, patient, gently expectant",
-            "prop_contact": "left hand holding the apple out toward 林晚"
+            "prop_state": "right hand holds the apple offered at arm's length toward 林晚"
           },
           "林晚": {
-            "position": "餐桌右侧",
-            "body_pose": "standing upright, shoulders squared toward 陆叔, right hand holding the closed umbrella at her side",
+            "position": "餐桌右侧或门边",
+            "pose": "standing upright, shoulders squared toward 陆叔",
+            "expression": "guarded, quietly attentive",
             "eye_target": "陆叔",
-            "expression": "quietly attentive, lips pressed together",
-            "prop_contact": "right hand gripping the umbrella handle, umbrella tip near the floor"
+            "prop_state": "no prop held"
           }
         },
         "camera": {
-          "position": "close on 陆叔's face and the outstretched apple, 林晚's shoulder at the right edge of frame",
-          "movement": "push-in completed, camera settled and still",
-          "framing": "close shot, 陆叔's face and the apple filling the frame",
-          "target": "陆叔's face and the apple held out toward 林晚"
+          "framing": "close-up holding on 林晚's guarded attentive expression with the apple at frame edge",
+          "movement": "near-static micro drift toward 林晚",
+          "scale": 1.15
         }
       }
     },
     {
+      "shot_id": "SH_E01_SC002_007",
+      "source_facts": {
+        "shot_id": "SH_E01_SC002_007",
+        "scene_id": "E01_SC002",
+        "character_ids": [
+          "林晚",
+          "陆叔"
+        ],
+        "prop_ids": [],
+        "dialogue": "",
+        "location": "出租公寓厨房"
+      },
+      "starting_state": {
+        "林晚": {
+          "position": "厨房门边",
+          "left_hand": "扶门框"
+        },
+        "陆叔": {
+          "position": "餐桌旁",
+          "pose": "站定"
+        }
+      },
       "blocking": [
         {
           "identity": "林晚",
-          "reference_identity": "厨房门框",
+          "reference_identity": "厨房门边",
           "position": "厨房门边",
-          "screen_x": 0.32,
+          "screen_x": "0.32",
           "depth_zone": "midground",
-          "body_pose": "站立，身体微侧向餐桌方向",
-          "weight_distribution": "重心落在右腿，左腿放松微屈",
-          "torso_direction": "朝向餐桌方向，约偏右30度",
-          "head_yaw": "朝向陆叔，约偏右25度",
-          "head_pitch": "水平，微向下约5度",
-          "eye_target": "陆叔面部",
-          "expression": "平静，略带迟疑",
-          "left_hand": "扶门框，手指轻搭在门框边缘",
-          "right_hand": "自然垂于身侧",
-          "prop_contact": "左手与门框持续接触"
+          "body_pose": "standing, left hand resting on door frame, body angled slightly toward the dining table",
+          "weight_distribution": "weight on right leg, left leg relaxed",
+          "torso_direction": "torso turned approximately 30 degrees toward the dining table",
+          "head_yaw": "head turned approximately 20 degrees toward 陆叔",
+          "head_pitch": "head level, chin slightly lowered",
+          "eye_target": "eyes on 陆叔 at the dining table",
+          "expression": "quiet, attentive, slightly guarded",
+          "left_hand": "left hand resting on the door frame",
+          "right_hand": "right hand relaxed at her side",
+          "prop_contact": "left hand in contact with the door frame"
         },
         {
           "identity": "陆叔",
-          "reference_identity": "餐桌",
+          "reference_identity": "餐桌旁",
           "position": "餐桌旁",
-          "screen_x": 0.68,
+          "screen_x": "0.68",
           "depth_zone": "midground",
-          "body_pose": "站定，身体正对厨房门方向",
-          "weight_distribution": "双脚均匀承重，站姿稳定",
-          "torso_direction": "朝向厨房门方向",
-          "head_yaw": "朝向林晚，约偏左20度",
-          "head_pitch": "水平",
-          "eye_target": "林晚面部",
-          "expression": "沉稳，略带关切",
-          "left_hand": "自然垂于身侧",
-          "right_hand": "轻搭在餐桌边缘",
-          "prop_contact": "右手与餐桌边缘持续接触"
+          "body_pose": "standing upright beside the dining table",
+          "weight_distribution": "weight evenly distributed on both feet",
+          "torso_direction": "torso facing toward the kitchen door",
+          "head_yaw": "head turned toward 林晚 at the kitchen door",
+          "head_pitch": "head level",
+          "eye_target": "eyes on 林晚",
+          "expression": "steady, composed, expectant",
+          "left_hand": "left hand relaxed at his side",
+          "right_hand": "right hand resting near the edge of the dining table",
+          "prop_contact": "right hand near the edge of the dining table"
         }
       ],
       "performance_beats": [
@@ -1914,178 +2082,166 @@
           "start_time": 0.0,
           "end_time": 1.2,
           "actor": "林晚",
-          "body_action": "躯干从朝向门框的微侧姿态缓慢转向餐桌方向，转动约15度，结束时躯干朝向陆叔方向",
-          "hand_action": "左手从扶门框的静态接触状态开始，手指轻微收紧后放松，保持扶门框的接触，结束时手指恢复轻搭状态",
-          "head_action": "头部从朝向门框内侧的状态开始，向右缓慢转动约20度，结束时面部朝向陆叔",
-          "eye_action": "视线从门框方向开始，向右平移至陆叔面部，结束时目光落在陆叔脸上",
-          "facial_action": "面部从平静状态开始，嘴角轻微下沉后恢复，结束时表情为平静中带迟疑",
-          "ending_state": "林晚躯干朝向餐桌方向，头部朝向陆叔，目光落在陆叔面部，左手仍扶门框"
+          "body_action": "林晚's torso rotates from facing the kitchen door toward the dining table, ending with her body angled approximately 30 degrees toward 陆叔",
+          "hand_action": "林晚's left hand remains resting on the door frame, maintaining contact without sliding, ending with the palm flat against the frame",
+          "head_action": "林晚's head turns from facing the door frame toward 陆叔, ending with her face directed at him",
+          "eye_action": "林晚's eyes shift from the door frame to 陆叔's face, ending with a steady gaze on him",
+          "facial_action": "林晚's expression settles from neutral into a quiet, attentive look, ending with her lips closed and brows relaxed",
+          "ending_state": "林晚 stands at the kitchen door, torso angled toward the dining table, left hand on the door frame, eyes on 陆叔"
         },
         {
           "start_time": 1.2,
           "end_time": 2.6,
           "actor": "陆叔",
-          "body_action": "躯干保持站定姿态，从正对厨房门的状态开始，上身轻微前倾约5度，结束时身体保持站定并微向前倾",
-          "hand_action": "右手从轻搭餐桌边缘的状态开始，手指轻微抬起后重新落下，保持与餐桌边缘的接触，结束时右手仍搭在餐桌边缘",
-          "head_action": "头部从朝向林晚的状态开始，轻微向左转动约5度，结束时面部更直接朝向林晚",
-          "eye_action": "视线保持在林晚面部，从平视状态开始，轻微下移约3度后回到原位，结束时目光仍落在林晚脸上",
-          "facial_action": "面部从沉稳状态开始，眉心轻微收紧后放松，结束时表情为沉稳中带关切",
-          "ending_state": "陆叔保持站定，上身微向前倾，头部朝向林晚，目光落在林晚面部，右手仍搭在餐桌边缘"
+          "body_action": "陆叔's torso shifts from facing the kitchen door toward 林晚, ending with his shoulders squared toward her",
+          "hand_action": "陆叔's right hand lifts slightly from the table edge and settles back down, ending with the fingertips resting on the table surface",
+          "head_action": "陆叔's head tilts slightly downward toward 林晚, ending with his chin lowered a few degrees",
+          "eye_action": "陆叔's eyes hold steady on 林晚's face, ending with an unbroken gaze",
+          "facial_action": "陆叔's expression firms from composed to expectant, ending with his mouth set in a calm line",
+          "ending_state": "陆叔 stands at the dining table, shoulders squared toward 林晚, right hand resting on the table, eyes fixed on her"
         },
         {
           "start_time": 2.6,
-          "end_time": 4.0,
+          "end_time": 3.8,
           "actor": "林晚",
-          "body_action": "躯干从朝向餐桌方向的状态开始，轻微向后移动约3厘米，重心从右腿向左腿转移约20%，结束时身体重心略偏左腿",
-          "hand_action": "左手从扶门框的状态开始，手指轻微松开后重新搭上，保持与门框的接触，结束时左手仍扶门框",
-          "head_action": "头部从朝向陆叔的状态开始，轻微向左回转约8度，结束时面部朝向介于陆叔与门框之间的方向",
-          "eye_action": "视线从陆叔面部开始，短暂移向门框方向后回到陆叔面部，结束时目光重新落在陆叔脸上",
-          "facial_action": "面部从迟疑状态开始，嘴唇轻微抿紧后放松，结束时表情为平静中带犹豫",
-          "ending_state": "林晚身体重心略偏左腿，头部朝向陆叔与门框之间，目光落在陆叔面部，左手仍扶门框"
+          "body_action": "林晚's torso leans slightly forward from the door frame, ending with her weight shifted onto her right foot",
+          "hand_action": "林晚's left hand tightens its grip on the door frame, ending with her fingers curled more firmly around the edge",
+          "head_action": "林晚's head lowers slightly, ending with her chin tucked a few degrees toward her chest",
+          "eye_action": "林晚's eyes drop briefly toward the floor, ending with her gaze returning to 陆叔",
+          "facial_action": "林晚's expression softens from guarded to hesitant, ending with her lips slightly parted",
+          "ending_state": "林晚 leans slightly forward at the kitchen door, left hand gripping the frame, eyes returning to 陆叔"
         },
         {
-          "start_time": 4.0,
+          "start_time": 3.8,
           "end_time": 5.0,
           "actor": "陆叔",
-          "body_action": "躯干从前倾状态开始，缓慢回正约5度，结束时身体恢复站定姿态",
-          "hand_action": "右手从搭在餐桌边缘的状态开始，手指轻微收拢后放松，保持与餐桌边缘的接触，结束时右手仍搭在餐桌边缘",
-          "head_action": "头部从朝向林晚的状态开始，保持不动，结束时面部仍朝向林晚",
-          "eye_action": "视线保持在林晚面部，从平视状态开始，轻微眯眼后恢复，结束时目光仍落在林晚脸上",
-          "facial_action": "面部从关切状态开始，嘴角轻微上扬约2毫米后恢复，结束时表情为沉稳中带温和",
-          "ending_state": "陆叔身体恢复站定，头部朝向林晚，目光落在林晚面部，右手仍搭在餐桌边缘"
+          "body_action": "陆叔's torso straightens from the slight forward lean, ending with his posture fully upright",
+          "hand_action": "陆叔's right hand slides a short distance along the table edge, ending with his palm flat on the surface",
+          "head_action": "陆叔's head lifts from the slight downward tilt, ending level with his gaze on 林晚",
+          "eye_action": "陆叔's eyes remain fixed on 林晚, ending with a steady, unwavering look",
+          "facial_action": "陆叔's expression settles from expectant into calm resolve, ending with his features relaxed but firm",
+          "ending_state": "陆叔 stands upright at the dining table, right hand flat on the table, eyes steady on 林晚"
         }
       ],
+      "dialogue_beats": [],
       "camera_beats": [
         {
           "start_time": 0.0,
           "end_time": 2.5,
-          "movement_type": "缓慢推近",
-          "direction": "沿镜头轴线向前，朝向林晚与陆叔之间的中点",
-          "speed": "缓慢匀速",
-          "distance_or_scale_change": "画面主体放大约8%",
-          "target": "林晚与陆叔之间的中点区域",
-          "start_framing": "中景，林晚位于画面左侧约三分之一处，陆叔位于画面右侧约三分之一处，两人之间可见餐桌与厨房门框",
-          "end_framing": "中近景，林晚与陆叔的上半身占据画面主要区域，餐桌边缘与门框仍在画面内",
-          "easing": "线性匀速"
+          "movement_type": "slow push-in",
+          "direction": "toward the two characters, drifting slightly toward 陆叔",
+          "speed": "slow and steady",
+          "distance_or_scale_change": "frame tightens from a two-shot to a medium two-shot, scale increasing approximately 10 percent",
+          "target": "林晚 and 陆叔",
+          "start_framing": "wide two-shot, 林晚 at the kitchen door on the left, 陆叔 at the dining table on the right",
+          "end_framing": "medium two-shot, both characters filling more of the frame with the kitchen door and dining table visible",
+          "easing": "linear"
         },
         {
           "start_time": 2.5,
           "end_time": 5.0,
-          "movement_type": "缓慢横移",
-          "direction": "向右缓慢移动，朝向陆叔方向",
-          "speed": "缓慢匀速",
-          "distance_or_scale_change": "画面主体保持中近景比例，横向位置偏移约5%",
-          "target": "陆叔面部区域",
-          "start_framing": "中近景，林晚位于画面左侧，陆叔位于画面右侧，两人上半身均在画面内",
-          "end_framing": "中近景，陆叔面部位于画面中心偏右区域，林晚位于画面左侧边缘",
-          "easing": "线性匀速"
+          "movement_type": "slow lateral drift",
+          "direction": "drifting left toward 林晚",
+          "speed": "very slow",
+          "distance_or_scale_change": "scale held steady, framing shifts so 林晚 gains more prominence",
+          "target": "林晚, with 陆叔 held in the right of frame",
+          "start_framing": "medium two-shot centered between both characters",
+          "end_framing": "medium shot weighted toward 林晚 at the kitchen door, 陆叔 still visible at the right edge",
+          "easing": "ease-in-out"
         }
       ],
-      "dialogue_beats": [],
+      "emotion_arc": {
+        "start": "quiet, guarded attention",
+        "middle": "hesitation and softening",
+        "end": "calm resolve on both sides"
+      },
       "ending_state": {
         "characters": {
           "林晚": {
             "position": "厨房门边",
             "left_hand": "扶门框",
-            "body_pose": "站立，重心略偏左腿，躯干朝向陆叔与门框之间",
-            "head_yaw": "朝向陆叔与门框之间",
-            "eye_target": "陆叔面部",
-            "expression": "平静中带犹豫"
+            "body_pose": "standing, torso angled toward the dining table, left hand gripping the door frame",
+            "eye_target": "eyes on 陆叔",
+            "expression": "hesitant, attentive"
           },
           "陆叔": {
             "position": "餐桌旁",
             "pose": "站定",
-            "body_pose": "站定，上身回正，躯干朝向厨房门方向",
-            "head_yaw": "朝向林晚",
-            "eye_target": "林晚面部",
-            "expression": "沉稳中带温和",
-            "right_hand": "搭在餐桌边缘"
+            "body_pose": "standing upright beside the dining table, right hand flat on the table surface",
+            "eye_target": "eyes on 林晚",
+            "expression": "calm resolve"
           }
         },
         "camera": {
-          "position": "画面中心偏右，朝向陆叔面部区域",
-          "framing": "中近景，陆叔面部位于画面中心偏右，林晚位于画面左侧边缘",
-          "movement": "横移结束，镜头静止"
+          "position": "medium shot weighted toward 林晚 at the kitchen door",
+          "framing": "林晚 on the left of frame, 陆叔 visible at the right edge, kitchen door and dining table in frame",
+          "movement": "camera has completed a slow push-in followed by a slow lateral drift left",
+          "focus": "focus held on 林晚, with 陆叔 softly present in the right of frame"
         }
       }
     }
   ],
   "llm_canary": {
     "calls": 5,
-    "status": "BLOCKED",
+    "status": "COMPLETED",
     "diagnostics": [
       {
         "shot_id": "SH_E01_SC001_002",
         "source_fact_conflicts": [],
         "nested_ir_validation": {
-          "status": "BLOCK",
-          "errors": [
-            "DIRECTOR_PLAN_SCHEMA_INVALID:emotion_arc"
-          ],
-          "error_count": 1
+          "status": "PASS",
+          "errors": [],
+          "error_count": 0
         },
-        "status": "BLOCK"
+        "status": "PASS"
       },
       {
         "shot_id": "SH_E01_SC001_005",
         "source_fact_conflicts": [],
         "nested_ir_validation": {
-          "status": "BLOCK",
-          "errors": [
-            "DIRECTOR_PLAN_SCHEMA_INVALID:emotion_arc"
-          ],
-          "error_count": 1
+          "status": "PASS",
+          "errors": [],
+          "error_count": 0
         },
-        "status": "BLOCK"
+        "status": "PASS"
       },
       {
         "shot_id": "SH_E01_SC002_002",
         "source_fact_conflicts": [],
         "nested_ir_validation": {
-          "status": "BLOCK",
-          "errors": [
-            "DIRECTOR_PLAN_SCHEMA_INVALID:emotion_arc",
-            "DIRECTOR_PLAN_SCHEMA_INVALID:source_facts"
-          ],
-          "error_count": 2
+          "status": "PASS",
+          "errors": [],
+          "error_count": 0
         },
-        "status": "BLOCK"
+        "status": "PASS"
       },
       {
         "shot_id": "SH_E01_SC002_006",
         "source_fact_conflicts": [],
         "nested_ir_validation": {
-          "status": "BLOCK",
-          "errors": [
-            "DIRECTOR_PLAN_SCHEMA_INVALID:emotion_arc"
-          ],
-          "error_count": 1
+          "status": "PASS",
+          "errors": [],
+          "error_count": 0
         },
-        "status": "BLOCK"
+        "status": "PASS"
       },
       {
         "shot_id": "SH_E01_SC002_007",
-        "source_fact_conflicts": [
-          "shot_id"
-        ],
+        "source_fact_conflicts": [],
         "nested_ir_validation": {
-          "status": "BLOCK",
-          "errors": [
-            "DIRECTOR_PLAN_SCHEMA_INVALID:emotion_arc",
-            "DIRECTOR_PLAN_SCHEMA_INVALID:shot_id",
-            "DIRECTOR_PLAN_SCHEMA_INVALID:source_facts"
-          ],
-          "error_count": 3
+          "status": "PASS",
+          "errors": [],
+          "error_count": 0
         },
-        "status": "BLOCK"
+        "status": "PASS"
       }
     ],
-    "source_fact_conflicts": 1,
-    "nested_ir_blockers": 8,
+    "source_fact_conflicts": 0,
+    "nested_ir_blockers": 0,
     "profile_id": "local-llm-2vydoz",
     "model": "mimo-v2.5",
     "reason": "REUSED_LAST_CONTROLLED_CANARY_RESPONSES"
   },
-  "source_fact_conflicts": 1,
-  "status": "PROMPT_PRODUCTION_DETAIL_QUALITY_BLOCKED"
+  "source_fact_conflicts": 0,
+  "status": "PROMPT_PRODUCTION_V4_READY_FOR_MEDIA_CANARY"
 }

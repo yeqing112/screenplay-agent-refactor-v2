@@ -5,24 +5,22 @@
       "ending_state": {
         "characters": {
           "林晚": {
-            "position": "售票窗口与站台入口之间，向前半步",
-            "pose": "身体前倾3厘米，双脚冻结",
-            "head_direction": "向右15度、下巴上抬5度",
-            "eye_target": "站台入口红伞伞骨",
-            "emotion": "警觉",
-            "right_hand": "胸腹前夹住车票"
-          }
-        },
-        "props": {
-          "RED_UMBRELLA": {
-            "position": "站台入口右侧",
-            "state": "伞面半收，左侧伞骨折断且暴露"
+            "position": "售票窗口前一步，右手持车票前伸约10厘米、车票接近售票窗口",
+            "pose": "站直，躯干微前倾约3厘米，重心偏向售票窗口",
+            "eye_target": "售票窗口方向",
+            "expression": "眉头紧蹙、嘴唇紧抿、神情凝重",
+            "prop_contact": "右手拇指与食指捏住车票边缘，车票前伸接近售票窗口"
           }
         },
         "camera": {
-          "framing": "中景",
-          "height": "平视",
-          "movement": "4.6秒后停止"
+          "movement_type": "缓慢推轨",
+          "direction": "向林晚方向缓慢推进",
+          "speed": "慢速，约每秒推进0.15米",
+          "distance_or_scale_change": "镜头与林晚距离较起始缩短约0.83米，林晚面部在画面中占比增大约24%",
+          "target": "林晚面部表情及持车票的右手",
+          "start_framing": "中景，林晚位于画面中心，售票窗口在画面右侧",
+          "end_framing": "近景，林晚面部表情及持车票的右手占据画面主体，售票窗口在画面右侧边缘",
+          "easing": "缓入缓出"
         }
       }
     },
@@ -31,30 +29,31 @@
       "ending_state": {
         "characters": {
           "陆叔": {
-            "position": "画面左侧，距林晚约一步",
-            "pose": "右手持包，左手指尖停在包口凸起上",
-            "head_direction": "正面",
-            "eye_target": "包口硬物",
-            "emotion": "警觉"
+            "position": "林晚左前方半步，右脚已向前迈出半步",
+            "right_hand": "垂于大腿外侧，未接触手提包提手",
+            "left_hand": "垂于体侧，手指微张",
+            "torso_direction": "朝向林晚，躯干向右前方偏转约15度",
+            "head_yaw": "朝向林晚面部，向右转约10度",
+            "head_pitch": "微低头约2度",
+            "eye_target": "林晚的面部",
+            "expression": "克制询问，眉头微蹙，嘴唇紧抿"
           },
           "林晚": {
-            "position": "画面右侧后退5厘米",
-            "pose": "双手落在身体两侧",
-            "head_direction": "向左5度",
-            "eye_target": "包口硬物",
-            "emotion": "警觉"
-          }
-        },
-        "props": {
-          "HANDBAG": {
-            "owner": "陆叔右手",
-            "state": "包口闭合，硬物轮廓可见"
+            "position": "售票台侧前方，上身微前倾",
+            "right_hand": "握住手提包提手，手指略微放松但仍保持握持",
+            "left_hand": "微抬至腰侧，手指微曲",
+            "torso_direction": "朝向陆叔，躯干向左偏转约10度",
+            "head_yaw": "朝向陆叔面部，向左转约25度",
+            "head_pitch": "微低头约2度",
+            "eye_target": "陆叔的面部",
+            "expression": "困惑不安，双唇微颤，眉头轻扬"
           }
         },
         "camera": {
-          "framing": "双人中景",
-          "height": "平视",
-          "movement": "5.1秒后停止"
+          "position": "镜头位于两人前方约2.5米处，高度约与人物胸部齐平",
+          "framing": "中近景，陆叔位于画面左侧约42%处，林晚位于画面右侧约58%处，手提包位于画面下方约30%处",
+          "movement": "静止，无移动",
+          "focus_target": "林晚的面部与右手握住的手提包提手"
         }
       }
     },
@@ -63,30 +62,23 @@
       "ending_state": {
         "characters": {
           "陆叔": {
-            "position": "餐桌左侧",
-            "pose": "坐姿，右手搭在苹果或桌面",
-            "head_direction": "面向林晚",
-            "eye_target": "桌面划痕",
-            "emotion": "警觉"
+            "position": "餐桌左侧, torso upright with weight shifting back toward the kitchen",
+            "eye_target": "kitchen workspace",
+            "body_pose": "standing upright, right hand relaxed at hip, torso angled slightly toward the kitchen",
+            "expression": "warm, settled, gently caring"
           },
           "林晚": {
-            "position": "餐桌右侧或门边",
-            "pose": "双脚压地，肩背贴近门边",
-            "head_direction": "向左7度",
-            "eye_target": "陆叔双眼",
-            "emotion": "警觉"
-          }
-        },
-        "props": {
-          "APPLE": {
-            "position": "桌边或陆叔右手",
-            "state": "保持可见，未进入林晚手中"
+            "position": "餐桌右侧或门边, torso upright with shoulders settled",
+            "eye_target": "tabletop",
+            "body_pose": "standing upright, right hand flat on the table near her side, left hand hanging free at her side",
+            "expression": "tired but softened, neutral and receptive"
           }
         },
         "camera": {
-          "framing": "过肩中景",
-          "height": "平视",
-          "movement": "静止在最后1.2秒停止"
+          "position": "medium two-shot, pulled back to the original framing distance",
+          "framing": "both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+          "movement": "camera has settled into a static hold after the slow pull-back",
+          "target": "both 陆叔 and 林晚 at the kitchen table"
         }
       }
     },
@@ -96,29 +88,23 @@
         "characters": {
           "陆叔": {
             "position": "餐桌左侧",
-            "pose": "坐姿，右手搭在苹果或桌面",
-            "head_direction": "面向林晚",
-            "eye_target": "林晚的双眼",
-            "emotion": "警觉"
+            "pose": "leaning forward about 12 degrees over the table edge",
+            "expression": "warm inviting, gentle encouraging",
+            "eye_target": "林晚",
+            "prop_state": "right hand holds the apple offered at arm's length toward 林晚"
           },
           "林晚": {
             "position": "餐桌右侧或门边",
-            "pose": "双脚压地，肩背贴近门边",
-            "head_direction": "向左7度",
-            "eye_target": "陆叔双眼",
-            "emotion": "警觉"
-          }
-        },
-        "props": {
-          "APPLE": {
-            "position": "桌边或陆叔右手",
-            "state": "保持可见，未进入林晚手中"
+            "pose": "standing upright, shoulders squared toward 陆叔",
+            "expression": "guarded, quietly attentive",
+            "eye_target": "陆叔",
+            "prop_state": "no prop held"
           }
         },
         "camera": {
-          "framing": "近景",
-          "height": "平视",
-          "movement": "缓慢推近在最后1.2秒停止"
+          "framing": "close-up holding on 林晚's guarded attentive expression with the apple at frame edge",
+          "movement": "near-static micro drift toward 林晚",
+          "scale": 1.15
         }
       }
     },
@@ -127,25 +113,25 @@
       "ending_state": {
         "characters": {
           "林晚": {
-            "position": "厨房门边，后退30厘米，背贴门框",
-            "pose": "左手压门框，右手护包，双脚冻结",
-            "head_direction": "向右20度",
-            "eye_target": "陆叔双眼",
-            "emotion": "明确警觉"
+            "position": "厨房门边",
+            "left_hand": "扶门框",
+            "body_pose": "standing, torso angled toward the dining table, left hand gripping the door frame",
+            "eye_target": "eyes on 陆叔",
+            "expression": "hesitant, attentive"
           },
           "陆叔": {
-            "position": "餐桌边缘前半步",
-            "pose": "右手悬停4厘米，左手下垂",
-            "head_direction": "向左10度",
-            "eye_target": "林晚双眼",
-            "emotion": "平静压迫"
+            "position": "餐桌旁",
+            "pose": "站定",
+            "body_pose": "standing upright beside the dining table, right hand flat on the table surface",
+            "eye_target": "eyes on 林晚",
+            "expression": "calm resolve"
           }
         },
-        "props": {},
         "camera": {
-          "framing": "双人中景偏近",
-          "height": "平视",
-          "movement": "4.4秒停止"
+          "position": "medium shot weighted toward 林晚 at the kitchen door",
+          "framing": "林晚 on the left of frame, 陆叔 visible at the right edge, kitchen door and dining table in frame",
+          "movement": "camera has completed a slow push-in followed by a slow lateral drift left",
+          "focus": "focus held on 林晚, with 陆叔 softly present in the right of frame"
         }
       }
     }
