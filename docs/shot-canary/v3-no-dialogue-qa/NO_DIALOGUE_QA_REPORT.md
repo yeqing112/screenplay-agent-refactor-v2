@@ -42,7 +42,7 @@ Final status:
 `NO_DIALOGUE_QA_FALSE_NEGATIVE_CLOSED`
 
 Commit:
-- pending commit
+- `ad70606`
 
 Working tree:
-- evidence generated locally
+- Working tree clean after commit.
