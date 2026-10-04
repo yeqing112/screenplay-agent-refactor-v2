@@ -1,0 +1,8 @@
+{
+  "status": "MAPPING_OBSERVED",
+  "requested_model": "minimax_h3_no_audios",
+  "origin_model_name": "minimax_h3_no_audios",
+  "upstream_model_name": "75api-minimax-h3-ref-20260916",
+  "reported_completion_model": "75api-minimax-h3-fast-20260911",
+  "contract_interpretation": "Observed provider routing mapping; not classified as mismatch."
+}

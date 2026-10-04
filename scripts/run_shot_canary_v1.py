@@ -29,6 +29,7 @@ from api.generation_adapters import (  # noqa: E402
 )
 from api.model_registry import get_default_profile
 from core.shot_readiness import project_provider_duration
+from core.video_provider_prompt_ir import build_video_provider_prompt_ir
 
 OUT = ROOT / "docs" / "shot-canary" / "v1"
 READY = OUT / "readiness"
@@ -94,7 +95,7 @@ def _keyframe_prompt(shot_id: str, duration: int) -> str:
     return base + "陆叔坐在餐桌左侧，右手握着一只完整红黄苹果并向林晚递出；苹果在陆叔右手，林晚不接触；林晚退到厨房门边，左手接触门锁下方；严禁手提包和包带。"
 
 
-def _video_prompt(shot_id: str, duration: int, director: float) -> str:
+def _video_prompt_diagnostic_only(shot_id: str, duration: int, director: float) -> str:
     hold = f"最后{duration - director:g}秒只保持最终姿态、眼神、表情、道具状态和构图，不新增对白、动作、事件、道具转移或摄影事件。" if duration > director else ""
     return _keyframe_prompt(shot_id, duration) + f" 连续单镜头，时长{duration}秒，严格按照导演动作和对白时间执行；{hold}使用输入首帧作为第一帧。"
 
@@ -218,7 +219,10 @@ async def _run() -> tuple[int, dict[str, Any]]:
                 return 2, evidence
             director = {"SH_E01_SC002_007": 5.0, "SH_E01_SC002_002": 13.5, "SH_E01_SC002_006": 8.5}[shot_id]
             projection = project_provider_duration(director)
-            prompt = _video_prompt(shot_id, int(projection.provider_duration_seconds), director)
+            director_ir = json.loads((ROOT / "docs" / "prompt-quality" / "v4" / "DIRECTOR_DECISION_IR.json").read_text(encoding="utf-8"))
+            decision = next(item for item in director_ir.get("canary_shots", []) if item.get("shot_id") == shot_id)
+            provider_ir = build_video_provider_prompt_ir(decision, projection)
+            prompt = provider_ir.rendered_prompt
             payload = _build_75api_minimax_h3_video_payload(video_profile, prompt=prompt, duration_seconds=int(projection.provider_duration_seconds), aspect_ratio="16:9", first_frame_url=first_frame_url, reference_images=[])
             submitted = await submit_75api_minimax_h3_generation(video_profile, payload=payload)
             evidence["real_video_calls"] += 1
@@ -231,7 +235,7 @@ async def _run() -> tuple[int, dict[str, Any]]:
             await _save_uri(url, video_path, headers=headers)
             probe = _ffprobe(video_path)
             qa = {"status": "PASS" if probe.get("status") == "PASS" and int(probe.get("audio_streams") or 0) == 0 else "FAIL", "ffprobe": probe, "sampled_frames": ["first", "middle", "final_director", "final_provider"], "unauthorized_props": []}
-            row = {"version": version, "provider": "75api-minimax-h3", "model": "minimax_h3_no_audios", "director_duration_seconds": director, "provider_seconds": int(projection.provider_duration_seconds), "provider_padding_seconds": projection.provider_padding_seconds, "submit_post_count": 1, "task_id": task_id, "reload": True, "reconcile_get": reconcile, "poll": polled, "candidate": {"status": "CANDIDATE", "path": str(video_path), "sha256": _sha(video_path)}, "media_qa": qa, "review_decision": "APPROVE" if qa["status"] == "PASS" else "BLOCK", "official_version": version}
+            row = {"version": version, "provider": "75api-minimax-h3", "model": "minimax_h3_no_audios", "director_duration_seconds": director, "provider_seconds": int(projection.provider_duration_seconds), "provider_padding_seconds": projection.provider_padding_seconds, "prompt_sha256": provider_ir.prompt_sha256, "dialogue_contract": provider_ir.dialogue_contract.as_dict(), "submit_post_count": 1, "task_id": task_id, "reload": True, "reconcile_get": reconcile, "poll": polled, "candidate": {"status": "CANDIDATE", "path": str(video_path), "sha256": _sha(video_path)}, "media_qa": qa, "review_decision": "APPROVE" if qa["status"] == "PASS" else "BLOCK", "official_version": version}
             evidence["videos"].setdefault(shot_id, []).append(row)
             if qa["status"] != "PASS":
                 evidence["status"] = "REAL_SHOT_MEDIA_CANARY_MEDIA_QUALITY_FAILED"

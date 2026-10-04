@@ -1,0 +1,34 @@
+{
+  "status": "FAIL",
+  "sampled_frame_count": 10,
+  "sampled_frames": [
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-01.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-02.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-03.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-04.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-05.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-06.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-07.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-08.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-09.jpg",
+    "docs\\shot-canary\\v2-dialogue-truth\\existing-video-frames\\frame-10.jpg"
+  ],
+  "contact_sheet": "docs\\shot-canary\\v2-dialogue-truth\\existing-video-contact-sheet.jpg",
+  "judge": {
+    "status": "FAIL",
+    "lin_wan_speech_like_motion": false,
+    "lu_shu_speech_like_motion": true,
+    "evidence_windows": [
+      {
+        "character": "Lu Shu",
+        "frames": [
+          "frame-09",
+          "frame-10"
+        ],
+        "reason": "陆叔嘴部张开幅度明显增大，且在连续两帧中保持张开状态，符合持续的对白式嘴部运动特征。"
+      }
+    ],
+    "method": "contact-sheet temporal sample",
+    "response_sha256": "aed3160f0e79695ce440f42af57d2bbafc4a5cec6bc5857d4aa79c3f6228aa48"
+  }
+}

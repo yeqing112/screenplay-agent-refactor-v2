@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "checks": {
+    "canonical_ir": true,
+    "none_contract": {
+      "dialogue_mode": "NONE",
+      "speaker": null,
+      "authoritative_text": "",
+      "phrase_windows": [],
+      "silent_characters": [
+        "林晚",
+        "陆叔"
+      ],
+      "visual_lipsync_required": false,
+      "audio_generation_allowed": false,
+      "mouth_motion_outside_dialogue_allowed": false
+    },
+    "canonical_has_no_positive_dialogue_leak": true,
+    "historical_chain_is_broken": true,
+    "visual_audit_sampled": true,
+    "provider_model_mapping_captured": true
+  }
+}
