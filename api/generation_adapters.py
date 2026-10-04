@@ -27,6 +27,13 @@ from .model_registry import (
     get_profile,
 )
 from core.provider_execution_profile import provider_generation_params, provider_timeout_seconds
+from core.provider_response_contract import (
+    API75ImageResponseInspector,
+    ImageProviderResult,
+    extract_75api_image_result,
+    response_fingerprint,
+    safe_provider_response,
+)
 
 
 class ModelProfileError(RuntimeError):
@@ -39,6 +46,11 @@ class ModelProfileError(RuntimeError):
         external_status: str | None = None,
         poll_attempts: int | None = None,
         external_task_id: str | None = None,
+        provider_response_shape: dict[str, Any] | None = None,
+        provider_response_fingerprint: str = "",
+        provider_http_status: int | None = None,
+        provider_response_media_path: str = "",
+        response_classification: str = "",
     ) -> None:
         super().__init__(message)
         self.provider_response = provider_response
@@ -46,6 +58,11 @@ class ModelProfileError(RuntimeError):
         self.external_status = external_status
         self.poll_attempts = poll_attempts
         self.external_task_id = external_task_id
+        self.provider_response_shape = provider_response_shape
+        self.provider_response_fingerprint = provider_response_fingerprint
+        self.provider_http_status = provider_http_status
+        self.provider_response_media_path = provider_response_media_path
+        self.response_classification = response_classification
 
 
 def _runtime_credential(profile: dict[str, Any], runtime_credential_value: str | None) -> str:
@@ -1650,26 +1667,44 @@ async def _generate_75api_image(
         except Exception as exc:
             raise _map_http_error("75api 图片生成", exc, provider_request_payload=payload) from exc
 
-    items = data.get("data") if isinstance(data, dict) else None
-    if not isinstance(items, list) or not items or not isinstance(items[0], dict):
-        raise ModelProfileError("75api 图片 provider 没有返回可用图片数据。", provider_response=data if isinstance(data, dict) else {}, provider_request_payload=payload)
-    image_item = items[0]
-    preview_url = image_item.get("url") or image_item.get("image_url") or image_item.get("imageUrl")
-    if not preview_url and image_item.get("b64_json"):
-        preview_url = _make_data_uri(str(image_item["b64_json"]), str(image_item.get("mime_type") or "image/png"))
-    if not preview_url:
-        raise ModelProfileError("75api 图片响应缺少 url 或 b64_json。", provider_response=data, provider_request_payload=payload)
-    response_identity = str(data.get("id") or data.get("request_id") or data.get("requestId") or "").strip()
-    if not response_identity:
-        response_identity = "75api-image-response-" + hashlib.sha256(json.dumps(data, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")).hexdigest()[:32]
+    response_shape = API75ImageResponseInspector.inspect(data, http_status=response.status_code)
+    response_fp = response_fingerprint(data)
+    try:
+        extracted: ImageProviderResult = extract_75api_image_result(data, http_status=response.status_code)
+    except ValueError as exc:
+        code = str(exc).split(":", 1)[0]
+        messages = {
+            "PROVIDER_LOGICAL_ERROR": "75API_IMAGE_RESPONSE_LOGICAL_ERROR",
+            "75API_IMAGE_RESPONSE_MEDIA_MISSING": "75API_IMAGE_RESPONSE_MEDIA_MISSING",
+            "75API_IMAGE_RESPONSE_SCHEMA_UNKNOWN": "75API_IMAGE_RESPONSE_SCHEMA_UNKNOWN",
+        }
+        classification = "PROVIDER_LOGICAL_ERROR" if code == "PROVIDER_LOGICAL_ERROR" else "PROVIDER_RESPONSE_CONTRACT_MISMATCH"
+        raise ModelProfileError(
+            messages.get(code, "75API_IMAGE_RESPONSE_SCHEMA_UNKNOWN"),
+            provider_response=data if isinstance(data, dict) else {},
+            provider_request_payload=payload,
+            provider_response_shape=response_shape,
+            provider_response_fingerprint=response_fp,
+            provider_http_status=response.status_code,
+            response_classification=classification,
+        ) from exc
+    response_identity = extracted.provider_request_id or "75api-image-response-" + response_fp[:32]
+    preview_url = extracted.preview_url
+    if extracted.image_base64:
+        preview_url = _make_data_uri(extracted.image_base64, extracted.mime_type)
     return {
         "previewUrl": str(preview_url),
         "uri": str(preview_url),
-        "revisedPrompt": image_item.get("revised_prompt") or image_item.get("revisedPrompt"),
-        "providerResponse": data,
+        "revisedPrompt": extracted.revised_prompt,
+        "providerResponse": safe_provider_response(data, http_status=response.status_code),
         "providerRequestPayload": payload,
         "providerRequestId": response_identity,
         "providerTaskId": response_identity,
+        "providerResponseShape": response_shape,
+        "providerResponseFingerprint": response_fp,
+        "providerResponseMediaPath": extracted.source_path,
+        "providerHttpStatus": response.status_code,
+        "providerResponseClassification": extracted.result_classification,
     }
 
 

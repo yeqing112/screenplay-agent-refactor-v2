@@ -85,12 +85,18 @@ HANDBAG = {
 
 
 class ProviderSubmissionError(RuntimeError):
-    def __init__(self, message: str, *, state: PostSubmissionState, task_created: bool = False, timeout_evidence: dict[str, Any] | None = None, configuration_error: str | None = None):
+    def __init__(self, message: str, *, state: PostSubmissionState, task_created: bool = False, timeout_evidence: dict[str, Any] | None = None, configuration_error: str | None = None, provider_response: dict[str, Any] | None = None, provider_response_shape: dict[str, Any] | None = None, provider_response_fingerprint: str = "", provider_http_status: int | None = None, provider_response_media_path: str = "", response_classification: str = ""):
         super().__init__(message)
         self.post_submission_state = state
         self.task_created = task_created
         self.timeout_evidence = timeout_evidence or {}
         self.configuration_error = configuration_error
+        self.provider_response = provider_response or {}
+        self.provider_response_shape = provider_response_shape or {}
+        self.provider_response_fingerprint = provider_response_fingerprint
+        self.provider_http_status = provider_http_status
+        self.provider_response_media_path = provider_response_media_path
+        self.response_classification = response_classification
 
 
 def _sha(value: Any) -> str:
@@ -305,7 +311,7 @@ async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id:
         provider_timeout = "超时" in message or "timeout" in message.lower() or "timed out" in message.lower()
         state = PostSubmissionState.AMBIGUOUS_AFTER_SEND if provider_timeout else PostSubmissionState.REJECTED_BEFORE_TASK if classification in {ProviderFailureClassification.CREDITS_INSUFFICIENT, ProviderFailureClassification.CHANNEL_UNAVAILABLE, ProviderFailureClassification.MODEL_UNAVAILABLE, ProviderFailureClassification.AUTH_FAILED} else PostSubmissionState.TASK_CONFIRMED
         evidence = timeout_evidence(timeout_hierarchy, request_started_at=request_started, request_finished_at=finished, timeout_layer="PROVIDER" if provider_timeout else "NONE")
-        raise ProviderSubmissionError(message, state=state, task_created=True, timeout_evidence=evidence)
+        raise ProviderSubmissionError(message, state=state, task_created=True, timeout_evidence=evidence, provider_response=task.get("provider_response") or task.get("providerResponse") or {}, provider_response_shape=task.get("provider_response_shape") or {}, provider_response_fingerprint=str(task.get("provider_response_fingerprint") or ""), provider_http_status=task.get("provider_http_status"), provider_response_media_path=str(task.get("provider_response_media_path") or ""), response_classification=str(task.get("provider_response_classification") or ""))
     asset = task.get("asset") or {}; persistence = (asset.get("metadata") or {}).get("generatedImagePersistence") or {}; local_path = Path(str(persistence.get("local_path") or ""))
     if local_path.exists():
         shutil.copy2(local_path, output)

@@ -27,6 +27,8 @@ class ProviderFailureClassification(str, Enum):
     PAYLOAD_INVALID = "PAYLOAD_INVALID"
     NETWORK_TRANSIENT = "NETWORK_TRANSIENT"
     SUBMISSION_AMBIGUOUS = "SUBMISSION_AMBIGUOUS"
+    PROVIDER_RESPONSE_CONTRACT_MISMATCH = "PROVIDER_RESPONSE_CONTRACT_MISMATCH"
+    PROVIDER_LOGICAL_ERROR = "PROVIDER_LOGICAL_ERROR"
     UNKNOWN = "UNKNOWN"
 
 
@@ -77,6 +79,10 @@ def classify_provider_failure(
     except ValueError:
         submission_state = PostSubmissionState.AMBIGUOUS_AFTER_SEND
     text = str(error or "").lower()
+    if "provider_response_contract_mismatch" in text or "75api_image_response_schema_unknown" in text or "75api_image_response_media_missing" in text:
+        return ProviderFailureClassification.PROVIDER_RESPONSE_CONTRACT_MISMATCH
+    if "provider_logical_error" in text or "75api_image_response_logical_error" in text:
+        return ProviderFailureClassification.PROVIDER_LOGICAL_ERROR
     if submission_state in {PostSubmissionState.AMBIGUOUS_AFTER_SEND, PostSubmissionState.TASK_NOT_CONFIRMED} and any(
         token in text for token in ("timeout", "timed out", "超时", "连接超时", "connection reset", "unknown task", "no task", "request id")
     ):

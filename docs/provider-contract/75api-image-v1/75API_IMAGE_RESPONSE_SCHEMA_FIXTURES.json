@@ -1,0 +1,36 @@
+{
+  "schema_version": "75api_image_response_fixtures_v1",
+  "fixtures": [
+    {
+      "name": "documented_top_level_url",
+      "response_shape": {"response_type": "dict", "top_level_keys": ["model", "url"], "candidate_media_paths": ["url"]},
+      "expected": {"classification": "VALID_IMAGE_RESPONSE", "matched_path": "url", "media_type": "https_url"}
+    },
+    {
+      "name": "openai_data_url",
+      "response_shape": {"response_type": "dict", "top_level_keys": ["data"], "candidate_media_paths": ["data[0].url"]},
+      "expected": {"classification": "VALID_IMAGE_RESPONSE", "matched_path": "data[0].url", "media_type": "https_url"}
+    },
+    {
+      "name": "openai_data_b64_json",
+      "response_shape": {"response_type": "dict", "top_level_keys": ["data"], "candidate_media_paths": ["data[0].b64_json"], "base64_metadata_only": true},
+      "expected": {"classification": "VALID_IMAGE_RESPONSE", "matched_path": "data[0].b64_json", "media_type": "base64"}
+    },
+    {
+      "name": "http_200_logical_error",
+      "response_shape": {"response_type": "dict", "top_level_keys": ["code", "message"]},
+      "expected": {"classification": "PROVIDER_LOGICAL_ERROR", "error_code": "75API_IMAGE_RESPONSE_LOGICAL_ERROR"}
+    },
+    {
+      "name": "valid_response_without_media",
+      "response_shape": {"response_type": "dict", "top_level_keys": ["data"], "list_lengths": {"data": 0}},
+      "expected": {"classification": "PROVIDER_RESPONSE_CONTRACT_MISMATCH", "error_code": "75API_IMAGE_RESPONSE_MEDIA_MISSING"}
+    },
+    {
+      "name": "unknown_json_schema",
+      "response_shape": {"response_type": "dict", "top_level_keys": ["model", "result"]},
+      "expected": {"classification": "PROVIDER_RESPONSE_CONTRACT_MISMATCH", "error_code": "75API_IMAGE_RESPONSE_SCHEMA_UNKNOWN"}
+    }
+  ],
+  "redaction": {"base64": "type_length_sha256_mime_only", "url": "scheme_host_path_sha256_query_presence_only", "credentials": "omitted"}
+}

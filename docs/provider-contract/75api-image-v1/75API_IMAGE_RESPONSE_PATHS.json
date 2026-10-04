@@ -1,0 +1,8 @@
+{
+  "schema_version": "75api_image_response_paths_v1",
+  "source": "Feishu 好漫剧API对接文档 · GPT-image-2 · 返回结果示例",
+  "documented_paths": ["url"],
+  "openai_compatible_paths": ["data[].url", "data[].b64_json"],
+  "item_fields": ["url", "b64_json"],
+  "allowlist_policy": "explicit paths only; no recursive arbitrary URL or base64 search"
+}

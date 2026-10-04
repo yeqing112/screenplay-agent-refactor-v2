@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "profile": {
+    "id": "local-image-c4a7yu",
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k"
+  },
+  "timeout_hierarchy": {
+    "provider_timeout_seconds": 120,
+    "orchestration_read_timeout_seconds": 180,
+    "connect_timeout_seconds": 10,
+    "write_timeout_seconds": 60,
+    "pool_timeout_seconds": 30,
+    "margin_seconds": 60
+  },
+  "capabilities": {
+    "text_to_image": true,
+    "image_to_image": true,
+    "reference_images": true
+  },
+  "connection_probe": {
+    "status": "PASS",
+    "message": "75api 连接成功；未发起任何计费图片生成。"
+  }
+}

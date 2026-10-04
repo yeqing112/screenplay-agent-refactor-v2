@@ -56,6 +56,7 @@ from core.production_policy import evaluate_production_boundary, resolve_workflo
 from core.production_workspace_projection import build_production_workspace_projection
 from core.production_workspace_projection_v2 import build_production_workspace_projection_v2
 from core.generation_compatibility_telemetry import record_generation_compatibility_response, generation_compatibility_telemetry_snapshot
+from core.provider_response_contract import safe_provider_response
 from core.script_beat import build_script_beats, find_issue_beats, is_structural_beat
 from core.qa_resolution import build_resolution_criteria, evaluate_resolution_criteria, route_issue
 from core.script_edit import apply_edits, validate_edits
@@ -13621,6 +13622,11 @@ def _complete_reconciled_creative_task(
         "providerPromptAdjustmentReason": generated.get("providerPromptAdjustmentReason") or "",
         "providerSafePrompt": generated.get("providerSafePrompt") or "",
         "providerContentRequiresAuth": bool(generated.get("providerContentRequiresAuth")),
+        "providerResponseShape": generated.get("providerResponseShape") or {},
+        "providerResponseFingerprint": generated.get("providerResponseFingerprint") or "",
+        "providerResponseMediaPath": generated.get("providerResponseMediaPath") or "",
+        "providerHttpStatus": generated.get("providerHttpStatus"),
+        "providerResponseClassification": generated.get("providerResponseClassification") or "",
     })
     _apply_provider_submission_snapshot(task_state, asset, req, generated=generated)
 
@@ -13857,6 +13863,11 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
             "providerPromptAdjustmentReason": generated.get("providerPromptAdjustmentReason") or "",
             "providerSafePrompt": generated.get("providerSafePrompt") or "",
             "providerContentRequiresAuth": bool(generated.get("providerContentRequiresAuth")),
+            "providerResponseShape": generated.get("providerResponseShape") or {},
+            "providerResponseFingerprint": generated.get("providerResponseFingerprint") or "",
+            "providerResponseMediaPath": generated.get("providerResponseMediaPath") or "",
+            "providerHttpStatus": generated.get("providerHttpStatus"),
+            "providerResponseClassification": generated.get("providerResponseClassification") or "",
         })
         _apply_provider_submission_snapshot(task_state, asset, req, generated=generated)
 
@@ -13964,7 +13975,12 @@ async def _run_creative_task(task_id: str, kind: str, req: CreativeGenerationReq
             if getattr(exc, "poll_attempts", None) is not None:
                 task_state["poll_attempts"] = exc.poll_attempts
             if getattr(exc, "provider_response", None) is not None:
-                task_state["provider_response"] = exc.provider_response
+                task_state["provider_response"] = safe_provider_response(exc.provider_response)
+                task_state["provider_response_shape"] = getattr(exc, "provider_response_shape", None) or safe_provider_response(exc.provider_response).get("provider_response_shape")
+                task_state["provider_response_fingerprint"] = getattr(exc, "provider_response_fingerprint", "") or safe_provider_response(exc.provider_response).get("provider_response_fingerprint", "")
+                task_state["provider_http_status"] = getattr(exc, "provider_http_status", None)
+                task_state["provider_response_media_path"] = getattr(exc, "provider_response_media_path", "")
+                task_state["provider_response_classification"] = getattr(exc, "response_classification", "")
             _apply_provider_submission_snapshot(task_state, None, req, exc=exc)
         if kind == "video" or str(task_state.get("target_kind") or "") == "video":
             _record_failed_video_retry_attempt(task_state, req)
@@ -14287,7 +14303,12 @@ async def reconcile_creative_task(task_id: str):
             if getattr(exc, "external_status", None):
                 task["external_status"] = exc.external_status
             if getattr(exc, "provider_response", None) is not None:
-                task["provider_response"] = exc.provider_response
+                task["provider_response"] = safe_provider_response(exc.provider_response, http_status=getattr(exc, "provider_http_status", None))
+                task["provider_response_shape"] = getattr(exc, "provider_response_shape", None) or task["provider_response"].get("provider_response_shape")
+                task["provider_response_fingerprint"] = getattr(exc, "provider_response_fingerprint", "") or task["provider_response"].get("provider_response_fingerprint", "")
+                task["provider_http_status"] = getattr(exc, "provider_http_status", None)
+                task["provider_response_media_path"] = getattr(exc, "provider_response_media_path", "")
+                task["provider_response_classification"] = getattr(exc, "response_classification", "")
             if getattr(exc, "poll_attempts", None) is not None:
                 task["poll_attempts"] = int(task.get("poll_attempts") or 0) + int(exc.poll_attempts or 0)
         _stamp_creative_task_state(task)

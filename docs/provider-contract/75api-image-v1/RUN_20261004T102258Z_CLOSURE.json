@@ -1,0 +1,19 @@
+{
+  "schema_version": "provider_contract_run_closure_v1",
+  "run_id": "20261004T102258Z",
+  "source_audit": "docs/visual-assets/75api-autonomous-v2/AUTONOMOUS_VISUAL_ASSET_AUDIT.json",
+  "original_observation": {
+    "http_request_completed": true,
+    "elapsed_seconds": 40.106,
+    "timeout_layer": "NONE",
+    "provider_json_received": true,
+    "adapter_media_resolution": "FAILED"
+  },
+  "closure_status": "CLOSED_PROVIDER_RESPONSE_CONTRACT_MISMATCH",
+  "new_classification": "PROVIDER_RESPONSE_CONTRACT_MISMATCH",
+  "post_submission_state": "TASK_CONFIRMED",
+  "retry_allowed": false,
+  "response_recovery": "REAL_RESPONSE_BODY_NOT_RECOVERABLE",
+  "safe_shape_available": false,
+  "reason": "The previous canary event retained only the adapter error and did not persist the provider response body or safe response shape. No raw response is reconstructed."
+}

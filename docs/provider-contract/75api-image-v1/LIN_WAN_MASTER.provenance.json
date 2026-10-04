@@ -1,0 +1,10 @@
+{
+  "run_id": "20261004T105249Z",
+  "generation_execution_id": "c880b07f4c0c",
+  "provider": "75api-image",
+  "model": "gpt-image-2-1k",
+  "matched_response_path": "url",
+  "media_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+  "authority_status": "READY",
+  "derived_generation_allowed_in_this_phase": false
+}

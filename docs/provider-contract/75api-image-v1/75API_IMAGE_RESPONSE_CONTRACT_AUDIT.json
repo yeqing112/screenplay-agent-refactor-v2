@@ -1,0 +1,60 @@
+{
+  "run_id": "20261004T105249Z",
+  "status": "75API_IMAGE_RESPONSE_CONTRACT_PROVEN",
+  "real_image_calls": 1,
+  "derived_calls": 0,
+  "lu_shu_calls": 0,
+  "handbag_calls": 0,
+  "vision_judge_calls": 0,
+  "real_video_calls": 0,
+  "http_status": 200,
+  "elapsed_seconds": 111.969,
+  "provider_response_shape": {
+    "response_type": "dict",
+    "top_level_keys": [
+      "model",
+      "url"
+    ],
+    "field_shapes": {
+      "model": "string",
+      "url": "string"
+    },
+    "nested_keys": {},
+    "list_lengths": {},
+    "candidate_media_paths": [
+      "url"
+    ],
+    "string_length_metadata": {
+      "model": {
+        "type": "string",
+        "length": 11,
+        "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+      },
+      "url": {
+        "type": "https_url",
+        "scheme": "https",
+        "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+        "path_sha256": "f6af8a1d5c88c50a3a49c92b8b7f2947032df4cbd89965a2e496c094009a0ee0",
+        "has_query": false
+      }
+    },
+    "provider_http_status": 200
+  },
+  "provider_response_fingerprint": "69d07cc83e184d82cd7a6bbc7b641868f9441899d6f556bc562861b91cdd1c2f",
+  "provider_response_media_path": "url",
+  "provider_http_status": 200,
+  "post_submission_state": "TASK_CONFIRMED",
+  "generation_execution_id": "c880b07f4c0c",
+  "matched_media_path": "url",
+  "media_type": "image/png",
+  "media_sha256": "fb16b58520681d04460467ede564ab44232c629dff128cadaad2eb5e18853c1b",
+  "result": "LIN_WAN_MASTER_READY",
+  "safety": {
+    "raw_base64_persisted": 0,
+    "signed_url_query_persisted": 0,
+    "secret_leaks": 0,
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "orphans": 0
+  }
+}
