@@ -1,1 +1,116 @@
-{}
+{
+  "HANDBAG": {
+    "master": {
+      "view_id": "MASTER",
+      "asset_type": "PROP",
+      "status": "PASS",
+      "canonical_identity_match": true,
+      "canonical_costume_match": true,
+      "allowed_accessories": [
+        "small dark-brown handbag"
+      ],
+      "detected_accessories": [
+        "small dark-brown handbag"
+      ],
+      "detected_props": [
+        "small dark-brown handbag"
+      ],
+      "unauthorized_accessories": [],
+      "unauthorized_props": [],
+      "extra_people": false,
+      "text_or_watermark": false,
+      "view_pose_compliance": 100,
+      "framing_compliance": 100,
+      "critical_view_violation": [],
+      "violations": [],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1,
+      "semantic_authority_fingerprint": "3a19d45ac5e704901cf364613ef4a6b60ad8e534442656761b35d173a9f5b461",
+      "score_scale": "0-100"
+    },
+    "derived": [
+      {
+        "view_id": "SIDE",
+        "asset_type": "PROP",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "handbag"
+        ],
+        "detected_accessories": [
+          "handbag"
+        ],
+        "detected_props": [
+          "handbag"
+        ],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 100,
+        "framing_compliance": 100,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "3a19d45ac5e704901cf364613ef4a6b60ad8e534442656761b35d173a9f5b461",
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "BACK",
+        "asset_type": "PROP",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "handbag"
+        ],
+        "detected_accessories": [
+          "handbag"
+        ],
+        "detected_props": [
+          "handbag"
+        ],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 95,
+        "framing_compliance": 95,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "3a19d45ac5e704901cf364613ef4a6b60ad8e534442656761b35d173a9f5b461",
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "DETAIL",
+        "asset_type": "PROP",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "small dark-brown handbag"
+        ],
+        "detected_accessories": [
+          "small dark-brown handbag"
+        ],
+        "detected_props": [],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 90,
+        "framing_compliance": 90,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "3a19d45ac5e704901cf364613ef4a6b60ad8e534442656761b35d173a9f5b461",
+        "score_scale": "0-100"
+      }
+    ]
+  }
+}

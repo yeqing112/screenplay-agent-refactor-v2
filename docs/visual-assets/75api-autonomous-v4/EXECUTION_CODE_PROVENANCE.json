@@ -1,10 +1,10 @@
 {
   "schema_version": "execution_code_provenance_v1",
-  "run_id": "20261004T142925Z",
-  "execution_base_commit_sha": "686c616dcd5a7dbd87a2a4cbd542880f3c0fba49",
+  "run_id": "20261004T144240Z",
+  "execution_base_commit_sha": "12e92801432f67c33e902e8e358a8b7fcfd1b9dc",
   "working_tree_clean_at_start": true,
   "runner_path": "scripts\\run_75api_autonomous_asset_canary_v4.py",
-  "runner_sha256": "600b7ff0f89204e0a835a100866944fd2daf200b09303d3752ba492b127ff7f3",
+  "runner_sha256": "5031d404d0dbc7cf48193877b4198dea4340a814ca3d1d3d916639f85df347e2",
   "core_runtime_file_sha256": [
     {
       "path": "scripts\\run_autonomous_visual_asset_pipeline_v4.py",

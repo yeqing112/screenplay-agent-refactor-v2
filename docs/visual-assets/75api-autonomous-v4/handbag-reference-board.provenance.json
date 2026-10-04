@@ -1,0 +1,27 @@
+{
+  "board_run_id": "20261004T144240Z",
+  "authority_fingerprint": "1a1ce5fc422976cba4ff907acbaabbc226be5a6eb14b2480afc1b2f2d5f36788",
+  "source_view_sha256": [
+    {
+      "view_id": "MASTER",
+      "sha256": "5e951d6d9aafe002e045653dabc30ed77ed80fd47e1b0bed98414159b36f4c46",
+      "generation_execution_id": "63baf554bb53"
+    },
+    {
+      "view_id": "SIDE",
+      "sha256": "c3d72fe09177356a98329be3c82b0e2ac0e66e305e7a0b9d55b81b86daf0b3e1",
+      "generation_execution_id": "160025917a31"
+    },
+    {
+      "view_id": "BACK",
+      "sha256": "4140aca8f9f732f8c3824aed2baa8fa8574181af13c3ca4a2aa8762faf4b1968",
+      "generation_execution_id": "db8f8944fbf9"
+    },
+    {
+      "view_id": "DETAIL",
+      "sha256": "6474828806ea4394c16d7e1ce6988b0bceb45b77ac6798aa2f3782c15f358324",
+      "generation_execution_id": "6edc23e72a84"
+    }
+  ],
+  "board_sha256": "5ff18cfaa6ca21ccd23cd11dcd25dec4c2dcfee65a199e6aabf84f529033883f"
+}

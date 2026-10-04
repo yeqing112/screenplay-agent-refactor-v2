@@ -4,7 +4,7 @@
   "identity_consistency": "PASS",
   "semantic_purity": "FAIL",
   "unauthorized_props": [
-    "black shoulder bag"
+    "shoulder bag"
   ],
   "audit": {
     "view_id": "MASTER",
@@ -19,19 +19,19 @@
       "narrow wristwatch"
     ],
     "detected_props": [
-      "black shoulder bag"
+      "shoulder bag"
     ],
     "unauthorized_accessories": [],
     "unauthorized_props": [
-      "black shoulder bag"
+      "shoulder bag"
     ],
     "extra_people": false,
     "text_or_watermark": false,
-    "view_pose_compliance": 100,
-    "framing_compliance": 100,
+    "view_pose_compliance": 95,
+    "framing_compliance": 95,
     "critical_view_violation": [],
     "violations": [
-      "Unauthorized prop/accessory detected: black shoulder bag (shoulder bag is explicitly forbidden)."
+      "Unauthorized prop detected: shoulder bag (black bag strap visible on shoulder)."
     ],
     "judge_status": "VISION_JUDGE_EXECUTED",
     "attempt_number": 1,
@@ -39,11 +39,11 @@
     "score_scale": "0-100"
   },
   "request_fingerprint": "850051ed29d51443400950727663dbf875efbd62bb88a906629606188c2d04ba",
-  "response_fingerprint": "1092d8f2a9876bf087557a9bcd3cf6dc064a00d4b20ae67a391d4d4660d3426f",
+  "response_fingerprint": "035828e0ccf8fe7c34e95bd04c3e83abd1d963b796c0ae8fab460ae09f8979a4",
   "raw_judge": {
     "status": "FAIL",
     "canonical_identity_match": 95,
-    "canonical_costume_match": 95,
+    "canonical_costume_match": 90,
     "allowed_accessories": [
       "narrow wristwatch"
     ],
@@ -51,19 +51,19 @@
       "narrow wristwatch"
     ],
     "detected_props": [
-      "black shoulder bag"
+      "shoulder bag"
     ],
     "unauthorized_accessories": [],
     "unauthorized_props": [
-      "black shoulder bag"
+      "shoulder bag"
     ],
     "extra_people": 0,
     "text_or_watermark": 0,
-    "view_pose_compliance": 100,
-    "framing_compliance": 100,
+    "view_pose_compliance": 95,
+    "framing_compliance": 95,
     "critical_view_violation": 0,
     "violations": [
-      "Unauthorized prop/accessory detected: black shoulder bag (shoulder bag is explicitly forbidden)."
+      "Unauthorized prop detected: shoulder bag (black bag strap visible on shoulder)."
     ]
   }
 }

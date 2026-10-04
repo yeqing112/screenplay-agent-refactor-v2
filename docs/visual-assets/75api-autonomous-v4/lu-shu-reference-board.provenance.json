@@ -1,0 +1,37 @@
+{
+  "board_run_id": "20261004T144240Z",
+  "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2",
+  "source_view_sha256": [
+    {
+      "view_id": "FACE_FRONT",
+      "sha256": "ded3348be7713d30ac627b0ec94200f1076211f36aed1cb6c8a39daeec5ee483",
+      "generation_execution_id": "806c897d7535"
+    },
+    {
+      "view_id": "FACE_PROFILE",
+      "sha256": "0e725011135abfc043eeeec86f2b7019d10c04e93e219a056f7dc771eceefcfb",
+      "generation_execution_id": "42826664aa46"
+    },
+    {
+      "view_id": "FACE_45",
+      "sha256": "e5af90a14f320d6e5365977a6c39b6a1f3aa947e91d40cebcf988bd32e9ddd0f",
+      "generation_execution_id": "2df86aab1a1b"
+    },
+    {
+      "view_id": "FULL_FRONT",
+      "sha256": "e7322b776dfeb8dc6d492674696b1c91c711bf872b6f330524001f03d37ca028",
+      "generation_execution_id": "3989b80a7fe7"
+    },
+    {
+      "view_id": "FULL_SIDE",
+      "sha256": "18682d4381a06980995f8f321867dc19785ee210fb7f4baf2ef5079b8fd1c71c",
+      "generation_execution_id": "13bcd14d8b5d"
+    },
+    {
+      "view_id": "FULL_BACK",
+      "sha256": "018535283a0f22cc4b0ff0b8760dd5c097624d9d0594a219fc33263e2690a0c6",
+      "generation_execution_id": "a25a43ae5a95"
+    }
+  ],
+  "board_sha256": "d4ac00dc84a742fd2cddd3ec292892782cf2b5ad6f015acd6717529a29beaff9"
+}

@@ -16,7 +16,28 @@
       "same_costume": true,
       "same_body_proportions": true,
       "cross_view_violations": [],
-      "judge_request_fingerprint": "be1b7efff07f0296df1fc70e15d49a60f0f5fea10a8bfaeaac9c56d585c16098",
+      "judge_request_fingerprint": "d08f9ec3e165cee70b1b3700bcb968bf434b8fed4c7f72dc69057226174337c2",
+      "judge_response_fingerprint": "4e4b1b5b8b538885c0105eeda2ef969752c50dc25f3d89e7ea7be804a77bcc04"
+    }
+  },
+  "LU_SHU": {
+    "semantic": {
+      "status": "PASS",
+      "same_character": true,
+      "same_costume": true,
+      "same_body": true,
+      "unauthorized_prop_across_views": [],
+      "unauthorized_accessory_across_views": [],
+      "front_profile_45_separation": true,
+      "cross_view_semantic_conflicts": []
+    },
+    "identity": {
+      "status": "PASS",
+      "same_character": true,
+      "same_costume": true,
+      "same_body_proportions": true,
+      "cross_view_violations": [],
+      "judge_request_fingerprint": "d94c919b8e52152e7c213102145e8e7ec4eb4711dc2258185a96e8eddb757067",
       "judge_response_fingerprint": "d1315b156026d8623323a89481c9760837e9360d05966667a3ea9e168ca8e7e6"
     }
   }

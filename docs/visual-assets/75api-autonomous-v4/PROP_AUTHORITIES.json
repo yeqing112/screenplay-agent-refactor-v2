@@ -1,1 +1,27 @@
-{}
+{
+  "HANDBAG": {
+    "prop_id": "HANDBAG",
+    "name": "HANDBAG",
+    "complexity": "HIGH",
+    "status": "READY",
+    "primary_sha256": "5e951d6d9aafe002e045653dabc30ed77ed80fd47e1b0bed98414159b36f4c46",
+    "primary_execution_id": "63baf554bb53",
+    "derived_shas": {
+      "SIDE": "c3d72fe09177356a98329be3c82b0e2ac0e66e305e7a0b9d55b81b86daf0b3e1",
+      "BACK": "4140aca8f9f732f8c3824aed2baa8fa8574181af13c3ca4a2aa8762faf4b1968",
+      "DETAIL": "6474828806ea4394c16d7e1ce6988b0bceb45b77ac6798aa2f3782c15f358324"
+    },
+    "derived_execution_ids": {
+      "SIDE": "160025917a31",
+      "BACK": "db8f8944fbf9",
+      "DETAIL": "6edc23e72a84"
+    },
+    "pairwise_audit_count": 3,
+    "global_judge_status": "PASS",
+    "profile_fingerprint": "a38e5a20552fabe582681f5899291ee0ffdecf4bfc206409c6643ffae672943e",
+    "prompt_fingerprint": "db89a6fe5c67a69b5d3c2fca3290f3a7cbde2db51645209932af1bf182678844",
+    "semantic_status": "PASS",
+    "semantic_authority_fingerprint": "3a19d45ac5e704901cf364613ef4a6b60ad8e534442656761b35d173a9f5b461",
+    "semantic_audit_count": 4
+  }
+}

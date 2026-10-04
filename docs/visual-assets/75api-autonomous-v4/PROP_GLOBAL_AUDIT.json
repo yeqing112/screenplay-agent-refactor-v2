@@ -1,1 +1,23 @@
-{}
+{
+  "HANDBAG": {
+    "semantic": {
+      "status": "PASS",
+      "same_character": true,
+      "same_costume": true,
+      "same_body": true,
+      "unauthorized_prop_across_views": [],
+      "unauthorized_accessory_across_views": [],
+      "front_profile_45_separation": true,
+      "cross_view_semantic_conflicts": []
+    },
+    "identity": {
+      "status": "PASS",
+      "same_object": true,
+      "same_material": true,
+      "same_hardware": true,
+      "cross_view_violations": [],
+      "judge_request_fingerprint": "30166d69ee07c59f202ff7685a84578f54584f0c94b38b78778fcdf4b2179f3e",
+      "judge_response_fingerprint": "d3f697f5bd6dc1afbd2b04c41afa1b1aa12ecdfacca2fd6f720b24599cefc970"
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "LIN_WAN": {
+    "asset_id": "LIN_WAN",
+    "run_id": "20261004T144240Z",
+    "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3",
+    "media": [
+      {
+        "view_id": "MASTER",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-master.jpg",
+        "sha256": "67e1d6306172afb48f162262f20d4ebd53a3c62044bdd3408e720547764b3357",
+        "generation_execution_id": "59d5cbaf3e4d",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3"
+      },
+      {
+        "view_id": "FULL_FRONT",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-full-front.jpg",
+        "sha256": "67e1d6306172afb48f162262f20d4ebd53a3c62044bdd3408e720547764b3357",
+        "generation_execution_id": "59d5cbaf3e4d",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3"
+      },
+      {
+        "view_id": "FACE_FRONT",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-face-front.jpg",
+        "sha256": "6abb0ef9b16374cfbb724734bbaf0ac7e814be79084f6e8771d86f8b665cca6e",
+        "generation_execution_id": "fa4e93653f7b",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3"
+      },
+      {
+        "view_id": "FACE_PROFILE",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-face-profile.jpg",
+        "sha256": "1d65d84ab5e55f93cfa826878da32a01b3bd12259c694c1c9f7631f95d314c1b",
+        "generation_execution_id": "54a1b562847b",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3"
+      },
+      {
+        "view_id": "FACE_45",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-face-45.jpg",
+        "sha256": "9f1f5b35ccfac62dade6c77148802d9d695b88830d382e694c5e38ab67d291d7",
+        "generation_execution_id": "bf0afcf30c81",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3"
+      },
+      {
+        "view_id": "FULL_SIDE",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-full-side.jpg",
+        "sha256": "f65d7799e5a250ae883e2883107c059e8ed18c22e5bd8476e178d86038494c1d",
+        "generation_execution_id": "a92202b37da6",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3"
+      },
+      {
+        "view_id": "FULL_BACK",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-full-back.jpg",
+        "sha256": "fd225b669f374d347491be9565e93bb12da818fb3e1561ede38a1844a84e3507",
+        "generation_execution_id": "e9972a19f274",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "443c90b68a7cddbf49497587c98a0dd5f525850c7fb62e6960334d998930c6b3"
+      }
+    ]
+  },
+  "LU_SHU": {
+    "asset_id": "LU_SHU",
+    "run_id": "20261004T144240Z",
+    "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2",
+    "media": [
+      {
+        "view_id": "MASTER",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lu-shu-master.jpg",
+        "sha256": "e7322b776dfeb8dc6d492674696b1c91c711bf872b6f330524001f03d37ca028",
+        "generation_execution_id": "3989b80a7fe7",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2"
+      },
+      {
+        "view_id": "FULL_FRONT",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lu-shu-full-front.jpg",
+        "sha256": "e7322b776dfeb8dc6d492674696b1c91c711bf872b6f330524001f03d37ca028",
+        "generation_execution_id": "3989b80a7fe7",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2"
+      },
+      {
+        "view_id": "FACE_FRONT",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lu-shu-face-front.jpg",
+        "sha256": "ded3348be7713d30ac627b0ec94200f1076211f36aed1cb6c8a39daeec5ee483",
+        "generation_execution_id": "806c897d7535",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2"
+      },
+      {
+        "view_id": "FACE_PROFILE",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lu-shu-face-profile.jpg",
+        "sha256": "0e725011135abfc043eeeec86f2b7019d10c04e93e219a056f7dc771eceefcfb",
+        "generation_execution_id": "42826664aa46",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2"
+      },
+      {
+        "view_id": "FACE_45",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lu-shu-face-45.jpg",
+        "sha256": "e5af90a14f320d6e5365977a6c39b6a1f3aa947e91d40cebcf988bd32e9ddd0f",
+        "generation_execution_id": "2df86aab1a1b",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2"
+      },
+      {
+        "view_id": "FULL_SIDE",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lu-shu-full-side.jpg",
+        "sha256": "18682d4381a06980995f8f321867dc19785ee210fb7f4baf2ef5079b8fd1c71c",
+        "generation_execution_id": "13bcd14d8b5d",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2"
+      },
+      {
+        "view_id": "FULL_BACK",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\lu-shu-full-back.jpg",
+        "sha256": "018535283a0f22cc4b0ff0b8760dd5c097624d9d0594a219fc33263e2690a0c6",
+        "generation_execution_id": "a25a43ae5a95",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1b1bded119c780307e1f14769b68a4bf4bed7a987ab6bbb8bde97d76aba8efc2"
+      }
+    ]
+  },
+  "HANDBAG": {
+    "asset_id": "HANDBAG",
+    "run_id": "20261004T144240Z",
+    "authority_fingerprint": "1a1ce5fc422976cba4ff907acbaabbc226be5a6eb14b2480afc1b2f2d5f36788",
+    "media": [
+      {
+        "view_id": "MASTER",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\handbag-master.jpg",
+        "sha256": "5e951d6d9aafe002e045653dabc30ed77ed80fd47e1b0bed98414159b36f4c46",
+        "generation_execution_id": "63baf554bb53",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1a1ce5fc422976cba4ff907acbaabbc226be5a6eb14b2480afc1b2f2d5f36788"
+      },
+      {
+        "view_id": "SIDE",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\handbag-side.jpg",
+        "sha256": "c3d72fe09177356a98329be3c82b0e2ac0e66e305e7a0b9d55b81b86daf0b3e1",
+        "generation_execution_id": "160025917a31",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1a1ce5fc422976cba4ff907acbaabbc226be5a6eb14b2480afc1b2f2d5f36788"
+      },
+      {
+        "view_id": "BACK",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\handbag-back.jpg",
+        "sha256": "4140aca8f9f732f8c3824aed2baa8fa8574181af13c3ca4a2aa8762faf4b1968",
+        "generation_execution_id": "db8f8944fbf9",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1a1ce5fc422976cba4ff907acbaabbc226be5a6eb14b2480afc1b2f2d5f36788"
+      },
+      {
+        "view_id": "DETAIL",
+        "path": "docs\\visual-assets\\75api-autonomous-v4\\handbag-detail.jpg",
+        "sha256": "6474828806ea4394c16d7e1ce6988b0bceb45b77ac6798aa2f3782c15f358324",
+        "generation_execution_id": "6edc23e72a84",
+        "run_id": "20261004T144240Z",
+        "authority_fingerprint": "1a1ce5fc422976cba4ff907acbaabbc226be5a6eb14b2480afc1b2f2d5f36788"
+      }
+    ]
+  }
+}
