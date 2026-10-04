@@ -1,0 +1,12 @@
+{
+  "schema_version": "asset_media_canary_data_safety_v1",
+  "isolated_database": true,
+  "production_db_writes": 0,
+  "book_990400_writes": 0,
+  "book_990402_writes": "isolated disposable copy only",
+  "secret_leaks": 0,
+  "orphan_rows": 0,
+  "duplicate_submits": 0,
+  "automatic_promotion": false,
+  "video_calls": 0
+}

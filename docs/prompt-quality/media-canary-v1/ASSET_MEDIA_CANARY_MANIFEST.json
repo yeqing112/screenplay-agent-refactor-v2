@@ -1,0 +1,231 @@
+{
+  "schema_version": "asset_media_canary_manifest_v1",
+  "stage": "ASSET_MEDIA_CANARY_PENDING_HUMAN_REVIEW",
+  "generated_at": "2026-10-04T01:00:57.674206+00:00",
+  "book_id": 990402,
+  "episode": 1,
+  "profile": {
+    "status": "READY",
+    "profile_id": "local-image-mw4y52",
+    "provider": "shapi-openai-images",
+    "model": "grok-imagine-image-quality",
+    "base_url": "https://shapi.vip/v1",
+    "transport": "shapi-openai-images.image.v1",
+    "capability": "IMAGE_GENERATION",
+    "credential": "runtime_resolver_ready"
+  },
+  "budget": {
+    "authorized_calls": 6,
+    "normal_required_max": 5,
+    "emergency_reserve": 1,
+    "used": 5,
+    "reserve_used": 0
+  },
+  "outputs": [
+    {
+      "key": "01-linwan",
+      "asset_type": "CHARACTER",
+      "asset_id": "canary-linwan",
+      "name": "林晚",
+      "candidate_status": "CANDIDATE",
+      "execution_id": "3e824e66d464",
+      "provider": "shapi-openai-images",
+      "model_profile_id": "local-image-mw4y52",
+      "provider_task_id": null,
+      "provider_request_payload": {
+        "model": "grok-imagine-image-quality",
+        "prompt": "人物定妆设定板，同一名约二十八岁中国女性角色，林晚，16:9横向画布，严格保持同一人物身份。六视图：上排正脸近景、左侧脸近景、右前45度脸部近景；下排全身正面、全身侧面、全身背面。脸型偏窄的椭圆脸，眼尾略长，目光敏锐，鼻梁自然挺直，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。统一服装：浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。中性柔光，无纹理中性灰背景，六个视图同一站立重心、同一发型、同一服装、同一配饰和身体比例，写实电影人物设定板，画面不出现文字、水印、额外人物、海报或身份漂移。\n\nNegative constraints (must not appear): 单人肖像、证件照、海报、单视图、视图错位、多个不同人物、发型变化、服装变化、文字、水印、Logo",
+        "n": 1,
+        "size": "auto",
+        "response_format": "b64_json"
+      },
+      "prompt_fingerprint": "a0926744f9d46025c3d01c0f0d739ff8403e8254bb3f4b583978da98795f5128",
+      "negative_prompt_fingerprint": "3850e0fdaf0c97c402973c596f2e185536089ea276e11705d75bcb0680272718",
+      "file": {
+        "file": "01-linwan.jpg",
+        "bytes": 199819,
+        "sha256": "c00fb083d8cb127cc9e49093abe0761382bb9269b4006387e5517c5d8fcf19ad",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "meta": {
+        "file": "01-linwan.jpg",
+        "bytes": 199819,
+        "sha256": "c00fb083d8cb127cc9e49093abe0761382bb9269b4006387e5517c5d8fcf19ad",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "local_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\prompt-quality\\media-canary-v1\\originals\\01-linwan.jpg",
+      "visual_review": "PENDING_HUMAN_VISUAL_REVIEW"
+    },
+    {
+      "key": "02-lushu",
+      "asset_type": "CHARACTER",
+      "asset_id": "canary-lushu",
+      "name": "陆叔",
+      "candidate_status": "CANDIDATE",
+      "execution_id": "73bb4689b3be",
+      "provider": "shapi-openai-images",
+      "model_profile_id": "local-image-mw4y52",
+      "provider_task_id": null,
+      "provider_request_payload": {
+        "model": "grok-imagine-image-quality",
+        "prompt": "人物定妆设定板，同一名约五十五岁中国男性角色，陆叔，16:9横向画布，严格保持同一人物身份。六视图：上排正脸近景、左侧脸近景、右前45度脸部近景；下排全身正面、全身侧面、全身背面。脸型偏圆、面部轮廓厚实，眼神平静但持续观察，鼻翼略宽，嘴角容易形成礼貌笑意，偏暖肤色；灰黑侧分短发，结实身形，肩膀宽厚。统一服装：旧棕色磨旧帆布工作夹克、粗棉深色长裤、旧深色工作鞋，无显著饰品。中性柔光，无纹理中性灰背景，六个视图同一站立重心、同一发型、同一服装和身体比例，写实电影人物设定板，画面不出现文字、水印、额外人物、海报或身份漂移。\n\nNegative constraints (must not appear): 单人肖像、证件照、海报、单视图、视图错位、多个不同人物、发型变化、服装变化、文字、水印、Logo",
+        "n": 1,
+        "size": "auto",
+        "response_format": "b64_json"
+      },
+      "prompt_fingerprint": "eb0733a24e35e214d3a5355e28819f4a6c6e097d5332896c4ce62da00a223032",
+      "negative_prompt_fingerprint": "3850e0fdaf0c97c402973c596f2e185536089ea276e11705d75bcb0680272718",
+      "file": {
+        "file": "02-lushu.jpg",
+        "bytes": 238378,
+        "sha256": "de4316780cc443722b973125b172b1fbd3fa04e9d7092af630f1c838049166c1",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "meta": {
+        "file": "02-lushu.jpg",
+        "bytes": 238378,
+        "sha256": "de4316780cc443722b973125b172b1fbd3fa04e9d7092af630f1c838049166c1",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "local_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\prompt-quality\\media-canary-v1\\originals\\02-lushu.jpg",
+      "visual_review": "PENDING_HUMAN_VISUAL_REVIEW"
+    },
+    {
+      "key": "03-kitchen",
+      "asset_type": "SCENE",
+      "asset_id": "E01_SC002",
+      "name": "E01_SC002 出租公寓厨房",
+      "candidate_status": "CANDIDATE",
+      "execution_id": "7df02bc743eb",
+      "provider": "shapi-openai-images",
+      "model_profile_id": "local-image-mw4y52",
+      "provider_task_id": null,
+      "provider_request_payload": {
+        "model": "grok-imagine-image-quality",
+        "prompt": "场景设定板，16:9横向2×2四视图，同一间旧出租公寓厨房，四格分别为master wide、reverse angle、side angle、key detail。固定空间事实：小型餐桌位于厨房与客厅交界，厨房门在一侧，水槽和旧橱柜沿后墙，窗户从左侧提供冷色天光；固定家具与结构在四格完全一致，旧白色瓷砖、磨损木质台面、少量生活痕迹；时间为傍晚，窗外阴天，冷色窗光与顶部一盏偏暖灯形成克制对比。master wide展示餐桌、厨房门、水槽、窗户的完整关系；reverse angle从餐桌朝水槽和厨房门；side angle沿餐桌长边展示空间深度；key detail聚焦水槽、台面和餐桌边缘。四格必须是同一建筑、同一布局、同一门窗、同一固定家具、同一时间和同一光线逻辑，画面不出现人物、文字、水印或Logo。\n\nNegative constraints (must not appear): 人物、角色、人脸、不同建筑、布局变化、家具漂移、额外房间、文字、海报、Logo、水印、四格内容不一致",
+        "n": 1,
+        "size": "auto",
+        "response_format": "b64_json"
+      },
+      "prompt_fingerprint": "f37b6912e7f8839bf5a36c6f06b825c2fc8e7f3ff8be444de3b069340cd9da8a",
+      "negative_prompt_fingerprint": "7b5aa4d52c1c4bbe25c440dcbc4832faf6b064ca786ab1b83f32303cf54202b8",
+      "file": {
+        "file": "03-kitchen.jpg",
+        "bytes": 332751,
+        "sha256": "d0b90df791ce9d8538cf26df589c072d177f3465549a54c42eea8f9d72da42be",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "meta": {
+        "file": "03-kitchen.jpg",
+        "bytes": 332751,
+        "sha256": "d0b90df791ce9d8538cf26df589c072d177f3465549a54c42eea8f9d72da42be",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "local_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\prompt-quality\\media-canary-v1\\originals\\03-kitchen.jpg",
+      "visual_review": "PENDING_HUMAN_VISUAL_REVIEW"
+    },
+    {
+      "key": "04-apple",
+      "asset_type": "PROP",
+      "asset_id": "APPLE",
+      "name": "APPLE 苹果",
+      "candidate_status": "CANDIDATE",
+      "execution_id": "6990392a9063",
+      "provider": "shapi-openai-images",
+      "model_profile_id": "local-image-mw4y52",
+      "provider_task_id": null,
+      "provider_request_payload": {
+        "model": "grok-imagine-image-quality",
+        "prompt": "道具参考设定板，4:3横向画布，主体为一只普通生活用苹果，单一对象的多角度参考板：正面英雄视图、侧面、顶部、切面细节。苹果为中等成人手掌大小，圆润略不对称，红黄渐变果皮，细腻自然的果皮纹理，短棕色果梗和浅凹果脐，材质和尺寸比例在每个视角一致，柔和侧光突出形状、颜色和表面质感，中性浅灰背景，写实电影道具摄影。画面不出现手、人物、盘子、文字、水印或Logo。\n\nNegative constraints (must not appear): 人物、手、多个苹果、分格错位、拼贴、过度光泽、塑料质感、文字、水印、Logo、变形、不同颜色",
+        "n": 1,
+        "size": "auto",
+        "response_format": "b64_json"
+      },
+      "prompt_fingerprint": "40dda263e8a6b2c824c0bf3e896510e9d0e19bdf9629b17fe95da4041f234d01",
+      "negative_prompt_fingerprint": "ea8bd54aa3ea721078e0344fdabab68cd2da2f624a2071824eb323f4e5de0e39",
+      "file": {
+        "file": "04-apple.jpg",
+        "bytes": 202769,
+        "sha256": "09b9b8c15c6fe53cc9e52c61974403962b64dc8ce2322e7c634bf9e1ed447cd0",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "meta": {
+        "file": "04-apple.jpg",
+        "bytes": 202769,
+        "sha256": "09b9b8c15c6fe53cc9e52c61974403962b64dc8ce2322e7c634bf9e1ed447cd0",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "local_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\prompt-quality\\media-canary-v1\\originals\\04-apple.jpg",
+      "visual_review": "PENDING_HUMAN_VISUAL_REVIEW"
+    },
+    {
+      "key": "05-handbag",
+      "asset_type": "PROP",
+      "asset_id": "HANDBAG",
+      "name": "HANDBAG 手提包",
+      "candidate_status": "CANDIDATE",
+      "execution_id": "37f5efae72a4",
+      "provider": "shapi-openai-images",
+      "model_profile_id": "local-image-mw4y52",
+      "provider_task_id": null,
+      "provider_request_payload": {
+        "model": "grok-imagine-image-quality",
+        "prompt": "道具参考设定板，4:3横向画布，主体为小型深棕色手提包，single hero reference plus side detail。展示正面英雄视图、侧面厚度、窄提手和金属扣件特写；软质矩形包身，可放在前臂上，哑光皮革，细微使用纹理，提手边缘轻微磨损，深棕色保持一致，柔和侧光让皮革和扣件可辨，中性深灰背景，写实电影道具摄影。所有视角保持同一包型、提手、扣件、材质、颜色和磨损状态，画面不出现人物、手、文字、水印或Logo。\n\nNegative constraints (must not appear): 人物、手、多个包、分格错位、拼贴、塑料质感、颜色变化、文字、水印、Logo、包型变化",
+        "n": 1,
+        "size": "auto",
+        "response_format": "b64_json"
+      },
+      "prompt_fingerprint": "097f0efc4a4ae14e4fa9448c0d33516885b7b0a88942071147ed03057c7362f7",
+      "negative_prompt_fingerprint": "7d40fd2f5d1f8ee8f768ec5193a91868cc5f519f60ab1c2162bb2912a26c6fc2",
+      "file": {
+        "file": "05-handbag.jpg",
+        "bytes": 176586,
+        "sha256": "94428026b3ad21b3cdddc1135ca16ec37b5872f64118035c6d1401f16452aaf2",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "meta": {
+        "file": "05-handbag.jpg",
+        "bytes": 176586,
+        "sha256": "94428026b3ad21b3cdddc1135ca16ec37b5872f64118035c6d1401f16452aaf2",
+        "width": 1024,
+        "height": 1024,
+        "format": "JPEG"
+      },
+      "local_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\prompt-quality\\media-canary-v1\\originals\\05-handbag.jpg",
+      "visual_review": "PENDING_HUMAN_VISUAL_REVIEW"
+    }
+  ],
+  "contact_sheet": {
+    "file": "contact-sheet.png",
+    "bytes": 1266822,
+    "sha256": "cc6756cbf65c06320f66a5b6453f4dc2401c8c59537d97a6caec788975f5f7a1",
+    "width": 1440,
+    "height": 1728,
+    "format": "PNG"
+  },
+  "real_image_calls": 5,
+  "real_video_calls": 0,
+  "promotion": {
+    "automatic": false,
+    "candidate_only": true,
+    "human_review": "PENDING_HUMAN_VISUAL_REVIEW"
+  }
+}

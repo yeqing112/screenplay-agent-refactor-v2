@@ -1,0 +1,10 @@
+{
+  "status": "READY",
+  "profile_id": "local-image-mw4y52",
+  "provider": "shapi-openai-images",
+  "model": "grok-imagine-image-quality",
+  "base_url": "https://shapi.vip/v1",
+  "transport": "shapi-openai-images.image.v1",
+  "capability": "IMAGE_GENERATION",
+  "credential": "runtime_resolver_ready"
+}

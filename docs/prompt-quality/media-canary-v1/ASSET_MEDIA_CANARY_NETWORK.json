@@ -1,0 +1,85 @@
+{
+  "schema_version": "asset_media_canary_network_v1",
+  "generated_at": "2026-10-04T01:00:57.674206+00:00",
+  "provider_base_url": "https://shapi.vip/v1",
+  "canonical_api": "isolated local canonical API",
+  "browser_direct_provider_calls": 0,
+  "provider_calls": 5,
+  "video_calls": 0,
+  "requests": [
+    {
+      "asset": "林晚",
+      "method": "POST",
+      "path": "/api/prototyping/generate-reference-image",
+      "status_code": 200,
+      "task_id": "3e824e66d464"
+    },
+    {
+      "asset": "陆叔",
+      "method": "POST",
+      "path": "/api/prototyping/generate-reference-image",
+      "status_code": 200,
+      "task_id": "73bb4689b3be"
+    },
+    {
+      "asset": "E01_SC002 出租公寓厨房",
+      "method": "POST",
+      "path": "/api/prototyping/generate-reference-image",
+      "status_code": 200,
+      "task_id": "7df02bc743eb"
+    },
+    {
+      "asset": "APPLE 苹果",
+      "method": "POST",
+      "path": "/api/prototyping/generate-reference-image",
+      "status_code": 200,
+      "task_id": "6990392a9063"
+    },
+    {
+      "asset": "HANDBAG 手提包",
+      "method": "POST",
+      "path": "/api/prototyping/generate-reference-image",
+      "status_code": 200,
+      "task_id": "37f5efae72a4"
+    },
+    {
+      "asset": "林晚",
+      "method": "GET",
+      "path": "/api/prototyping/tasks/3e824e66d464",
+      "status_code": 200,
+      "terminal_status": "done"
+    },
+    {
+      "asset": "陆叔",
+      "method": "GET",
+      "path": "/api/prototyping/tasks/73bb4689b3be",
+      "status_code": 200,
+      "terminal_status": "done"
+    },
+    {
+      "asset": "E01_SC002 出租公寓厨房",
+      "method": "GET",
+      "path": "/api/prototyping/tasks/7df02bc743eb",
+      "status_code": 200,
+      "terminal_status": "done"
+    },
+    {
+      "asset": "APPLE 苹果",
+      "method": "GET",
+      "path": "/api/prototyping/tasks/6990392a9063",
+      "status_code": 200,
+      "terminal_status": "done"
+    },
+    {
+      "asset": "HANDBAG 手提包",
+      "method": "GET",
+      "path": "/api/prototyping/tasks/37f5efae72a4",
+      "status_code": 200,
+      "terminal_status": "done"
+    }
+  ],
+  "external_hosts": [
+    "shapi.vip"
+  ],
+  "no_manual_sdk_or_curl": true
+}
