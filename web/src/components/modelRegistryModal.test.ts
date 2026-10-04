@@ -17,6 +17,7 @@ import {
 describe('ModelRegistryModal helpers', () => {
   it('offers poyo-async as a selectable provider for image and video capabilities', () => {
     expect(providerOptionsForCapability('image')).toContain('poyo-async')
+    expect(providerOptionsForCapability('image')).toContain('75api-image')
     expect(providerOptionsForCapability('video')).toContain('poyo-async')
     expect(providerOptionsForCapability('video')).toContain('minimax-h3-async')
     expect(providerOptionsForCapability('video')).toContain('75api-minimax-h3')
@@ -76,6 +77,7 @@ describe('ModelRegistryModal helpers', () => {
     expect(suggestedBaseUrlForProvider('poyo-async')).toBe('https://api.poyo.ai')
     expect(suggestedBaseUrlForProvider('minimax-h3-async')).toBe('https://metaso.cn/api/minimax')
     expect(suggestedBaseUrlForProvider('75api-minimax-h3')).toBe('https://www.75api.com')
+    expect(suggestedBaseUrlForProvider('75api-image')).toBe('https://www.75api.com')
     expect(suggestedBaseUrlForProvider('shapi-gemini-image')).toBe('https://shapi.vip')
     expect(suggestedBaseUrlForProvider('shapi-openai-images')).toBe('https://shapi.vip/v1')
     expect(suggestedBaseUrlForProvider('openai-compatible')).toBe('')
@@ -102,6 +104,11 @@ describe('ModelRegistryModal helpers', () => {
     const gptDefaults = suggestedDefaultParamsText('image', 'shapi-openai-images')
     expect(gptDefaults).toContain('"supports_reference_images": false')
     expect(gptDefaults).toContain('"transport": "openai-images-generations"')
+
+    const api75Defaults = JSON.parse(suggestedDefaultParamsText('image', '75api-image', 'gpt-image-2-1k'))
+    expect(api75Defaults.allowed_models).toEqual(['gpt-image-2-1k', 'gpt-image-2-2k'])
+    expect(api75Defaults.transport).toBe('75api-images-generations')
+    expect(api75Defaults.supports_reference_images).toBe(false)
   })
 
   it('suggests MiniMax H3 async defaults with explicit mutually-exclusive input capabilities', () => {

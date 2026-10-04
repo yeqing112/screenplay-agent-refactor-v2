@@ -485,6 +485,7 @@ def build_default_adapter_registry() -> ModelAdapterRegistry:
             "poyo-async": ImageGenerationProviderAdapter(),
             "minimax-h3-async": UnavailableProviderAdapter(),
             "75api-minimax-h3": UnavailableProviderAdapter(),
+            "75api-image": ImageGenerationProviderAdapter(),
             "shapi-openai-images": ImageGenerationProviderAdapter(),
             "shapi-gemini-image": ImageGenerationProviderAdapter(),
         }

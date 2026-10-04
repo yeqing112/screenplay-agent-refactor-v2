@@ -41,6 +41,7 @@ const MOCK_PROVIDER = 'prototype-task-adapter'
 const POYO_ASYNC_PROVIDER = 'poyo-async'
 const MINIMAX_H3_ASYNC_PROVIDER = 'minimax-h3-async'
 const MINIMAX_H3_75API_PROVIDER = '75api-minimax-h3'
+const API75_IMAGE_PROVIDER = '75api-image'
 const SHAPI_OPENAI_IMAGES_PROVIDER = 'shapi-openai-images'
 const SHAPI_GEMINI_IMAGE_PROVIDER = 'shapi-gemini-image'
 
@@ -67,6 +68,10 @@ function isMiniMaxH375ApiProvider(provider: string) {
   return provider.trim() === MINIMAX_H3_75API_PROVIDER
 }
 
+function is75apiImageProvider(provider: string) {
+  return provider.trim() === API75_IMAGE_PROVIDER
+}
+
 function isShapiOpenAiImagesProvider(provider: string) {
   return provider.trim() === SHAPI_OPENAI_IMAGES_PROVIDER
 }
@@ -85,7 +90,7 @@ export function providerOptionsForCapability(capability: ModelCapability) {
   if (capability === 'llm') return ['openai-compatible']
   return capability === 'video'
     ? [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER, MINIMAX_H3_ASYNC_PROVIDER, MINIMAX_H3_75API_PROVIDER]
-    : [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER, SHAPI_OPENAI_IMAGES_PROVIDER, SHAPI_GEMINI_IMAGE_PROVIDER]
+    : [MOCK_PROVIDER, 'openai-compatible', POYO_ASYNC_PROVIDER, API75_IMAGE_PROVIDER, SHAPI_OPENAI_IMAGES_PROVIDER, SHAPI_GEMINI_IMAGE_PROVIDER]
 }
 
 export function buildShapiPresetProfiles(): ModelProfileRecord[] {
@@ -352,6 +357,7 @@ export function buildPoyoPresetProfiles(): ModelProfileRecord[] {
 export function suggestedBaseUrlForProvider(provider: string) {
   if (isMiniMaxH3AsyncProvider(provider)) return 'https://metaso.cn/api/minimax'
   if (isMiniMaxH375ApiProvider(provider)) return 'https://www.75api.com'
+  if (is75apiImageProvider(provider)) return 'https://www.75api.com'
   if (isShapiGeminiImageProvider(provider)) return 'https://shapi.vip'
   if (isShapiOpenAiImagesProvider(provider)) return 'https://shapi.vip/v1'
   return isPoyoAsyncProvider(provider) ? 'https://api.poyo.ai' : ''
@@ -375,6 +381,23 @@ export function suggestedDefaultParamsText(capability: ModelCapability, provider
   if (capability === 'llm') return `{\n  "temperature": 0.3,\n  "max_tokens": 8192,\n  "thinking": {\n    "type": "disabled"\n  }\n}`
   if (capability === 'embedding') return `{\n  "dimension": 768\n}`
   if (capability === 'image') {
+    if (is75apiImageProvider(provider)) {
+      return `{
+  "task_modes": ["text_to_image"],
+  "supports_reference_images": false,
+  "supports_image_url": false,
+  "supports_file_upload": false,
+  "supports_negative_prompt": false,
+  "supports_async_tasks": false,
+  "n": 1,
+  "size": "auto",
+  "quality": "high",
+  "response_format": "url",
+  "allowed_models": ["gpt-image-2-1k", "gpt-image-2-2k"],
+  "transport": "75api-images-generations",
+  "evidence_status": "provider_probe_required"
+}`
+    }
     if (isPoyoAsyncProvider(provider)) {
       const maxReferenceImages = modelName === 'gpt-image-2' ? 8 : 14
       return `{\n  "task_modes": ["text_to_image", "image_to_image"],\n  "supports_reference_images": true,\n  "max_reference_images": ${maxReferenceImages},\n  "supports_image_url": true,\n  "supports_file_upload": false,\n  "supports_negative_prompt": true,\n  "supports_async_tasks": true,\n  "poll_interval_seconds": 3,\n  "poll_timeout_seconds": 180\n}`
@@ -1496,8 +1519,10 @@ export default function ModelRegistryModal({
                     const nextModelName =
                       isMiniMaxH3AsyncProvider(provider) && !current.model_name.trim()
                         ? 'MiniMax-H3'
-                        : isMiniMaxH375ApiProvider(provider) && !current.model_name.trim()
+                      : isMiniMaxH375ApiProvider(provider) && !current.model_name.trim()
                           ? 'minimax_h3_no_audios'
+                        : is75apiImageProvider(provider) && !current.model_name.trim()
+                          ? 'gpt-image-2-1k'
                         : isShapiGeminiImageProvider(provider) && !current.model_name.trim()
                           ? 'nano-banana-2'
                           : isShapiOpenAiImagesProvider(provider) && !current.model_name.trim()
@@ -1530,6 +1555,8 @@ export default function ModelRegistryModal({
                     ? 'MiniMax-H3'
                     : isMiniMaxH375ApiProvider(draft.provider)
                       ? 'minimax_h3_no_audios'
+                    : is75apiImageProvider(draft.provider)
+                      ? 'gpt-image-2-1k 或 gpt-image-2-2k'
                     : isPoyoAsyncProvider(draft.provider)
                       ? '例如：seedream-5.0-lite 或 seedance-2'
                       : isShapiGeminiImageProvider(draft.provider)
@@ -1564,6 +1591,9 @@ export default function ModelRegistryModal({
               ) : null}
               {isMiniMaxH375ApiProvider(draft.provider) ? (
                 <div className="-mt-2 text-xs leading-5 text-slate-500">75api 模型名：minimax_h3_no_audios。该模型不支持文生视频，必须提供首帧图或多参考图；最多 8 张，时长 5–15 秒。测试当前草稿只校验配置结构。</div>
+              ) : null}
+              {is75apiImageProvider(draft.provider) ? (
+                <div className="-mt-2 text-xs leading-5 text-slate-500">75api 图片模型名仅支持 `gpt-image-2-1k` 或 `gpt-image-2-2k`。连接检测只读取模型目录，不提交计费生图任务；当前默认按文生图能力配置。</div>
               ) : null}
               {isShapiGeminiImageProvider(draft.provider) ? (
                 <div className="-mt-2 text-xs leading-5 text-slate-500">SHAPI Gemini 原生图片通道：支持将已回收至 HTTPS 对象存储的资产作为参考图。测试当前草稿只读取模型列表，不发起扣费生成。</div>

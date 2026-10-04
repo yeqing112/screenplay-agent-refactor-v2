@@ -69,7 +69,7 @@ ModelAdapterResult 不包含 api_key、authorization header 或 runtime credenti
 
 | target | 现有 transport |
 |---|---|
-| IMAGE | openai-compatible.image.v1、poyo-async.image.v1、shapi-openai-images.image.v1、shapi-gemini-image.image.v1 |
+| IMAGE | openai-compatible.image.v1、poyo-async.image.v1、shapi-openai-images.image.v1、shapi-gemini-image.image.v1、75api-image.image.v1 |
 | VIDEO | poyo-async.video.v1、minimax-h3-async.video.v1、75api-minimax-h3.video.v1 |
 | local/dev | prototype-task-adapter 的 mock image/video |
 

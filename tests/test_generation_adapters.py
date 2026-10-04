@@ -15,6 +15,61 @@ from api.generation_adapters import (
 
 
 class GenerationAdaptersTests(unittest.IsolatedAsyncioTestCase):
+    async def test_75api_image_posts_openai_compatible_payload_and_maps_url(self):
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "id": "img-75api-1",
+            "data": [{"url": "https://cdn.example.com/75api-image.png", "revised_prompt": "rewritten"}],
+        }
+        client = AsyncMock()
+        client.__aenter__.return_value = client
+        client.post.return_value = response
+
+        with patch("api.generation_adapters.httpx.AsyncClient", return_value=client):
+            result = await generate_image_asset(
+                {
+                    "provider": "75api-image",
+                    "base_url": "https://www.75api.com/v1",
+                    "model_name": "gpt-image-2-2k",
+                    "api_key": "secret-test-key",
+                    "default_params": {"size": "2K", "quality": "high"},
+                },
+                prompt="一张电影感城市夜景",
+                aspect_ratio="16:9",
+            )
+
+        self.assertEqual(client.post.await_args.args[0], "https://www.75api.com/v1/images/generations")
+        payload = client.post.await_args.kwargs["json"]
+        self.assertEqual(payload, {
+            "model": "gpt-image-2-2k",
+            "prompt": "一张电影感城市夜景",
+            "n": 1,
+            "size": "2K",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "16:9",
+        })
+        self.assertEqual(result["previewUrl"], "https://cdn.example.com/75api-image.png")
+        self.assertEqual(result["providerRequestId"], "img-75api-1")
+        self.assertEqual(result["revisedPrompt"], "rewritten")
+
+    async def test_75api_image_rejects_reference_images_when_not_declared(self):
+        with self.assertRaises(ModelProfileError) as ctx:
+            await generate_image_asset(
+                {
+                    "provider": "75api-image",
+                    "base_url": "https://www.75api.com",
+                    "model_name": "gpt-image-2-1k",
+                    "api_key": "secret-test-key",
+                    "default_params": {"supports_reference_images": False},
+                },
+                prompt="镜头提示词",
+                aspect_ratio=None,
+                reference_images=[{"image_url": "https://cdn.example.com/reference.png"}],
+            )
+        self.assertIn("不会静默丢弃参考图", str(ctx.exception))
+
     async def test_shapi_openai_images_uses_allowlisted_payload_and_maps_size(self):
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None

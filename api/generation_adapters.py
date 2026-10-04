@@ -14,6 +14,8 @@ from urllib.parse import urlparse
 import httpx
 
 from .model_registry import (
+    API75_IMAGE_MODELS,
+    API75_IMAGE_PROVIDER,
     MINIMAX_H3_75API_PROVIDER,
     MINIMAX_H3_ASYNC_PROVIDER,
     MOCK_PROVIDER,
@@ -1564,6 +1566,111 @@ async def _generate_shapi_openai_image(
     }
 
 
+def _75api_image_base_url(profile: dict[str, Any]) -> str:
+    base_url = str(profile.get("base_url") or "").rstrip("/")
+    if base_url.lower().endswith("/v1"):
+        base_url = base_url[:-3].rstrip("/")
+    return base_url
+
+
+def _build_75api_image_payload(
+    profile: dict[str, Any],
+    *,
+    prompt: str,
+    aspect_ratio: str | None,
+    negative_prompt: str | None,
+    reference_images: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    normalized_prompt = str(prompt or "").strip()
+    if not normalized_prompt:
+        raise ModelProfileError("75api 图片生成缺少 prompt。")
+    model_name = str(profile.get("model_name") or "").strip()
+    if model_name not in API75_IMAGE_MODELS:
+        raise ModelProfileError("75api 图片 provider 只支持模型 gpt-image-2-1k 或 gpt-image-2-2k。")
+    params = dict(profile.get("default_params") or {})
+    payload: dict[str, Any] = {
+        "model": model_name,
+        "prompt": normalized_prompt,
+        "n": max(_coerce_int(params.get("n"), 1), 1),
+        "size": str(params.get("size") or "auto").strip() or "auto",
+        "quality": str(params.get("quality") or "high").strip() or "high",
+        "response_format": str(params.get("response_format") or "url").strip() or "url",
+    }
+    ratio = str(aspect_ratio or params.get("aspect_ratio") or "").strip()
+    if ratio:
+        payload["aspect_ratio"] = ratio
+    if negative_prompt and bool(params.get("supports_negative_prompt")):
+        payload["negative_prompt"] = str(negative_prompt).strip()
+
+    reference_urls = _extract_reference_urls(reference_images)
+    if reference_urls:
+        if not bool(params.get("supports_reference_images")):
+            raise ModelProfileError("75api 图片模型当前配置未声明参考图能力；系统不会静默丢弃参考图。")
+        max_references = max(_coerce_int(params.get("max_reference_images"), 1), 1)
+        if len(reference_urls) > max_references:
+            raise ModelProfileError(f"75api 图片模型最多支持 {max_references} 张参考图，当前收到 {len(reference_urls)} 张；系统不会静默丢弃参考图。")
+        reference_field = str(params.get("reference_field") or "images").strip() or "images"
+        payload[reference_field] = reference_urls if len(reference_urls) > 1 or reference_field == "images" else reference_urls[0]
+    return payload
+
+
+async def _generate_75api_image(
+    profile: dict[str, Any],
+    *,
+    prompt: str,
+    aspect_ratio: str | None,
+    negative_prompt: str | None,
+    reference_images: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    api_key = _runtime_credential(profile, None)
+    base_url = _75api_image_base_url(profile)
+    if not api_key:
+        raise ModelProfileError("75api 图片模型配置缺少 API Key。")
+    if not base_url:
+        raise ModelProfileError("75api 图片模型配置缺少 base_url。")
+    payload = _build_75api_image_payload(
+        profile,
+        prompt=prompt,
+        aspect_ratio=aspect_ratio,
+        negative_prompt=negative_prompt,
+        reference_images=reference_images,
+    )
+    timeout_seconds = provider_timeout_seconds(profile, strict=bool(profile.get("phase_f_strict")))
+    async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+        try:
+            response = await client.post(
+                f"{base_url}/v1/images/generations",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json=payload,
+            )
+            response.raise_for_status()
+            data = response.json()
+        except Exception as exc:
+            raise _map_http_error("75api 图片生成", exc, provider_request_payload=payload) from exc
+
+    items = data.get("data") if isinstance(data, dict) else None
+    if not isinstance(items, list) or not items or not isinstance(items[0], dict):
+        raise ModelProfileError("75api 图片 provider 没有返回可用图片数据。", provider_response=data if isinstance(data, dict) else {}, provider_request_payload=payload)
+    image_item = items[0]
+    preview_url = image_item.get("url") or image_item.get("image_url") or image_item.get("imageUrl")
+    if not preview_url and image_item.get("b64_json"):
+        preview_url = _make_data_uri(str(image_item["b64_json"]), str(image_item.get("mime_type") or "image/png"))
+    if not preview_url:
+        raise ModelProfileError("75api 图片响应缺少 url 或 b64_json。", provider_response=data, provider_request_payload=payload)
+    response_identity = str(data.get("id") or data.get("request_id") or data.get("requestId") or "").strip()
+    if not response_identity:
+        response_identity = "75api-image-response-" + hashlib.sha256(json.dumps(data, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")).hexdigest()[:32]
+    return {
+        "previewUrl": str(preview_url),
+        "uri": str(preview_url),
+        "revisedPrompt": image_item.get("revised_prompt") or image_item.get("revisedPrompt"),
+        "providerResponse": data,
+        "providerRequestPayload": payload,
+        "providerRequestId": response_identity,
+        "providerTaskId": response_identity,
+    }
+
+
 async def generate_image_asset(
     profile: dict[str, Any],
     *,
@@ -1599,6 +1706,14 @@ async def generate_image_asset(
             "providerResponse": polled.get("providerResponse") or submitted.get("providerResponse"),
             "providerRequestPayload": submitted.get("providerRequestPayload") or {},
         }
+    if profile.get("provider") == API75_IMAGE_PROVIDER:
+        return await _generate_75api_image(
+            profile,
+            prompt=prompt,
+            aspect_ratio=aspect_ratio,
+            negative_prompt=negative_prompt,
+            reference_images=reference_images,
+        )
     if profile.get("provider") == SHAPI_GEMINI_IMAGE_PROVIDER:
         return await _generate_shapi_gemini_image(
             profile,

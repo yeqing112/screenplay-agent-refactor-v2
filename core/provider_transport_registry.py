@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Any, Awaitable, Callable
 
 from api.generation_adapters import (
+    API75_IMAGE_PROVIDER,
     MINIMAX_H3_75API_PROVIDER,
     MINIMAX_H3_ASYNC_PROVIDER,
     OPENAI_COMPATIBLE_PROVIDER,
@@ -218,13 +219,15 @@ def dispatch_provider_transport(context: dict[str, Any]) -> Awaitable[dict[str, 
 
 
 def _register_builtin_real_bindings() -> None:
-    for provider in (OPENAI_COMPATIBLE_PROVIDER, POYO_ASYNC_PROVIDER, SHAPI_OPENAI_IMAGES_PROVIDER, SHAPI_GEMINI_IMAGE_PROVIDER):
+    for provider in (OPENAI_COMPATIBLE_PROVIDER, POYO_ASYNC_PROVIDER, SHAPI_OPENAI_IMAGES_PROVIDER, SHAPI_GEMINI_IMAGE_PROVIDER, API75_IMAGE_PROVIDER):
         if provider == OPENAI_COMPATIBLE_PROVIDER:
             binding_id = "openai-compatible.image.v1"
         elif provider == POYO_ASYNC_PROVIDER:
             binding_id = "poyo-async.image.v1"
         elif provider == SHAPI_OPENAI_IMAGES_PROVIDER:
             binding_id = "shapi-openai-images.image.v1"
+        elif provider == API75_IMAGE_PROVIDER:
+            binding_id = "75api-image.image.v1"
         else:
             binding_id = "shapi-gemini-image.image.v1"
         register_provider_transport_binding(ProviderTransportBinding(binding_id, provider, "IMAGE", "sync" if provider != POYO_ASYNC_PROVIDER else "async", "generate_image_asset", "generate_image_asset", _image_handler))

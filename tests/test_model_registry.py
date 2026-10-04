@@ -341,6 +341,50 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
         saved_gpt = next(item for item in payload["profiles"] if item["id"] == "image-shapi-gpt-1")
         self.assertEqual(saved_gpt["provider"], "shapi-openai-images")
 
+    def test_save_registry_allows_75api_gpt_image_as_default_and_keeps_secret_server_side(self):
+        payload = save_registry(
+            profiles=[
+                {
+                    "id": "image-75api-gpt-2k",
+                    "name": "75API GPT Image 2K",
+                    "capability": "image",
+                    "provider": "75api-image",
+                    "base_url": "https://www.75api.com",
+                    "model_name": "gpt-image-2-2k",
+                    "default_params": {"size": "2K", "quality": "high"},
+                    "enabled": True,
+                    "api_key": "secret-test-key",
+                }
+            ],
+            defaults={"image": "image-75api-gpt-2k"},
+        )
+        self.assertEqual(payload["defaults"]["image"], "image-75api-gpt-2k")
+        saved = get_default_profile("image")
+        self.assertEqual(saved["provider"], "75api-image")
+        self.assertEqual(saved["model_name"], "gpt-image-2-2k")
+        self.assertEqual(saved["credential_ref"], "profile:image-75api-gpt-2k")
+        serialized = next(item for item in payload["profiles"] if item["id"] == "image-75api-gpt-2k")
+        self.assertTrue(serialized["key_configured"])
+        self.assertNotIn("api_key", serialized)
+
+    def test_save_registry_rejects_unsupported_75api_image_model(self):
+        with self.assertRaises(ValueError) as ctx:
+            save_registry(
+                profiles=[
+                    {
+                        "id": "image-75api-invalid",
+                        "name": "75API invalid",
+                        "capability": "image",
+                        "provider": "75api-image",
+                        "base_url": "https://www.75api.com",
+                        "model_name": "gpt-image-2",
+                        "api_key": "secret-test-key",
+                    }
+                ],
+                defaults={"image": "image-75api-invalid"},
+            )
+        self.assertIn("gpt-image-2-1k", str(ctx.exception))
+
     async def test_shapi_gemini_profile_test_reads_models_without_generating_an_image(self):
         mock_response = Mock()
         mock_response.raise_for_status.return_value = None
@@ -363,6 +407,31 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(result["ok"])
         self.assertEqual(mock_client.get.await_args.args[0], "https://shapi.vip/v1/models")
+        self.assertIn("未发起任何计费", result["message"])
+
+    async def test_75api_image_profile_test_reads_models_without_generating_an_image(self):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {"data": [{"id": "gpt-image-2-1k"}, {"id": "gpt-image-2-2k"}]}
+        mock_client = AsyncMock()
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.get.return_value = mock_response
+
+        with patch("api.model_registry.httpx.AsyncClient", return_value=mock_client):
+            result = await run_profile_connection_test(
+                profile_payload={
+                    "name": "75API GPT Image 1K",
+                    "capability": "image",
+                    "provider": "75api-image",
+                    "base_url": "https://www.75api.com/v1",
+                    "model_name": "gpt-image-2-1k",
+                    "api_key": "secret-test-key",
+                }
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["model_available"])
+        self.assertEqual(mock_client.get.await_args.args[0], "https://www.75api.com/v1/models")
         self.assertIn("未发起任何计费", result["message"])
 
     async def test_shapi_openai_probe_blocks_model_missing_from_account_catalog(self):

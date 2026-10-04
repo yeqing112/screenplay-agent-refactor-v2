@@ -6,7 +6,7 @@ Model Registry 没有独立 SQLAlchemy 表；api/model_registry.py 使用 runtim
 
 主要字段：id、name、capability（llm/embedding/image/video）、provider、base_url、model_name、default_params、enabled、builtin/source、generation_capability、adapter_id/version、credential_ref、credential_configured、runtime_binding_id、transport_binding_id。api_key 仅内部读取，列表响应默认脱敏。
 
-内建 profile 包括环境 LLM、环境 embedding、mock image、mock video；provider allowlist 包括 openai-compatible、ollama、poyo-async、minimax-h3-async、75api-minimax-h3、shapi-openai-images、shapi-gemini-image、prototype-task-adapter。
+内建 profile 包括环境 LLM、环境 embedding、mock image、mock video；provider allowlist 包括 openai-compatible、ollama、poyo-async、minimax-h3-async、75api-minimax-h3、75api-image、shapi-openai-images、shapi-gemini-image、prototype-task-adapter。
 
 ## API
 

@@ -29,6 +29,8 @@ MINIMAX_H3_ASYNC_PROVIDER = "minimax-h3-async"
 MINIMAX_H3_75API_PROVIDER = "75api-minimax-h3"
 SHAPI_OPENAI_IMAGES_PROVIDER = "shapi-openai-images"
 SHAPI_GEMINI_IMAGE_PROVIDER = "shapi-gemini-image"
+API75_IMAGE_PROVIDER = "75api-image"
+API75_IMAGE_MODELS = frozenset({"gpt-image-2-1k", "gpt-image-2-2k"})
 
 VIDEO_REAL_DEFAULT_ENABLED = True
 API75_API_KEY_ENV = "API75_API_KEY"
@@ -58,6 +60,7 @@ _TRANSPORT_BINDING_IDS = {
     (MINIMAX_H3_75API_PROVIDER, "video"): "75api-minimax-h3.video.v1",
     (SHAPI_OPENAI_IMAGES_PROVIDER, "image"): "shapi-openai-images.image.v1",
     (SHAPI_GEMINI_IMAGE_PROVIDER, "image"): "shapi-gemini-image.image.v1",
+    (API75_IMAGE_PROVIDER, "image"): "75api-image.image.v1",
 }
 
 
@@ -208,7 +211,7 @@ def _runtime_credential_metadata(profile: Mapping[str, Any]) -> tuple[str, str, 
     provider = str(profile.get("provider") or "").strip()
     explicit_ref = str(profile.get("credential_ref") or "").strip()
     explicit_binding = str(profile.get("runtime_binding_id") or "").strip()
-    if provider == MINIMAX_H3_75API_PROVIDER:
+    if provider in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER}:
         profile_id = str(profile.get("id") or "").strip()
         api_key = str(profile.get("api_key") or "").strip()
         if api_key and profile_id:
@@ -243,7 +246,7 @@ def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str
         "default_params": _normalize_default_params(profile.get("default_params")),
         "enabled": bool(profile.get("enabled", True)),
         "is_default": bool(is_default),
-        "key_configured": bool(api_key) if str(profile.get("provider") or "") == MINIMAX_H3_75API_PROVIDER else bool(api_key) or bool(profile.get("key_configured")),
+        "key_configured": bool(api_key) if str(profile.get("provider") or "") in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} else bool(api_key) or bool(profile.get("key_configured")),
         "builtin": bool(profile.get("builtin", False)),
         "source": str(profile.get("source") or ("builtin" if profile.get("builtin") else "user")),
         "uses_mock": _profile_uses_mock(profile),
@@ -300,9 +303,9 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
                 "generation_capability": str(item.get("generation_capability") or ""),
                 "adapter_id": str(item.get("adapter_id") or ""),
                 "adapter_version": str(item.get("adapter_version") or ""),
-                "credential_ref": f"profile:{item.get('id')}" if item.get("provider") == MINIMAX_H3_75API_PROVIDER and item.get("api_key") else str(item.get("credential_ref") or ""),
-                "credential_configured": bool(item.get("api_key")) if item.get("provider") == MINIMAX_H3_75API_PROVIDER else bool(item.get("credential_configured", bool(item.get("api_key")))),
-                "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if item.get("provider") == MINIMAX_H3_75API_PROVIDER and item.get("api_key") else str(item.get("runtime_binding_id") or ""),
+                "credential_ref": f"profile:{item.get('id')}" if item.get("provider") in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and item.get("api_key") else str(item.get("credential_ref") or ""),
+                "credential_configured": bool(item.get("api_key")) if item.get("provider") in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} else bool(item.get("credential_configured", bool(item.get("api_key")))),
+                "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if item.get("provider") in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and item.get("api_key") else str(item.get("runtime_binding_id") or ""),
                 "transport_binding_id": _transport_binding_id(item),
             }
         )
@@ -477,9 +480,9 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "generation_capability": str(profile.get("generation_capability") or ""),
         "adapter_id": str(profile.get("adapter_id") or ""),
         "adapter_version": str(profile.get("adapter_version") or ""),
-        "credential_ref": f"profile:{profile.get('id')}" if provider == MINIMAX_H3_75API_PROVIDER and profile.get("api_key") else str(profile.get("credential_ref") or ""),
-        "credential_configured": bool(profile.get("api_key")) if provider == MINIMAX_H3_75API_PROVIDER else bool(profile.get("credential_configured", bool(profile.get("api_key")))),
-        "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if provider == MINIMAX_H3_75API_PROVIDER and profile.get("api_key") else str(profile.get("runtime_binding_id") or ""),
+        "credential_ref": f"profile:{profile.get('id')}" if provider in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and profile.get("api_key") else str(profile.get("credential_ref") or ""),
+        "credential_configured": bool(profile.get("api_key")) if provider in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} else bool(profile.get("credential_configured", bool(profile.get("api_key")))),
+        "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if provider in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and profile.get("api_key") else str(profile.get("runtime_binding_id") or ""),
         "transport_binding_id": _transport_binding_id(profile),
     }
 
@@ -515,6 +518,14 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         if capability != "image":
             raise ValueError("SHAPI 图片 provider 目前只支持 image 能力")
         _require_fields(normalized, ["base_url", "model_name"])
+        return normalized
+
+    if provider == API75_IMAGE_PROVIDER:
+        if capability != "image":
+            raise ValueError("75api 图片 provider 目前只支持 image 能力")
+        _require_fields(normalized, ["base_url", "model_name"])
+        if normalized["model_name"] not in API75_IMAGE_MODELS:
+            raise ValueError("75api 图片 provider 只支持模型：gpt-image-2-1k 或 gpt-image-2-2k")
         return normalized
 
     if provider == MINIMAX_H3_ASYNC_PROVIDER:
@@ -723,6 +734,36 @@ async def _test_shapi_gemini_image_profile(profile: dict[str, Any]) -> dict[str,
     return {"ok": True, "message": message}
 
 
+async def _test_75api_image_profile(profile: dict[str, Any]) -> dict[str, Any]:
+    """Probe the 75API model catalog without submitting a billable image task."""
+
+    _require_fields(profile, ["base_url", "model_name"])
+    if str(profile.get("model_name") or "") not in API75_IMAGE_MODELS:
+        raise ValueError("75api 图片 provider 只支持模型：gpt-image-2-1k 或 gpt-image-2-2k")
+    api_key = str(profile.get("api_key") or "").strip()
+    if not api_key:
+        raise ValueError("真实模型测试连接需要 API Key。")
+    base_url = str(profile.get("base_url") or "").rstrip("/")
+    if base_url.lower().endswith("/v1"):
+        base_url = base_url[:-3].rstrip("/")
+    async with httpx.AsyncClient(timeout=30) as client:
+        try:
+            response = await client.get(
+                f"{base_url}/v1/models",
+                headers={"Authorization": f"Bearer {api_key}"},
+            )
+            response.raise_for_status()
+            data = response.json()
+        except Exception as exc:  # pragma: no cover - covered by public callers/tests
+            raise ValueError(_friendly_http_error("测试 75api 图片模型连接", exc)) from exc
+    model_ids = [str(item.get("id")) for item in data.get("data", []) if isinstance(item, dict)] if isinstance(data, dict) else []
+    configured = str(profile.get("model_name") or "")
+    message = "75api 连接成功；未发起任何计费图片生成。"
+    if model_ids and configured not in model_ids:
+        message = f"75api 连接成功，但远端模型列表中未发现 {configured}。"
+    return {"ok": True, "message": message, "available_models": model_ids, "model_available": configured in model_ids if model_ids else None}
+
+
 async def _test_embedding_profile(profile: dict[str, Any]) -> dict[str, Any]:
     if profile.get("provider") != OLLAMA_PROVIDER:
         raise ValueError("当前只支持通过 Ollama 测试向量模型。")
@@ -813,7 +854,9 @@ async def test_profile_connection(
             "profile": response_profile,
         }
 
-    if profile.get("provider") == SHAPI_GEMINI_IMAGE_PROVIDER:
+    if profile.get("provider") == API75_IMAGE_PROVIDER:
+        result = await _test_75api_image_profile(profile)
+    elif profile.get("provider") == SHAPI_GEMINI_IMAGE_PROVIDER:
         result = await _test_shapi_gemini_image_profile(profile)
     elif profile.get("provider") == SHAPI_OPENAI_IMAGES_PROVIDER:
         result = await _test_openai_compatible_profile(profile)
