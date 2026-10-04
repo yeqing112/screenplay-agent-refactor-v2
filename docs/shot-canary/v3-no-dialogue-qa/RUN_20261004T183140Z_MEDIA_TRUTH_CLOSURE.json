@@ -1,0 +1,45 @@
+{
+  "run_id": "20261004T183140Z",
+  "status": "NO_DIALOGUE_QA_FALSE_NEGATIVE_CLOSED",
+  "video_dialogue_verdict": {
+    "media_contract_status": "FAILED",
+    "prompt_truth_status": "PROVIDER_RECORDED_PROMPT_UNAVAILABLE",
+    "root_cause_attribution_status": "PARTIAL",
+    "audio_contract_status": "FAIL",
+    "visual_dialogue_contract_status": "FAIL",
+    "human_review_status": "FAIL",
+    "automated_visual_judge_status": "FALSE_NEGATIVE",
+    "overall_status": "FAIL",
+    "subclassifications": [
+      "UNEXPECTED_AUDIO_STREAM",
+      "UNAUTHORIZED_AUDIBLE_DIALOGUE",
+      "UNAUTHORIZED_DIALOGUE_VISUAL",
+      "AUTOMATED_VISUAL_JUDGE_FALSE_NEGATIVE"
+    ]
+  },
+  "previous_fresh_video_reclassification": {
+    "prompt_truth_chain": "BLOCKED_PROVIDER_RECORDED_PROMPT_UNAVAILABLE",
+    "audio_contract": "FAIL",
+    "visual_dialogue_contract": "FAIL",
+    "human_review": "FAIL",
+    "automated_judge": "FALSE_NEGATIVE",
+    "overall_media_dialogue_contract": "FAIL",
+    "root_cause_attribution": "PARTIAL"
+  },
+  "audio_contract": "FAIL",
+  "visual_dialogue_contract": "FAIL",
+  "prompt_truth_status": "PROVIDER_RECORDED_PROMPT_UNAVAILABLE",
+  "human_review": "FAIL",
+  "automated_visual_judge": "FALSE_NEGATIVE",
+  "overall_media_dialogue_contract": "FAIL",
+  "subclassifications": [
+    "UNEXPECTED_AUDIO_STREAM",
+    "UNAUTHORIZED_AUDIBLE_DIALOGUE",
+    "UNAUTHORIZED_DIALOGUE_VISUAL",
+    "AUTOMATED_VISUAL_JUDGE_FALSE_NEGATIVE"
+  ],
+  "fresh_video_sha256": "0cf43af284dc508f3faf77ce76ec593d76140d967639816c6298c083a1be10b9",
+  "original_evidence_unchanged": true,
+  "real_image_calls": 0,
+  "real_video_calls": 0
+}

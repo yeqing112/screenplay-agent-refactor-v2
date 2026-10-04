@@ -1,0 +1,16 @@
+{
+  "shot_id": "SH_E01_SC002_007",
+  "video_sha256": "0cf43af284dc508f3faf77ce76ec593d76140d967639816c6298c083a1be10b9",
+  "human_review": {
+    "shot_id": "SH_E01_SC002_007",
+    "video_sha256": "0cf43af284dc508f3faf77ce76ec593d76140d967639816c6298c083a1be10b9",
+    "speech_like_mouth_motion": true,
+    "audible_speech": true,
+    "approximate_utterance_count": 3,
+    "speech_intelligibility": "UNINTELLIGIBLE",
+    "character_attribution": "UNSPECIFIED"
+  },
+  "automated_visual_judge_result": false,
+  "classification": "AUTOMATED_VISUAL_JUDGE_FALSE_NEGATIVE",
+  "review_scope": "No transcript, language, or reconstructed dialogue asserted."
+}

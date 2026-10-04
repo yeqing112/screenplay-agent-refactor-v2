@@ -1,0 +1,167 @@
+{
+  "status": "NO_DIALOGUE_QA_FALSE_NEGATIVE_CLOSED",
+  "zero_call_gate": "PASS",
+  "checks": {
+    "fresh_golden_video_fails": true,
+    "historical_golden_video_fails": true,
+    "fresh_human_override_recorded": true,
+    "dense_sampling_at_least_6fps": true,
+    "original_resolution_preserved": true,
+    "per_character_temporal_strips": true,
+    "no_dialogue_prompt_conflicts": true,
+    "audio_hard_gate_fails": true,
+    "real_image_calls": 0,
+    "real_video_calls": 0,
+    "no_provider_post": true
+  },
+  "fresh_audio": {
+    "video_sha256": "0cf43af284dc508f3faf77ce76ec593d76140d967639816c6298c083a1be10b9",
+    "expected_audio": false,
+    "audio_stream_present": true,
+    "audio_stream_count": 1,
+    "non_silent_audio_present": true,
+    "non_silent_segment_count": 9,
+    "non_silent_total_duration": 2.399,
+    "mean_volume": -24.2,
+    "max_volume": -3.3,
+    "silence_starts": [
+      0.0,
+      0.806625,
+      1.85425,
+      2.153125,
+      2.418406,
+      2.808156,
+      3.869938,
+      4.872531,
+      5.061063
+    ],
+    "silence_ends": [
+      0.715875,
+      1.239563,
+      2.088156,
+      2.396844,
+      2.63625,
+      3.017625,
+      4.272812,
+      5.060969,
+      5.184
+    ],
+    "silence_durations": [
+      0.715875,
+      0.432938,
+      0.233906,
+      0.243719,
+      0.217844,
+      0.209469,
+      0.402875,
+      0.188438,
+      0.122938
+    ],
+    "astats_captured": true,
+    "ffprobe": {
+      "duration_seconds": 5.167,
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "32000",
+          "channels": 2
+        }
+      ],
+      "audio_streams": [
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "32000",
+          "channels": 2
+        }
+      ]
+    },
+    "hard_audio_gate": {
+      "status": "FAIL",
+      "code": "UNEXPECTED_AUDIO_STREAM",
+      "audio_stream_count": 1
+    }
+  },
+  "fresh_dense_visual_status": "FAIL",
+  "historical_dense_visual_status": "FAIL",
+  "prompt_projection": {
+    "shot_id": "SH_E01_SC002_007",
+    "dialogue_mode": "NONE",
+    "old_conflict": {
+      "source_conflict_count": 1,
+      "tokens": [
+        "lips slightly parted"
+      ]
+    },
+    "new_mouth_contract": "CLOSED_RELAXED_STABLE",
+    "sanitized_performance_beats": [
+      {
+        "start_time": 0.0,
+        "end_time": 1.2,
+        "actor": "林晚",
+        "body_action": "林晚's torso rotates from facing the kitchen door toward the dining table, ending with her body angled approximately 30 degrees toward 陆叔",
+        "hand_action": "林晚's left hand remains resting on the door frame, maintaining contact without sliding, ending with the palm flat against the frame",
+        "head_action": "林晚's head turns from facing the door frame toward 陆叔, ending with her face directed at him",
+        "eye_action": "林晚's eyes shift from the door frame to 陆叔's face, ending with a steady gaze on him",
+        "facial_action": "林晚's expression settles from neutral into a quiet, attentive look, ending with her lips closed and brows relaxed",
+        "ending_state": "林晚 stands at the kitchen door, torso angled toward the dining table, left hand on the door frame, eyes on 陆叔"
+      },
+      {
+        "start_time": 1.2,
+        "end_time": 2.6,
+        "actor": "陆叔",
+        "body_action": "陆叔's torso shifts from facing the kitchen door toward 林晚, ending with his shoulders squared toward her",
+        "hand_action": "陆叔's right hand lifts slightly from the table edge and settles back down, ending with the fingertips resting on the table surface",
+        "head_action": "陆叔's head tilts slightly downward toward 林晚, ending with his chin lowered a few degrees",
+        "eye_action": "陆叔's eyes hold steady on 林晚's face, ending with an unbroken gaze",
+        "facial_action": "陆叔's expression firms from composed to expectant, ending with his mouth set in a calm line",
+        "ending_state": "陆叔 stands at the dining table, shoulders squared toward 林晚, right hand resting on the table, eyes fixed on her"
+      },
+      {
+        "start_time": 2.6,
+        "end_time": 3.8,
+        "actor": "林晚",
+        "body_action": "林晚's torso leans slightly forward from the door frame, ending with her weight shifted onto her right foot",
+        "hand_action": "林晚's left hand tightens its grip on the door frame, ending with her fingers curled more firmly around the edge",
+        "head_action": "林晚's head lowers slightly, ending with her chin tucked a few degrees toward her chest",
+        "eye_action": "林晚's eyes drop briefly toward the floor, ending with her gaze returning to 陆叔",
+        "facial_action": "林晚's expression softens from guarded to hesitant, ending with her lips gently closed",
+        "ending_state": "林晚 leans slightly forward at the kitchen door, left hand gripping the frame, eyes returning to 陆叔"
+      },
+      {
+        "start_time": 3.8,
+        "end_time": 5.0,
+        "actor": "陆叔",
+        "body_action": "陆叔's torso straightens from the slight forward lean, ending with his posture fully upright",
+        "hand_action": "陆叔's right hand slides a short distance along the table edge, ending with his palm flat on the surface",
+        "head_action": "陆叔's head lifts from the slight downward tilt, ending level with his gaze on 林晚",
+        "eye_action": "陆叔's eyes remain fixed on 林晚, ending with a steady, unwavering look",
+        "facial_action": "陆叔's expression settles from expectant into calm resolve, ending with his features relaxed but firm",
+        "ending_state": "陆叔 stands upright at the dining table, right hand flat on the table, eyes steady on 林晚"
+      }
+    ],
+    "prompt_conflict_count": 0,
+    "source_director_ir_unchanged": true
+  },
+  "baseline": {
+    "reference_passed": 2086,
+    "reference_failed": 24,
+    "current_passed": 2096,
+    "current_failed": 24,
+    "new_failed_nodes": 0,
+    "failure_set_unchanged": true
+  },
+  "safety": {
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "shapi_calls": 0,
+    "poyo_calls": 0,
+    "secret_leaks": 0,
+    "orphans": 0
+  }
+}

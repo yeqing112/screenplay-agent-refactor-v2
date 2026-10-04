@@ -13,6 +13,34 @@ POSITIVE_DIALOGUE_LEAK_TOKENS = (
     "按照对白执行", "对白时间", "说台词", "lip sync", "对白口型", "连续说话口型",
 )
 
+NO_DIALOGUE_MOUTH_CONFLICT_TOKENS = (
+    "lips slightly parted", "mouth opens", "mouth open", "speaking mouth",
+    "mouth movement", "inviting mouth shape", "嘴唇微张", "嘴部张开", "明显张嘴",
+    "说话口型", "嘴部运动", "开口说话",
+)
+
+
+class NoDialogueMouthStateConflict(ValueError):
+    """Raised when a NONE dialogue projection still contains a positive mouth beat."""
+
+
+@dataclass(frozen=True)
+class NoDialogueMouthStateProjection:
+    mouth_state_contract: str
+    sanitized_performance_beats: tuple[Mapping[str, Any], ...]
+    conflict_tokens: tuple[str, ...]
+    source_conflict_count: int
+    prompt_conflict_count: int
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "mouth_state_contract": self.mouth_state_contract,
+            "sanitized_performance_beats": [dict(x) for x in self.sanitized_performance_beats],
+            "conflict_tokens": list(self.conflict_tokens),
+            "source_conflict_count": self.source_conflict_count,
+            "prompt_conflict_count": self.prompt_conflict_count,
+        }
+
 
 @dataclass(frozen=True)
 class DialogueContract:
@@ -24,6 +52,7 @@ class DialogueContract:
     visual_lipsync_required: bool
     audio_generation_allowed: bool
     mouth_motion_outside_dialogue_allowed: bool
+    mouth_state_contract: str = "DIALOGUE_TIMED"
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self) | {"phrase_windows": [dict(x) for x in self.phrase_windows], "silent_characters": list(self.silent_characters)}
@@ -77,7 +106,7 @@ def build_dialogue_contract(decision: Mapping[str, Any]) -> DialogueContract:
     characters = tuple(str(x) for x in (decision.get("source_facts", {}).get("character_ids") or []))
     beats = [x for x in (decision.get("dialogue_beats") or []) if isinstance(x, dict)]
     if not beats or not str(decision.get("source_facts", {}).get("dialogue") or "").strip():
-        return DialogueContract("NONE", None, "", (), characters, False, False, False)
+        return DialogueContract("NONE", None, "", (), characters, False, False, False, "CLOSED_RELAXED_STABLE")
     first = beats[0]
     speaker = str(first.get("speaker") or "") or None
     silent = tuple(x for x in characters if x != speaker)
@@ -90,7 +119,98 @@ def build_dialogue_contract(decision: Mapping[str, Any]) -> DialogueContract:
         True,
         False,
         False,
+        "DIALOGUE_TIMED",
     )
+
+
+def _replace_mouth_language(value: Any) -> Any:
+    if not isinstance(value, str):
+        return value
+    replacements = (
+        ("lips slightly parted", "lips gently closed"),
+        ("mouth starts open", "mouth starts gently closed"),
+        ("mouth opens", "mouth remains gently closed"),
+        ("mouth open", "mouth gently closed"),
+        ("speaking mouth", "relaxed non-speaking mouth"),
+        ("mouth movement", "no speaking movement"),
+        ("inviting mouth shape", "relaxed closed mouth shape"),
+        ("嘴唇微张", "嘴唇自然闭合"),
+        ("嘴部张开", "嘴部自然闭合"),
+        ("明显张嘴", "嘴部自然闭合"),
+        ("说话口型", "非说话口型"),
+        ("嘴部运动", "嘴部保持稳定"),
+        ("开口说话", "保持闭嘴静止"),
+    )
+    result = value
+    for source, target in replacements:
+        result = result.replace(source, target)
+    return result
+
+
+def _sanitize_structure(value: Any) -> Any:
+    if isinstance(value, str):
+        return _replace_mouth_language(value)
+    if isinstance(value, list):
+        return [_sanitize_structure(x) for x in value]
+    if isinstance(value, dict):
+        return {key: _sanitize_structure(item) for key, item in value.items()}
+    return value
+
+
+def _contains_positive_mouth_language(value: Any) -> tuple[str, ...]:
+    if not isinstance(value, str):
+        return ()
+    return tuple(token for token in NO_DIALOGUE_MOUTH_CONFLICT_TOKENS if token in value)
+
+
+def project_no_dialogue_mouth_state(decision: Mapping[str, Any]) -> NoDialogueMouthStateProjection:
+    """Project NONE dialogue beats without mutating DirectorDecisionIR."""
+    contract = build_dialogue_contract(decision)
+    beats = tuple(dict(x) for x in (decision.get("performance_beats") or []) if isinstance(x, dict))
+    if contract.dialogue_mode != "NONE":
+        return NoDialogueMouthStateProjection("DIALOGUE_TIMED", beats, (), 0, 0)
+    source_tokens: list[str] = []
+    sanitized: list[dict[str, Any]] = []
+    for beat in beats:
+        item = {}
+        for key, value in beat.items():
+            if isinstance(value, str):
+                source_tokens.extend(_contains_positive_mouth_language(value))
+                item[key] = _replace_mouth_language(value)
+            else:
+                item[key] = value
+        sanitized.append(item)
+    return NoDialogueMouthStateProjection(
+        "CLOSED_RELAXED_STABLE",
+        tuple(sanitized),
+        tuple(dict.fromkeys(source_tokens)),
+        len(tuple(dict.fromkeys(source_tokens))),
+        0,
+    )
+
+
+def find_no_dialogue_mouth_conflicts(prompt: str) -> tuple[str, ...]:
+    """Find positive mouth descriptions while ignoring explicit negative constraints."""
+    tokens: list[str] = []
+    for line in str(prompt or "").splitlines():
+        if any(marker in line for marker in ("禁止", "不得", "仅允许", "不产生")):
+            continue
+        tokens.extend(_contains_positive_mouth_language(line))
+    return tuple(dict.fromkeys(tokens))
+
+
+def validate_no_dialogue_mouth_contract(prompt: str, dialogue_contract: DialogueContract) -> dict[str, Any]:
+    conflicts = find_no_dialogue_mouth_conflicts(prompt) if dialogue_contract.dialogue_mode == "NONE" else ()
+    result = {
+        "status": "PASS" if not conflicts else "NO_DIALOGUE_MOUTH_STATE_CONFLICT",
+        "dialogue_mode": dialogue_contract.dialogue_mode,
+        "mouth_state_contract": dialogue_contract.mouth_state_contract,
+        "prompt_conflict_count": len(conflicts),
+        "conflict_tokens": list(conflicts),
+    }
+    if conflicts:
+        raise NoDialogueMouthStateConflict(json.dumps(result, ensure_ascii=False))
+    return result
 
 
 def build_video_provider_prompt_ir(decision: Mapping[str, Any], projection: ProviderDurationProjection, prop_states: list[Mapping[str, Any]] | None = None) -> VideoProviderPromptIR:
@@ -99,6 +219,7 @@ def build_video_provider_prompt_ir(decision: Mapping[str, Any], projection: Prov
     blocking = tuple(dict(x) for x in (decision.get("blocking") or []) if isinstance(x, dict))
     props = tuple(dict(x) for x in (prop_states or []) if isinstance(x, dict) and x.get("present"))
     dialogue = build_dialogue_contract(decision)
+    mouth_projection = project_no_dialogue_mouth_state(decision)
     duration = projection.as_dict()
     hold = terminal_hold_text(projection)
     negatives = ["不得新增人物、道具、事件、摄影事件或场景拓扑变化", "不得文生视频，必须使用输入首帧作为第一帧"]
@@ -127,7 +248,8 @@ def build_video_provider_prompt_ir(decision: Mapping[str, Any], projection: Prov
     else:
         lines.append("起始道具状态：无剧情道具。")
     lines.append("时间化表演动作：")
-    for beat in (decision.get("performance_beats") or []):
+    projected_beats = mouth_projection.sanitized_performance_beats if dialogue.dialogue_mode == "NONE" else tuple(dict(x) for x in (decision.get("performance_beats") or []) if isinstance(x, dict))
+    for beat in projected_beats:
         if isinstance(beat, dict):
             actor = beat.get("actor") or "角色"
             details = "；".join(f"{key}={beat.get(key)}" for key in ("body_action", "hand_action", "head_action", "eye_action", "facial_action", "prop_action", "ending_state") if beat.get(key))
@@ -136,12 +258,16 @@ def build_video_provider_prompt_ir(decision: Mapping[str, Any], projection: Prov
     for beat in (decision.get("camera_beats") or []):
         if isinstance(beat, dict):
             lines.append(f"[{beat.get('start_time')}–{beat.get('end_time')}] {beat.get('movement_type')}；方向={beat.get('direction')}；速度={beat.get('speed')}；目标={beat.get('target')}；起始构图={beat.get('start_framing')}；结束构图={beat.get('end_framing')}；缓动={beat.get('easing')}")
-    lines.append("最终状态：" + _json(decision.get("ending_state") or {}))
+    projected_ending_state = _sanitize_structure(decision.get("ending_state") or {}) if dialogue.dialogue_mode == "NONE" else (decision.get("ending_state") or {})
+    lines.append("最终状态：" + _json(projected_ending_state))
     if hold:
         lines.append(hold)
     lines.append("负向时间约束：" + "；".join(negatives))
+    if dialogue.dialogue_mode == "NONE":
+        lines.insert(5, "嘴部状态合同：CLOSED_RELAXED_STABLE；嘴唇自然闭合，下颌放松，不产生说话运动。")
     rendered = "\n".join(lines)
-    return VideoProviderPromptIR(shot_id, {"scene_id": source.get("scene_id"), "location": source.get("location")}, blocking, props, duration, dialogue, tuple(dict(x) for x in (decision.get("performance_beats") or []) if isinstance(x, dict)), tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, dict)), decision.get("ending_state") or {}, hold, tuple(negatives), rendered, hashlib.sha256(rendered.encode("utf-8")).hexdigest())
+    validate_no_dialogue_mouth_contract(rendered, dialogue)
+    return VideoProviderPromptIR(shot_id, {"scene_id": source.get("scene_id"), "location": source.get("location")}, blocking, props, duration, dialogue, projected_beats, tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, dict)), projected_ending_state, hold, tuple(negatives), rendered, hashlib.sha256(rendered.encode("utf-8")).hexdigest())
 
 
 def build_prompt_truth_chain(canonical_prompt: str, submission_prompt: str, provider_recorded_prompt: str | None) -> dict[str, Any]:

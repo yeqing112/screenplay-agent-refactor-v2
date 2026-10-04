@@ -1,0 +1,73 @@
+{
+  "video_sha256": "0cf43af284dc508f3faf77ce76ec593d76140d967639816c6298c083a1be10b9",
+  "expected_audio": false,
+  "audio_stream_present": true,
+  "audio_stream_count": 1,
+  "non_silent_audio_present": true,
+  "non_silent_segment_count": 9,
+  "non_silent_total_duration": 2.399,
+  "mean_volume": -24.2,
+  "max_volume": -3.3,
+  "silence_starts": [
+    0.0,
+    0.806625,
+    1.85425,
+    2.153125,
+    2.418406,
+    2.808156,
+    3.869938,
+    4.872531,
+    5.061063
+  ],
+  "silence_ends": [
+    0.715875,
+    1.239563,
+    2.088156,
+    2.396844,
+    2.63625,
+    3.017625,
+    4.272812,
+    5.060969,
+    5.184
+  ],
+  "silence_durations": [
+    0.715875,
+    0.432938,
+    0.233906,
+    0.243719,
+    0.217844,
+    0.209469,
+    0.402875,
+    0.188438,
+    0.122938
+  ],
+  "astats_captured": true,
+  "ffprobe": {
+    "duration_seconds": 5.167,
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video"
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "32000",
+        "channels": 2
+      }
+    ],
+    "audio_streams": [
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "32000",
+        "channels": 2
+      }
+    ]
+  },
+  "hard_audio_gate": {
+    "status": "FAIL",
+    "code": "UNEXPECTED_AUDIO_STREAM",
+    "audio_stream_count": 1
+  }
+}

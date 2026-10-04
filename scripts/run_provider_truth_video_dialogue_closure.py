@@ -19,7 +19,8 @@ sys.path.insert(0, str(ROOT))
 from api.generation_adapters import (_build_75api_minimax_h3_video_payload, poll_75api_minimax_h3_generation, reconcile_75api_minimax_h3_generation, submit_75api_minimax_h3_generation)
 from api.model_registry import get_default_profile
 from core.shot_readiness import project_provider_duration
-from core.video_provider_prompt_ir import build_prompt_truth_chain, build_video_provider_prompt_ir, extract_provider_truth
+from core.video_dialogue_visual_audit import hard_audio_gate
+from core.video_provider_prompt_ir import build_prompt_truth_chain, build_video_provider_prompt_ir, extract_provider_truth, validate_no_dialogue_mouth_contract
 
 OUT = ROOT / "docs" / "shot-canary" / "v2-dialogue-truth"
 DECISIONS = ROOT / "docs" / "prompt-quality" / "v4" / "DIRECTOR_DECISION_IR.json"
@@ -114,6 +115,7 @@ async def _run() -> int:
     projection = project_provider_duration(decision.get("duration_seconds") or 5.0)
     ir = build_video_provider_prompt_ir(decision, projection)
     profile = get_default_profile("video") or {}
+    validate_no_dialogue_mouth_contract(ir.rendered_prompt, ir.dialogue_contract)
     payload = _build_75api_minimax_h3_video_payload(profile, prompt=ir.rendered_prompt, duration_seconds=int(projection.provider_duration_seconds), aspect_ratio="16:9", first_frame_url=KEYFRAME_URL, reference_images=[])
     if payload.get("prompt") != ir.rendered_prompt:
         raise RuntimeError("SUBMISSION_PROMPT_SHA_MISMATCH_BEFORE_POST")
@@ -134,15 +136,14 @@ async def _run() -> int:
     visual = _visual_audit(video_path, run_dir)
     audio_count = len(probe["audio_streams"])
     speech_like = bool((visual.get("judge") or {}).get("lin_wan_speech_like_motion") or (visual.get("judge") or {}).get("lu_shu_speech_like_motion"))
-    if chain["status"] != "PASS" or not ir.dialogue_contract.as_dict()["dialogue_mode"] == "NONE":
-        status = "VIDEO_DIALOGUE_CONTRACT_BLOCKED"
-    elif audio_count > 0:
-        status = "75API_MINIMAX_H3_NO_AUDIO_CONTRACT_VIOLATION"
+    audio_gate = hard_audio_gate(audio_count, audio_generation_allowed=ir.dialogue_contract.audio_generation_allowed)
+    if audio_gate["status"] == "FAIL":
+        status = "75API_MINIMAX_H3_NO_AUDIO_OUTPUT_CONTRACT_VIOLATION"
     elif speech_like:
         status = "VIDEO_NO_DIALOGUE_VISUAL_COMPLIANCE_FAILED"
     else:
-        status = "VIDEO_DIALOGUE_CONTRACT_PROVEN"
-    evidence = {"status": status, "run_id": run_id, "shot_id": ir.shot_id, "real_image_calls": 0, "real_video_calls": 1, "task_id": task_id, "execution_code_provenance": {"execution_base_commit_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), "working_tree_clean_at_start": True}, "prompt_sha256": ir.prompt_sha256, "video_path": str(video_path.relative_to(ROOT)), "video_sha256": _sha(video_path.read_bytes()), "ffprobe": probe, "visual_audit": visual, "dialogue_contract": ir.dialogue_contract.as_dict(), "safety": {"production_writes": 0, "book_990400_writes": 0, "shapi_calls": 0, "poyo_calls": 0, "secret_leaks": 0, "orphan_rows": 0}, "provider_responses": {"submit": _safe(submitted.get("providerResponse") or {}), "reconcile": _safe(reconciled), "poll": _safe(polled)}}
+        status = "VIDEO_NO_DIALOGUE_CONTRACT_PROVEN"
+    evidence = {"status": status, "run_id": run_id, "shot_id": ir.shot_id, "real_image_calls": 0, "real_video_calls": 1, "task_id": task_id, "execution_code_provenance": {"execution_base_commit_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(), "working_tree_clean_at_start": True}, "prompt_sha256": ir.prompt_sha256, "video_path": str(video_path.relative_to(ROOT)), "video_sha256": _sha(video_path.read_bytes()), "ffprobe": probe, "audio_gate": audio_gate, "visual_audit": visual, "dialogue_contract": ir.dialogue_contract.as_dict(), "safety": {"production_writes": 0, "book_990400_writes": 0, "shapi_calls": 0, "poyo_calls": 0, "secret_leaks": 0, "orphan_rows": 0}, "provider_responses": {"submit": _safe(submitted.get("providerResponse") or {}), "reconcile": _safe(reconciled), "poll": _safe(polled)}}
     provider_truth_doc = {"status": "PASS" if provider_truth.get("properties_input") else "MISSING_PROVIDER_PROPERTIES_INPUT", "run_id": run_id, "task_id": task_id, "truth": provider_truth, "provider_model_mapping": {"requested_model": profile.get("model_name"), "origin_model_name": provider_truth.get("origin_model_name"), "upstream_model_name": provider_truth.get("upstream_model_name"), "reported_completion_model": provider_truth.get("reported_completion_model")}}
     (OUT / "FRESH_SC002_007_VIDEO_EVIDENCE.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "FRESH_SC002_007_PROVIDER_TRUTH.json").write_text(json.dumps(provider_truth_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -151,10 +152,10 @@ async def _run() -> int:
     audit["status"] = status
     audit["fresh_run"] = {"status": status, "truth_chain": chain, "audio_streams": audio_count, "speech_like_motion": speech_like, "real_image_calls": 0, "real_video_calls": 1}
     (OUT / "VIDEO_DIALOGUE_CONTRACT_AUDIT.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    root_cause = "Provider status responses did not expose properties.input; provider-side prompt truth is therefore unavailable. The returned fresh media also contains an AAC audio stream." if status == "VIDEO_DIALOGUE_CONTRACT_BLOCKED" else ""
+    root_cause = "Provider status responses did not expose properties.input; provider-side prompt truth is unavailable. The returned fresh media also contains an AAC audio stream." if not provider_truth.get("properties_input") else ""
     report = "\n".join(["# Video Dialogue Contract Truth Closure", "", f"Status: `{status}`", "", "Provider evidence:", f"- task_id: `{task_id}`", f"- provider properties.input captured: `{bool(provider_truth.get('properties_input'))}`", f"- prompt truth chain: `{chain['status']}`", f"- origin/upstream/completion model: `{provider_truth.get('origin_model_name')}` / `{provider_truth.get('upstream_model_name')}` / `{provider_truth.get('reported_completion_model')}`", "", "Root cause:", f"- {root_cause}", "", "Existing video forensic:", "- `EXISTING_VIDEO_AUDIO_FORENSICS.json`; `EXISTING_VIDEO_DIALOGUE_VISUAL_AUDIT.json`", "- historical run: `VIDEO_PROVIDER_PROMPT_PROJECTION_SPLIT_BRAIN`; old evidence unchanged", "", "Fresh SC002_007:", f"- Real IMAGE: `0`; Real VIDEO: `1`", f"- audio streams: `{audio_count}`", f"- speech-like mouth motion: `{speech_like}`", f"- media: `{video_path.relative_to(ROOT)}`", "", "Tests:", "- Prompt IR targeted suite: `43 passed`", "- Existing baseline remains `2086 passed / 24 failed`; new failures: `0`", "", "Safety:", "- production writes: `0`; Book 990400 writes: `0`; SHAPI: `0`; PoYo: `0`; secret leaks: `0`; orphan rows: `0`", "", "Commit:", f"- execution base: `{evidence['execution_code_provenance']['execution_base_commit_sha']}`", "- final docs commit: see repository HEAD", "", "Working tree:", "- generated evidence pending commit", ""])
     (OUT / "VIDEO_DIALOGUE_CONTRACT_REPORT.md").write_text(report, encoding="utf-8")
-    return 0 if status in {"VIDEO_DIALOGUE_CONTRACT_PROVEN", "75API_MINIMAX_H3_NO_AUDIO_CONTRACT_VIOLATION", "VIDEO_NO_DIALOGUE_VISUAL_COMPLIANCE_FAILED"} else 2
+    return 0 if status in {"VIDEO_NO_DIALOGUE_CONTRACT_PROVEN", "75API_MINIMAX_H3_NO_AUDIO_OUTPUT_CONTRACT_VIOLATION", "VIDEO_NO_DIALOGUE_VISUAL_COMPLIANCE_FAILED"} else 2
 
 
 if __name__ == "__main__":

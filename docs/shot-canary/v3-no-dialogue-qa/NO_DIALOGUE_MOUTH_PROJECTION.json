@@ -1,0 +1,59 @@
+{
+  "shot_id": "SH_E01_SC002_007",
+  "dialogue_mode": "NONE",
+  "old_conflict": {
+    "source_conflict_count": 1,
+    "tokens": [
+      "lips slightly parted"
+    ]
+  },
+  "new_mouth_contract": "CLOSED_RELAXED_STABLE",
+  "sanitized_performance_beats": [
+    {
+      "start_time": 0.0,
+      "end_time": 1.2,
+      "actor": "林晚",
+      "body_action": "林晚's torso rotates from facing the kitchen door toward the dining table, ending with her body angled approximately 30 degrees toward 陆叔",
+      "hand_action": "林晚's left hand remains resting on the door frame, maintaining contact without sliding, ending with the palm flat against the frame",
+      "head_action": "林晚's head turns from facing the door frame toward 陆叔, ending with her face directed at him",
+      "eye_action": "林晚's eyes shift from the door frame to 陆叔's face, ending with a steady gaze on him",
+      "facial_action": "林晚's expression settles from neutral into a quiet, attentive look, ending with her lips closed and brows relaxed",
+      "ending_state": "林晚 stands at the kitchen door, torso angled toward the dining table, left hand on the door frame, eyes on 陆叔"
+    },
+    {
+      "start_time": 1.2,
+      "end_time": 2.6,
+      "actor": "陆叔",
+      "body_action": "陆叔's torso shifts from facing the kitchen door toward 林晚, ending with his shoulders squared toward her",
+      "hand_action": "陆叔's right hand lifts slightly from the table edge and settles back down, ending with the fingertips resting on the table surface",
+      "head_action": "陆叔's head tilts slightly downward toward 林晚, ending with his chin lowered a few degrees",
+      "eye_action": "陆叔's eyes hold steady on 林晚's face, ending with an unbroken gaze",
+      "facial_action": "陆叔's expression firms from composed to expectant, ending with his mouth set in a calm line",
+      "ending_state": "陆叔 stands at the dining table, shoulders squared toward 林晚, right hand resting on the table, eyes fixed on her"
+    },
+    {
+      "start_time": 2.6,
+      "end_time": 3.8,
+      "actor": "林晚",
+      "body_action": "林晚's torso leans slightly forward from the door frame, ending with her weight shifted onto her right foot",
+      "hand_action": "林晚's left hand tightens its grip on the door frame, ending with her fingers curled more firmly around the edge",
+      "head_action": "林晚's head lowers slightly, ending with her chin tucked a few degrees toward her chest",
+      "eye_action": "林晚's eyes drop briefly toward the floor, ending with her gaze returning to 陆叔",
+      "facial_action": "林晚's expression softens from guarded to hesitant, ending with her lips gently closed",
+      "ending_state": "林晚 leans slightly forward at the kitchen door, left hand gripping the frame, eyes returning to 陆叔"
+    },
+    {
+      "start_time": 3.8,
+      "end_time": 5.0,
+      "actor": "陆叔",
+      "body_action": "陆叔's torso straightens from the slight forward lean, ending with his posture fully upright",
+      "hand_action": "陆叔's right hand slides a short distance along the table edge, ending with his palm flat on the surface",
+      "head_action": "陆叔's head lifts from the slight downward tilt, ending level with his gaze on 林晚",
+      "eye_action": "陆叔's eyes remain fixed on 林晚, ending with a steady, unwavering look",
+      "facial_action": "陆叔's expression settles from expectant into calm resolve, ending with his features relaxed but firm",
+      "ending_state": "陆叔 stands upright at the dining table, right hand flat on the table, eyes steady on 林晚"
+    }
+  ],
+  "prompt_conflict_count": 0,
+  "source_director_ir_unchanged": true
+}

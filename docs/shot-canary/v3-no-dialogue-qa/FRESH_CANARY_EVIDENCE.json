@@ -1,0 +1,13 @@
+{
+  "status": "REGRESSION_ONLY_NO_PROVIDER_CALL",
+  "shot_id": "SH_E01_SC002_007",
+  "video_sha256": "0cf43af284dc508f3faf77ce76ec593d76140d967639816c6298c083a1be10b9",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "audio_streams": 1,
+  "non_silent_audio": true,
+  "lin_wan_speech_like": "UNDETERMINED_HUMAN_REVIEW",
+  "lu_shu_speech_like": "UNDETERMINED_HUMAN_REVIEW",
+  "character_attribution": "UNSPECIFIED_BY_HUMAN_REVIEW",
+  "result": "REGRESSION_FAIL_AS_EXPECTED"
+}
