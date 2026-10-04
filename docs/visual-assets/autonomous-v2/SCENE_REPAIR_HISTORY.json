@@ -1,0 +1,11 @@
+{
+  "repairs": [],
+  "events": [
+    {
+      "view_id": "MASTER",
+      "attempt": 1,
+      "decision": "FAILED",
+      "failure_code": "PROVIDER_CREDITS_INSUFFICIENT"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "scene_id": "E01_SC002",
+  "walls": [
+    "LEFT",
+    "BACK",
+    "RIGHT",
+    "FRONT"
+  ],
+  "zones": [
+    "KITCHEN_REAR",
+    "DINING_CENTER_FOREGROUND",
+    "KITCHEN_DOOR_RIGHT",
+    "WINDOW_LEFT"
+  ],
+  "doors": [
+    {
+      "id": "kitchen_door",
+      "zone": "REAR_RIGHT",
+      "wall": "RIGHT",
+      "opens_to": "living_room"
+    }
+  ],
+  "windows": [
+    {
+      "id": "left_window",
+      "wall": "LEFT",
+      "zone": "WINDOW_LEFT",
+      "daylight": "cool_overcast"
+    }
+  ],
+  "fixed_furniture": [
+    {
+      "id": "sink",
+      "wall": "LEFT",
+      "relation": "directly_below_left_window"
+    },
+    {
+      "id": "cabinet",
+      "wall": "BACK",
+      "relation": "behind_sink_and_counter"
+    },
+    {
+      "id": "dining_table",
+      "zone": "CENTER_FOREGROUND",
+      "relation": "between_camera_and_sink"
+    },
+    {
+      "id": "two_chairs",
+      "zone": "CENTER_FOREGROUND",
+      "relation": "opposite_long_edges_of_table"
+    }
+  ],
+  "fixed_props": [
+    {
+      "id": "dish_rack",
+      "zone": "LEFT_COUNTER",
+      "relation": "near_sink"
+    },
+    {
+      "id": "small_kitchen_items",
+      "zone": "BACK_COUNTER",
+      "relation": "fixed_sparse_cluster"
+    }
+  ],
+  "landmarks": [
+    "left_window",
+    "sink_below_window",
+    "back_cabinet",
+    "rear_right_kitchen_door",
+    "center_foreground_dining_table"
+  ],
+  "relative_positions": [
+    {
+      "subject": "sink",
+      "relation": "below",
+      "object": "left_window"
+    },
+    {
+      "subject": "dining_table",
+      "relation": "in_front_of",
+      "object": "sink"
+    },
+    {
+      "subject": "kitchen_door",
+      "relation": "rear_right_of",
+      "object": "dining_table"
+    },
+    {
+      "subject": "cabinet",
+      "relation": "behind",
+      "object": "sink"
+    }
+  ],
+  "adjacency": [
+    {
+      "a": "window_left",
+      "b": "sink",
+      "relation": "vertical_adjacent"
+    },
+    {
+      "a": "sink",
+      "b": "back_cabinet",
+      "relation": "same_rear_work_zone"
+    },
+    {
+      "a": "dining_table",
+      "b": "kitchen_door",
+      "relation": "door_visible_beyond_table_right"
+    }
+  ],
+  "lighting_sources": [
+    "cool overcast daylight through left window",
+    "single warm ceiling bulb"
+  ],
+  "lighting_directions": [
+    "cool light from LEFT toward CENTER",
+    "warm light from CEILING downward"
+  ],
+  "materials": [
+    "old white ceramic wall tile",
+    "worn wood countertop",
+    "matte painted cabinet",
+    "scuffed wood dining table",
+    "aged apartment plaster"
+  ],
+  "time": "early evening",
+  "weather": "overcast after rain",
+  "fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+  "authority": "topology"
+}
