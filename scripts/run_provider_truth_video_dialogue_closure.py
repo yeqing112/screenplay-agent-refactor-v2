@@ -21,6 +21,9 @@ from api.model_registry import get_default_profile
 from core.shot_readiness import project_provider_duration
 from core.video_dialogue_visual_audit import hard_audio_gate
 from core.video_provider_prompt_ir import build_prompt_truth_chain, build_video_provider_prompt_ir, extract_provider_truth, validate_no_dialogue_mouth_contract
+from core.video_compilers import default_video_compiler_registry
+from core.video_compilers.minimax_h3 import H3_CAPABILITIES
+from core.video_intent_ir import build_video_intent_ir
 
 OUT = ROOT / "docs" / "shot-canary" / "v2-dialogue-truth"
 DECISIONS = ROOT / "docs" / "prompt-quality" / "v4" / "DIRECTOR_DECISION_IR.json"
@@ -113,11 +116,13 @@ async def _run() -> int:
         raise RuntimeError("CLEAN_TREE_REQUIRED_BEFORE_REAL_CALL")
     decision = next(x for x in json.loads(DECISIONS.read_text(encoding="utf-8")).get("canary_shots", []) if x.get("shot_id") == "SH_E01_SC002_007")
     projection = project_provider_duration(decision.get("duration_seconds") or 5.0)
+    intent = build_video_intent_ir(decision)
+    compiled = default_video_compiler_registry().resolve(compiler_id="minimax-h3").compile(intent, H3_CAPABILITIES)
     ir = build_video_provider_prompt_ir(decision, projection)
     profile = get_default_profile("video") or {}
-    validate_no_dialogue_mouth_contract(ir.rendered_prompt, ir.dialogue_contract)
-    payload = _build_75api_minimax_h3_video_payload(profile, prompt=ir.rendered_prompt, duration_seconds=int(projection.provider_duration_seconds), aspect_ratio="16:9", first_frame_url=KEYFRAME_URL, reference_images=[])
-    if payload.get("prompt") != ir.rendered_prompt:
+    validate_no_dialogue_mouth_contract(compiled.prompt, ir.dialogue_contract)
+    payload = _build_75api_minimax_h3_video_payload(profile, prompt=compiled.prompt, duration_seconds=compiled.duration_seconds, aspect_ratio=compiled.aspect_ratio, first_frame_url=KEYFRAME_URL, reference_images=[])
+    if payload.get("prompt") != compiled.prompt:
         raise RuntimeError("SUBMISSION_PROMPT_SHA_MISMATCH_BEFORE_POST")
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_dir = OUT / "fresh-media" / run_id
@@ -128,7 +133,7 @@ async def _run() -> int:
     polled = await poll_75api_minimax_h3_generation(profile, external_task_id=task_id)
     provider_response = polled.get("providerResponse") or reconciled.get("providerResponse") or submitted.get("providerResponse") or {}
     provider_truth = extract_provider_truth(provider_response)
-    chain = build_prompt_truth_chain(ir.rendered_prompt, str(payload.get("prompt") or ""), provider_truth.get("properties_input") or None)
+    chain = build_prompt_truth_chain(compiled.prompt, str(payload.get("prompt") or ""), provider_truth.get("properties_input") or None)
     video_url = str(polled.get("previewUrl") or polled.get("uri") or "")
     video_path = run_dir / "SH_E01_SC002_007-video-fresh.mp4"
     await _download(video_url, video_path, str(profile.get("api_key") or ""))

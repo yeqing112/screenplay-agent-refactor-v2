@@ -1,0 +1,21 @@
+{
+  "title": "VideoIntentIR",
+  "type": "object",
+  "required": [
+    "shot_id",
+    "source_revision",
+    "source_fingerprint",
+    "director_duration_seconds",
+    "scene",
+    "characters",
+    "props",
+    "dialogue",
+    "performance_beats",
+    "camera_beats",
+    "ending_state",
+    "reference_requirements",
+    "audio_intent",
+    "negative_constraints"
+  ],
+  "additionalProperties": false
+}

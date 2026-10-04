@@ -275,6 +275,8 @@ def _serialize_profile(profile: dict[str, Any], *, is_default: bool) -> dict[str
         "generation_capability": str(profile.get("generation_capability") or ""),
         "adapter_id": str(profile.get("adapter_id") or ""),
         "adapter_version": str(profile.get("adapter_version") or ""),
+        "video_compiler_id": str(profile.get("video_compiler_id") or ""),
+        "model_family": str(profile.get("model_family") or ""),
         "credential_ref": credential_ref,
         "credential_configured": credential_configured,
         "runtime_binding_id": runtime_binding_id,
@@ -327,6 +329,8 @@ def _load_saved_profiles() -> list[dict[str, Any]]:
                 "generation_capability": str(item.get("generation_capability") or ""),
                 "adapter_id": str(item.get("adapter_id") or ""),
                 "adapter_version": str(item.get("adapter_version") or ""),
+                "video_compiler_id": str(item.get("video_compiler_id") or ""),
+                "model_family": str(item.get("model_family") or ""),
                 "credential_ref": f"profile:{item.get('id')}" if item.get("provider") in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and item.get("api_key") else str(item.get("credential_ref") or ""),
                 "credential_configured": bool(item.get("api_key")) if item.get("provider") in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} else bool(item.get("credential_configured", bool(item.get("api_key")))),
                 "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if item.get("provider") in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and item.get("api_key") else str(item.get("runtime_binding_id") or ""),
@@ -504,6 +508,8 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         "generation_capability": str(profile.get("generation_capability") or ""),
         "adapter_id": str(profile.get("adapter_id") or ""),
         "adapter_version": str(profile.get("adapter_version") or ""),
+        "video_compiler_id": str(profile.get("video_compiler_id") or ""),
+        "model_family": str(profile.get("model_family") or ""),
         "credential_ref": f"profile:{profile.get('id')}" if provider in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and profile.get("api_key") else str(profile.get("credential_ref") or ""),
         "credential_configured": bool(profile.get("api_key")) if provider in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} else bool(profile.get("credential_configured", bool(profile.get("api_key")))),
         "runtime_binding_id": MODEL_REGISTRY_PROFILE_SECRET_BINDING if provider in {MINIMAX_H3_75API_PROVIDER, API75_IMAGE_PROVIDER} and profile.get("api_key") else str(profile.get("runtime_binding_id") or ""),
@@ -562,8 +568,8 @@ def _validate_profile(profile: dict[str, Any]) -> dict[str, Any]:
         if capability != "video":
             raise ValueError("75api MiniMax H3 provider 目前只支持 video 能力")
         _require_fields(normalized, ["base_url", "model_name"])
-        if normalized["model_name"] != "minimax_h3_no_audios":
-            raise ValueError("75api MiniMax H3 provider 只支持模型：minimax_h3_no_audios")
+        if normalized["model_name"] not in {"minimax_h3", "minimax_h3_no_audios"}:
+            raise ValueError("75api MiniMax H3 provider 只支持模型：minimax_h3 或 minimax_h3_no_audios")
         return normalized
 
     raise ValueError(f"暂不支持 provider：{provider}")

@@ -1,0 +1,21 @@
+{
+  "title": "CompiledVideoRequestIR",
+  "type": "object",
+  "required": [
+    "compiler_id",
+    "compiler_version",
+    "model_family",
+    "shot_id",
+    "source_video_intent_fingerprint",
+    "prompt",
+    "duration_seconds",
+    "aspect_ratio",
+    "reference_mode",
+    "reference_bindings",
+    "audio_generation_mode",
+    "provider_capability_requirements",
+    "compiled_prompt_sha256",
+    "compiled_request_fingerprint"
+  ],
+  "additionalProperties": false
+}

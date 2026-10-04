@@ -214,6 +214,41 @@ def validate_no_dialogue_mouth_contract(prompt: str, dialogue_contract: Dialogue
 
 
 def build_video_provider_prompt_ir(decision: Mapping[str, Any], projection: ProviderDurationProjection, prop_states: list[Mapping[str, Any]] | None = None) -> VideoProviderPromptIR:
+    # Compatibility bridge: all prompt text now comes from VideoIntentIR and
+    # the selected model compiler.  The legacy return shape remains for older
+    # callers while preventing a second provider prompt renderer.
+    from core.video_compilers import default_video_compiler_registry
+    from core.video_compilers.minimax_h3 import H3_CAPABILITIES
+    from core.video_intent_ir import build_video_intent_ir
+
+    intent = build_video_intent_ir(decision, prop_states=prop_states)
+    compiled = default_video_compiler_registry().resolve(compiler_id="minimax-h3").compile(intent, H3_CAPABILITIES)
+    dialogue = build_dialogue_contract(decision)
+    mouth_projection = project_no_dialogue_mouth_state(decision)
+    source = decision.get("source_facts") if isinstance(decision.get("source_facts"), dict) else {}
+    blocking = tuple(dict(x) for x in (decision.get("blocking") or []) if isinstance(x, dict))
+    props = tuple(dict(x) for x in (prop_states or []) if isinstance(x, dict) and x.get("present"))
+    projected_beats = mouth_projection.sanitized_performance_beats if dialogue.dialogue_mode == "NONE" else tuple(dict(x) for x in (decision.get("performance_beats") or []) if isinstance(x, dict))
+    projected_ending_state = _sanitize_structure(decision.get("ending_state") or {}) if dialogue.dialogue_mode == "NONE" else (decision.get("ending_state") or {})
+    validate_no_dialogue_mouth_contract(compiled.prompt, dialogue)
+    return VideoProviderPromptIR(
+        intent.shot_id,
+        {"scene_id": source.get("scene_id"), "location": source.get("location")},
+        blocking,
+        props,
+        projection.as_dict(),
+        dialogue,
+        projected_beats,
+        tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, dict)),
+        projected_ending_state,
+        terminal_hold_text(projection),
+        tuple(intent.negative_constraints),
+        compiled.prompt,
+        compiled.compiled_prompt_sha256,
+    )
+
+    # Kept below only as a source-compatible historical reference during the
+    # migration; execution never reaches this renderer.
     shot_id = str(decision.get("shot_id") or "")
     source = decision.get("source_facts") if isinstance(decision.get("source_facts"), dict) else {}
     blocking = tuple(dict(x) for x in (decision.get("blocking") or []) if isinstance(x, dict))

@@ -1,0 +1,338 @@
+{
+  "shot_id": "SH_E01_SC002_002",
+  "source_revision": "DIRECTOR_DECISION_IR",
+  "source_fingerprint": "3c8d97b2958badba403c7692415ab005395c114c1560f1555893008dc2852990",
+  "director_duration_seconds": 13.5,
+  "scene": {
+    "scene_id": "E01_SC002",
+    "location": "出租公寓厨房"
+  },
+  "characters": [
+    {
+      "character_id": "陆叔",
+      "display_name": "陆叔",
+      "start_state": {
+        "identity": "陆叔",
+        "reference_identity": "餐桌左侧",
+        "position": "餐桌左侧",
+        "screen_x": "0.32",
+        "depth_zone": "midground",
+        "body_pose": "standing, torso leaning slightly forward over the table edge",
+        "weight_distribution": "weight on left leg, right leg relaxed and slightly back",
+        "torso_direction": "torso angled toward 林晚 at approximately 30 degrees",
+        "head_yaw": "head turned toward 林晚, yaw approximately 25 degrees to screen right",
+        "head_pitch": "head tilted down approximately 10 degrees toward the table surface",
+        "eye_target": "桌面划痕",
+        "expression": "concerned, brows slightly drawn together, mouth softly set",
+        "left_hand": "left hand resting flat on the table edge near the tabletop scratch",
+        "right_hand": "right hand hanging at side, fingers loosely curled",
+        "prop_contact": "left palm in contact with the table surface"
+      },
+      "role": "speaker",
+      "silent": false,
+      "authority_fingerprint": "ccef308c45816c55cc61930b9fc92fac43db997de6e799c02962aefc89e518f5",
+      "reference_roles": [
+        "CHARACTER_FULL",
+        "CHARACTER_FACE"
+      ]
+    },
+    {
+      "character_id": "林晚",
+      "display_name": "林晚",
+      "start_state": {
+        "identity": "林晚",
+        "reference_identity": "餐桌右侧或门边",
+        "position": "餐桌右侧或门边",
+        "screen_x": "0.68",
+        "depth_zone": "midground",
+        "body_pose": "standing upright, shoulders slightly hunched, weight shifted onto the back foot",
+        "weight_distribution": "weight on right leg, left foot slightly forward and unweighted",
+        "torso_direction": "torso facing 陆叔 at approximately 20 degrees to screen left",
+        "head_yaw": "head turned toward 陆叔, yaw approximately 15 degrees to screen left",
+        "head_pitch": "head level, chin slightly tucked",
+        "eye_target": "陆叔",
+        "expression": "pale and tired, eyes slightly wide, lips pressed together",
+        "left_hand": "自然放松，不接触道具",
+        "right_hand": "right hand hanging at her side, fingers slightly curled inward",
+        "prop_contact": "自然放松，不接触道具"
+      },
+      "role": "listener",
+      "silent": true,
+      "authority_fingerprint": "007a453949ac0166cdc0fe911a9a03c8198fb4ba0382fda311b50a38a69519ca",
+      "reference_roles": [
+        "CHARACTER_FULL",
+        "CHARACTER_FACE"
+      ]
+    }
+  ],
+  "props": [],
+  "dialogue": {
+    "mode": "AUTHORITATIVE",
+    "speaker_character_id": "陆叔",
+    "authoritative_text": "晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+    "language": "zh-CN",
+    "phrase_windows": [
+      {
+        "text": "晚晚，你看看你，跑那么快做什么？",
+        "start_time": 0.0,
+        "end_time": 3.6
+      },
+      {
+        "text": "在车站吓我一跳。",
+        "start_time": 3.6,
+        "end_time": 5.4
+      },
+      {
+        "text": "脸色这么差，是不是又没好好吃饭？",
+        "start_time": 5.4,
+        "end_time": 9.0
+      },
+      {
+        "text": "来，先坐下，陆叔给你洗个苹果。",
+        "start_time": 9.0,
+        "end_time": 13.5
+      }
+    ],
+    "silent_character_ids": [
+      "林晚"
+    ],
+    "audio_policy": "NATIVE_DIALOGUE",
+    "visual_lipsync_policy": "TIMED_SPEAKER_ONLY"
+  },
+  "performance_beats": [
+    {
+      "start_time": 0.0,
+      "end_time": 1.8,
+      "actor": "陆叔",
+      "body_action": "torso starts leaning over the table edge and straightens upward by approximately 10 degrees, ending with the torso upright and angled toward 林晚",
+      "hand_action": "left hand starts flat on the table edge and slides 5 cm toward 林晚 across the tabletop, ending with the palm open and fingers spread on the table surface",
+      "head_action": "head starts tilted down toward the tabletop scratch and lifts by approximately 10 degrees, ending with the head level and turned toward 林晚",
+      "eye_action": "eyes start fixed on the tabletop scratch and shift upward to 林晚's face, ending with a steady gaze on 林晚",
+      "facial_action": "brows start relaxed and draw together by approximately 3 mm, ending with a furrowed, concerned brow line",
+      "ending_state": "陆叔 standing upright at the table, left palm open on the table, gaze fixed on 林晚, brow furrowed with concern"
+    },
+    {
+      "start_time": 1.8,
+      "end_time": 3.6,
+      "actor": "陆叔",
+      "body_action": "torso starts upright and leans forward approximately 15 degrees toward 林晚, ending with the torso inclined over the table edge",
+      "hand_action": "right hand starts hanging at the side and rises to chest height, ending with the palm open and facing upward in a beckoning gesture",
+      "head_action": "head starts level and tilts down approximately 8 degrees, ending with the chin lowered toward 林晚",
+      "eye_action": "eyes start on 林晚's face and drop to her shoulders and back, ending with a scanning gaze over her upper body",
+      "facial_action": "mouth starts closed and corners drop by approximately 2 mm, ending with a soft, worried frown",
+      "ending_state": "陆叔 leaning over the table, right hand raised in an open beckoning palm, gaze scanning 林晚's shoulders, worried frown set"
+    },
+    {
+      "start_time": 3.6,
+      "end_time": 5.4,
+      "actor": "陆叔",
+      "body_action": "torso starts inclined forward and straightens back by approximately 10 degrees, ending with the torso upright and shoulders squared toward 林晚",
+      "hand_action": "right hand starts raised at chest height and lowers by 15 cm, ending with the hand at waist height, palm still open and facing upward",
+      "head_action": "head starts tilted down and lifts by approximately 5 degrees, ending with the head level and eyes locked on 林晚",
+      "eye_action": "eyes start scanning 林晚's shoulders and fix on her face, ending with a direct, steady gaze into her eyes",
+      "facial_action": "brows start furrowed and lift by approximately 2 mm at the inner corners, ending with a softened, questioning brow line",
+      "ending_state": "陆叔 upright at the table, right hand at waist height with open palm, direct steady gaze on 林晚, brow softened into a question"
+    },
+    {
+      "start_time": 5.4,
+      "end_time": 7.2,
+      "actor": "陆叔",
+      "body_action": "torso starts upright and rotates approximately 20 degrees toward the kitchen counter behind him, ending with the torso angled away from 林晚 toward the counter",
+      "hand_action": "right hand starts at waist height with open palm and closes into a loose fist, ending with the fist resting against his own chest",
+      "head_action": "head starts facing 林晚 and turns approximately 25 degrees toward the kitchen counter, ending with the head angled toward the counter",
+      "eye_action": "eyes start on 林晚 and shift to the kitchen counter, ending with a gaze fixed on the counter surface",
+      "facial_action": "mouth starts in a soft frown and relaxes by approximately 1 mm, ending with a neutral, thoughtful mouth line",
+      "ending_state": "陆叔 angled toward the kitchen counter, right fist against his chest, gaze on the counter, mouth neutral and thoughtful"
+    },
+    {
+      "start_time": 7.2,
+      "end_time": 9.0,
+      "actor": "陆叔",
+      "body_action": "torso starts angled toward the counter and rotates back approximately 20 degrees toward 林晚, ending with the torso facing her squarely",
+      "hand_action": "right hand starts against his chest and extends forward toward 林晚 by approximately 20 cm, ending with the palm open and facing upward in an offering gesture",
+      "head_action": "head starts angled toward the counter and turns back approximately 25 degrees toward 林晚, ending with the head facing her directly",
+      "eye_action": "eyes start on the counter and shift back to 林晚's face, ending with a warm, direct gaze on her",
+      "facial_action": "mouth starts neutral and corners lift by approximately 2 mm, ending with a gentle, encouraging half-smile",
+      "ending_state": "陆叔 facing 林晚 squarely, right hand extended forward with open offering palm, warm direct gaze, gentle half-smile"
+    },
+    {
+      "start_time": 9.0,
+      "end_time": 11.0,
+      "actor": "陆叔",
+      "body_action": "torso starts facing 林晚 and leans forward approximately 10 degrees, ending with the torso inclined toward her in an inviting posture",
+      "hand_action": "right hand starts extended forward with open palm and sweeps downward and to the side by approximately 15 cm, ending with the hand gesturing toward the chair beside the table",
+      "head_action": "head starts facing 林晚 and tilts down approximately 5 degrees toward the chair, ending with the head angled toward the seating spot",
+      "eye_action": "eyes start on 林晚's face and shift down to the chair, ending with a gaze directed at the chair beside the table",
+      "facial_action": "mouth starts in a half-smile and opens slightly by approximately 3 mm, ending with a soft, inviting mouth shape",
+      "ending_state": "陆叔 leaning toward 林晚, right hand gesturing toward the chair, gaze on the chair, soft inviting mouth"
+    },
+    {
+      "start_time": 11.0,
+      "end_time": 13.5,
+      "actor": "陆叔",
+      "body_action": "torso starts inclined toward the chair and straightens by approximately 8 degrees, ending with the torso upright and weight shifting onto the back foot as he prepares to move toward the kitchen",
+      "hand_action": "right hand starts gesturing toward the chair and lowers to his side, ending with the hand relaxed at his hip, fingers loosely curled",
+      "head_action": "head starts angled toward the chair and lifts by approximately 5 degrees, ending with the head level and turned slightly toward the kitchen",
+      "eye_action": "eyes start on the chair and shift toward the kitchen, ending with a gaze directed at the kitchen workspace",
+      "facial_action": "mouth starts open in an inviting shape and closes by approximately 2 mm, ending with a settled, warm mouth line",
+      "ending_state": "陆叔 upright with weight shifting back, right hand relaxed at hip, gaze toward the kitchen, warm settled mouth"
+    },
+    {
+      "start_time": 0.0,
+      "end_time": 2.4,
+      "actor": "林晚",
+      "body_action": "torso starts upright with shoulders hunched and lowers by approximately 5 degrees as her shoulders drop, ending with the shoulders relaxed downward",
+      "hand_action": "left hand starts gripping the bag strap tightly and loosens by approximately 2 mm of grip pressure, ending with the fingers still on the strap but relaxed",
+      "head_action": "head starts level and tilts down approximately 5 degrees, ending with the chin slightly lowered",
+      "eye_action": "eyes start fixed on 陆叔 and blink once, ending with the eyes open and still fixed on 陆叔",
+      "facial_action": "lips start pressed together and part by approximately 1 mm, ending with a slightly parted, tired mouth",
+      "ending_state": "林晚 standing with shoulders dropped, left hand relaxed on the bag strap, chin slightly lowered, eyes on 陆叔, mouth slightly parted"
+    },
+    {
+      "start_time": 2.4,
+      "end_time": 4.8,
+      "actor": "林晚",
+      "body_action": "torso starts upright and shifts weight from the back foot to the front foot by approximately 3 cm, ending with the weight centered between both feet",
+      "hand_action": "right hand starts hanging at the side and rises by approximately 5 cm, ending with the hand resting against her own abdomen, fingers lightly curled",
+      "head_action": "head starts tilted down and lifts by approximately 3 degrees, ending with the head level and eyes still on 陆叔",
+      "eye_action": "eyes start on 陆叔 and narrow slightly by approximately 1 mm, ending with a tired, attentive gaze on him",
+      "facial_action": "brows start relaxed and lift by approximately 1 mm at the inner corners, ending with a faintly questioning brow line",
+      "ending_state": "林晚 with weight centered, right hand on her abdomen, head level, tired attentive gaze on 陆叔, faintly questioning brow"
+    },
+    {
+      "start_time": 4.8,
+      "end_time": 7.2,
+      "actor": "林晚",
+      "body_action": "torso starts upright and rotates approximately 10 degrees toward the chair beside the table, ending with the torso angled toward the seating spot",
+      "hand_action": "right hand starts on her abdomen and lowers by approximately 8 cm, ending with the hand hanging at her side, fingers loosely curled",
+      "head_action": "head starts facing 陆叔 and turns approximately 10 degrees toward the chair, ending with the head angled toward the chair",
+      "eye_action": "eyes start on 陆叔 and shift to the chair, ending with a gaze directed at the chair beside the table",
+      "facial_action": "mouth starts slightly parted and closes by approximately 1 mm, ending with a soft, closed mouth line",
+      "ending_state": "林晚 angled toward the chair, right hand at her side, gaze on the chair, soft closed mouth"
+    },
+    {
+      "start_time": 7.2,
+      "end_time": 9.6,
+      "actor": "林晚",
+      "body_action": "torso starts angled toward the chair and rotates back approximately 10 degrees toward 陆叔, ending with the torso facing him again",
+      "hand_action": "left hand starts on the bag strap and releases it by opening the fingers approximately 5 mm, ending with the hand hanging free at her side",
+      "head_action": "head starts angled toward the chair and turns back approximately 10 degrees toward 陆叔, ending with the head facing him directly",
+      "eye_action": "eyes start on the chair and shift back to 陆叔's face, ending with a steady gaze on him",
+      "facial_action": "brows start faintly questioning and draw together by approximately 1 mm, ending with a slightly worried brow line",
+      "ending_state": "林晚 facing 陆叔, left hand free at her side, steady gaze on him, slightly worried brow"
+    },
+    {
+      "start_time": 9.6,
+      "end_time": 11.8,
+      "actor": "林晚",
+      "body_action": "torso starts facing 陆叔 and leans forward approximately 5 degrees, ending with the torso inclined slightly toward him",
+      "hand_action": "right hand starts at her side and rises by approximately 10 cm, ending with the hand resting lightly on the edge of the table",
+      "head_action": "head starts facing 陆叔 and tilts down approximately 3 degrees, ending with the chin slightly lowered toward the table",
+      "eye_action": "eyes start on 陆叔's face and shift down to the table surface, ending with a gaze directed at the tabletop",
+      "facial_action": "mouth starts soft and closed and corners drop by approximately 1 mm, ending with a faint, tired downturn of the lips",
+      "ending_state": "林晚 leaning slightly forward, right hand on the table edge, chin lowered, gaze on the tabletop, faint tired downturn of the lips"
+    },
+    {
+      "start_time": 11.8,
+      "end_time": 13.5,
+      "actor": "林晚",
+      "body_action": "torso starts leaning forward and straightens by approximately 4 degrees, ending with the torso upright and shoulders settling downward",
+      "hand_action": "right hand starts on the table edge and slides 3 cm toward her own body, ending with the hand resting flat on the table near her own side",
+      "head_action": "head starts tilted down and lifts by approximately 2 degrees, ending with the head level and eyes still directed downward",
+      "eye_action": "eyes start on the tabletop and blink once, ending with the eyes open and still directed at the tabletop",
+      "facial_action": "mouth starts with a faint downturn and relaxes by approximately 1 mm, ending with a neutral, tired mouth line",
+      "ending_state": "林晚 upright with shoulders settled, right hand flat on the table near her side, head level, eyes on the tabletop, neutral tired mouth"
+    }
+  ],
+  "camera_beats": [
+    {
+      "start_time": 0.0,
+      "end_time": 3.6,
+      "movement_type": "static",
+      "direction": "none",
+      "speed": "stationary",
+      "distance_or_scale_change": "no change in distance or scale",
+      "target": "two-shot of 陆叔 and 林晚 at the kitchen table",
+      "start_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+      "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+      "easing": "none"
+    },
+    {
+      "start_time": 3.6,
+      "end_time": 7.2,
+      "movement_type": "slow push-in",
+      "direction": "forward toward the two characters",
+      "speed": "slow, steady",
+      "distance_or_scale_change": "distance decreases by approximately 15 percent, subjects scale up slightly within the frame",
+      "target": "陆叔's upper body and face as he speaks",
+      "start_framing": "medium two-shot, both characters framed from mid-torso up",
+      "end_framing": "medium close-up favoring 陆叔, framed from chest up, 林晚 partially visible at the frame edge",
+      "easing": "linear"
+    },
+    {
+      "start_time": 7.2,
+      "end_time": 10.8,
+      "movement_type": "slow lateral drift",
+      "direction": "drifting slightly to the right, shifting emphasis toward 林晚",
+      "speed": "slow, gentle",
+      "distance_or_scale_change": "distance remains constant, framing shifts laterally by approximately 10 percent of frame width",
+      "target": "林晚's face and upper body as she listens",
+      "start_framing": "medium close-up favoring 陆叔, framed from chest up",
+      "end_framing": "medium close-up favoring 林晚, framed from chest up, 陆叔 partially visible at the frame edge",
+      "easing": "ease-in-out"
+    },
+    {
+      "start_time": 10.8,
+      "end_time": 13.5,
+      "movement_type": "slow pull-back",
+      "direction": "backward, widening the frame",
+      "speed": "slow, settling",
+      "distance_or_scale_change": "distance increases by approximately 12 percent, subjects scale down slightly within the frame",
+      "target": "both 陆叔 and 林晚 at the kitchen table",
+      "start_framing": "medium close-up favoring 林晚, framed from chest up",
+      "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+      "easing": "ease-out"
+    }
+  ],
+  "ending_state": {
+    "characters": {
+      "陆叔": {
+        "position": "餐桌左侧, torso upright with weight shifting back toward the kitchen",
+        "eye_target": "kitchen workspace",
+        "body_pose": "standing upright, right hand relaxed at hip, torso angled slightly toward the kitchen",
+        "expression": "warm, settled, gently caring"
+      },
+      "林晚": {
+        "position": "餐桌右侧或门边, torso upright with shoulders settled",
+        "eye_target": "tabletop",
+        "body_pose": "standing upright, right hand flat on the table near her side, left hand hanging free at her side",
+        "expression": "tired but softened, neutral and receptive"
+      }
+    },
+    "camera": {
+      "position": "medium two-shot, pulled back to the original framing distance",
+      "framing": "both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+      "movement": "camera has settled into a static hold after the slow pull-back",
+      "target": "both 陆叔 and 林晚 at the kitchen table"
+    }
+  },
+  "reference_requirements": {
+    "mode": "FIRST_FRAME",
+    "roles": [
+      "SCENE_MASTER",
+      "CHARACTER_FULL",
+      "CHARACTER_FACE"
+    ]
+  },
+  "audio_intent": {
+    "dialogue_required": true,
+    "room_tone_allowed": true,
+    "sound_effects_allowed": false,
+    "music_allowed": false
+  },
+  "negative_constraints": [
+    "no additional characters",
+    "no unauthorized props",
+    "preserve scene topology"
+  ]
+}

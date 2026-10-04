@@ -1,0 +1,264 @@
+{
+  "shot_id": "SH_E01_SC002_006",
+  "source_revision": "DIRECTOR_DECISION_IR",
+  "source_fingerprint": "597a4b62230b1f2c54d9b3519f052c53bbfa17d2485fc7de24c73a0756546b7e",
+  "director_duration_seconds": 8.5,
+  "scene": {
+    "scene_id": "E01_SC002",
+    "location": "出租公寓厨房"
+  },
+  "characters": [
+    {
+      "character_id": "陆叔",
+      "display_name": "陆叔",
+      "start_state": {
+        "identity": "陆叔",
+        "reference_identity": "餐桌左侧",
+        "position": "餐桌左侧",
+        "screen_x": "0.32",
+        "depth_zone": "midground",
+        "body_pose": "standing, torso leaning slightly forward over the table edge",
+        "weight_distribution": "weight on left leg, right foot slightly back",
+        "torso_direction": "angled toward 林晚 at the table's right side",
+        "head_yaw": "turned toward 林晚, about 25 degrees right",
+        "head_pitch": "slightly down toward the table surface",
+        "eye_target": "桌面划痕",
+        "expression": "curious, faintly teasing",
+        "left_hand": "resting flat on the table near the scratch",
+        "right_hand": "holding an apple, raised slightly",
+        "prop_contact": "right hand grips the apple; left palm contacts the tabletop"
+      },
+      "role": "speaker",
+      "silent": false,
+      "authority_fingerprint": "2403f39051be3fc260cf8927cc41e53f1d679537943a0a9b20fd092e65e84474",
+      "reference_roles": [
+        "CHARACTER_FULL",
+        "CHARACTER_FACE"
+      ]
+    },
+    {
+      "character_id": "林晚",
+      "display_name": "林晚",
+      "start_state": {
+        "identity": "林晚",
+        "reference_identity": "餐桌右侧或门边",
+        "position": "餐桌右侧或门边",
+        "screen_x": "0.68",
+        "depth_zone": "midground",
+        "body_pose": "standing upright, shoulders squared toward 陆叔",
+        "weight_distribution": "evenly balanced on both feet",
+        "torso_direction": "facing 陆叔 across the table",
+        "head_yaw": "turned toward 陆叔, about 10 degrees left",
+        "head_pitch": "level",
+        "eye_target": "陆叔",
+        "expression": "guarded, quietly attentive",
+        "left_hand": "hanging at side, fingers slightly curled",
+        "right_hand": "hanging at side, relaxed",
+        "prop_contact": "no prop contact"
+      },
+      "role": "listener",
+      "silent": true,
+      "authority_fingerprint": "0bb7be1240ccbbfa447e0b89e8d3227bf5d1900ef22caf690f3392f4ec46a65e",
+      "reference_roles": [
+        "CHARACTER_FULL",
+        "CHARACTER_FACE"
+      ]
+    }
+  ],
+  "props": [
+    {
+      "prop_id": "APPLE",
+      "present": true,
+      "holder": "LIN_WAN",
+      "hand": "right_hand",
+      "authority_source": "DIALOGUE_ACTION_RESOLVED_PROP"
+    }
+  ],
+  "dialogue": {
+    "mode": "AUTHORITATIVE",
+    "speaker_character_id": "陆叔",
+    "authoritative_text": "伞？你哪来的伞？你不是一直不喜欢带伞吗？嫌麻烦。来，吃苹果。",
+    "language": "zh-CN",
+    "phrase_windows": [
+      {
+        "text": "伞？",
+        "start_time": 0.0,
+        "end_time": 1.2
+      },
+      {
+        "text": "你哪来的伞？",
+        "start_time": 1.2,
+        "end_time": 2.6
+      },
+      {
+        "text": "你不是一直不喜欢带伞吗？",
+        "start_time": 2.6,
+        "end_time": 4.4
+      },
+      {
+        "text": "嫌麻烦。",
+        "start_time": 4.4,
+        "end_time": 5.4
+      },
+      {
+        "text": "来，吃苹果。",
+        "start_time": 5.4,
+        "end_time": 8.5
+      }
+    ],
+    "silent_character_ids": [
+      "林晚"
+    ],
+    "audio_policy": "NATIVE_DIALOGUE",
+    "visual_lipsync_policy": "TIMED_SPEAKER_ONLY"
+  },
+  "performance_beats": [
+    {
+      "start_time": 0.0,
+      "end_time": 1.2,
+      "actor": "陆叔",
+      "body_action": "torso rises from a slight forward lean over the table to a more upright stance, ending with shoulders squared toward 林晚",
+      "hand_action": "right hand lifts the apple from the tabletop up to chest height, ending with the apple held steady at chest level",
+      "head_action": "head lifts from a downward tilt toward the table scratch to level, ending with chin parallel to the floor",
+      "eye_action": "gaze shifts from the 桌面划痕 up to 林晚's face, ending focused on 林晚's eyes",
+      "facial_action": "eyebrows raise from neutral to lifted, mouth corners lift slightly, ending in a faint teasing smile",
+      "ending_state": "陆叔 upright, apple at chest height, eyes on 林晚, faint smile"
+    },
+    {
+      "start_time": 1.2,
+      "end_time": 2.6,
+      "actor": "陆叔",
+      "body_action": "torso leans forward about 10 degrees toward 林晚 across the table, ending with chest closer to the table edge",
+      "hand_action": "right hand pushes the apple forward about 15 centimeters toward 林晚, ending with the apple extended over the table",
+      "head_action": "head tilts slightly to the right about 8 degrees, ending with the tilt held",
+      "eye_action": "gaze holds on 林晚's face without shifting, ending fixed on 林晚",
+      "facial_action": "eyebrows lift higher, mouth remains gently closed slightly as if speaking, ending with an open, questioning expression",
+      "ending_state": "陆叔 leaning forward, apple extended toward 林晚, questioning expression"
+    },
+    {
+      "start_time": 2.6,
+      "end_time": 4.4,
+      "actor": "陆叔",
+      "body_action": "torso straightens back from the forward lean to upright, ending with shoulders back over the hips",
+      "hand_action": "right hand retracts the apple back toward his own chest about 10 centimeters, ending with the apple held close again",
+      "head_action": "head returns from the right tilt to level, ending with the head upright",
+      "eye_action": "gaze drops briefly to the apple then returns to 林晚, ending back on 林晚's face",
+      "facial_action": "mouth closes from the open questioning shape into a small knowing smirk, ending with the smirk held",
+      "ending_state": "陆叔 upright, apple back at chest, knowing smirk, eyes on 林晚"
+    },
+    {
+      "start_time": 4.4,
+      "end_time": 6.2,
+      "actor": "陆叔",
+      "body_action": "torso leans forward again about 12 degrees toward 林晚, ending with the chest over the table edge",
+      "hand_action": "right hand extends the apple forward again about 20 centimeters toward 林晚, ending with the apple offered at arm's length",
+      "head_action": "head dips slightly forward about 5 degrees, ending with the chin angled down toward the offered apple",
+      "eye_action": "gaze shifts from 林晚's face down to the apple then back up to 林晚, ending on 林晚's face",
+      "facial_action": "eyebrows soften from raised to relaxed, mouth remains gently closed into a warm inviting shape, ending with a gentle encouraging expression",
+      "ending_state": "陆叔 leaning forward, apple offered at arm's length, warm inviting expression"
+    },
+    {
+      "start_time": 6.2,
+      "end_time": 8.5,
+      "actor": "陆叔",
+      "body_action": "torso holds the forward lean steady without further movement, ending in the same leaning stance",
+      "hand_action": "right hand holds the apple steady at arm's length toward 林晚, ending with the apple unmoving in the offered position",
+      "head_action": "head holds level with the slight forward dip, ending unmoving",
+      "eye_action": "gaze holds steady on 林晚's face, ending fixed and waiting",
+      "facial_action": "warm inviting expression holds without change, ending with the gentle encouraging look sustained",
+      "ending_state": "陆叔 holding the offer, apple steady at arm's length, warm expectant expression, eyes on 林晚"
+    }
+  ],
+  "camera_beats": [
+    {
+      "start_time": 0.0,
+      "end_time": 2.6,
+      "movement_type": "slow push-in",
+      "direction": "forward along the axis between the two characters",
+      "speed": "slow, steady",
+      "distance_or_scale_change": "scale increases from 1.0 to 1.08",
+      "target": "陆叔's upper body and face",
+      "start_framing": "medium two-shot, both characters visible across the table",
+      "end_framing": "medium close-up favoring 陆叔, 林晚's shoulder at frame edge",
+      "easing": "ease-in-out"
+    },
+    {
+      "start_time": 2.6,
+      "end_time": 4.4,
+      "movement_type": "subtle lateral drift",
+      "direction": "sliding right toward 林晚's side of the table",
+      "speed": "very slow",
+      "distance_or_scale_change": "scale holds at 1.08",
+      "target": "the space between 陆叔's face and 林晚's face",
+      "start_framing": "medium close-up favoring 陆叔",
+      "end_framing": "balanced two-shot close-up, both faces in frame",
+      "easing": "linear"
+    },
+    {
+      "start_time": 4.4,
+      "end_time": 6.2,
+      "movement_type": "gentle tilt down and push-in",
+      "direction": "downward toward the offered apple, then forward",
+      "speed": "slow",
+      "distance_or_scale_change": "scale increases from 1.08 to 1.15",
+      "target": "陆叔's hand holding the apple and 林晚's reaction",
+      "start_framing": "balanced two-shot close-up",
+      "end_framing": "close-up on the offered apple with 陆叔's face soft in background",
+      "easing": "ease-out"
+    },
+    {
+      "start_time": 6.2,
+      "end_time": 8.5,
+      "movement_type": "held frame with micro drift",
+      "direction": "barely perceptible drift toward 林晚",
+      "speed": "near-static",
+      "distance_or_scale_change": "scale holds at 1.15",
+      "target": "林晚's face receiving the offer",
+      "start_framing": "close-up on the offered apple with 陆叔's face soft in background",
+      "end_framing": "close-up holding on 林晚's guarded attentive expression with the apple at frame edge",
+      "easing": "linear"
+    }
+  ],
+  "ending_state": {
+    "characters": {
+      "陆叔": {
+        "position": "餐桌左侧",
+        "pose": "leaning forward about 12 degrees over the table edge",
+        "expression": "warm inviting, gentle encouraging",
+        "eye_target": "林晚",
+        "prop_state": "right hand holds the apple offered at arm's length toward 林晚"
+      },
+      "林晚": {
+        "position": "餐桌右侧或门边",
+        "pose": "standing upright, shoulders squared toward 陆叔",
+        "expression": "guarded, quietly attentive",
+        "eye_target": "陆叔",
+        "prop_state": "no prop held"
+      }
+    },
+    "camera": {
+      "framing": "close-up holding on 林晚's guarded attentive expression with the apple at frame edge",
+      "movement": "near-static micro drift toward 林晚",
+      "scale": 1.15
+    }
+  },
+  "reference_requirements": {
+    "mode": "FIRST_FRAME",
+    "roles": [
+      "SCENE_MASTER",
+      "CHARACTER_FULL",
+      "CHARACTER_FACE"
+    ]
+  },
+  "audio_intent": {
+    "dialogue_required": true,
+    "room_tone_allowed": true,
+    "sound_effects_allowed": false,
+    "music_allowed": false
+  },
+  "negative_constraints": [
+    "no additional characters",
+    "no unauthorized props",
+    "preserve scene topology"
+  ]
+}

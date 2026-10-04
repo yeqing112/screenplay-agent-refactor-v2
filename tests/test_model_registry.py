@@ -798,11 +798,11 @@ class ModelRegistryTests(unittest.IsolatedAsyncioTestCase):
                     "capability": "video",
                     "provider": "75api-minimax-h3",
                     "base_url": "https://www.75api.com",
-                    "model_name": "minimax_h3",
+                    "model_name": "unsupported_h3_variant",
                     "api_key": "secret-test-key",
                 }
             )
-        self.assertIn("minimax_h3_no_audios", str(ctx.exception))
+        self.assertIn("minimax_h3", str(ctx.exception))
 
     async def test_profile_test_falls_back_to_payload_when_profile_id_is_missing(self):
         result = await run_profile_connection_test(

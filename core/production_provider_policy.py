@@ -13,7 +13,7 @@ class ProductionProviderPolicy:
     image_provider: str = "75api-image"
     image_model: str = "gpt-image-2-1k"
     video_provider: str = "75api-minimax-h3"
-    video_model: str = "minimax_h3_no_audios"
+    video_model: str = "minimax_h3"
     strict_provider: bool = True
 
     def allows_image_profile(self, profile: dict[str, Any]) -> bool:

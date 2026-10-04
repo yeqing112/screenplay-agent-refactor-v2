@@ -1,0 +1,245 @@
+{
+  "intent": {
+    "shot_id": "SH_E01_SC002_007",
+    "source_revision": "DIRECTOR_DECISION_IR",
+    "source_fingerprint": "1135fe679df0bb08449e19c2fd01730ff5499de14010dd13d0a4005205638cce",
+    "director_duration_seconds": 5.0,
+    "scene": {
+      "scene_id": "E01_SC002",
+      "location": "出租公寓厨房"
+    },
+    "characters": [
+      {
+        "character_id": "林晚",
+        "display_name": "林晚",
+        "start_state": {
+          "identity": "林晚",
+          "reference_identity": "厨房门边",
+          "position": "厨房门边",
+          "screen_x": "0.32",
+          "depth_zone": "midground",
+          "body_pose": "standing, left hand resting on door frame, body angled slightly toward the dining table",
+          "weight_distribution": "weight on right leg, left leg relaxed",
+          "torso_direction": "torso turned approximately 30 degrees toward the dining table",
+          "head_yaw": "head turned approximately 20 degrees toward 陆叔",
+          "head_pitch": "head level, chin slightly lowered",
+          "eye_target": "eyes on 陆叔 at the dining table",
+          "expression": "quiet, attentive, slightly guarded",
+          "left_hand": "left hand resting on the door frame",
+          "right_hand": "right hand relaxed at her side",
+          "prop_contact": "left hand in contact with the door frame"
+        },
+        "role": "listener",
+        "silent": true,
+        "authority_fingerprint": "160cc699999e3f0375b6872a6124a04f3a720a76997ec3f9f33cc4dde6750574",
+        "reference_roles": [
+          "CHARACTER_FULL",
+          "CHARACTER_FACE"
+        ]
+      },
+      {
+        "character_id": "陆叔",
+        "display_name": "陆叔",
+        "start_state": {
+          "identity": "陆叔",
+          "reference_identity": "餐桌旁",
+          "position": "餐桌旁",
+          "screen_x": "0.68",
+          "depth_zone": "midground",
+          "body_pose": "standing upright beside the dining table",
+          "weight_distribution": "weight evenly distributed on both feet",
+          "torso_direction": "torso facing toward the kitchen door",
+          "head_yaw": "head turned toward 林晚 at the kitchen door",
+          "head_pitch": "head level",
+          "eye_target": "eyes on 林晚",
+          "expression": "steady, composed, expectant",
+          "left_hand": "left hand relaxed at his side",
+          "right_hand": "right hand resting near the edge of the dining table",
+          "prop_contact": "right hand near the edge of the dining table"
+        },
+        "role": "listener",
+        "silent": true,
+        "authority_fingerprint": "c697f425dcf970b59827fd4c91d3701be292efcd317f046c62ca3e50d11a7291",
+        "reference_roles": [
+          "CHARACTER_FULL",
+          "CHARACTER_FACE"
+        ]
+      }
+    ],
+    "props": [],
+    "dialogue": {
+      "mode": "NONE",
+      "speaker_character_id": null,
+      "authoritative_text": "",
+      "language": null,
+      "phrase_windows": [],
+      "silent_character_ids": [
+        "林晚",
+        "陆叔"
+      ],
+      "audio_policy": "SILENCE_REQUESTED",
+      "visual_lipsync_policy": "NO_SPEAKING_MOTION"
+    },
+    "performance_beats": [
+      {
+        "start_time": 0.0,
+        "end_time": 1.2,
+        "actor": "林晚",
+        "body_action": "林晚's torso rotates from facing the kitchen door toward the dining table, ending with her body angled approximately 30 degrees toward 陆叔",
+        "hand_action": "林晚's left hand remains resting on the door frame, maintaining contact without sliding, ending with the palm flat against the frame",
+        "head_action": "林晚's head turns from facing the door frame toward 陆叔, ending with her face directed at him",
+        "eye_action": "林晚's eyes shift from the door frame to 陆叔's face, ending with a steady gaze on him",
+        "facial_action": "林晚's expression settles from neutral into a quiet, attentive look, ending with her lips closed and brows relaxed",
+        "ending_state": "林晚 stands at the kitchen door, torso angled toward the dining table, left hand on the door frame, eyes on 陆叔"
+      },
+      {
+        "start_time": 1.2,
+        "end_time": 2.6,
+        "actor": "陆叔",
+        "body_action": "陆叔's torso shifts from facing the kitchen door toward 林晚, ending with his shoulders squared toward her",
+        "hand_action": "陆叔's right hand lifts slightly from the table edge and settles back down, ending with the fingertips resting on the table surface",
+        "head_action": "陆叔's head tilts slightly downward toward 林晚, ending with his chin lowered a few degrees",
+        "eye_action": "陆叔's eyes hold steady on 林晚's face, ending with an unbroken gaze",
+        "facial_action": "陆叔's expression firms from composed to expectant, ending with his mouth set in a calm line",
+        "ending_state": "陆叔 stands at the dining table, shoulders squared toward 林晚, right hand resting on the table, eyes fixed on her"
+      },
+      {
+        "start_time": 2.6,
+        "end_time": 3.8,
+        "actor": "林晚",
+        "body_action": "林晚's torso leans slightly forward from the door frame, ending with her weight shifted onto her right foot",
+        "hand_action": "林晚's left hand tightens its grip on the door frame, ending with her fingers curled more firmly around the edge",
+        "head_action": "林晚's head lowers slightly, ending with her chin tucked a few degrees toward her chest",
+        "eye_action": "林晚's eyes drop briefly toward the floor, ending with her gaze returning to 陆叔",
+        "facial_action": "林晚's expression softens from guarded to hesitant, ending with her lips gently closed",
+        "ending_state": "林晚 leans slightly forward at the kitchen door, left hand gripping the frame, eyes returning to 陆叔"
+      },
+      {
+        "start_time": 3.8,
+        "end_time": 5.0,
+        "actor": "陆叔",
+        "body_action": "陆叔's torso straightens from the slight forward lean, ending with his posture fully upright",
+        "hand_action": "陆叔's right hand slides a short distance along the table edge, ending with his palm flat on the surface",
+        "head_action": "陆叔's head lifts from the slight downward tilt, ending level with his gaze on 林晚",
+        "eye_action": "陆叔's eyes remain fixed on 林晚, ending with a steady, unwavering look",
+        "facial_action": "陆叔's expression settles from expectant into calm resolve, ending with his features relaxed but firm",
+        "ending_state": "陆叔 stands upright at the dining table, right hand flat on the table, eyes steady on 林晚"
+      }
+    ],
+    "camera_beats": [
+      {
+        "start_time": 0.0,
+        "end_time": 2.5,
+        "movement_type": "slow push-in",
+        "direction": "toward the two characters, drifting slightly toward 陆叔",
+        "speed": "slow and steady",
+        "distance_or_scale_change": "frame tightens from a two-shot to a medium two-shot, scale increasing approximately 10 percent",
+        "target": "林晚 and 陆叔",
+        "start_framing": "wide two-shot, 林晚 at the kitchen door on the left, 陆叔 at the dining table on the right",
+        "end_framing": "medium two-shot, both characters filling more of the frame with the kitchen door and dining table visible",
+        "easing": "linear"
+      },
+      {
+        "start_time": 2.5,
+        "end_time": 5.0,
+        "movement_type": "slow lateral drift",
+        "direction": "drifting left toward 林晚",
+        "speed": "very slow",
+        "distance_or_scale_change": "scale held steady, framing shifts so 林晚 gains more prominence",
+        "target": "林晚, with 陆叔 held in the right of frame",
+        "start_framing": "medium two-shot centered between both characters",
+        "end_framing": "medium shot weighted toward 林晚 at the kitchen door, 陆叔 still visible at the right edge",
+        "easing": "ease-in-out"
+      }
+    ],
+    "ending_state": {
+      "characters": {
+        "林晚": {
+          "position": "厨房门边",
+          "left_hand": "扶门框",
+          "body_pose": "standing, torso angled toward the dining table, left hand gripping the door frame",
+          "eye_target": "eyes on 陆叔",
+          "expression": "hesitant, attentive"
+        },
+        "陆叔": {
+          "position": "餐桌旁",
+          "pose": "站定",
+          "body_pose": "standing upright beside the dining table, right hand flat on the table surface",
+          "eye_target": "eyes on 林晚",
+          "expression": "calm resolve"
+        }
+      },
+      "camera": {
+        "position": "medium shot weighted toward 林晚 at the kitchen door",
+        "framing": "林晚 on the left of frame, 陆叔 visible at the right edge, kitchen door and dining table in frame",
+        "movement": "camera has completed a slow push-in followed by a slow lateral drift left",
+        "focus": "focus held on 林晚, with 陆叔 softly present in the right of frame"
+      }
+    },
+    "reference_requirements": {
+      "mode": "FIRST_FRAME",
+      "roles": [
+        "SCENE_MASTER",
+        "CHARACTER_FULL",
+        "CHARACTER_FACE"
+      ]
+    },
+    "audio_intent": {
+      "dialogue_required": false,
+      "room_tone_allowed": false,
+      "sound_effects_allowed": false,
+      "music_allowed": false
+    },
+    "negative_constraints": [
+      "no additional characters",
+      "no unauthorized props",
+      "preserve scene topology"
+    ]
+  },
+  "compiled": {
+    "compiler_id": "minimax-h3",
+    "compiler_version": "1",
+    "model_family": "minimax-h3",
+    "shot_id": "SH_E01_SC002_007",
+    "source_video_intent_fingerprint": "1135fe679df0bb08449e19c2fd01730ff5499de14010dd13d0a4005205638cce",
+    "prompt": "integrated_multimodal_description:\nCinematic single-take shot SH_E01_SC002_007. Preserve scene topology: 出租公寓厨房.\nCharacters:\nS1: 林晚; role listener; start state position 厨房门边; body pose standing, left hand resting on door frame, body angled slightly toward the dining table; weight distribution weight on right leg, left leg relaxed; torso direction torso turned approximately 30 degrees toward the dining table; head yaw head turned approximately 20 degrees toward 陆叔; head pitch head level, chin slightly lowered; eye target eyes on 陆叔 at the dining table; expression quiet, attentive, slightly guarded; left hand left hand resting on the door frame; right hand right hand relaxed at her side; prop contact left hand in contact with the door frame.\nS2: 陆叔; role listener; start state position 餐桌旁; body pose standing upright beside the dining table; weight distribution weight evenly distributed on both feet; torso direction torso facing toward the kitchen door; head yaw head turned toward 林晚 at the kitchen door; head pitch head level; eye target eyes on 林晚; expression steady, composed, expectant; left hand left hand relaxed at his side; right hand right hand resting near the edge of the dining table; prop contact right hand near the edge of the dining table.\nProps: none.\nPerformance timeline:\nTemporal window [0.0–1.2]\n0.0–1.2s: 林晚 林晚's torso rotates from facing the kitchen door toward the dining table, ending with her body angled approximately 30 degrees toward 陆叔; 林晚's left hand remains resting on the door frame, maintaining contact without sliding, ending with the palm flat against the frame; 林晚's head turns from facing the door frame toward 陆叔, ending with her face directed at him; 林晚's eyes shift from the door frame to 陆叔's face, ending with a steady gaze on him; 林晚's expression settles from neutral into a quiet, attentive look, ending with her lips closed and brows relaxed; 林晚 stands at the kitchen door, torso angled toward the dining table, left hand on the door frame, eyes on 陆叔\nTemporal window [1.2–2.6]\n1.2–2.6s: 陆叔 陆叔's torso shifts from facing the kitchen door toward 林晚, ending with his shoulders squared toward her; 陆叔's right hand lifts slightly from the table edge and settles back down, ending with the fingertips resting on the table surface; 陆叔's head tilts slightly downward toward 林晚, ending with his chin lowered a few degrees; 陆叔's eyes hold steady on 林晚's face, ending with an unbroken gaze; 陆叔's expression firms from composed to expectant, ending with his mouth set in a calm line; 陆叔 stands at the dining table, shoulders squared toward 林晚, right hand resting on the table, eyes fixed on her\nTemporal window [2.6–3.8]\n2.6–3.8s: 林晚 林晚's torso leans slightly forward from the door frame, ending with her weight shifted onto her right foot; 林晚's left hand tightens its grip on the door frame, ending with her fingers curled more firmly around the edge; 林晚's head lowers slightly, ending with her chin tucked a few degrees toward her chest; 林晚's eyes drop briefly toward the floor, ending with her gaze returning to 陆叔; 林晚's expression softens from guarded to hesitant, ending with her lips gently closed; 林晚 leans slightly forward at the kitchen door, left hand gripping the frame, eyes returning to 陆叔\nTemporal window [3.8–5.0]\n3.8–5.0s: 陆叔 陆叔's torso straightens from the slight forward lean, ending with his posture fully upright; 陆叔's right hand slides a short distance along the table edge, ending with his palm flat on the surface; 陆叔's head lifts from the slight downward tilt, ending level with his gaze on 林晚; 陆叔's eyes remain fixed on 林晚, ending with a steady, unwavering look; 陆叔's expression settles from expectant into calm resolve, ending with his features relaxed but firm; 陆叔 stands upright at the dining table, right hand flat on the table, eyes steady on 林晚\nCamera timeline:\n0.0–2.5s: slow push-in toward the two characters, drifting slightly toward 陆叔; target 林晚 and 陆叔; from wide two-shot, 林晚 at the kitchen door on the left, 陆叔 at the dining table on the right to medium two-shot, both characters filling more of the frame with the kitchen door and dining table visible.\n2.5–5.0s: slow lateral drift drifting left toward 林晚; target 林晚, with 陆叔 held in the right of frame; from medium two-shot centered between both characters to medium shot weighted toward 林晚 at the kitchen door, 陆叔 still visible at the right edge.\nDialogue: none.\n完全无对白镜头。\n两位角色全程保持沉默，不得出现明显的对白式张嘴、闭嘴循环。\nAll characters remain silent. No dialogue markup block, no speaker dialogue token, and no speaking-like lip motion.\noverall_soundscape:\nN/A\nnon_diegetic_music:\nN/A\nDuration: 5s total; director intent 5s; terminal hold 0s.\nNegative constraints: no additional characters; no unauthorized props; preserve scene topology.",
+    "duration_seconds": 5,
+    "aspect_ratio": "16:9",
+    "reference_mode": "FIRST_FRAME",
+    "reference_bindings": [
+      {
+        "role": "SCENE_MASTER",
+        "asset_id": ""
+      },
+      {
+        "role": "CHARACTER_FULL",
+        "asset_id": ""
+      },
+      {
+        "role": "CHARACTER_FACE",
+        "asset_id": ""
+      }
+    ],
+    "audio_generation_mode": "SILENCE_REQUESTED",
+    "provider_capability_requirements": {
+      "supports_native_audio": true,
+      "supports_first_frame": true
+    },
+    "warnings": [],
+    "compiled_prompt_sha256": "33f0924b8fde63666b6c6ade7fb3f33a2d60d664e0c16f58ca0d65ce9c67e02c",
+    "compiled_request_fingerprint": "de648268deee100de732b547ce28c8bf78d953d1805a8d44d12ef02063d4ebf5",
+    "prompt_complexity": {
+      "characters": 2,
+      "words": 769,
+      "performance_beats": 4,
+      "camera_beats": 2,
+      "dialogue_length": 0,
+      "blocked": false,
+      "code": null
+    }
+  },
+  "real_provider_calls": {
+    "image": 0,
+    "video": 0
+  }
+}

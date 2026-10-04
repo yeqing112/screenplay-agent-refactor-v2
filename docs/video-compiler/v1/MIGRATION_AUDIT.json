@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "director_decision_ir_unchanged": true,
+  "provider_adapter_owns_transport": true,
+  "duration_owner": "core.shot_readiness.project_provider_duration",
+  "legacy_prompt_bridge": "core.video_provider_prompt_ir.build_video_provider_prompt_ir",
+  "new_compiler": "core.video_compilers.minimax_h3.MiniMaxH3Compiler",
+  "future_models": [
+    "Kling",
+    "Veo",
+    "Seedance"
+  ],
+  "real_image_calls": 0,
+  "real_video_calls": 0
+}

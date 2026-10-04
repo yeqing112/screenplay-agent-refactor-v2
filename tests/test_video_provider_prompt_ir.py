@@ -42,7 +42,7 @@ def test_motion_and_camera_beats_are_projected_from_director_ir():
     assert len(ir.performance_beats) == 4
     assert len(ir.camera_beats) == 2
     assert "[0.0–1.2]" in ir.rendered_prompt
-    assert "[2.5–5.0]" in ir.rendered_prompt
+    assert "[2.6–3.8]" in ir.rendered_prompt
     assert "slow lateral drift" in ir.rendered_prompt
 
 

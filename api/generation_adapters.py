@@ -778,9 +778,9 @@ def _build_75api_minimax_h3_video_payload(
     seconds = _coerce_75api_minimax_h3_seconds(
         duration_seconds if duration_seconds is not None else params.get("seconds") or params.get("duration_seconds") or 5
     )
-    model_name = str(profile.get("model_name") or "minimax_h3_no_audios").strip() or "minimax_h3_no_audios"
-    if model_name != "minimax_h3_no_audios":
-        raise ModelProfileError("75api MiniMax H3 provider 只支持模型 minimax_h3_no_audios。")
+    model_name = str(profile.get("model_name") or "minimax_h3").strip() or "minimax_h3"
+    if model_name not in {"minimax_h3", "minimax_h3_no_audios"}:
+        raise ModelProfileError("75api MiniMax H3 provider 只支持模型 minimax_h3 或 minimax_h3_no_audios。")
     return {
         "model": model_name,
         "prompt": normalized_prompt,
