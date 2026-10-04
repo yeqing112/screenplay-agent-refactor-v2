@@ -1,0 +1,14 @@
+{
+  "LIN_WAN": {
+    "audits": [],
+    "global": {
+      "status": "NOT_RUN"
+    }
+  },
+  "LU_SHU": {
+    "audits": [],
+    "global": {
+      "status": "NOT_RUN"
+    }
+  }
+}

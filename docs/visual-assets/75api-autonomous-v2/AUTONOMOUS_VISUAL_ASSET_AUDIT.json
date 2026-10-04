@@ -1,7 +1,10 @@
 {
-  "schema_version": "75api_autonomous_character_prop_canary_v1",
+  "schema_version": "75api_autonomous_character_prop_canary_v2",
+  "phase": "PHASE_75API_IMAGE_TIMEOUT_HIERARCHY_AND_FRESH_CHARACTER_CANARY",
+  "final_marker": "PHASE_75API_IMAGE_TIMEOUT_HIERARCHY_AND_FRESH_CHARACTER_CANARY_PARTIAL",
+  "run_id": "20261004T102258Z",
   "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL",
-  "failure": "LIN_WAN:STRICT_75API_FAIL_CLOSED:UNKNOWN",
+  "failure": "LIN_WAN:SUBMISSION_UNKNOWN::timeout_evidence={\"connect_timeout_seconds\": 10, \"elapsed_seconds\": 40.106, \"margin_seconds\": 60, \"orchestration_read_timeout_seconds\": 180, \"orchestration_timeout_seconds\": 180, \"pool_timeout_seconds\": 30, \"provider_timeout_seconds\": 120, \"request_finished_at\": 449318.4749267, \"request_started_at\": 449278.3688166, \"timeout_layer\": \"NONE\", \"write_timeout_seconds\": 60}",
   "production_provider_policy": {
     "image_provider": "75api-image",
     "image_model": "gpt-image-2-1k",
@@ -9,8 +12,16 @@
     "video_model": "minimax_h3_no_audios",
     "strict_provider": true
   },
+  "timeout_hierarchy": {
+    "provider_timeout_seconds": 120,
+    "orchestration_read_timeout_seconds": 180,
+    "connect_timeout_seconds": 10,
+    "write_timeout_seconds": 60,
+    "pool_timeout_seconds": 30,
+    "margin_seconds": 60
+  },
   "preflight": {
-    "schema_version": "75api_image_preflight_v1",
+    "schema_version": "75api_image_preflight_v2",
     "status": "PASS",
     "policy": {
       "image_provider": "75api-image",
@@ -83,23 +94,21 @@
       "https"
     ],
     "real_generation_calls": 0,
+    "timeout_hierarchy": {
+      "provider_timeout_seconds": 120,
+      "orchestration_read_timeout_seconds": 180,
+      "connect_timeout_seconds": 10,
+      "write_timeout_seconds": 60,
+      "pool_timeout_seconds": 30,
+      "margin_seconds": 60
+    },
     "connection_probe": {
-      "profile_id": "local-image-c4a7yu",
-      "provider": "75api-image",
-      "model": "gpt-image-2-1k",
-      "operation": "TEXT_TO_IMAGE",
-      "credential_ready": true,
-      "text_to_image": true,
-      "reference_image": true,
-      "connection_probe": "PASS",
-      "model_available": true,
-      "priority": 1,
-      "selected": false,
-      "rejected_reason": "",
-      "probe_message": "75api 连接成功；未发起任何计费图片生成。"
+      "status": "PASS",
+      "message": "75api 连接成功；未发起任何计费图片生成。",
+      "model_available": true
     }
   },
-  "provider_health": {},
+  "characters": {},
   "real_image_calls": 1,
   "real_image_calls_by_provider": {
     "75api-image": 1,
@@ -108,51 +117,17 @@
     "other-image": 0
   },
   "real_video_calls": 0,
+  "publish_staging": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-character-prop-canary-v2\\20261004T102258Z\\publish-staging",
+  "board_publication": {
+    "LIN_WAN": "NOT_PUBLISHED",
+    "LU_SHU": "NOT_PUBLISHED",
+    "HANDBAG": "NOT_PUBLISHED"
+  },
   "safety": {
     "production_writes": 0,
     "book_990400_writes": 0,
     "browser_direct_provider_calls": 0,
     "secret_leaks": 0,
     "orphans": 0
-  },
-  "failure_classification": "SUBMISSION_AMBIGUOUS",
-  "post_submission_state": "AMBIGUOUS_AFTER_SEND",
-  "retry_blocked": true,
-  "stage_stopped": "LIN_WAN",
-  "task_id": "ffa4881c08be",
-  "provider_error": "75api 图片生成失败：请求超时。",
-  "reference_validation": {
-    "multi_reference_real_call_completed": false,
-    "data_uri_real_call_completed": false,
-    "reason": "MASTER timed out before any derived reference call"
-  },
-  "stale_board_handling": {
-    "status": "STALE_NON_AUTHORITATIVE_ARTIFACT",
-    "source_commit": "de83476",
-    "formal_directory_boards_present": false,
-    "historical_path": "historical-invalid-artifacts/de83476",
-    "authority_inclusion": false
-  },
-  "publication_rule": {
-    "partial_run": "NOT_PUBLISHED",
-    "ready_authority": "ATOMIC_PUBLISH_ONLY"
-  },
-  "framing_policy": {
-    "character_face": {
-      "requested": "1:1",
-      "provider": "1:1"
-    },
-    "character_full": {
-      "requested": "2:3",
-      "provider": "9:16",
-      "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio"
-    },
-    "prop": "1:1",
-    "scene": "16:9"
-  },
-  "lifecycle_status": "CLOSED_SUBMISSION_AMBIGUOUS",
-  "retry_allowed": false,
-  "resume_allowed": false,
-  "reuse_allowed": false,
-  "closure_record": "CLOSED_SUBMISSION_AMBIGUOUS.json"
-}\n
+  }
+}

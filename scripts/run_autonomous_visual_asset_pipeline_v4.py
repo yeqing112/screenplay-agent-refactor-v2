@@ -51,6 +51,7 @@ from core.autonomous_visual_assets import (  # noqa: E402
 from core.autonomous_asset_generation import MediaEvidenceBinding  # noqa: E402
 from core.production_provider_policy import ProductionProviderPolicy  # noqa: E402
 from core.asset_view_framing import AssetViewFramingPolicy  # noqa: E402
+from core.generation_timeout import GenerationTimeoutHierarchy, classify_timeout_layer, timeout_evidence  # noqa: E402
 from scripts.run_asset_media_canary_v1 import _free_port, _image_meta, _redact, _wait_for_health, _write  # noqa: E402
 from scripts.run_autonomous_scene_asset_pipeline_v1 import (  # noqa: E402
     BOOK_ID,
@@ -84,10 +85,12 @@ HANDBAG = {
 
 
 class ProviderSubmissionError(RuntimeError):
-    def __init__(self, message: str, *, state: PostSubmissionState, task_created: bool = False):
+    def __init__(self, message: str, *, state: PostSubmissionState, task_created: bool = False, timeout_evidence: dict[str, Any] | None = None, configuration_error: str | None = None):
         super().__init__(message)
         self.post_submission_state = state
         self.task_created = task_created
+        self.timeout_evidence = timeout_evidence or {}
+        self.configuration_error = configuration_error
 
 
 def _sha(value: Any) -> str:
@@ -254,9 +257,10 @@ def _prop_derived_prompt(prop: Mapping[str, Any], view_id: str, violations: list
     return f"参考图是同一只 HANDBAG 的权威 HERO。{prop['description']}。{view}。严格保持同一包型、同一比例、同一材质、同一深棕色、同一提手、同一对黄铜扣件、同一金属件和同一磨损状态，只改变摄影机角度和裁切。不得重新设计道具。单张图，不要人物、手、多个包、拼图、文字或水印。{repair}"
 
 
-async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id: str, asset_type: str, asset_id: str, view_id: str, prompt: str, output: Path, refs: list[dict[str, Any]] | None = None, framing: Mapping[str, Any] | None = None) -> dict[str, Any]:
+async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id: str, asset_type: str, asset_id: str, view_id: str, prompt: str, output: Path, refs: list[dict[str, Any]] | None = None, framing: Mapping[str, Any] | None = None, timeout_hierarchy: GenerationTimeoutHierarchy | None = None) -> dict[str, Any]:
     refs = refs or []
     framing = dict(framing or AssetViewFramingPolicy.for_view(asset_type, view_id).as_dict())
+    timeout_hierarchy = timeout_hierarchy or GenerationTimeoutHierarchy.from_profile({})
     payload = {
         "book_id": BOOK_ID, "episode": EPISODE, "shot_id": f"AUTO_ASSET_V4_{asset_type}_{asset_id}_{view_id}",
         "source_node_id": f"autonomous-asset-v4:{asset_type}:{asset_id}:{view_id}", "source_asset_id": None,
@@ -266,13 +270,18 @@ async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id:
         "count": 1, "confirmed": True, "allow_external_call": True,
     }
     sent = False
+    request_started = time.monotonic()
     try:
         sent = True
-        response = await client.post(f"{base_url}/api/prototyping/generate-reference-image", json=payload)
+        response = await client.post(f"{base_url}/api/prototyping/generate-reference-image", json=payload, timeout=timeout_hierarchy.httpx_timeout())
         response.raise_for_status()
     except Exception as exc:
+        request_finished = time.monotonic()
+        elapsed = max(0.0, request_finished - request_started)
+        layer, config_error = classify_timeout_layer(exc, hierarchy=timeout_hierarchy, elapsed_seconds=elapsed)
+        evidence = timeout_evidence(timeout_hierarchy, request_started_at=request_started, request_finished_at=request_finished, timeout_layer=layer)
         state = PostSubmissionState.AMBIGUOUS_AFTER_SEND if sent else PostSubmissionState.NOT_SENT
-        raise ProviderSubmissionError(str(exc), state=state) from exc
+        raise ProviderSubmissionError(str(exc), state=state, timeout_evidence=evidence, configuration_error=config_error) from exc
     task_id = str(response.json().get("task_id") or "")
     if not task_id:
         raise ProviderSubmissionError("provider task id missing after POST", state=PostSubmissionState.TASK_NOT_CONFIRMED)
@@ -286,12 +295,17 @@ async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id:
                 break
             await asyncio.sleep(2)
     except Exception as exc:
-        raise ProviderSubmissionError(str(exc), state=PostSubmissionState.AMBIGUOUS_AFTER_SEND, task_created=True) from exc
+        finished = time.monotonic()
+        evidence = timeout_evidence(timeout_hierarchy, request_started_at=request_started, request_finished_at=finished, timeout_layer="NETWORK")
+        raise ProviderSubmissionError(str(exc), state=PostSubmissionState.AMBIGUOUS_AFTER_SEND, task_created=True, timeout_evidence=evidence) from exc
     if task.get("status") != "done":
         message = str(task.get("error") or task.get("status") or "generation failed")
         classification = classify_provider_failure(message)
-        state = PostSubmissionState.REJECTED_BEFORE_TASK if classification in {ProviderFailureClassification.CREDITS_INSUFFICIENT, ProviderFailureClassification.CHANNEL_UNAVAILABLE, ProviderFailureClassification.MODEL_UNAVAILABLE, ProviderFailureClassification.AUTH_FAILED} else PostSubmissionState.TASK_CONFIRMED
-        raise ProviderSubmissionError(message, state=state, task_created=True)
+        finished = time.monotonic()
+        provider_timeout = "超时" in message or "timeout" in message.lower() or "timed out" in message.lower()
+        state = PostSubmissionState.AMBIGUOUS_AFTER_SEND if provider_timeout else PostSubmissionState.REJECTED_BEFORE_TASK if classification in {ProviderFailureClassification.CREDITS_INSUFFICIENT, ProviderFailureClassification.CHANNEL_UNAVAILABLE, ProviderFailureClassification.MODEL_UNAVAILABLE, ProviderFailureClassification.AUTH_FAILED} else PostSubmissionState.TASK_CONFIRMED
+        evidence = timeout_evidence(timeout_hierarchy, request_started_at=request_started, request_finished_at=finished, timeout_layer="PROVIDER" if provider_timeout else "NONE")
+        raise ProviderSubmissionError(message, state=state, task_created=True, timeout_evidence=evidence)
     asset = task.get("asset") or {}; persistence = (asset.get("metadata") or {}).get("generatedImagePersistence") or {}; local_path = Path(str(persistence.get("local_path") or ""))
     if local_path.exists():
         shutil.copy2(local_path, output)
@@ -318,7 +332,9 @@ async def _submit_asset(client: httpx.AsyncClient, base_url: str, *, profile_id:
                 provider_reference_order_matches = False
                 break
     input_formats = ["data_uri" if str(item.get("image_url") or "").startswith("data:image/") else "https" if str(item.get("image_url") or "").startswith("https://") else "other" for item in refs]
-    return {"view_id": view_id, "execution_id": task_id, "generation_execution_id": task_id, "provider": task.get("provider"), "model_profile_id": task.get("model_profile_id") or profile_id, "candidate_status": "CANDIDATE", "prompt_fingerprint": _sha(prompt), "reference_image_count": len(refs), "reference_image_sha256": canonical_reference_sha[0] if canonical_reference_sha else "", "reference_image_sha256s": canonical_reference_sha, "reference_order": canonical_reference_order, "reference_input_formats": input_formats, "reference_role": refs[0].get("role") if refs else "", "reference_purpose": refs[0].get("reference_purpose") if refs else "", "provider_inline_reference_attached": bool(refs) and ("images" in provider_payload or "inlineData" in serialized or "inline_data" in serialized), "provider_reference_order_matches": provider_reference_order_matches, "provider_payload_reference_count": len(provider_images), "provider_request_payload": _redact(provider_payload), "requested_aspect_ratio": framing["requested_aspect_ratio"], "provider_aspect_ratio": framing["provider_aspect_ratio"], "projection_reason": framing["projection_reason"], "framing_class": framing["framing_class"], "file": {**_image_meta(output), "sha256": sha}, "sha256": sha, "fingerprint": sha, "path": str(output)}
+    finished = time.monotonic()
+    evidence = timeout_evidence(timeout_hierarchy, request_started_at=request_started, request_finished_at=finished, timeout_layer="NONE")
+    return {"view_id": view_id, "execution_id": task_id, "generation_execution_id": task_id, "provider": task.get("provider"), "model_profile_id": task.get("model_profile_id") or profile_id, "candidate_status": "CANDIDATE", "prompt_fingerprint": _sha(prompt), "reference_image_count": len(refs), "reference_image_sha256": canonical_reference_sha[0] if canonical_reference_sha else "", "reference_image_sha256s": canonical_reference_sha, "reference_order": canonical_reference_order, "reference_input_formats": input_formats, "reference_role": refs[0].get("role") if refs else "", "reference_purpose": refs[0].get("reference_purpose") if refs else "", "provider_inline_reference_attached": bool(refs) and ("images" in provider_payload or "inlineData" in serialized or "inline_data" in serialized), "provider_reference_order_matches": provider_reference_order_matches, "provider_payload_reference_count": len(provider_images), "provider_request_payload": _redact(provider_payload), "requested_aspect_ratio": framing["requested_aspect_ratio"], "provider_aspect_ratio": framing["provider_aspect_ratio"], "projection_reason": framing["projection_reason"], "framing_class": framing["framing_class"], "timeout_evidence": evidence, "file": {**_image_meta(output), "sha256": sha}, "sha256": sha, "fingerprint": sha, "path": str(output)}
 
 
 def _evidence(view_id: str, attempt: int, primary: Mapping[str, Any], derived: Mapping[str, Any], judge_profile: Mapping[str, Any], judge: Mapping[str, Any], request_fp: str, response_fp: str, scores: dict[str, int]) -> MediaEvidenceBinding:
@@ -397,6 +413,9 @@ async def _run_asset(
     traces: list[dict[str, Any]],
     events: list[dict[str, Any]],
     policy: ProductionProviderPolicy,
+    existing_master: dict[str, Any] | None = None,
+    existing_profile: dict[str, Any] | None = None,
+    master_attempts_override: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     asset_id = str(asset["id"])
     name = str(asset["name"])
@@ -409,33 +428,35 @@ async def _run_asset(
     if not candidates:
         raise RuntimeError(f"{asset_id}:PRODUCTION_PROVIDER_POLICY_NO_CANDIDATE")
 
-    selected_profile: dict[str, Any] | None = None
-    master: dict[str, Any] | None = None
-    master_attempts: list[dict[str, Any]] = []
-    for row in candidates:
-        profile = next((item for item in all_profiles if str(item.get("id")) == row.profile_id), {})
-        policy.assert_image_profile(profile)
-        if call_counter["used"] >= CANARY_BUDGET["total"]:
-            raise RuntimeError("AUTONOMOUS_CHARACTER_PROP_CANARY_BUDGET_EXCEEDED")
-        call_counter["used"] += 1
-        call_counter["by_provider"][str(row.provider)] = call_counter["by_provider"].get(str(row.provider), 0) + 1
-        try:
-            master = await _submit_asset(
-                client, base_url, profile_id=row.profile_id, asset_type=kind,
-                asset_id=asset_id, view_id="MASTER", prompt=master_prompt,
-                output=paths["MASTER"], refs=[], framing=AssetViewFramingPolicy.for_view(kind, "MASTER").as_dict(),
-            )
-            selected_profile = profile
-            master_attempts.append({"provider": row.provider, "model": row.model, "status": "SUCCEEDED", "execution_id": master["execution_id"], "post_submission_state": PostSubmissionState.TASK_CONFIRMED.value})
-            events.append({"kind": "MASTER_SELECTED", "asset": asset_id, **master_attempts[-1]})
-            break
-        except ProviderSubmissionError as exc:
-            classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
-            row_data = {"provider": row.provider, "model": row.model, "status": "FAILED", "classification": classification.value, "post_submission_state": exc.post_submission_state.value, "task_created": exc.task_created, "error": str(exc)[:500]}
-            master_attempts.append(row_data)
-            events.append({"kind": "MASTER_FAILED", "asset": asset_id, **row_data})
-            # Strict production policy intentionally has no image fallback.
-            raise RuntimeError(f"{asset_id}:STRICT_75API_FAIL_CLOSED:{classification.value}") from exc
+    selected_profile: dict[str, Any] | None = existing_profile
+    master: dict[str, Any] | None = existing_master
+    master_attempts: list[dict[str, Any]] = list(master_attempts_override or [])
+    if master is None or selected_profile is None:
+        for row in candidates:
+            profile = next((item for item in all_profiles if str(item.get("id")) == row.profile_id), {})
+            policy.assert_image_profile(profile)
+            if call_counter["used"] >= CANARY_BUDGET["total"]:
+                raise RuntimeError("AUTONOMOUS_CHARACTER_PROP_CANARY_BUDGET_EXCEEDED")
+            call_counter["used"] += 1
+            call_counter["by_provider"][str(row.provider)] = call_counter["by_provider"].get(str(row.provider), 0) + 1
+            try:
+                master = await _submit_asset(
+                    client, base_url, profile_id=row.profile_id, asset_type=kind,
+                    asset_id=asset_id, view_id="MASTER", prompt=master_prompt,
+                    output=paths["MASTER"], refs=[], framing=AssetViewFramingPolicy.for_view(kind, "MASTER").as_dict(), timeout_hierarchy=GenerationTimeoutHierarchy.from_profile(profile),
+                )
+                selected_profile = profile
+                master_attempts.append({"provider": row.provider, "model": row.model, "status": "SUCCEEDED", "execution_id": master["execution_id"], "post_submission_state": PostSubmissionState.TASK_CONFIRMED.value})
+                events.append({"kind": "MASTER_SELECTED", "asset": asset_id, **master_attempts[-1]})
+                break
+            except ProviderSubmissionError as exc:
+                classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
+                row_data = {"provider": row.provider, "model": row.model, "status": "FAILED", "classification": classification.value, "post_submission_state": exc.post_submission_state.value, "task_created": exc.task_created, "error": str(exc)[:500], "timeout_evidence": exc.timeout_evidence, "configuration_error": exc.configuration_error}
+                master_attempts.append(row_data)
+                events.append({"kind": "MASTER_FAILED", "asset": asset_id, **row_data})
+                # Strict production policy intentionally has no image fallback.
+                code = exc.configuration_error or classification.value
+                raise RuntimeError(f"{asset_id}:STRICT_75API_FAIL_CLOSED:{code}:timeout_evidence={json.dumps(exc.timeout_evidence, ensure_ascii=False, sort_keys=True)}") from exc
 
     if not master or not selected_profile:
         raise RuntimeError(f"{asset_id}:MASTER_PROVIDER_POOL_EXHAUSTED")
@@ -496,10 +517,11 @@ async def _run_asset(
         call_counter["by_provider"][PRODUCTION_POLICY.image_provider] = call_counter["by_provider"].get(PRODUCTION_POLICY.image_provider, 0) + 1
         prompt = derived_prompt(asset, view_id)
         try:
-            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs, framing=AssetViewFramingPolicy.for_view(kind, view_id).as_dict())
+            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs, framing=AssetViewFramingPolicy.for_view(kind, view_id).as_dict(), timeout_hierarchy=GenerationTimeoutHierarchy.from_profile(selected_profile))
         except ProviderSubmissionError as exc:
             classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
-            raise RuntimeError(f"{asset_id}:{view_id}:STRICT_75API_FAIL_CLOSED:{classification.value}:post_submission_state={exc.post_submission_state.value}") from exc
+            code = exc.configuration_error or classification.value
+            raise RuntimeError(f"{asset_id}:{view_id}:STRICT_75API_FAIL_CLOSED:{code}:post_submission_state={exc.post_submission_state.value}:timeout_evidence={json.dumps(exc.timeout_evidence, ensure_ascii=False, sort_keys=True)}") from exc
         assert_reference_lineage(media, refs, view_id)
         generations[view_id] = media
         status, judge, req, resp = _judge_pair(kind, judge_profile, paths[refs[0]["reference_name"].rsplit("_", 1)[-1]], paths[view_id], view_id, description)
@@ -519,10 +541,11 @@ async def _run_asset(
         call_counter["by_provider"][PRODUCTION_POLICY.image_provider] = call_counter["by_provider"].get(PRODUCTION_POLICY.image_provider, 0) + 1
         prompt = derived_prompt(asset, view_id, audit.violations + (audit.critical_identity_violations if kind == "CHARACTER" else audit.critical_object_violations))
         try:
-            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs, framing=AssetViewFramingPolicy.for_view(kind, view_id).as_dict())
+            media = await _submit_asset(client, base_url, profile_id=selected_profile["id"], asset_type=kind, asset_id=asset_id, view_id=view_id, prompt=prompt, output=paths[view_id], refs=refs, framing=AssetViewFramingPolicy.for_view(kind, view_id).as_dict(), timeout_hierarchy=GenerationTimeoutHierarchy.from_profile(selected_profile))
         except ProviderSubmissionError as exc:
             classification = classify_provider_failure(exc, post_submission_state=exc.post_submission_state)
-            raise RuntimeError(f"{asset_id}:{view_id}:REPAIR_STRICT_75API_FAIL_CLOSED:{classification.value}") from exc
+            code = exc.configuration_error or classification.value
+            raise RuntimeError(f"{asset_id}:{view_id}:REPAIR_STRICT_75API_FAIL_CLOSED:{code}:timeout_evidence={json.dumps(exc.timeout_evidence, ensure_ascii=False, sort_keys=True)}") from exc
         assert_reference_lineage(media, refs, view_id)
         generations[view_id] = media
         status, judge, req, resp = _judge_pair(kind, judge_profile, paths[refs[0]["reference_name"].rsplit("_", 1)[-1]], paths[view_id], view_id, description)
@@ -638,7 +661,10 @@ def main() -> int:
             results[asset_id]["board"] = _board({key: paths[key] for key in keys}, staging / f"{asset_id.lower().replace('_', '-')}-reference-board.png", ["FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_FRONT", "FULL_SIDE", "FULL_BACK"], 3, run_id=run_id, authority=results[asset_id]["authority"])
 
         async def run_all() -> None:
-            async with httpx.AsyncClient(timeout=60, trust_env=False) as client:
+            # Ordinary health, polling and metadata requests stay short.  The
+            # generation POST receives a per-request timeout derived from the
+            # selected provider profile inside _submit_asset.
+            async with httpx.AsyncClient(timeout=httpx.Timeout(connect=10, read=30, write=30, pool=30), trust_env=False) as client:
                 for character in (CHARACTERS[0], CHARACTERS[1]):
                     keys = ["MASTER", "FULL_FRONT", "FACE_FRONT", "FACE_PROFILE", "FACE_45", "FULL_SIDE", "FULL_BACK"]
                     paths = {key: work / f"{character['id'].lower()}-{key.lower()}.jpg" for key in keys}

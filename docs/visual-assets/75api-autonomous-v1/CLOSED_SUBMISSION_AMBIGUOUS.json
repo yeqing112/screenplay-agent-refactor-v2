@@ -1,0 +1,11 @@
+{
+  "schema_version": "submission_closure_v1",
+  "run_id": "de83476",
+  "source_commit": "de83476",
+  "status": "CLOSED_SUBMISSION_AMBIGUOUS",
+  "retry_allowed": false,
+  "resume_allowed": false,
+  "reuse_allowed": false,
+  "evidence_preserved": "historical-invalid-artifacts/de83476",
+  "reason": "75api IMAGE POST returned timeout after submission; task outcome was not confirmed"
+}

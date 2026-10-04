@@ -1,0 +1,35 @@
+{
+  "run_id": "20261004T102258Z",
+  "events": [
+    {
+      "kind": "MASTER_STARTED",
+      "asset": "LIN_WAN",
+      "run_id": "20261004T102258Z",
+      "attempt": 1,
+      "provider": "75api-image",
+      "model": "gpt-image-2-1k"
+    },
+    {
+      "kind": "MASTER_FAILED",
+      "asset": "LIN_WAN",
+      "classification": "UNKNOWN",
+      "post_submission_state": "TASK_CONFIRMED",
+      "task_created": true,
+      "timeout_evidence": {
+        "provider_timeout_seconds": 120,
+        "orchestration_read_timeout_seconds": 180,
+        "connect_timeout_seconds": 10,
+        "write_timeout_seconds": 60,
+        "pool_timeout_seconds": 30,
+        "margin_seconds": 60,
+        "orchestration_timeout_seconds": 180,
+        "request_started_at": 449278.3688166,
+        "request_finished_at": 449318.4749267,
+        "elapsed_seconds": 40.106,
+        "timeout_layer": "NONE"
+      },
+      "configuration_error": null,
+      "error": "75api 图片 provider 没有返回可用图片数据。"
+    }
+  ]
+}
