@@ -1,8 +1,8 @@
 {
   "schema_version": "asset_semantic_purity_audit_v1",
-  "run_id": "20261004T142118Z",
+  "run_id": "20261004T142925Z",
   "status": "AUTONOMOUS_VISUAL_ASSET_PIPELINE_PARTIAL",
-  "failure": "LIN_WAN:FACE_45:SEMANTIC_GATE_FAILED",
+  "failure": "LU_SHU:FACE_45:SEMANTIC_GATE_FAILED",
   "production_provider_policy": {
     "image_provider": "75api-image",
     "image_model": "gpt-image-2-1k",
@@ -16,7 +16,7 @@
     "identity_consistency": "PASS",
     "semantic_purity": "FAIL",
     "unauthorized_props": [
-      "shoulder bag"
+      "black shoulder bag"
     ],
     "audit": {
       "view_id": "MASTER",
@@ -31,11 +31,11 @@
         "narrow wristwatch"
       ],
       "detected_props": [
-        "shoulder bag"
+        "black shoulder bag"
       ],
       "unauthorized_accessories": [],
       "unauthorized_props": [
-        "shoulder bag"
+        "black shoulder bag"
       ],
       "extra_people": false,
       "text_or_watermark": false,
@@ -43,7 +43,7 @@
       "framing_compliance": 100,
       "critical_view_violation": [],
       "violations": [
-        "Unauthorized prop detected: shoulder bag (black bag strap and bag body visible on the left shoulder/side)."
+        "Unauthorized prop/accessory detected: black shoulder bag (shoulder bag is explicitly forbidden)."
       ],
       "judge_status": "VISION_JUDGE_EXECUTED",
       "attempt_number": 1,
@@ -51,7 +51,7 @@
       "score_scale": "0-100"
     },
     "request_fingerprint": "850051ed29d51443400950727663dbf875efbd62bb88a906629606188c2d04ba",
-    "response_fingerprint": "23088d75e17039b776ca1d78a7970249841d2fd453823432d7b47a8ed63ff1c2",
+    "response_fingerprint": "1092d8f2a9876bf087557a9bcd3cf6dc064a00d4b20ae67a391d4d4660d3426f",
     "raw_judge": {
       "status": "FAIL",
       "canonical_identity_match": 95,
@@ -63,23 +63,2068 @@
         "narrow wristwatch"
       ],
       "detected_props": [
-        "shoulder bag"
+        "black shoulder bag"
       ],
       "unauthorized_accessories": [],
       "unauthorized_props": [
-        "shoulder bag"
+        "black shoulder bag"
       ],
       "extra_people": 0,
       "text_or_watermark": 0,
       "view_pose_compliance": 100,
       "framing_compliance": 100,
-      "critical_view_violation": false,
+      "critical_view_violation": 0,
       "violations": [
-        "Unauthorized prop detected: shoulder bag (black bag strap and bag body visible on the left shoulder/side)."
+        "Unauthorized prop/accessory detected: black shoulder bag (shoulder bag is explicitly forbidden)."
       ]
     }
   },
-  "characters": {},
+  "characters": {
+    "LIN_WAN": {
+      "asset_id": "LIN_WAN",
+      "name": "林晚",
+      "kind": "CHARACTER",
+      "master": {
+        "view_id": "MASTER",
+        "execution_id": "2946d0e28cba",
+        "generation_execution_id": "2946d0e28cba",
+        "provider": "75api-image",
+        "model_profile_id": "local-image-c4a7yu",
+        "candidate_status": "CANDIDATE",
+        "prompt_fingerprint": "a7cc9dc23551fe8ed1cf067d1c3b2d550e7f3b5256a2e340c1f336e63586b540",
+        "reference_image_count": 0,
+        "reference_image_sha256": "",
+        "reference_image_sha256s": [],
+        "reference_asset_ids": [],
+        "reference_order": [],
+        "reference_input_formats": [],
+        "reference_role": "",
+        "reference_purpose": "",
+        "provider_inline_reference_attached": false,
+        "provider_reference_order_matches": true,
+        "provider_payload_reference_count": 0,
+        "provider_request_payload": {
+          "model": "gpt-image-2-1k",
+          "prompt": "单张写实电影角色定妆参考图，约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。角色名是林晚。全身正面、标准中性站姿、正脸可辨、纯净中性灰背景、稳定柔光。一次只生成一个人物，不要六宫格，不要拼图，不要文字。MASTER 必须锁定 face identity、hair、body proportions、costume、accessories，保持自然比例和完整鞋子。 只展示人物本人。人物身上、肩部、手中和周围不得出现任何剧情道具。不得出现包、肩包、挎包、背包、手提包、包带、雨伞、手机、文件、购物袋或任何未声明物体。唯一允许的配饰是 canonical profile 明确声明的窄表。",
+          "n": 1,
+          "size": "auto",
+          "quality": "high",
+          "response_format": "url",
+          "aspect_ratio": "9:16"
+        },
+        "provider_response_shape": {
+          "response_type": "dict",
+          "top_level_keys": [
+            "model",
+            "url"
+          ],
+          "field_shapes": {
+            "model": "string",
+            "url": "string"
+          },
+          "nested_keys": {},
+          "list_lengths": {},
+          "candidate_media_paths": [
+            "url"
+          ],
+          "string_length_metadata": {
+            "model": {
+              "type": "string",
+              "length": 11,
+              "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+            },
+            "url": {
+              "type": "https_url",
+              "scheme": "https",
+              "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+              "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+              "has_query": false
+            }
+          },
+          "provider_http_status": 200
+        },
+        "provider_response_fingerprint": "3c95db5489fde10d6ab137726613a4af140b70082090c4382988c6a15ed551f1",
+        "provider_response_media_path": "url",
+        "provider_http_status": 200,
+        "provider_response": {
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "3c95db5489fde10d6ab137726613a4af140b70082090c4382988c6a15ed551f1",
+          "provider_http_status": 200,
+          "redacted_response": {
+            "model": "gpt-image-2",
+            "url": {
+              "type": "https_url",
+              "scheme": "https",
+              "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+              "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+              "has_query": false
+            }
+          }
+        },
+        "requested_aspect_ratio": "2:3",
+        "submitted_aspect_ratio": "9:16",
+        "provider_aspect_ratio": "9:16",
+        "observed_width": 1024,
+        "observed_height": 1536,
+        "observed_aspect_ratio": "2:3",
+        "provider_ratio_honored": false,
+        "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+        "framing_class": "FULL_BODY",
+        "timeout_evidence": {
+          "provider_timeout_seconds": 120,
+          "orchestration_read_timeout_seconds": 180,
+          "connect_timeout_seconds": 10,
+          "write_timeout_seconds": 60,
+          "pool_timeout_seconds": 30,
+          "margin_seconds": 60,
+          "orchestration_timeout_seconds": 180,
+          "request_started_at": 464068.1475352,
+          "request_finished_at": 464106.5096856,
+          "elapsed_seconds": 38.362,
+          "timeout_layer": "NONE"
+        },
+        "file": {
+          "file": "lin_wan-master.jpg",
+          "bytes": 2000588,
+          "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "width": 1024,
+          "height": 1536,
+          "format": "PNG"
+        },
+        "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+        "fingerprint": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+        "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-master.jpg",
+        "semantic_audit": {
+          "view_id": "MASTER",
+          "asset_type": "CHARACTER",
+          "status": "PASS",
+          "canonical_identity_match": true,
+          "canonical_costume_match": true,
+          "allowed_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_props": [],
+          "unauthorized_accessories": [],
+          "unauthorized_props": [],
+          "extra_people": false,
+          "text_or_watermark": false,
+          "view_pose_compliance": 95,
+          "framing_compliance": 95,
+          "critical_view_violation": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+          "score_scale": "0-100"
+        },
+        "semantic_request_fingerprint": "00ed9aa1a0f2497c58c754c07ea6402df7885b2f277d7f14864a1c859a041f93",
+        "semantic_response_fingerprint": "f0516b09f36f8bf08ffa5e53b3c0ebfd70c0b874c5580f7f4e147e9f7d8e4f6a"
+      },
+      "master_semantic": {
+        "view_id": "MASTER",
+        "asset_type": "CHARACTER",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_props": [],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 95,
+        "framing_compliance": 95,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "score_scale": "0-100"
+      },
+      "master_attempts": [
+        {
+          "attempt": 1,
+          "execution_id": "2946d0e28cba",
+          "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "semantic_status": "PASS",
+          "unauthorized_props": []
+        }
+      ],
+      "generations": {
+        "MASTER": {
+          "view_id": "MASTER",
+          "execution_id": "2946d0e28cba",
+          "generation_execution_id": "2946d0e28cba",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "a7cc9dc23551fe8ed1cf067d1c3b2d550e7f3b5256a2e340c1f336e63586b540",
+          "reference_image_count": 0,
+          "reference_image_sha256": "",
+          "reference_image_sha256s": [],
+          "reference_asset_ids": [],
+          "reference_order": [],
+          "reference_input_formats": [],
+          "reference_role": "",
+          "reference_purpose": "",
+          "provider_inline_reference_attached": false,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 0,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "单张写实电影角色定妆参考图，约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。角色名是林晚。全身正面、标准中性站姿、正脸可辨、纯净中性灰背景、稳定柔光。一次只生成一个人物，不要六宫格，不要拼图，不要文字。MASTER 必须锁定 face identity、hair、body proportions、costume、accessories，保持自然比例和完整鞋子。 只展示人物本人。人物身上、肩部、手中和周围不得出现任何剧情道具。不得出现包、肩包、挎包、背包、手提包、包带、雨伞、手机、文件、购物袋或任何未声明物体。唯一允许的配饰是 canonical profile 明确声明的窄表。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "9:16"
+          },
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "3c95db5489fde10d6ab137726613a4af140b70082090c4382988c6a15ed551f1",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "provider_response": {
+            "provider_response_shape": {
+              "response_type": "dict",
+              "top_level_keys": [
+                "model",
+                "url"
+              ],
+              "field_shapes": {
+                "model": "string",
+                "url": "string"
+              },
+              "nested_keys": {},
+              "list_lengths": {},
+              "candidate_media_paths": [
+                "url"
+              ],
+              "string_length_metadata": {
+                "model": {
+                  "type": "string",
+                  "length": 11,
+                  "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+                },
+                "url": {
+                  "type": "https_url",
+                  "scheme": "https",
+                  "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                  "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+                  "has_query": false
+                }
+              },
+              "provider_http_status": 200
+            },
+            "provider_response_fingerprint": "3c95db5489fde10d6ab137726613a4af140b70082090c4382988c6a15ed551f1",
+            "provider_http_status": 200,
+            "redacted_response": {
+              "model": "gpt-image-2",
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+                "has_query": false
+              }
+            }
+          },
+          "requested_aspect_ratio": "2:3",
+          "submitted_aspect_ratio": "9:16",
+          "provider_aspect_ratio": "9:16",
+          "observed_width": 1024,
+          "observed_height": 1536,
+          "observed_aspect_ratio": "2:3",
+          "provider_ratio_honored": false,
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL_BODY",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 464068.1475352,
+            "request_finished_at": 464106.5096856,
+            "elapsed_seconds": 38.362,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin_wan-master.jpg",
+            "bytes": 2000588,
+            "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "fingerprint": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-master.jpg",
+          "semantic_audit": {
+            "view_id": "MASTER",
+            "asset_type": "CHARACTER",
+            "status": "PASS",
+            "canonical_identity_match": true,
+            "canonical_costume_match": true,
+            "allowed_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_props": [],
+            "unauthorized_accessories": [],
+            "unauthorized_props": [],
+            "extra_people": false,
+            "text_or_watermark": false,
+            "view_pose_compliance": 95,
+            "framing_compliance": 95,
+            "critical_view_violation": [],
+            "violations": [],
+            "judge_status": "VISION_JUDGE_EXECUTED",
+            "attempt_number": 1,
+            "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+            "score_scale": "0-100"
+          },
+          "semantic_request_fingerprint": "00ed9aa1a0f2497c58c754c07ea6402df7885b2f277d7f14864a1c859a041f93",
+          "semantic_response_fingerprint": "f0516b09f36f8bf08ffa5e53b3c0ebfd70c0b874c5580f7f4e147e9f7d8e4f6a"
+        },
+        "FULL_FRONT": {
+          "view_id": "MASTER",
+          "execution_id": "2946d0e28cba",
+          "generation_execution_id": "2946d0e28cba",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "a7cc9dc23551fe8ed1cf067d1c3b2d550e7f3b5256a2e340c1f336e63586b540",
+          "reference_image_count": 0,
+          "reference_image_sha256": "",
+          "reference_image_sha256s": [],
+          "reference_asset_ids": [],
+          "reference_order": [],
+          "reference_input_formats": [],
+          "reference_role": "",
+          "reference_purpose": "",
+          "provider_inline_reference_attached": false,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 0,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "单张写实电影角色定妆参考图，约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。角色名是林晚。全身正面、标准中性站姿、正脸可辨、纯净中性灰背景、稳定柔光。一次只生成一个人物，不要六宫格，不要拼图，不要文字。MASTER 必须锁定 face identity、hair、body proportions、costume、accessories，保持自然比例和完整鞋子。 只展示人物本人。人物身上、肩部、手中和周围不得出现任何剧情道具。不得出现包、肩包、挎包、背包、手提包、包带、雨伞、手机、文件、购物袋或任何未声明物体。唯一允许的配饰是 canonical profile 明确声明的窄表。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "9:16"
+          },
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "3c95db5489fde10d6ab137726613a4af140b70082090c4382988c6a15ed551f1",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "provider_response": {
+            "provider_response_shape": {
+              "response_type": "dict",
+              "top_level_keys": [
+                "model",
+                "url"
+              ],
+              "field_shapes": {
+                "model": "string",
+                "url": "string"
+              },
+              "nested_keys": {},
+              "list_lengths": {},
+              "candidate_media_paths": [
+                "url"
+              ],
+              "string_length_metadata": {
+                "model": {
+                  "type": "string",
+                  "length": 11,
+                  "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+                },
+                "url": {
+                  "type": "https_url",
+                  "scheme": "https",
+                  "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                  "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+                  "has_query": false
+                }
+              },
+              "provider_http_status": 200
+            },
+            "provider_response_fingerprint": "3c95db5489fde10d6ab137726613a4af140b70082090c4382988c6a15ed551f1",
+            "provider_http_status": 200,
+            "redacted_response": {
+              "model": "gpt-image-2",
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "dc137789f97d239448f871ae14f3debb0ae4d81771d412ea2b3be50c0438514d",
+                "has_query": false
+              }
+            }
+          },
+          "requested_aspect_ratio": "2:3",
+          "submitted_aspect_ratio": "9:16",
+          "provider_aspect_ratio": "9:16",
+          "observed_width": 1024,
+          "observed_height": 1536,
+          "observed_aspect_ratio": "2:3",
+          "provider_ratio_honored": false,
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL_BODY",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 464068.1475352,
+            "request_finished_at": 464106.5096856,
+            "elapsed_seconds": 38.362,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin_wan-master.jpg",
+            "bytes": 2000588,
+            "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "fingerprint": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-master.jpg",
+          "semantic_audit": {
+            "view_id": "MASTER",
+            "asset_type": "CHARACTER",
+            "status": "PASS",
+            "canonical_identity_match": true,
+            "canonical_costume_match": true,
+            "allowed_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_props": [],
+            "unauthorized_accessories": [],
+            "unauthorized_props": [],
+            "extra_people": false,
+            "text_or_watermark": false,
+            "view_pose_compliance": 95,
+            "framing_compliance": 95,
+            "critical_view_violation": [],
+            "violations": [],
+            "judge_status": "VISION_JUDGE_EXECUTED",
+            "attempt_number": 1,
+            "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+            "score_scale": "0-100"
+          },
+          "semantic_request_fingerprint": "00ed9aa1a0f2497c58c754c07ea6402df7885b2f277d7f14864a1c859a041f93",
+          "semantic_response_fingerprint": "f0516b09f36f8bf08ffa5e53b3c0ebfd70c0b874c5580f7f4e147e9f7d8e4f6a"
+        },
+        "FACE_FRONT": {
+          "view_id": "FACE_FRONT",
+          "execution_id": "fd5da07f1538",
+          "generation_execution_id": "fd5da07f1538",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "b7c02e93cf98423884ce6557590a4dd81ab02062e6b11399310ff554e7b0ea99",
+          "reference_image_count": 1,
+          "reference_image_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "reference_image_sha256s": [
+            "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b"
+          ],
+          "reference_asset_ids": [
+            "LIN_WAN:MASTER"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER"
+          ],
+          "reference_input_formats": [
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 1,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。标准正脸近景。头肩构图，脸部占据一致视觉尺度，眼睛位于一致的垂直区域，不出现全身。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "1:1",
+            "images": [
+              "<redacted large value: 2667475 chars>"
+            ]
+          },
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "a6746377a88b7e11e5dd1774a3f6cd6d0756481beb3107543df9b820c0fff920",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "ba3d5fdf5b1702d90e5063b3c9201f264ec1c01aa6199aa49ffa21d71064ae72",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "provider_response": {
+            "provider_response_shape": {
+              "response_type": "dict",
+              "top_level_keys": [
+                "model",
+                "url"
+              ],
+              "field_shapes": {
+                "model": "string",
+                "url": "string"
+              },
+              "nested_keys": {},
+              "list_lengths": {},
+              "candidate_media_paths": [
+                "url"
+              ],
+              "string_length_metadata": {
+                "model": {
+                  "type": "string",
+                  "length": 11,
+                  "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+                },
+                "url": {
+                  "type": "https_url",
+                  "scheme": "https",
+                  "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                  "path_sha256": "a6746377a88b7e11e5dd1774a3f6cd6d0756481beb3107543df9b820c0fff920",
+                  "has_query": false
+                }
+              },
+              "provider_http_status": 200
+            },
+            "provider_response_fingerprint": "ba3d5fdf5b1702d90e5063b3c9201f264ec1c01aa6199aa49ffa21d71064ae72",
+            "provider_http_status": 200,
+            "redacted_response": {
+              "model": "gpt-image-2",
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "a6746377a88b7e11e5dd1774a3f6cd6d0756481beb3107543df9b820c0fff920",
+                "has_query": false
+              }
+            }
+          },
+          "requested_aspect_ratio": "1:1",
+          "submitted_aspect_ratio": "1:1",
+          "provider_aspect_ratio": "1:1",
+          "observed_width": 1024,
+          "observed_height": 1536,
+          "observed_aspect_ratio": "2:3",
+          "provider_ratio_honored": false,
+          "projection_reason": "requested_ratio_supported",
+          "framing_class": "FACE",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 464116.3253294,
+            "request_finished_at": 464158.8922655,
+            "elapsed_seconds": 42.567,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin_wan-face_front.jpg",
+            "bytes": 2561926,
+            "sha256": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+          "fingerprint": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-face_front.jpg",
+          "semantic_audit": {
+            "view_id": "FACE_FRONT",
+            "asset_type": "CHARACTER",
+            "status": "PASS",
+            "canonical_identity_match": true,
+            "canonical_costume_match": true,
+            "allowed_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_accessories": [],
+            "detected_props": [],
+            "unauthorized_accessories": [],
+            "unauthorized_props": [],
+            "extra_people": false,
+            "text_or_watermark": false,
+            "view_pose_compliance": 95,
+            "framing_compliance": 95,
+            "critical_view_violation": [],
+            "violations": [],
+            "judge_status": "VISION_JUDGE_EXECUTED",
+            "attempt_number": 1,
+            "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+            "score_scale": "0-100"
+          },
+          "semantic_request_fingerprint": "fbe06cb9ad7c02d26016c7eddd739634b1f32c3cab493c97f2db659903ba8d41",
+          "semantic_response_fingerprint": "866e53d344854061b3259e607aaedc884a12dc5eb75479d37ff063007e55b5d4"
+        },
+        "FACE_PROFILE": {
+          "view_id": "FACE_PROFILE",
+          "execution_id": "900aa34fb497",
+          "generation_execution_id": "900aa34fb497",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "2ede62dfea8360aa523887ae98efa2610e3b2a788ddd05e90836191a6ac55c14",
+          "reference_image_count": 2,
+          "reference_image_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "reference_image_sha256s": [
+            "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec"
+          ],
+          "reference_asset_ids": [
+            "LIN_WAN:MASTER",
+            "LIN_WAN:FACE_FRONT"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FACE_FRONT"
+          ],
+          "reference_input_formats": [
+            "data_uri",
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 2,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。严格90度真侧脸近景，只允许看到一只眼睛，清晰呈现鼻梁、额头、嘴唇和下巴的侧面轮廓；禁止3/4角度、禁止同时看到两只眼睛。头肩构图，脸部占据一致视觉尺度，眼睛位于一致的垂直区域，不出现全身。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "1:1",
+            "images": [
+              "<redacted large value: 2667475 chars>",
+              "<redacted large value: 3415927 chars>"
+            ]
+          },
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "58f1ee2fc9624489cde0d345a338db2ee0b6111ad507cd4504d6b4e9c205af70",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "8a8b5839ddaefe4da56d02f124aacf5e1279bce83662e778a4e4a9e1acdb3763",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "provider_response": {
+            "provider_response_shape": {
+              "response_type": "dict",
+              "top_level_keys": [
+                "model",
+                "url"
+              ],
+              "field_shapes": {
+                "model": "string",
+                "url": "string"
+              },
+              "nested_keys": {},
+              "list_lengths": {},
+              "candidate_media_paths": [
+                "url"
+              ],
+              "string_length_metadata": {
+                "model": {
+                  "type": "string",
+                  "length": 11,
+                  "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+                },
+                "url": {
+                  "type": "https_url",
+                  "scheme": "https",
+                  "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                  "path_sha256": "58f1ee2fc9624489cde0d345a338db2ee0b6111ad507cd4504d6b4e9c205af70",
+                  "has_query": false
+                }
+              },
+              "provider_http_status": 200
+            },
+            "provider_response_fingerprint": "8a8b5839ddaefe4da56d02f124aacf5e1279bce83662e778a4e4a9e1acdb3763",
+            "provider_http_status": 200,
+            "redacted_response": {
+              "model": "gpt-image-2",
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "58f1ee2fc9624489cde0d345a338db2ee0b6111ad507cd4504d6b4e9c205af70",
+                "has_query": false
+              }
+            }
+          },
+          "requested_aspect_ratio": "1:1",
+          "submitted_aspect_ratio": "1:1",
+          "provider_aspect_ratio": "1:1",
+          "observed_width": 1024,
+          "observed_height": 1536,
+          "observed_aspect_ratio": "2:3",
+          "provider_ratio_honored": false,
+          "projection_reason": "requested_ratio_supported",
+          "framing_class": "FACE",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 464180.0058089,
+            "request_finished_at": 464229.7760496,
+            "elapsed_seconds": 49.77,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin_wan-face_profile.jpg",
+            "bytes": 2609986,
+            "sha256": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+          "fingerprint": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-face_profile.jpg",
+          "semantic_audit": {
+            "view_id": "FACE_PROFILE",
+            "asset_type": "CHARACTER",
+            "status": "PASS",
+            "canonical_identity_match": true,
+            "canonical_costume_match": true,
+            "allowed_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_accessories": [],
+            "detected_props": [],
+            "unauthorized_accessories": [],
+            "unauthorized_props": [],
+            "extra_people": false,
+            "text_or_watermark": false,
+            "view_pose_compliance": 95,
+            "framing_compliance": 95,
+            "critical_view_violation": [],
+            "violations": [],
+            "judge_status": "VISION_JUDGE_EXECUTED",
+            "attempt_number": 1,
+            "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+            "score_scale": "0-100"
+          },
+          "semantic_request_fingerprint": "649dc2d52391b3db4102ef91a40aff0d7b2b916d6a341021942059d83dfabc68",
+          "semantic_response_fingerprint": "a6e33d24ec59b18561ba43a7b2da0050ff9c8829c1bb18c92f0335913221b3f3"
+        },
+        "FACE_45": {
+          "view_id": "FACE_45",
+          "execution_id": "e794329dca58",
+          "generation_execution_id": "e794329dca58",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "be376bf5018c07c9016bbef0871b8adaf3c2dbc28f0525e9ce22c03deb9d73eb",
+          "reference_image_count": 2,
+          "reference_image_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "reference_image_sha256s": [
+            "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec"
+          ],
+          "reference_asset_ids": [
+            "LIN_WAN:MASTER",
+            "LIN_WAN:FACE_FRONT"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FACE_FRONT"
+          ],
+          "reference_input_formats": [
+            "data_uri",
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 2,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。右前方45度脸部近景。头肩构图，脸部占据一致视觉尺度，眼睛位于一致的垂直区域，不出现全身。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。 头部必须向右转约45度，左右眼大小明显不同，只让一侧脸颊和鼻梁主导画面；不得正脸、不得接近正脸、不得90度侧脸。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "1:1",
+            "images": [
+              "<redacted large value: 2667475 chars>",
+              "<redacted large value: 3415927 chars>"
+            ]
+          },
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "c75e0e6bba1a8a12202ab909d58b0165a856aeb8c36ab7bb31fdea7694612f59",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "0ec103d97e4ef408a1ad96c4403ef2eacf34b94d86e663b9dabce412f8c4f09b",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "provider_response": {
+            "provider_response_shape": {
+              "response_type": "dict",
+              "top_level_keys": [
+                "model",
+                "url"
+              ],
+              "field_shapes": {
+                "model": "string",
+                "url": "string"
+              },
+              "nested_keys": {},
+              "list_lengths": {},
+              "candidate_media_paths": [
+                "url"
+              ],
+              "string_length_metadata": {
+                "model": {
+                  "type": "string",
+                  "length": 11,
+                  "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+                },
+                "url": {
+                  "type": "https_url",
+                  "scheme": "https",
+                  "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                  "path_sha256": "c75e0e6bba1a8a12202ab909d58b0165a856aeb8c36ab7bb31fdea7694612f59",
+                  "has_query": false
+                }
+              },
+              "provider_http_status": 200
+            },
+            "provider_response_fingerprint": "0ec103d97e4ef408a1ad96c4403ef2eacf34b94d86e663b9dabce412f8c4f09b",
+            "provider_http_status": 200,
+            "redacted_response": {
+              "model": "gpt-image-2",
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "c75e0e6bba1a8a12202ab909d58b0165a856aeb8c36ab7bb31fdea7694612f59",
+                "has_query": false
+              }
+            }
+          },
+          "requested_aspect_ratio": "1:1",
+          "submitted_aspect_ratio": "1:1",
+          "provider_aspect_ratio": "1:1",
+          "observed_width": 1024,
+          "observed_height": 1536,
+          "observed_aspect_ratio": "2:3",
+          "provider_ratio_honored": false,
+          "projection_reason": "requested_ratio_supported",
+          "framing_class": "FACE",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 464246.3286097,
+            "request_finished_at": 464292.9868555,
+            "elapsed_seconds": 46.658,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin_wan-face_45.jpg",
+            "bytes": 2448683,
+            "sha256": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+          "fingerprint": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-face_45.jpg",
+          "semantic_audit": {
+            "view_id": "FACE_45",
+            "asset_type": "CHARACTER",
+            "status": "PASS",
+            "canonical_identity_match": true,
+            "canonical_costume_match": true,
+            "allowed_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_accessories": [],
+            "detected_props": [],
+            "unauthorized_accessories": [],
+            "unauthorized_props": [],
+            "extra_people": false,
+            "text_or_watermark": false,
+            "view_pose_compliance": 90,
+            "framing_compliance": 95,
+            "critical_view_violation": [],
+            "violations": [],
+            "judge_status": "VISION_JUDGE_EXECUTED",
+            "attempt_number": 1,
+            "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+            "score_scale": "0-100"
+          },
+          "semantic_request_fingerprint": "38d15a56420326a3c1ea001f081ae9958f38527a32c8040f8e3f516dbaa64bf2",
+          "semantic_response_fingerprint": "acdb74d9b7296065b51cd7f6b861fdac16f6f51d3c94dfe8b0df7cd3b77e8b75"
+        },
+        "FULL_SIDE": {
+          "view_id": "FULL_SIDE",
+          "execution_id": "e21f58764615",
+          "generation_execution_id": "e21f58764615",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "ba92b5e9fd42b0fff62a1a8d7bb917deb87413b4623d63e9ea2e42b8e1e9e5eb",
+          "reference_image_count": 1,
+          "reference_image_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "reference_image_sha256s": [
+            "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b"
+          ],
+          "reference_asset_ids": [
+            "LIN_WAN:MASTER"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER"
+          ],
+          "reference_input_formats": [
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 1,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。全身标准侧面，保持脚部完整。完整头部和完整鞋脚必须在画面内，保持中性标准站姿和一致的全身高度。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "9:16",
+            "images": [
+              "<redacted large value: 2667475 chars>"
+            ]
+          },
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "b40e36e1dafe9d325618197543e28c38684a1f2476dd16db955584de85dc3a97",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "a2f55f7c76d5ec6e4ededead85799a77556d8e4b01691985f7569f9b7b6b18d3",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "provider_response": {
+            "provider_response_shape": {
+              "response_type": "dict",
+              "top_level_keys": [
+                "model",
+                "url"
+              ],
+              "field_shapes": {
+                "model": "string",
+                "url": "string"
+              },
+              "nested_keys": {},
+              "list_lengths": {},
+              "candidate_media_paths": [
+                "url"
+              ],
+              "string_length_metadata": {
+                "model": {
+                  "type": "string",
+                  "length": 11,
+                  "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+                },
+                "url": {
+                  "type": "https_url",
+                  "scheme": "https",
+                  "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                  "path_sha256": "b40e36e1dafe9d325618197543e28c38684a1f2476dd16db955584de85dc3a97",
+                  "has_query": false
+                }
+              },
+              "provider_http_status": 200
+            },
+            "provider_response_fingerprint": "a2f55f7c76d5ec6e4ededead85799a77556d8e4b01691985f7569f9b7b6b18d3",
+            "provider_http_status": 200,
+            "redacted_response": {
+              "model": "gpt-image-2",
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "b40e36e1dafe9d325618197543e28c38684a1f2476dd16db955584de85dc3a97",
+                "has_query": false
+              }
+            }
+          },
+          "requested_aspect_ratio": "2:3",
+          "submitted_aspect_ratio": "9:16",
+          "provider_aspect_ratio": "9:16",
+          "observed_width": 1024,
+          "observed_height": 1536,
+          "observed_aspect_ratio": "2:3",
+          "provider_ratio_honored": false,
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL_BODY",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 464311.4028718,
+            "request_finished_at": 464362.1741351,
+            "elapsed_seconds": 50.771,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin_wan-full_side.jpg",
+            "bytes": 1831053,
+            "sha256": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+          "fingerprint": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-full_side.jpg",
+          "semantic_audit": {
+            "view_id": "FULL_SIDE",
+            "asset_type": "CHARACTER",
+            "status": "PASS",
+            "canonical_identity_match": true,
+            "canonical_costume_match": true,
+            "allowed_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_props": [],
+            "unauthorized_accessories": [],
+            "unauthorized_props": [],
+            "extra_people": false,
+            "text_or_watermark": false,
+            "view_pose_compliance": 100,
+            "framing_compliance": 100,
+            "critical_view_violation": [],
+            "violations": [],
+            "judge_status": "VISION_JUDGE_EXECUTED",
+            "attempt_number": 1,
+            "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+            "score_scale": "0-100"
+          },
+          "semantic_request_fingerprint": "d7d69c7ac8ff21b259362cb4416997d128a9da928666d4915246d9ff499894a0",
+          "semantic_response_fingerprint": "c964075f25ad51c8fa733b063232a7a1975adfe49a9013c3b6e8e996309e543b"
+        },
+        "FULL_BACK": {
+          "view_id": "FULL_BACK",
+          "execution_id": "cceeac7de26f",
+          "generation_execution_id": "cceeac7de26f",
+          "provider": "75api-image",
+          "model_profile_id": "local-image-c4a7yu",
+          "candidate_status": "CANDIDATE",
+          "prompt_fingerprint": "d887a4ed21592362331e5e476c4b80d0a3ecdb1b4ecafa6ecbb634d871302a4d",
+          "reference_image_count": 2,
+          "reference_image_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+          "reference_image_sha256s": [
+            "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87"
+          ],
+          "reference_asset_ids": [
+            "LIN_WAN:MASTER",
+            "LIN_WAN:FULL_SIDE"
+          ],
+          "reference_order": [
+            "LIN_WAN_MASTER",
+            "LIN_WAN_FULL_SIDE"
+          ],
+          "reference_input_formats": [
+            "data_uri",
+            "data_uri"
+          ],
+          "reference_role": "character",
+          "reference_purpose": "same character identity",
+          "provider_inline_reference_attached": true,
+          "provider_reference_order_matches": true,
+          "provider_payload_reference_count": 2,
+          "provider_request_payload": {
+            "model": "gpt-image-2-1k",
+            "prompt": "参考图是林晚同一人物的权威定妆。约二十八岁中国女性，偏窄椭圆脸，眼尾略长，敏锐目光，自然挺鼻，薄唇，冷白肤色；黑色中长直发，发尾齐整；中等身高、清瘦身形、肩背稳定。浅灰蓝哑光棉质外套、深色细纹长裤、深色低跟鞋、窄表。。全身标准背面，展示同一头发长度、服装背面和鞋子。完整头部和完整鞋脚必须在画面内，保持中性标准站姿和一致的全身高度。严格保持同一脸型、同一眼睛、同一鼻子、同一嘴型、同一年龄、同一肤色、同一发型、同一发际线、同一身体比例、同一服装、同一鞋子和同一配饰。只改变摄影机角度和自然遮挡。不得重新设计五官，不得改变年龄、发型、发际线、妆容、服装、鞋子或增加配饰。单张图，不要拼图、文字或水印。 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。",
+            "n": 1,
+            "size": "auto",
+            "quality": "high",
+            "response_format": "url",
+            "aspect_ratio": "9:16",
+            "images": [
+              "<redacted large value: 2667475 chars>",
+              "<redacted large value: 2441427 chars>"
+            ]
+          },
+          "provider_response_shape": {
+            "response_type": "dict",
+            "top_level_keys": [
+              "model",
+              "url"
+            ],
+            "field_shapes": {
+              "model": "string",
+              "url": "string"
+            },
+            "nested_keys": {},
+            "list_lengths": {},
+            "candidate_media_paths": [
+              "url"
+            ],
+            "string_length_metadata": {
+              "model": {
+                "type": "string",
+                "length": 11,
+                "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+              },
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "f2ef103978344172df5ef6c8ec17c04cb4f7ab79b44ab1aeab82e9cdf96b0073",
+                "has_query": false
+              }
+            },
+            "provider_http_status": 200
+          },
+          "provider_response_fingerprint": "755040d5c7f8a8de131f959ac03f9fbb16ab9628720ad29ece7d134987ed9d68",
+          "provider_response_media_path": "url",
+          "provider_http_status": 200,
+          "provider_response": {
+            "provider_response_shape": {
+              "response_type": "dict",
+              "top_level_keys": [
+                "model",
+                "url"
+              ],
+              "field_shapes": {
+                "model": "string",
+                "url": "string"
+              },
+              "nested_keys": {},
+              "list_lengths": {},
+              "candidate_media_paths": [
+                "url"
+              ],
+              "string_length_metadata": {
+                "model": {
+                  "type": "string",
+                  "length": 11,
+                  "sha256": "9ba2827204791ed85334d9169cfdc7568e85f54747d31d3132d798d7dabc231b"
+                },
+                "url": {
+                  "type": "https_url",
+                  "scheme": "https",
+                  "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                  "path_sha256": "f2ef103978344172df5ef6c8ec17c04cb4f7ab79b44ab1aeab82e9cdf96b0073",
+                  "has_query": false
+                }
+              },
+              "provider_http_status": 200
+            },
+            "provider_response_fingerprint": "755040d5c7f8a8de131f959ac03f9fbb16ab9628720ad29ece7d134987ed9d68",
+            "provider_http_status": 200,
+            "redacted_response": {
+              "model": "gpt-image-2",
+              "url": {
+                "type": "https_url",
+                "scheme": "https",
+                "host": "pub-13fd1d3607a441b4a9d232b3a223f5f6.r2.dev",
+                "path_sha256": "f2ef103978344172df5ef6c8ec17c04cb4f7ab79b44ab1aeab82e9cdf96b0073",
+                "has_query": false
+              }
+            }
+          },
+          "requested_aspect_ratio": "2:3",
+          "submitted_aspect_ratio": "9:16",
+          "provider_aspect_ratio": "9:16",
+          "observed_width": 1024,
+          "observed_height": 1536,
+          "observed_aspect_ratio": "2:3",
+          "provider_ratio_honored": false,
+          "projection_reason": "requested_ratio_projected_to_nearest_legal_provider_ratio",
+          "framing_class": "FULL_BODY",
+          "timeout_evidence": {
+            "provider_timeout_seconds": 120,
+            "orchestration_read_timeout_seconds": 180,
+            "connect_timeout_seconds": 10,
+            "write_timeout_seconds": 60,
+            "pool_timeout_seconds": 30,
+            "margin_seconds": 60,
+            "orchestration_timeout_seconds": 180,
+            "request_started_at": 464381.3907501,
+            "request_finished_at": 464427.1483613,
+            "elapsed_seconds": 45.758,
+            "timeout_layer": "NONE"
+          },
+          "file": {
+            "file": "lin_wan-full_back.jpg",
+            "bytes": 1887251,
+            "sha256": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059",
+            "width": 1024,
+            "height": 1536,
+            "format": "PNG"
+          },
+          "sha256": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059",
+          "fingerprint": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059",
+          "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\work\\75api-autonomous-asset-canary-v4\\20261004T142925Z\\lin_wan-full_back.jpg",
+          "semantic_audit": {
+            "view_id": "FULL_BACK",
+            "asset_type": "CHARACTER",
+            "status": "PASS",
+            "canonical_identity_match": true,
+            "canonical_costume_match": true,
+            "allowed_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_accessories": [
+              "narrow wristwatch"
+            ],
+            "detected_props": [],
+            "unauthorized_accessories": [],
+            "unauthorized_props": [],
+            "extra_people": false,
+            "text_or_watermark": false,
+            "view_pose_compliance": 100,
+            "framing_compliance": 100,
+            "critical_view_violation": [],
+            "violations": [],
+            "judge_status": "VISION_JUDGE_EXECUTED",
+            "attempt_number": 1,
+            "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+            "score_scale": "0-100"
+          },
+          "semantic_request_fingerprint": "8639158444da84478e13aecd90371627691f9f270f450821db10e4b193cb04ab",
+          "semantic_response_fingerprint": "799e73ffe8ddd3e7777bc46ff7f7d7fd088775743809f406221ba86d01656c57"
+        }
+      },
+      "semantic_audits": [
+        {
+          "view_id": "FACE_FRONT",
+          "asset_type": "CHARACTER",
+          "status": "PASS",
+          "canonical_identity_match": true,
+          "canonical_costume_match": true,
+          "allowed_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_accessories": [],
+          "detected_props": [],
+          "unauthorized_accessories": [],
+          "unauthorized_props": [],
+          "extra_people": false,
+          "text_or_watermark": false,
+          "view_pose_compliance": 95,
+          "framing_compliance": 95,
+          "critical_view_violation": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FACE_PROFILE",
+          "asset_type": "CHARACTER",
+          "status": "PASS",
+          "canonical_identity_match": true,
+          "canonical_costume_match": true,
+          "allowed_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_accessories": [],
+          "detected_props": [],
+          "unauthorized_accessories": [],
+          "unauthorized_props": [],
+          "extra_people": false,
+          "text_or_watermark": false,
+          "view_pose_compliance": 95,
+          "framing_compliance": 95,
+          "critical_view_violation": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FACE_45",
+          "asset_type": "CHARACTER",
+          "status": "PASS",
+          "canonical_identity_match": true,
+          "canonical_costume_match": true,
+          "allowed_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_accessories": [],
+          "detected_props": [],
+          "unauthorized_accessories": [],
+          "unauthorized_props": [],
+          "extra_people": false,
+          "text_or_watermark": false,
+          "view_pose_compliance": 90,
+          "framing_compliance": 95,
+          "critical_view_violation": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FULL_SIDE",
+          "asset_type": "CHARACTER",
+          "status": "PASS",
+          "canonical_identity_match": true,
+          "canonical_costume_match": true,
+          "allowed_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_props": [],
+          "unauthorized_accessories": [],
+          "unauthorized_props": [],
+          "extra_people": false,
+          "text_or_watermark": false,
+          "view_pose_compliance": 100,
+          "framing_compliance": 100,
+          "critical_view_violation": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FULL_BACK",
+          "asset_type": "CHARACTER",
+          "status": "PASS",
+          "canonical_identity_match": true,
+          "canonical_costume_match": true,
+          "allowed_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_accessories": [
+            "narrow wristwatch"
+          ],
+          "detected_props": [],
+          "unauthorized_accessories": [],
+          "unauthorized_props": [],
+          "extra_people": false,
+          "text_or_watermark": false,
+          "view_pose_compliance": 100,
+          "framing_compliance": 100,
+          "critical_view_violation": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+          "score_scale": "0-100"
+        }
+      ],
+      "view_pose_audits": [
+        {
+          "view_id": "FACE_FRONT",
+          "status": "PASS",
+          "view_pose_compliance": 95,
+          "framing_compliance": 95,
+          "critical_view_violation": []
+        },
+        {
+          "view_id": "FACE_PROFILE",
+          "status": "PASS",
+          "view_pose_compliance": 95,
+          "framing_compliance": 95,
+          "critical_view_violation": []
+        },
+        {
+          "view_id": "FACE_45",
+          "status": "PASS",
+          "view_pose_compliance": 90,
+          "framing_compliance": 95,
+          "critical_view_violation": []
+        },
+        {
+          "view_id": "FULL_SIDE",
+          "status": "PASS",
+          "view_pose_compliance": 100,
+          "framing_compliance": 100,
+          "critical_view_violation": []
+        },
+        {
+          "view_id": "FULL_BACK",
+          "status": "PASS",
+          "view_pose_compliance": 100,
+          "framing_compliance": 100,
+          "critical_view_violation": []
+        }
+      ],
+      "identity_audits": [
+        {
+          "view_id": "FACE_FRONT",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 98,
+          "face_score": 98,
+          "hair_score": 98,
+          "body_proportion_score": 95,
+          "costume_score": 98,
+          "accessory_score": 95,
+          "critical_identity_violations": [],
+          "violations": [
+            "accessory_score slightly reduced due to watch visibility being limited in the close-up view"
+          ],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FACE_FRONT",
+            "attempt_number": 1,
+            "master_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "derived_sha256": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+            "master_generation_execution_id": "2946d0e28cba",
+            "derived_generation_execution_id": "fd5da07f1538",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "2a2c7d33197cf9a04cfed6059e63bcca7e9e1d0529ed020ba33578513d7894a1",
+            "judge_response_fingerprint": "7aa587fbf9967ebb30dfbafde55125b5525aae43690d39bdfaf04a499f04cb65",
+            "judge_raw_scores": {
+              "identity_score": 98,
+              "face_score": 98,
+              "hair_score": 98,
+              "body_proportion_score": 95,
+              "costume_score": 98,
+              "accessory_score": 95
+            },
+            "judge_normalized_scores": {
+              "identity_score": 98,
+              "face_score": 98,
+              "hair_score": 98,
+              "body_proportion_score": 95,
+              "costume_score": 98,
+              "accessory_score": 95
+            },
+            "generated_at": "2026-10-04T14:31:28.913091+00:00",
+            "judged_at": "2026-10-04T14:31:28.913091+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FACE_PROFILE",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 95,
+          "face_score": 95,
+          "hair_score": 95,
+          "body_proportion_score": 90,
+          "costume_score": 95,
+          "accessory_score": 90,
+          "critical_identity_violations": [],
+          "violations": [
+            "accessory visibility limited in profile view"
+          ],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FACE_PROFILE",
+            "attempt_number": 1,
+            "master_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "derived_sha256": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+            "master_generation_execution_id": "2946d0e28cba",
+            "derived_generation_execution_id": "900aa34fb497",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "c4edb97d04a017b30d0c4f1aaa763a6de824b33a52d38157a93bfe0f60dc0274",
+            "judge_response_fingerprint": "afdd9cc79fffdf1717459a54ee811b824fe09215dd682e3206f625c19f6c3b50",
+            "judge_raw_scores": {
+              "identity_score": 95,
+              "face_score": 95,
+              "hair_score": 95,
+              "body_proportion_score": 90,
+              "costume_score": 95,
+              "accessory_score": 90
+            },
+            "judge_normalized_scores": {
+              "identity_score": 95,
+              "face_score": 95,
+              "hair_score": 95,
+              "body_proportion_score": 90,
+              "costume_score": 95,
+              "accessory_score": 90
+            },
+            "generated_at": "2026-10-04T14:32:35.233493+00:00",
+            "judged_at": "2026-10-04T14:32:35.233493+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FACE_45",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 97,
+          "face_score": 97,
+          "hair_score": 98,
+          "body_proportion_score": 95,
+          "costume_score": 98,
+          "accessory_score": 90,
+          "critical_identity_violations": [],
+          "violations": [
+            "The close-up image (FACE_45) does not show the lower body, pants, shoes, or the wristwatch accessory, making a full-body comparison impossible for those specific elements."
+          ],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FACE_45",
+            "attempt_number": 1,
+            "master_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "derived_sha256": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+            "master_generation_execution_id": "2946d0e28cba",
+            "derived_generation_execution_id": "e794329dca58",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "a11070f198580fc732c3743c98cb2631a2b3df2328c0e3d325e6e90f8b96f812",
+            "judge_response_fingerprint": "489b7d01a8a085209722cf54d3a448cbbcc0d451f53c0a2ecbacfb161fa37cca",
+            "judge_raw_scores": {
+              "identity_score": 97,
+              "face_score": 97,
+              "hair_score": 98,
+              "body_proportion_score": 95,
+              "costume_score": 98,
+              "accessory_score": 90
+            },
+            "judge_normalized_scores": {
+              "identity_score": 97,
+              "face_score": 97,
+              "hair_score": 98,
+              "body_proportion_score": 95,
+              "costume_score": 98,
+              "accessory_score": 90
+            },
+            "generated_at": "2026-10-04T14:33:40.319936+00:00",
+            "judged_at": "2026-10-04T14:33:40.319936+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FULL_SIDE",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 98,
+          "face_score": 97,
+          "hair_score": 99,
+          "body_proportion_score": 98,
+          "costume_score": 99,
+          "accessory_score": 98,
+          "critical_identity_violations": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FULL_SIDE",
+            "attempt_number": 1,
+            "master_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "derived_sha256": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+            "master_generation_execution_id": "2946d0e28cba",
+            "derived_generation_execution_id": "e21f58764615",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "71144fefc841430bbab07f12bc33d57374331303bda161efb4916d9e1856037a",
+            "judge_response_fingerprint": "9fb1931d3ed974a1e712fd80e6883286438af57d0ea04e8302312c6723ebaa55",
+            "judge_raw_scores": {
+              "identity_score": 98,
+              "face_score": 97,
+              "hair_score": 99,
+              "body_proportion_score": 98,
+              "costume_score": 99,
+              "accessory_score": 98
+            },
+            "judge_normalized_scores": {
+              "identity_score": 98,
+              "face_score": 97,
+              "hair_score": 99,
+              "body_proportion_score": 98,
+              "costume_score": 99,
+              "accessory_score": 98
+            },
+            "generated_at": "2026-10-04T14:34:50.299891+00:00",
+            "judged_at": "2026-10-04T14:34:50.299891+00:00"
+          },
+          "score_scale": "0-100"
+        },
+        {
+          "view_id": "FULL_BACK",
+          "status": "PASS",
+          "same_character": true,
+          "identity_score": 98,
+          "face_score": 95,
+          "hair_score": 98,
+          "body_proportion_score": 97,
+          "costume_score": 98,
+          "accessory_score": 95,
+          "critical_identity_violations": [],
+          "violations": [],
+          "judge_status": "VISION_JUDGE_EXECUTED",
+          "attempt_number": 1,
+          "media_evidence": {
+            "view_id": "FULL_BACK",
+            "attempt_number": 1,
+            "master_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "derived_sha256": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059",
+            "master_generation_execution_id": "2946d0e28cba",
+            "derived_generation_execution_id": "cceeac7de26f",
+            "judge_profile_id": "local-llm-2vydoz",
+            "judge_model": "mimo-v2.5",
+            "judge_request_fingerprint": "b3ad0737b61f6f79cb6c700fb3e8eef0353fac04bf121e24ca51c6205259c270",
+            "judge_response_fingerprint": "cd20e0b6c72dbcef6718931af7968d824a3f2ad8029dc0d765a0d42def831555",
+            "judge_raw_scores": {
+              "identity_score": 98,
+              "face_score": 95,
+              "hair_score": 98,
+              "body_proportion_score": 97,
+              "costume_score": 98,
+              "accessory_score": 95
+            },
+            "judge_normalized_scores": {
+              "identity_score": 98,
+              "face_score": 95,
+              "hair_score": 98,
+              "body_proportion_score": 97,
+              "costume_score": 98,
+              "accessory_score": 95
+            },
+            "generated_at": "2026-10-04T14:35:54.107222+00:00",
+            "judged_at": "2026-10-04T14:35:54.107222+00:00"
+          },
+          "score_scale": "0-100"
+        }
+      ],
+      "global_semantic": {
+        "status": "PASS",
+        "same_character": true,
+        "same_costume": true,
+        "same_body": true,
+        "unauthorized_prop_across_views": [],
+        "unauthorized_accessory_across_views": [],
+        "front_profile_45_separation": true,
+        "cross_view_semantic_conflicts": []
+      },
+      "global": {
+        "status": "PASS",
+        "same_character": true,
+        "same_costume": true,
+        "same_body_proportions": true,
+        "cross_view_violations": [],
+        "judge_request_fingerprint": "be1b7efff07f0296df1fc70e15d49a60f0f5fea10a8bfaeaac9c56d585c16098",
+        "judge_response_fingerprint": "d1315b156026d8623323a89481c9760837e9360d05966667a3ea9e168ca8e7e6"
+      },
+      "repairs": [],
+      "authority": {
+        "character_id": "LIN_WAN",
+        "name": "林晚",
+        "status": "READY",
+        "primary_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+        "primary_execution_id": "2946d0e28cba",
+        "derived_shas": {
+          "FACE_FRONT": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+          "FACE_PROFILE": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+          "FACE_45": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+          "FULL_SIDE": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+          "FULL_BACK": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059"
+        },
+        "derived_execution_ids": {
+          "FACE_FRONT": "fd5da07f1538",
+          "FACE_PROFILE": "900aa34fb497",
+          "FACE_45": "e794329dca58",
+          "FULL_SIDE": "e21f58764615",
+          "FULL_BACK": "cceeac7de26f"
+        },
+        "pairwise_audit_count": 5,
+        "global_judge_status": "PASS",
+        "profile_fingerprint": "a38e5a20552fabe582681f5899291ee0ffdecf4bfc206409c6643ffae672943e",
+        "prompt_fingerprint": "a7cc9dc23551fe8ed1cf067d1c3b2d550e7f3b5256a2e340c1f336e63586b540",
+        "semantic_status": "PASS",
+        "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "semantic_audit_count": 6,
+        "view_pose_status": "PASS"
+      },
+      "semantic_authority": {
+        "character_id": "LIN_WAN",
+        "name": "林晚",
+        "allowed_costume": [
+          "light grey-blue matte cotton jacket",
+          "dark pinstripe trousers",
+          "dark low-heel shoes"
+        ],
+        "allowed_accessories": [
+          "narrow wristwatch"
+        ],
+        "allowed_story_props": [],
+        "forbidden_persistent_props": [
+          "handbag",
+          "shoulder bag",
+          "crossbody bag",
+          "backpack",
+          "umbrella",
+          "suitcase",
+          "shopping bag",
+          "phone",
+          "weapon",
+          "food",
+          "document",
+          "unrelated story prop"
+        ],
+        "source_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3"
+      },
+      "global_semantic_request_fingerprint": "6540f9005482d308da7ab83c4f2415ec46833517a548dbbba2e7a92d7c3916d4",
+      "global_semantic_response_fingerprint": "72bce938f279094479631851bd393732717b3b692352e7849a82efe61041ed66",
+      "board": {
+        "file": "lin-wan-reference-board.png",
+        "bytes": 753773,
+        "sha256": "f760e4a244e180567bbbef1a7998ba27bd23c903573f086f5fda9f41778586de",
+        "width": 1560,
+        "height": 936,
+        "format": "PNG",
+        "board_run_id": "20261004T142925Z",
+        "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a",
+        "source_view_sha256": [
+          {
+            "view_id": "FACE_FRONT",
+            "sha256": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+            "generation_execution_id": "fd5da07f1538"
+          },
+          {
+            "view_id": "FACE_PROFILE",
+            "sha256": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+            "generation_execution_id": "900aa34fb497"
+          },
+          {
+            "view_id": "FACE_45",
+            "sha256": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+            "generation_execution_id": "e794329dca58"
+          },
+          {
+            "view_id": "FULL_FRONT",
+            "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "generation_execution_id": "2946d0e28cba"
+          },
+          {
+            "view_id": "FULL_SIDE",
+            "sha256": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+            "generation_execution_id": "e21f58764615"
+          },
+          {
+            "view_id": "FULL_BACK",
+            "sha256": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059",
+            "generation_execution_id": "cceeac7de26f"
+          }
+        ],
+        "board_sha256": "f760e4a244e180567bbbef1a7998ba27bd23c903573f086f5fda9f41778586de"
+      },
+      "media_provenance": {
+        "asset_id": "LIN_WAN",
+        "run_id": "20261004T142925Z",
+        "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a",
+        "media": [
+          {
+            "view_id": "MASTER",
+            "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-master.jpg",
+            "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "generation_execution_id": "2946d0e28cba",
+            "run_id": "20261004T142925Z",
+            "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a"
+          },
+          {
+            "view_id": "FULL_FRONT",
+            "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-full-front.jpg",
+            "sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+            "generation_execution_id": "2946d0e28cba",
+            "run_id": "20261004T142925Z",
+            "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a"
+          },
+          {
+            "view_id": "FACE_FRONT",
+            "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-face-front.jpg",
+            "sha256": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+            "generation_execution_id": "fd5da07f1538",
+            "run_id": "20261004T142925Z",
+            "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a"
+          },
+          {
+            "view_id": "FACE_PROFILE",
+            "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-face-profile.jpg",
+            "sha256": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+            "generation_execution_id": "900aa34fb497",
+            "run_id": "20261004T142925Z",
+            "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a"
+          },
+          {
+            "view_id": "FACE_45",
+            "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-face-45.jpg",
+            "sha256": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+            "generation_execution_id": "e794329dca58",
+            "run_id": "20261004T142925Z",
+            "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a"
+          },
+          {
+            "view_id": "FULL_SIDE",
+            "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-full-side.jpg",
+            "sha256": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+            "generation_execution_id": "e21f58764615",
+            "run_id": "20261004T142925Z",
+            "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a"
+          },
+          {
+            "view_id": "FULL_BACK",
+            "path": "docs\\visual-assets\\75api-autonomous-v4\\lin-wan-full-back.jpg",
+            "sha256": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059",
+            "generation_execution_id": "cceeac7de26f",
+            "run_id": "20261004T142925Z",
+            "authority_fingerprint": "c1abb476096d8d634259549f58c676673c611447ed248e0d7a59c89f2c87b14a"
+          }
+        ]
+      }
+    }
+  },
   "scene": {
     "scene_id": "E01_SC002",
     "geometry_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
@@ -101,18 +2146,18 @@
     "status": "READY"
   },
   "board_publication": {
-    "LIN_WAN": "NOT_PUBLISHED",
+    "LIN_WAN": "PUBLISHED",
     "LU_SHU": "NOT_PUBLISHED",
     "HANDBAG": "NOT_PUBLISHED"
   },
-  "real_image_calls": 6,
+  "real_image_calls": 11,
   "real_image_calls_by_provider": {
-    "75api-image": 6,
+    "75api-image": 11,
     "shapi-image": 0,
     "poyo-image": 0,
     "other-image": 0
   },
-  "vision_judge_calls": 9,
+  "vision_judge_calls": 21,
   "real_video_calls": 0,
   "shot_keyframe_calls": 0,
   "safety": {

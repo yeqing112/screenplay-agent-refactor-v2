@@ -218,6 +218,8 @@ async def _run_asset(client: httpx.AsyncClient, base_url: str, *, kind: str, ass
             prompt += " 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。"
             if view == "FACE_45":
                 prompt += " 头部必须向右转约45度，左右眼大小明显不同，只让一侧脸颊和鼻梁主导画面；不得正脸、不得接近正脸、不得90度侧脸。"
+            if view == "FACE_PROFILE":
+                prompt += " 必须是证件式严格侧面肖像：头部精确转90度，只出现一只眼睛，另一只眼睛完全不可见；耳朵、鼻梁、嘴唇、下巴形成单一侧面剪影。不得3/4，不得正面，不得同时看见两只眼睛。"
         semantic = None
         media = None
         sreq = sresp = ""

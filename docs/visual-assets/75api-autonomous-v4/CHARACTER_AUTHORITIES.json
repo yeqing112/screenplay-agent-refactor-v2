@@ -1,1 +1,31 @@
-{}
+{
+  "LIN_WAN": {
+    "character_id": "LIN_WAN",
+    "name": "林晚",
+    "status": "READY",
+    "primary_sha256": "25e888bacaaf87279b23da3666a26515a5cac07a3402c04e6473da42c154a73b",
+    "primary_execution_id": "2946d0e28cba",
+    "derived_shas": {
+      "FACE_FRONT": "c39d2272d843d664559d549a807d37eb6a047faff92428e30d3b9ade175e34ec",
+      "FACE_PROFILE": "ba662f4f6dac139bc397d998451313446b39c105505e669a6560dd0c2d2cc4bf",
+      "FACE_45": "e40d2df7c7dc3068a03f701ce82ee4aba7a9680c05e4ee74da82cd7c5f472c00",
+      "FULL_SIDE": "5315f4a07deaefd3fe1593776cca285ca871deec4a6c6c18542d0766a3407c87",
+      "FULL_BACK": "b1729be797e3d59a675357d8b6b09bbfb7338f71c7312accc6e7e31d8dd24059"
+    },
+    "derived_execution_ids": {
+      "FACE_FRONT": "fd5da07f1538",
+      "FACE_PROFILE": "900aa34fb497",
+      "FACE_45": "e794329dca58",
+      "FULL_SIDE": "e21f58764615",
+      "FULL_BACK": "cceeac7de26f"
+    },
+    "pairwise_audit_count": 5,
+    "global_judge_status": "PASS",
+    "profile_fingerprint": "a38e5a20552fabe582681f5899291ee0ffdecf4bfc206409c6643ffae672943e",
+    "prompt_fingerprint": "a7cc9dc23551fe8ed1cf067d1c3b2d550e7f3b5256a2e340c1f336e63586b540",
+    "semantic_status": "PASS",
+    "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+    "semantic_audit_count": 6,
+    "view_pose_status": "PASS"
+  }
+}

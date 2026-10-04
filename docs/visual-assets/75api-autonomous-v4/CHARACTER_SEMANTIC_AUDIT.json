@@ -1,1 +1,156 @@
-{}
+{
+  "LIN_WAN": {
+    "master": {
+      "view_id": "MASTER",
+      "asset_type": "CHARACTER",
+      "status": "PASS",
+      "canonical_identity_match": true,
+      "canonical_costume_match": true,
+      "allowed_accessories": [
+        "narrow wristwatch"
+      ],
+      "detected_accessories": [
+        "narrow wristwatch"
+      ],
+      "detected_props": [],
+      "unauthorized_accessories": [],
+      "unauthorized_props": [],
+      "extra_people": false,
+      "text_or_watermark": false,
+      "view_pose_compliance": 95,
+      "framing_compliance": 95,
+      "critical_view_violation": [],
+      "violations": [],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1,
+      "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+      "score_scale": "0-100"
+    },
+    "derived": [
+      {
+        "view_id": "FACE_FRONT",
+        "asset_type": "CHARACTER",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_accessories": [],
+        "detected_props": [],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 95,
+        "framing_compliance": 95,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FACE_PROFILE",
+        "asset_type": "CHARACTER",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_accessories": [],
+        "detected_props": [],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 95,
+        "framing_compliance": 95,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FACE_45",
+        "asset_type": "CHARACTER",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_accessories": [],
+        "detected_props": [],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 90,
+        "framing_compliance": 95,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FULL_SIDE",
+        "asset_type": "CHARACTER",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_props": [],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 100,
+        "framing_compliance": 100,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "score_scale": "0-100"
+      },
+      {
+        "view_id": "FULL_BACK",
+        "asset_type": "CHARACTER",
+        "status": "PASS",
+        "canonical_identity_match": true,
+        "canonical_costume_match": true,
+        "allowed_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_accessories": [
+          "narrow wristwatch"
+        ],
+        "detected_props": [],
+        "unauthorized_accessories": [],
+        "unauthorized_props": [],
+        "extra_people": false,
+        "text_or_watermark": false,
+        "view_pose_compliance": 100,
+        "framing_compliance": 100,
+        "critical_view_violation": [],
+        "violations": [],
+        "judge_status": "VISION_JUDGE_EXECUTED",
+        "attempt_number": 1,
+        "semantic_authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "score_scale": "0-100"
+      }
+    ]
+  }
+}

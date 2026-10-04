@@ -4,7 +4,7 @@
   "identity_consistency": "PASS",
   "semantic_purity": "FAIL",
   "unauthorized_props": [
-    "shoulder bag"
+    "black shoulder bag"
   ],
   "audit": {
     "view_id": "MASTER",
@@ -19,11 +19,11 @@
       "narrow wristwatch"
     ],
     "detected_props": [
-      "shoulder bag"
+      "black shoulder bag"
     ],
     "unauthorized_accessories": [],
     "unauthorized_props": [
-      "shoulder bag"
+      "black shoulder bag"
     ],
     "extra_people": false,
     "text_or_watermark": false,
@@ -31,7 +31,7 @@
     "framing_compliance": 100,
     "critical_view_violation": [],
     "violations": [
-      "Unauthorized prop detected: shoulder bag (black bag strap and bag body visible on the left shoulder/side)."
+      "Unauthorized prop/accessory detected: black shoulder bag (shoulder bag is explicitly forbidden)."
     ],
     "judge_status": "VISION_JUDGE_EXECUTED",
     "attempt_number": 1,
@@ -39,7 +39,7 @@
     "score_scale": "0-100"
   },
   "request_fingerprint": "850051ed29d51443400950727663dbf875efbd62bb88a906629606188c2d04ba",
-  "response_fingerprint": "23088d75e17039b776ca1d78a7970249841d2fd453823432d7b47a8ed63ff1c2",
+  "response_fingerprint": "1092d8f2a9876bf087557a9bcd3cf6dc064a00d4b20ae67a391d4d4660d3426f",
   "raw_judge": {
     "status": "FAIL",
     "canonical_identity_match": 95,
@@ -51,19 +51,19 @@
       "narrow wristwatch"
     ],
     "detected_props": [
-      "shoulder bag"
+      "black shoulder bag"
     ],
     "unauthorized_accessories": [],
     "unauthorized_props": [
-      "shoulder bag"
+      "black shoulder bag"
     ],
     "extra_people": 0,
     "text_or_watermark": 0,
     "view_pose_compliance": 100,
     "framing_compliance": 100,
-    "critical_view_violation": false,
+    "critical_view_violation": 0,
     "violations": [
-      "Unauthorized prop detected: shoulder bag (black bag strap and bag body visible on the left shoulder/side)."
+      "Unauthorized prop/accessory detected: black shoulder bag (shoulder bag is explicitly forbidden)."
     ]
   }
 }

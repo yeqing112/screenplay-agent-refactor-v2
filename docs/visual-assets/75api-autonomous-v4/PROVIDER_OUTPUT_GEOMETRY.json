@@ -1,1 +1,60 @@
-{}
+{
+  "LIN_WAN": {
+    "MASTER": {
+      "requested_aspect_ratio": "2:3",
+      "submitted_aspect_ratio": "9:16",
+      "observed_width": 1024,
+      "observed_height": 1536,
+      "observed_aspect_ratio": "2:3",
+      "provider_ratio_honored": false
+    },
+    "FULL_FRONT": {
+      "requested_aspect_ratio": "2:3",
+      "submitted_aspect_ratio": "9:16",
+      "observed_width": 1024,
+      "observed_height": 1536,
+      "observed_aspect_ratio": "2:3",
+      "provider_ratio_honored": false
+    },
+    "FACE_FRONT": {
+      "requested_aspect_ratio": "1:1",
+      "submitted_aspect_ratio": "1:1",
+      "observed_width": 1024,
+      "observed_height": 1536,
+      "observed_aspect_ratio": "2:3",
+      "provider_ratio_honored": false
+    },
+    "FACE_PROFILE": {
+      "requested_aspect_ratio": "1:1",
+      "submitted_aspect_ratio": "1:1",
+      "observed_width": 1024,
+      "observed_height": 1536,
+      "observed_aspect_ratio": "2:3",
+      "provider_ratio_honored": false
+    },
+    "FACE_45": {
+      "requested_aspect_ratio": "1:1",
+      "submitted_aspect_ratio": "1:1",
+      "observed_width": 1024,
+      "observed_height": 1536,
+      "observed_aspect_ratio": "2:3",
+      "provider_ratio_honored": false
+    },
+    "FULL_SIDE": {
+      "requested_aspect_ratio": "2:3",
+      "submitted_aspect_ratio": "9:16",
+      "observed_width": 1024,
+      "observed_height": 1536,
+      "observed_aspect_ratio": "2:3",
+      "provider_ratio_honored": false
+    },
+    "FULL_BACK": {
+      "requested_aspect_ratio": "2:3",
+      "submitted_aspect_ratio": "9:16",
+      "observed_width": 1024,
+      "observed_height": 1536,
+      "observed_aspect_ratio": "2:3",
+      "provider_ratio_honored": false
+    }
+  }
+}

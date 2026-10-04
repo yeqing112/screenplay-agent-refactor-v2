@@ -1,1 +1,39 @@
-{}
+{
+  "LIN_WAN": [
+    {
+      "view_id": "FACE_FRONT",
+      "status": "PASS",
+      "view_pose_compliance": 95,
+      "framing_compliance": 95,
+      "critical_view_violation": []
+    },
+    {
+      "view_id": "FACE_PROFILE",
+      "status": "PASS",
+      "view_pose_compliance": 95,
+      "framing_compliance": 95,
+      "critical_view_violation": []
+    },
+    {
+      "view_id": "FACE_45",
+      "status": "PASS",
+      "view_pose_compliance": 90,
+      "framing_compliance": 95,
+      "critical_view_violation": []
+    },
+    {
+      "view_id": "FULL_SIDE",
+      "status": "PASS",
+      "view_pose_compliance": 100,
+      "framing_compliance": 100,
+      "critical_view_violation": []
+    },
+    {
+      "view_id": "FULL_BACK",
+      "status": "PASS",
+      "view_pose_compliance": 100,
+      "framing_compliance": 100,
+      "critical_view_violation": []
+    }
+  ]
+}
