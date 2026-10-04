@@ -1,5 +1,5 @@
 {
-  "status": "PASS",
+  "status": "VIDEO_DIALOGUE_CONTRACT_BLOCKED",
   "zero_call": {
     "real_image_calls": 0,
     "real_video_calls": 0
@@ -27,5 +27,20 @@
     "historical_chain_is_broken": true,
     "visual_audit_sampled": true,
     "provider_model_mapping_captured": true
+  },
+  "fresh_run": {
+    "status": "VIDEO_DIALOGUE_CONTRACT_BLOCKED",
+    "truth_chain": {
+      "canonical_prompt_sha256": "2921b11c502596f2457e387bd155ba612a03c06b4b4778f05d5f5cdff57cbf12",
+      "submission_prompt_sha256": "2921b11c502596f2457e387bd155ba612a03c06b4b4778f05d5f5cdff57cbf12",
+      "provider_recorded_prompt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "canonical_equals_submission": true,
+      "submission_equals_provider": false,
+      "status": "VIDEO_PROMPT_TRUTH_CHAIN_BROKEN"
+    },
+    "audio_streams": 1,
+    "speech_like_motion": false,
+    "real_image_calls": 0,
+    "real_video_calls": 1
   }
 }

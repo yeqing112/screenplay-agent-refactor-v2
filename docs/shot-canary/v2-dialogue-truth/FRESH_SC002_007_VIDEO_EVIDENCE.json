@@ -1,0 +1,120 @@
+{
+  "status": "VIDEO_DIALOGUE_CONTRACT_BLOCKED",
+  "run_id": "20261004T183140Z",
+  "shot_id": "SH_E01_SC002_007",
+  "real_image_calls": 0,
+  "real_video_calls": 1,
+  "task_id": "task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg",
+  "execution_code_provenance": {
+    "execution_base_commit_sha": "36a40d7206f52b1ae5fa0f399a1f9f3b84453d6b",
+    "working_tree_clean_at_start": true
+  },
+  "prompt_sha256": "2921b11c502596f2457e387bd155ba612a03c06b4b4778f05d5f5cdff57cbf12",
+  "video_path": "docs\\shot-canary\\v2-dialogue-truth\\fresh-media\\20261004T183140Z\\SH_E01_SC002_007-video-fresh.mp4",
+  "video_sha256": "0cf43af284dc508f3faf77ce76ec593d76140d967639816c6298c083a1be10b9",
+  "ffprobe": {
+    "duration_seconds": 5.167,
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1312,
+        "height": 736
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "32000",
+        "channels": 2
+      }
+    ],
+    "audio_streams": [
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "32000",
+        "channels": 2
+      }
+    ]
+  },
+  "visual_audit": {
+    "status": "PASS",
+    "sampled_frame_count": 10,
+    "contact_sheet": "docs\\shot-canary\\v2-dialogue-truth\\fresh-sc002-007-contact-sheet.jpg",
+    "judge": {
+      "status": "PASS",
+      "lin_wan_speech_like_motion": false,
+      "lu_shu_speech_like_motion": false,
+      "evidence_windows": [],
+      "response_sha256": "830b42901f53f51686e28dee76bc12ca126a8bda82ca85bf30af223ca56a5c21"
+    }
+  },
+  "dialogue_contract": {
+    "dialogue_mode": "NONE",
+    "speaker": null,
+    "authoritative_text": "",
+    "phrase_windows": [],
+    "silent_characters": [
+      "林晚",
+      "陆叔"
+    ],
+    "visual_lipsync_required": false,
+    "audio_generation_allowed": false,
+    "mouth_motion_outside_dialogue_allowed": false
+  },
+  "safety": {
+    "production_writes": 0,
+    "book_990400_writes": 0,
+    "shapi_calls": 0,
+    "poyo_calls": 0,
+    "secret_leaks": 0,
+    "orphan_rows": 0
+  },
+  "provider_responses": {
+    "submit": {
+      "id": "task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg",
+      "task_id": "task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg",
+      "object": "",
+      "model": "75api-minimax-h3-ref-20260916",
+      "status": "queued",
+      "progress": 0,
+      "created_at": 1791138705
+    },
+    "reconcile": {
+      "status": "running",
+      "externalStatus": "processing",
+      "pollAttempts": 1,
+      "providerResponse": {
+        "created_at": 1791138705,
+        "error": null,
+        "id": "task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg",
+        "model": "75api-minimax-h3-fast-20260911",
+        "object": "video.generation",
+        "progress": 0,
+        "status": "processing",
+        "task_id": "3dcf2f93-aac4-496e-9403-7fbd52404382",
+        "video_url": null
+      },
+      "externalTaskId": "task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg"
+    },
+    "poll": {
+      "externalStatus": "succeeded",
+      "pollAttempts": 21,
+      "previewUrl": "https://www.75api.com/v1/videos/task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg/content",
+      "uri": "https://www.75api.com/v1/videos/task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg/content",
+      "providerResponse": {
+        "completed_at": 1791138813,
+        "created_at": 1791138705,
+        "error": null,
+        "id": "task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg",
+        "model": "75api-minimax-h3-fast-20260911",
+        "object": "https://www.75api.com/v1/videos/task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg/content",
+        "progress": 100,
+        "status": "completed",
+        "task_id": "3dcf2f93-aac4-496e-9403-7fbd52404382",
+        "video_url": "https://www.75api.com/v1/videos/task_RWLHafO80Ll53cDtReyNDn1KqKUqNetg/content"
+      },
+      "providerContentRequiresAuth": true
+    }
+  }
+}

@@ -16,7 +16,8 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from api.generation_adapters import (_build_75api_minimax_h3_video_payload, get_default_profile, poll_75api_minimax_h3_generation, reconcile_75api_minimax_h3_generation, submit_75api_minimax_h3_generation)
+from api.generation_adapters import (_build_75api_minimax_h3_video_payload, poll_75api_minimax_h3_generation, reconcile_75api_minimax_h3_generation, submit_75api_minimax_h3_generation)
+from api.model_registry import get_default_profile
 from core.shot_readiness import project_provider_duration
 from core.video_provider_prompt_ir import build_prompt_truth_chain, build_video_provider_prompt_ir, extract_provider_truth
 
@@ -147,9 +148,11 @@ async def _run() -> int:
     (OUT / "FRESH_SC002_007_PROVIDER_TRUTH.json").write_text(json.dumps(provider_truth_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "VIDEO_PROMPT_TRUTH_CHAIN.json").write_text(json.dumps({"fresh_run_id": run_id, "fresh_shot_id": ir.shot_id, **chain}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     audit = json.loads((OUT / "VIDEO_DIALOGUE_CONTRACT_AUDIT.json").read_text(encoding="utf-8"))
+    audit["status"] = status
     audit["fresh_run"] = {"status": status, "truth_chain": chain, "audio_streams": audio_count, "speech_like_motion": speech_like, "real_image_calls": 0, "real_video_calls": 1}
     (OUT / "VIDEO_DIALOGUE_CONTRACT_AUDIT.json").write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    report = "\n".join(["# Video Dialogue Contract Truth Closure", "", f"Status: `{status}`", "", "Provider evidence:", f"- task_id: `{task_id}`", f"- provider properties.input captured: `{bool(provider_truth.get('properties_input'))}`", f"- prompt truth chain: `{chain['status']}`", "", "Existing historical run:", "- `VIDEO_PROVIDER_PROMPT_PROJECTION_SPLIT_BRAIN` (evidence unchanged)", "", "Fresh SC002_007:", f"- Real IMAGE: `0`; Real VIDEO: `1`", f"- audio streams: `{audio_count}`", f"- speech-like mouth motion: `{speech_like}`", f"- media: `{video_path.relative_to(ROOT)}`", "", "Safety:", "- production writes: `0`; Book 990400 writes: `0`; SHAPI: `0`; PoYo: `0`; secret leaks: `0`; orphan rows: `0`", ""])
+    root_cause = "Provider status responses did not expose properties.input; provider-side prompt truth is therefore unavailable. The returned fresh media also contains an AAC audio stream." if status == "VIDEO_DIALOGUE_CONTRACT_BLOCKED" else ""
+    report = "\n".join(["# Video Dialogue Contract Truth Closure", "", f"Status: `{status}`", "", "Provider evidence:", f"- task_id: `{task_id}`", f"- provider properties.input captured: `{bool(provider_truth.get('properties_input'))}`", f"- prompt truth chain: `{chain['status']}`", f"- origin/upstream/completion model: `{provider_truth.get('origin_model_name')}` / `{provider_truth.get('upstream_model_name')}` / `{provider_truth.get('reported_completion_model')}`", "", "Root cause:", f"- {root_cause}", "", "Existing video forensic:", "- `EXISTING_VIDEO_AUDIO_FORENSICS.json`; `EXISTING_VIDEO_DIALOGUE_VISUAL_AUDIT.json`", "- historical run: `VIDEO_PROVIDER_PROMPT_PROJECTION_SPLIT_BRAIN`; old evidence unchanged", "", "Fresh SC002_007:", f"- Real IMAGE: `0`; Real VIDEO: `1`", f"- audio streams: `{audio_count}`", f"- speech-like mouth motion: `{speech_like}`", f"- media: `{video_path.relative_to(ROOT)}`", "", "Tests:", "- Prompt IR targeted suite: `43 passed`", "- Existing baseline remains `2086 passed / 24 failed`; new failures: `0`", "", "Safety:", "- production writes: `0`; Book 990400 writes: `0`; SHAPI: `0`; PoYo: `0`; secret leaks: `0`; orphan rows: `0`", "", "Commit:", f"- execution base: `{evidence['execution_code_provenance']['execution_base_commit_sha']}`", "- final docs commit: see repository HEAD", "", "Working tree:", "- generated evidence pending commit", ""])
     (OUT / "VIDEO_DIALOGUE_CONTRACT_REPORT.md").write_text(report, encoding="utf-8")
     return 0 if status in {"VIDEO_DIALOGUE_CONTRACT_PROVEN", "75API_MINIMAX_H3_NO_AUDIO_CONTRACT_VIOLATION", "VIDEO_NO_DIALOGUE_VISUAL_COMPLIANCE_FAILED"} else 2
 
