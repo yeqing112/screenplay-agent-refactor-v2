@@ -1,14 +1,14 @@
 {
   "schema_version": "execution_code_provenance_v1",
-  "run_id": "20261004T141537Z",
-  "execution_base_commit_sha": "47a24df226c5bd266a5d10b8d15f57e14acf61d8",
+  "run_id": "20261004T142118Z",
+  "execution_base_commit_sha": "dc4d0852934fe01b8bbafe8bf871b09729ec2143",
   "working_tree_clean_at_start": true,
   "runner_path": "scripts\\run_75api_autonomous_asset_canary_v4.py",
-  "runner_sha256": "f1d002f845816eb9730511e46c7c3305f1e33f75622c5a529208c68105add0c4",
+  "runner_sha256": "c4418c4b642e83e83e90a56f04a692c6c2caa3878aabc7e1c83faa2c0b21c550",
   "core_runtime_file_sha256": [
     {
       "path": "scripts\\run_autonomous_visual_asset_pipeline_v4.py",
-      "sha256": "d317d5910d17500e66962c9064de38030ec0013751b37b6c7da27ac6f613c3b6"
+      "sha256": "28737550d5a635d3ea1d94d985f885777b8a3d06396e10c38aa493c999af91ec"
     },
     {
       "path": "core\\asset_semantic_compliance.py",

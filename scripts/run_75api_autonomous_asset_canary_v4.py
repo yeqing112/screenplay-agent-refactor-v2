@@ -216,6 +216,8 @@ async def _run_asset(client: httpx.AsyncClient, base_url: str, *, kind: str, ass
         prompt = _character_derived_prompt(asset, view) if kind == "CHARACTER" else _prop_derived_prompt(asset, view)
         if kind == "CHARACTER":
             prompt += " 人物本人身上、肩部、手中和周围不得出现包、肩带、手机、雨伞、文件或任何未声明剧情道具；唯一允许的配饰是窄表。"
+            if view == "FACE_45":
+                prompt += " 头部必须向右转约45度，左右眼大小明显不同，只让一侧脸颊和鼻梁主导画面；不得正脸、不得接近正脸、不得90度侧脸。"
         semantic = None
         media = None
         sreq = sresp = ""
