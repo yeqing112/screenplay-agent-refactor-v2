@@ -1,0 +1,83 @@
+[
+  {
+    "view_id": "REVERSE",
+    "view_type": "REVERSE",
+    "camera_position": "near rear kitchen work zone facing toward dining table",
+    "camera_direction": "toward the center foreground and rear-right kitchen door",
+    "visible_landmarks": [
+      "dining_table",
+      "rear_right_kitchen_door",
+      "left_window_edge",
+      "sink_edge"
+    ],
+    "occluded_landmarks": [
+      "back_cabinet_partial"
+    ],
+    "required_landmarks": [
+      "dining_table",
+      "rear_right_kitchen_door",
+      "left_window_edge"
+    ],
+    "forbidden_changes": [
+      "redesigning the room",
+      "moving the door",
+      "moving the sink below the window",
+      "changing fixed furniture",
+      "adding people or text"
+    ]
+  },
+  {
+    "view_id": "SIDE",
+    "view_type": "SIDE",
+    "camera_position": "along the long side of the dining table",
+    "camera_direction": "across the table toward the left window and rear work zone",
+    "visible_landmarks": [
+      "dining_table",
+      "sink_below_window",
+      "back_cabinet",
+      "rear_right_kitchen_door"
+    ],
+    "occluded_landmarks": [
+      "near chair underside"
+    ],
+    "required_landmarks": [
+      "dining_table",
+      "sink_below_window",
+      "back_cabinet"
+    ],
+    "forbidden_changes": [
+      "redesigning the room",
+      "changing table orientation",
+      "moving the window",
+      "changing fixed furniture",
+      "adding people or text"
+    ]
+  },
+  {
+    "view_id": "DETAIL",
+    "view_type": "DETAIL",
+    "camera_position": "close camera at the left counter beside the sink",
+    "camera_direction": "toward sink, worn counter, left window lower frame and cabinet edge",
+    "visible_landmarks": [
+      "sink_below_window",
+      "left_window",
+      "worn_counter",
+      "back_cabinet_edge"
+    ],
+    "occluded_landmarks": [
+      "dining_table",
+      "kitchen_door"
+    ],
+    "required_landmarks": [
+      "sink_below_window",
+      "worn_counter",
+      "left_window"
+    ],
+    "forbidden_changes": [
+      "inventing another kitchen",
+      "moving the sink away from the window",
+      "changing tile or counter material",
+      "adding people or text"
+    ]
+  }
+]

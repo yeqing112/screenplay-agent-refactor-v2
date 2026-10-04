@@ -1,0 +1,253 @@
+{
+  "schema_version": "scene_consistency_audit_v1",
+  "scene_id": "E01_SC002",
+  "judge_status": "VISION_JUDGE_EXECUTED",
+  "judge": {
+    "status": "FAIL",
+    "views": {
+      "REVERSE": {
+        "same_physical_space": false,
+        "architecture_score": 2,
+        "landmark_score": 3,
+        "furniture_score": 2,
+        "lighting_score": 4,
+        "critical_topology_violations": [
+          "Upper cabinets in MASTER are a continuous 5-door run; in REVERSE they are split into a 2-door unit and a separate tall pantry cabinet, altering the wall topology.",
+          "Doorway in MASTER shows an open room with a sofa; REVERSE shows a closed dark door in a different position.",
+          "Sink in MASTER is a large white farmhouse style; REVERSE sink is smaller and set differently."
+        ],
+        "violations": [
+          "Cabinet configuration and count differ significantly.",
+          "Doorway destination and structure inconsistent.",
+          "Countertop items and layout do not match."
+        ]
+      },
+      "SIDE": {
+        "same_physical_space": false,
+        "architecture_score": 3,
+        "landmark_score": 3,
+        "furniture_score": 2,
+        "lighting_score": 4,
+        "critical_topology_violations": [
+          "Sink changes from white farmhouse (MASTER) to stainless steel inset (SIDE).",
+          "Doorway in SIDE shows a green door with glass panel and hallway rug; MASTER doorway shows open room with sofa.",
+          "Upper cabinets in SIDE are 4 doors with different wear patterns vs 5 doors in MASTER."
+        ],
+        "violations": [
+          "Sink material and type inconsistent.",
+          "Doorway structure and adjacent room differ.",
+          "Cabinet door count and condition mismatch."
+        ]
+      },
+      "DETAIL": {
+        "same_physical_space": false,
+        "architecture_score": 3,
+        "landmark_score": 4,
+        "furniture_score": 3,
+        "lighting_score": 4,
+        "critical_topology_violations": [
+          "DETAIL shows a corner layout with L-shaped counter; MASTER shows straight counter run.",
+          "DETAIL sink is white but positioned differently relative to window.",
+          "DETAIL upper cabinet is dark grey/blue; MASTER upper cabinets are white."
+        ],
+        "violations": [
+          "Counter topology (corner vs straight) inconsistent.",
+          "Upper cabinet color differs (dark vs white).",
+          "Window frame and sill details do not match MASTER."
+        ]
+      },
+      "MASTER": {
+        "same_physical_space": true,
+        "architecture_score": 10,
+        "landmark_score": 10,
+        "furniture_score": 10,
+        "lighting_score": 10,
+        "critical_topology_violations": [],
+        "violations": []
+      }
+    }
+  },
+  "views": [
+    {
+      "view_id": "REVERSE",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 3,
+      "landmark_score": 2,
+      "furniture_score": 3,
+      "lighting_score": 4,
+      "critical_topology_violations": [
+        "Doorway topology mismatch: MASTER shows an open doorway with no door leaf and a view into a room with a sofa; REVERSE shows a closed door with a frosted glass panel occupying the same wall position.",
+        "Upper cabinet topology mismatch: MASTER features a continuous run of 5 white cabinets; REVERSE features only 2 green cabinets, leaving a large empty wall section to the right."
+      ],
+      "violations": [
+        "Cabinet color mismatch: white in MASTER vs green in REVERSE.",
+        "Lighting state mismatch: the pendant bulb is lit in MASTER but unlit in REVERSE.",
+        "Sink unit mismatch: MASTER has a white cabinet base under the sink; REVERSE has a white appliance (dishwasher) base.",
+        "Countertop clutter mismatch: coffee maker present in MASTER, absent in REVERSE."
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 2
+    },
+    {
+      "view_id": "SIDE",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 4,
+      "landmark_score": 3,
+      "furniture_score": 3,
+      "lighting_score": 4,
+      "critical_topology_violations": [
+        "Doorway topology mismatch: MASTER shows an open doorway with no door leaf; SIDE shows a closed solid door with a handle in the same wall position."
+      ],
+      "violations": [
+        "Upper cabinet count mismatch: MASTER has 5 cabinets; SIDE has 3 cabinets.",
+        "Cabinet color mismatch: white in MASTER vs cream/off-white in SIDE.",
+        "Countertop clutter mismatch: coffee maker present in MASTER, absent in SIDE.",
+        "Table surface mismatch: MASTER table has dark stains; SIDE table is clean."
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1
+    },
+    {
+      "view_id": "DETAIL",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 2,
+      "landmark_score": 2,
+      "furniture_score": 2,
+      "lighting_score": 3,
+      "critical_topology_violations": [
+        "Window topology mismatch: MASTER has a large double-pane window with a central vertical mullion; DETAIL shows a single-pane window with no mullion.",
+        "Sink placement mismatch: MASTER sink is positioned under the window; DETAIL sink is positioned to the right of the window on a perpendicular counter run."
+      ],
+      "violations": [
+        "Upper cabinet color mismatch: white in MASTER vs dark grey/blue in DETAIL.",
+        "Lighting mismatch: DETAIL shows a flush-mount ceiling light instead of the pendant bulb in MASTER.",
+        "Countertop material mismatch: MASTER has a continuous wooden counter; DETAIL shows a split counter with a white section under the sink.",
+        "Faucet mismatch: MASTER has a wall-mounted faucet; DETAIL has a deck-mounted faucet."
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1
+    },
+    {
+      "view_id": "REVERSE",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 2,
+      "landmark_score": 2,
+      "furniture_score": 3,
+      "lighting_score": 4,
+      "critical_topology_violations": [
+        "Upper cabinets are split into two separate units with a tall narrow cabinet between them, instead of the continuous 5-door run in MASTER",
+        "Doorway is positioned on the back wall to the right of the cabinets, whereas MASTER places the doorway on the right side wall",
+        "No continuous tiled backsplash behind the counter; tiles only appear in a small section near the sink"
+      ],
+      "violations": [
+        "Sink is a standalone cabinet unit rather than integrated under the counter",
+        "Countertop items (coffee maker, jars, bottles) from MASTER are missing",
+        "Table surface is cleaner and lacks the dark stains seen in MASTER",
+        "Doorway leads to a dark closed door instead of an open view into a lit room with a sofa",
+        "Wall condition is smoother with less peeling paint than MASTER"
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 3
+    },
+    {
+      "view_id": "SIDE",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 3,
+      "landmark_score": 3,
+      "furniture_score": 2,
+      "lighting_score": 4,
+      "critical_topology_violations": [
+        "Sink changes from white farmhouse (MASTER) to stainless steel inset (SIDE).",
+        "Doorway in SIDE shows a green door with glass panel and hallway rug; MASTER doorway shows open room with sofa.",
+        "Upper cabinets in SIDE are 4 doors with different wear patterns vs 5 doors in MASTER."
+      ],
+      "violations": [
+        "Sink material and type inconsistent.",
+        "Doorway structure and adjacent room differ.",
+        "Cabinet door count and condition mismatch."
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 2
+    }
+  ],
+  "latest_views": {
+    "REVERSE": {
+      "view_id": "REVERSE",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 2,
+      "landmark_score": 2,
+      "furniture_score": 3,
+      "lighting_score": 4,
+      "critical_topology_violations": [
+        "Upper cabinets are split into two separate units with a tall narrow cabinet between them, instead of the continuous 5-door run in MASTER",
+        "Doorway is positioned on the back wall to the right of the cabinets, whereas MASTER places the doorway on the right side wall",
+        "No continuous tiled backsplash behind the counter; tiles only appear in a small section near the sink"
+      ],
+      "violations": [
+        "Sink is a standalone cabinet unit rather than integrated under the counter",
+        "Countertop items (coffee maker, jars, bottles) from MASTER are missing",
+        "Table surface is cleaner and lacks the dark stains seen in MASTER",
+        "Doorway leads to a dark closed door instead of an open view into a lit room with a sofa",
+        "Wall condition is smoother with less peeling paint than MASTER"
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 3
+    },
+    "SIDE": {
+      "view_id": "SIDE",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 3,
+      "landmark_score": 3,
+      "furniture_score": 2,
+      "lighting_score": 4,
+      "critical_topology_violations": [
+        "Sink changes from white farmhouse (MASTER) to stainless steel inset (SIDE).",
+        "Doorway in SIDE shows a green door with glass panel and hallway rug; MASTER doorway shows open room with sofa.",
+        "Upper cabinets in SIDE are 4 doors with different wear patterns vs 5 doors in MASTER."
+      ],
+      "violations": [
+        "Sink material and type inconsistent.",
+        "Doorway structure and adjacent room differ.",
+        "Cabinet door count and condition mismatch."
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 2
+    },
+    "DETAIL": {
+      "view_id": "DETAIL",
+      "status": "REPAIR",
+      "same_physical_space": false,
+      "architecture_score": 2,
+      "landmark_score": 2,
+      "furniture_score": 2,
+      "lighting_score": 3,
+      "critical_topology_violations": [
+        "Window topology mismatch: MASTER has a large double-pane window with a central vertical mullion; DETAIL shows a single-pane window with no mullion.",
+        "Sink placement mismatch: MASTER sink is positioned under the window; DETAIL sink is positioned to the right of the window on a perpendicular counter run."
+      ],
+      "violations": [
+        "Upper cabinet color mismatch: white in MASTER vs dark grey/blue in DETAIL.",
+        "Lighting mismatch: DETAIL shows a flush-mount ceiling light instead of the pendant bulb in MASTER.",
+        "Countertop material mismatch: MASTER has a continuous wooden counter; DETAIL shows a split counter with a white section under the sink.",
+        "Faucet mismatch: MASTER has a wall-mounted faucet; DETAIL has a deck-mounted faucet."
+      ],
+      "judge_status": "VISION_JUDGE_EXECUTED",
+      "attempt_number": 1
+    }
+  },
+  "thresholds": {
+    "normal_calls_max": 7,
+    "max_attempts_per_view": 3,
+    "architecture_threshold": 85,
+    "landmarks_threshold": 85,
+    "furniture_threshold": 80,
+    "lighting_threshold": 80
+  }
+}
