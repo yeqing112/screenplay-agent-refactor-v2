@@ -1,0 +1,145 @@
+{
+  "SH_E01_SC002_007": {
+    "shot_id": "SH_E01_SC002_007",
+    "scene_id": "E01_SC002",
+    "references": [
+      {
+        "role": "SCENE_MASTER",
+        "asset_id": "E01_SC002",
+        "authority_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+        "media_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+        "reference_order": 1,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FULL",
+        "asset_id": "LIN_WAN",
+        "authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "media_sha256": "67e1d6306172afb48f162262f20d4ebd53a3c62044bdd3408e720547764b3357",
+        "reference_order": 2,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FACE",
+        "asset_id": "LIN_WAN",
+        "authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "media_sha256": "6abb0ef9b16374cfbb724734bbaf0ac7e814be79084f6e8771d86f8b665cca6e",
+        "reference_order": 3,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FULL",
+        "asset_id": "LU_SHU",
+        "authority_fingerprint": "75e23baf168ff9bb7bfb2cf671db4ed7d7d83319b68f423b7156346bc10272b5",
+        "media_sha256": "e7322b776dfeb8dc6d492674696b1c91c711bf872b6f330524001f03d37ca028",
+        "reference_order": 4,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FACE",
+        "asset_id": "LU_SHU",
+        "authority_fingerprint": "75e23baf168ff9bb7bfb2cf671db4ed7d7d83319b68f423b7156346bc10272b5",
+        "media_sha256": "ded3348be7713d30ac627b0ec94200f1076211f36aed1cb6c8a39daeec5ee483",
+        "reference_order": 5,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      }
+    ],
+    "unresolved_references": []
+  },
+  "SH_E01_SC002_002": {
+    "shot_id": "SH_E01_SC002_002",
+    "scene_id": "E01_SC002",
+    "references": [
+      {
+        "role": "SCENE_MASTER",
+        "asset_id": "E01_SC002",
+        "authority_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+        "media_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+        "reference_order": 1,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FULL",
+        "asset_id": "LIN_WAN",
+        "authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "media_sha256": "67e1d6306172afb48f162262f20d4ebd53a3c62044bdd3408e720547764b3357",
+        "reference_order": 2,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FACE",
+        "asset_id": "LIN_WAN",
+        "authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "media_sha256": "6abb0ef9b16374cfbb724734bbaf0ac7e814be79084f6e8771d86f8b665cca6e",
+        "reference_order": 3,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FULL",
+        "asset_id": "LU_SHU",
+        "authority_fingerprint": "75e23baf168ff9bb7bfb2cf671db4ed7d7d83319b68f423b7156346bc10272b5",
+        "media_sha256": "e7322b776dfeb8dc6d492674696b1c91c711bf872b6f330524001f03d37ca028",
+        "reference_order": 4,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FACE",
+        "asset_id": "LU_SHU",
+        "authority_fingerprint": "75e23baf168ff9bb7bfb2cf671db4ed7d7d83319b68f423b7156346bc10272b5",
+        "media_sha256": "ded3348be7713d30ac627b0ec94200f1076211f36aed1cb6c8a39daeec5ee483",
+        "reference_order": 5,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      }
+    ],
+    "unresolved_references": []
+  },
+  "SH_E01_SC002_006": {
+    "shot_id": "SH_E01_SC002_006",
+    "scene_id": "E01_SC002",
+    "references": [
+      {
+        "role": "SCENE_MASTER",
+        "asset_id": "E01_SC002",
+        "authority_fingerprint": "c7447f7692f347033d8db436305d01f154aaeaeaf94e572b39f3623c95fac376",
+        "media_sha256": "1a3dc3b2f8c69003f17dcaaba9e7374ae5f059a666b38156c7806c960011aa5f",
+        "reference_order": 1,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FULL",
+        "asset_id": "LIN_WAN",
+        "authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "media_sha256": "67e1d6306172afb48f162262f20d4ebd53a3c62044bdd3408e720547764b3357",
+        "reference_order": 2,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FACE",
+        "asset_id": "LIN_WAN",
+        "authority_fingerprint": "5f1e43adad57ae43a585b8b75fd85b8939edcf0688ab66af58e988a6b68172b3",
+        "media_sha256": "6abb0ef9b16374cfbb724734bbaf0ac7e814be79084f6e8771d86f8b665cca6e",
+        "reference_order": 3,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FULL",
+        "asset_id": "LU_SHU",
+        "authority_fingerprint": "75e23baf168ff9bb7bfb2cf671db4ed7d7d83319b68f423b7156346bc10272b5",
+        "media_sha256": "e7322b776dfeb8dc6d492674696b1c91c711bf872b6f330524001f03d37ca028",
+        "reference_order": 4,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      },
+      {
+        "role": "CHARACTER_FACE",
+        "asset_id": "LU_SHU",
+        "authority_fingerprint": "75e23baf168ff9bb7bfb2cf671db4ed7d7d83319b68f423b7156346bc10272b5",
+        "media_sha256": "ded3348be7713d30ac627b0ec94200f1076211f36aed1cb6c8a39daeec5ee483",
+        "reference_order": 5,
+        "path": "docs/visual-assets/75api-autonomous-v4"
+      }
+    ],
+    "unresolved_references": [
+      "APPLE"
+    ]
+  }
+}

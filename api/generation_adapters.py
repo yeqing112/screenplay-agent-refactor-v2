@@ -711,7 +711,18 @@ def _75api_minimax_h3_base_url(profile: dict[str, Any]) -> str:
 
 
 def _coerce_75api_minimax_h3_seconds(value: Any) -> int:
-    seconds = _coerce_int(value, 0)
+    # Canonical callers must project fractional Director durations before the
+    # provider boundary.  Silent ``int(13.5)`` truncation changes authored
+    # timing and is therefore fail-closed.
+    if isinstance(value, bool):
+        raise ModelProfileError("VIDEO_PROVIDER_DURATION_NOT_PROJECTED")
+    try:
+        numeric = float(value)
+    except (TypeError, ValueError):
+        raise ModelProfileError("VIDEO_PROVIDER_DURATION_NOT_PROJECTED") from None
+    if not numeric.is_integer():
+        raise ModelProfileError("VIDEO_PROVIDER_DURATION_NOT_PROJECTED")
+    seconds = int(numeric)
     if seconds < 5 or seconds > 15:
         raise ModelProfileError("75api MiniMax H3 的 seconds 必须是 5–15 秒；请延长镜头或先拆镜。")
     return seconds

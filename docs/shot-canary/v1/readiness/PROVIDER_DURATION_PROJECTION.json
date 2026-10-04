@@ -1,0 +1,23 @@
+{
+  "SH_E01_SC002_007": {
+    "director_duration_seconds": 5.0,
+    "provider_duration_seconds": 5,
+    "provider_padding_seconds": 0.0,
+    "padding_mode": "NONE",
+    "status": "PASS"
+  },
+  "SH_E01_SC002_002": {
+    "director_duration_seconds": 13.5,
+    "provider_duration_seconds": 14,
+    "provider_padding_seconds": 0.5,
+    "padding_mode": "TERMINAL_HOLD",
+    "status": "PASS"
+  },
+  "SH_E01_SC002_006": {
+    "director_duration_seconds": 8.5,
+    "provider_duration_seconds": 9,
+    "provider_padding_seconds": 0.5,
+    "padding_mode": "TERMINAL_HOLD",
+    "status": "PASS"
+  }
+}

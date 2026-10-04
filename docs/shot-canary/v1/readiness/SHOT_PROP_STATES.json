@@ -1,0 +1,46 @@
+{
+  "SH_E01_SC002_007": {
+    "shot_id": "SH_E01_SC002_007",
+    "prop_id": "",
+    "present": false,
+    "holder": "",
+    "hand": "",
+    "contact": "",
+    "position": "人物身侧",
+    "physical_state": "无道具",
+    "story_state": "镜头重新建立空间关系",
+    "authority_source": "EXPLICIT_SOURCE_PROP",
+    "validation_errors": [],
+    "allowed_props": []
+  },
+  "SH_E01_SC002_002": {
+    "shot_id": "SH_E01_SC002_002",
+    "prop_id": "",
+    "present": false,
+    "holder": "",
+    "hand": "",
+    "contact": "",
+    "position": "人物身侧",
+    "physical_state": "无道具",
+    "story_state": "镜头重新建立空间关系",
+    "authority_source": "EXPLICIT_SOURCE_PROP",
+    "validation_errors": [],
+    "allowed_props": []
+  },
+  "SH_E01_SC002_006": {
+    "shot_id": "SH_E01_SC002_006",
+    "prop_id": "APPLE",
+    "present": true,
+    "holder": "LU_SHU",
+    "hand": "RIGHT",
+    "contact": "holds and offers",
+    "position": "餐桌右侧向林晚",
+    "physical_state": "whole intact",
+    "story_state": "offered in dialogue",
+    "authority_source": "DIALOGUE_ACTION_RESOLVED_PROP",
+    "validation_errors": [],
+    "allowed_props": [
+      "APPLE"
+    ]
+  }
+}
