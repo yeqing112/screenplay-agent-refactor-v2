@@ -1,0 +1,21 @@
+{
+  "status": "INCOMPLETE",
+  "code": "VIDEO_REFERENCE_LINEAGE_INCOMPLETE",
+  "shot_id": "SH_E01_SC002_002",
+  "reference_mode": "FIRST_FRAME",
+  "asset_id": "",
+  "media_sha256": "f039112c1a3eb0d7d24785a684b9c104989a549df235a4fdd52c72956e1472c1",
+  "authority_fingerprint": "",
+  "generation_execution_id": "",
+  "review_decision": "APPROVE",
+  "official_lineage": "",
+  "provider_accessible_url_present": true,
+  "missing": [
+    "asset_id",
+    "authority_fingerprint",
+    "generation_execution_id",
+    "official_lineage"
+  ],
+  "resolver_path": "Approved Keyframe Authority -> ReferencePlan -> VideoIntentIR -> CompiledVideoRequestIR -> resolver -> URL -> adapter",
+  "post_count": 0
+}
