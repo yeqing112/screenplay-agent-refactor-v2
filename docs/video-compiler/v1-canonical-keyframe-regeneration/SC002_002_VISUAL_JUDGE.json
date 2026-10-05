@@ -1,0 +1,12 @@
+{
+  "schema_version": "sc002_002_canonical_keyframe_regeneration_v1",
+  "status": "NOT_RUN",
+  "run_id": "20261005T044836Z",
+  "shot_id": "SH_E01_SC002_002",
+  "media_role": "KEYFRAME_START_IMAGE",
+  "blocked_by": "CANONICAL_SHOT_SOURCE_MISSING",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "provider_image_post_count": 0,
+  "provider_video_post_count": 0
+}

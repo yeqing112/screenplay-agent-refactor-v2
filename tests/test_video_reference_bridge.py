@@ -31,6 +31,22 @@ def test_bridge_uses_official_media_ids_and_authority_lineage():
     assert validate_official_media_video_reference_bridge(bridge)["status"] == "PASS"
 
 
+def test_bridge_requires_authority_lineage_hash_even_when_payload_hash_exists():
+    args = list(_records())
+    args[2] = SimpleNamespace(authority_id="oma-1", status="CURRENT", lineage_hash=None, payload_hash="payload-1")
+    with pytest.raises(ValueError, match="OFFICIAL_MEDIA_AUTHORITY_FINGERPRINT_MISSING"):
+        build_official_media_video_reference_bridge(source_binding=args[0], official_media_version=args[1], official_media_authority=args[2], official_media_pointer=args[3], validation=args[4], promotion=args[5], candidate=args[6], execution=args[7])
+
+
+@pytest.mark.parametrize("field", ["payload_hash", "pointer_fingerprint", "checksum_sha256", "provider_asset_url"])
+def test_bridge_does_not_substitute_other_fingerprints_for_lineage(field):
+    args = list(_records())
+    args[2] = SimpleNamespace(authority_id="oma-1", status="CURRENT", lineage_hash=None, payload_hash="payload-1")
+    setattr(args[2], field, "substitute-value")
+    with pytest.raises(ValueError, match="OFFICIAL_MEDIA_AUTHORITY_FINGERPRINT_MISSING"):
+        build_official_media_video_reference_bridge(source_binding=args[0], official_media_version=args[1], official_media_authority=args[2], official_media_pointer=args[3], validation=args[4], promotion=args[5], candidate=args[6], execution=args[7])
+
+
 def test_bridge_rejects_checksum_only_or_pointer_mismatch():
     args = list(_records())
     args[3] = SimpleNamespace(official_media_version_id="other", authority_id="oma-1", fingerprint="ptr-fp")

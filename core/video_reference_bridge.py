@@ -60,7 +60,7 @@ def build_official_media_video_reference_bridge(
     promotion_id = _text(promotion, "promotion_id")
     if not validation_id or not promotion_id:
         raise ValueError("OFFICIAL_MEDIA_REVIEW_LINEAGE_INCOMPLETE")
-    lineage_hash = _text(official_media_authority, "lineage_hash") or _text(official_media_authority, "payload_hash")
+    lineage_hash = _text(official_media_authority, "lineage_hash")
     if not lineage_hash:
         raise ValueError("OFFICIAL_MEDIA_AUTHORITY_FINGERPRINT_MISSING")
     return {

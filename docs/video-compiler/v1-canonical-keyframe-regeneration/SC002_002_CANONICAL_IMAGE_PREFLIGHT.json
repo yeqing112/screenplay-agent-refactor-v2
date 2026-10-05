@@ -1,0 +1,79 @@
+{
+  "schema_version": "sc002_002_canonical_image_preflight_v1",
+  "status": "BLOCKED_BEFORE_POST",
+  "code": "CANONICAL_SHOT_SOURCE_MISSING",
+  "reason": "Current canonical StoryboardShot and media-scoped PromptIR pointer for SH_E01_SC002_002 are unavailable; historical prompt/media cannot be adopted.",
+  "run_id": "20261005T044836Z",
+  "shot_id": "SH_E01_SC002_002",
+  "media_role": "KEYFRAME_START_IMAGE",
+  "current_source": {
+    "shot_identity": "SH_E01_SC002_002",
+    "database_url_source": "configured application database",
+    "storyboard_shot_match_count": 0,
+    "prompt_ir_pointer_match_count": 0,
+    "current_prompt_ir_available": false,
+    "current_script_ir_available": false,
+    "semantic_source_available": false,
+    "historical_prompt_used": false,
+    "historical_keyframe_adopted": false
+  },
+  "prompt_ir_version_id": null,
+  "prompt_ir_payload_hash": null,
+  "model_profile": {
+    "id": "local-image-c4a7yu",
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k",
+    "generation_capability": "IMAGE_GENERATION",
+    "adapter_id": "image_generic",
+    "adapter_version": "image_generic_adapter_v1",
+    "transport_binding_id": "75api-image.image.v1",
+    "credential_configured": true,
+    "default_params": {
+      "task_modes": [
+        "text_to_image",
+        "image_to_image"
+      ],
+      "supports_reference_images": true,
+      "supports_image_url": true,
+      "supports_file_upload": false,
+      "supports_negative_prompt": false,
+      "supports_async_tasks": false,
+      "n": 1,
+      "size": "auto",
+      "quality": "high",
+      "response_format": "url",
+      "allowed_models": [
+        "gpt-image-2-1k",
+        "gpt-image-2-2k"
+      ],
+      "transport": "75api-images-generations",
+      "evidence_status": "provider_probe_required"
+    }
+  },
+  "generation_request_fingerprint": null,
+  "reference_bindings": [],
+  "credential_readiness": {
+    "credential_ref": "profile:local-image-c4a7yu",
+    "configured": true,
+    "resolved": true,
+    "validated": true,
+    "validation_method": "model-registry-secret-presence",
+    "validation_version": "v1"
+  },
+  "expected_aspect_ratio": null,
+  "expected_dimensions": null,
+  "contract_status": "MISSING_CANONICAL_SHOT_SOURCE",
+  "prior_matching_active_execution": {
+    "checked": true,
+    "match_count": 0,
+    "status": "NOT_APPLICABLE"
+  },
+  "real_image_budget": 1,
+  "real_video_budget": 0,
+  "provider_image_post_count": 0,
+  "provider_video_post_count": 0,
+  "historical_evidence": {
+    "status": "FORENSIC_ONLY",
+    "adoption": "FORBIDDEN"
+  }
+}
