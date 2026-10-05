@@ -1,21 +1,30 @@
 {
   "schema_version": "sc002_002_canonical_image_preflight_v1",
   "status": "BLOCKED_BEFORE_POST",
-  "code": "CANONICAL_SHOT_SOURCE_MISSING",
-  "reason": "Current canonical StoryboardShot and media-scoped PromptIR pointer for SH_E01_SC002_002 are unavailable; historical prompt/media cannot be adopted.",
-  "run_id": "20261005T044836Z",
+  "code": "SC002_002_CANONICAL_IDENTITY_NOT_FOUND",
+  "reason": "No unique authoritative current ShotPlan payload contains exact plan_shot_id SH_E01_SC002_002; historical prompt/media cannot be adopted.",
+  "run_id": "20261005T061257Z",
   "shot_id": "SH_E01_SC002_002",
   "media_role": "KEYFRAME_START_IMAGE",
   "current_source": {
     "shot_identity": "SH_E01_SC002_002",
     "database_url_source": "configured application database",
-    "storyboard_shot_match_count": 0,
-    "prompt_ir_pointer_match_count": 0,
-    "current_prompt_ir_available": false,
-    "current_script_ir_available": false,
-    "semantic_source_available": false,
     "historical_prompt_used": false,
-    "historical_keyframe_adopted": false
+    "historical_keyframe_adopted": false,
+    "identity_resolution": {
+      "status": "ZERO",
+      "target_plan_shot_id": "SH_E01_SC002_002",
+      "matches": [],
+      "authoritative_matches": []
+    },
+    "script_ir_state": {
+      "scope": "UNSCOPED_UNTIL_IDENTITY_RESOLVED",
+      "script_count": 60,
+      "current_pointer_count": 47,
+      "production_qualified_current_count": 44
+    },
+    "current_script_ir_available": "UNSCOPED_UNTIL_IDENTITY_RESOLVED",
+    "semantic_source_available": false
   },
   "prompt_ir_version_id": null,
   "prompt_ir_payload_hash": null,
@@ -62,7 +71,7 @@
   },
   "expected_aspect_ratio": null,
   "expected_dimensions": null,
-  "contract_status": "MISSING_CANONICAL_SHOT_SOURCE",
+  "contract_status": "SC002_002_CANONICAL_IDENTITY_NOT_FOUND",
   "prior_matching_active_execution": {
     "checked": true,
     "match_count": 0,

@@ -1,0 +1,1518 @@
+{
+  "schema_version": "sc002_002_canonical_upstream_recovery_v1",
+  "run_id": "20261005T055321Z",
+  "shot_id": "SH_E01_SC002_002",
+  "status": "SC002_002_CANONICAL_IDENTITY_NOT_FOUND",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "external_llm_calls": 0,
+  "script_ir": {
+    "scope": "UNSCOPED_UNTIL_IDENTITY_RESOLVED",
+    "script_count": 60,
+    "current_pointer_count": 47,
+    "production_qualified_current_count": 44,
+    "rows": [
+      {
+        "script_id": 3,
+        "book_id": 991119,
+        "episode": 2,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 4,
+        "book_id": 991119,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 5,
+        "book_id": 990400,
+        "episode": 1,
+        "script_status": "done",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 6,
+        "book_id": 990401,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 7,
+        "book_id": 990401,
+        "episode": 2,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 8,
+        "book_id": 990401,
+        "episode": 3,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 9,
+        "book_id": 990401,
+        "episode": 4,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 10,
+        "book_id": 990401,
+        "episode": 5,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 11,
+        "book_id": 990401,
+        "episode": 6,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 12,
+        "book_id": 990401,
+        "episode": 7,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 13,
+        "book_id": 990401,
+        "episode": 8,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 14,
+        "book_id": 990401,
+        "episode": 9,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 15,
+        "book_id": 990401,
+        "episode": 10,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": null,
+        "script_ir": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "qualification_state": null,
+          "stale_status": null,
+          "payload_hash": null,
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": null
+        },
+        "fact_snapshot": {
+          "id": null,
+          "revision": null,
+          "status": null,
+          "payload_hash": null
+        }
+      },
+      {
+        "script_id": 16,
+        "book_id": 990402,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 2,
+        "script_ir": {
+          "id": 2,
+          "revision": 2,
+          "status": "qualified",
+          "qualification_state": "STRUCTURALLY_VALID",
+          "stale_status": "UNKNOWN",
+          "payload_hash": "de49e08ab2504c0465d1b6b83a510e330825f90298c3ab9edf800a8f428b313f",
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": "1"
+        },
+        "fact_snapshot": {
+          "id": 1,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "c4f5e1a2c722e2daf2cd83e8faf4ec2c1d6307ea22f46f38bd715d770679b3ba"
+        }
+      },
+      {
+        "script_id": 17,
+        "book_id": 990402,
+        "episode": 2,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 6,
+        "script_ir": {
+          "id": 6,
+          "revision": 2,
+          "status": "qualified",
+          "qualification_state": "STRUCTURALLY_VALID",
+          "stale_status": "UNKNOWN",
+          "payload_hash": "4d1bf0de586111aebaa8a4253faec6628cc60d787d561607f6b1363691786f7e",
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": "2"
+        },
+        "fact_snapshot": {
+          "id": 2,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a57bcd3b111405f47da762f7a7ee1c98ea65826642a80b978f6d8d251c490516"
+        }
+      },
+      {
+        "script_id": 18,
+        "book_id": 990402,
+        "episode": 3,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 5,
+        "script_ir": {
+          "id": 5,
+          "revision": 2,
+          "status": "qualified",
+          "qualification_state": "STRUCTURALLY_VALID",
+          "stale_status": "UNKNOWN",
+          "payload_hash": "f25f9c35787ead30a68166b6e497d794f51de8f24ab46a0b2754a756ef76a4e2",
+          "authority_fingerprint": null,
+          "authority_envelope_valid_shape": false,
+          "fact_snapshot_id": "3"
+        },
+        "fact_snapshot": {
+          "id": 3,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "82c367fdbe2441294ad247554162c0e242d8fc8586a75124b4fcf9a0627488c8"
+        }
+      },
+      {
+        "script_id": 19,
+        "book_id": 990405,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 7,
+        "script_ir": {
+          "id": 7,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "f300d6483ce4d8be3da90c43c90d77620ae1b90f1352d9870fc7531bdc6e8b9a",
+          "authority_fingerprint": "f39e57decd3f4fa9140511a5684da1c95ab716b33d72d37ca90086da2929468f",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "4"
+        },
+        "fact_snapshot": {
+          "id": 4,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 21,
+        "book_id": 990407,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 9,
+        "script_ir": {
+          "id": 9,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "cbcd54025d4f1a316b644368d70f90e4c991a764ddb202f113ec00610366ffe3",
+          "authority_fingerprint": "68846ec8a630a9537c0847ca3482ec84a4040d773c128a3f5a14a4aa970cbaba",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "6"
+        },
+        "fact_snapshot": {
+          "id": 6,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 22,
+        "book_id": 990408,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 10,
+        "script_ir": {
+          "id": 10,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "c465107fc9426d873a12ccb2e04427114a800695921dd62c856403838753527e",
+          "authority_fingerprint": "219cb1121c1fa2618c442a2df54057d2b8011ecf17e04255e62f180ddf686e8f",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "7"
+        },
+        "fact_snapshot": {
+          "id": 7,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 23,
+        "book_id": 990409,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 11,
+        "script_ir": {
+          "id": 11,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "dd27ac9c0dd5b6ce328fc5e77475c161c6777e49edb35643c6651b374f50b48c",
+          "authority_fingerprint": "da9b4924b18081be0bb0a7da517911b85ffa3eb925e68389b34a743269660b34",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "8"
+        },
+        "fact_snapshot": {
+          "id": 8,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 24,
+        "book_id": 990410,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 12,
+        "script_ir": {
+          "id": 12,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "5a5532d2e278476ccc6d208ba6209cc52289f15dfd44538d18e2d131f6df1012",
+          "authority_fingerprint": "5dd8af777faaa4ad19c5a455856a5d21f7d43229bd75c0ceaea670dfa8fecdc8",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "9"
+        },
+        "fact_snapshot": {
+          "id": 9,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 25,
+        "book_id": 990411,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 13,
+        "script_ir": {
+          "id": 13,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "7c6cf2aa87349575ea223f598e7e6b6987d2c0135cf264b709f9da94af94b608",
+          "authority_fingerprint": "dd3c1c9f5d0c081b8abc813d8b4702f91c616197905715e0054480771f12cc3d",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "10"
+        },
+        "fact_snapshot": {
+          "id": 10,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 26,
+        "book_id": 990412,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 14,
+        "script_ir": {
+          "id": 14,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "3e80eeac0861f8da38068ea1aa73162294efb75af878387f5a7899ab9cef5e1e",
+          "authority_fingerprint": "0747f93bf2093af85fd0203b0d4babbc2e7f6f824db19ae95cd1c2048d2711f1",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "11"
+        },
+        "fact_snapshot": {
+          "id": 11,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 27,
+        "book_id": 990413,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 15,
+        "script_ir": {
+          "id": 15,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "85e09a6421e2afb5490c64db96b972761acefdf7b443b2137d87c374668ed72d",
+          "authority_fingerprint": "589770898460a478f118bb8ee925919601e1c13101cda32ba0cada6e1dea44e0",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "12"
+        },
+        "fact_snapshot": {
+          "id": 12,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 28,
+        "book_id": 990414,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 16,
+        "script_ir": {
+          "id": 16,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "a1fb970ac0814f1ab6d6035eeaecfd147b8645b1092d30e331972096b57548da",
+          "authority_fingerprint": "28d265793d1e677091ae6a757388d01126e82c0622f9edb0947cea239a5c0b4b",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "13"
+        },
+        "fact_snapshot": {
+          "id": 13,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 29,
+        "book_id": 990415,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 17,
+        "script_ir": {
+          "id": 17,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "ca175125f0dff83e47e805f59b300f8a9d15635f953c587f73ae68de11ffb918",
+          "authority_fingerprint": "21c256ddaae35b78681631dbb0f7742fea5dabf3c5f15ad7a04e861dc828f831",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "14"
+        },
+        "fact_snapshot": {
+          "id": 14,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 30,
+        "book_id": 990416,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 18,
+        "script_ir": {
+          "id": 18,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "616321feb3cc1ff097d8f0178220d7247298fffb5c4a7123f40b04c0105fa51e",
+          "authority_fingerprint": "eb4cae29477ae69c0c01daad3ba33a9749d7b13354bc2d391d38ca2ac3c712d7",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "15"
+        },
+        "fact_snapshot": {
+          "id": 15,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 31,
+        "book_id": 990417,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 19,
+        "script_ir": {
+          "id": 19,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "6be43df46503320c9d9961a7e5ac9313189e8775ec50d1351baeb3aadfd094a0",
+          "authority_fingerprint": "1c6760c160828f09ffc2d625c342b53e1403564bd7b555ed1137b7007953b584",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "16"
+        },
+        "fact_snapshot": {
+          "id": 16,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 32,
+        "book_id": 990418,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 20,
+        "script_ir": {
+          "id": 20,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "7c638a662f9fcc9119bdc7f4450d2865eca825f326596848fd685f42bad2e07b",
+          "authority_fingerprint": "547d7e6ae4d765949e4b1cb11a4db9990ba83e3f2ce7715c52c94a02429b39b3",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "17"
+        },
+        "fact_snapshot": {
+          "id": 17,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 33,
+        "book_id": 990419,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 21,
+        "script_ir": {
+          "id": 21,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "968e1783607659b01262db9f852b77261a7706c29701bd350be5cf349628b8f1",
+          "authority_fingerprint": "1d2cd748dc0a9d61f643069e627541002c516293363ba2f216fd8542711dcf1f",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "18"
+        },
+        "fact_snapshot": {
+          "id": 18,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 34,
+        "book_id": 990420,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 22,
+        "script_ir": {
+          "id": 22,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "52e19906b10776273b3a77b7ca3b1f91922f416f3167332a138a6bf8d2d66c59",
+          "authority_fingerprint": "2557c580befd236369c93a119ff3df791af6abfcd33657c68a33c95ba021a21a",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "19"
+        },
+        "fact_snapshot": {
+          "id": 19,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 35,
+        "book_id": 990421,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 23,
+        "script_ir": {
+          "id": 23,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "ce47662b1ecf18094f8cad8e86d0b790eb870b962a35417c6c55e877aefdb17c",
+          "authority_fingerprint": "701ba57de90aa8a2ed43c3bfe640d2710fbbedfc826ee9660799ec9c89be4251",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "20"
+        },
+        "fact_snapshot": {
+          "id": 20,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 36,
+        "book_id": 990422,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 24,
+        "script_ir": {
+          "id": 24,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "e59e6dc622a4be1e2d2586003927324e0cc39794ccea21a2e06144727c7b45de",
+          "authority_fingerprint": "2fe42019f5f503f3596e9b470c74cbc2d7c517e9d18196a75cc06bdd2e23af83",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "21"
+        },
+        "fact_snapshot": {
+          "id": 21,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 37,
+        "book_id": 990423,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 25,
+        "script_ir": {
+          "id": 25,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "5b7ce37d60ce6b08e16b3ac01a0b1f81460d6a85c245079627e11be5a79096cf",
+          "authority_fingerprint": "436c57b330139e0a67ff3fd44243c842eb0413ba37e14b68cd3c9845df97a730",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "22"
+        },
+        "fact_snapshot": {
+          "id": 22,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 38,
+        "book_id": 990424,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 26,
+        "script_ir": {
+          "id": 26,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "c979c787af36734e20171caff020816dbbd3fda8fc562282c4e679df8d5d0618",
+          "authority_fingerprint": "a493e14503840e05378c98626d6ac69dff4fade3176b223fd7398a410dff4ad7",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "23"
+        },
+        "fact_snapshot": {
+          "id": 23,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 39,
+        "book_id": 990425,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 27,
+        "script_ir": {
+          "id": 27,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "60e11de84d61843d7e52f665a893218790798eb9f280801d87e08920bad664c0",
+          "authority_fingerprint": "688bd2c1e8dbd3314e4a5e59ff26ad78875bdac51b654e9119b57ce716b340a6",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "24"
+        },
+        "fact_snapshot": {
+          "id": 24,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 40,
+        "book_id": 990426,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 28,
+        "script_ir": {
+          "id": 28,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "59df8cd12f89aedabb22c01539f8184b75e53c2877114e55121178a07d14e35b",
+          "authority_fingerprint": "eb9e7201522d620ebebdb18fcd915da100028fc9d8b6bbb7bf3e83718903345d",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "25"
+        },
+        "fact_snapshot": {
+          "id": 25,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 41,
+        "book_id": 990427,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 29,
+        "script_ir": {
+          "id": 29,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "5096960f6e120ff8148fc846f517633b20d94197fdc0864e9832b6bac8c68a8c",
+          "authority_fingerprint": "bd34fcfcade43bc99c22e9a01371ef906ce40cbeaef365ee8aa38c397aea6cd0",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "26"
+        },
+        "fact_snapshot": {
+          "id": 26,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 42,
+        "book_id": 990428,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 30,
+        "script_ir": {
+          "id": 30,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "6dd272eac91771f920a0d69d9c4256b20448770c43a968709442074fc2d121f8",
+          "authority_fingerprint": "c9025a7c3a49dc0de7253167cb93c2532b566f93566674c87581e007a562ac47",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "27"
+        },
+        "fact_snapshot": {
+          "id": 27,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 43,
+        "book_id": 990429,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 31,
+        "script_ir": {
+          "id": 31,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "617b874ad9e044182d43bed8e9d605e5e75dc90b6d3898ea5b2b5a849600d042",
+          "authority_fingerprint": "3f79b4ebf0778de5985bb64954d18cc63575a2021b6b30f6634e04f2db15cf3c",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "28"
+        },
+        "fact_snapshot": {
+          "id": 28,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 44,
+        "book_id": 990430,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 32,
+        "script_ir": {
+          "id": 32,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "9614e23e80100bb085b47a1f35f4779359ee15fdb624693b785d51c684883708",
+          "authority_fingerprint": "7e332914486870ea6f887c227bd8afc12a89a6e32d2099d84a45f1f012c3b811",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "29"
+        },
+        "fact_snapshot": {
+          "id": 29,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 45,
+        "book_id": 990431,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 33,
+        "script_ir": {
+          "id": 33,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "4c5ce8a4100dd0461a34b4acaff485cd75782c11d9de05ba494e17ed73f2af30",
+          "authority_fingerprint": "6bc12d428818efdfc6788c33a0282dcadd0e651c3aa1210e64b63608c69bc937",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "30"
+        },
+        "fact_snapshot": {
+          "id": 30,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 46,
+        "book_id": 990432,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 34,
+        "script_ir": {
+          "id": 34,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "944c4cb60c36233072d709acf4f31d782bce0169ea21f9f450f25f478b16319a",
+          "authority_fingerprint": "b08327b1b14b6333459221538212da3e97d5c98c52445f084a7731e3e4843959",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "31"
+        },
+        "fact_snapshot": {
+          "id": 31,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 47,
+        "book_id": 990433,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 35,
+        "script_ir": {
+          "id": 35,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "357d4007d99d98bc0e69974706f7368d6bdd23f994da1e495fba1032a9120118",
+          "authority_fingerprint": "de6338548282224012972a74b9db0bc8b6ab2a9bc57cfe52c75bf50d95c9630d",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "32"
+        },
+        "fact_snapshot": {
+          "id": 32,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 48,
+        "book_id": 990434,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 36,
+        "script_ir": {
+          "id": 36,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "ae75397bbda009dd43867f258dd26b8896da1a9b93c76e1b1e46172f00600076",
+          "authority_fingerprint": "68575232e9e45cdd2ffb4d39ead9cc2d1fb87d3b67aa99aea5bb36e0f49559fc",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "33"
+        },
+        "fact_snapshot": {
+          "id": 33,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 49,
+        "book_id": 990435,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 37,
+        "script_ir": {
+          "id": 37,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "3004e2e05620339d602c2b7acea15f9c379d943b2ef7551fb06379108c65534c",
+          "authority_fingerprint": "6e1f4c9178e1dedfed21edc76352903706515e6fe4687d24cc09d2957f935943",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "34"
+        },
+        "fact_snapshot": {
+          "id": 34,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 50,
+        "book_id": 990436,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 38,
+        "script_ir": {
+          "id": 38,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "527adac581f5aef282611787a71c73a83be25aa71243ae940a15df8c02a05002",
+          "authority_fingerprint": "ba8752435be76c76af2d0f38fbc9a189ec81c6785bb8bbfd3a0afc650995c577",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "35"
+        },
+        "fact_snapshot": {
+          "id": 35,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "f4ffd99940a2473a98cbc570fbbd6664d17b13c24971aed322f7867df227b9f1"
+        }
+      },
+      {
+        "script_id": 51,
+        "book_id": 990437,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 39,
+        "script_ir": {
+          "id": 39,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "2084820b8fccd156bad12fb9d9174dde051f4900a142d862ec09c4327d5033a6",
+          "authority_fingerprint": "07e8806cc2c03d4aa6434712705695685775b1de1a861cf3835020616c99da9d",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "36"
+        },
+        "fact_snapshot": {
+          "id": 36,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 52,
+        "book_id": 990438,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 40,
+        "script_ir": {
+          "id": 40,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "6fdc1ba397a1c0e1abb64e8e0f0be3a2218cb874248ec9b2c034ae30ac1c7d1d",
+          "authority_fingerprint": "84d982ef1a9d81f053907be127a41b90d45186618f35f9e775556e29071f06e3",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "37"
+        },
+        "fact_snapshot": {
+          "id": 37,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 53,
+        "book_id": 990439,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 41,
+        "script_ir": {
+          "id": 41,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "5b648b6521a3732f6b9badb938982392517e235225e460575abd0d550b9a2c37",
+          "authority_fingerprint": "d9cea1cb173bf7b1f57e37d76b7cd76d21b9bc0eaf23fed3b4f4dc9c7ece5db6",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "38"
+        },
+        "fact_snapshot": {
+          "id": 38,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 54,
+        "book_id": 990440,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 42,
+        "script_ir": {
+          "id": 42,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "b9a679382fd44b6c270ccb44a86110cacf79bb4b146dba4ebfd3aa741d18d2b1",
+          "authority_fingerprint": "0685989a882fc6ea537096edbfebd3e022aec10c5aee90e8409c8f977c2d9bdd",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "39"
+        },
+        "fact_snapshot": {
+          "id": 39,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 55,
+        "book_id": 990441,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 43,
+        "script_ir": {
+          "id": 43,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "5cebde3e9cae7064bf6bdb4a313a4f7e72579423e9415cf73b689d32a21bce5f",
+          "authority_fingerprint": "6254af0649d1fbecf94829dfa4f5317804ce6293c1d06957a2c43945a979ed43",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "40"
+        },
+        "fact_snapshot": {
+          "id": 40,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 56,
+        "book_id": 990442,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 44,
+        "script_ir": {
+          "id": 44,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "f06e3a7e1bc61c5d65b8e5d285f894125db2971de15229274347a2e4d70b43b1",
+          "authority_fingerprint": "b065f94e51c06e62ecf49b3393c77818fdbc2f65ece2679a40c6d678c0488e41",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "41"
+        },
+        "fact_snapshot": {
+          "id": 41,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 57,
+        "book_id": 990443,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 45,
+        "script_ir": {
+          "id": 45,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "e70096257215a159353f8d808c430b2a75f9354d8aceb1549089bc75800a6b57",
+          "authority_fingerprint": "0481489b4892234111b21bcee317ccbb81ed2fa7631de9a8a75d8ea124cf05b3",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "42"
+        },
+        "fact_snapshot": {
+          "id": 42,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 58,
+        "book_id": 990444,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 46,
+        "script_ir": {
+          "id": 46,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "dffb455c71b23266d3108f7edb0ec1af353afaedd9bbdb382e05b083e6951678",
+          "authority_fingerprint": "f060edde85976aa823ba625fae8f59701de8b6df5c479cd1c6047c582cefd63c",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "43"
+        },
+        "fact_snapshot": {
+          "id": 43,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 59,
+        "book_id": 990448,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 47,
+        "script_ir": {
+          "id": 47,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "0c3aa1a50e7b8289e2fc187f04cc408978dfb1a6641e9fec464047bc38ce4803",
+          "authority_fingerprint": "0b03e06f272d1efc4d3fb2fe744269046701b899b0b9e066620c90ef9d11e6ca",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "44"
+        },
+        "fact_snapshot": {
+          "id": 44,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 60,
+        "book_id": 990449,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 48,
+        "script_ir": {
+          "id": 48,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "9c3e2b386660924fc84bbfd25b6dff026568aed847f4a6cb68c09f6d8d9f8f23",
+          "authority_fingerprint": "5b01e50d9023431f321564abf7e64cd430fd84b9beaf727a1c5edfa658a57f79",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "45"
+        },
+        "fact_snapshot": {
+          "id": 45,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 61,
+        "book_id": 990450,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 49,
+        "script_ir": {
+          "id": 49,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "b1528bdd5fb9996baa33d9cf504ffa48d20d9a8e52f58b34117d34e7efde0f99",
+          "authority_fingerprint": "d68844c8f83b1a0b8c52af501d68b24c9291e5b9832bc85394475af788e38baf",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "46"
+        },
+        "fact_snapshot": {
+          "id": 46,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 62,
+        "book_id": 990451,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 50,
+        "script_ir": {
+          "id": 50,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "398655131a1a96cba424bf15f4eb79dee61b687884402df0ff5774f32ec21d7b",
+          "authority_fingerprint": "0741c5180f5a6220611a3b6171df1f2190a0d47da8c0defbef6833052608ddad",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "47"
+        },
+        "fact_snapshot": {
+          "id": 47,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      },
+      {
+        "script_id": 63,
+        "book_id": 990452,
+        "episode": 1,
+        "script_status": "draft",
+        "script_production_status": "blocked",
+        "current_script_ir_version_id": 51,
+        "script_ir": {
+          "id": 51,
+          "revision": 1,
+          "status": "production_qualified",
+          "qualification_state": "PRODUCTION_QUALIFIED",
+          "stale_status": "FRESH",
+          "payload_hash": "55dd6ee88f52d727b5ba8abb3b64f2601042d3511af7d1cea4822230a35561ad",
+          "authority_fingerprint": "90469eca3c08a7dec86d74764c8bdfdb9b7b131ce2e48247f560edd2778e9bff",
+          "authority_envelope_valid_shape": true,
+          "fact_snapshot_id": "48"
+        },
+        "fact_snapshot": {
+          "id": 48,
+          "revision": 1,
+          "status": "confirmed",
+          "payload_hash": "a32a785af7413e3d37d39996537269201f546974d5a5c14fabe01cde4ec10c28"
+        }
+      }
+    ]
+  },
+  "scope": "UNSCOPED_UNTIL_IDENTITY_RESOLVED"
+}

@@ -67,7 +67,8 @@ def main() -> int:
 
     from api.model_registry import get_default_profile
     from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
-    from models import PromptIRPointer, Session, StoryboardShot
+    from core.sc002_002_upstream_recovery import inspect_script_ir_state, resolve_exact_canonical_identity
+    from models import Session
 
     profile = get_default_profile("image") or {}
     profile_view = _profile_projection(profile)
@@ -82,29 +83,20 @@ def main() -> int:
             "code": exc.code,
         }
 
-    source_scan = {
-        "shot_identity": SHOT_ID,
-        "database_url_source": "configured application database",
-        "storyboard_shot_match_count": 0,
-        "prompt_ir_pointer_match_count": 0,
-        "current_prompt_ir_available": False,
-        "current_script_ir_available": False,
-        "semantic_source_available": False,
-        "historical_prompt_used": False,
-        "historical_keyframe_adopted": False,
-    }
+    source_scan = {"shot_identity": SHOT_ID, "database_url_source": "configured application database", "historical_prompt_used": False, "historical_keyframe_adopted": False}
     with Session() as session:
-        # The durable schema uses an integer business shot_id.  Do not guess
-        # a book/episode mapping from the historical string identity.
-        rows = session.query(StoryboardShot).all()
-        matching_rows = [row for row in rows if SHOT_ID in str(getattr(row, "meta_info", "") or "")]
-        source_scan["storyboard_shot_match_count"] = len(matching_rows)
-        pointers = session.query(PromptIRPointer).all()
-        matching_pointers = [row for row in pointers if SHOT_ID in str(getattr(row, "storyboard_shot_id", "") or "")]
-        source_scan["prompt_ir_pointer_match_count"] = len(matching_pointers)
+        identity = resolve_exact_canonical_identity(session, SHOT_ID)
+        script_state = inspect_script_ir_state(session)
+        source_scan.update({
+            "identity_resolution": identity,
+            "script_ir_state": {key: value for key, value in script_state.items() if key != "rows"},
+            "current_script_ir_available": "UNSCOPED_UNTIL_IDENTITY_RESOLVED",
+            "semantic_source_available": identity.get("status") == "EXACT_ONE",
+        })
 
-    block_reason = "CANONICAL_SHOT_SOURCE_MISSING"
-    block_detail = "Current canonical StoryboardShot and media-scoped PromptIR pointer for SH_E01_SC002_002 are unavailable; historical prompt/media cannot be adopted."
+    identity_status = str((source_scan.get("identity_resolution") or {}).get("status") or "ZERO")
+    block_reason = "SC002_002_CANONICAL_IDENTITY_AMBIGUOUS" if identity_status == "AMBIGUOUS" else "SC002_002_CANONICAL_IDENTITY_NOT_FOUND"
+    block_detail = "No unique authoritative current ShotPlan payload contains exact plan_shot_id SH_E01_SC002_002; historical prompt/media cannot be adopted."
     preflight = {
         "schema_version": "sc002_002_canonical_image_preflight_v1",
         "status": "BLOCKED_BEFORE_POST",
@@ -122,7 +114,7 @@ def main() -> int:
         "credential_readiness": credential_audit,
         "expected_aspect_ratio": None,
         "expected_dimensions": None,
-        "contract_status": "MISSING_CANONICAL_SHOT_SOURCE",
+        "contract_status": block_reason,
         "prior_matching_active_execution": {"checked": True, "match_count": 0, "status": "NOT_APPLICABLE"},
         "real_image_budget": 1,
         "real_video_budget": 0,
@@ -170,7 +162,7 @@ Shot: `{SHOT_ID}`
 
 ## Gate A
 
-The run stopped before provider POST with `{block_reason}`. The current canonical database has no matching durable `StoryboardShot` or media-scoped `PromptIRPointer` for `{SHOT_ID}`. Historical Markdown prompts and the historical keyframe remain forensic evidence only and were not adopted, modified, or used as authority.
+The run stopped before provider POST with `{block_reason}`. Exact current identity resolution found no unique authoritative `ShotPlan.shots[*].plan_shot_id == {SHOT_ID}`. Historical Markdown prompts and the historical keyframe remain forensic evidence only and were not adopted, modified, or used as authority.
 
 ## Provider and persistence safety
 

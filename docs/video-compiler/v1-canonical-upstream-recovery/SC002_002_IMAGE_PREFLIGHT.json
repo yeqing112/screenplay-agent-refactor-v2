@@ -1,0 +1,23 @@
+{
+  "schema_version": "sc002_002_canonical_upstream_recovery_v1",
+  "run_id": "20261005T055321Z",
+  "shot_id": "SH_E01_SC002_002",
+  "status": "BLOCKED_BEFORE_POST",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "external_llm_calls": 0,
+  "model_profile": {
+    "id": "local-image-c4a7yu",
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k",
+    "adapter_id": "image_generic",
+    "adapter_version": "image_generic_adapter_v1",
+    "transport_binding_id": "75api-image.image.v1",
+    "credential_configured": true
+  },
+  "provider_image_post_count": 0,
+  "provider_video_post_count": 0,
+  "generation_request_fingerprint": null,
+  "real_image_budget": 0,
+  "real_video_budget": 0
+}
