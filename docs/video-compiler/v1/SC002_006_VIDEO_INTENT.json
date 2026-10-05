@@ -1,7 +1,7 @@
 {
   "shot_id": "SH_E01_SC002_006",
   "source_revision": "DIRECTOR_DECISION_IR",
-  "source_fingerprint": "310bf04b5bb8af6aa0c321114c8b9d98b07890220a263935581a518df20340ad",
+  "source_fingerprint": "0bea3fd34e66e43ab310652f88cd2e636452f410a78e8daee0e57c288238636e",
   "director_duration_seconds": 8.5,
   "scene": {
     "scene_id": "E01_SC002",
@@ -136,7 +136,7 @@
       "hand_action": "right hand pushes the apple forward about 15 centimeters toward 林晚, ending with the apple extended over the table",
       "head_action": "head tilts slightly to the right about 8 degrees, ending with the tilt held",
       "eye_action": "gaze holds on 林晚's face without shifting, ending fixed on 林晚",
-      "facial_action": "eyebrows lift higher, mouth opens slightly as if speaking, ending with an open, questioning expression",
+      "facial_action": "eyebrows lift higher, mouth remains gently closed slightly as if speaking, ending with an open, questioning expression",
       "ending_state": "陆叔 leaning forward, apple extended toward 林晚, questioning expression"
     },
     {
@@ -158,7 +158,7 @@
       "hand_action": "right hand extends the apple forward again about 20 centimeters toward 林晚, ending with the apple offered at arm's length",
       "head_action": "head dips slightly forward about 5 degrees, ending with the chin angled down toward the offered apple",
       "eye_action": "gaze shifts from 林晚's face down to the apple then back up to 林晚, ending on 林晚's face",
-      "facial_action": "eyebrows soften from raised to relaxed, mouth opens into a warm inviting shape, ending with a gentle encouraging expression",
+      "facial_action": "eyebrows soften from raised to relaxed, mouth remains gently closed into a warm inviting shape, ending with a gentle encouraging expression",
       "ending_state": "陆叔 leaning forward, apple offered at arm's length, warm inviting expression"
     },
     {

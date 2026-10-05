@@ -190,7 +190,10 @@ def build_video_intent_ir(
     audio = AudioIntent(mode == "AUTHORITATIVE", mode == "AUTHORITATIVE", False, False)
     negative = ("no additional characters", "no unauthorized props", "preserve scene topology")
     performance_raw = list(decision.get("performance_beats") or [])
-    performance_projected = _sanitize_performance(performance_raw, allowed_prop_ids) if mode == "NONE" or prop_states is not None else performance_raw
+    # Canonical ShotPropState is authoritative even when the caller does not
+    # pass an explicit list: an empty authorized set must remove stale bag or
+    # strap actions from the projected intent.
+    performance_projected = _sanitize_performance(performance_raw, allowed_prop_ids)
     semantic_payload = {
         "shot_id": shot_id, "source_revision": source_revision, "director_duration_seconds": director_duration,
         "scene": {"scene_id": source.get("scene_id"), "location": source.get("location")},
@@ -199,5 +202,5 @@ def build_video_intent_ir(
         "camera_beats": list(decision.get("camera_beats") or []), "ending_state": decision.get("ending_state") or {},
         "reference_requirements": references, "audio_intent": audio.as_dict(), "negative_constraints": list(negative),
     }
-    ending = _sanitize_performance(decision.get("ending_state") or {}, allowed_prop_ids) if mode == "NONE" else (decision.get("ending_state") or {})
+    ending = _sanitize_performance(decision.get("ending_state") or {}, allowed_prop_ids)
     return VideoIntentIR(shot_id, source_revision, _fingerprint(semantic_payload), director_duration, semantic_payload["scene"], tuple(characters), props, dialogue, tuple(dict(x) for x in performance_projected if isinstance(x, Mapping)), tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, Mapping)), ending, references, audio, negative)

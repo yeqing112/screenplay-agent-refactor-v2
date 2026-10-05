@@ -18,12 +18,23 @@
   "book_990400_writes": 0,
   "secret_leaks": 0,
   "orphans": 0,
-  "compiled_prompt_sha256": "38ff2def6f72ffc5d7fe096fc3d5de6d9acc98ef79c9ca45138450f3cb40c9b2",
-  "compiled_request_fingerprint": "9be63e67152e225686333626985ea2f3291b5cd48db1dcdf1eedb2e6dea41f1f",
+  "compiled_prompt_sha256": "fec1d195998ee9d7485fd871b0e0846a56b334e88d5750d863a316a32304bca1",
+  "compiled_request_fingerprint": "c3810c438e922543a32aa1778a1ffbe187724e0fb9dd331b5c2436caa800998d",
   "tests": {
     "targeted": "98 passed",
     "full_passed": 2106,
     "full_failed": 24,
     "new_failed_nodes": []
+  },
+  "gate_b": {
+    "executed": true,
+    "shot": "SH_E01_SC002_002",
+    "real_video": 1,
+    "task": "task_mHPdw210obDDtPaCsoOU1cwXM9hRvfSH",
+    "status": "MINIMAX_H3_NATIVE_DIALOGUE_MEDIA_QUALITY_FAILED",
+    "official_promotion": false,
+    "sc002_006_executed": false,
+    "real_image_calls": 0,
+    "rerun_after_failure": false
   }
 }

@@ -1,7 +1,7 @@
 {
   "shot_id": "SH_E01_SC002_002",
   "source_revision": "DIRECTOR_DECISION_IR",
-  "source_fingerprint": "b924db7a7c94b4cbfc3e53caf1de7e2137abc618c7ac0dd4df9aff7a01bc8666",
+  "source_fingerprint": "dee7049af24f52ac895b671d84ba276ec1b2006b693590c83810ab33219185c9",
   "director_duration_seconds": 13.5,
   "scene": {
     "scene_id": "E01_SC002",
@@ -173,7 +173,7 @@
       "hand_action": "right hand starts gesturing toward the chair and lowers to his side, ending with the hand relaxed at his hip, fingers loosely curled",
       "head_action": "head starts angled toward the chair and lifts by approximately 5 degrees, ending with the head level and turned slightly toward the kitchen",
       "eye_action": "eyes start on the chair and shift toward the kitchen, ending with a gaze directed at the kitchen workspace",
-      "facial_action": "mouth starts open in an inviting shape and closes by approximately 2 mm, ending with a settled, warm mouth line",
+      "facial_action": "mouth starts gently closed in an inviting shape and closes by approximately 2 mm, ending with a settled, warm mouth line",
       "ending_state": "陆叔 upright with weight shifting back, right hand relaxed at hip, gaze toward the kitchen, warm settled mouth"
     },
     {
@@ -181,11 +181,11 @@
       "end_time": 2.4,
       "actor": "林晚",
       "body_action": "torso starts upright with shoulders hunched and lowers by approximately 5 degrees as her shoulders drop, ending with the shoulders relaxed downward",
-      "hand_action": "left hand starts gripping the bag strap tightly and loosens by approximately 2 mm of grip pressure, ending with the fingers still on the strap but relaxed",
+      "hand_action": "left hand starts gripping the hands remain relaxed without prop contact tightly and loosens by approximately 2 mm of grip pressure, ending with the fingers still on the strap but relaxed",
       "head_action": "head starts level and tilts down approximately 5 degrees, ending with the chin slightly lowered",
       "eye_action": "eyes start fixed on 陆叔 and blink once, ending with the eyes open and still fixed on 陆叔",
       "facial_action": "lips start pressed together and part by approximately 1 mm, ending with a slightly parted, tired mouth",
-      "ending_state": "林晚 standing with shoulders dropped, left hand relaxed on the bag strap, chin slightly lowered, eyes on 陆叔, mouth slightly parted"
+      "ending_state": "林晚 standing with shoulders dropped, left hand relaxed on the hands remain relaxed without prop contact, chin slightly lowered, eyes on 陆叔, mouth slightly parted"
     },
     {
       "start_time": 2.4,
@@ -214,7 +214,7 @@
       "end_time": 9.6,
       "actor": "林晚",
       "body_action": "torso starts angled toward the chair and rotates back approximately 10 degrees toward 陆叔, ending with the torso facing him again",
-      "hand_action": "left hand starts on the bag strap and releases it by opening the fingers approximately 5 mm, ending with the hand hanging free at her side",
+      "hand_action": "left hand starts on the hands remain relaxed without prop contact and releases it by opening the fingers approximately 5 mm, ending with the hand hanging free at her side",
       "head_action": "head starts angled toward the chair and turns back approximately 10 degrees toward 陆叔, ending with the head facing him directly",
       "eye_action": "eyes start on the chair and shift back to 陆叔's face, ending with a steady gaze on him",
       "facial_action": "brows start faintly questioning and draw together by approximately 1 mm, ending with a slightly worried brow line",

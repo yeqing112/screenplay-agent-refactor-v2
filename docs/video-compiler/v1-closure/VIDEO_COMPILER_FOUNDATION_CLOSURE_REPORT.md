@@ -10,10 +10,11 @@ VideoIntentIR contains no provider or native execution strategy. MiniMax H3 choo
 
 Compiled references carry asset id, media SHA, and authority fingerprint; runtime resolution adds provider accessible URLs only at the adapter boundary. The compatibility bridge is deprecated and has no second renderer or production dependency.
 
-Real IMAGE: `0`
-Real VIDEO: `0`
+Gate B executed exactly one real VIDEO for `SH_E01_SC002_002` using the approved keyframe. ffprobe passed duration/audio checks, but human frame review found an unauthorized black handbag and shoulder strap on 林晚. The result remains Candidate and was not promoted. No second real VIDEO was attempted and SC002_006 was not run.
 
-Gate B remains unopened in this packet.
+Real IMAGE: `0`
+Real VIDEO: `1`
+
+Final status: `VIDEO_MODEL_COMPILER_FOUNDATION_CONTRACT_CLOSED` + `MINIMAX_H3_NATIVE_DIALOGUE_MEDIA_QUALITY_FAILED`
 
 Full regression: 2106 passed, 24 failed; the 24 failures match the pre-existing baseline and new failed nodes are 0.
-
