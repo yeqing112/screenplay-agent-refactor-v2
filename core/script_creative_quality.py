@@ -486,7 +486,7 @@ def _gate_timeline_origin(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
     errors: list[dict[str, Any]] = []
     for scene in _scene_order(script_ir):
         origin = _text(scene.get("timeline_origin")).upper()
-        if origin != "EXPLICIT" or scene.get("production_eligible") is not True:
+        if origin not in {"EXPLICIT", "SOURCE_GROUNDED"} or scene.get("production_eligible") is not True:
             errors.append(_error(
                 "SCRIPT_TIMELINE_NOT_EXPLICIT",
                 f"场景 {_text(scene.get('scene_id'))} 的 screenplay timeline 来源为 {origin or 'UNKNOWN'} 或未标记 production_eligible，Production 只接受显式时间线。",

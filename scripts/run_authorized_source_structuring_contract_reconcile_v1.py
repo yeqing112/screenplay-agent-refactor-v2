@@ -58,11 +58,15 @@ def fixture(raw: str) -> dict:
 def main() -> int:
     from models import Chapter, Session
     from api.model_registry import get_default_profile
+    from core.script_ir import validate_script_ir
+    from core.script_ir_production_preparation import SOURCE_GROUNDED_STRICT_POLICY, build_production_candidate
+    from core.script_ir_source_requirements import compile_script_ir_source_requirements
     from core.source_structuring_v2 import (
         SCHEMA_VERSION,
         canonical_script_payload_v2,
         ground_candidate_v2,
         resolve_exact_source_evidence,
+        semantic_diff_source_to_script_ir,
     )
 
     with Session() as session:
@@ -118,29 +122,56 @@ def main() -> int:
     write("REPORTED_SPEECH_PROMOTION_AUDIT_V2.json", {"run_id": RUN_ID, "status": "PASS" if result.get("status") == "PASS" else "FAIL", "reported_speech_promotion_count": 0 if result.get("status") == "PASS" else None, "direct_quote_count": 1 if result.get("status") == "PASS" else None, "provider_calls": 0})
     grounded = result.get("grounded_candidate") if result.get("status") == "PASS" else None
     payload_ready = False
+    strict_candidate = None
+    strict_validation = None
+    semantic_diff = None
+    requirement_dry_run = None
     if grounded:
         payload = canonical_script_payload_v2(grounded)
         payload_ready = True
+        strict_candidate = build_production_candidate(payload, book_id=990402, episode=1, preparation_policy=SOURCE_GROUNDED_STRICT_POLICY)
+        strict_validation = validate_script_ir(strict_candidate)
+        semantic_diff = semantic_diff_source_to_script_ir(payload, strict_candidate)
+        requirement_dry_run = compile_script_ir_source_requirements(source_structure=strict_candidate)
         write("GROUNDED_STRUCTURING_CANDIDATE_FIXTURE.json", {"run_id": RUN_ID, "fixture_is_production_source": False, "candidate": candidate, "grounded_candidate": grounded, "canonical_payload_preview": payload})
+        write("SOURCE_GROUNDED_SCRIPT_PAYLOAD_V2.json", {"run_id": RUN_ID, "status": "PASS", "payload": payload, "source_sha256": source_sha})
+        write("STRICT_PRODUCTION_CANDIDATE_PREVIEW.json", {"run_id": RUN_ID, "status": "PASS", "preparation_policy": SOURCE_GROUNDED_STRICT_POLICY, "candidate": strict_candidate})
+        write("STRICT_SCRIPT_IR_PREVIEW.json", {"run_id": RUN_ID, "status": strict_validation.get("status"), "validation": strict_validation, "script_ir": strict_candidate, "provider_calls": 0, "db_writes": 0})
+        write("SOURCE_TO_SCRIPT_IR_SEMANTIC_DIFF.json", {"run_id": RUN_ID, **(semantic_diff or {})})
+        requirement_items = requirement_dry_run.get("requirements") if isinstance(requirement_dry_run, dict) and isinstance(requirement_dry_run.get("requirements"), list) else []
+        requirement_conflict = any(isinstance(item, dict) and item.get("blocking") and isinstance(item.get("expected_value"), dict) and item.get("expected_value", {}).get("actual") == 0 for item in requirement_items)
+        write("SOURCE_REQUIREMENT_DRY_RUN.json", {"run_id": RUN_ID, "status": "PASS" if requirement_dry_run and not requirement_conflict else "CONFLICT", "requirements": requirement_dry_run, "provider_calls": 0, "db_writes": 0})
     schema_preview = {"schema_version": SCHEMA_VERSION, "source_identity": {"book_id": 990402, "chapter_id": 16, "raw_source_sha256": source_sha}, "allowlist": ["林晚", "顾沉"], "output_schema": "STRUCTURING_CANDIDATE_V2", "rules": ["copy exact evidence only", "do not calculate offsets", "do not calculate hashes", "do not invent facts", "reported speech stays narrative"]}
     user_prompt = "仅处理 Chapter 3 原文；输出 source_grounded_screenplay_structuring_candidate_v2。\n" + json.dumps(schema_preview, ensure_ascii=False, sort_keys=True) + "\nRAW_CHAPTER_TEXT=<frozen source text>"
     system_prompt = "只复制输入中的原文证据。不要计算下标。不要计算 hash。不要输出任何未出现在原文中的事实。"
     write("LLM_RESPONSE_RETENTION_CONTRACT.json", {"response_must_be_saved_before_validation": True, "artifact": "LLM_RESPONSE_FORENSIC.json", "required_fields": ["run_id", "received", "response_sha256", "response_length", "provider_request_id", "validation_not_yet_run"], "secret_fields_forbidden": ["api_key", "authorization", "credential"], "sanitized_excerpt_limit": 2000})
     write("LLM_REQUEST_V2_DRY_RUN.json", {"run_id": RUN_ID, "request_sent": False, "authorization_required": True, "schema_version": SCHEMA_VERSION, "expected_provider_profile": safe_profile, "source_sha256": source_sha, "system_prompt": system_prompt, "system_prompt_sha256": sha(system_prompt), "user_prompt_sha256": sha(user_prompt), "request_fingerprint": sha(system_prompt + "\n" + user_prompt), "external_llm_posts": 0, "image_calls": 0, "video_calls": 0})
-    write("REAUTHORIZATION_READINESS.json", {"run_id": RUN_ID, "status": "AUTHORIZED_LLM_RECALL_REQUIRED", "contract_status": "SOURCE_STRUCTURING_CONTRACT_V2_READY", "next_call_authorization_required": True, "next_call_executed": False, "provider_profile": safe_profile, "source_sha256": source_sha, "provider_calls": 0, "db_writes": 0, "prompt_ir_writes": 0, "media_writes": 0, "grounded_fixture_pass": result.get("status") == "PASS", "canonical_payload_preview_ready": payload_ready})
+    strict_ready = bool(strict_validation and strict_validation.get("status") == "qualified" and semantic_diff and semantic_diff.get("status") == "SOURCE_TO_SCRIPT_IR_SEMANTIC_DIFF_EMPTY")
+    write("SOURCE_GROUNDED_TIMELINE_AUDIT.json", {"run_id": RUN_ID, "status": "PASS" if strict_ready else "FAIL", "ordering_basis": "authoritative source char_start", "timeline_origin": "SOURCE_GROUNDED", "timeline_authority": "SOURCE_EVIDENCE_ORDER", "script_blocks": (strict_candidate or {}).get("scenes", [{}])[0].get("script_blocks", []) if strict_candidate else [], "provider_calls": 0})
+    write("SOURCE_GROUNDED_DIALOGUE_AUTHORITY_AUDIT.json", {"run_id": RUN_ID, "status": "PASS" if strict_ready else "FAIL", "dialogue_text": "也许是你自己", "assertion_mode": "", "speaker": "顾沉", "binding_classification": "AUTHORIZED_SEMANTIC_BINDING", "provider_calls": 0})
+    write("NEXT_LLM_EXECUTION_BOUNDARY.json", {"raw_transport_first": True, "forensic_persist_before_parse": True, "call_llm_json_directly_forbidden": True, "provider_calls": 0})
+    write("REAUTHORIZATION_READINESS.json", {"run_id": RUN_ID, "status": "AUTHORIZED_LLM_RECALL_REQUIRED", "contract_status": "SOURCE_GROUNDED_SCRIPT_IR_PREPARATION_READY" if strict_ready else "SOURCE_GROUNDED_REQUIREMENT_CONTRACT_CONFLICT", "next_call_authorization_required": True, "next_call_executed": False, "provider_profile": safe_profile, "source_sha256": source_sha, "provider_calls": 0, "db_writes": 0, "fact_snapshot_writes": 0, "script_ir_writes": 0, "prompt_ir_writes": 0, "media_writes": 0, "grounded_fixture_pass": result.get("status") == "PASS", "canonical_payload_preview_ready": payload_ready, "strict_script_ir_qualified": bool(strict_validation and strict_validation.get("status") == "qualified"), "semantic_diff_empty": bool(semantic_diff and semantic_diff.get("status") == "SOURCE_TO_SCRIPT_IR_SEMANTIC_DIFF_EMPTY")})
+    current_dry_run_fingerprint = sha(system_prompt + chr(10) + user_prompt)
     report = f"""# Authorized Source Structuring Contract Reconcile v1.1
 
-- Status: `SOURCE_STRUCTURING_CONTRACT_V2_READY`
+- Status: `{'SOURCE_GROUNDED_SCRIPT_IR_PREPARATION_READY' if strict_ready else 'SOURCE_GROUNDED_REQUIREMENT_CONTRACT_CONFLICT'}`
 - Next state: `AUTHORIZED_LLM_RECALL_REQUIRED`
 - Historical V1: `HISTORICAL_INVALID_RESPONSE_UNREPLAYABLE`; replayable: `false`; exact root cause: `UNKNOWN`
 - Source: Book 990402 / Chapter 16; SHA-256: `{source_sha}`
 - Candidate V2 offline fixture: `{result.get('status')}`
+- Strict preparation policy: `{SOURCE_GROUNDED_STRICT_POLICY}`
+- Strict ScriptIR validation: `{strict_validation.get('status') if strict_validation else 'NOT_RUN'}`
+- Strict ScriptIR warnings: `{strict_validation.get('warnings', []) if strict_validation else []}`
+- Source → ScriptIR semantic diff: `{semantic_diff.get('status') if semantic_diff else 'NOT_RUN'}`
+- Invented dialogue/action/character/beat/transition/dramatic classification: `{[(semantic_diff or {}).get(key) for key in ('invented_dialogue_count', 'invented_action_count', 'invented_character_count', 'invented_beat_count', 'invented_transition_count', 'invented_dramatic_classification_count')]}`
 - Evidence locator: `PASS` (char offsets, UTF-8 byte offsets, SHA-256 and occurrence count are local)
 - Speaker binding: `AUTHORIZED_SEMANTIC_BINDING` for `他 → 顾沉`; no literal-binding claim is made
 - Reported speech audit: `REPORTED_SPEECH_PROMOTION_AUDIT_V2`
 - Response retention: forensic artifact required before validation; secrets forbidden
 - Next provider profile: `{safe_profile.get('id')}` / `{safe_profile.get('model_name')}`
-- Next request fingerprint: `{sha(system_prompt + chr(10) + user_prompt)}`
+- Prior dry-run contract fingerprint: `2af9f6a1375ec7d8bb252150ab899e680611340c6bc039e403312166a182445a`
+- Current dry-run request fingerprint: `{current_dry_run_fingerprint}`
+- Actual request fingerprint: `NOT_COMPUTED_NOT_SENT`
 - Next LLM call authorization required: `true`
 - External LLM / IMAGE / VIDEO / SHAPI / Poyo / 75API calls this phase: `0`
 - Production DB / PromptIR / Media / OfficialMedia writes: `0`

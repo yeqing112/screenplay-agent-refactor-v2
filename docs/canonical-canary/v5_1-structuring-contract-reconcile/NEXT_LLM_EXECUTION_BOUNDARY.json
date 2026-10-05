@@ -1,0 +1,6 @@
+{
+  "call_llm_json_directly_forbidden": true,
+  "forensic_persist_before_parse": true,
+  "provider_calls": 0,
+  "raw_transport_first": true
+}

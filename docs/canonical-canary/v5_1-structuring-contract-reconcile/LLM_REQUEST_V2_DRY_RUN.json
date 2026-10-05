@@ -13,7 +13,7 @@
   "image_calls": 0,
   "request_fingerprint": "2af9f6a1375ec7d8bb252150ab899e680611340c6bc039e403312166a182445a",
   "request_sent": false,
-  "run_id": "20261005T144017Z",
+  "run_id": "20261005T150107Z",
   "schema_version": "source_grounded_screenplay_structuring_candidate_v2",
   "source_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
   "system_prompt": "只复制输入中的原文证据。不要计算下标。不要计算 hash。不要输出任何未出现在原文中的事实。",

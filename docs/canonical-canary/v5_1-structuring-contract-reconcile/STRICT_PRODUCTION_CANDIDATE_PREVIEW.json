@@ -1,0 +1,175 @@
+{
+  "candidate": {
+    "book_id": 990402,
+    "characters": [],
+    "episode": 1,
+    "episode_objective": "",
+    "fact_snapshot_id": "",
+    "open_questions": [],
+    "payload_hash": "0edd7a370834b23ccdeceba8b79380870be744735d3b7e37d6aff77ac1ba65a3",
+    "preparation_policy": "SOURCE_GROUNDED_STRICT",
+    "scene_transitions": [],
+    "scenes": [
+      {
+        "actions": [
+          {
+            "action_id": "CH03_SC01_A001",
+            "beat_ref": "",
+            "source_evidence": {
+              "byte_end": 195,
+              "byte_start": 0,
+              "char_end": 65,
+              "char_start": 0,
+              "evidence_id": "S1A001",
+              "occurrence_count": 1,
+              "sha256": "d5c30feb973a49ad12923f500d35a60aa9a0a0618654fa2883791e2f71a84d3a",
+              "text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+            },
+            "text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          },
+          {
+            "action_id": "CH03_SC01_A002",
+            "beat_ref": "",
+            "source_evidence": {
+              "byte_end": 412,
+              "byte_start": 379,
+              "char_end": 140,
+              "char_start": 129,
+              "evidence_id": "S1A002",
+              "occurrence_count": 1,
+              "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+              "text": "顾沉说胶片被人拿走了。"
+            },
+            "text": "顾沉说胶片被人拿走了。"
+          },
+          {
+            "action_id": "CH03_SC01_A003",
+            "beat_ref": "",
+            "source_evidence": {
+              "byte_end": 589,
+              "byte_start": 532,
+              "char_end": 199,
+              "char_start": 180,
+              "evidence_id": "S1A003",
+              "occurrence_count": 1,
+              "sha256": "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+              "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            },
+            "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          }
+        ],
+        "asset_mentions": [],
+        "beats": [],
+        "blocking_hints": [],
+        "character_blocking": [],
+        "dialogues": [
+          {
+            "assertion_mode": "",
+            "audience_should_notice": false,
+            "character_knowledge_ref": "",
+            "contradicts_fact_refs": [],
+            "dialogue_id": "CH03_SC01_D001",
+            "parenthetical": "",
+            "source_evidence": {
+              "byte_end": 460,
+              "byte_start": 442,
+              "char_end": 156,
+              "char_start": 150,
+              "evidence_id": "S1D001",
+              "occurrence_count": 1,
+              "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+              "text": "也许是你自己"
+            },
+            "speaker": "顾沉",
+            "speaker_binding": {
+              "binding_type": "COREFERENCE_RESOLUTION",
+              "classification": "AUTHORIZED_SEMANTIC_BINDING",
+              "identity_evidence": [
+                {
+                  "byte_end": 412,
+                  "byte_start": 379,
+                  "char_end": 140,
+                  "char_start": 129,
+                  "evidence_id": "S1D1I001",
+                  "occurrence_count": 1,
+                  "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                  "text": "顾沉说胶片被人拿走了。"
+                }
+              ],
+              "utterance_evidence": [
+                {
+                  "byte_end": 487,
+                  "byte_start": 412,
+                  "char_end": 165,
+                  "char_start": 140,
+                  "evidence_id": "S1D1U001",
+                  "occurrence_count": 1,
+                  "sha256": "1be340bd4345e4bd1b95dc388114584a60ad3a28d7ba2f7939cb4bd7259a55c7",
+                  "text": "林晚问是谁，他回答“也许是你自己”，语气像在试探。"
+                }
+              ]
+            },
+            "text": "也许是你自己"
+          }
+        ],
+        "dramatic_beats": [],
+        "location_id": "",
+        "location_name": "暗房",
+        "name": "暗房",
+        "participants": [
+          {
+            "character_id": "林晚",
+            "id": "林晚",
+            "name": "林晚"
+          },
+          {
+            "character_id": "顾沉",
+            "id": "顾沉",
+            "name": "顾沉"
+          }
+        ],
+        "production_eligible": true,
+        "props": [],
+        "required_visual_proofs": [],
+        "scene_id": "CH03_SC01",
+        "script_blocks": [
+          {
+            "beat_refs": [],
+            "order": 10,
+            "ref": "CH03_SC01_A001",
+            "type": "ACTION"
+          },
+          {
+            "beat_refs": [],
+            "order": 20,
+            "ref": "CH03_SC01_A002",
+            "type": "ACTION"
+          },
+          {
+            "beat_refs": [],
+            "order": 30,
+            "ref": "CH03_SC01_D001",
+            "type": "DIALOGUE"
+          },
+          {
+            "beat_refs": [],
+            "order": 40,
+            "ref": "CH03_SC01_A003",
+            "type": "ACTION"
+          }
+        ],
+        "state_in": {},
+        "state_out": {},
+        "time_of_day": "",
+        "timeline_authority": "SOURCE_EVIDENCE_ORDER",
+        "timeline_origin": "SOURCE_GROUNDED",
+        "weather": ""
+      }
+    ],
+    "schema_version": "script_ir_v1",
+    "title": ""
+  },
+  "preparation_policy": "SOURCE_GROUNDED_STRICT",
+  "run_id": "20261005T150107Z",
+  "status": "PASS"
+}

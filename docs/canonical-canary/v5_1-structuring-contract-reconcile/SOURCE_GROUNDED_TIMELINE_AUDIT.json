@@ -1,0 +1,34 @@
+{
+  "ordering_basis": "authoritative source char_start",
+  "provider_calls": 0,
+  "run_id": "20261005T150107Z",
+  "script_blocks": [
+    {
+      "beat_refs": [],
+      "order": 10,
+      "ref": "CH03_SC01_A001",
+      "type": "ACTION"
+    },
+    {
+      "beat_refs": [],
+      "order": 20,
+      "ref": "CH03_SC01_A002",
+      "type": "ACTION"
+    },
+    {
+      "beat_refs": [],
+      "order": 30,
+      "ref": "CH03_SC01_D001",
+      "type": "DIALOGUE"
+    },
+    {
+      "beat_refs": [],
+      "order": 40,
+      "ref": "CH03_SC01_A003",
+      "type": "ACTION"
+    }
+  ],
+  "status": "PASS",
+  "timeline_authority": "SOURCE_EVIDENCE_ORDER",
+  "timeline_origin": "SOURCE_GROUNDED"
+}

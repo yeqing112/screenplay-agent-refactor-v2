@@ -21,7 +21,7 @@ def _text(value: Any) -> str:
     return str(value or "").strip()
 
 
-def _normalize_dramatic_beat(raw: Any, scene_id: str, beat_index: int) -> dict[str, Any]:
+def _normalize_dramatic_beat(raw: Any, scene_id: str, beat_index: int, *, strict_source_grounded: bool = False) -> dict[str, Any]:
     """Normalize a raw beat into a DramaticBeat.
 
     Keeps the legacy ``type``/``event``/``dramatic_function`` fields so old
@@ -43,22 +43,24 @@ def _normalize_dramatic_beat(raw: Any, scene_id: str, beat_index: int) -> dict[s
         "characters": raw.get("characters") if isinstance(raw.get("characters"), list) else [],
         "information_delta": _text(raw.get("information_delta") or raw.get("information_change")),
         "emotional_delta": _text(raw.get("emotional_delta") or raw.get("emotion_change")),
-        "requires_reaction": bool(raw.get("requires_reaction")) if raw.get("requires_reaction") is not None else False,
-        "importance": _text(raw.get("importance")) or ("critical" if raw.get("requires_reaction") else "normal"),
+        "requires_reaction": (bool(raw.get("requires_reaction")) if raw.get("requires_reaction") is not None else None) if strict_source_grounded else (bool(raw.get("requires_reaction")) if raw.get("requires_reaction") is not None else False),
+        "importance": _text(raw.get("importance")) if strict_source_grounded else (_text(raw.get("importance")) or ("critical" if raw.get("requires_reaction") else "normal")),
     }
 
 
-def _normalize_dialogue(raw: Any, scene_id: str, dialogue_index: int) -> dict[str, Any]:
+def _normalize_dialogue(raw: Any, scene_id: str, dialogue_index: int, *, strict_source_grounded: bool = False) -> dict[str, Any]:
     """Normalize a raw dialogue with Character Knowledge / Deception semantics."""
     return {
         "dialogue_id": _text(raw.get("dialogue_id") or raw.get("id")) or f"{scene_id}_D{dialogue_index:03d}",
         "speaker": _text(raw.get("speaker")),
         "parenthetical": _text(raw.get("parenthetical") or raw.get("direction")),
         "text": _text(raw.get("text") or raw.get("content")),
-        "assertion_mode": _text(raw.get("assertion_mode")) or "OBJECTIVE_FACT",
+        "assertion_mode": _text(raw.get("assertion_mode")) if strict_source_grounded else (_text(raw.get("assertion_mode")) or "OBJECTIVE_FACT"),
         "contradicts_fact_refs": raw.get("contradicts_fact_refs") if isinstance(raw.get("contradicts_fact_refs"), list) else [],
         "audience_should_notice": bool(raw.get("audience_should_notice")) if raw.get("audience_should_notice") is not None else False,
         "character_knowledge_ref": _text(raw.get("character_knowledge_ref")),
+        "source_evidence": raw.get("source_evidence") if isinstance(raw.get("source_evidence"), dict) else {},
+        "speaker_binding": raw.get("speaker_binding") if isinstance(raw.get("speaker_binding"), dict) else {},
     }
 
 
@@ -81,6 +83,7 @@ def _normalize_action(raw: Any, scene_id: str, action_index: int) -> dict[str, A
         "action_id": action_id,
         "text": _text(raw.get("text") or raw.get("event") or raw.get("content")),
         "beat_ref": _text(raw.get("beat_ref")),
+        "source_evidence": raw.get("source_evidence") if isinstance(raw.get("source_evidence"), dict) else {},
     }
 
 
@@ -128,7 +131,7 @@ def normalize_script_blocks(raw: Any, *, scene_id: str, beat_ids: list[str], dia
     return blocks
 
 
-def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_id: str = "", source_outline_revision: str = "") -> dict[str, Any]:
+def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_id: str = "", source_outline_revision: str = "", strict_source_grounded: bool = False) -> dict[str, Any]:
     """Normalize a structured script payload into ScriptIR v1 (Phase A)."""
     source = payload if isinstance(payload, dict) else {}
     raw_scenes = source.get("scenes") if isinstance(source.get("scenes"), list) else []
@@ -142,11 +145,11 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
         beats = []
         for beat_index, raw_beat in enumerate(raw_beats, start=1):
             if isinstance(raw_beat, dict):
-                beats.append(_normalize_dramatic_beat(raw_beat, scene_id, beat_index))
+                beats.append(_normalize_dramatic_beat(raw_beat, scene_id, beat_index, strict_source_grounded=strict_source_grounded))
             elif _text(raw_beat):
-                beats.append(_normalize_dramatic_beat({"type": "action", "event": _text(raw_beat)}, scene_id, beat_index))
+                beats.append(_normalize_dramatic_beat({"type": "action", "event": _text(raw_beat)}, scene_id, beat_index, strict_source_grounded=strict_source_grounded))
         raw_dialogues = raw_scene.get("dialogues") if isinstance(raw_scene.get("dialogues"), list) else []
-        dialogues = [_normalize_dialogue(raw, scene_id, d_index) for d_index, raw in enumerate(raw_dialogues, start=1) if isinstance(raw, dict)]
+        dialogues = [_normalize_dialogue(raw, scene_id, d_index, strict_source_grounded=strict_source_grounded) for d_index, raw in enumerate(raw_dialogues, start=1) if isinstance(raw, dict)]
         raw_actions = raw_scene.get("actions") if isinstance(raw_scene.get("actions"), list) else []
         actions = [_normalize_action(raw, scene_id, a_index) for a_index, raw in enumerate(raw_actions, start=1)]
         beat_ids = [item["beat_id"] for item in beats]
@@ -162,7 +165,7 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
         timeline_origin = _text(raw_scene.get("timeline_origin")).upper()
         if not isinstance(raw_scene.get("script_blocks"), list):
             timeline_origin = "LEGACY_INFERRED"
-        elif timeline_origin not in {"EXPLICIT", "LEGACY_INFERRED", "UNKNOWN"}:
+        elif timeline_origin not in {"EXPLICIT", "SOURCE_GROUNDED", "LEGACY_INFERRED", "UNKNOWN"}:
             timeline_origin = "EXPLICIT"
         # When legacy input has actions but no explicit timeline, retain any
         # dramatic beats that are not already realized by an action.  This
@@ -190,7 +193,7 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "scene_id": scene_id,
             "name": name,
             "location_id": _text(raw_scene.get("location_id")),
-            "location_name": _text(raw_scene.get("location_name") or name),
+            "location_name": _text(raw_scene.get("location_name")) if strict_source_grounded else _text(raw_scene.get("location_name") or name),
             "time_of_day": _text(raw_scene.get("time_of_day")),
             "weather": _text(raw_scene.get("weather")),
             "participants": raw_scene.get("participants") if isinstance(raw_scene.get("participants"), list) else [],
@@ -200,7 +203,8 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "dialogues": dialogues,
             "script_blocks": script_blocks,
             "timeline_origin": timeline_origin,
-            "production_eligible": timeline_origin == "EXPLICIT",
+            "production_eligible": timeline_origin in {"EXPLICIT", "SOURCE_GROUNDED"},
+            "timeline_authority": _text(raw_scene.get("timeline_authority")),
             "state_in": raw_scene.get("state_in") if isinstance(raw_scene.get("state_in"), dict) else {},
             "state_out": raw_scene.get("state_out") if isinstance(raw_scene.get("state_out"), dict) else {},
             "required_visual_proofs": raw_scene.get("required_visual_proofs") if isinstance(raw_scene.get("required_visual_proofs"), list) else [],
@@ -224,14 +228,14 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
             "transition_id": _text(raw_transition.get("transition_id") or raw_transition.get("id")) or f"T{transition_index:03d}",
             "from_scene_id": _text(raw_transition.get("from_scene_id")),
             "to_scene_id": _text(raw_transition.get("to_scene_id")),
-            "time_relation": _text(raw_transition.get("time_relation")) or "later",
-            "location_change": bool(raw_transition.get("location_change")) if raw_transition.get("location_change") is not None else False,
+            "time_relation": _text(raw_transition.get("time_relation")) if strict_source_grounded else (_text(raw_transition.get("time_relation")) or "later"),
+            "location_change": (bool(raw_transition.get("location_change")) if raw_transition.get("location_change") is not None else None) if strict_source_grounded else (bool(raw_transition.get("location_change")) if raw_transition.get("location_change") is not None else False),
             "exit_state": raw_transition.get("exit_state") if isinstance(raw_transition.get("exit_state"), dict) else {},
             "entry_state": raw_transition.get("entry_state") if isinstance(raw_transition.get("entry_state"), dict) else {},
             "transition_event": _text(raw_transition.get("transition_event")),
             "causal_reason": _text(raw_transition.get("causal_reason")),
             "travel_or_elapsed_time": _text(raw_transition.get("travel_or_elapsed_time")),
-            "status": _text(raw_transition.get("status")) or "RESOLVED",
+            "status": _text(raw_transition.get("status")) if strict_source_grounded else (_text(raw_transition.get("status")) or "RESOLVED"),
         })
     open_questions = source.get("open_questions") if isinstance(source.get("open_questions"), list) else []
     result = {

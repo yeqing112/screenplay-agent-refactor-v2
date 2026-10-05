@@ -141,6 +141,8 @@ def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: 
                 errors.append({"code": "PARTICIPANT_NOT_ALLOWLISTED", "name": name})
             evidence, participant_errors = _exact_evidence_list(raw, participant.get("evidence"), field=f"participant:{name}")
             errors.extend(participant_errors)
+            if evidence and not any(name in item["text"] for item in evidence):
+                errors.append({"code": "PARTICIPANT_EVIDENCE_IDENTITY_MISSING", "name": name})
             grounded_participants.append({"name": name, "evidence": _label_evidence(evidence, f"S{scene_index}P{participant_index + 1}E")})
         grounded_actions: list[dict[str, Any]] = []
         for action_index, action in enumerate(scene.get("actions") or []):
@@ -185,6 +187,10 @@ def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: 
                 errors.append({"code": "SEMANTIC_BINDING_TYPE_REQUIRED", "speaker": speaker})
             if identity and utterance_context and min(item["char_start"] for item in identity) > min(item["char_start"] for item in utterance_context):
                 errors.append({"code": "SPEAKER_EVIDENCE_ORDER_INVALID", "speaker": speaker})
+            if binding_type == "COREFERENCE_RESOLUTION" and identity and not any(speaker in item["text"] for item in identity):
+                errors.append({"code": "SPEAKER_IDENTITY_EVIDENCE_MISSING", "speaker": speaker})
+            if utterance_context and text and not any(text in item["text"] for item in utterance_context):
+                errors.append({"code": "UTTERANCE_EVIDENCE_DIALOGUE_MISSING", "text": text})
             if utterance and text:
                 grounded_dialogues.append({"speaker": speaker, "text": text, "utterance_evidence": _label_evidence(utterance_context, f"S{scene_index}D{dialogue_index + 1}U"), "speaker_identity_evidence": _label_evidence(identity, f"S{scene_index}D{dialogue_index + 1}I"), "utterance": {**utterance, "evidence_id": f"S{scene_index}D{dialogue_index + 1:03d}"}, "binding_type": binding_type, "binding_classification": classification})
         grounded_scenes.append({"scene_label": scene_label, "scene_evidence": _label_evidence(scene_ev, f"S{scene_index}E"), "participants": grounded_participants, "actions": grounded_actions, "dialogues": grounded_dialogues})
@@ -200,9 +206,21 @@ def canonical_script_payload_v2(grounded: Any) -> dict[str, Any]:
         scene_id = f"CH03_SC{index:02d}"
         participants = [{"id": p["name"], "character_id": p["name"], "name": p["name"]} for p in scene.get("participants") or []]
         actions = [{"action_id": f"{scene_id}_A{n:03d}", "text": item["source_evidence"]["text"], "source_evidence": item["source_evidence"]} for n, item in enumerate(scene.get("actions") or [], start=1)]
-        dialogues = [{"dialogue_id": f"{scene_id}_D{n:03d}", "speaker": item["speaker"], "text": item["text"], "source_evidence": item["utterance"], "speaker_binding": {"classification": item["binding_classification"], "binding_type": item["binding_type"], "identity_evidence": item["speaker_identity_evidence"], "utterance_evidence": item["utterance_evidence"]}} for n, item in enumerate(scene.get("dialogues") or [], start=1)]
-        scenes.append({"scene_id": scene_id, "name": scene["scene_label"], "participants": participants, "actions": actions, "dialogues": dialogues, "scene_evidence": scene.get("scene_evidence") or []})
-    return {"schema_version": "source_grounded_script_payload_v2", "source_fingerprint": grounded["source_fingerprint"], "scenes": scenes}
+        dialogues = [{"dialogue_id": f"{scene_id}_D{n:03d}", "speaker": item["speaker"], "text": item["text"], "assertion_mode": "", "source_evidence": item["utterance"], "speaker_binding": {"classification": item["binding_classification"], "binding_type": item["binding_type"], "identity_evidence": item["speaker_identity_evidence"], "utterance_evidence": item["utterance_evidence"]}} for n, item in enumerate(scene.get("dialogues") or [], start=1)]
+        timeline_items = []
+        for action in actions:
+            timeline_items.append((action["source_evidence"].get("char_start"), "ACTION", action["action_id"]))
+        for dialogue in dialogues:
+            timeline_items.append((dialogue["source_evidence"].get("char_start"), "DIALOGUE", dialogue["dialogue_id"]))
+        if any(position is None for position, _, _ in timeline_items) or len({position for position, _, _ in timeline_items}) != len(timeline_items):
+            raise ValueError("SOURCE_TIMELINE_ORDER_UNRESOLVED")
+        timeline_items.sort(key=lambda item: item[0])
+        script_blocks = [{"order": (index + 1) * 10, "type": block_type, "ref": ref} for index, (_, block_type, ref) in enumerate(timeline_items)]
+        scene_evidence = scene.get("scene_evidence") or []
+        location_name = scene["scene_label"] if any(scene["scene_label"] in item.get("text", "") for item in scene_evidence) else ""
+        location_evidence = next((item for item in scene_evidence if location_name and location_name in item.get("text", "")), None)
+        scenes.append({"scene_id": scene_id, "name": scene["scene_label"], "location_name": location_name, "location_evidence": location_evidence, "participants": participants, "actions": actions, "dialogues": dialogues, "scene_evidence": scene_evidence, "script_blocks": script_blocks, "timeline_origin": "SOURCE_GROUNDED", "timeline_authority": "SOURCE_EVIDENCE_ORDER", "production_eligible": True})
+    return {"schema_version": "source_grounded_script_payload_v2", "source_fingerprint": grounded["source_fingerprint"], "scenes": scenes, "scene_transitions": []}
 
 
 def retain_forensic_response(*, run_id: str, response: Any, provider: str, model: str, provider_request_id: str = "") -> dict[str, Any]:
@@ -237,4 +255,37 @@ def json_parse_attempt_budget(json_parse_retries: int | None) -> int:
     return max(1, int(json_parse_retries or 0) + 1)
 
 
-__all__ = ["SCHEMA_VERSION", "GROUNDED_VERSION", "ALLOWLIST", "SourceEvidenceError", "resolve_exact_source_evidence", "ground_candidate_v2", "canonical_script_payload_v2", "retain_forensic_response", "transport_attempt_budget", "json_parse_attempt_budget"]
+def semantic_diff_source_to_script_ir(source_payload: dict[str, Any], script_ir: dict[str, Any]) -> dict[str, Any]:
+    """Count only semantic additions made between grounded payload and IR."""
+    source_scenes = [item for item in source_payload.get("scenes") or [] if isinstance(item, dict)]
+    ir_scenes = [item for item in script_ir.get("scenes") or [] if isinstance(item, dict)]
+    source_participants = {p.get("name") for s in source_scenes for p in (s.get("participants") or []) if isinstance(p, dict)}
+    ir_participants = {p.get("name") for s in ir_scenes for p in (s.get("participants") or []) if isinstance(p, dict)}
+    source_actions = {a.get("text") for s in source_scenes for a in (s.get("actions") or []) if isinstance(a, dict)}
+    ir_actions = {a.get("text") for s in ir_scenes for a in (s.get("actions") or []) if isinstance(a, dict)}
+    source_dialogues = {(d.get("speaker"), d.get("text")) for s in source_scenes for d in (s.get("dialogues") or []) if isinstance(d, dict)}
+    ir_dialogues = {(d.get("speaker"), d.get("text")) for s in ir_scenes for d in (s.get("dialogues") or []) if isinstance(d, dict)}
+    source_scene_names = {s.get("name") for s in source_scenes}
+    ir_scene_names = {s.get("name") for s in ir_scenes}
+    source_transitions = {(t.get("from_scene_id"), t.get("to_scene_id"), t.get("transition_event"), t.get("causal_reason")) for t in (source_payload.get("scene_transitions") or []) if isinstance(t, dict)}
+    ir_transitions = {(t.get("from_scene_id"), t.get("to_scene_id"), t.get("transition_event"), t.get("causal_reason")) for t in (script_ir.get("scene_transitions") or []) if isinstance(t, dict)}
+    source_timeline = [[(block.get("type"), block.get("ref")) for block in (s.get("script_blocks") or []) if isinstance(block, dict)] for s in source_scenes]
+    ir_timeline = [[(block.get("type"), block.get("ref")) for block in (s.get("script_blocks") or []) if isinstance(block, dict)] for s in ir_scenes]
+    beat_count = sum(len(s.get("beats") or []) for s in ir_scenes if isinstance(s, dict)) - sum(len(s.get("beats") or []) for s in source_scenes if isinstance(s, dict))
+    classification_count = sum(1 for s in ir_scenes for b in (s.get("beats") or []) if isinstance(b, dict) and (b.get("type") or b.get("beat_type") or b.get("importance") or b.get("requires_reaction"))) + sum(1 for s in ir_scenes for d in (s.get("dialogues") or []) if isinstance(d, dict) and d.get("assertion_mode"))
+    counts = {
+        "invented_dialogue_count": len(ir_dialogues - source_dialogues),
+        "invented_action_count": len(ir_actions - source_actions),
+        "invented_character_count": len(ir_participants - source_participants),
+        "invented_scene_count": len(ir_scene_names - source_scene_names),
+        "invented_beat_count": max(0, beat_count),
+        "invented_transition_count": len(ir_transitions - source_transitions),
+        "invented_dramatic_classification_count": classification_count,
+        "timeline_order_preserved": source_timeline == ir_timeline,
+        "assertion_mode_preserved_empty": all(not d.get("assertion_mode") for s in ir_scenes for d in (s.get("dialogues") or []) if isinstance(d, dict)),
+    }
+    counts["status"] = "SOURCE_TO_SCRIPT_IR_SEMANTIC_DIFF_EMPTY" if all(value == 0 or value is True for value in counts.values()) else "SOURCE_TO_SCRIPT_IR_SEMANTIC_DIFF_NON_EMPTY"
+    return counts
+
+
+__all__ = ["SCHEMA_VERSION", "GROUNDED_VERSION", "ALLOWLIST", "SourceEvidenceError", "resolve_exact_source_evidence", "ground_candidate_v2", "canonical_script_payload_v2", "semantic_diff_source_to_script_ir", "retain_forensic_response", "transport_attempt_budget", "json_parse_attempt_budget"]

@@ -13,12 +13,41 @@ from typing import Any
 
 from core.script_ir import build_script_ir, script_ir_hash
 
+SOURCE_GROUNDED_STRICT_POLICY = "SOURCE_GROUNDED_STRICT"
+SOURCE_GROUNDED_PAYLOAD_SCHEMA = "source_grounded_script_payload_v2"
+
 
 def _text(value: Any) -> str:
     return str(value or "").strip()
 
 
-def build_production_candidate(source: Any, *, book_id: int, episode: int) -> dict[str, Any]:
+def _build_source_grounded_candidate(source: dict[str, Any], *, book_id: int, episode: int) -> dict[str, Any]:
+    """Prepare a source-grounded payload without authoring story semantics."""
+    for scene_index, scene in enumerate(source.get("scenes") or [], start=1):
+        if not isinstance(scene, dict):
+            continue
+        if (scene.get("actions") or scene.get("dialogues")) and not isinstance(scene.get("script_blocks"), list):
+            raise ValueError("SOURCE_TIMELINE_REQUIRED")
+        if not _text(scene.get("name") or scene.get("scene_name")):
+            raise ValueError("SOURCE_SCENE_NAME_REQUIRED")
+    candidate = build_script_ir(source, book_id=book_id, episode=episode, strict_source_grounded=True)
+    for scene in candidate.get("scenes") or []:
+        # All fields below are structural normalization only.  No beat, hook,
+        # reaction, importance, location or transition meaning is invented.
+        scene["beats"] = [item for item in (scene.get("beats") or []) if isinstance(item, dict)]
+        scene["dramatic_beats"] = list(scene["beats"])
+        scene["actions"] = [item for item in (scene.get("actions") or []) if isinstance(item, dict)]
+        scene["dialogues"] = [item for item in (scene.get("dialogues") or []) if isinstance(item, dict)]
+        scene["timeline_origin"] = "SOURCE_GROUNDED"
+        scene["timeline_authority"] = "SOURCE_EVIDENCE_ORDER"
+        scene["production_eligible"] = True
+    candidate["scene_transitions"] = [item for item in (candidate.get("scene_transitions") or []) if isinstance(item, dict)]
+    candidate["preparation_policy"] = SOURCE_GROUNDED_STRICT_POLICY
+    candidate["payload_hash"] = script_ir_hash(candidate)
+    return candidate
+
+
+def build_production_candidate(source: Any, *, book_id: int, episode: int, preparation_policy: str | None = None) -> dict[str, Any]:
     """Build a production eligible candidate without changing source facts.
 
     Legacy screenplay text is reconstructed by ``build_script_ir``.  The
@@ -26,6 +55,12 @@ def build_production_candidate(source: Any, *, book_id: int, episode: int) -> di
     so the Phase A creative gate can distinguish this user approved
     preparation from an implicit legacy fallback.
     """
+
+    strict = str(preparation_policy or "").strip().upper() == SOURCE_GROUNDED_STRICT_POLICY or (isinstance(source, dict) and source.get("schema_version") == SOURCE_GROUNDED_PAYLOAD_SCHEMA)
+    if strict:
+        if not isinstance(source, dict):
+            raise ValueError("SOURCE_GROUNDED_SOURCE_REQUIRED")
+        return _build_source_grounded_candidate(source, book_id=book_id, episode=episode)
 
     candidate = build_script_ir(source, book_id=book_id, episode=episode)
     scenes: list[dict[str, Any]] = []
