@@ -7,6 +7,7 @@ from core.scene_blocking import (
     SOURCE_FACT,
     build_scene_blocking_v2,
     extract_spatial_evidence,
+    initial_state_from_participants,
     plan_director_spatial,
     repair_scene_blocking,
     validate_scene_blocking,
@@ -14,6 +15,17 @@ from core.scene_blocking import (
 
 
 class SceneBlockingV2Tests(unittest.TestCase):
+    def test_initial_state_hydrates_declared_participants_without_fabrication(self):
+        result = initial_state_from_participants([
+            {"character_id": "c1", "start_position": {"value": "left"}, "facing": {"value": "right"}},
+            {"character_id": "c2", "start_position": {"value": "right"}},
+        ])
+        self.assertEqual(sorted(result["characters"]), ["c1", "c2"])
+        self.assertEqual(result["characters"]["c1"]["zone"], "left")
+        self.assertEqual(result["characters"]["c1"]["facing"], "right")
+        self.assertEqual(result["characters"]["c2"], {"zone": "right"})
+        self.assertEqual(initial_state_from_participants([])["characters"], {})
+
     def _inputs(self, blocking=None, canonical=None):
         return {
             "scene": {"name": "门厅", **({"character_blocking": blocking} if blocking is not None else {})},

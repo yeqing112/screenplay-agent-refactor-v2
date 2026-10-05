@@ -88,6 +88,44 @@ def _character_intents(treatment: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {str(key): value if isinstance(value, dict) else {"name": str(value)} for key, value in raw.items()}
 
 
+def initial_state_from_participants(participants: Any, *, props: Any = None, exit_access: Any = None) -> dict[str, Any]:
+    """Build the blocking compiler seed from already-authoritative participants.
+
+    Production preview receives participant identity from the approved
+    SceneBlocking proposal. The old API path supplied an empty ``initial_state``
+    instead, so ``compile_blocking_states`` emitted empty character snapshots
+    even though ``participants`` was populated. This helper only projects
+    declared fields; it never discovers or invents a character.
+    """
+    characters: dict[str, Any] = {}
+    for item in participants if isinstance(participants, list) else []:
+        if not isinstance(item, dict):
+            continue
+        character_id = _name(item.get("character_id") or item.get("id") or item.get("character"))
+        if not character_id:
+            continue
+        state: dict[str, Any] = {}
+        position = item.get("start_position")
+        if isinstance(position, dict):
+            position = position.get("value")
+        if position not in (None, ""):
+            state["zone"] = position
+        facing = item.get("facing")
+        if isinstance(facing, dict):
+            facing = facing.get("value")
+        if facing not in (None, ""):
+            state["facing"] = facing
+        entry = item.get("entry")
+        if isinstance(entry, dict) and entry.get("value") not in (None, ""):
+            state["state"] = entry.get("value")
+        characters[character_id] = state
+    return {
+        "characters": characters,
+        "props": dict(props) if isinstance(props, dict) else {},
+        "exit_access": dict(exit_access) if isinstance(exit_access, dict) else {},
+    }
+
+
 def _blocking_index(scene: dict[str, Any]) -> dict[str, dict[str, Any]]:
     declared = scene.get("character_blocking") or scene.get("blocking") or []
     if isinstance(declared, dict):

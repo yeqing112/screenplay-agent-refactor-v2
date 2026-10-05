@@ -1,0 +1,29 @@
+{
+  "canonical_projection_code_loss": false,
+  "dialogue_source_boundary": "SOURCE_DATA_HAS_NO_USEFUL_SEMANTICS",
+  "external_calls": {
+    "75api_image_post": 0,
+    "75api_video_post": 0,
+    "image": 0,
+    "llm": 0,
+    "poyo": 0,
+    "shapi": 0,
+    "video": 0
+  },
+  "primary_outcome": "CODE_BUG_FIXED_RECANARY_REQUIRED",
+  "production_provenance_boundary": "NO_PRODUCTION_SOURCE_WITH_USEFUL_SEMANTICS",
+  "production_writes": {
+    "generation_execution": 0,
+    "media": 0,
+    "official_media": 0,
+    "prompt_ir": 0
+  },
+  "quantified_causes": {
+    "LEGACY_STALE_MATERIALIZATION": 0,
+    "SHOT_SEMANTIC_HYDRATION_NOT_RUN": 20,
+    "SOURCE_DIALOGUE_EMPTY": 20
+  },
+  "run_id": "20261005T095639Z",
+  "safe_next_action": "Keep production database unchanged; use the patched provider-free hydration path for a new explicitly production-provenanced source with actual dialogue, then run a separately authorized dry-run rematerialization before any write.",
+  "upstream_hydration_boundary_code_bug": true
+}

@@ -9,7 +9,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from pydantic import AliasChoices, BaseModel, Field
 
-from core.scene_blocking import build_scene_blocking, build_scene_blocking_v2, validate_scene_blocking, repair_scene_blocking
+from core.scene_blocking import build_scene_blocking, build_scene_blocking_v2, initial_state_from_participants, validate_scene_blocking, repair_scene_blocking
 from core.scene_blocking_authority import (
     build_scene_blocking_authority_envelope,
     blocking_payload_from_row,
@@ -289,7 +289,20 @@ def preview_scene_blocking(book_id: int, episode: int, req: SceneBlockingPreview
         if is_production:
             # Preview exposes a reviewable canonical proposal.  The values are
             # still revalidated and deterministically recompiled at confirm.
-            blocking.setdefault("initial_state", {"characters": {}, "props": {}, "exit_access": {}})
+            declared_participants = blocking.get("participants") if isinstance(blocking.get("participants"), list) else []
+            existing_initial = blocking.get("initial_state") if isinstance(blocking.get("initial_state"), dict) else {}
+            # Preserve an authored non-empty state. If the builder omitted the
+            # state or emitted an empty character map while participants are
+            # authoritative, hydrate only from those declared identities.
+            if not isinstance(existing_initial.get("characters"), dict) or (not existing_initial.get("characters") and declared_participants):
+                derived_initial = initial_state_from_participants(
+                    declared_participants,
+                    props=existing_initial.get("props"),
+                    exit_access=existing_initial.get("exit_access"),
+                )
+                blocking["initial_state"] = {**existing_initial, **derived_initial}
+            else:
+                blocking["initial_state"] = existing_initial
             blocking.setdefault("blocking_transitions", [])
             blocking["compiler_version"] = COMPILER_VERSION
             preview_beats = [{"beat_id": item.get("beat_id")} for item in blocking.get("beat_transitions", []) if isinstance(item, dict) and item.get("beat_id")]

@@ -109,6 +109,8 @@ class SceneBlockingV2ApiTests(unittest.TestCase):
         self.assertEqual(body["blocking"]["schema_version"], "scene_blocking_v2")
         self.assertEqual(body["blocking"]["unknowns"], [])
         self.assertEqual(body["blocking"]["status"], "ready_for_review")
+        self.assertEqual(set(body["blocking"]["initial_state"]["characters"]), {"c1", "c2"})
+        self.assertTrue(all(item["characters"] for item in body["blocking"]["beat_spatial_states"]))
         draft_id = body["persisted_draft_id"]
         confirm = self.client.post(f"/api/books/{self.book_id}/episodes/1/scene-blocking/confirm", json={"blockingId": draft_id, "evidenceFingerprint": body["blocking"]["evidence_fingerprint"], "confirmed": True, "workflow_profile": "production", "schema_version": "scene_blocking_v2", "blocking": build_phase_b_production_blocking_candidate(body["blocking"])})
         self.assertEqual(confirm.status_code, 200, confirm.text)
