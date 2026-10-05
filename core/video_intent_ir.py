@@ -6,13 +6,14 @@ tokens, or transport fields.
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 import hashlib
 import json
 import re
 from typing import Any, Mapping
 
 from .shot_readiness import ShotPropState, canonical_shot_prop_states
+from .unauthorized_prop_semantic_scrubber import scrub_semantic_beats, scrub_semantic_beat
 
 
 @dataclass(frozen=True)
@@ -106,6 +107,7 @@ class VideoIntentIR:
     negative_constraints: tuple[str, ...]
     performance_realism: PerformanceRealismIntent = PerformanceRealismIntent()
     camera_realism: CameraRealismIntent = CameraRealismIntent()
+    semantic_audit: Mapping[str, Any] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -154,7 +156,7 @@ def _sanitize_state(state: Mapping[str, Any], allowed_prop_ids: set[str]) -> dic
     return output
 
 
-def _sanitize_performance(value: Any, allowed_prop_ids: set[str] | None = None) -> Any:
+def _sanitize_mouth(value: Any) -> Any:
     if isinstance(value, str):
         replacements = {
             "lips slightly parted": "lips gently closed",
@@ -167,20 +169,11 @@ def _sanitize_performance(value: Any, allowed_prop_ids: set[str] | None = None) 
         }
         for source, target in replacements.items():
             value = value.replace(source, target)
-        if not allowed_prop_ids:
-            for source, target in {
-                "bag strap": "hands remain relaxed without prop contact",
-                "handbag": "no unauthorized prop",
-                "shoulder bag": "no unauthorized prop",
-                "手提包": "无未授权道具",
-                "包带": "无未授权道具",
-            }.items():
-                value = value.replace(source, target)
         return value
     if isinstance(value, list):
-        return [_sanitize_performance(x, allowed_prop_ids) for x in value]
+        return [_sanitize_mouth(x) for x in value]
     if isinstance(value, dict):
-        return {key: _sanitize_performance(item, allowed_prop_ids) for key, item in value.items()}
+        return {key: _sanitize_mouth(item) for key, item in value.items()}
     return value
 
 
@@ -231,18 +224,28 @@ def build_video_intent_ir(
     # Canonical ShotPropState is authoritative even when the caller does not
     # pass an explicit list: an empty authorized set must remove stale bag or
     # strap actions from the projected intent.
-    performance_projected = _sanitize_performance(performance_raw, allowed_prop_ids)
+    performance_scrubbed, performance_audits = scrub_semantic_beats(performance_raw, allowed_prop_ids=allowed_prop_ids)
+    performance_projected = _sanitize_mouth(performance_scrubbed)
     semantic_payload = {
         "shot_id": shot_id, "source_revision": source_revision, "director_duration_seconds": director_duration,
         "scene": {"scene_id": source.get("scene_id"), "location": source.get("location")},
         "characters": [x.as_dict() for x in characters], "props": [dict(x) for x in props],
         "dialogue": dialogue.as_dict(), "performance_beats": performance_projected,
-        "camera_beats": list(decision.get("camera_beats") or []), "ending_state": decision.get("ending_state") or {},
+        "camera_beats": list(decision.get("camera_beats") or []), "ending_state": _sanitize_mouth(decision.get("ending_state") or {}),
         "reference_requirements": references, "audio_intent": audio.as_dict(), "negative_constraints": list(negative),
     }
-    ending = _sanitize_performance(decision.get("ending_state") or {}, allowed_prop_ids)
+    ending_source = decision.get("ending_state") or {}
+    ending, ending_audit = scrub_semantic_beat(ending_source, allowed_prop_ids=allowed_prop_ids)
+    ending = _sanitize_mouth(ending)
     performance_realism = PerformanceRealismIntent()
     camera_realism = CameraRealismIntent()
     semantic_payload["performance_realism"] = performance_realism.as_dict()
     semantic_payload["camera_realism"] = camera_realism.as_dict()
-    return VideoIntentIR(shot_id, source_revision, _fingerprint(semantic_payload), director_duration, semantic_payload["scene"], tuple(characters), props, dialogue, tuple(dict(x) for x in performance_projected if isinstance(x, Mapping)), tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, Mapping)), ending, references, audio, negative, performance_realism, camera_realism)
+    # The audits remain attached to the model-independent intent so Gate A can
+    # publish them without re-reading mutable Director source files.
+    semantic_payload["unauthorized_prop_semantic_audit"] = {
+        "status": "PASS" if all(a.status == "PASS" for a in (*performance_audits, ending_audit)) else "FAIL",
+        "performance": [a.as_dict() for a in performance_audits],
+        "ending_state": ending_audit.as_dict(),
+    }
+    return VideoIntentIR(shot_id, source_revision, _fingerprint(semantic_payload), director_duration, semantic_payload["scene"], tuple(characters), props, dialogue, tuple(dict(x) for x in performance_projected if isinstance(x, Mapping)), tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, Mapping)), ending, references, audio, negative, performance_realism, camera_realism, semantic_payload["unauthorized_prop_semantic_audit"])

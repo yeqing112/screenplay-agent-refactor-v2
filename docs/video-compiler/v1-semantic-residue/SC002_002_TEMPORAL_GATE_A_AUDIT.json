@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "performance_source_count": 13,
+  "performance_compiled_count": 13,
+  "performance_duplicate_count": 0,
+  "camera_source_count": 4,
+  "camera_compiled_count": 4,
+  "camera_duplicate_count": 0,
+  "dialogue_timing_drift": [],
+  "reaction_delay_count": 1,
+  "terminal_hold_count": 1
+}

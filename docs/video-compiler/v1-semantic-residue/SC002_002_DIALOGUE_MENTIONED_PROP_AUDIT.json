@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "visual_authority": {
+    "APPLE": "NONE"
+  },
+  "video_intent_props": [],
+  "apple_positive_visual_occurrences": 0,
+  "apple_negative_visual_occurrences": 2,
+  "canonical_dialogue_mention_occurrences": 1,
+  "required_negative_visual": [
+    "No apple is visible in this shot.",
+    "The apple is mentioned only in dialogue as a future action; it must not appear physically during this shot."
+  ]
+}

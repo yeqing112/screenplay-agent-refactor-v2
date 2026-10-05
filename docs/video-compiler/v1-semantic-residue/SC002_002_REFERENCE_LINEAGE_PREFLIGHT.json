@@ -1,0 +1,17 @@
+{
+  "status": "DEFERRED_UNTIL_GATE_B",
+  "gate_a": "PASS",
+  "reference_mode": "FIRST_FRAME",
+  "bindings": [],
+  "required_fields": [
+    "asset_id",
+    "media_sha256",
+    "authority_fingerprint",
+    "approved_or_official_lineage",
+    "provider_accessible_url"
+  ],
+  "hardcoded_url": false,
+  "failure_code_if_real_preflight_missing": "VIDEO_REFERENCE_LINEAGE_INCOMPLETE",
+  "real_image_calls": 0,
+  "real_video_calls": 0
+}

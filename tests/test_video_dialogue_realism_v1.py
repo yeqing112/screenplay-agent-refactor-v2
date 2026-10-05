@@ -58,6 +58,8 @@ def test_density_terminal_hold_and_prop_purity():
     assert audit.camera_realism_modifiers >= 0
     assert compiled.prompt.count("handbag") == 1
     assert compiled.prompt.count("bag strap") == 1
-    assert compiled.prompt.count("apple") == 0
+    assert compiled.prompt.count("apple") == 2
+    semantic = compiled.provider_capability_requirements["prompt_semantic_partition_audit"]
+    assert semantic["positive_visual_forbidden_tokens"]["apple"] == 0
     assert compiled.prompt.split("13.5–14.0s", 1)[1].count("<d>") == 0
     assert "shaky camera" not in compiled.prompt.lower()

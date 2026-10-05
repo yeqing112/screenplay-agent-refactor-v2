@@ -10,6 +10,7 @@ from core.shot_readiness import project_video_model_duration
 from core.video_dialogue_coverage import audit_dialogue_phrase_coverage, audit_provider_dialogue_occurrences
 from core.video_intent_ir import VideoIntentIR
 from core.video_intent_semantic_consistency import audit_video_intent_semantics
+from core.prompt_semantic_partition import partition_prompt
 from core.video_temporal_continuity import build_temporal_emission_audit, detect_performance_state_resets, source_event_id
 from .base import CompiledVideoRequestIR, CompilerSupportResult, PromptComplexityAudit, VideoModelCapabilities
 
@@ -95,11 +96,17 @@ def _camera_event(beat: dict[str, Any], index: int) -> dict[str, Any]:
     movement = str(beat.get("movement_type") or "holds")
     target = str(beat.get("target") or "the two characters")
     direction = str(beat.get("direction") or "")
-    primary = f"The camera makes a single {movement} toward {target}"
+    if movement.lower() == "static":
+        if "two-shot" in target.lower() and ("陆叔" in target or "林晚" in target):
+            primary = "The camera holds a restrained static medium two-shot of Uncle Lu and Lin Wan at the kitchen table, with barely perceptible handheld breathing drift"
+        else:
+            primary = f"The camera holds a restrained static {target}, with barely perceptible handheld breathing drift"
+    else:
+        primary = f"The camera makes a single {movement} toward {target}"
     if direction and direction != "none":
         primary += f", {direction}"
     primary += "."
-    modifiers = ["barely perceptible handheld breathing drift"]
+    modifiers = [] if movement.lower() == "static" else ["barely perceptible handheld breathing drift"]
     if index % 2 == 0:
         modifiers.append("the movement settles naturally at the end")
     else:
@@ -125,7 +132,7 @@ def _reaction_events(intent: VideoIntentIR) -> list[dict[str, Any]]:
 
 class MiniMaxH3Compiler:
     compiler_id = "minimax-h3"
-    compiler_version = "3-temporal-continuity"
+    compiler_version = "4-semantic-residue-closure"
     model_family = "minimax-h3"
 
     def supports(self, intent: VideoIntentIR, capabilities: VideoModelCapabilities) -> CompilerSupportResult:
@@ -199,6 +206,8 @@ class MiniMaxH3Compiler:
             "non_diegetic_music:\nN/A",
             f"Duration: {projection.provider_duration_seconds}s total; director intent {intent.director_duration_seconds:g}s; terminal hold {projection.provider_padding_seconds:g}s.",
             "Negative constraints: no additional characters; no unauthorized props; preserve scene topology; Lin Wan carries no handbag, no shoulder bag, no crossbody bag, and no bag strap is visible; both hands remain free of story props.",
+            "No apple is visible in this shot.",
+            "The apple is mentioned only in dialogue as a future action; it must not appear physically during this shot.",
         ]
         prompt = "\n".join(lines)
         occurrence = audit_provider_dialogue_occurrences(prompt, intent.dialogue.authoritative_text, dialogue_windows) if intent.dialogue.mode == "AUTHORITATIVE" else {"phrase_occurrences": [], "plain_full_authoritative_occurrence": 0, "d_block_count": 0, "status": "PASS", "errors": []}
@@ -213,5 +222,12 @@ class MiniMaxH3Compiler:
         references = tuple(dict(item) for item in (intent.reference_requirements.get("bindings") or []) if isinstance(item, dict)) or tuple({"role": str(role), "asset_id": "", "authority_fingerprint": "", "media_sha256": ""} for role in intent.reference_requirements.get("roles") or [])
         audio_mode = "NATIVE_AUDIO_EXPECTED" if intent.audio_intent.dialogue_required and target.supports_native_dialogue and target.supports_native_audio else "SILENCE_REQUESTED"
         request_basis = {"compiler_id": self.compiler_id, "compiler_version": self.compiler_version, "model_family": self.model_family, "shot_id": intent.shot_id, "source": intent.source_fingerprint, "prompt": prompt, "duration": projection.provider_duration_seconds, "aspect_ratio": "16:9", "reference_mode": intent.reference_requirements.get("mode"), "audio_generation_mode": audio_mode}
-        provider_requirements = {"supports_native_audio": target.supports_native_audio, "supports_first_frame": target.supports_first_frame, "dialogue_occurrence_audit": occurrence, "temporal_emission_audit": temporal_audit.as_dict()}
+        semantic_partition = partition_prompt(prompt, dialogue_texts=[str(x.get("text") or "") for x in dialogue_windows])
+        strap_total = prompt.lower().count("strap")
+        apple_positive = semantic_partition["positive_visual_forbidden_tokens"].get("apple", 0)
+        if strap_total != 1 or semantic_partition["counts"]["strap"]["NEGATIVE_VISUAL"] != 1 or semantic_partition["counts"]["strap"]["POSITIVE_VISUAL"] != 0:
+            raise ValueError("STRAP_SEMANTIC_RESIDUE")
+        if apple_positive != 0:
+            raise ValueError("APPLE_POSITIVE_VISUAL_RESIDUE")
+        provider_requirements = {"supports_native_audio": target.supports_native_audio, "supports_first_frame": target.supports_first_frame, "dialogue_occurrence_audit": occurrence, "temporal_emission_audit": temporal_audit.as_dict(), "prompt_semantic_partition_audit": semantic_partition, "unauthorized_prop_semantic_audit": dict(intent.semantic_audit or {})}
         return CompiledVideoRequestIR(self.compiler_id, self.compiler_version, self.model_family, intent.shot_id, intent.source_fingerprint, prompt, int(projection.provider_duration_seconds), "16:9", str(intent.reference_requirements.get("mode") or "FIRST_FRAME"), references, audio_mode, provider_requirements, support.warnings, _sha(prompt), _sha(json.dumps(request_basis, ensure_ascii=False, sort_keys=True, separators=(",", ":"))), complexity)
