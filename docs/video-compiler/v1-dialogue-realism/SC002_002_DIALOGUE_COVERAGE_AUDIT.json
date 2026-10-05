@@ -1,0 +1,32 @@
+{
+  "authoritative_text": "晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+  "phrase_windows": [
+    {
+      "text": "晚晚，你看看你，跑那么快做什么？",
+      "start_time": 0.0,
+      "end_time": 3.6
+    },
+    {
+      "text": "在车站吓我一跳。",
+      "start_time": 3.6,
+      "end_time": 5.4
+    },
+    {
+      "text": "脸色这么差，是不是又没好好吃饭？",
+      "start_time": 5.4,
+      "end_time": 9.0
+    },
+    {
+      "text": "来，先坐下，陆叔给你洗个苹果。",
+      "start_time": 9.0,
+      "end_time": 13.5
+    }
+  ],
+  "phrase_count": 4,
+  "concatenated_text": "晚晚，你看看你，跑那么快做什么？在车站吓我一跳。脸色这么差，是不是又没好好吃饭？来，先坐下，陆叔给你洗个苹果。",
+  "missing_text": "",
+  "duplicated_text": [],
+  "out_of_order": false,
+  "coverage_status": "PASS",
+  "status": "PASS"
+}

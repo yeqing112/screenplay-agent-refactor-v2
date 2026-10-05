@@ -47,7 +47,8 @@ def test_dialogue_golden_preserves_exact_text_and_stable_speaker_ids():
     first = MiniMaxH3Compiler().compile(intent, H3_CAPABILITIES)
     second = MiniMaxH3Compiler().compile(intent, H3_CAPABILITIES)
     exact = d["dialogue_beats"][0]["authoritative_text"]
-    assert exact in first.prompt
+    assert exact not in first.prompt
+    assert first.prompt.count("<d>") == 4
     assert "<d>[Chinese]" in first.prompt
     assert "(S1)" in first.prompt or "(S2)" in first.prompt
     assert first.prompt == second.prompt

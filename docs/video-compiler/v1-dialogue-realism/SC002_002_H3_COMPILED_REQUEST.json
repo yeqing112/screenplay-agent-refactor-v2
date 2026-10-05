@@ -1,0 +1,89 @@
+{
+  "compiler_id": "minimax-h3",
+  "compiler_version": "2-dialogue-realism",
+  "model_family": "minimax-h3",
+  "shot_id": "SH_E01_SC002_002",
+  "source_video_intent_fingerprint": "6329bb5fa2034ff40509fe9854f3e6db4ab2842440e09c6f2603c85eaf888138",
+  "prompt": "integrated_multimodal_description:\nCinematic single-take shot SH_E01_SC002_002. Preserve scene topology: 出租公寓厨房.\nCharacters:\nS1: 陆叔; role speaker; start state position 餐桌左侧; body pose standing, torso leaning slightly forward over the table edge; weight distribution weight on left leg, right leg relaxed and slightly back; torso direction torso angled toward 林晚 at approximately 30 degrees; head yaw head turned toward 林晚, yaw approximately 25 degrees to screen right; head pitch head tilted down approximately 10 degrees toward the table surface; eye target 桌面划痕; left hand left hand resting flat on the table edge near the tabletop scratch; right hand right hand hanging at side, fingers loosely curled; prop contact left palm in contact with the table surface.\nS2: 林晚; role listener; start state position 餐桌右侧或门边; body pose standing upright, shoulders slightly hunched, weight shifted onto the back foot; weight distribution weight on right leg, left foot slightly forward and unweighted; torso direction torso facing 陆叔 at approximately 20 degrees to screen left; head yaw head turned toward 陆叔, yaw approximately 15 degrees to screen left; head pitch head level, chin slightly tucked; eye target 陆叔; left hand 自然放松，不接触道具; right hand right hand hanging at her side, fingers slightly curled inward; prop contact 自然放松，不接触道具.\nProps: none.\nPerformance direction: grounded human acting; Lu Shu is concerned, caring, slightly anxious and gentle without melodrama; Lin Wan is tired, guarded, slightly hesitant and quietly receptive.\nRealism direction: subtle breathing, micro-expressions, responsive gaze, natural weight shift, occasional secondary motion and imperfect gestures; keep performance intensity restrained.\nEmotional arc: concern and guardedness gradually soften into a warmer, reassuring exchange without overt sentimentality.\nH3 temporal event stream:\n0–1.8s: 陆叔 torso starts leaning over the table edge and straightens upward by about 10 degrees, ending with the torso upright and angled toward 林晚. left hand starts flat on the table edge and slides 5 cm toward 林晚 across the tabletop, ending with the palm open and fingers spread on the table surface eyes start fixed on the tabletop scratch and shift upward to 林晚's face, ending with a steady gaze on 林晚 brows start relaxed and draw together by about 3 mm, ending with a furrowed, concerned brow line. 林晚 remains silent and does not react immediately; after a brief 0.2–0.6 second hesitation, the gaze dips before returning to the speaker. The camera uses a static toward two-shot of 陆叔 and 林晚 at the kitchen table. barely perceptible micro-drift; operator breathing remains subtle. (S1) <d>[Chinese] 晚晚，你看看你，跑那么快做什么？</d>\n1.8–2.4s: 陆叔 torso starts upright and leans forward about 15 degrees toward 林晚, ending with the torso inclined over the table edge. right hand starts hanging at the side and rises to chest height, ending with the palm open and facing upward in a beckoning gesture eyes start on 林晚's face and drop to her shoulders and back, ending with a scanning gaze over her upper body. 林晚 stays quiet, with a small breath and a slight shoulder settling before attention returns to the speaker. The camera uses a static toward two-shot of 陆叔 and 林晚 at the kitchen table. barely perceptible micro-drift; a tiny corrective adjustment follows with subtle reaction lag.\n2.4–3.6s: 陆叔 torso starts upright and leans forward about 15 degrees toward 林晚, ending with the torso inclined over the table edge. right hand starts hanging at the side and rises to chest height, ending with the palm open and facing upward in a beckoning gesture eyes start on 林晚's face and drop to her shoulders and back, ending with a scanning gaze over her upper body. 林晚 remains guarded but receptive; a restrained weight shift and a slow blink arrive after the speaker's cue. The camera uses a static toward two-shot of 陆叔 and 林晚 at the kitchen table. barely perceptible micro-drift; the movement eases into a natural settling.\n3.6–4.8s: 陆叔 torso starts inclined forward and straightens back by about 10 degrees, ending with the torso upright and shoulders squared toward 林晚. right hand starts raised at chest height and lowers by 15 cm, ending with the hand at waist height, palm still open and facing upward eyes start scanning 林晚's shoulders and fix on her face, ending with a direct, steady gaze into her eyes brows start furrowed and lift by about 2 mm at the inner corners, ending with a softened, questioning brow line. 林晚 remains silent and does not react immediately; after a brief 0.2–0.6 second hesitation, the gaze dips before returning to the speaker. The camera uses a slow push-in toward 陆叔's upper body and face as he speaks, forward toward the two characters. barely perceptible micro-drift; operator breathing remains subtle. (S1) <d>[Chinese] 在车站吓我一跳。</d>\n4.8–5.4s: 陆叔 torso starts inclined forward and straightens back by about 10 degrees, ending with the torso upright and shoulders squared toward 林晚. right hand starts raised at chest height and lowers by 15 cm, ending with the hand at waist height, palm still open and facing upward eyes start scanning 林晚's shoulders and fix on her face, ending with a direct, steady gaze into her eyes brows start furrowed and lift by about 2 mm at the inner corners, ending with a softened, questioning brow line. 林晚 stays quiet, with a small breath and a slight shoulder settling before attention returns to the speaker. The camera uses a slow push-in toward 陆叔's upper body and face as he speaks, forward toward the two characters. barely perceptible micro-drift; a tiny corrective adjustment follows with subtle reaction lag.\n5.4–7.2s: 陆叔 torso starts upright and rotates about 20 degrees toward the kitchen counter behind him, ending with the torso angled away from 林晚 toward the counter. right hand starts at waist height with open palm and closes into a loose fist, ending with the fist resting against his own chest eyes start on 林晚 and shift to the kitchen counter, ending with a gaze fixed on the counter surface. 林晚 remains guarded but receptive; a restrained weight shift and a slow blink arrive after the speaker's cue. The camera uses a slow push-in toward 陆叔's upper body and face as he speaks, forward toward the two characters. barely perceptible micro-drift; the movement eases into a natural settling. (S1) <d>[Chinese] 脸色这么差，是不是又没好好吃饭？</d>\n7.2–9s: 陆叔 torso starts angled toward the counter and rotates back about 20 degrees toward 林晚, ending with the torso facing her squarely. right hand starts against his chest and extends forward toward 林晚 by about 20 cm, ending with the palm open and facing upward in an offering gesture eyes start on the counter and shift back to 林晚's face, ending with a warm, direct gaze on her. 林晚 remains silent and does not react immediately; after a brief 0.2–0.6 second hesitation, the gaze dips before returning to the speaker. The camera uses a slow lateral drift toward 林晚's face and upper body as she listens, drifting slightly to the right, shifting emphasis toward 林晚. barely perceptible micro-drift; operator breathing remains subtle.\n9–9.6s: 陆叔 torso starts facing 林晚 and leans forward about 10 degrees, ending with the torso inclined toward her in an inviting posture. right hand starts extended forward with open palm and sweeps downward and to the side by about 15 cm, ending with the hand gesturing toward the chair beside the table eyes start on 林晚's face and shift down to the chair, ending with a gaze directed at the chair beside the table. 林晚 stays quiet, with a small breath and a slight shoulder settling before attention returns to the speaker. The camera uses a slow lateral drift toward 林晚's face and upper body as she listens, drifting slightly to the right, shifting emphasis toward 林晚. barely perceptible micro-drift; a tiny corrective adjustment follows with subtle reaction lag. (S1) <d>[Chinese] 来，先坐下，陆叔给你洗个苹果。</d>\n9.6–10.8s: 陆叔 torso starts facing 林晚 and leans forward about 10 degrees, ending with the torso inclined toward her in an inviting posture. right hand starts extended forward with open palm and sweeps downward and to the side by about 15 cm, ending with the hand gesturing toward the chair beside the table eyes start on 林晚's face and shift down to the chair, ending with a gaze directed at the chair beside the table. 林晚 remains guarded but receptive; a restrained weight shift and a slow blink arrive after the speaker's cue. The camera uses a slow lateral drift toward 林晚's face and upper body as she listens, drifting slightly to the right, shifting emphasis toward 林晚. barely perceptible micro-drift; the movement eases into a natural settling.\n10.8–11s: 陆叔 torso starts facing 林晚 and leans forward about 10 degrees, ending with the torso inclined toward her in an inviting posture. right hand starts extended forward with open palm and sweeps downward and to the side by about 15 cm, ending with the hand gesturing toward the chair beside the table eyes start on 林晚's face and shift down to the chair, ending with a gaze directed at the chair beside the table. 林晚 remains silent and does not react immediately; after a brief 0.2–0.6 second hesitation, the gaze dips before returning to the speaker. The camera uses a slow pull-back toward both 陆叔 and 林晚 at the kitchen table, backward, widening the frame. barely perceptible micro-drift; operator breathing remains subtle.\n11–11.8s: 陆叔 torso starts inclined toward the chair and straightens by about 8 degrees, ending with the torso upright and weight shifting onto the back foot as he prepares to move toward the kitchen. right hand starts gesturing toward the chair and lowers to his side, ending with the hand relaxed at his hip, fingers loosely curled eyes start on the chair and shift toward the kitchen, ending with a gaze directed at the kitchen workspace. 林晚 stays quiet, with a small breath and a slight shoulder settling before attention returns to the speaker. The camera uses a slow pull-back toward both 陆叔 and 林晚 at the kitchen table, backward, widening the frame. barely perceptible micro-drift; a tiny corrective adjustment follows with subtle reaction lag.\n11.8–13.5s: 陆叔 torso starts inclined toward the chair and straightens by about 8 degrees, ending with the torso upright and weight shifting onto the back foot as he prepares to move toward the kitchen. right hand starts gesturing toward the chair and lowers to his side, ending with the hand relaxed at his hip, fingers loosely curled eyes start on the chair and shift toward the kitchen, ending with a gaze directed at the kitchen workspace. 林晚 remains guarded but receptive; a restrained weight shift and a slow blink arrive after the speaker's cue. The camera uses a slow pull-back toward both 陆叔 and 林晚 at the kitchen table, backward, widening the frame. barely perceptible micro-drift; the movement eases into a natural settling.\n13.5–14s: Final pose, gaze, expression and framing settle naturally. No new dialogue, mouth articulation, body action, prop interaction or camera event; only subtle breathing and natural stillness remain.\noverall_soundscape:\nQuiet natural indoor room tone.\nThe authorized speaker's Mandarin dialogue is clear and foregrounded.\nNo additional voices.\nNo invented dialogue.\nnon_diegetic_music:\nN/A\nDuration: 14s total; director intent 13.5s; terminal hold 0.5s.\nNegative constraints: no additional characters; no unauthorized props; preserve scene topology; Lin Wan carries no handbag, no shoulder bag, no crossbody bag, and no bag strap is visible; both hands remain free of story props.",
+  "duration_seconds": 14,
+  "aspect_ratio": "16:9",
+  "reference_mode": "FIRST_FRAME",
+  "reference_bindings": [
+    {
+      "role": "SCENE_MASTER",
+      "asset_id": "",
+      "authority_fingerprint": "",
+      "media_sha256": ""
+    },
+    {
+      "role": "CHARACTER_FULL",
+      "asset_id": "",
+      "authority_fingerprint": "",
+      "media_sha256": ""
+    },
+    {
+      "role": "CHARACTER_FACE",
+      "asset_id": "",
+      "authority_fingerprint": "",
+      "media_sha256": ""
+    }
+  ],
+  "audio_generation_mode": "NATIVE_AUDIO_EXPECTED",
+  "provider_capability_requirements": {
+    "supports_native_audio": true,
+    "supports_first_frame": true,
+    "dialogue_occurrence_audit": {
+      "phrase_occurrences": [
+        {
+          "text": "晚晚，你看看你，跑那么快做什么？",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        },
+        {
+          "text": "在车站吓我一跳。",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        },
+        {
+          "text": "脸色这么差，是不是又没好好吃饭？",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        },
+        {
+          "text": "来，先坐下，陆叔给你洗个苹果。",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        }
+      ],
+      "plain_full_authoritative_occurrence": 0,
+      "d_block_count": 4,
+      "status": "PASS",
+      "errors": []
+    }
+  },
+  "warnings": [],
+  "compiled_prompt_sha256": "c87f2d638cfc21aa5601f9a4b475d16641bff659dcc0c1891ae67134e63c47cb",
+  "compiled_request_fingerprint": "316f749bfd8c92f69105b29278b23ea9fe986693a9ea31695340c8d6272c3fac",
+  "prompt_complexity": {
+    "characters": 2,
+    "words": 1873,
+    "performance_beats": 13,
+    "camera_beats": 4,
+    "dialogue_length": 55,
+    "blocked": false,
+    "code": null,
+    "timeline_windows": 13,
+    "primary_actions": 12,
+    "micro_actions": 27,
+    "camera_realism_modifiers": 24,
+    "dialogue_blocks": 4
+  },
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "provider_calls": 0,
+  "authority": "derived_zero_call_compiler_evidence"
+}

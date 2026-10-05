@@ -1,0 +1,10 @@
+{
+  "old_task": "task_mHPdw210obDDtPaCsoOU1cwXM9hRvfSH",
+  "status": "REJECTED_MEDIA_QUALITY",
+  "root_causes": [
+    "H3_DIALOGUE_DUPLICATE_EMISSION",
+    "UNAUTHORIZED_PROP_VISUAL_CONTAMINATION"
+  ],
+  "historical_evidence_preserved": true,
+  "new_real_provider_calls": 0
+}

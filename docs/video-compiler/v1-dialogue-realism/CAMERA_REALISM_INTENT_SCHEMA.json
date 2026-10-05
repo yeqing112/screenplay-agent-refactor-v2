@@ -1,0 +1,14 @@
+{
+  "title": "CameraRealismIntent",
+  "provider_neutral": true,
+  "fields": {
+    "stability": "restrained_handheld",
+    "micro_drift": "very_subtle",
+    "operator_breathing": "subtle",
+    "corrective_reframing": "subtle",
+    "reaction_lag": "subtle",
+    "settling_motion": true,
+    "mechanical_precision": false,
+    "focus_behavior": "rare"
+  }
+}

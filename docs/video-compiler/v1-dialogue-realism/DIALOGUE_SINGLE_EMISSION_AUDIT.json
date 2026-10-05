@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "contract": "DialogueSingleEmissionContract",
+  "authoritative_text_retained_in_ir": true,
+  "plain_full_authoritative_occurrence": 0,
+  "d_block_count": 4,
+  "phrase_occurrence_counts": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "phrase_inside_d_counts": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "all_audible_text_inside_d": true,
+  "real_image_calls": 0,
+  "real_video_calls": 0
+}

@@ -1,0 +1,34 @@
+{
+  "phrase_occurrences": [
+    {
+      "text": "晚晚，你看看你，跑那么快做什么？",
+      "total_occurrences": 1,
+      "inside_d_occurrences": 1,
+      "outside_d_occurrences": 0
+    },
+    {
+      "text": "在车站吓我一跳。",
+      "total_occurrences": 1,
+      "inside_d_occurrences": 1,
+      "outside_d_occurrences": 0
+    },
+    {
+      "text": "脸色这么差，是不是又没好好吃饭？",
+      "total_occurrences": 1,
+      "inside_d_occurrences": 1,
+      "outside_d_occurrences": 0
+    },
+    {
+      "text": "来，先坐下，陆叔给你洗个苹果。",
+      "total_occurrences": 1,
+      "inside_d_occurrences": 1,
+      "outside_d_occurrences": 0
+    }
+  ],
+  "plain_full_authoritative_occurrence": 0,
+  "d_block_count": 4,
+  "status": "PASS",
+  "errors": [],
+  "speaker_mouth_directives": 0,
+  "silent_listener_speech_like_directives": 0
+}

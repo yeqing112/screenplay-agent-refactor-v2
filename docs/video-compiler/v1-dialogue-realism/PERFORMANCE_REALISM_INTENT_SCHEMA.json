@@ -1,0 +1,14 @@
+{
+  "title": "PerformanceRealismIntent",
+  "provider_neutral": true,
+  "fields": {
+    "natural_breathing": true,
+    "micro_expressions": true,
+    "gaze_behavior": true,
+    "reaction_delay": "0.2-0.6 seconds",
+    "weight_shift": "natural",
+    "secondary_motion": "subtle",
+    "gesture_imperfection": "natural",
+    "performance_intensity": "restrained"
+  }
+}

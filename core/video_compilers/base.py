@@ -46,6 +46,11 @@ class PromptComplexityAudit:
     dialogue_length: int
     blocked: bool = False
     code: str | None = None
+    timeline_windows: int = 0
+    primary_actions: int = 0
+    micro_actions: int = 0
+    camera_realism_modifiers: int = 0
+    dialogue_blocks: int = 0
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -120,4 +125,3 @@ class VideoModelCompilerRegistry:
 
     def list(self) -> list[dict[str, str]]:
         return [{"compiler_id": x.compiler_id, "compiler_version": x.compiler_version, "model_family": x.model_family} for x in self._by_id.values()]
-

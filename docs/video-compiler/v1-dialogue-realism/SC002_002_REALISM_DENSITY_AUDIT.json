@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "max_micro_actions_per_window": 3,
+  "max_camera_realism_modifiers_per_window": 2,
+  "micro_action_budget": 3,
+  "camera_modifier_budget": 2,
+  "compression_triggered": false,
+  "terminal_hold_has_dialogue": false,
+  "prompt_word_count": 1873
+}

@@ -55,6 +55,40 @@ class AudioIntent:
 
 
 @dataclass(frozen=True)
+class PerformanceRealismIntent:
+    """Model independent cues for grounded human performance."""
+
+    natural_breathing: bool = True
+    micro_expressions: bool = True
+    gaze_behavior: bool = True
+    reaction_delay: str = "0.2-0.6 seconds"
+    weight_shift: str = "natural"
+    secondary_motion: str = "subtle"
+    gesture_imperfection: str = "natural"
+    performance_intensity: str = "restrained"
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class CameraRealismIntent:
+    """Model independent cues for a restrained human operated camera."""
+
+    stability: str = "restrained_handheld"
+    micro_drift: str = "very_subtle"
+    operator_breathing: str = "subtle"
+    corrective_reframing: str = "subtle"
+    reaction_lag: str = "subtle"
+    settling_motion: bool = True
+    mechanical_precision: bool = False
+    focus_behavior: str = "rare"
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class VideoIntentIR:
     shot_id: str
     source_revision: str
@@ -70,6 +104,8 @@ class VideoIntentIR:
     reference_requirements: Mapping[str, Any]
     audio_intent: AudioIntent
     negative_constraints: tuple[str, ...]
+    performance_realism: PerformanceRealismIntent = PerformanceRealismIntent()
+    camera_realism: CameraRealismIntent = CameraRealismIntent()
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -87,6 +123,8 @@ class VideoIntentIR:
             "reference_requirements": dict(self.reference_requirements),
             "audio_intent": self.audio_intent.as_dict(),
             "negative_constraints": list(self.negative_constraints),
+            "performance_realism": self.performance_realism.as_dict(),
+            "camera_realism": self.camera_realism.as_dict(),
         }
 
 
@@ -203,4 +241,8 @@ def build_video_intent_ir(
         "reference_requirements": references, "audio_intent": audio.as_dict(), "negative_constraints": list(negative),
     }
     ending = _sanitize_performance(decision.get("ending_state") or {}, allowed_prop_ids)
-    return VideoIntentIR(shot_id, source_revision, _fingerprint(semantic_payload), director_duration, semantic_payload["scene"], tuple(characters), props, dialogue, tuple(dict(x) for x in performance_projected if isinstance(x, Mapping)), tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, Mapping)), ending, references, audio, negative)
+    performance_realism = PerformanceRealismIntent()
+    camera_realism = CameraRealismIntent()
+    semantic_payload["performance_realism"] = performance_realism.as_dict()
+    semantic_payload["camera_realism"] = camera_realism.as_dict()
+    return VideoIntentIR(shot_id, source_revision, _fingerprint(semantic_payload), director_duration, semantic_payload["scene"], tuple(characters), props, dialogue, tuple(dict(x) for x in performance_projected if isinstance(x, Mapping)), tuple(dict(x) for x in (decision.get("camera_beats") or []) if isinstance(x, Mapping)), ending, references, audio, negative, performance_realism, camera_realism)

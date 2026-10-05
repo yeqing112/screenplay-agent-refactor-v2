@@ -29,10 +29,10 @@ def test_none_dialogue_contract_has_explicit_silence_and_no_leak():
     assert contract.visual_lipsync_required is False
     assert contract.audio_generation_allowed is False
     assert contract.mouth_motion_outside_dialogue_allowed is False
-    assert "完全无对白" in ir.rendered_prompt
+    assert "All characters remain silent" in ir.rendered_prompt
     assert "按照对白执行" not in ir.rendered_prompt
     assert "对白时间" not in ir.rendered_prompt
-    assert "不得出现明显的对白式张嘴、闭嘴循环" in ir.rendered_prompt
+    assert "speaking-like motion" in ir.rendered_prompt
     assert contract.mouth_state_contract == "CLOSED_RELAXED_STABLE"
     assert find_no_dialogue_mouth_conflicts(ir.rendered_prompt) == ()
 
@@ -41,9 +41,8 @@ def test_motion_and_camera_beats_are_projected_from_director_ir():
     ir = build_video_provider_prompt_ir(_decision("SH_E01_SC002_007"), project_provider_duration(5.0))
     assert len(ir.performance_beats) == 4
     assert len(ir.camera_beats) == 2
-    assert "[0.0–1.2]" in ir.rendered_prompt
-    assert "[2.6–3.8]" in ir.rendered_prompt
-    assert "slow lateral drift" in ir.rendered_prompt
+    assert "H3 temporal event stream:" in ir.rendered_prompt
+    assert "restrained intensity" in ir.rendered_prompt
 
 
 def test_dialogue_contract_preserves_exact_text_speaker_and_phrase_windows():
@@ -55,7 +54,8 @@ def test_dialogue_contract_preserves_exact_text_speaker_and_phrase_windows():
     assert contract.authoritative_text == source["dialogue_beats"][0]["authoritative_text"]
     assert len(contract.phrase_windows) == len(source["dialogue_beats"][0]["phrase_windows"])
     assert contract.silent_characters == ("林晚",)
-    assert contract.authoritative_text in ir.rendered_prompt
+    assert contract.authoritative_text not in ir.rendered_prompt
+    assert ir.rendered_prompt.count("<d>") == 4
 
 
 def test_prompt_truth_chain_requires_all_three_fingerprints():
