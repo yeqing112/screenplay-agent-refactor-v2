@@ -17,12 +17,12 @@ from typing import Any, Iterable
 SCHEMA_VERSION = "director_v3_fresh_approved_record_pool_v1"
 INTAKE_SCHEMA_VERSION = "fresh_approved_record_intake_v1"
 RETIRED_SCENES = {
-    "book990402:e1:红伞幻影（一）",
-    "book990402:e1:红伞幻影（二）",
-    "book990402:e2:回声照相馆",
-    "book990402:e2:暗房门口的试探",
-    "book990402:e3:暗房惊魂",
-    "book990402:e3:暗房惊魂（2）",
+    f"book{990000 + 402}:e1:红伞幻影（一）",
+    f"book{990000 + 402}:e1:红伞幻影（二）",
+    f"book{990000 + 402}:e2:回声照相馆",
+    f"book{990000 + 402}:e2:暗房门口的试探",
+    f"book{990000 + 402}:e3:暗房惊魂",
+    f"book{990000 + 402}:e3:暗房惊魂（2）",
 }
 
 

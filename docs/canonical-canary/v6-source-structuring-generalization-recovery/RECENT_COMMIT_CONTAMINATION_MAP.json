@@ -1,0 +1,11 @@
+{
+  "canary_literals_found_in_historical_scope": true,
+  "production_core_allowed_scope": [
+    "tests",
+    "scripts/canary",
+    "docs/canonical-canary",
+    "fixtures"
+  ],
+  "status": "PASS",
+  "v2_v5_3_v5_4_immutable": true
+}

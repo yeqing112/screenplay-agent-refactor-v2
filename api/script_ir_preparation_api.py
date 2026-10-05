@@ -44,6 +44,14 @@ def _snapshot_records(requirement_set: dict[str, Any]) -> list[dict[str, Any]]:
         if not requirement.get("blocking"):
             continue
         value = requirement.get("expected_value")
+        # Source-grounded V3 scene identity is a list of exact anchors.  The
+        # semantic display name and unresolved location are never promoted to
+        # source facts in FactSnapshot.
+        if requirement.get("contract_requirement_id") == "SIR_SCENE_IDENTITY_EVIDENCE":
+            value = requirement.get("source_value") or []
+        evidence = list(requirement.get("source_evidence_refs") or ["E0001"])
+        if requirement.get("contract_requirement_id") == "SIR_SCENE_IDENTITY_EVIDENCE":
+            evidence = [str(item.get("text") or "") for item in (requirement.get("source_value") or []) if isinstance(item, dict)] or evidence
         records.append({
             "fact_id": f"SOURCE_PREP_{index:04d}",
             "subject_type": requirement.get("subject_type") or "source",
@@ -54,7 +62,7 @@ def _snapshot_records(requirement_set: dict[str, Any]) -> list[dict[str, Any]]:
             "authority": "source_text",
             "status": "confirmed",
             "confidence": 1.0,
-            "evidence": ["E0001"],
+            "evidence": evidence,
         })
     return records
 
@@ -74,8 +82,11 @@ def _source_anchor_bindings(requirement_set: dict[str, Any], source_index: dict[
             continue
         requirement_id = str(requirement.get("requirement_id") or "")
         expected = str(requirement.get("expected_value") or "").strip()
-        if requirement.get("contract_requirement_id") == "SIR_SCENE_NAME" and expected:
-            matches = [str(anchor.get("anchor_ref")) for anchor in anchors if expected in str(anchor.get("exact_text") or "")]
+        expected_texts = []
+        if requirement.get("contract_requirement_id") == "SIR_SCENE_IDENTITY_EVIDENCE":
+            expected_texts = [str(item.get("text") or "") for item in (requirement.get("source_value") or []) if isinstance(item, dict)]
+        if requirement.get("contract_requirement_id") in {"SIR_SCENE_NAME", "SIR_SCENE_IDENTITY_EVIDENCE"} and (expected or expected_texts):
+            matches = [str(anchor.get("anchor_ref")) for anchor in anchors if (expected and expected in str(anchor.get("exact_text") or "")) or any(text and text in str(anchor.get("exact_text") or "") for text in expected_texts)]
             if matches:
                 result[requirement_id] = [matches[0]]
                 continue

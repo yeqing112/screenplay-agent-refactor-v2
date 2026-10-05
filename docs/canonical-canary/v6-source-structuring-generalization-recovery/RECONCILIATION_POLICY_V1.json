@@ -1,0 +1,16 @@
+{
+  "allowed": [
+    "EVIDENCE_PRESERVING_DIALOGUE_DEMOTION",
+    "SPEAKER_IDENTITY_EVIDENCE_RECOVERY",
+    "SCENE_LABEL_DEAUTHORIZED"
+  ],
+  "forbidden": [
+    "dialogue promotion",
+    "speaker change",
+    "action paraphrase",
+    "location inference",
+    "scene naming"
+  ],
+  "journal_required": true,
+  "status": "PASS"
+}

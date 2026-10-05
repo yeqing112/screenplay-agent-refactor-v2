@@ -1,0 +1,12 @@
+{
+  "excluded": [
+    "display_name",
+    "presentation fallback",
+    "inferred location"
+  ],
+  "source_facts": [
+    "source_identity_evidence",
+    "exact source requirements"
+  ],
+  "status": "PASS"
+}

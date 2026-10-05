@@ -192,8 +192,13 @@ def build_script_ir(payload: Any, *, book_id: int, episode: int, fact_snapshot_i
         scenes.append({
             "scene_id": scene_id,
             "name": name,
+            "display_name": _text(raw_scene.get("display_name")),
+            "display_name_authority": _text(raw_scene.get("display_name_authority")),
+            "source_identity_evidence": raw_scene.get("source_identity_evidence") if isinstance(raw_scene.get("source_identity_evidence"), list) else [],
             "location_id": _text(raw_scene.get("location_id")),
             "location_name": _text(raw_scene.get("location_name")) if strict_source_grounded else _text(raw_scene.get("location_name") or name),
+            "location_authority": _text(raw_scene.get("location_authority")),
+            "location_evidence": raw_scene.get("location_evidence") if isinstance(raw_scene.get("location_evidence"), dict) else None,
             "time_of_day": _text(raw_scene.get("time_of_day")),
             "weather": _text(raw_scene.get("weather")),
             "participants": raw_scene.get("participants") if isinstance(raw_scene.get("participants"), list) else [],
@@ -300,12 +305,17 @@ def validate_script_ir(payload: Any) -> dict[str, Any]:
         if not scene_id or scene_id in seen_ids:
             errors.append({"code": "SCENE_ID_INVALID", "message": "Scene IDs must be present and unique."})
         seen_ids.add(scene_id)
-        if not name:
+        source_grounded_v3 = str(payload.get("source_grounded_schema_version") or "") == "source_grounded_script_payload_v3" or (str(scene.get("timeline_origin") or "").upper() == "SOURCE_GROUNDED" and "source_identity_evidence" in scene and not name)
+        if not name and not source_grounded_v3:
             errors.append({"code": "SCENE_NAME_REQUIRED", "message": f"{scene_id or 'scene'} requires a name."})
-        elif name in seen_names:
+        elif name in seen_names and not source_grounded_v3:
             errors.append({"code": "SCENE_NAME_DUPLICATE", "message": f"Scene names must be unique: {name}."})
-        else:
+        elif name:
             seen_names.add(name)
+        if source_grounded_v3:
+            identity = scene.get("source_identity_evidence")
+            if not isinstance(identity, list) or not identity or not all(isinstance(item, dict) and str(item.get("text") or "") and all(key in item for key in ("char_start", "char_end", "byte_start", "byte_end", "sha256")) for item in identity):
+                errors.append({"code": "SIR_SCENE_IDENTITY_EVIDENCE_REQUIRED", "message": f"{scene_id or 'scene'} requires exact source identity evidence."})
         beats = scene.get("beats")
         if not isinstance(beats, list) or not beats:
             warnings.append({"code": "SCENE_BEATS_EMPTY", "message": f"{scene_id or name} has no beats."})

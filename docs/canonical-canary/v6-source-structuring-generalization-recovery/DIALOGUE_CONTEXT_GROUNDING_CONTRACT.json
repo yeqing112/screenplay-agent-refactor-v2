@@ -1,0 +1,7 @@
+{
+  "child_unique_within_context": true,
+  "context_unique": true,
+  "duplicate_key": "resolved_source_span",
+  "speaker_order": "bidirectional",
+  "status": "PASS"
+}

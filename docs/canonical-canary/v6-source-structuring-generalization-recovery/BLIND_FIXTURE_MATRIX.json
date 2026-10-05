@@ -1,0 +1,29 @@
+{
+  "A_attribution_before_quote": {
+    "errors": [],
+    "status": "PASS"
+  },
+  "B_attribution_after_quote": {
+    "errors": [],
+    "status": "PASS"
+  },
+  "C_repeated_identical_dialogue": {
+    "errors": [],
+    "status": "PASS"
+  },
+  "D_reported_speech_only": {
+    "actions_after": 1,
+    "dialogues_after": 0,
+    "status": "SOURCE_STRUCTURING_RECONCILIATION_PASS"
+  },
+  "E_multi_scene_without_title": {
+    "display_name": "",
+    "location_authority": "UNRESOLVED",
+    "status": "PASS"
+  },
+  "F_english_source": {
+    "errors": [],
+    "status": "PASS"
+  },
+  "status": "PASS"
+}

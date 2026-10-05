@@ -1,0 +1,14 @@
+{
+  "blocking": [
+    "SIR_SCENES_PRESENT",
+    "SIR_SCENE_STRUCTURAL_ID",
+    "SIR_SCENE_IDENTITY_EVIDENCE"
+  ],
+  "optional": [
+    "SIR_SCENE_DISPLAY_NAME",
+    "SIR_LOCATION",
+    "SIR_BEAT_EVENT",
+    "SIR_TRANSITION"
+  ],
+  "status": "PASS"
+}

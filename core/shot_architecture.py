@@ -253,7 +253,7 @@ def validate_topology(ir: dict[str, Any]) -> dict[str, Any]:
 
     Legacy drafts often omit ``stimulus_ref``.  They are not promoted to a
     hard error merely because the previous shot's function is OBSERVE: prose
-    such as “听到顾沉质问后” is deterministic evidence of a stimulus, while
+    stimulus phrases are deterministic evidence of a stimulus, while
     an undecidable legacy reaction is review-required.  Explicit forward
     references are always invalid.
     """

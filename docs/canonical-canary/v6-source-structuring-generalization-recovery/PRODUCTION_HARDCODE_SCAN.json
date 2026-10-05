@@ -1,0 +1,10 @@
+{
+  "hits": [],
+  "literal_count": 0,
+  "scope": [
+    "core/**",
+    "api/**"
+  ],
+  "status": "PRODUCTION_HARDCODE_SCAN_PASS",
+  "target_specific_branch_count": 0
+}

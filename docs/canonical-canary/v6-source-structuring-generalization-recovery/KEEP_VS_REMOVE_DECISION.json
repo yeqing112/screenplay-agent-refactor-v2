@@ -1,0 +1,18 @@
+{
+  "keep": [
+    "exact evidence locators",
+    "authority envelope",
+    "fail-closed ambiguity",
+    "forensic retention",
+    "strict preparation"
+  ],
+  "remove_or_extract": [
+    "participant allowlist",
+    "chapter IDs",
+    "target special cases",
+    "marker-based speech classification",
+    "scene-to-location heuristic",
+    "global dialogue text uniqueness"
+  ],
+  "status": "PASS"
+}

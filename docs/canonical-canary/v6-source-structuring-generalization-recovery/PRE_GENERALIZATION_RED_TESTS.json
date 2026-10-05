@@ -1,0 +1,41 @@
+{
+  "status": "RECORDED",
+  "tests": [
+    {
+      "before": "FAIL",
+      "name": "hardcoded participant allowlist"
+    },
+    {
+      "before": "FAIL",
+      "name": "CH03 structural ID"
+    },
+    {
+      "before": "FAIL",
+      "name": "target dialogue special case"
+    },
+    {
+      "before": "FAIL",
+      "name": "scene sentence projected to location"
+    },
+    {
+      "before": "FAIL",
+      "name": "repeated dialogue"
+    },
+    {
+      "before": "FAIL",
+      "name": "post-dialogue attribution"
+    },
+    {
+      "before": "FAIL",
+      "name": "source-grounded scene without display name"
+    },
+    {
+      "before": "FAIL",
+      "name": "reported speech marker dependency"
+    },
+    {
+      "before": "FAIL",
+      "name": "canary literal scan"
+    }
+  ]
+}

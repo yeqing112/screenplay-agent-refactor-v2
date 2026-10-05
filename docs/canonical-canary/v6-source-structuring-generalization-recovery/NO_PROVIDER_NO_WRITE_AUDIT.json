@@ -1,0 +1,18 @@
+{
+  "75api_calls": 0,
+  "book_writes": 0,
+  "external_llm_calls": 0,
+  "fact_snapshot_writes": 0,
+  "image_calls": 0,
+  "llm_transport": 0,
+  "media_writes": 0,
+  "official_media_writes": 0,
+  "poyo_calls": 0,
+  "production_writes": 0,
+  "prompt_ir_writes": 0,
+  "script_ir_writes": 0,
+  "script_writes": 0,
+  "shapi_calls": 0,
+  "status": "PASS",
+  "video_calls": 0
+}

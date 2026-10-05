@@ -56,6 +56,23 @@ _CONTRACT_REQUIREMENTS: tuple[dict[str, Any], ...] = (
         "expansion": "scene",
     },
     {
+        "requirement_id": "SIR_SCENE_IDENTITY_EVIDENCE",
+        "predicate": "scene_identity_evidence",
+        "semantic_definition": "A source-grounded scene has exact source identity evidence independent of presentation naming.",
+        "consumer_field": "scenes[].source_identity_evidence",
+        "consumer_invariant": "core.script_ir.validate_script_ir:SIR_SCENE_IDENTITY_EVIDENCE_REQUIRED",
+        "authority_class": "SOURCE_FACT",
+        "value_schema": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["text"]}},
+        "scope_policy": "scene",
+        "required": True,
+        "optional": False,
+        "blocking": True,
+        "evidence_requirement": {"direct_evidence_required": True, "source_anchor_required": True},
+        "derivation_policy": {"allowed": False, "reason": "identity evidence must be exact source text"},
+        "provenance_requirement": {"allowed": ["source_text"], "minimum": "source_anchor"},
+        "expansion": "scene",
+    },
+    {
         "requirement_id": "SIR_BEAT_EVENT",
         "predicate": "event_occurrence",
         "semantic_definition": "A declared beat may carry a source event description.",
@@ -145,7 +162,8 @@ def audit_script_ir_consumers() -> dict[str, Any]:
         },
         "source_fields": [
             {"field": "scenes", "reason": "validated non-empty and passed to every downstream stage"},
-            {"field": "scenes[].name", "reason": "validated required and unique; used as scene identity by treatment/blocking"},
+            {"field": "scenes[].name", "reason": "required and unique for legacy/explicit workflows; optional presentation metadata for SOURCE_GROUNDED V3"},
+            {"field": "scenes[].source_identity_evidence", "reason": "blocking exact source identity for SOURCE_GROUNDED V3"},
             {"field": "scenes[].beats[].event", "reason": "preserved as source event; empty beats are warning-only"},
             {"field": "title", "reason": "preserved/rendered but not validation-blocking"},
             {"field": "episode_objective", "reason": "preserved/rendered but not validation-blocking"},
@@ -154,7 +172,7 @@ def audit_script_ir_consumers() -> dict[str, Any]:
         "deterministic_transforms": [
             {"field": "scene_id", "rule": "explicit id or E{episode:02d}_SC{ordinal:03d}"},
             {"field": "beat_id", "rule": "explicit beat_id/id or {scene_id}_B{ordinal:02d}"},
-            {"field": "location_name", "rule": "explicit location_name or scene name"},
+            {"field": "location_name", "rule": "explicit authorized location only; SOURCE_GROUNDED defaults to unresolved"},
             {"field": "legacy_markdown", "rule": "best-effort headings/beats reconstruction; always needs_review"},
             {"field": "payload_hash", "rule": "canonical SHA-256"},
         ],
@@ -163,7 +181,8 @@ def audit_script_ir_consumers() -> dict[str, Any]:
         ],
         "blocking_missing": [
             {"requirement_id": "SIR_SCENES_PRESENT", "failure": "SCENES_REQUIRED"},
-            {"requirement_id": "SIR_SCENE_NAME", "failure": "SCENE_NAME_REQUIRED or duplicate identity"},
+            {"requirement_id": "SIR_SCENE_NAME", "failure": "SCENE_NAME_REQUIRED or duplicate identity for legacy/explicit workflows"},
+            {"requirement_id": "SIR_SCENE_IDENTITY_EVIDENCE", "failure": "exact source identity evidence required for SOURCE_GROUNDED V3"},
         ],
         "optional_or_nonblocking": ["title", "episode_objective", "characters", "participants", "dialogues", "actions", "state_in", "state_out", "required_visual_proofs", "blocking_hints", "character_blocking", "props", "asset_mentions", "beat event text"],
         "provenance_requirements": "blocking source requirements require source anchor or an approved FactSnapshot record; structural metadata uses request_context or deterministic_transform",
@@ -224,6 +243,7 @@ def compile_script_ir_source_requirements(*, source_structure: dict[str, Any] | 
     payload = source_structure if isinstance(source_structure, dict) else (script_ir if isinstance(script_ir, dict) else {})
     scenes = _scene_list(payload)
     templates = {row["requirement_id"]: row for row in contract["requirements"]}
+    source_grounded_v3 = str(payload.get("schema_version") or "") == "source_grounded_script_payload_v3" or str(payload.get("source_grounded_schema_version") or "") == "source_grounded_script_payload_v3"
     requirements: list[dict[str, Any]] = []
     if not scenes:
         requirements.append(_requirement(template=templates["SIR_SCENES_PRESENT"], fact_key="episode|scenes|scene_existence|episode", subject_type="episode", subject_id=_text(payload.get("episode")) or "episode", scope="episode", expected_value={"minimum": 1}, source_path="scenes"))
@@ -232,9 +252,13 @@ def compile_script_ir_source_requirements(*, source_structure: dict[str, Any] | 
         names_seen: set[str] = set()
         for index, scene in enumerate(scenes, 1):
             name = _text(scene.get("name") or scene.get("scene_name"))
-            subject_id = name or f"scene-{index:03d}"
-            requirements.append(_requirement(template=templates["SIR_SCENE_NAME"], fact_key=f"scene|{subject_id}|scene_identity|scene", subject_type="scene", subject_id=subject_id, scope="scene", expected_value=name, source_value=name, source_path=f"scenes[{index - 1}].name"))
-            names_seen.add(name)
+            subject_id = (_text(scene.get("scene_id")) if source_grounded_v3 else (name or f"scene-{index:03d}"))
+            if source_grounded_v3:
+                identity = scene.get("source_identity_evidence") if isinstance(scene.get("source_identity_evidence"), list) else []
+                requirements.append(_requirement(template=templates["SIR_SCENE_IDENTITY_EVIDENCE"], fact_key=f"scene|{subject_id}|scene_identity_evidence|scene", subject_type="scene", subject_id=subject_id, scope="scene", expected_value={"minimum": 1, "actual": len(identity)}, source_value=identity, source_path=f"scenes[{index - 1}].source_identity_evidence"))
+            else:
+                requirements.append(_requirement(template=templates["SIR_SCENE_NAME"], fact_key=f"scene|{subject_id}|scene_identity|scene", subject_type="scene", subject_id=subject_id, scope="scene", expected_value=name, source_value=name, source_path=f"scenes[{index - 1}].name"))
+                names_seen.add(name)
             beats = scene.get("beats") if isinstance(scene.get("beats"), list) else []
             for beat_index, beat in enumerate(beats, 1):
                 if not isinstance(beat, dict):
@@ -248,7 +272,7 @@ def compile_script_ir_source_requirements(*, source_structure: dict[str, Any] | 
     # a formal source blocker even though each individual name is non-empty.
     names = [_text(scene.get("name") or scene.get("scene_name")) for scene in scenes]
     duplicate_names = {name for name in names if name and names.count(name) > 1}
-    if duplicate_names:
+    if duplicate_names and not source_grounded_v3:
         for row in requirements:
             if row.get("contract_requirement_id") == "SIR_SCENE_NAME" and row.get("source_value") in duplicate_names:
                 row["source_conflict"] = "duplicate_scene_name"
@@ -256,7 +280,7 @@ def compile_script_ir_source_requirements(*, source_structure: dict[str, Any] | 
     structural = []
     for index, scene in enumerate(scenes, 1):
         explicit = _text(scene.get("scene_id"))
-        structural.append({"requirement_id": f"SIR_SCENE_ID[{index}]", "template_id": "SIR_SCENE_ID", "field": f"scenes[{index - 1}].scene_id", "expected_value": explicit or f"E{int(payload.get('episode') or 1):02d}_SC{index:03d}", "satisfied_by": "explicit_source" if explicit else "deterministic_transform", "provenance": "source_structure" if explicit else "deterministic_transform"})
+        structural.append({"requirement_id": f"SIR_SCENE_STRUCTURAL_ID[{index}]", "legacy_requirement_id": f"SIR_SCENE_ID[{index}]", "template_id": "SIR_SCENE_STRUCTURAL_ID", "field": f"scenes[{index - 1}].scene_id", "expected_value": explicit or f"E{int(payload.get('episode') or 1):02d}_SC{index:03d}", "satisfied_by": "explicit_source" if explicit else "deterministic_transform", "provenance": "source_structure" if explicit else "deterministic_transform"})
     structural.append({"requirement_id": "SIR_EPISODE_NUMBER", "template_id": "SIR_EPISODE_NUMBER", "field": "episode", "expected_value": payload.get("episode"), "satisfied_by": "request_context", "provenance": "request_context"})
     result = {
         "schema_version": REQUIREMENT_SET_SCHEMA_VERSION,

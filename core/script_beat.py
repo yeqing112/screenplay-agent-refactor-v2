@@ -103,7 +103,7 @@ def _classify_cluster(first_line: str) -> tuple[str, str]:
     if scene:
         return "heading", ""
     raw = first_line.strip()
-    # A `**角色**` heading is a dialogue turn, but `**[开场]**` / `**林晚**`
+    # A `**角色**` heading is a dialogue turn, but bracketed stage labels are not.
     # share the same `**...**` shape.  Classify the captured inner token first.
     m = _DICTATE_RE.match(raw)
     if m:

@@ -13,7 +13,6 @@ from typing import Any, Mapping
 SCHEMA_VERSION = "source_grounded_screenplay_structuring_candidate_v2"
 GROUNDED_VERSION = "grounded_source_screenplay_structuring_candidate_v2"
 FORBIDDEN_LLM_FIELDS = {"start", "end", "byte_offset", "byte_start", "byte_end", "char_start", "char_end", "sha256"}
-ALLOWLIST = ("林晚", "顾沉")
 
 
 class SourceEvidenceError(ValueError):
@@ -92,16 +91,7 @@ def _is_direct_quote(raw: str, text: str) -> bool:
     return any(f"{left}{text}{right}" in raw for left, right in pairs)
 
 
-def _reported_speech_like(text: str) -> bool:
-    markers = ("说", "回答", "问", "告诉", "表示")
-    return any(marker in text for marker in markers)
-
-
-def _reported_speech_in_source(raw: str, text: str) -> bool:
-    return any(f"{marker}{text}" in raw for marker in ("说", "回答", "问", "告诉", "表示"))
-
-
-def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: str | None = None, expected_source_fingerprint: str | None = None, allowlist: tuple[str, ...] = ALLOWLIST) -> dict[str, Any]:
+def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: str | None = None, expected_source_fingerprint: str | None = None, allowlist: tuple[str, ...] | None = None) -> dict[str, Any]:
     """Enrich and validate a semantic V2 candidate with local evidence."""
     raw = str(raw_source or "")
     errors: list[dict[str, Any]] = []
@@ -122,7 +112,6 @@ def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: 
         errors.append({"code": "SCENES_REQUIRED"})
         return {"status": "FAIL", "errors": errors}
     grounded_scenes: list[dict[str, Any]] = []
-    seen_dialogue_text: set[str] = set()
     for scene_index, scene in enumerate(scenes, start=1):
         if not isinstance(scene, dict):
             errors.append({"code": "SCENE_INVALID", "scene_index": scene_index}); continue
@@ -137,7 +126,7 @@ def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: 
             if not isinstance(participant, dict):
                 errors.append({"code": "PARTICIPANT_INVALID", "scene_index": scene_index}); continue
             name = str(participant.get("name") or "").strip()
-            if name not in allowlist:
+            if allowlist is not None and name not in allowlist:
                 errors.append({"code": "PARTICIPANT_NOT_ALLOWLISTED", "name": name})
             evidence, participant_errors = _exact_evidence_list(raw, participant.get("evidence"), field=f"participant:{name}")
             errors.extend(participant_errors)
@@ -159,7 +148,7 @@ def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: 
                 errors.append({"code": "DIALOGUE_INVALID", "scene_index": scene_index}); continue
             speaker = str(dialogue.get("speaker") or "").strip()
             text = str(dialogue.get("text") or "")
-            if speaker not in allowlist:
+            if allowlist is not None and speaker not in allowlist:
                 errors.append({"code": "SPEAKER_NOT_ALLOWLISTED", "speaker": speaker})
             if not text:
                 errors.append({"code": "DIALOGUE_TEXT_REQUIRED"})
@@ -168,13 +157,9 @@ def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: 
             except SourceEvidenceError as exc:
                 errors.append({"code": exc.code, "field": f"dialogue:{dialogue_index}", **exc.details})
                 utterance = None
-            if text in seen_dialogue_text:
-                errors.append({"code": "DIALOGUE_DUPLICATED", "text": text})
-            seen_dialogue_text.add(text)
             if text and not _is_direct_quote(raw, text):
                 errors.append({"code": "DIALOGUE_NOT_DIRECT_QUOTE", "text": text})
-                if _reported_speech_like(text) or _reported_speech_in_source(raw, text):
-                    errors.append({"code": "REPORTED_SPEECH_PROMOTED", "text": text})
+                errors.append({"code": "REPORTED_SPEECH_PROMOTED", "text": text})
             identity, identity_errors = _exact_evidence_list(raw, dialogue.get("speaker_identity_evidence"), field=f"dialogue:{dialogue_index}.speaker_identity_evidence")
             utterance_context, utterance_errors = _exact_evidence_list(raw, dialogue.get("utterance_evidence"), field=f"dialogue:{dialogue_index}.utterance_evidence")
             errors.extend(identity_errors); errors.extend(utterance_errors)
@@ -185,8 +170,6 @@ def ground_candidate_v2(raw_source: str, candidate: Any, *, source_fingerprint: 
             classification = "SOURCE_LITERAL_BINDING" if literal else "AUTHORIZED_SEMANTIC_BINDING"
             if not literal and binding_type != "COREFERENCE_RESOLUTION":
                 errors.append({"code": "SEMANTIC_BINDING_TYPE_REQUIRED", "speaker": speaker})
-            if identity and utterance_context and min(item["char_start"] for item in identity) > min(item["char_start"] for item in utterance_context):
-                errors.append({"code": "SPEAKER_EVIDENCE_ORDER_INVALID", "speaker": speaker})
             if binding_type == "COREFERENCE_RESOLUTION" and identity and not any(speaker in item["text"] for item in identity):
                 errors.append({"code": "SPEAKER_IDENTITY_EVIDENCE_MISSING", "speaker": speaker})
             if utterance_context and text and not any(text in item["text"] for item in utterance_context):
@@ -203,7 +186,7 @@ def canonical_script_payload_v2(grounded: Any) -> dict[str, Any]:
         raise ValueError("GROUNDED_CANDIDATE_REQUIRED")
     scenes = []
     for index, scene in enumerate(grounded.get("scenes") or [], start=1):
-        scene_id = f"CH03_SC{index:02d}"
+        scene_id = f"E01_SC{index:03d}"
         participants = [{"id": p["name"], "character_id": p["name"], "name": p["name"]} for p in scene.get("participants") or []]
         actions = [{"action_id": f"{scene_id}_A{n:03d}", "text": item["source_evidence"]["text"], "source_evidence": item["source_evidence"]} for n, item in enumerate(scene.get("actions") or [], start=1)]
         dialogues = [{"dialogue_id": f"{scene_id}_D{n:03d}", "speaker": item["speaker"], "text": item["text"], "assertion_mode": "", "source_evidence": item["utterance"], "speaker_binding": {"classification": item["binding_classification"], "binding_type": item["binding_type"], "identity_evidence": item["speaker_identity_evidence"], "utterance_evidence": item["utterance_evidence"]}} for n, item in enumerate(scene.get("dialogues") or [], start=1)]
@@ -217,9 +200,7 @@ def canonical_script_payload_v2(grounded: Any) -> dict[str, Any]:
         timeline_items.sort(key=lambda item: item[0])
         script_blocks = [{"order": (index + 1) * 10, "type": block_type, "ref": ref} for index, (_, block_type, ref) in enumerate(timeline_items)]
         scene_evidence = scene.get("scene_evidence") or []
-        location_name = scene["scene_label"] if any(scene["scene_label"] in item.get("text", "") for item in scene_evidence) else ""
-        location_evidence = next((item for item in scene_evidence if location_name and location_name in item.get("text", "")), None)
-        scenes.append({"scene_id": scene_id, "name": scene["scene_label"], "location_name": location_name, "location_evidence": location_evidence, "participants": participants, "actions": actions, "dialogues": dialogues, "scene_evidence": scene_evidence, "script_blocks": script_blocks, "timeline_origin": "SOURCE_GROUNDED", "timeline_authority": "SOURCE_EVIDENCE_ORDER", "production_eligible": True})
+        scenes.append({"scene_id": scene_id, "name": scene["scene_label"], "location_name": "", "location_authority": "UNRESOLVED", "location_evidence": None, "participants": participants, "actions": actions, "dialogues": dialogues, "scene_evidence": scene_evidence, "script_blocks": script_blocks, "timeline_origin": "SOURCE_GROUNDED", "timeline_authority": "SOURCE_EVIDENCE_ORDER", "production_eligible": True})
     return {"schema_version": "source_grounded_script_payload_v2", "source_fingerprint": grounded["source_fingerprint"], "scenes": scenes, "scene_transitions": []}
 
 
@@ -288,4 +269,4 @@ def semantic_diff_source_to_script_ir(source_payload: dict[str, Any], script_ir:
     return counts
 
 
-__all__ = ["SCHEMA_VERSION", "GROUNDED_VERSION", "ALLOWLIST", "SourceEvidenceError", "resolve_exact_source_evidence", "ground_candidate_v2", "canonical_script_payload_v2", "semantic_diff_source_to_script_ir", "retain_forensic_response", "transport_attempt_budget", "json_parse_attempt_budget"]
+__all__ = ["SCHEMA_VERSION", "GROUNDED_VERSION", "SourceEvidenceError", "resolve_exact_source_evidence", "ground_candidate_v2", "canonical_script_payload_v2", "semantic_diff_source_to_script_ir", "retain_forensic_response", "transport_attempt_budget", "json_parse_attempt_budget"]

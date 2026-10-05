@@ -1,0 +1,15 @@
+{
+  "chapter_number_invariance": [
+    "E01_SC001",
+    "E03_SC001",
+    "E27_SC001"
+  ],
+  "character_rename_invariance": true,
+  "dialogue_substitution_invariance": true,
+  "scene_ordinal_invariance": [
+    "E01_SC001",
+    "E01_SC002",
+    "E01_SC010"
+  ],
+  "status": "PASS"
+}

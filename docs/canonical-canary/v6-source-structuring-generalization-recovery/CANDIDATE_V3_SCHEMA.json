@@ -1,0 +1,13 @@
+{
+  "display_label_authority": "AUTHORIZED_SEMANTIC_LABEL",
+  "required": [
+    "scenes[].scene_evidence",
+    "scenes[].participants[].name",
+    "scenes[].participants[].evidence",
+    "scenes[].actions[].source_text",
+    "scenes[].dialogues[].utterance_evidence",
+    "scenes[].dialogues[].speaker_identity_evidence",
+    "scenes[].dialogues[].binding_type"
+  ],
+  "schema_version": "source_grounded_screenplay_structuring_candidate_v3"
+}

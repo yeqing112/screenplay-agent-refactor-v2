@@ -1,0 +1,66 @@
+{
+  "commit_range": {
+    "from": "2838c5edffbbcb8a729482d4c122aeac88d38fab",
+    "to": "707992e3da969de713f5843582f0d27106f3146c"
+  },
+  "counts": {
+    "AUTHORITY_MODEL_BUG_FIX": 4,
+    "CANARY_CONFIGURATION_MOVE_OUT_OF_CORE": 1,
+    "GENERIC_ARCHITECTURE_KEEP": 3,
+    "GENERIC_POLICY_EXTRACT": 0,
+    "HEURISTIC_OVERFIT_REMOVE": 3,
+    "TEST_FIXTURE_ONLY": 1,
+    "total_items": 12
+  },
+  "items": [
+    {
+      "classification": "GENERIC_ARCHITECTURE_KEEP",
+      "item": "exact locators, offsets, hashes, forensic retention"
+    },
+    {
+      "classification": "GENERIC_ARCHITECTURE_KEEP",
+      "item": "Candidate/Grounded Candidate separation"
+    },
+    {
+      "classification": "GENERIC_ARCHITECTURE_KEEP",
+      "item": "SOURCE_GROUNDED timeline and strict preparation"
+    },
+    {
+      "classification": "HEURISTIC_OVERFIT_REMOVE",
+      "item": "fixed participant allowlist"
+    },
+    {
+      "classification": "CANARY_CONFIGURATION_MOVE_OUT_OF_CORE",
+      "item": "CH03 scene IDs"
+    },
+    {
+      "classification": "HEURISTIC_OVERFIT_REMOVE",
+      "item": "target dialogue special case"
+    },
+    {
+      "classification": "HEURISTIC_OVERFIT_REMOVE",
+      "item": "Chinese reported-speech marker list"
+    },
+    {
+      "classification": "AUTHORITY_MODEL_BUG_FIX",
+      "item": "global duplicate dialogue text"
+    },
+    {
+      "classification": "AUTHORITY_MODEL_BUG_FIX",
+      "item": "speaker evidence preceding-only rule"
+    },
+    {
+      "classification": "AUTHORITY_MODEL_BUG_FIX",
+      "item": "scene label projected to location"
+    },
+    {
+      "classification": "AUTHORITY_MODEL_BUG_FIX",
+      "item": "scene display name as source blocker"
+    },
+    {
+      "classification": "TEST_FIXTURE_ONLY",
+      "item": "V2 forensic artifacts and authorization ledger"
+    }
+  ],
+  "status": "PASS"
+}

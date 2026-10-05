@@ -1,0 +1,11 @@
+{
+  "hash": "sha256",
+  "local_offsets": [
+    "char_start",
+    "char_end",
+    "byte_start",
+    "byte_end"
+  ],
+  "schema_version": "grounded_source_screenplay_structuring_candidate_v3",
+  "status": "PASS"
+}

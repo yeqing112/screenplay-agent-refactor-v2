@@ -1,0 +1,12 @@
+{
+  "blind_fixtures_passed": 6,
+  "current_canary_v2_to_v3": "PASS",
+  "external_llm_calls": 0,
+  "metamorphic_status": "PASS",
+  "next_state": "GENERALIZED_CANARY_PRODUCTION_PERSISTENCE_AUTHORIZATION_REQUIRED",
+  "overfit_items": 12,
+  "production_writes": 0,
+  "script_ir_v3_preflight": "qualified",
+  "source_requirement_v3": "PASS",
+  "status": "SOURCE_STRUCTURING_GENERALIZATION_RECOVERED"
+}
