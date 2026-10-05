@@ -66,5 +66,5 @@
 ## Git
 
 - Branch: `codex/visual-authoring-provider-canary-reconcile`
-- Remote HEAD: `fd075690de36d1efb49fd4a038e92556e9bd0ab4`
+- Remote HEAD: recorded by the final Git command in the delivery summary.
 - Working tree: clean
