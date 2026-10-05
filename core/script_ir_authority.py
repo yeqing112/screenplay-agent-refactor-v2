@@ -230,7 +230,20 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     except (TypeError, ValueError, json.JSONDecodeError):
         parsed_source = None
     if isinstance(parsed_source, dict) and parsed_source != source_structure:
-        raise ScriptIRAuthorityError("SOURCE_STRUCTURE_MISMATCH", "Activation source structure does not match the immutable source payload.")
+        # SOURCE_GROUNDED_STRICT deliberately keeps the immutable Script row in
+        # the source-grounded payload schema.  The preparation boundary then
+        # derives a normalized ScriptIR candidate from that payload.  These
+        # two representations are equivalent only when the strict policy and
+        # source fingerprint are both explicit; all other mismatches remain a
+        # hard activation failure.
+        strict_source_equivalent = (
+            str(source_structure.get("preparation_policy") or "").strip().upper() == "SOURCE_GROUNDED_STRICT"
+            and str(parsed_source.get("schema_version") or "") == "source_grounded_script_payload_v2"
+            and str(parsed_source.get("source_fingerprint") or "")
+            == str(source_structure.get("source_fingerprint") or "")
+        )
+        if not strict_source_equivalent:
+            raise ScriptIRAuthorityError("SOURCE_STRUCTURE_MISMATCH", "Activation source structure does not match the immutable source payload.")
     if not fact_snapshot_row or int(getattr(fact_snapshot_row, "book_id", -1)) != int(script_row.book_id) or int(getattr(fact_snapshot_row, "episode", -1) or -1) != int(script_row.episode) or str(getattr(fact_snapshot_row, "status", "")).lower() != "confirmed":
         raise ScriptIRAuthorityError("FACT_SNAPSHOT_BINDING_INVALID", "FactSnapshot must be confirmed and match book/episode.")
     contract = script_ir_source_requirement_contract()

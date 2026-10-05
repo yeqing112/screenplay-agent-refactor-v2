@@ -1,0 +1,394 @@
+{
+  "checks": {
+    "assertion_mode_empty": true,
+    "contract_v2_ready": true,
+    "grounding_pass": true,
+    "script_ir_qualified": true,
+    "semantic_diff_empty": true,
+    "source_requirement_pass": true,
+    "timeline_authority": true,
+    "timeline_origin": true
+  },
+  "requirements": {
+    "blocking_requirement_count": 2,
+    "consumer_audit": {
+      "blocking_missing": [
+        {
+          "failure": "SCENES_REQUIRED",
+          "requirement_id": "SIR_SCENES_PRESENT"
+        },
+        {
+          "failure": "SCENE_NAME_REQUIRED or duplicate identity",
+          "requirement_id": "SIR_SCENE_NAME"
+        }
+      ],
+      "consumer_traceability": [
+        {
+          "authority_class": "SOURCE_FACT",
+          "blocking": true,
+          "consumer_field": "scenes",
+          "consumer_invariant": "core.script_ir.validate_script_ir:SCENES_REQUIRED",
+          "derivation_policy": {
+            "allowed": false,
+            "reason": "scene existence cannot be inferred"
+          },
+          "evidence_requirement": {
+            "direct_evidence_required": true,
+            "source_anchor_required": true
+          },
+          "expansion": "episode",
+          "optional": false,
+          "predicate": "scene_existence",
+          "provenance_requirement": {
+            "allowed": [
+              "source_text",
+              "locked_fact",
+              "approved_fact"
+            ],
+            "minimum": "source_anchor"
+          },
+          "required": true,
+          "requirement_id": "SIR_SCENES_PRESENT",
+          "scope_policy": "episode",
+          "semantic_definition": "The episode contains at least one source scene.",
+          "value_schema": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        {
+          "authority_class": "SOURCE_FACT",
+          "blocking": true,
+          "consumer_field": "scenes[].name",
+          "consumer_invariant": "core.script_ir.validate_script_ir:SCENE_NAME_REQUIRED/SCENE_NAME_DUPLICATE",
+          "derivation_policy": {
+            "allowed": false,
+            "reason": "placeholder names would lose source identity"
+          },
+          "evidence_requirement": {
+            "direct_evidence_required": true,
+            "source_anchor_required": true
+          },
+          "expansion": "scene",
+          "optional": false,
+          "predicate": "scene_identity",
+          "provenance_requirement": {
+            "allowed": [
+              "source_text",
+              "locked_fact",
+              "approved_fact"
+            ],
+            "minimum": "source_anchor"
+          },
+          "required": true,
+          "requirement_id": "SIR_SCENE_NAME",
+          "scope_policy": "scene",
+          "semantic_definition": "Every normalized scene has a source-supported non-empty name.",
+          "value_schema": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        {
+          "authority_class": "SOURCE_FACT",
+          "blocking": false,
+          "consumer_field": "scenes[].beats[].event",
+          "consumer_invariant": "core.script_ir.validate_script_ir:SCENE_BEATS_EMPTY (warning only)",
+          "derivation_policy": {
+            "allowed": false,
+            "reason": "event text is source content, not a model inference"
+          },
+          "evidence_requirement": {
+            "direct_evidence_required": true,
+            "source_anchor_required": false
+          },
+          "expansion": "beat_when_declared",
+          "optional": true,
+          "predicate": "event_occurrence",
+          "provenance_requirement": {
+            "allowed": [
+              "source_text",
+              "locked_fact",
+              "approved_fact"
+            ],
+            "minimum": "source_anchor_if_present"
+          },
+          "required": false,
+          "requirement_id": "SIR_BEAT_EVENT",
+          "scope_policy": "scene_beat",
+          "semantic_definition": "A declared beat may carry a source event description.",
+          "value_schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "deterministic_transforms": [
+        {
+          "field": "scene_id",
+          "rule": "explicit id or E{episode:02d}_SC{ordinal:03d}"
+        },
+        {
+          "field": "beat_id",
+          "rule": "explicit beat_id/id or {scene_id}_B{ordinal:02d}"
+        },
+        {
+          "field": "location_name",
+          "rule": "explicit location_name or scene name"
+        },
+        {
+          "field": "legacy_markdown",
+          "rule": "best-effort headings/beats reconstruction; always needs_review"
+        },
+        {
+          "field": "payload_hash",
+          "rule": "canonical SHA-256"
+        }
+      ],
+      "fingerprint": "d4e0165811f99e8204193d7bd56d12b40f62f28d2b7758b12fccd89811bd8266",
+      "later_authoring": [
+        "visual identity",
+        "wardrobe",
+        "production geometry",
+        "camera",
+        "lighting",
+        "scene blocking",
+        "production prop continuity",
+        "shot design"
+      ],
+      "optional_or_nonblocking": [
+        "title",
+        "episode_objective",
+        "characters",
+        "participants",
+        "dialogues",
+        "actions",
+        "state_in",
+        "state_out",
+        "required_visual_proofs",
+        "blocking_hints",
+        "character_blocking",
+        "props",
+        "asset_mentions",
+        "beat event text"
+      ],
+      "provenance_requirements": "blocking source requirements require source anchor or an approved FactSnapshot record; structural metadata uses request_context or deterministic_transform",
+      "provider_calls": 0,
+      "schema": {
+        "beat_fields": [
+          "beat_id",
+          "type",
+          "event",
+          "dramatic_function",
+          "information_change",
+          "emotion_change"
+        ],
+        "scene_fields": [
+          "scene_id",
+          "name",
+          "location_id",
+          "location_name",
+          "time_of_day",
+          "weather",
+          "participants",
+          "beats",
+          "actions",
+          "dialogues",
+          "state_in",
+          "state_out",
+          "required_visual_proofs",
+          "blocking_hints",
+          "character_blocking",
+          "props",
+          "asset_mentions"
+        ],
+        "top_level_fields": [
+          "schema_version",
+          "book_id",
+          "episode",
+          "fact_snapshot_id",
+          "title",
+          "episode_objective",
+          "characters",
+          "scenes",
+          "payload_hash"
+        ]
+      },
+      "schema_version": "script_ir_consumer_audit_v1",
+      "source_fields": [
+        {
+          "field": "scenes",
+          "reason": "validated non-empty and passed to every downstream stage"
+        },
+        {
+          "field": "scenes[].name",
+          "reason": "validated required and unique; used as scene identity by treatment/blocking"
+        },
+        {
+          "field": "scenes[].beats[].event",
+          "reason": "preserved as source event; empty beats are warning-only"
+        },
+        {
+          "field": "title",
+          "reason": "preserved/rendered but not validation-blocking"
+        },
+        {
+          "field": "episode_objective",
+          "reason": "preserved/rendered but not validation-blocking"
+        },
+        {
+          "field": "characters",
+          "reason": "preserved and projected to asset registry/treatment; not ScriptIR validation-blocking"
+        }
+      ],
+      "status": "SCRIPT_IR_CONSUMER_AUDIT"
+    },
+    "contract_schema_version": "script_ir_source_requirement_contract_v1",
+    "derived_requirement_count": 0,
+    "fact_snapshot_fingerprint": "",
+    "fingerprint": "e7a59c4e9626bdc896291d6dca54ff78bb13cac365880c5ef610ff8fb1e1d6fe",
+    "optional_requirement_count": 0,
+    "provider_calls": 0,
+    "requirement_count": 2,
+    "requirements": [
+      {
+        "authority_class": "SOURCE_FACT",
+        "blocking": true,
+        "consumer": "core.script_ir.validate_script_ir:SCENES_REQUIRED",
+        "consumer_field": "scenes",
+        "contract_requirement_id": "SIR_SCENES_PRESENT",
+        "derivation_policy": {
+          "allowed": false,
+          "reason": "scene existence cannot be inferred"
+        },
+        "evidence_requirement": {
+          "direct_evidence_required": true,
+          "source_anchor_required": true
+        },
+        "expected_value": {
+          "actual": 1,
+          "minimum": 1
+        },
+        "fact_key": "episode|scenes|scene_existence|episode",
+        "optional": false,
+        "predicate": "scene_existence",
+        "provenance_requirement": {
+          "allowed": [
+            "source_text",
+            "locked_fact",
+            "approved_fact"
+          ],
+          "minimum": "source_anchor"
+        },
+        "required": true,
+        "requirement_id": "episode|scenes|scene_existence|episode",
+        "scope": "episode",
+        "scope_policy": "episode",
+        "semantic_definition": "The episode contains at least one source scene.",
+        "severity": "blocking",
+        "source_evidence_refs": [
+          "scenes"
+        ],
+        "source_path": "scenes",
+        "source_value": 1,
+        "subject_id": "1",
+        "subject_type": "episode",
+        "value_schema": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      {
+        "authority_class": "SOURCE_FACT",
+        "blocking": true,
+        "consumer": "core.script_ir.validate_script_ir:SCENE_NAME_REQUIRED/SCENE_NAME_DUPLICATE",
+        "consumer_field": "scenes[].name",
+        "contract_requirement_id": "SIR_SCENE_NAME",
+        "derivation_policy": {
+          "allowed": false,
+          "reason": "placeholder names would lose source identity"
+        },
+        "evidence_requirement": {
+          "direct_evidence_required": true,
+          "source_anchor_required": true
+        },
+        "expected_value": "暗房",
+        "fact_key": "scene|暗房|scene_identity|scene",
+        "optional": false,
+        "predicate": "scene_identity",
+        "provenance_requirement": {
+          "allowed": [
+            "source_text",
+            "locked_fact",
+            "approved_fact"
+          ],
+          "minimum": "source_anchor"
+        },
+        "required": true,
+        "requirement_id": "scene|暗房|scene_identity|scene",
+        "scope": "scene",
+        "scope_policy": "scene",
+        "semantic_definition": "Every normalized scene has a source-supported non-empty name.",
+        "severity": "blocking",
+        "source_evidence_refs": [
+          "scenes[0].name"
+        ],
+        "source_path": "scenes[0].name",
+        "source_value": "暗房",
+        "subject_id": "暗房",
+        "subject_type": "scene",
+        "value_schema": {
+          "minLength": 1,
+          "type": "string"
+        }
+      }
+    ],
+    "schema_version": "script_ir_source_requirement_set_v1",
+    "source_metadata": {},
+    "structural_metadata_requirements": [
+      {
+        "expected_value": "CH03_SC01",
+        "field": "scenes[0].scene_id",
+        "provenance": "source_structure",
+        "requirement_id": "SIR_SCENE_ID[1]",
+        "satisfied_by": "explicit_source",
+        "template_id": "SIR_SCENE_ID"
+      },
+      {
+        "expected_value": 1,
+        "field": "episode",
+        "provenance": "request_context",
+        "requirement_id": "SIR_EPISODE_NUMBER",
+        "satisfied_by": "request_context",
+        "template_id": "SIR_EPISODE_NUMBER"
+      }
+    ]
+  },
+  "run_id": "20261005T154004Z",
+  "semantic_diff": {
+    "assertion_mode_preserved_empty": true,
+    "invented_action_count": 0,
+    "invented_beat_count": 0,
+    "invented_character_count": 0,
+    "invented_dialogue_count": 0,
+    "invented_dramatic_classification_count": 0,
+    "invented_scene_count": 0,
+    "invented_transition_count": 0,
+    "status": "SOURCE_TO_SCRIPT_IR_SEMANTIC_DIFF_EMPTY",
+    "timeline_order_preserved": true
+  },
+  "status": "PASS",
+  "validation": {
+    "errors": [],
+    "status": "qualified",
+    "warnings": [
+      {
+        "code": "SCENE_BEATS_EMPTY",
+        "message": "CH03_SC01 has no beats."
+      },
+      {
+        "code": "SCENE_TRANSITIONS_EMPTY",
+        "message": "ScriptIR has no SceneTransitionContract records."
+      }
+    ]
+  }
+}

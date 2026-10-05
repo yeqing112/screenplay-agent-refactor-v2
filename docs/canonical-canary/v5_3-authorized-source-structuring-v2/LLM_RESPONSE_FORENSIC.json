@@ -1,0 +1,58 @@
+{
+  "actual_request_fingerprint": "3dcb8e154f0572720b2bf327cb77b770fe71ca51390f558bffed6a5cc3ba8950",
+  "artifact_path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\canonical-canary\\v5_3-authorized-source-structuring-v2\\LLM_RAW_RESPONSE_FORENSIC.txt",
+  "model": "mimo-v2.5",
+  "parse_started": true,
+  "persisted_before_parse": true,
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "provider_request_id": "",
+  "received": true,
+  "response_length": 1418,
+  "response_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+  "run_id": "20261005T154004Z",
+  "secret_fields_persisted": false,
+  "transport_audit_records": [
+    {
+      "extra": {
+        "phase": "production_canary_authorized_source_structuring_v2",
+        "request_fingerprint": "3dcb8e154f0572720b2bf327cb77b770fe71ca51390f558bffed6a5cc3ba8950",
+        "run_id": "20261005T154004Z",
+        "source_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+        "transport_attempt_number": 1,
+        "transport_retry": false
+      },
+      "has_repair_request": false,
+      "http_status": 200,
+      "latency_ms": 11701.26,
+      "parse_ok": true,
+      "profile_id": "local-llm-2vydoz",
+      "repair_request_length": 0,
+      "repair_request_sha256": "",
+      "request_fingerprint": "8617620811a73660662d20f55c499ef48a98749243c4e32a82851926ebec1a53",
+      "request_messages_sha256": "4c7e16b72cfe3d51407a77566957a618",
+      "response_debug_excerpt": "{\"scenes\": [{\"actions\": [{\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}, {\"source_text\": \"<depth-limit>\"}], \"dialogues\": [{\"binding_type\": \"<depth-limit>\", \"speaker\": \"<depth-limit>\", \"speaker_identity_evidence\": \"<depth-limit>\", \"text\": \"<depth-limit>\", \"utterance_evidence\": \"<depth-limit>\"}, {\"binding_type\": \"<depth-limit>\", \"speaker\": \"<depth-limit>\", \"speaker_identity_evidence\": \"<depth-limit>\", \"text\": \"<depth-limit>\", \"utterance_evidence\": \"<depth-limit>\"}, {\"binding_type\": \"<depth-limit>\", \"speaker\": \"<depth-limit>\", \"speaker_identity_evidence\": \"<depth-limit>\", \"text\": \"<depth-limit>\", \"utterance_evidence\": \"<depth-limit>\"}], \"participants\": [{\"evidence\": \"<depth-limit>\", \"name\": \"<depth-limit>\"}, {\"evidence\": \"<depth-limit>\", \"name\": \"<depth-limit>\"}], \"scene_evidence\": [\"顾沉带林晚进入暗房。\", \"暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。\", \"门缝下出现一双湿透的皮鞋。\"], \"scene_label\": \"暗房中的铁盒与车票\"}], \"schema_version\": \"source_grounded_screenplay_structuring_candidate_v2\", \"unknowns\": [\"车票是谁塞进来的？原文只写“那人没有进门”，未指明身份。\", \"车票背面文字“今晚十点，北堤仓库，带钥匙，不要带顾沉”是书写内容还是转述，原文未明确其载体形式。\"]}",
+      "response_length": 1418,
+      "response_sha256": "f4204059934cf19eebf4fcb94278756c",
+      "returned_schema_version": "source_grounded_screenplay_structuring_candidate_v2",
+      "system_prompt_length": 223,
+      "system_prompt_sha256": "0b09979cc7cb34c449ca77a7336e6e8a",
+      "top_level_keys": [
+        "scenes",
+        "schema_version",
+        "unknowns"
+      ],
+      "usage": {
+        "cache_hit_rate": null,
+        "cached_tokens": null,
+        "completion_tokens": 672,
+        "prompt_tokens": 654,
+        "total_tokens": 1326
+      },
+      "user_prompt_length": 1241,
+      "user_prompt_sha256": "f604666d0462e9118950c9008815d476",
+      "vendor_host": "api.xiaomimimo.com",
+      "vendor_model": "mimo-v2.5"
+    }
+  ]
+}

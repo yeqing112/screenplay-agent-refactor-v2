@@ -1,0 +1,101 @@
+# Production Canary Authorized Source Structuring V2 Report
+
+- Run ID: `20261005T154004Z`
+- Status: `LLM_STRUCTURING_SOURCE_GROUNDING_FAILED`
+- External LLM transport attempts: `1 / 1`
+- Retry: `0`
+- Raw response persisted before parse: `true`
+- JSON parse: `PASS`
+- Candidate V2 schema: `PASS`
+- Grounding: `FAIL`
+- Production writes: `0`
+- IMAGE / VIDEO: `0 / 0`
+
+## Failure evidence
+
+The provider returned additional reported speech as dialogue and omitted the literal `顾沉` from the target dialogue speaker identity evidence. Deterministic grounding rejected the candidate. The authorization was consumed and no retry, repair call, fallback, or production persistence was performed.
+
+```json
+{
+  "actual_request_fingerprint": "3dcb8e154f0572720b2bf327cb77b770fe71ca51390f558bffed6a5cc3ba8950",
+  "candidate_schema": "PASS",
+  "db_writes": 0,
+  "director_executed": false,
+  "expected_status": "PRODUCTION_CANARY_SOURCE_STRUCTURED_V2",
+  "external_llm_calls": 1,
+  "failure_rule": "No retry, no fallback, no production persistence after grounding failure.",
+  "grounding": "FAIL",
+  "grounding_errors": [
+    {
+      "code": "DIALOGUE_NOT_DIRECT_QUOTE",
+      "text": "胶片被人拿走了。"
+    },
+    {
+      "code": "REPORTED_SPEECH_PROMOTED",
+      "text": "胶片被人拿走了。"
+    },
+    {
+      "code": "DIALOGUE_NOT_DIRECT_QUOTE",
+      "text": "是谁"
+    },
+    {
+      "code": "REPORTED_SPEECH_PROMOTED",
+      "text": "是谁"
+    },
+    {
+      "code": "SPEAKER_IDENTITY_EVIDENCE_MISSING",
+      "speaker": "顾沉"
+    }
+  ],
+  "json_parse": "PASS",
+  "participants": [
+    "林晚",
+    "顾沉"
+  ],
+  "production_writes": {
+    "book": 0,
+    "fact_records": 0,
+    "fact_snapshot": 0,
+    "script": 0,
+    "script_ir_version": 0
+  },
+  "raw_response_length": 1418,
+  "raw_response_persisted_before_parse": true,
+  "raw_response_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "reported_speech_promotion_count": 2,
+  "retry": false,
+  "run_id": "20261005T154004Z",
+  "speaker_binding": {
+    "participants": [
+      "林晚",
+      "顾沉"
+    ],
+    "run_id": "20261005T154004Z",
+    "status": "PASS",
+    "target": {
+      "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+      "binding_type": "COREFERENCE_RESOLUTION",
+      "match_count": 1,
+      "run_id": "20261005T154004Z",
+      "speaker": "顾沉",
+      "status": "PASS",
+      "target_quote": "也许是你自己",
+      "target_quote_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+    }
+  },
+  "status": "LLM_STRUCTURING_SOURCE_GROUNDING_FAILED",
+  "target_dialogue": {
+    "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+    "binding_type": "COREFERENCE_RESOLUTION",
+    "match_count": 1,
+    "run_id": "20261005T154004Z",
+    "speaker": "顾沉",
+    "status": "PASS",
+    "target_quote": "也许是你自己",
+    "target_quote_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+  },
+  "transport_attempts": 1
+}
+```

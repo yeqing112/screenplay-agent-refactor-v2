@@ -1,0 +1,10 @@
+{
+  "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+  "binding_type": "COREFERENCE_RESOLUTION",
+  "match_count": 1,
+  "run_id": "20261005T154004Z",
+  "speaker": "顾沉",
+  "status": "PASS",
+  "target_quote": "也许是你自己",
+  "target_quote_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+}
