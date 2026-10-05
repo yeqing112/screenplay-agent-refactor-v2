@@ -23,3 +23,11 @@
 - Production DB / PromptIR / Media / OfficialMedia writes: `0`
 
 The dry run was not sent. No production source, Script, ScriptIR or media authority was created.
+## Purity audit
+
+- Creative default audit: 9 classes were identified and removed from the strict source-grounded path: synthetic beats, synthetic event text, ACTION/beat type fallback, importance fallback, requires-reaction fallback, forced HOOK/critical/reaction, synthetic actions, generated scene transitions, and semantic defaults for dialogue assertion/location/transition fields.
+- Strict path result: no invented dialogue, action, character, scene, beat, transition, or dramatic classification; source evidence order is preserved.
+- Targeted verification: `94 passed, 44 warnings`.
+- Full regression: `2223 passed, 24 failed, 8264 warnings`; the 24 failures are the same pre-existing baseline failures in legacy migration assertions, keyframe/scene readiness fixtures, episode production fixture, video fixture, and mock preview title.
+- Provider and write budget: external LLM/IMAGE/VIDEO/SHAPI/Poyo/75API calls `0`; production DB, FactSnapshot, ScriptIR, PromptIR, Media, OfficialMedia writes `0`.
+
