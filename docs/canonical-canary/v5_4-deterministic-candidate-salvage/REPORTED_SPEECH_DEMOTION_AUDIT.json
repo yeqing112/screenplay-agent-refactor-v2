@@ -1,0 +1,70 @@
+{
+  "classification": "DETERMINISTIC_REPORTED_SPEECH_DEMOTION",
+  "demoted_count": 2,
+  "demotions": [
+    {
+      "classification": "DETERMINISTIC_REPORTED_SPEECH_DEMOTION",
+      "demoted_action": {
+        "source_text": "顾沉说胶片被人拿走了。"
+      },
+      "dialogue_index": 1,
+      "duplicate_action_prevented": false,
+      "no_semantic_rewrite": true,
+      "original_dialogue": {
+        "binding_type": "COREFERENCE_RESOLUTION",
+        "speaker": "顾沉",
+        "speaker_identity_evidence": [
+          "顾沉说胶片被人拿走了。"
+        ],
+        "text": "胶片被人拿走了。",
+        "utterance_evidence": [
+          "顾沉说胶片被人拿走了。"
+        ]
+      },
+      "reason": "non_direct_quote_with_reported_speech_marker",
+      "scene_index": 1,
+      "source_evidence": {
+        "byte_end": 412,
+        "byte_start": 379,
+        "char_end": 140,
+        "char_start": 129,
+        "occurrence_count": 1,
+        "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+        "text": "顾沉说胶片被人拿走了。"
+      }
+    },
+    {
+      "classification": "DETERMINISTIC_REPORTED_SPEECH_DEMOTION",
+      "demoted_action": {
+        "source_text": "林晚问是谁"
+      },
+      "dialogue_index": 2,
+      "duplicate_action_prevented": false,
+      "no_semantic_rewrite": true,
+      "original_dialogue": {
+        "binding_type": "COREFERENCE_RESOLUTION",
+        "speaker": "林晚",
+        "speaker_identity_evidence": [
+          "林晚问是谁"
+        ],
+        "text": "是谁",
+        "utterance_evidence": [
+          "林晚问是谁"
+        ]
+      },
+      "reason": "non_direct_quote_with_reported_speech_marker",
+      "scene_index": 1,
+      "source_evidence": {
+        "byte_end": 427,
+        "byte_start": 412,
+        "char_end": 145,
+        "char_start": 140,
+        "occurrence_count": 1,
+        "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+        "text": "林晚问是谁"
+      }
+    }
+  ],
+  "no_semantic_rewrite": true,
+  "status": "PASS"
+}

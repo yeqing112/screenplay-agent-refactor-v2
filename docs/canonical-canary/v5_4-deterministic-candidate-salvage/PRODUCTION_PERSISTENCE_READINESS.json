@@ -1,0 +1,12 @@
+{
+  "external_llm_calls": 0,
+  "next_state": "PRODUCTION_PERSISTENCE_AUTHORIZATION_REQUIRED",
+  "production_writes": 0,
+  "salvage_status": "DETERMINISTIC_CANDIDATE_SALVAGE_READY",
+  "salvaged_grounding": "PASS",
+  "script_ir_validation": "qualified",
+  "semantic_core": "SALVAGE_SEMANTIC_CORE_PRESERVED",
+  "semantic_diff": "SOURCE_TO_SCRIPT_IR_SEMANTIC_DIFF_EMPTY",
+  "source_requirement": "PASS",
+  "status": "PRODUCTION_PERSISTENCE_AUTHORIZATION_REQUIRED"
+}

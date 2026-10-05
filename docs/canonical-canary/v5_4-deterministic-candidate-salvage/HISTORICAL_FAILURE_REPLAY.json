@@ -1,0 +1,21 @@
+{
+  "actual_error_codes": [
+    "DIALOGUE_NOT_DIRECT_QUOTE",
+    "REPORTED_SPEECH_PROMOTED",
+    "DIALOGUE_NOT_DIRECT_QUOTE",
+    "REPORTED_SPEECH_PROMOTED",
+    "SPEAKER_IDENTITY_EVIDENCE_MISSING"
+  ],
+  "expected_error_codes": [
+    "DIALOGUE_NOT_DIRECT_QUOTE",
+    "REPORTED_SPEECH_PROMOTED",
+    "DIALOGUE_NOT_DIRECT_QUOTE",
+    "REPORTED_SPEECH_PROMOTED",
+    "SPEAKER_IDENTITY_EVIDENCE_MISSING"
+  ],
+  "reported_speech_promotion_count": 2,
+  "request_fingerprint": "3dcb8e154f0572720b2bf327cb77b770fe71ca51390f558bffed6a5cc3ba8950",
+  "response_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+  "source_run_id": "20261005T154004Z",
+  "status": "PASS"
+}

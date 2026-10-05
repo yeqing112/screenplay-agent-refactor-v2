@@ -1,0 +1,21 @@
+{
+  "allowed": [
+    "demote exact reported-speech evidence",
+    "recover same-participant preceding identity evidence",
+    "replace non-literal scene label with earliest exact scene evidence",
+    "compute local offsets/hashes/order"
+  ],
+  "external_llm_calls": 0,
+  "forbidden": [
+    "speaker change",
+    "dialogue text change",
+    "binding type change",
+    "new source text",
+    "new semantic decision",
+    "provider call",
+    "production persistence"
+  ],
+  "semantic_repair_calls": 0,
+  "status": "PASS",
+  "transformation_policy": "deterministic_candidate_salvage_v1"
+}

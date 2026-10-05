@@ -1,0 +1,22 @@
+{
+  "audits": [
+    {
+      "display_label": "暗房中的铁盒与车票",
+      "display_label_authority": "AUTHORIZED_SEMANTIC_LABEL",
+      "original_scene_label": "暗房中的铁盒与车票",
+      "scene_index": 1,
+      "selected_scene_identity": {
+        "byte_end": 30,
+        "byte_start": 0,
+        "char_end": 10,
+        "char_start": 0,
+        "occurrence_count": 1,
+        "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+        "text": "顾沉带林晚进入暗房。"
+      },
+      "status": "SCENE_LABEL_NOT_SOURCE_LITERAL"
+    }
+  ],
+  "non_literal_label_count": 1,
+  "status": "PASS"
+}

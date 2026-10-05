@@ -1,0 +1,15 @@
+{
+  "binding_type_changes": 0,
+  "dialogue_rows_demoted": 2,
+  "external_semantic_decisions_added": 0,
+  "invented_action_text_count": 0,
+  "invented_dialogue_count": 0,
+  "new_character_count": 0,
+  "new_source_text_count": 0,
+  "participant_set_unchanged": true,
+  "scene_count_unchanged": true,
+  "scene_label_replaced_deterministically": true,
+  "speaker_changes": 0,
+  "status": "SALVAGE_SEMANTIC_CORE_PRESERVED",
+  "target_dialogue_text_changes": 0
+}

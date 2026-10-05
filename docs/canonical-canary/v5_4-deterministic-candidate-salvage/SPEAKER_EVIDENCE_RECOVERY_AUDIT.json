@@ -1,0 +1,25 @@
+{
+  "classification": "DETERMINISTIC_SPEAKER_IDENTITY_EVIDENCE_RECOVERY",
+  "recoveries": [
+    {
+      "classification": "DETERMINISTIC_SPEAKER_IDENTITY_EVIDENCE_RECOVERY",
+      "dialogue_index": 3,
+      "original_evidence": [
+        "他回答“也许是你自己”，语气像在试探。"
+      ],
+      "recovered_evidence": {
+        "byte_end": 412,
+        "byte_start": 379,
+        "char_end": 140,
+        "char_start": 129,
+        "occurrence_count": 1,
+        "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+        "text": "顾沉说胶片被人拿走了。"
+      },
+      "rule": "same_scene_same_participant_exact_evidence_contains_speaker_precedes_utterance_choose_nearest_preceding_char_start",
+      "scene_index": 1,
+      "speaker": "顾沉"
+    }
+  ],
+  "status": "PASS"
+}

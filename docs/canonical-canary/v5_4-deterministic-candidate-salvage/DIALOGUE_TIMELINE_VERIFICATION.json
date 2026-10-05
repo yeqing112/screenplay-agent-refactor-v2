@@ -1,0 +1,75 @@
+{
+  "demoted_action_texts": [
+    "顾沉说胶片被人拿走了。",
+    "林晚问是谁"
+  ],
+  "status": "PASS",
+  "target_quote": "也许是你自己",
+  "timeline": [
+    {
+      "blocks": [
+        {
+          "order": 10,
+          "ref": "CH03_SC01_A001",
+          "type": "ACTION"
+        },
+        {
+          "order": 20,
+          "ref": "CH03_SC01_A002",
+          "type": "ACTION"
+        },
+        {
+          "order": 30,
+          "ref": "CH03_SC01_A003",
+          "type": "ACTION"
+        },
+        {
+          "order": 40,
+          "ref": "CH03_SC01_A004",
+          "type": "ACTION"
+        },
+        {
+          "order": 50,
+          "ref": "CH03_SC01_A005",
+          "type": "ACTION"
+        },
+        {
+          "order": 60,
+          "ref": "CH03_SC01_A010",
+          "type": "ACTION"
+        },
+        {
+          "order": 70,
+          "ref": "CH03_SC01_A011",
+          "type": "ACTION"
+        },
+        {
+          "order": 80,
+          "ref": "CH03_SC01_D001",
+          "type": "DIALOGUE"
+        },
+        {
+          "order": 90,
+          "ref": "CH03_SC01_A006",
+          "type": "ACTION"
+        },
+        {
+          "order": 100,
+          "ref": "CH03_SC01_A007",
+          "type": "ACTION"
+        },
+        {
+          "order": 110,
+          "ref": "CH03_SC01_A008",
+          "type": "ACTION"
+        },
+        {
+          "order": 120,
+          "ref": "CH03_SC01_A009",
+          "type": "ACTION"
+        }
+      ],
+      "scene_id": "CH03_SC01"
+    }
+  ]
+}
