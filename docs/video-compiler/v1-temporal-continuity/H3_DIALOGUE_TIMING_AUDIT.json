@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "DIALOGUE_TIMING_PROJECTION_EXACT": true,
+  "source_windows": [
+    {
+      "text": "晚晚，你看看你，跑那么快做什么？",
+      "start_time": 0.0,
+      "end_time": 3.6
+    },
+    {
+      "text": "在车站吓我一跳。",
+      "start_time": 3.6,
+      "end_time": 5.4
+    },
+    {
+      "text": "脸色这么差，是不是又没好好吃饭？",
+      "start_time": 5.4,
+      "end_time": 9.0
+    },
+    {
+      "text": "来，先坐下，陆叔给你洗个苹果。",
+      "start_time": 9.0,
+      "end_time": 13.5
+    }
+  ],
+  "compiled_windows": [
+    {
+      "start_time": 0.0,
+      "end_time": 3.6,
+      "source_window_id": "DIALOGUE_00.0_03.6"
+    },
+    {
+      "start_time": 3.6,
+      "end_time": 5.4,
+      "source_window_id": "DIALOGUE_03.6_05.4"
+    },
+    {
+      "start_time": 5.4,
+      "end_time": 9.0,
+      "source_window_id": "DIALOGUE_05.4_09.0"
+    },
+    {
+      "start_time": 9.0,
+      "end_time": 13.5,
+      "source_window_id": "DIALOGUE_09.0_13.5"
+    }
+  ],
+  "timing_drift": []
+}

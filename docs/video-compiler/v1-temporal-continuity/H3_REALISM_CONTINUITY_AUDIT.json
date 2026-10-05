@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "reaction_delay_count": 1,
+  "listener_meaningful_reactions": 3,
+  "listener_template_rotation": false,
+  "primary_action_duplication": 0,
+  "camera_realism_duplication": 0,
+  "realism_does_not_add_primary_actions": true
+}

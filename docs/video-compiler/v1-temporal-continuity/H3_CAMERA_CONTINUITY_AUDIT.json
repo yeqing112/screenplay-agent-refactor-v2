@@ -1,0 +1,150 @@
+{
+  "status": "PASS",
+  "source_beats": [
+    {
+      "start_time": 0.0,
+      "end_time": 3.6,
+      "movement_type": "static",
+      "direction": "none",
+      "speed": "stationary",
+      "distance_or_scale_change": "no change in distance or scale",
+      "target": "two-shot of 陆叔 and 林晚 at the kitchen table",
+      "start_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+      "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+      "easing": "none"
+    },
+    {
+      "start_time": 3.6,
+      "end_time": 7.2,
+      "movement_type": "slow push-in",
+      "direction": "forward toward the two characters",
+      "speed": "slow, steady",
+      "distance_or_scale_change": "distance decreases by approximately 15 percent, subjects scale up slightly within the frame",
+      "target": "陆叔's upper body and face as he speaks",
+      "start_framing": "medium two-shot, both characters framed from mid-torso up",
+      "end_framing": "medium close-up favoring 陆叔, framed from chest up, 林晚 partially visible at the frame edge",
+      "easing": "linear"
+    },
+    {
+      "start_time": 7.2,
+      "end_time": 10.8,
+      "movement_type": "slow lateral drift",
+      "direction": "drifting slightly to the right, shifting emphasis toward 林晚",
+      "speed": "slow, gentle",
+      "distance_or_scale_change": "distance remains constant, framing shifts laterally by approximately 10 percent of frame width",
+      "target": "林晚's face and upper body as she listens",
+      "start_framing": "medium close-up favoring 陆叔, framed from chest up",
+      "end_framing": "medium close-up favoring 林晚, framed from chest up, 陆叔 partially visible at the frame edge",
+      "easing": "ease-in-out"
+    },
+    {
+      "start_time": 10.8,
+      "end_time": 13.5,
+      "movement_type": "slow pull-back",
+      "direction": "backward, widening the frame",
+      "speed": "slow, settling",
+      "distance_or_scale_change": "distance increases by approximately 12 percent, subjects scale down slightly within the frame",
+      "target": "both 陆叔 and 林晚 at the kitchen table",
+      "start_framing": "medium close-up favoring 林晚, framed from chest up",
+      "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+      "easing": "ease-out"
+    }
+  ],
+  "compiled_events": [
+    {
+      "start_time": 0.0,
+      "end_time": 3.6,
+      "event_type": "camera",
+      "source_beat_id": "CAMERA_0000_0360",
+      "primary_action": "The camera makes a single static toward two-shot of 陆叔 and 林晚 at the kitchen table.",
+      "realism_modifiers": [
+        "barely perceptible handheld breathing drift",
+        "the movement settles naturally at the end"
+      ],
+      "source": {
+        "start_time": 0.0,
+        "end_time": 3.6,
+        "movement_type": "static",
+        "direction": "none",
+        "speed": "stationary",
+        "distance_or_scale_change": "no change in distance or scale",
+        "target": "two-shot of 陆叔 and 林晚 at the kitchen table",
+        "start_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+        "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+        "easing": "none"
+      }
+    },
+    {
+      "start_time": 3.6,
+      "end_time": 7.2,
+      "event_type": "camera",
+      "source_beat_id": "CAMERA_0360_0720",
+      "primary_action": "The camera makes a single slow push-in toward 陆叔's upper body and face as he speaks, forward toward the two characters.",
+      "realism_modifiers": [
+        "barely perceptible handheld breathing drift",
+        "a tiny corrective reframing follows the performance with subtle reaction lag"
+      ],
+      "source": {
+        "start_time": 3.6,
+        "end_time": 7.2,
+        "movement_type": "slow push-in",
+        "direction": "forward toward the two characters",
+        "speed": "slow, steady",
+        "distance_or_scale_change": "distance decreases by approximately 15 percent, subjects scale up slightly within the frame",
+        "target": "陆叔's upper body and face as he speaks",
+        "start_framing": "medium two-shot, both characters framed from mid-torso up",
+        "end_framing": "medium close-up favoring 陆叔, framed from chest up, 林晚 partially visible at the frame edge",
+        "easing": "linear"
+      }
+    },
+    {
+      "start_time": 7.2,
+      "end_time": 10.8,
+      "event_type": "camera",
+      "source_beat_id": "CAMERA_0720_1080",
+      "primary_action": "The camera makes a single slow lateral drift toward 林晚's face and upper body as she listens, drifting slightly to the right, shifting emphasis toward 林晚.",
+      "realism_modifiers": [
+        "barely perceptible handheld breathing drift",
+        "the movement settles naturally at the end"
+      ],
+      "source": {
+        "start_time": 7.2,
+        "end_time": 10.8,
+        "movement_type": "slow lateral drift",
+        "direction": "drifting slightly to the right, shifting emphasis toward 林晚",
+        "speed": "slow, gentle",
+        "distance_or_scale_change": "distance remains constant, framing shifts laterally by approximately 10 percent of frame width",
+        "target": "林晚's face and upper body as she listens",
+        "start_framing": "medium close-up favoring 陆叔, framed from chest up",
+        "end_framing": "medium close-up favoring 林晚, framed from chest up, 陆叔 partially visible at the frame edge",
+        "easing": "ease-in-out"
+      }
+    },
+    {
+      "start_time": 10.8,
+      "end_time": 13.5,
+      "event_type": "camera",
+      "source_beat_id": "CAMERA_1080_1350",
+      "primary_action": "The camera makes a single slow pull-back toward both 陆叔 and 林晚 at the kitchen table, backward, widening the frame.",
+      "realism_modifiers": [
+        "barely perceptible handheld breathing drift",
+        "a tiny corrective reframing follows the performance with subtle reaction lag"
+      ],
+      "source": {
+        "start_time": 10.8,
+        "end_time": 13.5,
+        "movement_type": "slow pull-back",
+        "direction": "backward, widening the frame",
+        "speed": "slow, settling",
+        "distance_or_scale_change": "distance increases by approximately 12 percent, subjects scale down slightly within the frame",
+        "target": "both 陆叔 and 林晚 at the kitchen table",
+        "start_framing": "medium close-up favoring 林晚, framed from chest up",
+        "end_framing": "medium two-shot, both characters framed from mid-torso up, 陆叔 on the left third and 林晚 on the right third",
+        "easing": "ease-out"
+      }
+    }
+  ],
+  "duplicate_emissions": [],
+  "continuity_conflicts": [],
+  "realism_binding": "one to two modifiers per camera beat"
+}

@@ -29,7 +29,7 @@ def test_none_dialogue_contract_has_explicit_silence_and_no_leak():
     assert contract.visual_lipsync_required is False
     assert contract.audio_generation_allowed is False
     assert contract.mouth_motion_outside_dialogue_allowed is False
-    assert "All characters remain silent" in ir.rendered_prompt
+    assert "all characters remain silent" in ir.rendered_prompt
     assert "按照对白执行" not in ir.rendered_prompt
     assert "对白时间" not in ir.rendered_prompt
     assert "speaking-like motion" in ir.rendered_prompt
@@ -41,7 +41,7 @@ def test_motion_and_camera_beats_are_projected_from_director_ir():
     ir = build_video_provider_prompt_ir(_decision("SH_E01_SC002_007"), project_provider_duration(5.0))
     assert len(ir.performance_beats) == 4
     assert len(ir.camera_beats) == 2
-    assert "H3 temporal event stream:" in ir.rendered_prompt
+    assert "Timed performance events:" in ir.rendered_prompt
     assert "restrained intensity" in ir.rendered_prompt
 
 

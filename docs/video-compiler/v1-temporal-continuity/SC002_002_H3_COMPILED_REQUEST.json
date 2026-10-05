@@ -1,0 +1,105 @@
+{
+  "compiler_id": "minimax-h3",
+  "compiler_version": "3-temporal-continuity",
+  "model_family": "minimax-h3",
+  "shot_id": "SH_E01_SC002_002",
+  "source_video_intent_fingerprint": "6329bb5fa2034ff40509fe9854f3e6db4ab2842440e09c6f2603c85eaf888138",
+  "prompt": "integrated_multimodal_description:\nCinematic single-take shot SH_E01_SC002_002. Preserve scene topology: 出租公寓厨房.\nCharacters:\nS1: 陆叔; role speaker; start state position 餐桌左侧; body pose standing, torso leaning slightly forward over the table edge; weight distribution weight on left leg, right leg relaxed and slightly back; torso direction torso angled toward 林晚 at approximately 30 degrees; head yaw head turned toward 林晚, yaw approximately 25 degrees to screen right; head pitch head tilted down approximately 10 degrees toward the table surface; eye target 桌面划痕; left hand left hand resting flat on the table edge near the tabletop scratch; right hand right hand hanging at side, fingers loosely curled; prop contact left palm in contact with the table surface.\nS2: 林晚; role listener; start state position 餐桌右侧或门边; body pose standing upright, shoulders slightly hunched, weight shifted onto the back foot; weight distribution weight on right leg, left foot slightly forward and unweighted; torso direction torso facing 陆叔 at approximately 20 degrees to screen left; head yaw head turned toward 陆叔, yaw approximately 15 degrees to screen left; head pitch head level, chin slightly tucked; eye target 陆叔; left hand 自然放松，不接触道具; right hand right hand hanging at her side, fingers slightly curled inward; prop contact 自然放松，不接触道具.\nProps: none.\nPerformance direction: grounded human acting; Lu Shu is concerned, caring, slightly anxious and gentle without melodrama; Lin Wan is tired, guarded, slightly hesitant and quietly receptive.\nRealism direction: subtle breathing, micro-expressions, responsive gaze, natural weight shift, occasional secondary motion and imperfect gestures; realism never repeats a primary action.\nEmotional arc: concern and guardedness gradually soften into a warmer, reassuring exchange without overt sentimentality.\nTimed performance events (each source beat emits once):\n0.0–1.8s [PERF_LU_SHU_0000_0180]: 陆叔 torso starts leaning over the table edge and straightens upward by about 10 degrees, ending with the torso upright and angled toward 林晚. left hand starts flat on the table edge and slides 5 cm toward 林晚 across the tabletop, ending with the palm open and fingers spread on the table surface head starts tilted down toward the tabletop scratch and lifts by about 10 degrees, ending with the head level and turned toward 林晚 eyes start fixed on the tabletop scratch and shift upward to 林晚's face, ending with a steady gaze on 林晚.\n1.8–3.6s [PERF_LU_SHU_0180_0360]: 陆叔 torso starts upright and leans forward about 15 degrees toward 林晚, ending with the torso inclined over the table edge. right hand starts hanging at the side and rises to chest height, ending with the palm open and facing upward in a beckoning gesture head starts level and tilts down about 8 degrees, ending with the chin lowered toward 林晚 eyes start on 林晚's face and drop to her shoulders and back, ending with a scanning gaze over her upper body.\n3.6–5.4s [PERF_LU_SHU_0360_0540]: 陆叔 torso starts inclined forward and straightens back by about 10 degrees, ending with the torso upright and shoulders squared toward 林晚. right hand starts raised at chest height and lowers by 15 cm, ending with the hand at waist height, palm still open and facing upward head starts tilted down and lifts by about 5 degrees, ending with the head level and eyes locked on 林晚 eyes start scanning 林晚's shoulders and fix on her face, ending with a direct, steady gaze into her eyes.\n5.4–7.2s [PERF_LU_SHU_0540_0720]: 陆叔 torso starts upright and rotates about 20 degrees toward the kitchen counter behind him, ending with the torso angled away from 林晚 toward the counter. right hand starts at waist height with open palm and closes into a loose fist, ending with the fist resting against his own chest head starts facing 林晚 and turns about 25 degrees toward the kitchen counter, ending with the head angled toward the counter eyes start on 林晚 and shift to the kitchen counter, ending with a gaze fixed on the counter surface.\n7.2–9.0s [PERF_LU_SHU_0720_0900]: 陆叔 torso starts angled toward the counter and rotates back about 20 degrees toward 林晚, ending with the torso facing her squarely. right hand starts against his chest and extends forward toward 林晚 by about 20 cm, ending with the palm open and facing upward in an offering gesture head starts angled toward the counter and turns back about 25 degrees toward 林晚, ending with the head facing her directly eyes start on the counter and shift back to 林晚's face, ending with a warm, direct gaze on her.\n9.0–11.0s [PERF_LU_SHU_0900_1100]: 陆叔 torso starts facing 林晚 and leans forward about 10 degrees, ending with the torso inclined toward her in an inviting posture. right hand starts extended forward with open palm and sweeps downward and to the side by about 15 cm, ending with the hand gesturing toward the chair beside the table head starts facing 林晚 and tilts down about 5 degrees toward the chair, ending with the head angled toward the seating spot eyes start on 林晚's face and shift down to the chair, ending with a gaze directed at the chair beside the table.\n11.0–13.5s [PERF_LU_SHU_1100_1350]: 陆叔 torso starts inclined toward the chair and straightens by about 8 degrees, ending with the torso upright and weight shifting onto the back foot as he prepares to move toward the kitchen. right hand starts gesturing toward the chair and lowers to his side, ending with the hand relaxed at his hip, fingers loosely curled head starts angled toward the chair and lifts by about 5 degrees, ending with the head level and turned slightly toward the kitchen eyes start on the chair and shift toward the kitchen, ending with a gaze directed at the kitchen workspace.\n0.0–2.4s [PERF_LIN_WAN_0000_0240]: 林晚 torso starts upright with shoulders hunched and lowers by about 5 degrees as her shoulders drop, ending with the shoulders relaxed downward. left hand starts gripping the hands remain relaxed without prop contact tightly and loosens by about 2 mm of grip pressure, ending with the fingers still on the strap but relaxed head starts level and tilts down about 5 degrees, ending with the chin slightly lowered eyes start fixed on 陆叔 and blink once, ending with the eyes open and still fixed on 陆叔.\n2.4–4.8s [PERF_LIN_WAN_0240_0480]: 林晚 torso starts upright and shifts weight from the back foot to the front foot by about 3 cm, ending with the weight centered between both feet. right hand starts hanging at the side and rises by about 5 cm, ending with the hand resting against her own abdomen, fingers lightly curled head starts tilted down and lifts by about 3 degrees, ending with the head level and eyes still on 陆叔 eyes start on 陆叔 and narrow slightly by about 1 mm, ending with a tired, attentive gaze on him.\n4.8–7.2s [PERF_LIN_WAN_0480_0720]: 林晚 torso starts upright and rotates about 10 degrees toward the chair beside the table, ending with the torso angled toward the seating spot. right hand starts on her abdomen and lowers by about 8 cm, ending with the hand hanging at her side, fingers loosely curled head starts facing 陆叔 and turns about 10 degrees toward the chair, ending with the head angled toward the chair eyes start on 陆叔 and shift to the chair, ending with a gaze directed at the chair beside the table.\n7.2–9.6s [PERF_LIN_WAN_0720_0960]: 林晚 torso starts angled toward the chair and rotates back about 10 degrees toward 陆叔, ending with the torso facing him again. left hand starts on the hands remain relaxed without prop contact and releases it by opening the fingers about 5 mm, ending with the hand hanging free at her side head starts angled toward the chair and turns back about 10 degrees toward 陆叔, ending with the head facing him directly eyes start on the chair and shift back to 陆叔's face, ending with a steady gaze on him.\n9.6–11.8s [PERF_LIN_WAN_0960_1180]: 林晚 torso starts facing 陆叔 and leans forward about 5 degrees, ending with the torso inclined slightly toward him. right hand starts at her side and rises by about 10 cm, ending with the hand resting lightly on the edge of the table head starts facing 陆叔 and tilts down about 3 degrees, ending with the chin slightly lowered toward the table eyes start on 陆叔's face and shift down to the table surface, ending with a gaze directed at the tabletop.\n11.8–13.5s [PERF_LIN_WAN_1180_1350]: 林晚 torso starts leaning forward and straightens by about 4 degrees, ending with the torso upright and shoulders settling downward. right hand starts on the table edge and slides 3 cm toward her own body, ending with the hand resting flat on the table near her own side head starts tilted down and lifts by about 2 degrees, ending with the head level and eyes still directed downward eyes start on the tabletop and blink once, ending with the eyes open and still directed at the tabletop.\nListener reaction events (sparse, continuous):\n0.0–3.6s: 林晚 remains silent; after one brief 0.2–0.6 second hesitation, the gaze drops before returning to the speaker.\n5.4–9.0s: 林晚 stays quiet; a slow blink and slight shoulder settling arrive after the speaker's cue.\n9.0–13.5s: 林晚 remains guarded but receptive, with one small weight shift as the gaze softens toward the speaker.\nTimed camera events (each source beat emits once):\n0.0–3.6s [CAMERA_0000_0360]: The camera makes a single static toward two-shot of 陆叔 and 林晚 at the kitchen table. barely perceptible handheld breathing drift; the movement settles naturally at the end.\n3.6–7.2s [CAMERA_0360_0720]: The camera makes a single slow push-in toward 陆叔's upper body and face as he speaks, forward toward the two characters. barely perceptible handheld breathing drift; a tiny corrective reframing follows the performance with subtle reaction lag.\n7.2–10.8s [CAMERA_0720_1080]: The camera makes a single slow lateral drift toward 林晚's face and upper body as she listens, drifting slightly to the right, shifting emphasis toward 林晚. barely perceptible handheld breathing drift; the movement settles naturally at the end.\n10.8–13.5s [CAMERA_1080_1350]: The camera makes a single slow pull-back toward both 陆叔 and 林晚 at the kitchen table, backward, widening the frame. barely perceptible handheld breathing drift; a tiny corrective reframing follows the performance with subtle reaction lag.\nTimed dialogue events (source windows preserved exactly):\n0.0–3.6s [DIALOGUE_00.0_03.6] (S1) <d>[Chinese] 晚晚，你看看你，跑那么快做什么？</d>\n3.6–5.4s [DIALOGUE_03.6_05.4] (S1) <d>[Chinese] 在车站吓我一跳。</d>\n5.4–9.0s [DIALOGUE_05.4_09.0] (S1) <d>[Chinese] 脸色这么差，是不是又没好好吃饭？</d>\n9.0–13.5s [DIALOGUE_09.0_13.5] (S1) <d>[Chinese] 来，先坐下，陆叔给你洗个苹果。</d>\n13.5–14.0s [TERMINAL_HOLD]: Final pose, gaze, expression and framing settle naturally. No new dialogue, body action, prop interaction or camera event; only subtle breathing and natural stillness remain.\noverall_soundscape:\nQuiet natural indoor room tone.\nThe authorized speaker's Mandarin dialogue is clear and foregrounded.\nNo additional voices.\nNo invented dialogue.\nnon_diegetic_music:\nN/A\nDuration: 14s total; director intent 13.5s; terminal hold 0.5s.\nNegative constraints: no additional characters; no unauthorized props; preserve scene topology; Lin Wan carries no handbag, no shoulder bag, no crossbody bag, and no bag strap is visible; both hands remain free of story props.",
+  "duration_seconds": 14,
+  "aspect_ratio": "16:9",
+  "reference_mode": "FIRST_FRAME",
+  "reference_bindings": [
+    {
+      "role": "SCENE_MASTER",
+      "asset_id": "",
+      "authority_fingerprint": "",
+      "media_sha256": ""
+    },
+    {
+      "role": "CHARACTER_FULL",
+      "asset_id": "",
+      "authority_fingerprint": "",
+      "media_sha256": ""
+    },
+    {
+      "role": "CHARACTER_FACE",
+      "asset_id": "",
+      "authority_fingerprint": "",
+      "media_sha256": ""
+    }
+  ],
+  "audio_generation_mode": "NATIVE_AUDIO_EXPECTED",
+  "provider_capability_requirements": {
+    "supports_native_audio": true,
+    "supports_first_frame": true,
+    "dialogue_occurrence_audit": {
+      "phrase_occurrences": [
+        {
+          "text": "晚晚，你看看你，跑那么快做什么？",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        },
+        {
+          "text": "在车站吓我一跳。",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        },
+        {
+          "text": "脸色这么差，是不是又没好好吃饭？",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        },
+        {
+          "text": "来，先坐下，陆叔给你洗个苹果。",
+          "total_occurrences": 1,
+          "inside_d_occurrences": 1,
+          "outside_d_occurrences": 0
+        }
+      ],
+      "plain_full_authoritative_occurrence": 0,
+      "d_block_count": 4,
+      "status": "PASS",
+      "errors": []
+    },
+    "temporal_emission_audit": {
+      "source_performance_beats": 13,
+      "compiled_performance_events": 13,
+      "duplicate_performance_emissions": [],
+      "source_camera_beats": 4,
+      "compiled_camera_events": 4,
+      "duplicate_camera_emissions": [],
+      "source_dialogue_windows": 4,
+      "compiled_dialogue_windows": 4,
+      "dialogue_timing_drift": [],
+      "reaction_delay_count": 1,
+      "terminal_hold_count": 1,
+      "unexpected_state_resets": [],
+      "camera_continuity_conflicts": [],
+      "status": "PASS"
+    }
+  },
+  "warnings": [],
+  "compiled_prompt_sha256": "bd2a0e5e5fa6daefe880a6f1468596b6c58dd6700d4483d6d3e6cb0ff743cb60",
+  "compiled_request_fingerprint": "dde074853054caf45b07b88d2cb4f7bc13157b6eb6bee20b8b06175603651949",
+  "prompt_complexity": {
+    "characters": 2,
+    "words": 1793,
+    "performance_beats": 13,
+    "camera_beats": 4,
+    "dialogue_length": 55,
+    "blocked": false,
+    "code": null,
+    "timeline_windows": 22,
+    "primary_actions": 13,
+    "micro_actions": 39,
+    "camera_realism_modifiers": 8,
+    "dialogue_blocks": 4
+  },
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "provider_calls": 0,
+  "temporal_continuity_status": "PASS"
+}
