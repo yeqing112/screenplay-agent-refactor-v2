@@ -97,7 +97,7 @@ def _camera_event(beat: dict[str, Any], index: int) -> dict[str, Any]:
     target = str(beat.get("target") or "the two characters")
     direction = str(beat.get("direction") or "")
     if movement.lower() == "static":
-        if "two-shot" in target.lower() and ("陆叔" in target or "\u6797\u665a" in target):
+        if "two-shot" in target.lower() and ("陆叔" in target or "林晚" in target):
             primary = "The camera holds a restrained static medium two-shot of Uncle Lu and Lin Wan at the kitchen table, with barely perceptible handheld breathing drift"
         else:
             primary = f"The camera holds a restrained static {target}, with barely perceptible handheld breathing drift"

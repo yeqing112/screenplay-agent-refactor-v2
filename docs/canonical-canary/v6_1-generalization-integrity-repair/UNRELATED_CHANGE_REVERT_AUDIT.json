@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "files": [
+    "core\\fresh_approved_record_pool.py",
+    "core\\mock_runtime.py",
+    "core\\script_beat.py",
+    "core\\shot_architecture.py",
+    "core\\unauthorized_prop_semantic_scrubber.py",
+    "core\\video_compilers\\minimax_h3.py"
+  ],
+  "remaining_mismatches": []
+}

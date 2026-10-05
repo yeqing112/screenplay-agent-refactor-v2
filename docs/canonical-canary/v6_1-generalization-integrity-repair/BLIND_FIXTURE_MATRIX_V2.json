@@ -1,0 +1,16 @@
+{
+  "fixtures": {
+    "A": "PASS",
+    "B": "PASS",
+    "C": "PASS",
+    "D": "PASS",
+    "E": "PASS",
+    "F": "PASS",
+    "G": "PASS",
+    "H": "PASS",
+    "I": "PASS",
+    "J": "PASS",
+    "K": "PASS"
+  },
+  "status": "PASS"
+}

@@ -305,7 +305,7 @@ def validate_script_ir(payload: Any) -> dict[str, Any]:
         if not scene_id or scene_id in seen_ids:
             errors.append({"code": "SCENE_ID_INVALID", "message": "Scene IDs must be present and unique."})
         seen_ids.add(scene_id)
-        source_grounded_v3 = str(payload.get("source_grounded_schema_version") or "") == "source_grounded_script_payload_v3" or (str(scene.get("timeline_origin") or "").upper() == "SOURCE_GROUNDED" and "source_identity_evidence" in scene and not name)
+        source_grounded_v3 = str(payload.get("source_grounded_schema_version") or "") in {"source_grounded_script_payload_v3", "source_grounded_script_payload_v3_1"} or (str(scene.get("timeline_origin") or "").upper() == "SOURCE_GROUNDED" and "source_identity_evidence" in scene and not name)
         if not name and not source_grounded_v3:
             errors.append({"code": "SCENE_NAME_REQUIRED", "message": f"{scene_id or 'scene'} requires a name."})
         elif name in seen_names and not source_grounded_v3:

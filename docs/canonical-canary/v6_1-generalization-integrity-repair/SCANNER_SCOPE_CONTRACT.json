@@ -1,0 +1,11 @@
+{
+  "strict_dependency_paths": [
+    "core\\source_structuring_v3.py",
+    "core\\script_ir.py",
+    "core\\script_ir_production_preparation.py",
+    "core\\script_ir_source_requirements.py",
+    "api\\script_ir_preparation_api.py"
+  ],
+  "strict_dependency_count": 0,
+  "whole_core_api_is_inventory_only": true
+}

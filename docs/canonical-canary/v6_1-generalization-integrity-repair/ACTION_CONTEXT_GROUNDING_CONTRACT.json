@@ -1,0 +1,5 @@
+{
+  "context_bound_resolution": "PASS",
+  "repeated_action_contexts": "PASS",
+  "ambiguous_without_context": "FAIL_CLOSED"
+}

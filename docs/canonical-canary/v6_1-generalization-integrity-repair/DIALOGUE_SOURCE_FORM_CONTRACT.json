@@ -1,0 +1,10 @@
+{
+  "forms": [
+    "QUOTED_PROSE",
+    "SPEAKER_LABELED",
+    "STRUCTURED_DIALOGUE_BLOCK"
+  ],
+  "speaker_labeled_chinese": "PASS",
+  "speaker_labeled_english": "PASS",
+  "structured_block": "PASS"
+}

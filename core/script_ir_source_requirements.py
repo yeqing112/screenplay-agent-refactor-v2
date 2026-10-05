@@ -243,7 +243,7 @@ def compile_script_ir_source_requirements(*, source_structure: dict[str, Any] | 
     payload = source_structure if isinstance(source_structure, dict) else (script_ir if isinstance(script_ir, dict) else {})
     scenes = _scene_list(payload)
     templates = {row["requirement_id"]: row for row in contract["requirements"]}
-    source_grounded_v3 = str(payload.get("schema_version") or "") == "source_grounded_script_payload_v3" or str(payload.get("source_grounded_schema_version") or "") == "source_grounded_script_payload_v3"
+    source_grounded_v3 = str(payload.get("schema_version") or "") in {"source_grounded_script_payload_v3", "source_grounded_script_payload_v3_1"} or str(payload.get("source_grounded_schema_version") or "") in {"source_grounded_script_payload_v3", "source_grounded_script_payload_v3_1"}
     requirements: list[dict[str, Any]] = []
     if not scenes:
         requirements.append(_requirement(template=templates["SIR_SCENES_PRESENT"], fact_key="episode|scenes|scene_existence|episode", subject_type="episode", subject_id=_text(payload.get("episode")) or "episode", scope="episode", expected_value={"minimum": 1}, source_path="scenes"))

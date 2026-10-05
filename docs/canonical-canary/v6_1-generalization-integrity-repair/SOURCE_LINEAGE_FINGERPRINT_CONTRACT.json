@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "origin_source_fingerprint_present": true,
+  "canonical_script_fingerprint_present": true,
+  "origin_and_canonical_separated": true
+}

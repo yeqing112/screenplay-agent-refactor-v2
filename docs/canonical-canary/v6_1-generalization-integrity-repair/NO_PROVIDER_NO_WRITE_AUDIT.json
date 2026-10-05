@@ -1,0 +1,10 @@
+{
+  "external_llm_calls": 0,
+  "external_transport_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "75api_calls": 0,
+  "production_writes": 0
+}

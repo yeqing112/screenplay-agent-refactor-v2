@@ -75,7 +75,7 @@ def _has_dependent_verb(text: str) -> bool:
 
 def _person_pronouns(actor: str) -> tuple[str, str]:
     actor_lower = actor.lower()
-    if "\u6797\u665a" in actor or actor_lower in {"lin wan", "lin_wan"}:
+    if "林晚" in actor or actor_lower in {"lin wan", "lin_wan"}:
         return "her", "she"
     if "陆叔" in actor or actor_lower in {"lu shu", "lu_shu"}:
         return "his", "he"
@@ -84,7 +84,7 @@ def _person_pronouns(actor: str) -> tuple[str, str]:
 
 def _project_hand_action(text: str, *, actor: str, start: float, end: float) -> str:
     possessive, _ = _person_pronouns(actor)
-    if "\u6797\u665a" in actor or actor.lower() in {"lin wan", "lin_wan"}:
+    if "林晚" in actor or actor.lower() in {"lin wan", "lin_wan"}:
         if start <= 0.01 and end <= 2.5:
             return "left hand starts held close to her side, then the fingers gradually relax, ending with the hand naturally loose beside her body"
         if start >= 7.0 and end <= 10.0:

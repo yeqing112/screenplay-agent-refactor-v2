@@ -1,0 +1,5 @@
+{
+  "status": "PASS",
+  "evidence_contract": "stable anchor refs preferred; raw exact text remains in value/source_value",
+  "api_uses_raw_text_as_evidence": false
+}

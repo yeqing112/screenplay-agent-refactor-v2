@@ -49,9 +49,7 @@ def _snapshot_records(requirement_set: dict[str, Any]) -> list[dict[str, Any]]:
         # source facts in FactSnapshot.
         if requirement.get("contract_requirement_id") == "SIR_SCENE_IDENTITY_EVIDENCE":
             value = requirement.get("source_value") or []
-        evidence = list(requirement.get("source_evidence_refs") or ["E0001"])
-        if requirement.get("contract_requirement_id") == "SIR_SCENE_IDENTITY_EVIDENCE":
-            evidence = [str(item.get("text") or "") for item in (requirement.get("source_value") or []) if isinstance(item, dict)] or evidence
+        evidence = list(requirement.get("source_evidence_refs") or [f"E{index:04d}"])
         records.append({
             "fact_id": f"SOURCE_PREP_{index:04d}",
             "subject_type": requirement.get("subject_type") or "source",

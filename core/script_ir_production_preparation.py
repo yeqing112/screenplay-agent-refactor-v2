@@ -16,6 +16,7 @@ from core.script_ir import build_script_ir, script_ir_hash
 SOURCE_GROUNDED_STRICT_POLICY = "SOURCE_GROUNDED_STRICT"
 SOURCE_GROUNDED_PAYLOAD_SCHEMA = "source_grounded_script_payload_v2"
 SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3 = "source_grounded_script_payload_v3"
+SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3_1 = "source_grounded_script_payload_v3_1"
 
 
 def _text(value: Any) -> str:
@@ -24,7 +25,7 @@ def _text(value: Any) -> str:
 
 def _build_source_grounded_candidate(source: dict[str, Any], *, book_id: int, episode: int) -> dict[str, Any]:
     """Prepare a source-grounded payload without authoring story semantics."""
-    is_v3 = source.get("schema_version") == SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3 or source.get("source_grounded_schema_version") == SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3
+    is_v3 = source.get("schema_version") in {SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3, SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3_1} or source.get("source_grounded_schema_version") in {SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3, SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3_1}
     for scene_index, scene in enumerate(source.get("scenes") or [], start=1):
         if not isinstance(scene, dict):
             continue
@@ -52,6 +53,7 @@ def _build_source_grounded_candidate(source: dict[str, Any], *, book_id: int, ep
             scene["name"] = ""
             scene["display_name"] = _text(source_scene.get("display_name"))
             scene["display_name_authority"] = _text(source_scene.get("display_name_authority")) or "UNRESOLVED"
+            scene["untrusted_display_label"] = _text(source_scene.get("untrusted_display_label"))
             scene["source_identity_evidence"] = copy.deepcopy(source_scene.get("source_identity_evidence") or [])
             scene["location_name"] = ""
             scene["location_authority"] = "UNRESOLVED"
@@ -59,7 +61,7 @@ def _build_source_grounded_candidate(source: dict[str, Any], *, book_id: int, ep
     candidate["scene_transitions"] = [item for item in (candidate.get("scene_transitions") or []) if isinstance(item, dict)]
     candidate["preparation_policy"] = SOURCE_GROUNDED_STRICT_POLICY
     if is_v3:
-        candidate["source_grounded_schema_version"] = SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3
+        candidate["source_grounded_schema_version"] = source.get("source_grounded_schema_version") or SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3
     candidate["payload_hash"] = script_ir_hash(candidate)
     return candidate
 
@@ -73,7 +75,7 @@ def build_production_candidate(source: Any, *, book_id: int, episode: int, prepa
     preparation from an implicit legacy fallback.
     """
 
-    strict = str(preparation_policy or "").strip().upper() == SOURCE_GROUNDED_STRICT_POLICY or (isinstance(source, dict) and source.get("schema_version") in {SOURCE_GROUNDED_PAYLOAD_SCHEMA, SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3})
+    strict = str(preparation_policy or "").strip().upper() == SOURCE_GROUNDED_STRICT_POLICY or (isinstance(source, dict) and source.get("schema_version") in {SOURCE_GROUNDED_PAYLOAD_SCHEMA, SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3, SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3_1})
     if strict:
         if not isinstance(source, dict):
             raise ValueError("SOURCE_GROUNDED_SOURCE_REQUIRED")

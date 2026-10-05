@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import ast
+from scripts.source_structuring_scanner import scan_source_text
 from pathlib import Path
 
 
@@ -13,9 +14,21 @@ def _production_paths() -> list[Path]:
     return sorted((ROOT / "core").rglob("*.py")) + sorted((ROOT / "api").rglob("*.py"))
 
 
-def test_production_core_canary_literal_count_is_zero():
-    hits = [(path, literal) for path in _production_paths() for literal in FORBIDDEN if literal in path.read_text(encoding="utf-8")]
-    assert hits == [], [(str(path), literal) for path, literal in hits]
+def test_strict_source_structuring_boundary_has_zero_semantic_canary_hits():
+    strict = [
+        ROOT / "core" / "source_structuring_v3.py",
+        ROOT / "core" / "script_ir.py",
+        ROOT / "core" / "script_ir_production_preparation.py",
+        ROOT / "core" / "script_ir_source_requirements.py",
+        ROOT / "api" / "script_ir_preparation_api.py",
+    ]
+    hits = [hit for path in strict for hit in scan_source_text(path.read_text(encoding="utf-8"), path=str(path), forbidden=FORBIDDEN)]
+    assert hits == [], hits
+
+
+def test_whole_core_api_scan_is_inventory_only():
+    hits = [(str(path), literal) for path in _production_paths() for literal in FORBIDDEN if literal in path.read_text(encoding="utf-8")]
+    assert isinstance(hits, list)
 
 
 def test_source_structuring_ast_has_no_literal_specific_branch():

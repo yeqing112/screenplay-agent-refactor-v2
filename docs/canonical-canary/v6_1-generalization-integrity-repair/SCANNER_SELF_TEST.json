@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "cases": {
+    "direct": 1,
+    "unicode": 1,
+    "concat": 1,
+    "arithmetic": 1,
+    "fstring": 1,
+    "clean": 0
+  },
+  "execution": "AST_ONLY_NO_EXECUTION"
+}

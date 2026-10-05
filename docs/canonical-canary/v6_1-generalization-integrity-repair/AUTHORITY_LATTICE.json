@@ -1,0 +1,9 @@
+{
+  "ordered_lattice": [
+    "UNRESOLVED",
+    "UNTRUSTED_MODEL_OUTPUT",
+    "AUTHORIZED_SEMANTIC_LABEL",
+    "SOURCE_FACT"
+  ],
+  "reconciliation_upgrade_count": 0
+}

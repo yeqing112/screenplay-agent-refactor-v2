@@ -9,7 +9,7 @@ from core.script_ir import validate_script_ir
 from core.script_ir_production_preparation import SOURCE_GROUNDED_STRICT_POLICY, build_production_candidate
 from core.script_ir_source_requirements import compile_script_ir_source_requirements
 from core.source_structuring_v3 import (
-    PAYLOAD_SCHEMA_VERSION,
+    PAYLOAD_SCHEMA_VERSION_V3_1,
     SCHEMA_VERSION,
     SourceIdentityContext,
     SourceStructuringPolicy,
@@ -62,7 +62,7 @@ def test_fixture_d_non_direct_dialogue_demotes_without_language_marker_rule():
     reconciled = reconcile_candidate_v3(raw, c)
     assert reconciled["status"] == "SOURCE_STRUCTURING_RECONCILIATION_PASS"
     assert reconciled["candidate"]["scenes"][0]["dialogues"] == []
-    assert reconciled["candidate"]["scenes"][0]["actions"][0]["source_text"] == raw
+    assert reconciled["candidate"]["scenes"][0]["actions"][0]["text"] == raw
 
 
 def test_fixture_e_prose_scene_has_structural_identity_but_no_display_or_location():
@@ -70,11 +70,12 @@ def test_fixture_e_prose_scene_has_structural_identity_but_no_display_or_locatio
     c = {"schema_version": SCHEMA_VERSION, "scenes": [{"scene_evidence": [raw], "display_label": "车站的重逢", "display_label_authority": "AUTHORIZED_SEMANTIC_LABEL", "participants": [], "actions": [{"source_text": raw}], "dialogues": []}], "unknowns": []}
     grounded = ground_candidate_v3(raw, c)
     payload = canonical_script_payload_v3(grounded["grounded_candidate"], identity_context=SourceIdentityContext(episode=27))
-    assert payload["schema_version"] == PAYLOAD_SCHEMA_VERSION
+    assert payload["schema_version"] == PAYLOAD_SCHEMA_VERSION_V3_1
     scene = payload["scenes"][0]
     assert scene["scene_id"] == "E27_SC001"
     assert scene["name"] == ""
-    assert scene["display_name"] == "车站的重逢"
+    assert scene["display_name"] == ""
+    assert scene["untrusted_display_label"] == "车站的重逢"
     assert scene["location_name"] == ""
     strict = build_production_candidate(payload, book_id=7, episode=27, preparation_policy=SOURCE_GROUNDED_STRICT_POLICY)
     assert validate_script_ir(strict)["status"] == "qualified"
@@ -127,5 +128,4 @@ def test_production_source_structuring_scan_has_no_canary_literals():
     paths = list((Path(__file__).resolve().parents[1] / "core").glob("source_structuring*.py"))
     paths += [Path(__file__).resolve().parents[1] / "api" / "script_ir_preparation_api.py"]
     hits = [(str(path), literal) for path in paths for literal in forbidden if literal in path.read_text(encoding="utf-8")]
-    assert hits == hits  # evidence is emitted by the phase audit; V3 modules are clean
-    assert not any("source_structuring_v3.py" in path and literal for path, literal in hits)
+    assert hits == []
