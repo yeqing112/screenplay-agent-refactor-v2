@@ -1,0 +1,23 @@
+{
+  "canonical_payload_preview_ready": true,
+  "contract_status": "SOURCE_STRUCTURING_CONTRACT_V2_READY",
+  "db_writes": 0,
+  "grounded_fixture_pass": true,
+  "media_writes": 0,
+  "next_call_authorization_required": true,
+  "next_call_executed": false,
+  "prompt_ir_writes": 0,
+  "provider_calls": 0,
+  "provider_profile": {
+    "base_url": "https://api.xiaomimimo.com/v1",
+    "enabled": true,
+    "id": "local-llm-2vydoz",
+    "key_configured": true,
+    "model_name": "mimo-v2.5",
+    "name": "mimo",
+    "provider": "openai-compatible"
+  },
+  "run_id": "20261005T144017Z",
+  "source_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "status": "AUTHORIZED_LLM_RECALL_REQUIRED"
+}

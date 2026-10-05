@@ -1,0 +1,11 @@
+{
+  "classification": "HISTORICAL_INVALID_RESPONSE_UNREPLAYABLE",
+  "exact_root_cause": "UNKNOWN",
+  "external_llm_posts": 1,
+  "historical_evidence_immutable": true,
+  "replayable": false,
+  "response_retained": false,
+  "retry": 0,
+  "run_id": "20261005T114436Z",
+  "status": "LLM_STRUCTURING_OUTPUT_INVALID"
+}

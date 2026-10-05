@@ -1,0 +1,16 @@
+{
+  "first_occurrence_fallback": false,
+  "multiple_match": "SOURCE_EVIDENCE_AMBIGUOUS",
+  "resolver": "resolve_exact_source_evidence",
+  "returns": [
+    "text",
+    "char_start",
+    "char_end",
+    "byte_start",
+    "byte_end",
+    "sha256",
+    "occurrence_count"
+  ],
+  "source_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "zero_match": "SOURCE_EVIDENCE_NOT_FOUND"
+}

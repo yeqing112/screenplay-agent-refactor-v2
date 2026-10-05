@@ -1,0 +1,18 @@
+{
+  "artifact": "LLM_RESPONSE_FORENSIC.json",
+  "required_fields": [
+    "run_id",
+    "received",
+    "response_sha256",
+    "response_length",
+    "provider_request_id",
+    "validation_not_yet_run"
+  ],
+  "response_must_be_saved_before_validation": true,
+  "sanitized_excerpt_limit": 2000,
+  "secret_fields_forbidden": [
+    "api_key",
+    "authorization",
+    "credential"
+  ]
+}

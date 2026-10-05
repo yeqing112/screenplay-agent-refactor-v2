@@ -1,0 +1,6 @@
+{
+  "audit": "REPORTED_SPEECH_PROMOTION_AUDIT_V2",
+  "direct_quote": "must be enclosed by source quotation marks",
+  "fail_code": "REPORTED_SPEECH_PROMOTED",
+  "reported_speech": "remains action/narrative evidence"
+}

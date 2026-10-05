@@ -1,0 +1,7 @@
+{
+  "binding_type": "COREFERENCE_RESOLUTION",
+  "identity_evidence": "exact source evidence",
+  "literal_classification": "SOURCE_LITERAL_BINDING only when speaker literal is in utterance evidence",
+  "semantic_classification": "AUTHORIZED_SEMANTIC_BINDING when coreference judgment is required",
+  "utterance_evidence": "exact source evidence"
+}

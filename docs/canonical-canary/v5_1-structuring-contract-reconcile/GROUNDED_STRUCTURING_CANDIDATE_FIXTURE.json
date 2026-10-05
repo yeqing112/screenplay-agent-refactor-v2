@@ -1,0 +1,314 @@
+{
+  "candidate": {
+    "scenes": [
+      {
+        "actions": [
+          {
+            "source_text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          },
+          {
+            "source_text": "顾沉说胶片被人拿走了。"
+          },
+          {
+            "source_text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          }
+        ],
+        "dialogues": [
+          {
+            "binding_type": "COREFERENCE_RESOLUTION",
+            "speaker": "顾沉",
+            "speaker_identity_evidence": [
+              "顾沉说胶片被人拿走了。"
+            ],
+            "text": "也许是你自己",
+            "utterance_evidence": [
+              "林晚问是谁，他回答“也许是你自己”，语气像在试探。"
+            ]
+          }
+        ],
+        "participants": [
+          {
+            "evidence": [
+              "顾沉带林晚进入暗房。"
+            ],
+            "name": "林晚"
+          },
+          {
+            "evidence": [
+              "顾沉带林晚进入暗房。"
+            ],
+            "name": "顾沉"
+          }
+        ],
+        "scene_evidence": [
+          "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+        ],
+        "scene_label": "暗房"
+      }
+    ],
+    "schema_version": "source_grounded_screenplay_structuring_candidate_v2",
+    "unknowns": []
+  },
+  "canonical_payload_preview": {
+    "scenes": [
+      {
+        "actions": [
+          {
+            "action_id": "CH03_SC01_A001",
+            "source_evidence": {
+              "byte_end": 195,
+              "byte_start": 0,
+              "char_end": 65,
+              "char_start": 0,
+              "evidence_id": "S1A001",
+              "occurrence_count": 1,
+              "sha256": "d5c30feb973a49ad12923f500d35a60aa9a0a0618654fa2883791e2f71a84d3a",
+              "text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+            },
+            "text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          },
+          {
+            "action_id": "CH03_SC01_A002",
+            "source_evidence": {
+              "byte_end": 412,
+              "byte_start": 379,
+              "char_end": 140,
+              "char_start": 129,
+              "evidence_id": "S1A002",
+              "occurrence_count": 1,
+              "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+              "text": "顾沉说胶片被人拿走了。"
+            },
+            "text": "顾沉说胶片被人拿走了。"
+          },
+          {
+            "action_id": "CH03_SC01_A003",
+            "source_evidence": {
+              "byte_end": 589,
+              "byte_start": 532,
+              "char_end": 199,
+              "char_start": 180,
+              "evidence_id": "S1A003",
+              "occurrence_count": 1,
+              "sha256": "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+              "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            },
+            "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          }
+        ],
+        "dialogues": [
+          {
+            "dialogue_id": "CH03_SC01_D001",
+            "source_evidence": {
+              "byte_end": 460,
+              "byte_start": 442,
+              "char_end": 156,
+              "char_start": 150,
+              "evidence_id": "S1D001",
+              "occurrence_count": 1,
+              "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+              "text": "也许是你自己"
+            },
+            "speaker": "顾沉",
+            "speaker_binding": {
+              "binding_type": "COREFERENCE_RESOLUTION",
+              "classification": "AUTHORIZED_SEMANTIC_BINDING",
+              "identity_evidence": [
+                {
+                  "byte_end": 412,
+                  "byte_start": 379,
+                  "char_end": 140,
+                  "char_start": 129,
+                  "evidence_id": "S1D1I001",
+                  "occurrence_count": 1,
+                  "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                  "text": "顾沉说胶片被人拿走了。"
+                }
+              ],
+              "utterance_evidence": [
+                {
+                  "byte_end": 487,
+                  "byte_start": 412,
+                  "char_end": 165,
+                  "char_start": 140,
+                  "evidence_id": "S1D1U001",
+                  "occurrence_count": 1,
+                  "sha256": "1be340bd4345e4bd1b95dc388114584a60ad3a28d7ba2f7939cb4bd7259a55c7",
+                  "text": "林晚问是谁，他回答“也许是你自己”，语气像在试探。"
+                }
+              ]
+            },
+            "text": "也许是你自己"
+          }
+        ],
+        "name": "暗房",
+        "participants": [
+          {
+            "character_id": "林晚",
+            "id": "林晚",
+            "name": "林晚"
+          },
+          {
+            "character_id": "顾沉",
+            "id": "顾沉",
+            "name": "顾沉"
+          }
+        ],
+        "scene_evidence": [
+          {
+            "byte_end": 195,
+            "byte_start": 0,
+            "char_end": 65,
+            "char_start": 0,
+            "evidence_id": "S1E001",
+            "occurrence_count": 1,
+            "sha256": "d5c30feb973a49ad12923f500d35a60aa9a0a0618654fa2883791e2f71a84d3a",
+            "text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          }
+        ],
+        "scene_id": "CH03_SC01"
+      }
+    ],
+    "schema_version": "source_grounded_script_payload_v2",
+    "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1"
+  },
+  "fixture_is_production_source": false,
+  "grounded_candidate": {
+    "errors": [],
+    "scenes": [
+      {
+        "actions": [
+          {
+            "source_evidence": {
+              "byte_end": 195,
+              "byte_start": 0,
+              "char_end": 65,
+              "char_start": 0,
+              "evidence_id": "S1A001",
+              "occurrence_count": 1,
+              "sha256": "d5c30feb973a49ad12923f500d35a60aa9a0a0618654fa2883791e2f71a84d3a",
+              "text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+            }
+          },
+          {
+            "source_evidence": {
+              "byte_end": 412,
+              "byte_start": 379,
+              "char_end": 140,
+              "char_start": 129,
+              "evidence_id": "S1A002",
+              "occurrence_count": 1,
+              "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+              "text": "顾沉说胶片被人拿走了。"
+            }
+          },
+          {
+            "source_evidence": {
+              "byte_end": 589,
+              "byte_start": 532,
+              "char_end": 199,
+              "char_start": 180,
+              "evidence_id": "S1A003",
+              "occurrence_count": 1,
+              "sha256": "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+              "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            }
+          }
+        ],
+        "dialogues": [
+          {
+            "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+            "binding_type": "COREFERENCE_RESOLUTION",
+            "speaker": "顾沉",
+            "speaker_identity_evidence": [
+              {
+                "byte_end": 412,
+                "byte_start": 379,
+                "char_end": 140,
+                "char_start": 129,
+                "evidence_id": "S1D1I001",
+                "occurrence_count": 1,
+                "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                "text": "顾沉说胶片被人拿走了。"
+              }
+            ],
+            "text": "也许是你自己",
+            "utterance": {
+              "byte_end": 460,
+              "byte_start": 442,
+              "char_end": 156,
+              "char_start": 150,
+              "evidence_id": "S1D001",
+              "occurrence_count": 1,
+              "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+              "text": "也许是你自己"
+            },
+            "utterance_evidence": [
+              {
+                "byte_end": 487,
+                "byte_start": 412,
+                "char_end": 165,
+                "char_start": 140,
+                "evidence_id": "S1D1U001",
+                "occurrence_count": 1,
+                "sha256": "1be340bd4345e4bd1b95dc388114584a60ad3a28d7ba2f7939cb4bd7259a55c7",
+                "text": "林晚问是谁，他回答“也许是你自己”，语气像在试探。"
+              }
+            ]
+          }
+        ],
+        "participants": [
+          {
+            "evidence": [
+              {
+                "byte_end": 30,
+                "byte_start": 0,
+                "char_end": 10,
+                "char_start": 0,
+                "evidence_id": "S1P1E001",
+                "occurrence_count": 1,
+                "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                "text": "顾沉带林晚进入暗房。"
+              }
+            ],
+            "name": "林晚"
+          },
+          {
+            "evidence": [
+              {
+                "byte_end": 30,
+                "byte_start": 0,
+                "char_end": 10,
+                "char_start": 0,
+                "evidence_id": "S1P2E001",
+                "occurrence_count": 1,
+                "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                "text": "顾沉带林晚进入暗房。"
+              }
+            ],
+            "name": "顾沉"
+          }
+        ],
+        "scene_evidence": [
+          {
+            "byte_end": 195,
+            "byte_start": 0,
+            "char_end": 65,
+            "char_start": 0,
+            "evidence_id": "S1E001",
+            "occurrence_count": 1,
+            "sha256": "d5c30feb973a49ad12923f500d35a60aa9a0a0618654fa2883791e2f71a84d3a",
+            "text": "顾沉带林晚进入暗房。红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          }
+        ],
+        "scene_label": "暗房"
+      }
+    ],
+    "schema_version": "grounded_source_screenplay_structuring_candidate_v2",
+    "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "source_length": 762,
+    "unknowns": [],
+    "validation_status": "PASS"
+  },
+  "run_id": "20261005T144017Z"
+}

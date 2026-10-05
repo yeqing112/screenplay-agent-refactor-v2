@@ -1,0 +1,20 @@
+{
+  "fields": {
+    "action.source_text": "exact source substring",
+    "dialogue.speaker_identity_evidence": "exact source excerpts",
+    "dialogue.utterance_evidence": "exact source excerpts",
+    "participant.evidence": "exact source excerpts",
+    "scene_evidence": "exact source excerpts"
+  },
+  "llm_must_not_provide": [
+    "start",
+    "end",
+    "byte_offset",
+    "byte_start",
+    "byte_end",
+    "char_start",
+    "char_end",
+    "sha256"
+  ],
+  "schema_version": "source_grounded_screenplay_structuring_candidate_v2"
+}
