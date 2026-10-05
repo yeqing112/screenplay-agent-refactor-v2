@@ -46,7 +46,7 @@ Status: `MINIMAX_H3_TEMPORAL_CONTINUITY_READY`
 
 ## Tests and provider budget
 
-- Targeted temporal/compiler tests: `106 passed`
+- Targeted temporal/compiler tests: `107 passed`
 - Full regression: `2113 passed, 25 failed`; one transient HTTP fixture failure was rerun and passed; effective result `2114 passed, 24 baseline failures`; new failed nodes: `0`
 - Real IMAGE: `0`
 - Real VIDEO: `0`
