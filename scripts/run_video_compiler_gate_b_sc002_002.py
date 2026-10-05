@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import os
+import time
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,9 +53,17 @@ async def download(url: str, path: Path, api_key: str) -> None:
     import httpx
     headers = {"Authorization": f"Bearer {api_key}"} if urlsplit(url).netloc == "www.75api.com" else {}
     async with httpx.AsyncClient(timeout=300, follow_redirects=True, trust_env=False) as client:
-        response = await client.get(url, headers=headers)
-        response.raise_for_status()
-        path.write_bytes(response.content)
+        last = None
+        for _ in range(5):
+            try:
+                response = await client.get(url, headers=headers)
+                response.raise_for_status()
+                path.write_bytes(response.content)
+                return
+            except Exception as exc:
+                last = exc
+                await asyncio.sleep(5)
+        raise last
 
 
 async def main() -> int:
@@ -83,7 +93,8 @@ async def main() -> int:
     payload_prompt_sha = sha_text(payload["prompt"])
     if payload_prompt_sha != compiled.compiled_prompt_sha256:
         raise RuntimeError("COMPILED_PROMPT_SHA_MISMATCH_BEFORE_POST")
-    submitted = await submit_75api_minimax_h3_generation(profile, payload=payload, runtime_credential_value=str(profile.get("api_key") or ""))
+    resume_task_id = str(os.environ.get("VIDEO_GATE_B_RESUME_TASK_ID") or "").strip()
+    submitted = {"providerResponse": {}, "externalTaskId": resume_task_id} if resume_task_id else await submit_75api_minimax_h3_generation(profile, payload=payload, runtime_credential_value=str(profile.get("api_key") or ""))
     task_id = str(submitted["externalTaskId"])
     reconciled = await reconcile_75api_minimax_h3_generation(profile, external_task_id=task_id, runtime_credential_value=str(profile.get("api_key") or ""))
     polled = await poll_75api_minimax_h3_generation(profile, external_task_id=task_id, runtime_credential_value=str(profile.get("api_key") or ""))
