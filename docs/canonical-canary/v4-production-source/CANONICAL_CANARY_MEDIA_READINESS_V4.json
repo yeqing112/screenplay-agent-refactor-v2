@@ -1,0 +1,28 @@
+{
+  "image": {
+    "reason": "No semantic production canary target.",
+    "status": "NOT_EVALUATED"
+  },
+  "provider_calls": {
+    "75api_image": 0,
+    "75api_video": 0,
+    "image": 0,
+    "llm": 0,
+    "poyo": 0,
+    "shapi": 0,
+    "video": 0
+  },
+  "run_id": "20261005T111334Z",
+  "selected_target": null,
+  "status": "NO_TARGET_TO_EVALUATE",
+  "video": {
+    "reason": "No semantic production canary target.",
+    "status": "NOT_EVALUATED"
+  },
+  "writes": {
+    "database": 0,
+    "media": 0,
+    "official_media": 0,
+    "prompt_ir": 0
+  }
+}

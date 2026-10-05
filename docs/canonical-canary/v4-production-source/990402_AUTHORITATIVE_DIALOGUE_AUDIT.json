@@ -1,0 +1,773 @@
+{
+  "authoritative_source": "chapters.content",
+  "book_id": 990402,
+  "historical_script_ir_dialogue_count_excluded": 35,
+  "historical_script_ir_dialogue_lines": [
+    {
+      "authoritative": false,
+      "line_index": 1,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "林晚：这雨……一时半会儿停不了吧？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 2,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "撑红伞的女人：你也在等车？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 3,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "林晚：嗯。去市里的车，最早一班是……五点半吧？记不清了。这鬼地方，时刻表都快烂没了。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 4,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "撑红伞的女人：五点半。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 5,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "林晚：这伞……颜色真亮。这镇上，好像很少见用这么鲜艳颜色的。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 6,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "撑红伞的女人：是吗？我倒觉得，雨天需要一点颜色。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 7,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "林晚：哎哟，吓我一跳。没摔坏吧？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 8,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "撑红伞的女人：谢谢。没坏。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 9,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "林晚：不客气。这破地方，东西都脆得很，经不起折腾。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 10,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "撑红伞的女人：你……一个人？这么晚，在这里，不怕？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 11,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "林晚：怕什么？这镇子，安静得很。该怕的……早就不在了。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 12,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "1",
+      "text": "撑红伞的女人：是吗。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 1,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：这雨，一时半会儿停不了。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 2,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：嗯……是挺大的。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 3,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：等人？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 4,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：啊……算是吧。车晚点了。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 5,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：这个点，没车了。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 6,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：没车了？那……那我怎么……"
+    },
+    {
+      "authoritative": false,
+      "line_index": 7,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：你从哪儿来？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 8,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：就……城里。过来办点事。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 9,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：办事？这种天气，这种时间？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 10,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：急事嘛。没办法。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 11,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：你……一个人？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 12,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：嗯。不然呢？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 13,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：这电路……真够老的。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 14,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：你袖子里……藏了什么？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 15,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：什么？没有啊。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 16,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：这道划痕……是新的。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 17,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：划痕？伞上的吗？我看看……"
+    },
+    {
+      "authoritative": false,
+      "line_index": 18,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：不用了。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 19,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：你……认识这伞的主人？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 20,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：这伞，没有主人。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 21,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：那道划痕，是新的。但伞骨末端的金属箍……磨损很旧。一把旧伞，换了个新箍，又添了新伤。你握伞的姿势，像握刀。你刚才挡在身前的动作，是防御姿态。你问我的问题，不是闲聊，是试探。你不是在等车。你是在等人。或者……在等一个东西。"
+    },
+    {
+      "authoritative": false,
+      "line_index": 22,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "撑红伞的女人：你呢？你又在等什么？"
+    },
+    {
+      "authoritative": false,
+      "line_index": 23,
+      "reason": "historical ScriptIR derived line; excluded from source confirmation",
+      "scene_id": "2",
+      "text": "林晚：我在等一个解释。关于我母亲……为什么在遗书里，画了你的伞。"
+    }
+  ],
+  "outcome": "SOURCE_DIALOGUE_CONFIRMED",
+  "qualification_note": "Authoritative prose contains dialogue evidence, but the current deterministic production ingest requires structured scenes[].dialogues[] and cannot derive speaker-bound lines from prose without an additional structuring step.",
+  "raw_quote_span_count": 11,
+  "run_id": "20261005T111334Z",
+  "scenes": [
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "岚"
+      ],
+      "dialogue_text_evidence": [
+        {
+          "source_offset": 69,
+          "text": "岚",
+          "text_sha256": "e3f2f3cb990237e92ebed5ec34b39a7dac65dbf25ca6379a6e1656817a2f90f9"
+        },
+        {
+          "source_offset": 174,
+          "text": "潮声第三次响起时，去灯塔，不要相信穿灰外套的人。",
+          "text_sha256": "cecfbea67ea681d354991554fa824181eb417005be11a08c5952b47ef85a034d"
+        }
+      ],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 2,
+      "scene_id": "SOURCE_CHAPTER_01",
+      "scene_name": "第一章  雨夜来信",
+      "source_chapter_id": 14,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [],
+      "speech_context_evidence": [],
+      "speech_marker_count": 0,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉"
+      ],
+      "dialogue_text_evidence": [
+        {
+          "source_offset": 13,
+          "text": "回声照相馆",
+          "text_sha256": "d4abc6d9aae8088671e3ff1dae84ce00c64b4745ec2ba1e941aeb0f5625e6428"
+        },
+        {
+          "source_offset": 226,
+          "text": "灰外套",
+          "text_sha256": "fee45bf84e01af8ea9b0d3bb6beff5ea161256f6d2e842d6202c22bc9dff7059"
+        }
+      ],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 2,
+      "scene_id": "SOURCE_CHAPTER_02",
+      "scene_name": "第二章  旧照相馆",
+      "source_chapter_id": 15,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "林晚",
+        "顾沉"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "他说自己受林晚母亲所托，替她保管一卷胶片，但没有解释母亲为什么从未提起他",
+          "source_offset": 180,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "166406f5df14ca3d47d0b5fbba082cb8fa59d60eef3926cc2034531653549526",
+          "verb": "解释"
+        },
+        {
+          "context": "林晚问起信里的“灰外套”，顾沉避开她的目光，只把一张写着潮汐时间的纸推到柜台边",
+          "source_offset": 219,
+          "speaker_name_evidence": [
+            "林晚",
+            "顾沉"
+          ],
+          "text_sha256": "874644b726eef8127cf3b12dee96fdcae856d52ff88b502c414c129934c8edfd",
+          "verb": "问"
+        }
+      ],
+      "speech_marker_count": 2,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉"
+      ],
+      "dialogue_text_evidence": [
+        {
+          "source_offset": 149,
+          "text": "也许是你自己",
+          "text_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+        }
+      ],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 1,
+      "scene_id": "SOURCE_CHAPTER_03",
+      "scene_name": "第三章  没有底片的暗房",
+      "source_chapter_id": 16,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "林晚",
+        "顾沉"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "顾沉说胶片被人拿走了",
+          "source_offset": 129,
+          "speaker_name_evidence": [
+            "顾沉"
+          ],
+          "text_sha256": "60164073e911b648acd36b20534bd2f6fe6232ad6dd109c36157a5632a885bf2",
+          "verb": "说"
+        },
+        {
+          "context": "林晚问是谁，他回答“也许是你自己”，语气像在试探",
+          "source_offset": 140,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "2a5db0a686522412a0717101b127b52f01ab6048b887d78aa33833145a43a52f",
+          "verb": "回答"
+        }
+      ],
+      "speech_marker_count": 2,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉"
+      ],
+      "dialogue_text_evidence": [
+        {
+          "source_offset": 133,
+          "text": "如果林晚听到这段话，说明我已经失败。",
+          "text_sha256": "3322221653a98e33de1a359459942c91ed3b47a9fb8cb590a623e56457cb89fb"
+        },
+        {
+          "source_offset": 211,
+          "text": "第三次回声前完成",
+          "text_sha256": "99747c960de0ddd97d213f4a416c21e9b788ef4b4d27ea82175deb55321caad9"
+        }
+      ],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 2,
+      "scene_id": "SOURCE_CHAPTER_04",
+      "scene_name": "第四章  北堤仓库",
+      "source_chapter_id": 17,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "林晚"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "录音里传来母亲年轻时的声音：“如果林晚听到这段话，说明我已经失败",
+          "source_offset": 119,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "364e129b8649d4f30a348801df5962d1b92df15151f6da39de96e37b3bf7b0f1",
+          "verb": "说"
+        },
+        {
+          "context": "他说自己跟来是为了保护她，林晚却发现他手上的皮手套沾着与围巾相同的红褐色污迹",
+          "source_offset": 234,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "d96e10a7ce13eeb80c9144dd09bf1405e6ba74cc7635230504d4e56847fb7c5f",
+          "verb": "说"
+        }
+      ],
+      "speech_marker_count": 2,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉",
+        "岚",
+        "陆叔"
+      ],
+      "dialogue_text_evidence": [
+        {
+          "source_offset": 133,
+          "text": "岚",
+          "text_sha256": "e3f2f3cb990237e92ebed5ec34b39a7dac65dbf25ca6379a6e1656817a2f90f9"
+        },
+        {
+          "source_offset": 179,
+          "text": "林晚，十二岁",
+          "text_sha256": "49f38aa4e3161dde27faf395b52a7d9a04081f749f09521d5464590223b707da"
+        }
+      ],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 2,
+      "scene_id": "SOURCE_CHAPTER_05",
+      "scene_name": "第五章  灯塔下的水池",
+      "source_chapter_id": 18,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "林晚"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "林晚没有停下，直到听见他喊出她童年的乳名",
+          "source_offset": 49,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "8e09bcbf2b5ceabe49e303c53e3ecbc267714f51edf62df1cbd846a58e5cff3e",
+          "verb": "喊"
+        },
+        {
+          "context": "他认出林晚，却坚持说母亲从未有过女儿",
+          "source_offset": 88,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "4854e39d6bc30a3f3c4dcf3b8740d8f728afff4ffe2960e91ceb1aae826bc4c5",
+          "verb": "说"
+        }
+      ],
+      "speech_marker_count": 2,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉",
+        "岚"
+      ],
+      "dialogue_text_evidence": [],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 0,
+      "scene_id": "SOURCE_CHAPTER_06",
+      "scene_name": "第六章  胶片里的第四个人",
+      "source_chapter_id": 19,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "岚",
+        "林晚",
+        "顾沉"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "顾沉承认红伞女人叫岚，是林晚的双胞胎姐姐",
+          "source_offset": 66,
+          "speaker_name_evidence": [
+            "林晚",
+            "顾沉",
+            "岚"
+          ],
+          "text_sha256": "e446bcdaafa681917f64aefffa92360f41169c644c4b48d7dfe9984b5e821cfa",
+          "verb": "承认"
+        },
+        {
+          "context": "林晚不相信这段解释",
+          "source_offset": 129,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "c37fa87739b31c6c9fbb6c3af20dc52beb6dbea52206250978591363dc7580a2",
+          "verb": "解释"
+        },
+        {
+          "context": "顾沉说那个人就是他，却拒绝说明自己为何看起来多年没有变化",
+          "source_offset": 171,
+          "speaker_name_evidence": [
+            "顾沉"
+          ],
+          "text_sha256": "bd73c644ad4bd8dd40399dea0c1b2bed7b18e575a89d80dd66d79c41ff2418a7",
+          "verb": "说"
+        }
+      ],
+      "speech_marker_count": 3,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉",
+        "岚",
+        "陆叔"
+      ],
+      "dialogue_text_evidence": [],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 0,
+      "scene_id": "SOURCE_CHAPTER_07",
+      "scene_name": "第七章  潮声第三次",
+      "source_chapter_id": 20,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "岚",
+        "林晚",
+        "陆叔",
+        "顾沉"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "陆叔说第三次响起时，地下蓄水池会打开一条通往旧码头的暗道",
+          "source_offset": 30,
+          "speaker_name_evidence": [
+            "陆叔"
+          ],
+          "text_sha256": "01ba5aea100517d774762bc993fba35f8bc00e96483bd937636b198d06082b4b",
+          "verb": "说"
+        },
+        {
+          "context": "顾沉要求她把钥匙交给自己，理由是钥匙可能触发爆炸机关；林晚怀疑他只是想抢走证据",
+          "source_offset": 72,
+          "speaker_name_evidence": [
+            "林晚",
+            "顾沉"
+          ],
+          "text_sha256": "d09d9b9d408097777b95afc451cc8f527c824db46c3bad0f41c8fc60335f3690",
+          "verb": "要求"
+        },
+        {
+          "context": "岚告诉林晚，母亲没有失败，真正失败的是她们姐妹之间的记忆被人为改写",
+          "source_offset": 201,
+          "speaker_name_evidence": [
+            "林晚",
+            "岚"
+          ],
+          "text_sha256": "d403b498a25ae4900d8692293c1d36038100501ff14684f902a39287b5474810",
+          "verb": "告诉"
+        }
+      ],
+      "speech_marker_count": 3,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉",
+        "岚",
+        "陆叔"
+      ],
+      "dialogue_text_evidence": [
+        {
+          "source_offset": 240,
+          "text": "不要寻找谁是真正的林晚，记住你们共同做过的选择。",
+          "text_sha256": "00792606af0939ab203a22b0ff114d2f2ee9be5b9cfd802837eebdcf55e8cb99"
+        }
+      ],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 1,
+      "scene_id": "SOURCE_CHAPTER_08",
+      "scene_name": "第八章  选择播放",
+      "source_chapter_id": 21,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "岚",
+        "林晚",
+        "陆叔",
+        "顾沉"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "顾沉挡在林晚身前，承认自己曾替那艘船工作，只为了把林晚送出镇子",
+          "source_offset": 38,
+          "speaker_name_evidence": [
+            "林晚",
+            "顾沉"
+          ],
+          "text_sha256": "dd50ced477f2e0d83ff565964b3de50abe7936cfff26a4f34780c30720eb2b5c",
+          "verb": "承认"
+        },
+        {
+          "context": "岚要求林晚立即播放录音",
+          "source_offset": 72,
+          "speaker_name_evidence": [
+            "林晚",
+            "岚"
+          ],
+          "text_sha256": "4e92dfa1b367008c29929d20e64318279361043929dd1bb50a8eb0c8daf81703",
+          "verb": "要求"
+        },
+        {
+          "context": "顾沉却说录音一旦播放，灯塔信号会自动发送，船上的人就会知道她们的位置",
+          "source_offset": 84,
+          "speaker_name_evidence": [
+            "顾沉"
+          ],
+          "text_sha256": "313e3eabb432b4198c1b0b260acb362f250a6ecc870f95314774a1ef6b320252",
+          "verb": "说"
+        },
+        {
+          "context": "陆叔在身后喊她们快走，自己却转身去拉下旧闸门",
+          "source_offset": 168,
+          "speaker_name_evidence": [
+            "陆叔"
+          ],
+          "text_sha256": "3ae65ebce3d63536bf01ea85836e72058c39c18c6fe5452632c741c324655bf0",
+          "verb": "喊"
+        },
+        {
+          "context": "母亲的声音说：“不要寻找谁是真正的林晚，记住你们共同做过的选择",
+          "source_offset": 233,
+          "speaker_name_evidence": [
+            "林晚"
+          ],
+          "text_sha256": "d8abbdf9764c30ba275ef34daaa015c502ce996c8d3d3f6ce924e394e29a4d8d",
+          "verb": "说"
+        }
+      ],
+      "speech_marker_count": 5,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉",
+        "岚",
+        "陆叔"
+      ],
+      "dialogue_text_evidence": [
+        {
+          "source_offset": 198,
+          "text": "岚",
+          "text_sha256": "e3f2f3cb990237e92ebed5ec34b39a7dac65dbf25ca6379a6e1656817a2f90f9"
+        }
+      ],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 1,
+      "scene_id": "SOURCE_CHAPTER_09",
+      "scene_name": "第九章  退潮之后",
+      "source_chapter_id": 22,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "岚",
+        "林晚",
+        "陆叔",
+        "顾沉"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "顾沉把旧皮手套放在柜台上，告诉林晚自己准备去警局作证",
+          "source_offset": 143,
+          "speaker_name_evidence": [
+            "林晚",
+            "顾沉"
+          ],
+          "text_sha256": "bf8fa089a166bfa20b8bc0bf530212e19ee3060acd7a5fe35ff38550c038d26b",
+          "verb": "告诉"
+        },
+        {
+          "context": "陆叔把红色搪瓷杯交给林晚，说杯底的“岚”字不是名字，而是母亲给她们的暗号",
+          "source_offset": 181,
+          "speaker_name_evidence": [
+            "林晚",
+            "岚",
+            "陆叔"
+          ],
+          "text_sha256": "fe2c2c8186ea7e00ad9a88a017876298842d5c001da19bdf70057c6ff5f0a940",
+          "verb": "说"
+        }
+      ],
+      "speech_marker_count": 2,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    },
+    {
+      "action_performance_text_present": true,
+      "declared_participants_by_literal_source_evidence": [
+        "林晚",
+        "顾沉",
+        "岚"
+      ],
+      "dialogue_text_evidence": [],
+      "dialogue_text_presence": true,
+      "raw_quote_span_count": 0,
+      "scene_id": "SOURCE_CHAPTER_10",
+      "scene_name": "第十章  回声仍在",
+      "source_chapter_id": 23,
+      "speaker_binding_status": "PROSE_CONTEXT_ONLY",
+      "speaking_character_evidence": [
+        "岚",
+        "顾沉"
+      ],
+      "speech_context_evidence": [
+        {
+          "context": "她没有立刻告诉岚和顾沉，只把字迹拍下来，放进新的铁盒",
+          "source_offset": 58,
+          "speaker_name_evidence": [
+            "顾沉",
+            "岚"
+          ],
+          "text_sha256": "a607b5f2160c97fe5e41063a1b1abcc6759f9ff8c3dff9ade171c7354587f79c",
+          "verb": "告诉"
+        }
+      ],
+      "speech_marker_count": 1,
+      "structured_dialogue_count": 0,
+      "two_or_more_visible_characters_can_legitimately_appear_together": true
+    }
+  ],
+  "source_dialogue_is_structured": false,
+  "source_dialogue_text_presence": true,
+  "speech_marker_count": 22
+}

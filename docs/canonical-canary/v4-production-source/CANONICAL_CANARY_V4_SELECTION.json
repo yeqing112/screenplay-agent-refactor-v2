@@ -1,0 +1,16 @@
+{
+  "blockers": {
+    "HISTORICAL_DERIVED_ROWS_EXCLUDED": 1,
+    "NEW_PRODUCTION_SOURCE_NOT_CREATED": 1,
+    "STRUCTURED_DIALOGUE_REQUIRES_AUTHORIZATION": 1
+  },
+  "book_id": 990402,
+  "candidates": [],
+  "provider_calls": 0,
+  "reason": "V2 selection is gated on a legitimate current production source with canonical subjects and structured dialogue.",
+  "run_id": "20261005T111334Z",
+  "source_authority_fingerprint": "ed5a3942b20764a631df8de95a03874baecfebe91dc88023ba8d1302fa70cbe0",
+  "source_dialogue_outcome": "SOURCE_DIALOGUE_CONFIRMED",
+  "status": "NO_SEMANTICALLY_USEFUL_CANONICAL_CANARY_TARGET",
+  "v2_semantic_selection_rerun": false
+}

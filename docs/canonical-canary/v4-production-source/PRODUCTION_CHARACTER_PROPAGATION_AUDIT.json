@@ -1,0 +1,27 @@
+{
+  "book_id": 990402,
+  "current_20_row_audit_reference": "docs/canonical-canary/v3-semantic-root-cause/CANONICAL_ROW_SEMANTIC_ROOT_CAUSE_AUDIT.json",
+  "current_20_rows_untouched": true,
+  "exact_participant_id_lineage_verified_for_new_source": false,
+  "fallback_asset_identity_subjects": 0,
+  "historical_990402_chain_is_not_candidate": true,
+  "lineage": [
+    "SceneBlocking.participants",
+    "initial_state_from_participants()",
+    "initial_state.characters",
+    "compile_blocking_states()",
+    "beat_spatial_states",
+    "ShotPlan subjects",
+    "visual_semantic_handoff.subjects",
+    "canonical StoryboardShot subjects"
+  ],
+  "new_source_rows": 0,
+  "prompt_derived_subjects": 0,
+  "reason": "No new production source was created because authoritative prose requires screenplay structuring before the supported production path can carry dialogue.",
+  "repair": "initial_state_from_participants",
+  "repair_test_status": "PASS_IN_CURRENT_PRODUCTION_PREVIEW_TESTS",
+  "rows_in_prior_20_row_audit": 20,
+  "run_id": "20261005T111334Z",
+  "status": "NOT_EXECUTED_NEW_SOURCE_BLOCKED",
+  "synthetic_subjects": 0
+}

@@ -1,0 +1,362 @@
+{
+  "authoritative_source": "chapters.content",
+  "authoritative_structured_dialogue_lines": [],
+  "book_id": 990402,
+  "canonical_projection_loss": false,
+  "historical_derived_lines": [
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：这雨……一时半会儿停不了吧？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:1",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：你也在等车？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:2",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：嗯。去市里的车，最早一班是……五点半吧？记不清了。这鬼地方，时刻表都快烂没了。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:3",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：五点半。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:4",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：这伞……颜色真亮。这镇上，好像很少见用这么鲜艳颜色的。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:5",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：是吗？我倒觉得，雨天需要一点颜色。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:6",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：哎哟，吓我一跳。没摔坏吧？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:7",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：谢谢。没坏。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:8",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：不客气。这破地方，东西都脆得很，经不起折腾。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:9",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：你……一个人？这么晚，在这里，不怕？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:10",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：怕什么？这镇子，安静得很。该怕的……早就不在了。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:11",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：是吗。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:1:12",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：这雨，一时半会儿停不了。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:1",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：嗯……是挺大的。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:2",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：等人？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:3",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：啊……算是吧。车晚点了。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:4",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：这个点，没车了。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:5",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：没车了？那……那我怎么……",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:6",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：你从哪儿来？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:7",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：就……城里。过来办点事。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:8",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：办事？这种天气，这种时间？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:9",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：急事嘛。没办法。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:10",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：你……一个人？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:11",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：嗯。不然呢？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:12",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：这电路……真够老的。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:13",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：你袖子里……藏了什么？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:14",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：什么？没有啊。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:15",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：这道划痕……是新的。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:16",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：划痕？伞上的吗？我看看……",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:17",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：不用了。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:18",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：你……认识这伞的主人？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:19",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：这伞，没有主人。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:20",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：那道划痕，是新的。但伞骨末端的金属箍……磨损很旧。一把旧伞，换了个新箍，又添了新伤。你握伞的姿势，像握刀。你刚才挡在身前的动作，是防御姿态。你问我的问题，不是闲聊，是试探。你不是在等车。你是在等人。或者……在等一个东西。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:21",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "撑红伞的女人：你呢？你又在等什么？",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:22",
+      "speaker": "撑红伞的女人",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    },
+    {
+      "authoritative": false,
+      "blocked_reason": "HISTORICAL_SCRIPTIR_NOT_AUTHORITATIVE",
+      "dialogue_field": "林晚：我在等一个解释。关于我母亲……为什么在遗书里，画了你的伞。",
+      "shot_assignment": null,
+      "source_line_or_semantic_id": "historical-script-ir-v2:2:23",
+      "speaker": "林晚",
+      "video_prompt_ir_availability": "NOT_EVALUATED_NO_CURRENT_CANONICAL_TARGET",
+      "visible_in_canonical_storyboard_shot": false
+    }
+  ],
+  "reason": "No new production source exists; historical ScriptIR lines are reported only to prove they were excluded.",
+  "run_id": "20261005T111334Z",
+  "status": "BLOCKED_HISTORICAL_LINES_EXCLUDED",
+  "video_prompt_ir_compile_required": true
+}
