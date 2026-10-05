@@ -1,0 +1,15 @@
+{
+  "allowlist": [
+    "林晚",
+    "顾沉"
+  ],
+  "creative_generation_forbidden": true,
+  "external_llm_posts": 1,
+  "historical_inputs_forbidden": true,
+  "image_calls": 0,
+  "max_external_posts": 1,
+  "retry_performed": false,
+  "run_id": "20261005T114436Z",
+  "status": "CONSUMED_ONE_CALL_INVALID",
+  "video_calls": 0
+}
