@@ -1,0 +1,107 @@
+{
+  "provider_prompt_compilation_calls": 0,
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "rows": [
+    {
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 376
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 377
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 378
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 379
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 380
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 381
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 382
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 383
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 384
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 385
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 386
+    },
+    {
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "storyboard_shot_id": 387
+    }
+  ],
+  "run_id": "20261005T070217Z",
+  "schema_version": "canonical_canary_prompt_ir_readiness_v1",
+  "selection_status": "CANONICAL_CANARY_TARGET_AMBIGUOUS",
+  "status": "BLOCKED_UNTIL_UNIQUE_TARGET"
+}

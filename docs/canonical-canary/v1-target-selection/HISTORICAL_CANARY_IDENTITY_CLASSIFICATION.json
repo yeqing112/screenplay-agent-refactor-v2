@@ -1,0 +1,107 @@
+{
+  "adoption": "FORBIDDEN",
+  "benchmark_fixture_ids": [
+    "SH_E01_SC002_002",
+    "SH_E01_SC002_006",
+    "SH_E01_SC002_007"
+  ],
+  "historical_media_authority_count": 0,
+  "production_canonical_count": 0,
+  "records": [
+    {
+      "allowed_usage": [
+        "PROMPT_COMPILER_GOLDEN",
+        "VIDEO_COMPILER_GOLDEN",
+        "SEMANTIC_REGRESSION",
+        "TEMPORAL_REGRESSION",
+        "MEDIA_QUALITY_BENCHMARK"
+      ],
+      "forbidden_production_authority_uses": [
+        "PRODUCTION_SHOT_AUTHORITY",
+        "PRODUCTION_MEDIA_AUTHORITY",
+        "OFFICIAL_MEDIA_LINEAGE_SOURCE"
+      ],
+      "forbidden_usage": [
+        "PRODUCTION_SHOT_AUTHORITY",
+        "PRODUCTION_MEDIA_AUTHORITY",
+        "OFFICIAL_MEDIA_LINEAGE_SOURCE"
+      ],
+      "historical_documents_retained": true,
+      "historical_media_authority": false,
+      "historical_media_retained_for_forensics_only": true,
+      "historical_runner_reference_detected": true,
+      "identity": "SH_E01_SC002_002",
+      "identity_class": "BENCHMARK_FIXTURE",
+      "production_canonical": false,
+      "production_canonical_identity": false,
+      "retention_roots": [
+        "docs/shot-canary",
+        "docs/video-compiler"
+      ]
+    },
+    {
+      "allowed_usage": [
+        "PROMPT_COMPILER_GOLDEN",
+        "VIDEO_COMPILER_GOLDEN",
+        "SEMANTIC_REGRESSION",
+        "TEMPORAL_REGRESSION",
+        "MEDIA_QUALITY_BENCHMARK"
+      ],
+      "forbidden_production_authority_uses": [
+        "PRODUCTION_SHOT_AUTHORITY",
+        "PRODUCTION_MEDIA_AUTHORITY",
+        "OFFICIAL_MEDIA_LINEAGE_SOURCE"
+      ],
+      "forbidden_usage": [
+        "PRODUCTION_SHOT_AUTHORITY",
+        "PRODUCTION_MEDIA_AUTHORITY",
+        "OFFICIAL_MEDIA_LINEAGE_SOURCE"
+      ],
+      "historical_documents_retained": true,
+      "historical_media_authority": false,
+      "historical_media_retained_for_forensics_only": true,
+      "historical_runner_reference_detected": true,
+      "identity": "SH_E01_SC002_006",
+      "identity_class": "BENCHMARK_FIXTURE",
+      "production_canonical": false,
+      "production_canonical_identity": false,
+      "retention_roots": [
+        "docs/shot-canary",
+        "docs/video-compiler"
+      ]
+    },
+    {
+      "allowed_usage": [
+        "PROMPT_COMPILER_GOLDEN",
+        "VIDEO_COMPILER_GOLDEN",
+        "SEMANTIC_REGRESSION",
+        "TEMPORAL_REGRESSION",
+        "MEDIA_QUALITY_BENCHMARK"
+      ],
+      "forbidden_production_authority_uses": [
+        "PRODUCTION_SHOT_AUTHORITY",
+        "PRODUCTION_MEDIA_AUTHORITY",
+        "OFFICIAL_MEDIA_LINEAGE_SOURCE"
+      ],
+      "forbidden_usage": [
+        "PRODUCTION_SHOT_AUTHORITY",
+        "PRODUCTION_MEDIA_AUTHORITY",
+        "OFFICIAL_MEDIA_LINEAGE_SOURCE"
+      ],
+      "historical_documents_retained": true,
+      "historical_media_authority": false,
+      "historical_media_retained_for_forensics_only": true,
+      "historical_runner_reference_detected": true,
+      "identity": "SH_E01_SC002_007",
+      "identity_class": "BENCHMARK_FIXTURE",
+      "production_canonical": false,
+      "production_canonical_identity": false,
+      "retention_roots": [
+        "docs/shot-canary",
+        "docs/video-compiler"
+      ]
+    }
+  ],
+  "run_id": "20261005T070217Z",
+  "schema_version": "historical_canary_identity_classification_v1"
+}

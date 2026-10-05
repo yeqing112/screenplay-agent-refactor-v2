@@ -4,6 +4,7 @@ import json
 from types import SimpleNamespace
 
 from core.sc002_002_upstream_recovery import exact_shot_plan_payload_matches, resolve_exact_canonical_identity
+from core.canary_identity_boundary import CanaryIdentityError, classify_canary_identity, require_production_canonical_identity
 
 
 def _plan(plan_id: int, target: str):
@@ -73,3 +74,26 @@ def test_identity_requires_pointer_and_authority_join():
     authority = SimpleNamespace(shot_plan_id=1, payload_hash="payload-1", envelope_fingerprint="auth-1", qualification_state="AUTHORITY_BOUND", stale_status="FRESH")
     result = resolve_exact_canonical_identity(_Session([plan], [pointer], [authority]))
     assert result["status"] == "ZERO"
+
+
+def test_benchmark_fixture_cannot_become_production_identity_even_with_history():
+    classification = classify_canary_identity("SH_E01_SC002_002")
+    assert classification["identity_class"] == "BENCHMARK_FIXTURE"
+    assert classification["production_canonical_identity"] is False
+    try:
+        require_production_canonical_identity(_Session([]), "SH_E01_SC002_002")
+    except CanaryIdentityError as exc:
+        assert exc.code == "BENCHMARK_IDENTITY_NOT_PRODUCTION_CANONICAL"
+    else:
+        raise AssertionError("benchmark fixture unexpectedly entered production identity")
+
+
+def test_exact_production_identity_is_marked_after_authority_join():
+    identity = "SH_E01_SC001_001"
+    plan = _plan(1, identity)
+    plan.production_status = "qualified"
+    pointer = SimpleNamespace(book_id=100, episode=1, scene_id="E01_SC002", shot_plan_id=1, plan_revision=1, authority_envelope_fingerprint="auth-1", qualification_state="PRODUCTION_QUALIFIED")
+    authority = SimpleNamespace(shot_plan_id=1, payload_hash="payload-1", envelope_fingerprint="auth-1", qualification_state="AUTHORITY_BOUND", stale_status="FRESH")
+    result = require_production_canonical_identity(_Session([plan], [pointer], [authority]), identity)
+    assert result["classification"]["identity_class"] == "PRODUCTION_CANONICAL"
+    assert result["classification"]["production_canonical_identity"] is True

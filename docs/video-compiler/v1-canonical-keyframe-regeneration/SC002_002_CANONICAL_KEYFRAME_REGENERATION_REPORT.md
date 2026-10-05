@@ -1,12 +1,12 @@
 # SC002_002 Canonical Keyframe Regeneration
 
 Status: `SC002_002_CANONICAL_IMAGE_PREFLIGHT_BLOCKED`
-Run: `20261005T061257Z`
+Run: `20261005T064033Z`
 Shot: `SH_E01_SC002_002`
 
 ## Gate A
 
-The run stopped before provider POST with `SC002_002_CANONICAL_IDENTITY_NOT_FOUND`. Exact current identity resolution found no unique authoritative `ShotPlan.shots[*].plan_shot_id == SH_E01_SC002_002`. Historical Markdown prompts and the historical keyframe remain forensic evidence only and were not adopted, modified, or used as authority.
+The run stopped before provider POST with `BENCHMARK_IDENTITY_NOT_PRODUCTION_CANONICAL`. Exact current identity resolution found no unique authoritative `ShotPlan.shots[*].plan_shot_id == SH_E01_SC002_002`. Historical Markdown prompts and the historical keyframe remain forensic evidence only and were not adopted, modified, or used as authority.
 
 ## Provider and persistence safety
 

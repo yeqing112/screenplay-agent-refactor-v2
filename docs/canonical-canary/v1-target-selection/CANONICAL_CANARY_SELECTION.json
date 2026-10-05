@@ -1,0 +1,1002 @@
+{
+  "blocker_counts": {
+    "PROMPT_IR_VIDEO_NOT_CURRENT": 8
+  },
+  "candidate_count": 12,
+  "external_llm_calls": 0,
+  "identity_boundary_status": "BENCHMARK_PRODUCTION_IDENTITY_SEPARATED",
+  "ranking": "score_desc_then_book_episode_exact_plan_shot_id_storyboard_id",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "run_id": "20261005T070217Z",
+  "schema_version": "canonical_canary_selection_v1",
+  "selected": null,
+  "selection_fingerprint": "eaac583109355f5ca6fb1f343671a3420239f57cdb193cf921b994d3539d1c78",
+  "status": "CANONICAL_CANARY_TARGET_AMBIGUOUS",
+  "top_candidates": [
+    {
+      "asset_authority": {
+        "authority_fingerprint": "a2849b490b7a1ecf2daa89fa1bc2be4e9e36189acaec8cd7de6a3dc915880eb5",
+        "bindings": [
+          {
+            "asset_key": "book:990449:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 21,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990449,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 4,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "7460848d3f6c774452ab18ffc098830f8f2c08774b7d672d7b8314725f1b52ac",
+      "materialization_set_id": 8,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "308609a954438caa5062bce33504e6b54d5accb5035b11d5378f21f479367b4c",
+      "scene_blocking_id": 75,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "5b01e50d9023431f321564abf7e64cd430fd84b9beaf727a1c5edfa658a57f79",
+        "book_id": 990449,
+        "episode": 1,
+        "payload_hash": "9c3e2b386660924fc84bbfd25b6dff026568aed847f4a6cb68c09f6d8d9f8f23",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 60,
+        "script_ir_version_id": 48,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "dcf409f6160a570c016efe3f29909f1ff10c92112dd051a3fe06c820f322b4c9",
+      "shot_plan_id": 28,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 376,
+      "treatment_authority_fingerprint": "62c4532a322323cd12a6e5ec90c51355a06f9dea342fa0818666ce66da1b0443",
+      "treatment_id": 62
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "a2849b490b7a1ecf2daa89fa1bc2be4e9e36189acaec8cd7de6a3dc915880eb5",
+        "bindings": [
+          {
+            "asset_key": "book:990449:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 21,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990449,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 3,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "7460848d3f6c774452ab18ffc098830f8f2c08774b7d672d7b8314725f1b52ac",
+      "materialization_set_id": 8,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "308609a954438caa5062bce33504e6b54d5accb5035b11d5378f21f479367b4c",
+      "scene_blocking_id": 75,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "5b01e50d9023431f321564abf7e64cd430fd84b9beaf727a1c5edfa658a57f79",
+        "book_id": 990449,
+        "episode": 1,
+        "payload_hash": "9c3e2b386660924fc84bbfd25b6dff026568aed847f4a6cb68c09f6d8d9f8f23",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 60,
+        "script_ir_version_id": 48,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "dcf409f6160a570c016efe3f29909f1ff10c92112dd051a3fe06c820f322b4c9",
+      "shot_plan_id": 28,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 377,
+      "treatment_authority_fingerprint": "62c4532a322323cd12a6e5ec90c51355a06f9dea342fa0818666ce66da1b0443",
+      "treatment_id": 62
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "a2849b490b7a1ecf2daa89fa1bc2be4e9e36189acaec8cd7de6a3dc915880eb5",
+        "bindings": [
+          {
+            "asset_key": "book:990449:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 21,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990449,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 6,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "7460848d3f6c774452ab18ffc098830f8f2c08774b7d672d7b8314725f1b52ac",
+      "materialization_set_id": 8,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "308609a954438caa5062bce33504e6b54d5accb5035b11d5378f21f479367b4c",
+      "scene_blocking_id": 75,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "5b01e50d9023431f321564abf7e64cd430fd84b9beaf727a1c5edfa658a57f79",
+        "book_id": 990449,
+        "episode": 1,
+        "payload_hash": "9c3e2b386660924fc84bbfd25b6dff026568aed847f4a6cb68c09f6d8d9f8f23",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 60,
+        "script_ir_version_id": 48,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "dcf409f6160a570c016efe3f29909f1ff10c92112dd051a3fe06c820f322b4c9",
+      "shot_plan_id": 28,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 378,
+      "treatment_authority_fingerprint": "62c4532a322323cd12a6e5ec90c51355a06f9dea342fa0818666ce66da1b0443",
+      "treatment_id": 62
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "a2849b490b7a1ecf2daa89fa1bc2be4e9e36189acaec8cd7de6a3dc915880eb5",
+        "bindings": [
+          {
+            "asset_key": "book:990449:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 21,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990449,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM_CLOSE",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 3,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "7460848d3f6c774452ab18ffc098830f8f2c08774b7d672d7b8314725f1b52ac",
+      "materialization_set_id": 8,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "308609a954438caa5062bce33504e6b54d5accb5035b11d5378f21f479367b4c",
+      "scene_blocking_id": 75,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "5b01e50d9023431f321564abf7e64cd430fd84b9beaf727a1c5edfa658a57f79",
+        "book_id": 990449,
+        "episode": 1,
+        "payload_hash": "9c3e2b386660924fc84bbfd25b6dff026568aed847f4a6cb68c09f6d8d9f8f23",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 60,
+        "script_ir_version_id": 48,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "dcf409f6160a570c016efe3f29909f1ff10c92112dd051a3fe06c820f322b4c9",
+      "shot_plan_id": 28,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 379,
+      "treatment_authority_fingerprint": "62c4532a322323cd12a6e5ec90c51355a06f9dea342fa0818666ce66da1b0443",
+      "treatment_id": 62
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "6e8760b1be07f1120a720b3b8e8f74fdeb7ad3d4d9b54291f06908021cea1016",
+        "bindings": [
+          {
+            "asset_key": "book:990450:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 22,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990450,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 4,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "abacdcd03d82072dd2f1ba9decd1272cceb2aeee006ed5b919f394d486e4b507",
+      "materialization_set_id": 9,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "0862ee2b82776b792c77d956b6bba470b6458112574632cabb9cd32a11342761",
+      "scene_blocking_id": 77,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "d68844c8f83b1a0b8c52af501d68b24c9291e5b9832bc85394475af788e38baf",
+        "book_id": 990450,
+        "episode": 1,
+        "payload_hash": "b1528bdd5fb9996baa33d9cf504ffa48d20d9a8e52f58b34117d34e7efde0f99",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 61,
+        "script_ir_version_id": 49,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "4abe61f75df6f2077691da6906a502350a0a8d19d0d99b3a5577b98d151a8d88",
+      "shot_plan_id": 30,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 380,
+      "treatment_authority_fingerprint": "8e0eed962c803ebd9f12c8abfb1a344172b05de524b39664acb1de8a28fe875d",
+      "treatment_id": 63
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "6e8760b1be07f1120a720b3b8e8f74fdeb7ad3d4d9b54291f06908021cea1016",
+        "bindings": [
+          {
+            "asset_key": "book:990450:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 22,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990450,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 3,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "abacdcd03d82072dd2f1ba9decd1272cceb2aeee006ed5b919f394d486e4b507",
+      "materialization_set_id": 9,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "0862ee2b82776b792c77d956b6bba470b6458112574632cabb9cd32a11342761",
+      "scene_blocking_id": 77,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "d68844c8f83b1a0b8c52af501d68b24c9291e5b9832bc85394475af788e38baf",
+        "book_id": 990450,
+        "episode": 1,
+        "payload_hash": "b1528bdd5fb9996baa33d9cf504ffa48d20d9a8e52f58b34117d34e7efde0f99",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 61,
+        "script_ir_version_id": 49,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "4abe61f75df6f2077691da6906a502350a0a8d19d0d99b3a5577b98d151a8d88",
+      "shot_plan_id": 30,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 381,
+      "treatment_authority_fingerprint": "8e0eed962c803ebd9f12c8abfb1a344172b05de524b39664acb1de8a28fe875d",
+      "treatment_id": 63
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "6e8760b1be07f1120a720b3b8e8f74fdeb7ad3d4d9b54291f06908021cea1016",
+        "bindings": [
+          {
+            "asset_key": "book:990450:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 22,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990450,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 6,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "abacdcd03d82072dd2f1ba9decd1272cceb2aeee006ed5b919f394d486e4b507",
+      "materialization_set_id": 9,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "0862ee2b82776b792c77d956b6bba470b6458112574632cabb9cd32a11342761",
+      "scene_blocking_id": 77,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "d68844c8f83b1a0b8c52af501d68b24c9291e5b9832bc85394475af788e38baf",
+        "book_id": 990450,
+        "episode": 1,
+        "payload_hash": "b1528bdd5fb9996baa33d9cf504ffa48d20d9a8e52f58b34117d34e7efde0f99",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 61,
+        "script_ir_version_id": 49,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "4abe61f75df6f2077691da6906a502350a0a8d19d0d99b3a5577b98d151a8d88",
+      "shot_plan_id": 30,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 382,
+      "treatment_authority_fingerprint": "8e0eed962c803ebd9f12c8abfb1a344172b05de524b39664acb1de8a28fe875d",
+      "treatment_id": 63
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "6e8760b1be07f1120a720b3b8e8f74fdeb7ad3d4d9b54291f06908021cea1016",
+        "bindings": [
+          {
+            "asset_key": "book:990450:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 22,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990450,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM_CLOSE",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 3,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "abacdcd03d82072dd2f1ba9decd1272cceb2aeee006ed5b919f394d486e4b507",
+      "materialization_set_id": 9,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "0862ee2b82776b792c77d956b6bba470b6458112574632cabb9cd32a11342761",
+      "scene_blocking_id": 77,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "d68844c8f83b1a0b8c52af501d68b24c9291e5b9832bc85394475af788e38baf",
+        "book_id": 990450,
+        "episode": 1,
+        "payload_hash": "b1528bdd5fb9996baa33d9cf504ffa48d20d9a8e52f58b34117d34e7efde0f99",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 61,
+        "script_ir_version_id": 49,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "4abe61f75df6f2077691da6906a502350a0a8d19d0d99b3a5577b98d151a8d88",
+      "shot_plan_id": 30,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 383,
+      "treatment_authority_fingerprint": "8e0eed962c803ebd9f12c8abfb1a344172b05de524b39664acb1de8a28fe875d",
+      "treatment_id": 63
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "ff3a174de215495ce7bc67a3eaafe06c21c1b175ba1d79ce333e21a50b84acaf",
+        "bindings": [
+          {
+            "asset_key": "book:990451:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 23,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990451,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 4,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "6d73de09ab7c47ae999d4d8789d280bcbd7d55d69f5987d6c29a9d13dd088a48",
+      "materialization_set_id": 10,
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "6f0a17c6dabb68df88a853ce3f66ce9b22f48b198372fffb4f9c9f0448f677b4",
+      "scene_blocking_id": 79,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "0741c5180f5a6220611a3b6171df1f2190a0d47da8c0defbef6833052608ddad",
+        "book_id": 990451,
+        "episode": 1,
+        "payload_hash": "398655131a1a96cba424bf15f4eb79dee61b687884402df0ff5774f32ec21d7b",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 62,
+        "script_ir_version_id": 50,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "a001fe26978c4291feeaca53e7b4b488046b67f6f76a8167391dee7333729115",
+      "shot_plan_id": 32,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 384,
+      "treatment_authority_fingerprint": "913eebf97efb4e1ed0d2559bef7d1a86efa117bc9257aee545fded160ddbbbdb",
+      "treatment_id": 64
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "ff3a174de215495ce7bc67a3eaafe06c21c1b175ba1d79ce333e21a50b84acaf",
+        "bindings": [
+          {
+            "asset_key": "book:990451:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 23,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990451,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 3,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "6d73de09ab7c47ae999d4d8789d280bcbd7d55d69f5987d6c29a9d13dd088a48",
+      "materialization_set_id": 10,
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "6f0a17c6dabb68df88a853ce3f66ce9b22f48b198372fffb4f9c9f0448f677b4",
+      "scene_blocking_id": 79,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "0741c5180f5a6220611a3b6171df1f2190a0d47da8c0defbef6833052608ddad",
+        "book_id": 990451,
+        "episode": 1,
+        "payload_hash": "398655131a1a96cba424bf15f4eb79dee61b687884402df0ff5774f32ec21d7b",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 62,
+        "script_ir_version_id": 50,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "a001fe26978c4291feeaca53e7b4b488046b67f6f76a8167391dee7333729115",
+      "shot_plan_id": 32,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 385,
+      "treatment_authority_fingerprint": "913eebf97efb4e1ed0d2559bef7d1a86efa117bc9257aee545fded160ddbbbdb",
+      "treatment_id": 64
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "ff3a174de215495ce7bc67a3eaafe06c21c1b175ba1d79ce333e21a50b84acaf",
+        "bindings": [
+          {
+            "asset_key": "book:990451:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 23,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990451,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 6,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "6d73de09ab7c47ae999d4d8789d280bcbd7d55d69f5987d6c29a9d13dd088a48",
+      "materialization_set_id": 10,
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "6f0a17c6dabb68df88a853ce3f66ce9b22f48b198372fffb4f9c9f0448f677b4",
+      "scene_blocking_id": 79,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "0741c5180f5a6220611a3b6171df1f2190a0d47da8c0defbef6833052608ddad",
+        "book_id": 990451,
+        "episode": 1,
+        "payload_hash": "398655131a1a96cba424bf15f4eb79dee61b687884402df0ff5774f32ec21d7b",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 62,
+        "script_ir_version_id": 50,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "a001fe26978c4291feeaca53e7b4b488046b67f6f76a8167391dee7333729115",
+      "shot_plan_id": 32,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 386,
+      "treatment_authority_fingerprint": "913eebf97efb4e1ed0d2559bef7d1a86efa117bc9257aee545fded160ddbbbdb",
+      "treatment_id": 64
+    },
+    {
+      "asset_authority": {
+        "authority_fingerprint": "ff3a174de215495ce7bc67a3eaafe06c21c1b175ba1d79ce333e21a50b84acaf",
+        "bindings": [
+          {
+            "asset_key": "book:990451:scene:E01_SC001",
+            "asset_name": "",
+            "asset_revision": 1,
+            "asset_type": "scene",
+            "asset_version_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "asset_version_id": 23,
+            "authority_fingerprint": "sha256:431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "authority_status": "PRODUCTION_AUTHORITATIVE",
+            "canonical_asset_id": "E01_SC001",
+            "media_readiness": "READY",
+            "readiness": {
+              "blocking_reason": "",
+              "identity_ready": true,
+              "media_ready": false,
+              "reference_ready": true,
+              "status": "ASSET_REFERENCE_READY",
+              "visual_spec_ready": true
+            },
+            "reference_authority": {},
+            "reference_status": "REFERENCE_PENDING",
+            "reference_token": "",
+            "stale_status": "FRESH",
+            "variant_id": "",
+            "variant_scope": {},
+            "visual_facts": []
+          }
+        ],
+        "required_character_ids": [],
+        "required_prop_ids": [],
+        "status": "PASS"
+      },
+      "blockers": [],
+      "book_id": 990451,
+      "camera": {
+        "angle": "eye_level",
+        "movement": "none",
+        "shot_size": "MEDIUM_CLOSE",
+        "support": "static"
+      },
+      "characters": 0,
+      "dialogue_present": false,
+      "duration": 3,
+      "episode": 1,
+      "hard_gate": "PASS",
+      "materialization_fingerprint": "6d73de09ab7c47ae999d4d8789d280bcbd7d55d69f5987d6c29a9d13dd088a48",
+      "materialization_set_id": 10,
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_ir": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      },
+      "props": 0,
+      "scene_blocking_authority_fingerprint": "6f0a17c6dabb68df88a853ce3f66ce9b22f48b198372fffb4f9c9f0448f677b4",
+      "scene_blocking_id": 79,
+      "scene_id": "E01_SC001",
+      "scene_name": "场景一：雨夜旧港 — 旧港便利店 — 夜",
+      "script_ir": {
+        "authority_fingerprint": "0741c5180f5a6220611a3b6171df1f2190a0d47da8c0defbef6833052608ddad",
+        "book_id": 990451,
+        "episode": 1,
+        "payload_hash": "398655131a1a96cba424bf15f4eb79dee61b687884402df0ff5774f32ec21d7b",
+        "qualification_state": "PRODUCTION_QUALIFIED",
+        "revision": 1,
+        "script_id": 62,
+        "script_ir_version_id": 50,
+        "stale_status": "FRESH",
+        "status": "production_qualified",
+        "status_result": "PASS"
+      },
+      "selection_score": 25,
+      "shot_plan_authority_fingerprint": "a001fe26978c4291feeaca53e7b4b488046b67f6f76a8167391dee7333729115",
+      "shot_plan_id": 32,
+      "shot_plan_revision": 1,
+      "storyboard_shot_id": 387,
+      "treatment_authority_fingerprint": "913eebf97efb4e1ed0d2559bef7d1a86efa117bc9257aee545fded160ddbbbdb",
+      "treatment_id": 64
+    }
+  ]
+}

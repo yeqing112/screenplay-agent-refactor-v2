@@ -67,6 +67,7 @@ def main() -> int:
 
     from api.model_registry import get_default_profile
     from core.runtime_credentials import RuntimeCredentialError, resolve_runtime_credential
+    from core.canary_identity_boundary import classify_canary_identity
     from core.sc002_002_upstream_recovery import inspect_script_ir_state, resolve_exact_canonical_identity
     from models import Session
 
@@ -84,10 +85,12 @@ def main() -> int:
         }
 
     source_scan = {"shot_identity": SHOT_ID, "database_url_source": "configured application database", "historical_prompt_used": False, "historical_keyframe_adopted": False}
+    identity_classification = classify_canary_identity(SHOT_ID)
     with Session() as session:
         identity = resolve_exact_canonical_identity(session, SHOT_ID)
         script_state = inspect_script_ir_state(session)
         source_scan.update({
+            "identity_classification": identity_classification,
             "identity_resolution": identity,
             "script_ir_state": {key: value for key, value in script_state.items() if key != "rows"},
             "current_script_ir_available": "UNSCOPED_UNTIL_IDENTITY_RESOLVED",
@@ -95,7 +98,10 @@ def main() -> int:
         })
 
     identity_status = str((source_scan.get("identity_resolution") or {}).get("status") or "ZERO")
-    block_reason = "SC002_002_CANONICAL_IDENTITY_AMBIGUOUS" if identity_status == "AMBIGUOUS" else "SC002_002_CANONICAL_IDENTITY_NOT_FOUND"
+    if identity_classification.get("identity_class") == "BENCHMARK_FIXTURE":
+        block_reason = "BENCHMARK_IDENTITY_NOT_PRODUCTION_CANONICAL"
+    else:
+        block_reason = "SC002_002_CANONICAL_IDENTITY_AMBIGUOUS" if identity_status == "AMBIGUOUS" else "SC002_002_CANONICAL_IDENTITY_NOT_FOUND"
     block_detail = "No unique authoritative current ShotPlan payload contains exact plan_shot_id SH_E01_SC002_002; historical prompt/media cannot be adopted."
     preflight = {
         "schema_version": "sc002_002_canonical_image_preflight_v1",

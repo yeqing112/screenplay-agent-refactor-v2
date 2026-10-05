@@ -1,0 +1,26 @@
+{
+  "all_benchmark_blocked": true,
+  "external_llm_calls": 0,
+  "production_identity_rule": "exact structured ShotPlan.shots[*].plan_shot_id + current ShotPlanPointer + current ShotPlanAuthority",
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "records": [
+    {
+      "error_code": "BENCHMARK_IDENTITY_NOT_PRODUCTION_CANONICAL",
+      "identity": "SH_E01_SC002_002",
+      "status": "BLOCKED"
+    },
+    {
+      "error_code": "BENCHMARK_IDENTITY_NOT_PRODUCTION_CANONICAL",
+      "identity": "SH_E01_SC002_006",
+      "status": "BLOCKED"
+    },
+    {
+      "error_code": "BENCHMARK_IDENTITY_NOT_PRODUCTION_CANONICAL",
+      "identity": "SH_E01_SC002_007",
+      "status": "BLOCKED"
+    }
+  ],
+  "run_id": "20261005T070217Z",
+  "schema_version": "canary_identity_boundary_audit_v1"
+}
