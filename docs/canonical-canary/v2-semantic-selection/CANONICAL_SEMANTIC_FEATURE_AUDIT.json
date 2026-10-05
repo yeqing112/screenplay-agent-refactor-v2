@@ -1,0 +1,1106 @@
+{
+  "count": 20,
+  "items": [
+    {
+      "book_id": 990448,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-dab75c73f3a52187",
+      "plan_shot_id": "SH_E01_SC001_001",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 4,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "6a6822abefd356ce8c5f0ada162deef54f98d91b3a55c3b7ae93832ac54639cd",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "9ee8efec9077a43180fd5a53b4a8cc0c85da4cca6765df853ba96b5fc1f5baa9"
+      },
+      "storyboard_shot_id": 372
+    },
+    {
+      "book_id": 990448,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-a2f6af84f52ce830",
+      "plan_shot_id": "SH_E01_SC001_002",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "124d65095f8a5e399eb242aa3af220bac5a95cab7977af8a8f7c84f9e5443803",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "94a98b343186c24689e05d1d90b43d106197c62c703d0a51a9eed80bd3cee202"
+      },
+      "storyboard_shot_id": 373
+    },
+    {
+      "book_id": 990448,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-fa1d90506dfc8ca7",
+      "plan_shot_id": "SH_E01_SC001_003",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 6,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "622f05c036ba3fd2f3729565af93590582cba1c414e4f9fdd8b71147029360af",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "0891b8fca7d01e499dd57594683bf71876fedb5ce89f9f5339a208589a494cdb"
+      },
+      "storyboard_shot_id": 374
+    },
+    {
+      "book_id": 990448,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-0f7696b5b22f8594",
+      "plan_shot_id": "SH_E01_SC001_004",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM_CLOSE",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM_CLOSE",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": true,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "7b5120950cda638f1f042a92eca79d2134cc653d567a85840977e1095f1867ca",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "5cf567d31e29535402c2a2108e7cf1aa3143cf53a488a80de28dac64b96d3dee"
+      },
+      "storyboard_shot_id": 375
+    },
+    {
+      "book_id": 990449,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-dab75c73f3a52187",
+      "plan_shot_id": "SH_E01_SC001_001",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 4,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "39cf50379ade0757e4aa0b5c9f59c3e0d5fd401d3c91d62de767a1c74a836ef3",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "9ee8efec9077a43180fd5a53b4a8cc0c85da4cca6765df853ba96b5fc1f5baa9"
+      },
+      "storyboard_shot_id": 376
+    },
+    {
+      "book_id": 990449,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-a2f6af84f52ce830",
+      "plan_shot_id": "SH_E01_SC001_002",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "38d9a5e6ffe711ea94152e3ce0e7398d399121cb8268444dbffd7605da4bc01b",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "94a98b343186c24689e05d1d90b43d106197c62c703d0a51a9eed80bd3cee202"
+      },
+      "storyboard_shot_id": 377
+    },
+    {
+      "book_id": 990449,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-fa1d90506dfc8ca7",
+      "plan_shot_id": "SH_E01_SC001_003",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 6,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "c7212ab1143eae5a3534cec5d016008a442256bfcbb673fe225c103e4732cf8b",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "0891b8fca7d01e499dd57594683bf71876fedb5ce89f9f5339a208589a494cdb"
+      },
+      "storyboard_shot_id": 378
+    },
+    {
+      "book_id": 990449,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-0f7696b5b22f8594",
+      "plan_shot_id": "SH_E01_SC001_004",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM_CLOSE",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM_CLOSE",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": true,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "8c12c6cd6c5aee6691ed002e03fe8b491ed0fcb41cfb9e9a2401f5be7da07957",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "5cf567d31e29535402c2a2108e7cf1aa3143cf53a488a80de28dac64b96d3dee"
+      },
+      "storyboard_shot_id": 379
+    },
+    {
+      "book_id": 990450,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-dab75c73f3a52187",
+      "plan_shot_id": "SH_E01_SC001_001",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 4,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "1d735ce3b63795c77a479a3bb1b808a3d89591d5bd9ecf7560cd97c3d48b367b",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "9ee8efec9077a43180fd5a53b4a8cc0c85da4cca6765df853ba96b5fc1f5baa9"
+      },
+      "storyboard_shot_id": 380
+    },
+    {
+      "book_id": 990450,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-a2f6af84f52ce830",
+      "plan_shot_id": "SH_E01_SC001_002",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "cdee24cfaa8b674e15af2a2042146a23df44fe03981d6c9393c8d02ad05ee8f3",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "94a98b343186c24689e05d1d90b43d106197c62c703d0a51a9eed80bd3cee202"
+      },
+      "storyboard_shot_id": 381
+    },
+    {
+      "book_id": 990450,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-fa1d90506dfc8ca7",
+      "plan_shot_id": "SH_E01_SC001_003",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 6,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "426c6c72a7784e981b80491c17be2005357c10a3a926bac15fabc69e6a29afbc",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "0891b8fca7d01e499dd57594683bf71876fedb5ce89f9f5339a208589a494cdb"
+      },
+      "storyboard_shot_id": 382
+    },
+    {
+      "book_id": 990450,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-0f7696b5b22f8594",
+      "plan_shot_id": "SH_E01_SC001_004",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM_CLOSE",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM_CLOSE",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": true,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "e1969ace2e79084e32806d1a52ba399407465e3da9003d64a8bdd84f638bb1b8",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "5cf567d31e29535402c2a2108e7cf1aa3143cf53a488a80de28dac64b96d3dee"
+      },
+      "storyboard_shot_id": 383
+    },
+    {
+      "book_id": 990451,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-dab75c73f3a52187",
+      "plan_shot_id": "SH_E01_SC001_001",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 4,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "d399ab0fa08c0ef4437de83fc51516d46a647b586de7f8329d1c2f1be6d3111e",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "9ee8efec9077a43180fd5a53b4a8cc0c85da4cca6765df853ba96b5fc1f5baa9"
+      },
+      "storyboard_shot_id": 384
+    },
+    {
+      "book_id": 990451,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-a2f6af84f52ce830",
+      "plan_shot_id": "SH_E01_SC001_002",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "08f04d5234e1f28a832a17e597bbd2e14a6c27a0faa55ec2aae65dcbfb7683b5",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "94a98b343186c24689e05d1d90b43d106197c62c703d0a51a9eed80bd3cee202"
+      },
+      "storyboard_shot_id": 385
+    },
+    {
+      "book_id": 990451,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-fa1d90506dfc8ca7",
+      "plan_shot_id": "SH_E01_SC001_003",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 6,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "5e8fbac91559951e41e874186f75ec3e3da9b52a40b07548944cf0fc84ab088f",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "0891b8fca7d01e499dd57594683bf71876fedb5ce89f9f5339a208589a494cdb"
+      },
+      "storyboard_shot_id": 386
+    },
+    {
+      "book_id": 990451,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-0f7696b5b22f8594",
+      "plan_shot_id": "SH_E01_SC001_004",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM_CLOSE",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM_CLOSE",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": true,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "d6a752db628f76e810939f2dafbe7a24793609c54fb5b8973c08f23afd3c6203",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "5cf567d31e29535402c2a2108e7cf1aa3143cf53a488a80de28dac64b96d3dee"
+      },
+      "storyboard_shot_id": 387
+    },
+    {
+      "book_id": 990452,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-dab75c73f3a52187",
+      "plan_shot_id": "SH_E01_SC001_001",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 4,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "28567be470f50f08eb10b79fa29a9fd600bdd6d9e1f376d98a29119e9455bbda",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "9ee8efec9077a43180fd5a53b4a8cc0c85da4cca6765df853ba96b5fc1f5baa9"
+      },
+      "storyboard_shot_id": 388
+    },
+    {
+      "book_id": 990452,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-a2f6af84f52ce830",
+      "plan_shot_id": "SH_E01_SC001_002",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "702bcdd782bdd0c6a370688f7de0f414da6873ce964abd191230f88e2a750b52",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "94a98b343186c24689e05d1d90b43d106197c62c703d0a51a9eed80bd3cee202"
+      },
+      "storyboard_shot_id": 389
+    },
+    {
+      "book_id": 990452,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-fa1d90506dfc8ca7",
+      "plan_shot_id": "SH_E01_SC001_003",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 6,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": false,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "b94ee078dc6b0d8a8dd0f6bd859ad0c464195b6153abbd0198eb37b5839f6f91",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "0891b8fca7d01e499dd57594683bf71876fedb5ce89f9f5339a208589a494cdb"
+      },
+      "storyboard_shot_id": 390
+    },
+    {
+      "book_id": 990452,
+      "canonical_eligibility": "FAIL",
+      "clone_group_id": "clone-0f7696b5b22f8594",
+      "plan_shot_id": "SH_E01_SC001_004",
+      "semantic_completeness": "INSUFFICIENT",
+      "semantic_features": {
+        "asset_identity_refs": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "camera": {
+          "framing": "MEDIUM_CLOSE",
+          "movement": "NONE",
+          "raw": {
+            "framing_class": "MEDIUM_CLOSE",
+            "movement": "NONE",
+            "movement_end_condition": null,
+            "movement_target": null,
+            "movement_trigger": null,
+            "orientation": "EYE_LEVEL",
+            "support": "STATIC"
+          },
+          "support": "STATIC"
+        },
+        "camera_complexity": "LOW",
+        "canonical_asset_identity": {
+          "characters": [],
+          "props": [],
+          "scene": "E01_SC001"
+        },
+        "continuity_data_presence": true,
+        "dialogue_consistency": "PASS",
+        "dialogue_consistency_errors": [],
+        "dialogue_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dialogue_length": 0,
+        "dialogue_present": false,
+        "duration": 3,
+        "entry_state_presence": true,
+        "exit_state_presence": true,
+        "prop_count": 0,
+        "prop_ids": [],
+        "props": [],
+        "reaction_or_performance_presence": true,
+        "semantic_source": "StoryboardShot.meta_info.visual_semantic_handoff",
+        "stored_visual_semantic_fingerprint": "91e154f08a4f55971628b6ca6be86499094036638049c72865418d0f967c8ea9",
+        "subject_count": 0,
+        "subject_ids": [],
+        "subjects": [],
+        "temporal_intent_presence": true,
+        "visual_semantic_fingerprint": "5cf567d31e29535402c2a2108e7cf1aa3143cf53a488a80de28dac64b96d3dee"
+      },
+      "storyboard_shot_id": 391
+    }
+  ],
+  "run_id": "20261005T091321Z"
+}

@@ -1,0 +1,30 @@
+{
+  "policy_version": "canonical_canary_selection_policy_v2",
+  "prompt_ir_missing": "readiness_only",
+  "quality_score_inputs_excluded": [
+    "book_id",
+    "storyboard_shot_id",
+    "created_at",
+    "database_row_order"
+  ],
+  "schema_version": "canonical_canary_selection_policy_v2",
+  "semantic_minimum": {
+    "fallback": "subject_count >= 1 and meaningful performance/action semantics",
+    "preferred": "subject_count >= 2 and dialogue_present"
+  },
+  "weights": {
+    "asset_authority": 10,
+    "dialogue": 20,
+    "duration_3_to_14": 8,
+    "entry_exit": 8,
+    "image_prompt_current": 4,
+    "low_camera_complexity": 8,
+    "medium_framing": 8,
+    "one_simple_prop": 3,
+    "one_subject": 12,
+    "reaction_performance": 10,
+    "two_subjects": 25,
+    "video_prompt_current": 4,
+    "zero_props": 6
+  }
+}

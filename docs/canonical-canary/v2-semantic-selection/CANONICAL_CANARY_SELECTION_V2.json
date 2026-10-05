@@ -1,0 +1,19 @@
+{
+  "blocker_counts": {
+    "PROJECT_PROVENANCE_NOT_PRODUCTION_ELIGIBLE": 20
+  },
+  "candidate_count": 0,
+  "external_llm_calls": 0,
+  "identity_boundary_status": "BENCHMARK_PRODUCTION_IDENTITY_SEPARATED",
+  "image_post_count": 0,
+  "media_writes": 0,
+  "official_media_writes": 0,
+  "prompt_ir_production_writes": 0,
+  "real_image_calls": 0,
+  "real_video_calls": 0,
+  "run_id": "20261005T091321Z",
+  "selection_fingerprint": "f649d1dac57e7c2ca82f7f2063cd42f2becf2e1d78c71889389ac6b4acfa2d82",
+  "status": "NO_SEMANTICALLY_USEFUL_CANONICAL_CANARY_TARGET",
+  "top_candidates": [],
+  "video_post_count": 0
+}

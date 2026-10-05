@@ -1,0 +1,118 @@
+{
+  "books": [
+    {
+      "book_id": 990448,
+      "chapter_count": 1,
+      "created_at": "2026-10-02T09:49:40.995696",
+      "eligible": false,
+      "evidence": [
+        "books row",
+        "task_runs row",
+        "no explicit production/canary/test provenance marker found"
+      ],
+      "filename": "20261002_174941_faf77df6_潮汐回声-1.txt",
+      "generation_execution_count": 0,
+      "generation_execution_modes": [],
+      "generation_providers": [],
+      "official_production_canary": false,
+      "provenance_class": "UNKNOWN_PROVENANCE",
+      "status": "scripted",
+      "task_run_count": 2,
+      "title": "潮汐回声-1",
+      "total_words": 140
+    },
+    {
+      "book_id": 990449,
+      "chapter_count": 1,
+      "created_at": "2026-10-02T09:56:42.183732",
+      "eligible": false,
+      "evidence": [
+        "books row",
+        "task_runs row",
+        "no explicit production/canary/test provenance marker found"
+      ],
+      "filename": "20261002_175642_330cb0b2_潮汐回声-1.txt",
+      "generation_execution_count": 0,
+      "generation_execution_modes": [],
+      "generation_providers": [],
+      "official_production_canary": false,
+      "provenance_class": "UNKNOWN_PROVENANCE",
+      "status": "scripted",
+      "task_run_count": 2,
+      "title": "潮汐回声-1",
+      "total_words": 140
+    },
+    {
+      "book_id": 990450,
+      "chapter_count": 1,
+      "created_at": "2026-10-02T10:21:43.334195",
+      "eligible": false,
+      "evidence": [
+        "books row",
+        "task_runs row",
+        "GenerationExecutionRecord execution_mode/provider explicitly identifies canary/fake runtime"
+      ],
+      "filename": "20261002_182144_411b4249_潮汐回声-1.txt",
+      "generation_execution_count": 1,
+      "generation_execution_modes": [
+        "CANARY"
+      ],
+      "generation_providers": [
+        "phase-f-fake-image-provider"
+      ],
+      "official_production_canary": false,
+      "provenance_class": "CANARY_PROJECT",
+      "status": "scripted",
+      "task_run_count": 2,
+      "title": "潮汐回声-1",
+      "total_words": 140
+    },
+    {
+      "book_id": 990451,
+      "chapter_count": 1,
+      "created_at": "2026-10-02T10:28:17.184235",
+      "eligible": false,
+      "evidence": [
+        "books row",
+        "task_runs row",
+        "GenerationExecutionRecord execution_mode/provider explicitly identifies canary/fake runtime"
+      ],
+      "filename": "20261002_182817_303f08d4_潮汐回声-1.txt",
+      "generation_execution_count": 1,
+      "generation_execution_modes": [
+        "CANARY"
+      ],
+      "generation_providers": [
+        "phase-f-fake-image-provider"
+      ],
+      "official_production_canary": false,
+      "provenance_class": "CANARY_PROJECT",
+      "status": "scripted",
+      "task_run_count": 2,
+      "title": "潮汐回声-1",
+      "total_words": 140
+    },
+    {
+      "book_id": 990452,
+      "chapter_count": 1,
+      "created_at": "2026-10-02T15:31:13.395958",
+      "eligible": false,
+      "evidence": [
+        "books row",
+        "task_runs row",
+        "committed Playwright browser zero-call evidence explicitly names this book"
+      ],
+      "filename": "20261002_233114_0072deae_潮汐回声-2.txt",
+      "generation_execution_count": 0,
+      "generation_execution_modes": [],
+      "generation_providers": [],
+      "official_production_canary": false,
+      "provenance_class": "CANARY_PROJECT",
+      "status": "scripted",
+      "task_run_count": 2,
+      "title": "潮汐回声-2",
+      "total_words": 140
+    }
+  ],
+  "run_id": "20261005T091321Z"
+}

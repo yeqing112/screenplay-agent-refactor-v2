@@ -1,0 +1,223 @@
+{
+  "count": 20,
+  "items": [
+    {
+      "book_id": 990448,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    },
+    {
+      "book_id": 990448,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    },
+    {
+      "book_id": 990448,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    },
+    {
+      "book_id": 990448,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    },
+    {
+      "book_id": 990449,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990449,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990449,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990449,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990450,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990450,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990450,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990450,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990451,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990451,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990451,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990451,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_compile_required": [],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "PRESENT_CURRENT"
+      }
+    },
+    {
+      "book_id": 990452,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_001",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    },
+    {
+      "book_id": 990452,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_002",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    },
+    {
+      "book_id": 990452,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_003",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    },
+    {
+      "book_id": 990452,
+      "execution_blockers": [],
+      "plan_shot_id": "SH_E01_SC001_004",
+      "prompt_compile_required": [
+        "VIDEO"
+      ],
+      "prompt_ir_readiness": {
+        "IMAGE": "PRESENT_CURRENT",
+        "VIDEO": "MISSING_COMPILE_REQUIRED"
+      }
+    }
+  ],
+  "production_compile_calls": 0,
+  "run_id": "20261005T091321Z"
+}
