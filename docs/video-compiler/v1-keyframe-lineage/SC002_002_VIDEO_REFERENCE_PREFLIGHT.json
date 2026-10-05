@@ -1,0 +1,20 @@
+{
+  "status": "BLOCKED",
+  "final_status": "KEYFRAME_CANONICAL_LINEAGE_UNRECOVERABLE",
+  "reference_mode": "FIRST_FRAME",
+  "asset_id": "",
+  "media_sha256": "f039112c1a3eb0d7d24785a684b9c104989a549df235a4fdd52c72956e1472c1",
+  "authority_fingerprint": "",
+  "generation_execution_id": "",
+  "official_lineage": {},
+  "official_media_current": false,
+  "pointer_current": false,
+  "prompt_ir_current_exact": false,
+  "runtime_url_resolved": false,
+  "hardcoded_url": false,
+  "compiled_prompt_sha256": "bfed0de8fe178c819219d0e7f8a59e549cd7d8dcb7727482d65b0c5aff3e8495",
+  "payload_prompt_sha256": "NOT_BUILT_REFERENCE_BLOCKED",
+  "post_count": 0,
+  "real_image_calls": 0,
+  "real_video_calls": 0
+}

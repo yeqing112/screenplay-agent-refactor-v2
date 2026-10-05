@@ -1,0 +1,9 @@
+{
+  "status": "HISTORICAL_KEYFRAME_PROMPT_LINEAGE_UNRECOVERABLE",
+  "historical_prompt_artifact_present": true,
+  "historical_prompt_sha256": "8b99895a5e1c13f29bc423de1d1018823cac1d7f7e33cc1f1b6ea914a1e55140",
+  "persisted_prompt_ir_version_matches": false,
+  "prompt_ir_matches": [],
+  "current_prompt_pointer_matches": [],
+  "exact_canonical_hash_rule": "A persisted PromptIRVersion.payload_hash must uniquely match the historical canonical prompt; current PromptIR cannot be substituted."
+}

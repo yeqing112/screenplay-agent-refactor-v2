@@ -1,0 +1,21 @@
+{
+  "status": "CANONICAL_ADOPTION_NOT_PROVEN",
+  "eligible": false,
+  "required_provenance": {
+    "media_bytes": true,
+    "checksum": true,
+    "shot_identity": true,
+    "prompt_ir_version_hash": false,
+    "model_profile_identity": false,
+    "provider_request_identity": false,
+    "provider_response_identity": false,
+    "review_approve_evidence": true
+  },
+  "missing": [
+    "prompt_ir_version_hash",
+    "model_profile_identity",
+    "provider_request_identity",
+    "provider_response_identity"
+  ],
+  "decision": "KEYFRAME_CANONICAL_LINEAGE_UNRECOVERABLE"
+}

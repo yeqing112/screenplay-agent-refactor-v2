@@ -1,0 +1,12 @@
+{
+  "status": "HISTORICAL_PROVIDER_LINEAGE_UNRECOVERABLE",
+  "historical_provider": {
+    "provider": "75api-image",
+    "model": "gpt-image-2-1k",
+    "preview_url_present": true,
+    "response_fingerprint_present": false
+  },
+  "persisted_request_fingerprint": false,
+  "persisted_response_hash": false,
+  "profile_substitution_forbidden": true
+}

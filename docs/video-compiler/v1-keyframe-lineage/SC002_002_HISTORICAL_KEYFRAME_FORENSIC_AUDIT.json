@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "read_only": true,
+  "shot_id": "SH_E01_SC002_002",
+  "historical_evidence": {
+    "run_id": "20261004T162533Z",
+    "version": 1,
+    "sha256": "f039112c1a3eb0d7d24785a684b9c104989a549df235a4fdd52c72956e1472c1",
+    "width": 1672,
+    "height": 941,
+    "review_decision": "APPROVE",
+    "judge": {
+      "status": "PASS",
+      "scene_identity": true,
+      "character_identity": true,
+      "unauthorized_props": [],
+      "apple_in_lu_shu_right_hand": false,
+      "extra_people": false,
+      "text_or_watermark": false,
+      "response_sha256": "fdfca2f472ca2e098a7fa005aef5b840f44928cf68253ae4541d8ae1c930aaae"
+    },
+    "provider_preview_url_present": true,
+    "provider_preview_url_persisted": false
+  },
+  "artifact": {
+    "path": "D:\\Work\\Project\\screenplay-agent-refactor-v2\\docs\\shot-canary\\v1\\media\\20261004T162533Z\\SH_E01_SC002_002-keyframe-v1.jpg",
+    "exists": true,
+    "actual_sha256": "f039112c1a3eb0d7d24785a684b9c104989a549df235a4fdd52c72956e1472c1",
+    "expected_sha256": "f039112c1a3eb0d7d24785a684b9c104989a549df235a4fdd52c72956e1472c1",
+    "bytes_exact": true,
+    "width": 1672,
+    "height": 941,
+    "format": "PNG",
+    "mode": "RGB"
+  },
+  "canonical_record_counts": {
+    "GenerationExecutionRecord": 4,
+    "MediaCandidateRecord": 4,
+    "MediaValidationRecord": 0,
+    "MediaPromotionRecord": 0,
+    "OfficialMediaVersion": 0,
+    "OfficialMediaAuthority": 0,
+    "OfficialMediaPointer": 0
+  },
+  "canonical_match_counts": {
+    "GenerationExecutionRecord": 0,
+    "MediaCandidateRecord": 0,
+    "MediaValidationRecord": 0,
+    "MediaPromotionRecord": 0,
+    "OfficialMediaVersion": 0,
+    "OfficialMediaAuthority": 0,
+    "OfficialMediaPointer": 0
+  },
+  "review_evidence": {
+    "status": "PASS",
+    "scene_identity": true,
+    "character_identity": true,
+    "unauthorized_props": [],
+    "apple_in_lu_shu_right_hand": false,
+    "extra_people": false,
+    "text_or_watermark": false,
+    "response_sha256": "fdfca2f472ca2e098a7fa005aef5b840f44928cf68253ae4541d8ae1c930aaae"
+  },
+  "shot_canary_evidence": {
+    "status": "PASS",
+    "run_id": "20261004T162533Z"
+  },
+  "database_write_count": 0
+}

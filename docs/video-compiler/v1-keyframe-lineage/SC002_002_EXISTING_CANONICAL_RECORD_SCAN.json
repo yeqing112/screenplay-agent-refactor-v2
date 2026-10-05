@@ -1,0 +1,45 @@
+{
+  "status": "NO_MATCHING_CANONICAL_CHAIN",
+  "read_only": true,
+  "target_sha256": "f039112c1a3eb0d7d24785a684b9c104989a549df235a4fdd52c72956e1472c1",
+  "counts": {
+    "GenerationExecutionRecord": 4,
+    "MediaCandidateRecord": 4,
+    "MediaValidationRecord": 0,
+    "MediaPromotionRecord": 0,
+    "OfficialMediaVersion": 0,
+    "OfficialMediaAuthority": 0,
+    "OfficialMediaPointer": 0
+  },
+  "matches": {
+    "GenerationExecutionRecord": {
+      "count": 4,
+      "matching_rows": []
+    },
+    "MediaCandidateRecord": {
+      "count": 4,
+      "matching_rows": []
+    },
+    "MediaValidationRecord": {
+      "count": 0,
+      "matching_rows": []
+    },
+    "MediaPromotionRecord": {
+      "count": 0,
+      "matching_rows": []
+    },
+    "OfficialMediaVersion": {
+      "count": 0,
+      "matching_rows": []
+    },
+    "OfficialMediaAuthority": {
+      "count": 0,
+      "matching_rows": []
+    },
+    "OfficialMediaPointer": {
+      "count": 0,
+      "matching_rows": []
+    }
+  },
+  "no_id_invention": true
+}
