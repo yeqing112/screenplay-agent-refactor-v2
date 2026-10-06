@@ -1,0 +1,10 @@
+{
+  "call_count": 1,
+  "finish_reason": "stop",
+  "raw_before_parse": true,
+  "response_format": {
+    "type": "json_object"
+  },
+  "retries": 0,
+  "status": "PASS"
+}

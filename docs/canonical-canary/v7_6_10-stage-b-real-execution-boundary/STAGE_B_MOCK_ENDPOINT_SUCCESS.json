@@ -1,0 +1,10 @@
+{
+  "confirm_allowed": true,
+  "endpoint": "/api/books/{book_id}/episodes/{episode}/director-treatment/creative-enrichment/llm-draft",
+  "real_provider_calls": 0,
+  "result_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_VALIDATED",
+  "status": "PASS",
+  "status_code": 200,
+  "transport": "patched",
+  "transport_calls": 1
+}

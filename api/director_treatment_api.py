@@ -63,6 +63,7 @@ from core.director_progressive_authoring import (
     validate_director_creative_enrichment_text_completeness,
     parse_director_creative_enrichment_ir,
     is_progressive_stage_validated,
+    compile_progressive_director_proposal,
 )
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
@@ -483,6 +484,18 @@ def validate_director_creative_enrichment_provider_identity(identity: dict[str, 
     return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
+def _progressive_stage_b_complete(info: dict[str, Any], proposal: Any) -> bool:
+    progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
+    stage_b = progressive.get("stage_b") if isinstance(progressive, dict) else None
+    if not is_progressive_stage_validated(stage_b, authoring_stage="CREATIVE_ENRICHMENT"):
+        return False
+    if not isinstance(stage_b, dict) or str(stage_b.get("merge_state") or "") != "MERGED":
+        return False
+    candidate = proposal if isinstance(proposal, dict) else {}
+    projection = candidate.get("creative_projection") if isinstance(candidate.get("creative_projection"), dict) else {}
+    return candidate.get("decision") == "ready_for_review" and projection.get("status") == "PROPOSED"
+
+
 def _update_director_packet_info(packet_id: int, book_id: int, patch: dict[str, Any]) -> None:
     with Session() as session:
         row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
@@ -621,6 +634,193 @@ def _stage_a_failure(packet_id: int, book_id: int, code: str, *, forensic: dict[
     _update_director_packet_info(packet_id, book_id, patch)
     if update_latest and attempt_context is not None:
         _set_latest_director_attempt_status(packet_id, book_id, status or code)
+
+
+def _stage_b_failure(packet_id: int, book_id: int, code: str, *, forensic: dict[str, Any] | None = None, trace: list[str] | None = None, report: dict[str, Any] | None = None, attempt_context: DirectorAttemptContext | None = None, update_latest: bool = True) -> None:
+    patch: dict[str, Any] = {"llm_draft_in_progress": False, "last_llm_draft_failure": code, "stage_b_status": code, "event_trace": trace or []}
+    if forensic is not None:
+        patch["stage_b_raw_response_forensic"] = {**forensic, "parse_started": bool("PARSE" in (trace or []))}
+    if report is not None:
+        patch["stage_b_validation"] = report
+    _update_director_packet_info(packet_id, book_id, patch)
+    if update_latest and attempt_context is not None:
+        _set_latest_director_attempt_status(packet_id, book_id, code)
+
+
+def _persist_stage_b_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], provider_identity: dict[str, Any], provider_record: dict[str, Any], authorization_id: str, attempt_context: DirectorAttemptContext, stage_a: dict[str, Any], scope_fingerprint_value: str) -> dict[str, Any]:
+    """Append Stage B raw evidence before parsing, with an append-only race gate."""
+    raw_text = str(raw_response or "")
+    forensic = {
+        "schema_version": "director_llm_raw_response_forensic_v1",
+        "packet_id": str(packet_id), "packet_fingerprint": packet_fingerprint_value,
+        "authoring_stage": "CREATIVE_ENRICHMENT", "attempt_id": attempt_context.attempt_id,
+        "authorization_id": str(authorization_id), "scope_fingerprint": scope_fingerprint_value,
+        "stage_a_attempt_id": str(stage_a.get("attempt_id") or ""),
+        "stage_a_ir_fingerprint": str(stage_a.get("ir_fingerprint") or stage_a.get("fingerprint") or ""),
+        "stage_a_materialized_fingerprint": str(stage_a.get("materialized_fingerprint") or ""),
+        "raw_response": raw_text, "raw_response_sha256": hashlib.sha256(raw_text.encode("utf-8")).hexdigest(),
+        "raw_response_length": len(raw_text), "profile_id": provider_identity["profile_snapshot"]["profile_id"],
+        "model": provider_identity["profile_snapshot"]["model"], "provider_host": provider_identity["profile_snapshot"]["base_host"],
+        "provider_request_id": str(provider_record.get("provider_request_id") or ""),
+        "prompt_fingerprint": provider_identity["prompt_fingerprint"],
+        "provider_request_fingerprint_v2": provider_identity["provider_request_fingerprint_v2"],
+        "persisted_before_parse": True, "parse_started": False,
+        "finish_reason": provider_record.get("finish_reason"), "choice_index": provider_record.get("choice_index"),
+        "resolved_max_tokens": provider_record.get("resolved_max_tokens", provider_identity["generation_policy"].get("max_tokens")),
+        "resolved_temperature": provider_record.get("resolved_temperature", provider_identity["generation_policy"].get("temperature")),
+        "resolved_response_format": provider_record.get("resolved_response_format", provider_identity["generation_policy"].get("response_format")),
+        "resolved_thinking": provider_record.get("resolved_thinking", provider_identity["generation_policy"].get("thinking")),
+        "usage": provider_record.get("usage") if isinstance(provider_record.get("usage"), dict) else {},
+        "latency_ms": provider_record.get("latency_ms"),
+    }
+    try:
+        with Session() as session:
+            row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+            if not row:
+                raise RuntimeError("decision packet disappeared before Stage B forensic persistence")
+            info = _json_object(row.model_info, {})
+            info = info if isinstance(info, dict) else {}
+            current_progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
+            current_stage_a = current_progressive.get("stage_a") if isinstance(current_progressive, dict) else None
+            if json.dumps(current_stage_a, ensure_ascii=False, sort_keys=True, separators=(",", ":")) != json.dumps(stage_a, ensure_ascii=False, sort_keys=True, separators=(",", ":")):
+                raise ValueError("DIRECTOR_CREATIVE_ENRICHMENT_STAGE_A_BINDING_CONFLICT")
+            info = append_director_attempt(
+                info, request_fingerprint=provider_identity["prompt_fingerprint"], raw_response_sha256=forensic["raw_response_sha256"],
+                authorization_id=authorization_id, authoring_stage="CREATIVE_ENRICHMENT", prompt_fingerprint=provider_identity["prompt_fingerprint"],
+                provider_request_fingerprint_v2=provider_identity["provider_request_fingerprint_v2"], attempt_context=attempt_context,
+            )
+            info.update({"stage_b_provider_request": provider_identity, "stage_b_raw_response_forensic": forensic, "provider_audit": provider_record, "event_trace": ["TRANSPORT", "RAW_PERSIST"], "stage_b_attempt_context": {"history_count": attempt_context.history_count, "ordinal": attempt_context.ordinal, "attempt_id": attempt_context.attempt_id, "status_prefix": attempt_context.status_prefix}})
+            row.model_info = json.dumps(info, ensure_ascii=False)
+            row.updated_at = datetime.now()
+            session.commit()
+    except ValueError:
+        raise
+    except Exception as exc:
+        raise RuntimeError("DIRECTOR_CREATIVE_ENRICHMENT_FORENSIC_PERSISTENCE_FAILED") from exc
+    return forensic
+
+
+def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any], scene_id: str, authorization_id: str, identity: dict[str, Any], profile: dict[str, Any]) -> dict[str, Any]:
+    """Execute exactly one authorized Stage B call and persist only a proposal."""
+    attempt_context = None
+    try:
+        with Session() as session:
+            row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+            info = _json_object(row.model_info, {}) if row else {}
+            if not row or not isinstance(info, dict):
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PACKET_NOT_FOUND"})
+            proposal = _json_object(row.proposal, {})
+            if proposal.get("decision") != "awaiting_llm":
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_ALREADY_COMPLETED"})
+            progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
+            stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
+            if not is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") or str(stage_a.get("attempt_id") or "") != "attempt-7":
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_VALIDATION_REQUIRED"})
+            materialized = stage_a.get("materialized_beat_plan")
+            materialized_fp = str(stage_a.get("materialized_fingerprint") or "")
+            actual_fp = hashlib.sha256(json.dumps(materialized, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest() if isinstance(materialized, dict) else ""
+            if not materialized_fp or actual_fp != materialized_fp or identity.get("upstream_binding_fingerprint") != materialized_fp:
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_STAGE_A_BINDING_CONFLICT"})
+            attempt_context = resolve_next_director_attempt_context(info, authoring_stage="CREATIVE_ENRICHMENT")
+            scope = _json_object(row.scope, {})
+            scope_fp = hashlib.sha256(json.dumps(scope, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+        audits: list[dict[str, Any]] = []
+        try:
+            raw = llm_client.call_llm(identity["user_prompt"], system=identity["system_prompt"], model_profile=profile, retries=1, estimated_tokens=identity["generation_policy"]["max_tokens"], max_tokens=identity["generation_policy"]["max_tokens"], temperature=identity["generation_policy"]["temperature"], response_format=identity["generation_policy"]["response_format"], audit_callback=lambda record: audits.append(dict(record)) if isinstance(record, dict) else None, audit_extra={"director_execution_boundary": identity["execution_boundary_version"], "authoring_stage": "CREATIVE_ENRICHMENT", "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"]})
+        except (httpx.ReadTimeout, TimeoutError) as exc:
+            _stage_b_failure(packet_id, book_id, attempt_context.status("SUBMISSION_AMBIGUOUS"), trace=["TRANSPORT"], attempt_context=None, update_latest=False)
+            raise HTTPException(status_code=502, detail={"code": attempt_context.status("SUBMISSION_AMBIGUOUS"), "retry": 0}) from exc
+        except Exception as exc:
+            _stage_b_failure(packet_id, book_id, attempt_context.status("PROVIDER_FAILED"), trace=["TRANSPORT"], attempt_context=None, update_latest=False)
+            raise HTTPException(status_code=502, detail={"code": attempt_context.status("PROVIDER_FAILED"), "retry": 0, "message": str(exc)[:240]}) from exc
+        provider_record = audits[-1] if audits else {}
+        try:
+            forensic = _persist_stage_b_raw_forensic(packet_id=packet_id, book_id=book_id, packet_fingerprint_value=packet_fingerprint_value, raw_response=str(raw or ""), profile_snapshot=identity["profile_snapshot"], provider_identity=identity, provider_record=provider_record, authorization_id=authorization_id, attempt_context=attempt_context, stage_a=stage_a, scope_fingerprint_value=scope_fp)
+        except ValueError as exc:
+            code = attempt_context.status("LINEAGE_CONFLICT") if "LINEAGE" in str(exc) else "DIRECTOR_CREATIVE_ENRICHMENT_STAGE_A_BINDING_CONFLICT"
+            _stage_b_failure(packet_id, book_id, code, trace=["TRANSPORT"], attempt_context=None, update_latest=False)
+            raise HTTPException(status_code=409, detail={"code": code, "retry": 0}) from exc
+        except RuntimeError as exc:
+            _stage_b_failure(packet_id, book_id, "DIRECTOR_CREATIVE_ENRICHMENT_FORENSIC_PERSISTENCE_FAILED", trace=["TRANSPORT"], attempt_context=None, update_latest=False)
+            raise HTTPException(status_code=502, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_FORENSIC_PERSISTENCE_FAILED", "retry": 0}) from exc
+        finish_reason = str(provider_record.get("finish_reason") or "").strip().lower()
+        if finish_reason == "length":
+            code = attempt_context.status("OUTPUT_TRUNCATED")
+            _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", "FINISH_REASON_GATE"], attempt_context=attempt_context)
+            raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
+        finish_note = "FINISH_REASON_UNAVAILABLE" if not finish_reason else "FINISH_REASON_GATE"
+        try:
+            parsed = parse_director_creative_enrichment_ir(str(raw or ""))
+        except Exception as exc:
+            outcome = "DUPLICATE_JSON_KEY" if "DUPLICATE_JSON_KEY" in str(exc) else "PARSE_FAILED"
+            code = attempt_context.status(outcome)
+            _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE"], report={"error": str(exc)}, attempt_context=attempt_context)
+            raise HTTPException(status_code=502, detail={"code": code, "retry": 0}) from exc
+        schema_report = validate_director_creative_enrichment_ir_schema(parsed)
+        if schema_report.get("status") != "PASS":
+            code = attempt_context.status("SCHEMA_INVALID")
+            _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE"], report=schema_report, attempt_context=attempt_context)
+            raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
+        text_report = validate_director_creative_enrichment_text_completeness(parsed)
+        if text_report.get("status") != "PASS":
+            code = attempt_context.status("TEXT_INCOMPLETE")
+            _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS"], report=text_report, attempt_context=attempt_context)
+            raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
+        runtime = validate_director_creative_enrichment_ir(parsed, beat_plan=stage_a["materialized_beat_plan"], declared_participants=(treatment.get("source_constraints") or {}).get("declared_participants", []))
+        if runtime.get("status") != "qualified":
+            outcome = "BEAT_COVERAGE_INCOMPLETE" if runtime.get("beat_coverage") == "FAIL" else "RUNTIME_INVALID"
+            code = attempt_context.status(outcome)
+            _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE"], report=runtime, attempt_context=attempt_context)
+            raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
+        with Session() as session:
+            current = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+            current_info = _json_object(current.model_info, {}) if current else {}
+            current_progressive = current_info.get("progressive_director_authoring") if isinstance(current_info, dict) else {}
+            current_stage_a = current_progressive.get("stage_a") if isinstance(current_progressive, dict) else None
+            if json.dumps(current_stage_a, ensure_ascii=False, sort_keys=True, separators=(",", ":")) != json.dumps(stage_a, ensure_ascii=False, sort_keys=True, separators=(",", ":")):
+                code = attempt_context.status("STAGE_A_BINDING_CONFLICT")
+                _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE", "STAGE_A_BINDING_REVALIDATE"], attempt_context=attempt_context)
+                raise HTTPException(status_code=409, detail={"code": code, "retry": 0})
+            current_history = current_info.get("director_llm_attempts") if isinstance(current_info, dict) else []
+            if not isinstance(current_history, list) or len(current_history) != attempt_context.ordinal or str(current_history[-1].get("attempt_id") or "") != attempt_context.attempt_id:
+                code = attempt_context.status("LINEAGE_CONFLICT")
+                _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE", "STAGE_A_BINDING_REVALIDATE", "ATTEMPT_LINEAGE_VALIDATE"], attempt_context=attempt_context)
+                raise HTTPException(status_code=409, detail={"code": code, "retry": 0})
+        stage_b_fp = hashlib.sha256(json.dumps(parsed, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+        try:
+            candidate = compile_progressive_director_proposal(beat_plan_ir=stage_a["ir"], enrichment_ir=parsed, baseline_treatment=treatment, source_scene=evidence.get("scene") if isinstance(evidence.get("scene"), dict) else {}, materialized_beat_plan=stage_a["materialized_beat_plan"], materialized_fingerprint=stage_a["materialized_fingerprint"])
+            compiled = validate_source_grounded_contract_v2(candidate, scene=evidence.get("scene") if isinstance(evidence.get("scene"), dict) else {}, production=False)
+            if compiled.get("status") not in {"qualified", "AUTHORING_REQUIRED"} or candidate.get("decision") != "ready_for_review" or (candidate.get("creative_projection") or {}).get("status") != "PROPOSED":
+                raise ValueError(json.dumps(compiled, ensure_ascii=False))
+        except Exception as exc:
+            code = attempt_context.status("COMPILED_CONTRACT_INVALID")
+            _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE", "STAGE_A_BINDING_REVALIDATE", "STAGE_B_PERSIST", "DETERMINISTIC_MERGE", "COMPILED_V3_VALIDATE"], report={"error": str(exc)}, attempt_context=attempt_context)
+            raise HTTPException(status_code=502, detail={"code": code, "retry": 0}) from exc
+        provider = {"called": True, "calls": 1, "profile_id": identity["profile_snapshot"]["profile_id"], "model": identity["profile_snapshot"]["model"], "request_fingerprint": identity["prompt_fingerprint"], "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"], "response_fingerprint": forensic["raw_response_sha256"]}
+        with Session() as session:
+            row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+            info = _json_object(row.model_info, {}) if row else {}
+            info = info if isinstance(info, dict) else {}
+            progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
+            stage_b = {"status": attempt_context.status("VALIDATED"), "authoring_stage": "CREATIVE_ENRICHMENT", "attempt_id": attempt_context.attempt_id, "authorization_id": authorization_id, "ir": parsed, "ir_fingerprint": stage_b_fp, "fingerprint": stage_b_fp, "stage_a_materialized_fingerprint": stage_a["materialized_fingerprint"], "provider_provenance": provider, "validation_state": "VALIDATED", "merge_state": "MERGED"}
+            info["progressive_director_authoring"] = {**progressive, "stage_a": progressive.get("stage_a"), "stage_b": stage_b}
+            info.update({"llm_draft_in_progress": False, "stage_b_status": stage_b["status"], "stage_b_raw_response_forensic": {**forensic, "parse_started": True}, "stage_b_validation": {"schema": schema_report, "text": text_report, "runtime": runtime}, "event_trace": ["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE", "STAGE_A_BINDING_REVALIDATE", "STAGE_B_PERSIST", "DETERMINISTIC_MERGE", "COMPILED_V3_VALIDATE", "PROPOSAL_PERSIST"], "proposal_provenance": {"proposal_origin": "PROVIDER_PROPOSAL", "provider": provider, "authoring": {"human_input": False}, "stage_a": {"attempt_id": stage_a.get("attempt_id"), "ir_fingerprint": stage_a.get("ir_fingerprint"), "materialized_fingerprint": stage_a.get("materialized_fingerprint")}, "stage_b": {"attempt_id": attempt_context.attempt_id, "ir_fingerprint": stage_b_fp}}})
+            row.model_info = json.dumps(info, ensure_ascii=False)
+            row.proposal = json.dumps(candidate, ensure_ascii=False)
+            row.status = "draft"
+            row.updated_at = datetime.now()
+            history = info.get("director_llm_attempts") if isinstance(info.get("director_llm_attempts"), list) else []
+            if history:
+                history[-1] = {**history[-1], "status": stage_b["status"]}
+                info["director_llm_attempts"] = history
+                row.model_info = json.dumps(info, ensure_ascii=False)
+            session.commit()
+        return {"packet_id": packet_id, "packet_fingerprint": packet_fingerprint_value, "status": attempt_context.status("VALIDATED"), "next_state": "DIRECTOR_TREATMENT_REVIEW_REQUIRED", "confirm_allowed": True, "candidate": candidate, "provider": provider, "execution_manifest": identity}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        _stage_b_failure(packet_id, book_id, "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_EXECUTION_FAILED", trace=["EXECUTION"], attempt_context=None, update_latest=False)
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_EXECUTION_FAILED", "retry": 0, "message": str(exc)[:240]}) from exc
 
 
 def _execute_source_grounded_beat_plan(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any], scene_id: str, authorization_id: str) -> dict[str, Any]:
@@ -1309,8 +1509,12 @@ def generate_director_creative_enrichment_llm_draft(book_id: int, episode: int, 
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_PRODUCTION_ONLY"})
     preview_req = DirectorTreatmentPreviewRequest(episode=episode, scene_id=req.scene_id, workflow_profile="production")
     treatment, evidence, _ = _build_preview(book_id, preview_req)
+    if str(treatment.get("scene_id") or "") != str(req.scene_id):
+        raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Requested scene is not the frozen source scene."})
     packet = _make_decision_packet(book_id, episode, treatment, evidence)
-    if req.packet_fingerprint and req.packet_fingerprint != packet["packet_fingerprint"]:
+    if not str(req.packet_fingerprint or "").strip():
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PACKET_FINGERPRINT_REQUIRED"})
+    if req.packet_fingerprint != packet["packet_fingerprint"]:
         raise HTTPException(status_code=409, detail="Treatment evidence changed; reload the preview before calling Stage B.")
     with Session() as session:
         row = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=packet["packet_fingerprint"]).first()
@@ -1322,14 +1526,34 @@ def generate_director_creative_enrichment_llm_draft(book_id: int, episode: int, 
     materialized = stage_a.get("materialized_beat_plan") if isinstance(stage_a, dict) else None
     materialized_fp = str(stage_a.get("materialized_fingerprint") or "") if isinstance(stage_a, dict) else ""
     constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
+    profile, profile_snapshot = _director_llm_profile_preflight()
     identity = build_director_creative_enrichment_provider_request(
         scene_id=req.scene_id, materialized_beat_plan=materialized if isinstance(materialized, dict) else {},
         stage_a_materialized_fingerprint=materialized_fp,
         declared_participants=constraints.get("declared_participants") if isinstance(constraints.get("declared_participants"), list) else [],
+        profile=profile, profile_snapshot=profile_snapshot,
     )
+    if is_progressive_stage_validated(progressive.get("stage_b") if isinstance(progressive, dict) else None, authoring_stage="CREATIVE_ENRICHMENT") or _json_object(row.proposal, {}).get("decision") == "ready_for_review":
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_ALREADY_COMPLETED"})
     if not (req.confirmed and req.allow_external_call and str(req.authorization_id or "").strip()):
         return {"status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_AUTHORIZATION_REQUIRED", "provider": {"called": False, "calls": 0}, "execution_manifest": identity}
-    raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_EXECUTION_DEFERRED", "message": "Stage B transport is intentionally disabled in this boundary phase."})
+    with Session() as session:
+        current = session.query(DecisionPacketRecord).filter_by(id=row.id, book_id=book_id).first()
+        current_info = _json_object(current.model_info, {}) if current else {}
+        if not current or not isinstance(current_info, dict):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PACKET_NOT_FOUND"})
+        if current_info.get("llm_draft_in_progress"):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_EXECUTION_IN_PROGRESS"})
+        current_info["llm_draft_in_progress"] = True
+        current_info["stage_b_execution_started_at"] = datetime.now().isoformat()
+        current.model_info = json.dumps(current_info, ensure_ascii=False)
+        current.status = "draft"
+        session.commit()
+    return _execute_source_grounded_creative_enrichment(
+        book_id=book_id, packet_id=row.id, packet_fingerprint_value=packet["packet_fingerprint"],
+        treatment=treatment, evidence=evidence, scene_id=req.scene_id, authorization_id=req.authorization_id,
+        identity=identity, profile=profile,
+    )
 
 
 @router.post("/{book_id}/episodes/{episode}/director-treatment/llm-draft")
@@ -1528,7 +1752,7 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
         stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
         stage_b = progressive.get("stage_b") if isinstance(progressive, dict) else None
-        if is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") and not is_progressive_stage_validated(stage_b, authoring_stage="CREATIVE_ENRICHMENT"):
+        if is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") and not _progressive_stage_b_complete(info, _json_object(packet.proposal, {})):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REQUIRED", "message": "Stage A BeatPlan is not confirmable until Stage B creative enrichment is complete."})
         scope = _json_object(packet.scope, {})
         scene_name = str(scope.get("scene_name") or "").strip() if isinstance(scope, dict) else ""
@@ -1623,7 +1847,7 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
         stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
         stage_b = progressive.get("stage_b") if isinstance(progressive, dict) else None
-        if is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") and not is_progressive_stage_validated(stage_b, authoring_stage="CREATIVE_ENRICHMENT"):
+        if is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") and not _progressive_stage_b_complete(info, _json_object(packet.proposal, {})):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REQUIRED", "message": "Stage A BeatPlan is not confirmable until Stage B creative enrichment is complete."})
         scope = _json_object(packet.scope, {})
         scene_id = str(scope.get("scene_id") or "").strip() if isinstance(scope, dict) else ""

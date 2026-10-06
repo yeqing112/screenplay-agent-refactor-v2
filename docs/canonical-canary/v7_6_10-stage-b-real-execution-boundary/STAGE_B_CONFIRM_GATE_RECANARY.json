@@ -1,0 +1,7 @@
+{
+  "executor_confirmed": false,
+  "stage_a_only": "DIRECTOR_CREATIVE_ENRICHMENT_REQUIRED",
+  "stage_a_plus_stage_b_unmerged": "BLOCKED",
+  "stage_a_stage_b_merged_compiled": "ALLOWED_TO_SEMANTIC_VALIDATION",
+  "status": "PASS"
+}

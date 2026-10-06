@@ -1,0 +1,18 @@
+{
+  "authority_confirm_in_executor": false,
+  "states": [
+    "TRANSPORT",
+    "RAW_PERSIST",
+    "FINISH_REASON_GATE",
+    "PARSE",
+    "STAGE_B_SCHEMA_VALIDATE",
+    "STAGE_B_TEXT_COMPLETENESS",
+    "STAGE_B_RUNTIME_VALIDATE",
+    "STAGE_A_BINDING_REVALIDATE",
+    "STAGE_B_PERSIST",
+    "DETERMINISTIC_MERGE",
+    "COMPILED_V3_VALIDATE",
+    "PROPOSAL_PERSIST"
+  ],
+  "status": "PASS"
+}

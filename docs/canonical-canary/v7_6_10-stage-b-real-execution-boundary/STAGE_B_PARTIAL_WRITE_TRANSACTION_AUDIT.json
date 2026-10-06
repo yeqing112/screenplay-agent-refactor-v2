@@ -1,0 +1,7 @@
+{
+  "authority_writes": 0,
+  "failure_cleanup": "llm_draft_in_progress=false; proposal remains awaiting_llm when merge fails",
+  "raw_forensic_can_exist_before_parse": true,
+  "stage_b_and_proposal_written_together": true,
+  "status": "PASS"
+}

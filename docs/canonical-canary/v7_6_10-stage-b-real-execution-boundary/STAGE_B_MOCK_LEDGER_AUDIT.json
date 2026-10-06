@@ -1,0 +1,9 @@
+{
+  "after_count": 8,
+  "attempt9_created": false,
+  "before_count": 7,
+  "latest_attempt": "attempt-8",
+  "latest_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_VALIDATED",
+  "production_packet_ledger_before_after": "7 -> 7",
+  "status": "PASS"
+}

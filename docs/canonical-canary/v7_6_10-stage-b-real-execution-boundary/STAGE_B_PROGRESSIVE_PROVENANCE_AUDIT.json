@@ -1,0 +1,19 @@
+{
+  "merge": {
+    "local_semantic_additions": 0,
+    "mode": "DETERMINISTIC"
+  },
+  "stage_a": {
+    "attempt_id": "attempt-7",
+    "authoring_stage": "BEAT_PLAN",
+    "materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01"
+  },
+  "stage_b": {
+    "attempt_id": "attempt-8",
+    "authoring_stage": "CREATIVE_ENRICHMENT",
+    "prompt_fingerprint_recorded": true,
+    "provider_request_fingerprint_recorded": true,
+    "raw_sha_recorded": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,8 @@
+{
+  "deterministic": true,
+  "local_direction_semantic_expansion_count": 0,
+  "local_new_creative_decision_count": 0,
+  "materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "source_mutation_count": 0,
+  "status": "PASS"
+}

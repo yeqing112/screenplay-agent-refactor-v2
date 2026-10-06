@@ -1,0 +1,7 @@
+{
+  "after": "ENABLED_WITH_EXPLICIT_AUTHORIZATION",
+  "before": "DIRECTOR_CREATIVE_ENRICHMENT_EXECUTION_DEFERRED",
+  "executor": "_execute_source_grounded_creative_enrichment",
+  "real_transport_invocations": 0,
+  "status": "PASS"
+}

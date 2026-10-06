@@ -1,0 +1,18 @@
+{
+  "required": [
+    "packet_id",
+    "packet_fingerprint",
+    "authoring_stage",
+    "attempt_id",
+    "authorization_id",
+    "stage_a_attempt_id",
+    "stage_a_materialized_fingerprint",
+    "raw_response_sha256",
+    "finish_reason",
+    "choice_index",
+    "provider_request_id",
+    "usage",
+    "latency_ms"
+  ],
+  "status": "PASS"
+}

@@ -1,0 +1,20 @@
+{
+  "attempt9_for_all": 0,
+  "authority_writes_for_all": 0,
+  "retry_for_all": 0,
+  "status": "PASS",
+  "statuses": [
+    "PROVIDER_FAILED",
+    "SUBMISSION_AMBIGUOUS",
+    "OUTPUT_TRUNCATED",
+    "PARSE_FAILED",
+    "DUPLICATE_JSON_KEY",
+    "SCHEMA_INVALID",
+    "TEXT_INCOMPLETE",
+    "RUNTIME_INVALID",
+    "STAGE_A_BINDING_CONFLICT",
+    "LINEAGE_CONFLICT",
+    "COMPILED_CONTRACT_INVALID",
+    "FORENSIC_PERSISTENCE_FAILED"
+  ]
+}
