@@ -46,7 +46,7 @@ from core.director_proposal_ir import (
     parse_director_proposal_ir,
     validate_director_proposal_ir_schema,
 )
-from core.director_forensic import append_director_attempt
+from core.director_forensic import append_director_attempt, DirectorAttemptContext, resolve_next_director_attempt_context
 from core.director_progressive_authoring import (
     DIRECTOR_BEAT_PLAN_IR_VERSION,
     build_director_beat_plan_prompt,
@@ -419,6 +419,26 @@ def _set_latest_director_attempt_status(packet_id: int, book_id: int, status: st
         session.commit()
 
 
+def _resolve_stage_a_attempt_context(packet_id: int, book_id: int) -> DirectorAttemptContext:
+    """Freeze the next attempt identity from the packet's immutable ledger."""
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        if not row:
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT_LINEAGE_CONFLICT"})
+        info = _json_object(row.model_info, {})
+        return resolve_next_director_attempt_context(info if isinstance(info, dict) else {})
+
+
+def _assert_stage_a_attempt_context_current(packet_id: int, book_id: int, attempt_context: DirectorAttemptContext) -> None:
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        info = _json_object(row.model_info, {}) if row else {}
+        history = info.get("director_llm_attempts") if isinstance(info, dict) else None
+        latest = history[-1] if isinstance(history, list) and history else None
+        if not isinstance(latest, dict) or str(latest.get("attempt_id") or "") != attempt_context.attempt_id:
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT_LINEAGE_CONFLICT", "retry": 0})
+
+
 def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], request_fingerprint: str, provider_record: dict[str, Any], event_trace: list[str], authorization_id: str = "") -> dict[str, Any]:
     if not str(authorization_id or "").strip():
         raise ValueError("DIRECTOR_LLM_AUTHORIZATION_ID_REQUIRED")
@@ -455,7 +475,7 @@ def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint
     return forensic
 
 
-def _persist_stage_a_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], provider_identity: dict[str, Any], provider_record: dict[str, Any], authorization_id: str) -> dict[str, Any]:
+def _persist_stage_a_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], provider_identity: dict[str, Any], provider_record: dict[str, Any], authorization_id: str, attempt_context: DirectorAttemptContext) -> dict[str, Any]:
     """Append Stage A raw evidence before any parse or validation."""
     raw_text = str(raw_response or "")
     forensic = {
@@ -487,35 +507,38 @@ def _persist_stage_a_raw_forensic(*, packet_id: int, book_id: int, packet_finger
             raw_response_sha256=forensic["raw_response_sha256"], authorization_id=authorization_id,
             authoring_stage="BEAT_PLAN", prompt_fingerprint=provider_identity["prompt_fingerprint"],
             provider_request_fingerprint_v2=provider_identity["provider_request_fingerprint_v2"],
+            attempt_context=attempt_context,
         )
         info.update({"profile_preflight": provider_identity["profile_snapshot"], "stage_a_provider_request": provider_identity,
                      "raw_response_forensic": forensic, "provider_audit": provider_record,
-                     "event_trace": ["TRANSPORT", "RAW_PERSIST"]})
+                     "event_trace": ["TRANSPORT", "RAW_PERSIST"], "attempt_context": {"history_count": attempt_context.history_count, "ordinal": attempt_context.ordinal, "attempt_id": attempt_context.attempt_id, "status_prefix": attempt_context.status_prefix}})
         row.model_info = json.dumps(info, ensure_ascii=False)
         row.updated_at = datetime.now()
         session.commit()
     return forensic
 
 
-def _stage_a_failure(packet_id: int, book_id: int, code: str, *, forensic: dict[str, Any] | None = None, trace: list[str] | None = None, report: dict[str, Any] | None = None, status: str | None = None) -> None:
+def _stage_a_failure(packet_id: int, book_id: int, code: str, *, forensic: dict[str, Any] | None = None, trace: list[str] | None = None, report: dict[str, Any] | None = None, status: str | None = None, attempt_context: DirectorAttemptContext | None = None, update_latest: bool = True) -> None:
     patch = {"llm_draft_in_progress": False, "last_llm_draft_failure": code, "event_trace": trace or [], "stage_a_status": status or code}
     if forensic is not None:
         patch["raw_response_forensic"] = {**forensic, "parse_started": bool("PARSE" in (trace or []))}
     if report is not None:
         patch["stage_a_validation"] = report
     _update_director_packet_info(packet_id, book_id, patch)
-    _set_latest_director_attempt_status(packet_id, book_id, status or code)
+    if update_latest and attempt_context is not None:
+        _set_latest_director_attempt_status(packet_id, book_id, status or code)
 
 
 def _execute_source_grounded_beat_plan(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any], scene_id: str, authorization_id: str) -> dict[str, Any]:
     """Execute exactly one Stage A call; never compiles or promotes Stage B."""
     if not str(authorization_id or "").strip():
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_AUTHORIZATION_ID_REQUIRED"})
+    attempt_context = _resolve_stage_a_attempt_context(packet_id, book_id)
     profile, profile_snapshot = _director_llm_profile_preflight()
     try:
         identity = build_director_beat_plan_provider_request(treatment, evidence, scene_id=scene_id, profile=profile, profile_snapshot=profile_snapshot)
     except ValueError as exc:
-        _stage_a_failure(packet_id, book_id, "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", trace=["PREFLIGHT_IDENTITY_VALIDATE"], status="PREFLIGHT_BLOCKED")
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", "event_trace": ["PREFLIGHT_IDENTITY_VALIDATE"]})
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", "message": "Stage A Provider identity failed internal consistency validation."}) from exc
     audits: list[dict[str, Any]] = []
     try:
@@ -525,44 +548,59 @@ def _execute_source_grounded_beat_plan(*, book_id: int, packet_id: int, packet_f
             audit_callback=lambda record: audits.append(dict(record)) if isinstance(record, dict) else None,
             audit_extra={"director_execution_boundary": identity["execution_boundary_version"], "authoring_stage": "BEAT_PLAN", "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"]})
     except Exception as exc:
-        _stage_a_failure(packet_id, book_id, "DIRECTOR_BEAT_PLAN_ATTEMPT5_PROVIDER_FAILED", trace=["TRANSPORT"], status="DIRECTOR_BEAT_PLAN_ATTEMPT5_PROVIDER_FAILED")
-        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT5_PROVIDER_FAILED", "retry": 0, "message": str(exc)[:240]}) from exc
+        code = attempt_context.status("PROVIDER_FAILED")
+        _stage_a_failure(packet_id, book_id, code, trace=["TRANSPORT"], status=code, attempt_context=attempt_context, update_latest=False)
+        raise HTTPException(status_code=502, detail={"code": code, "retry": 0, "message": str(exc)[:240]}) from exc
     provider_record = audits[-1] if audits else {}
     try:
-        forensic = _persist_stage_a_raw_forensic(packet_id=packet_id, book_id=book_id, packet_fingerprint_value=packet_fingerprint_value, raw_response=str(raw or ""), profile_snapshot=profile_snapshot, provider_identity=identity, provider_record=provider_record, authorization_id=authorization_id)
+        forensic = _persist_stage_a_raw_forensic(packet_id=packet_id, book_id=book_id, packet_fingerprint_value=packet_fingerprint_value, raw_response=str(raw or ""), profile_snapshot=profile_snapshot, provider_identity=identity, provider_record=provider_record, authorization_id=authorization_id, attempt_context=attempt_context)
+    except ValueError as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_BEAT_PLAN_ATTEMPT_LINEAGE_CONFLICT", "event_trace": ["TRANSPORT", "ATTEMPT_LINEAGE_VALIDATE"]})
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT_LINEAGE_CONFLICT", "retry": 0}) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED", "retry": 0}) from exc
     finish_reason = str(provider_record.get("finish_reason") or "").strip().lower()
     if finish_reason == "length":
-        _stage_a_failure(packet_id, book_id, "DIRECTOR_BEAT_PLAN_ATTEMPT5_OUTPUT_TRUNCATED", forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", "FINISH_REASON_GATE"], status="DIRECTOR_BEAT_PLAN_ATTEMPT5_OUTPUT_TRUNCATED")
-        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT5_OUTPUT_TRUNCATED", "retry": 0})
+        code = attempt_context.status("OUTPUT_TRUNCATED")
+        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", "FINISH_REASON_GATE"], status=code, attempt_context=attempt_context)
+        raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
     finish_note = "FINISH_REASON_UNAVAILABLE" if not finish_reason else "FINISH_REASON_GATE"
     try:
         parsed = parse_director_beat_plan_ir(str(raw or ""))
     except Exception as exc:
-        _stage_a_failure(packet_id, book_id, "DIRECTOR_BEAT_PLAN_ATTEMPT5_PARSE_FAILED", forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE"], report={"error": str(exc)}, status="DIRECTOR_BEAT_PLAN_ATTEMPT5_PARSE_FAILED")
-        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT5_PARSE_FAILED", "retry": 0}) from exc
+        code = attempt_context.status("PARSE_FAILED")
+        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE"], report={"error": str(exc)}, status=code, attempt_context=attempt_context)
+        raise HTTPException(status_code=502, detail={"code": code, "retry": 0}) from exc
     schema_report = validate_director_beat_plan_ir_schema(parsed)
     if schema_report.get("status") != "PASS":
-        _stage_a_failure(packet_id, book_id, "DIRECTOR_BEAT_PLAN_ATTEMPT5_SCHEMA_INVALID", forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE"], report=schema_report, status="DIRECTOR_BEAT_PLAN_ATTEMPT5_SCHEMA_INVALID")
-        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT5_SCHEMA_INVALID", "retry": 0})
+        code = attempt_context.status("SCHEMA_INVALID")
+        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE"], report=schema_report, status=code, attempt_context=attempt_context)
+        raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
     completeness = validate_director_beat_plan_text_completeness(parsed)
     if completeness.get("status") != "PASS":
-        _stage_a_failure(packet_id, book_id, "DIRECTOR_BEAT_PLAN_ATTEMPT5_TEXT_INCOMPLETE", forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_TEXT_COMPLETENESS"], report=completeness, status="DIRECTOR_BEAT_PLAN_ATTEMPT5_TEXT_INCOMPLETE")
-        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_BEAT_PLAN_ATTEMPT5_TEXT_INCOMPLETE", "retry": 0})
+        code = attempt_context.status("TEXT_INCOMPLETE")
+        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_TEXT_COMPLETENESS"], report=completeness, status=code, attempt_context=attempt_context)
+        raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
     constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
     units = constraints.get("source_authoring_units") if isinstance(constraints.get("source_authoring_units"), list) else []
     runtime = validate_director_beat_plan_ir(parsed, source_units=units)
     if runtime.get("status") != "qualified":
-        code = "DIRECTOR_BEAT_PLAN_ATTEMPT5_SOURCE_COVERAGE_INCOMPLETE" if any(e.get("code") == "DIRECTOR_BEAT_PLAN_SOURCE_COVERAGE_INCOMPLETE" for e in runtime.get("errors", [])) else "DIRECTOR_BEAT_PLAN_ATTEMPT5_RUNTIME_INVALID"
-        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_TEXT_COMPLETENESS", "STAGE_A_RUNTIME_VALIDATE"], report=runtime, status=code)
+        outcome = "SOURCE_COVERAGE_INCOMPLETE" if any(e.get("code") == "DIRECTOR_BEAT_PLAN_SOURCE_COVERAGE_INCOMPLETE" for e in runtime.get("errors", [])) else "RUNTIME_INVALID"
+        code = attempt_context.status(outcome)
+        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_TEXT_COMPLETENESS", "STAGE_A_RUNTIME_VALIDATE"], report=runtime, status=code, attempt_context=attempt_context)
         raise HTTPException(status_code=502, detail={"code": code, "retry": 0})
     materialized = materialize_director_beat_plan_ids(parsed, scene_id=scene_id)
     raw_fp = hashlib.sha256(json.dumps(parsed, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
     materialized_fp = hashlib.sha256(json.dumps(materialized, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-    _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "stage_a_status": "VALIDATED", "event_trace": ["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_TEXT_COMPLETENESS", "STAGE_A_RUNTIME_VALIDATE", "STAGE_A_PERSIST"], "progressive_director_authoring": {"stage_a": {"status": "VALIDATED", "authoring_stage": "BEAT_PLAN", "ir": parsed, "ir_fingerprint": raw_fp, "materialized_beat_plan": materialized, "materialized_fingerprint": materialized_fp, "authorization_id": authorization_id, "attempt_id": "attempt-5", "provider_provenance": {"called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"], "prompt_fingerprint": identity["prompt_fingerprint"], "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"], "raw_response_sha256": forensic["raw_response_sha256"]}}}})
-    _set_latest_director_attempt_status(packet_id, book_id, "DIRECTOR_BEAT_PLAN_ATTEMPT5_VALIDATED")
-    return {"packet_id": packet_id, "packet_fingerprint": packet_fingerprint_value, "status": "DIRECTOR_BEAT_PLAN_ATTEMPT5_VALIDATED", "authoring_stage": "BEAT_PLAN", "ir": parsed, "materialized_beat_plan": materialized, "next_state": "DIRECTOR_CREATIVE_ENRICHMENT_AUTHORIZATION_REQUIRED", "confirm_allowed": False, "provider": {"called": True, "calls": 1}, "execution_manifest": identity}
+    try:
+        _assert_stage_a_attempt_context_current(packet_id, book_id, attempt_context)
+    except HTTPException:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_BEAT_PLAN_ATTEMPT_LINEAGE_CONFLICT", "event_trace": ["TRANSPORT", "RAW_PERSIST", "ATTEMPT_LINEAGE_VALIDATE"]})
+        raise
+    success_code = attempt_context.status("VALIDATED")
+    _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "stage_a_status": success_code, "event_trace": ["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_TEXT_COMPLETENESS", "STAGE_A_RUNTIME_VALIDATE", "STAGE_A_PERSIST"], "progressive_director_authoring": {"stage_a": {"status": success_code, "authoring_stage": "BEAT_PLAN", "ir": parsed, "ir_fingerprint": raw_fp, "materialized_beat_plan": materialized, "materialized_fingerprint": materialized_fp, "authorization_id": authorization_id, "attempt_id": attempt_context.attempt_id, "provider_provenance": {"called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"], "prompt_fingerprint": identity["prompt_fingerprint"], "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"], "raw_response_sha256": forensic["raw_response_sha256"]}}}})
+    _set_latest_director_attempt_status(packet_id, book_id, success_code)
+    return {"packet_id": packet_id, "packet_fingerprint": packet_fingerprint_value, "status": success_code, "authoring_stage": "BEAT_PLAN", "attempt_id": attempt_context.attempt_id, "materialized_beat_plan": materialized, "next_state": "DIRECTOR_CREATIVE_ENRICHMENT_AUTHORIZATION_REQUIRED", "confirm_allowed": False, "provider": {"called": True, "calls": 1}, "execution_manifest": identity}
 
 
 def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any], authorization_id: str = "") -> dict[str, Any]:

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "context": {
+    "history_count": 5,
+    "ordinal": 6,
+    "attempt_id": "attempt-6",
+    "status_prefix": "DIRECTOR_BEAT_PLAN_ATTEMPT6"
+  },
+  "ledger_latest": {
+    "attempt_id": "attempt-6",
+    "authorization_id": "auth",
+    "request_fingerprint": "fp",
+    "raw_response_sha256": "sha",
+    "status": "RAW_PERSISTED",
+    "authoring_stage": "BEAT_PLAN",
+    "prompt_fingerprint": "fp",
+    "provider_request_fingerprint_v2": "provider-fp"
+  },
+  "stage_a_attempt_id": "attempt-6",
+  "api_status": "DIRECTOR_BEAT_PLAN_ATTEMPT6_VALIDATED",
+  "lineage_equal": true
+}

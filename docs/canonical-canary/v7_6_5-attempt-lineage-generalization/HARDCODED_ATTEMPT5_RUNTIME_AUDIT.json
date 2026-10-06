@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "runtime_hardcoded_attempt_tokens": [],
+  "runtime_attempt_status_literals": false,
+  "historical_docs_excluded": true,
+  "canonical_context": "resolve_next_director_attempt_context"
+}

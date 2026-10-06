@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "source": "core/llm.py",
+  "call_parameter": "retries=1",
+  "implementation": "attempt_budget=max(1,int(retries or 0))",
+  "actual_http_posts_for_retries_1": 1,
+  "automatic_transport_retry": false,
+  "canary_max_posts": 1
+}

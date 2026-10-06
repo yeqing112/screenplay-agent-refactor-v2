@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "pre_call_freeze": [
+    "history_count",
+    "expected_attempt_id"
+  ],
+  "raw_append_guard": "current ledger count must equal frozen history_count",
+  "post_raw_guard": "latest ledger attempt_id must equal frozen context.attempt_id",
+  "conflict_code": "DIRECTOR_BEAT_PLAN_ATTEMPT_LINEAGE_CONFLICT",
+  "retry_on_conflict": false
+}

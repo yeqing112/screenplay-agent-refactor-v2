@@ -1,0 +1,47 @@
+{
+  "success": {
+    "status": "PASS",
+    "context": {
+      "history_count": 6,
+      "ordinal": 7,
+      "attempt_id": "attempt-7",
+      "status_prefix": "DIRECTOR_BEAT_PLAN_ATTEMPT7"
+    },
+    "ledger_latest": {
+      "attempt_id": "attempt-7",
+      "authorization_id": "auth",
+      "request_fingerprint": "fp",
+      "raw_response_sha256": "sha",
+      "status": "RAW_PERSISTED",
+      "authoring_stage": "BEAT_PLAN",
+      "prompt_fingerprint": "fp",
+      "provider_request_fingerprint_v2": "provider-fp"
+    },
+    "stage_a_attempt_id": "attempt-7",
+    "api_status": "DIRECTOR_BEAT_PLAN_ATTEMPT7_VALIDATED",
+    "lineage_equal": true
+  },
+  "schema_invalid": {
+    "status": "PASS",
+    "context": {
+      "history_count": 6,
+      "ordinal": 7,
+      "attempt_id": "attempt-7",
+      "status_prefix": "DIRECTOR_BEAT_PLAN_ATTEMPT7"
+    },
+    "ledger_latest": {
+      "attempt_id": "attempt-7",
+      "authorization_id": "auth",
+      "request_fingerprint": "fp",
+      "raw_response_sha256": "sha",
+      "status": "RAW_PERSISTED",
+      "authoring_stage": "BEAT_PLAN",
+      "prompt_fingerprint": "fp",
+      "provider_request_fingerprint_v2": "provider-fp"
+    },
+    "stage_a_attempt_id": "attempt-7",
+    "api_status": "DIRECTOR_BEAT_PLAN_ATTEMPT7_SCHEMA_INVALID",
+    "lineage_equal": true
+  },
+  "attempt7_generated_without_literal": true
+}

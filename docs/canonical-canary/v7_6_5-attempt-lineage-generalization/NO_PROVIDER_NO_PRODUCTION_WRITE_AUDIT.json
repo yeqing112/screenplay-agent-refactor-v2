@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "real_provider_http_posts": 0,
+  "stage_a_real_calls": 0,
+  "stage_b_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "75api_calls": 0,
+  "production_writes": 0,
+  "attempt_history_before": 5,
+  "attempt_history_after": 5,
+  "packet_proposal_before": {
+    "decision": "awaiting_llm"
+  },
+  "packet_proposal_after": {
+    "decision": "awaiting_llm"
+  },
+  "authority_promotion": 0
+}

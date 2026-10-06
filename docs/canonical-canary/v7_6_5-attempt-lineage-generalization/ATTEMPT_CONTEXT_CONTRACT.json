@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "type": "DirectorAttemptContext",
+  "source": "DecisionPacketRecord.model_info.director_llm_attempts",
+  "fields": [
+    "history_count",
+    "ordinal",
+    "attempt_id",
+    "status_prefix"
+  ],
+  "status_builder": "context.status(outcome)",
+  "authorization_independent": true
+}

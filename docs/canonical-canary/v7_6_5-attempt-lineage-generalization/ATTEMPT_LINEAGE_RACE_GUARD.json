@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "frozen": {
+    "history_count": 5,
+    "ordinal": 6,
+    "attempt_id": "attempt-6",
+    "status_prefix": "DIRECTOR_BEAT_PLAN_ATTEMPT6"
+  },
+  "raced_ledger_count": 6,
+  "result": "DIRECTOR_BEAT_PLAN_ATTEMPT_LINEAGE_CONFLICT",
+  "append_attempt7": false,
+  "provider_retry": false
+}

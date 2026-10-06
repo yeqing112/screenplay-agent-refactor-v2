@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "ledger_count": 5,
+  "expected_attempt_id": "attempt-6",
+  "runtime_expected_attempt_id": "attempt-6",
+  "historical_attempts_1_to_5_immutable": true,
+  "stage_a_existing_attempt_id": null,
+  "attempt5_status": "DIRECTOR_BEAT_PLAN_ATTEMPT5_SCHEMA_INVALID"
+}
