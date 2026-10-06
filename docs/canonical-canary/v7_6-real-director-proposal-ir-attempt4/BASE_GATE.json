@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "base_head": "06d0a5596be3afa517682cc655b9938ded87925e",
+  "remote_head": "06d0a5596be3afa517682cc655b9938ded87925e",
+  "remote_equals_local": true,
+  "working_tree_clean": true,
+  "tests": "46 passed",
+  "compileall": "PASS",
+  "diff_check": "PASS",
+  "provider_calls_before_execution": 0
+}

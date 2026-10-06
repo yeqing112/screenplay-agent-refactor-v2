@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "confirm_endpoint_called": false,
+  "confirm_calls": 0,
+  "scene_blocking_writes": 0,
+  "shot_plan_writes": 0,
+  "storyboard_writes": 0,
+  "prompt_ir_writes": 0,
+  "generation_execution_writes": 0,
+  "media_candidate_writes": 0,
+  "official_media_writes": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "75api_calls": 0,
+  "proposal_persisted": false,
+  "terminal_status": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID"
+}

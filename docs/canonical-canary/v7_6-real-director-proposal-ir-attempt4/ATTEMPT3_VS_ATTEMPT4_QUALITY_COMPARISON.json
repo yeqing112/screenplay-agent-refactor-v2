@@ -1,0 +1,18 @@
+{
+  "status": "NOT_COMPARABLE_SCHEMA_GATE_BLOCKED",
+  "attempt3_status": "IR_INVALID",
+  "attempt3_raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+  "attempt4_status": "SCHEMA_INVALID",
+  "attempt4_raw_response_sha256": "98ea44dd68877b14c733b4bf49fd01252cd76c8aeacbf3c3d561a481b1a3679b",
+  "raw_sha_equal": false,
+  "comparison_fields": [
+    "creative beat count",
+    "12-unit grouping",
+    "hook usage",
+    "character direction quality",
+    "dialogue interpretation",
+    "unknown preservation",
+    "scene exit strategy"
+  ],
+  "quality_verdict": "NOT_EVALUATED"
+}

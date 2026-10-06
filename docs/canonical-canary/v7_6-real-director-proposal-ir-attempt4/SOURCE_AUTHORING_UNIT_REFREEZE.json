@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "count": 12,
+  "actions": 11,
+  "dialogue": 1,
+  "source_beats": 0,
+  "fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "dialogue_contract": {
+    "unit_id": "SAU_E01_SC001_008",
+    "source_ref": "E01_SC001_D001",
+    "speaker": "顾沉",
+    "text": "也许是你自己",
+    "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+    "binding_type": "COREFERENCE_RESOLUTION"
+  }
+}

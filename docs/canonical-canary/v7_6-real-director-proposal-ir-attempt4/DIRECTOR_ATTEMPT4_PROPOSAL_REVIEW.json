@@ -1,0 +1,24 @@
+{
+  "status": "NOT_GENERATED_SCHEMA_GATE_BLOCKED",
+  "scene_id": "E01_SC001",
+  "scene_label": "NOT_AVAILABLE",
+  "scene_objective": "NOT_AVAILABLE",
+  "dramatic_question": "NOT_AVAILABLE",
+  "creative_beats": [],
+  "character_directions": [],
+  "performance_arc": [],
+  "information_strategy": [],
+  "rhythm_strategy": [],
+  "visual_priority": [],
+  "scene_exit_intent": "NOT_AVAILABLE",
+  "prohibited_interpretations": [
+    "门外人物身份",
+    "车票投递者身份",
+    "顾沉真实动机",
+    "林晚童年真相"
+  ],
+  "passthrough_refs": [],
+  "unknowns": "SOURCE_REFREEZE_ONLY",
+  "confidence": "NOT_AVAILABLE",
+  "note": "Attempt-4 stopped at formal schema gate; no review candidate exists."
+}

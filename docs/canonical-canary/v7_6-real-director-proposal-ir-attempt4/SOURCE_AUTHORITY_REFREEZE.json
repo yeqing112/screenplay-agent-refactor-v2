@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "book": {
+    "id": 990453,
+    "title": "V7 Generalized Canary 20261006T013634Z-8bf0de6a0e95514a"
+  },
+  "script": {
+    "id": 64,
+    "book_id": 990453,
+    "episode": 1,
+    "current_script_ir_version_id": 52,
+    "status": "draft",
+    "production_status": "blocked"
+  },
+  "fact_snapshot": {
+    "id": 49,
+    "book_id": 990453,
+    "episode": 1,
+    "revision": 1,
+    "status": "confirmed",
+    "payload_hash": "47898887876eba48f442e05094b245e2dc04dfa0765993ad424f10ce1184526f"
+  },
+  "script_ir": {
+    "id": 52,
+    "book_id": 990453,
+    "episode": 1,
+    "status": "production_qualified",
+    "qualification_state": "PRODUCTION_QUALIFIED",
+    "stale_status": "FRESH",
+    "source_fact_snapshot_id": "49",
+    "authority_profile": "SOURCE_GROUNDED_V3_1",
+    "creative_readiness_state": "AUTHORING_REQUIRED",
+    "envelope_fingerprint": "48da3932b179a9379ee8bdfe54e9426e7e3664039737df3a5bb7ff6935d33682"
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f"
+}

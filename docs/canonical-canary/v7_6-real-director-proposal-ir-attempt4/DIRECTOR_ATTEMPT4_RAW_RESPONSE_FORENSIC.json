@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "schema_version": "director_llm_raw_response_forensic_v1",
+  "attempt_id": "attempt-4",
+  "authorization_id": "v7_6-director-proposal-ir-attempt4-authorization-4",
+  "packet_id": "64",
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "raw_response_sha256": "98ea44dd68877b14c733b4bf49fd01252cd76c8aeacbf3c3d561a481b1a3679b",
+  "raw_response_length": 1070,
+  "raw_response": "{\"version\":\"director_proposal_ir_v1\",\"scene_label\":\"E01_SC001 暗房\",\"scene_objective\":\"建立暗房的封闭压迫感与母题物件（铁盒、别针、胶片），让林晚在记忆缺口与顾沉的暗示之间产生动摇，并以门外不速之客的车票指令把两人关系推向不信任。\",\"dramatic_question\":\"是谁拿走了胶片？林晚的童年与这间暗房、这只别针之间到底发生过什么？门外的人又为何点名要避开顾沉？\",\"beats\":[{\"refs\":[\"SAU_E01_SC001_001\",\"SAU_E01_SC001_002\"],\"purpose\":\"以顾沉引导林晚进入暗房开场，用红色安全灯与水渍墙面建立空间的不安质感。\",\"objective\":\"让观众与林晚同步进入这个陌生而潮湿的空间，感受顾沉对这里的熟悉与林晚的被动跟随。\",\"information_change\":\"确立场景地点（暗房）与两人关系位置：顾沉主导、林晚被带入。\",\"audience_effect\":\"压抑、潮湿、被窥视的不安感；对暗房的来历产生好奇。\",\"performance\":\"顾沉动作熟练、不解释，带路时略显急切；林晚迟疑、环顾四周，身体语言保持防御。\",\"transition\":\"灯光忽明忽暗的节奏自然引向暗房中央的物件。\",\"hook\":false,\"character_effects\":[{\"character_ref\":\"顾沉\",\"effect\":\"展现他对暗房的熟悉与掌控欲\"},{\"character_ref\":\"林晚\",\"effect\":\"处于被动、警惕的外来者位置\"}]},{\"refs\":[\"SAU_E01_SC001_003\"],\"purpose\":\"揭示暗房中央的铁盒与母亲手写标签，抛出核心母题物件。\",\"objective\":\"让\"  , \"beats_note\":\"placeholder\"}],\"passthrough_refs\":[\"SAU_E01_SC001_004\",\"SAU_E01_SC001_005\",\"SAU_E01_SC001_006\",\"SAU_E01_SC001_007\",\"SAU_E01_SC001_008\",\"SAU_E01_SC001_009\",\"SAU_E01_SC001_010\",\"SAU_E01_SC001_011\",\"SAU_E01_SC001_012\"],\"confidence\":0.0,\"note\":\"placeholder\"}",
+  "persisted_before_parse": true,
+  "parse_started": true,
+  "provider_request_id": "",
+  "request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402"
+}

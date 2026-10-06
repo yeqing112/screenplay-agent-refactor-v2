@@ -1,0 +1,12 @@
+{
+  "status": "CONSUMED",
+  "authorization_id": "v7_6-director-proposal-ir-attempt4-authorization-4",
+  "authorized_calls": 1,
+  "consumed_calls": 1,
+  "provider_calls": 0,
+  "recorded_before_post": true,
+  "provider_post_count": 1,
+  "transport_attempts": 1,
+  "retry": 0,
+  "terminal_outcome": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID"
+}

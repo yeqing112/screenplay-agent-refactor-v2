@@ -1,0 +1,85 @@
+{
+  "status": "FAIL",
+  "validator": "validate_director_proposal_ir_schema",
+  "errors": [
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "character_directions"
+    },
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "information_strategy"
+    },
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "performance_arc"
+    },
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "prohibited_interpretations"
+    },
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "rhythm_strategy"
+    },
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "scene_exit_intent"
+    },
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "unknowns"
+    },
+    {
+      "path": "$",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "visual_priority"
+    },
+    {
+      "path": "$.beats[1]",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "audience_effect"
+    },
+    {
+      "path": "$.beats[1]",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "character_effects"
+    },
+    {
+      "path": "$.beats[1]",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "hook"
+    },
+    {
+      "path": "$.beats[1]",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "information_change"
+    },
+    {
+      "path": "$.beats[1]",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "performance"
+    },
+    {
+      "path": "$.beats[1]",
+      "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+      "field": "transition"
+    },
+    {
+      "path": "$.beats[1]",
+      "code": "SCHEMA_ADDITIONAL_PROPERTY",
+      "field": "beats_note"
+    }
+  ],
+  "terminal_code": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID",
+  "runtime_validation_run": false,
+  "compiler_run": false,
+  "proposal_persisted": false
+}

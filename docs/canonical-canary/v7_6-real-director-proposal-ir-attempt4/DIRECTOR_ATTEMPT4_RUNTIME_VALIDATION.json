@@ -1,0 +1,8 @@
+{
+  "status": "NOT_RUN_SCHEMA_GATE_BLOCKED",
+  "validator": "validate_director_proposal_ir",
+  "source_unit_count_expected": 12,
+  "covered_source_unit_count": "NOT_EVALUATED",
+  "creative_beat_count": "NOT_EVALUATED",
+  "terminal_code": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID"
+}

@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "parse_calls": 1,
+  "provider_parse_ok": true,
+  "raw_persisted_before_parse": true,
+  "parser": "parse_director_proposal_ir",
+  "parse_retry": 0,
+  "terminal_next_gate": "IR_SCHEMA_VALIDATE",
+  "compiler_run": false
+}

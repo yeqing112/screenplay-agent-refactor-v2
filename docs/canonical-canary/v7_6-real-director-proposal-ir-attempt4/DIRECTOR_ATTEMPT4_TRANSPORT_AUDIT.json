@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "authorization_id": "v7_6-director-proposal-ir-attempt4-authorization-4",
+  "provider_posts": 1,
+  "transport_attempts": 1,
+  "transport_retry": 0,
+  "parse_retry": 0,
+  "repair_llm": 0,
+  "fallback": 0,
+  "profile": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true
+  },
+  "http_status": 200,
+  "provider_request_id": "",
+  "actual_request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+  "frozen_request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+  "fingerprint_match": true,
+  "audit_record": {
+    "vendor_model": "mimo-v2.5",
+    "vendor_host": "api.xiaomimimo.com",
+    "profile_id": "local-llm-2vydoz",
+    "system_prompt_sha256": "47bc465337d344f2fd991f1c874083f7",
+    "system_prompt_length": 698,
+    "user_prompt_sha256": "d2a4d76417cd4254e64abb9cd7872e2a",
+    "user_prompt_length": 9457,
+    "request_messages_sha256": "e74ec81c9f7f5496b7e63c31fbd3a6be",
+    "request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+    "has_repair_request": false,
+    "repair_request_sha256": "",
+    "repair_request_length": 0,
+    "response_sha256": "98ea44dd68877b14c733b4bf49fd0125",
+    "response_length": 1070,
+    "http_status": 200,
+    "parse_ok": true,
+    "top_level_keys": [
+      "beats",
+      "confidence",
+      "dramatic_question",
+      "note",
+      "passthrough_refs",
+      "scene_label",
+      "scene_objective",
+      "version"
+    ],
+    "returned_schema_version": "",
+    "response_debug_excerpt": "{\"beats\": [{\"audience_effect\": \"压抑、潮湿、被窥视的不安感；对暗房的来历产生好奇。\", \"character_effects\": [{\"character_ref\": \"<depth-limit>\", \"effect\": \"<depth-limit>\"}, {\"character_ref\": \"<depth-limit>\", \"effect\": \"<depth-limit>\"}], \"hook\": false, \"information_change\": \"确立场景地点（暗房）与两人关系位置：顾沉主导、林晚被带入。\", \"objective\": \"让观众与林晚同步进入这个陌生而潮湿的空间，感受顾沉对这里的熟悉与林晚的被动跟随。\", \"performance\": \"顾沉动作熟练、不解释，带路时略显急切；林晚迟疑、环顾四周，身体语言保持防御。\", \"purpose\": \"以顾沉引导林晚进入暗房开场，用红色安全灯与水渍墙面建立空间的不安质感。\", \"refs\": [\"SAU_E01_SC001_001\", \"SAU_E01_SC001_002\"], \"transition\": \"灯光忽明忽暗的节奏自然引向暗房中央的物件。\"}, {\"beats_note\": \"placeholder\", \"objective\": \"让\", \"purpose\": \"揭示暗房中央的铁盒与母亲手写标签，抛出核心母题物件。\", \"refs\": [\"SAU_E01_SC001_003\"]}], \"confidence\": 0.0, \"dramatic_question\": \"是谁拿走了胶片？林晚的童年与这间暗房、这只别针之间到底发生过什么？门外的人又为何点名要避开顾沉？\", \"note\": \"placeholder\", \"passthrough_refs\": [\"SAU_E01_SC001_004\", \"SAU_E01_SC001_005\", \"SAU_E01_SC001_006\", \"SAU_E01_SC001_007\", \"SAU_E01_SC001_008\", \"SAU_E01_SC001_009\", \"SAU_E01_SC001_010\", \"SAU_E01_SC001_011\", \"SAU_E01_SC001_012\"], \"scene_label\": \"E01_SC001 暗房\", \"scene_objective\": \"建立暗房的封闭压迫感与母题物件（铁盒、别针、胶片），让林晚在记忆缺口与顾沉的暗示之间产生动摇，并以门外不速之客的车票指令把两人关系推向不信任。\", \"version\": \"director_proposal_ir_v1\"}",
+    "usage": {
+      "prompt_tokens": 4853,
+      "cached_tokens": 4096,
+      "completion_tokens": 555,
+      "total_tokens": 5408,
+      "cache_hit_rate": 0.844014
+    },
+    "latency_ms": 19540.12,
+    "extra": {
+      "director_execution_boundary": "v3_one_call",
+      "transport_attempt_number": 1,
+      "transport_retry": false
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "status": "NOT_RUN_SCHEMA_GATE_BLOCKED",
+  "unknown_facts_preserved_in_source_authority": [
+    "门外人物身份",
+    "车票投递者身份",
+    "顾沉真实动机",
+    "林晚童年真相"
+  ],
+  "new_canonized_facts": [],
+  "new_characters": 0,
+  "terminal_code": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID"
+}

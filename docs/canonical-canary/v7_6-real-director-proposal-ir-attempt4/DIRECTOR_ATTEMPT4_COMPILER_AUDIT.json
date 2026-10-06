@@ -1,0 +1,8 @@
+{
+  "status": "NOT_RUN_SCHEMA_GATE_BLOCKED",
+  "compiler": "compile_director_proposal_ir",
+  "local_compiler_new_creative_decision_count": 0,
+  "local_direction_semantic_expansion_count": 0,
+  "candidate_status": "NOT_CREATED",
+  "terminal_code": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID"
+}

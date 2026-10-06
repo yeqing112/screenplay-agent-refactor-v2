@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "packet_id": 64,
+  "book_id": 990453,
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "status_before": "draft",
+  "proposal_before": {
+    "decision": "awaiting_llm"
+  },
+  "attempt_history_count": 3,
+  "attempt_history": [
+    {
+      "attempt_id": "v7_3_attempt_1",
+      "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "status": "PARSE_FAILED"
+    },
+    {
+      "attempt_id": "v7_3_attempt_2",
+      "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "status": "PARSE_FAILED"
+    },
+    {
+      "attempt_id": "attempt-3",
+      "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+      "request_fingerprint": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+      "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+      "status": "IR_INVALID"
+    }
+  ],
+  "next_attempt": "attempt-4",
+  "historical_attempt3_immutable": {
+    "attempt_id": "attempt-3",
+    "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+    "request_fingerprint": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+    "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+    "status": "IR_INVALID"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "source_mutation_count": 0,
+  "script_64_unchanged": true,
+  "fact_snapshot_49_unchanged": true,
+  "script_ir_52_unchanged": true,
+  "source_authoring_units_unchanged": true,
+  "dialogue_unchanged": true,
+  "speaker_unchanged": true,
+  "binding_unchanged": true,
+  "participants_unchanged": true,
+  "source_script_hash": "24d0f512d05e5721e36e60b3a0e36bf7bbbfdedd0f862de4250183ec2e0f6cb8",
+  "fact_payload_hash": "47898887876eba48f442e05094b245e2dc04dfa0765993ad424f10ce1184526f",
+  "script_ir_payload_hash": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b"
+}
