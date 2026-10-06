@@ -12,9 +12,11 @@ from unittest.mock import patch
 
 import httpx
 import pytest
+from fastapi import HTTPException
 
 from api import director_treatment_api as api
 from core import llm
+from core.prompt_cache import prompt_fingerprint
 from models import Book, DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, Session, init_db
 from tests.test_director_source_grounded_authoring_v7_1 import _preview, _scene
 
@@ -99,6 +101,32 @@ def test_v3_prompt_freezes_advisory_asset_context_out_of_request_identity():
     assert "mutable-asset" not in user
 
 
+def test_execution_identity_builder_is_deterministic_and_asset_independent():
+    treatment = _preview()
+    first = api.build_source_grounded_director_execution_identity(treatment, {"characters": [{"id": "mutable-a"}]})
+    second = api.build_source_grounded_director_execution_identity(treatment, {"characters": [{"id": "mutable-b"}]})
+    assert first["request_fingerprint"] == second["request_fingerprint"]
+    assert first["request_fingerprint"] == prompt_fingerprint(first["system_prompt"], first["user_prompt"])
+    assert first["advisory_asset_context"] == []
+    altered = json.loads(json.dumps(treatment))
+    altered["source_constraints"]["source_authoring_units"][0]["text"] = "changed source"
+    assert api.build_source_grounded_director_execution_identity(altered, {"characters": []})["request_fingerprint"] != first["request_fingerprint"]
+    prompt_changed = json.loads(json.dumps(treatment))
+    prompt_changed["scene_id"] = "E01_SC001_CHANGED"
+    assert api.build_source_grounded_director_execution_identity(prompt_changed, {"characters": []})["request_fingerprint"] != first["request_fingerprint"]
+
+
+def test_production_endpoint_missing_scene_id_rejects_before_provider(monkeypatch):
+    calls = []
+    monkeypatch.setattr(api, "_build_preview", lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("preview must not run")))
+    monkeypatch.setattr(api.llm_client, "call_llm", lambda *args, **kwargs: calls.append(1))
+    req = api.DirectorTreatmentLlmDraftRequest(episode=1, confirmed=True, allow_external_call=True, workflow_profile="production", authorization_id="scene-id-test")
+    with pytest.raises(HTTPException) as exc:
+        api.generate_director_treatment_llm_draft(990453, 1, req)
+    assert exc.value.detail["code"] == "SCENE_ID_REQUIRED"
+    assert calls == []
+
+
 def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projection(monkeypatch):
     result, error, calls, model_info, packet, downstream = _run(monkeypatch, _valid_response(_preview()))
     assert error is None
@@ -108,7 +136,7 @@ def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projecti
     assert calls[0]["temperature"] == 0.0
     assert calls[0]["response_format"] == {"type": "json_object"}
     assert downstream == (0, 0, 0)
-    assert model_info["event_trace"] == ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"]
+    assert model_info["event_trace"] == ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_SCHEMA_VALIDATE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"]
     assert model_info["raw_response_forensic"]["persisted_before_parse"] is True
     assert len(model_info["raw_response_forensic"]["raw_response_sha256"]) == 64
     assert json.loads(packet.proposal)["proposal_origin"] == "PROVIDER_PROPOSAL"
@@ -216,7 +244,7 @@ def test_real_v3_endpoint_branch_is_proposal_only(monkeypatch):
     calls = []
     monkeypatch.setattr(api.llm_client, "_resolve_llm_profile", lambda *_args, **_kwargs: _profile())
     monkeypatch.setattr(api.llm_client, "call_llm", lambda *args, **kwargs: calls.append(kwargs) or _valid_response(treatment))
-    req = api.DirectorTreatmentLlmDraftRequest(episode=1, confirmed=True, allow_external_call=True, workflow_profile="production", packet_fingerprint=packet["packet_fingerprint"], authorization_id="isolated-v7-2-endpoint-authorization")
+    req = api.DirectorTreatmentLlmDraftRequest(episode=1, scene_id="E01_SC001", confirmed=True, allow_external_call=True, workflow_profile="production", packet_fingerprint=packet["packet_fingerprint"], authorization_id="isolated-v7-2-endpoint-authorization")
     result = api.generate_director_treatment_llm_draft(book_id, 1, req)
     assert result["domain_write_performed"] is False
     assert calls[0]["response_format"] == {"type": "json_object"}

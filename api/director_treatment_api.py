@@ -194,10 +194,26 @@ def _source_grounded_v3_prompt(treatment: dict[str, Any], evidence: dict[str, An
         f"PROPOSAL_IR_VERSION={DIRECTOR_PROPOSAL_IR_VERSION}\n"
         f"PROPOSAL_IR_SCHEMA_KEYS={json.dumps(sorted(DIRECTOR_PROPOSAL_IR_SCHEMA['properties']), ensure_ascii=False)}\n"
         "BEAT_CONTRACT=refs[]; purpose; objective; information_change; audience_effect; performance; transition; hook(boolean); character_effects[{character_ref,effect}]\n"
+        "CHARACTER_DIRECTION_CONTRACT=character_ref:string plus one or more of direction:string, objective:string, obstacle:string, strategy:string, performance_notes:string; no other keys\n"
         "每个 beat 的 refs 只能引用上述 SAU ID。所有 source authoring unit 必须由 beats[].refs 或 passthrough_refs 覆盖。"
         "MINIMAL_VALID_SHAPE={\"version\":\"director_proposal_ir_v1\",\"scene_label\":\"\",\"scene_objective\":\"\",\"dramatic_question\":\"\",\"beats\":[],\"character_directions\":[],\"performance_arc\":[],\"information_strategy\":[],\"rhythm_strategy\":{},\"visual_priority\":[],\"scene_exit_intent\":\"\",\"prohibited_interpretations\":[],\"passthrough_refs\":[],\"unknowns\":[],\"confidence\":0.0,\"note\":\"\"}"
     )
     return DIRECTOR_PROPOSAL_IR_V1_SYSTEM_PROMPT, user_prompt
+
+
+def build_source_grounded_director_execution_identity(treatment: dict[str, Any], evidence: dict[str, Any]) -> dict[str, Any]:
+    """Build the one deterministic prompt identity shared by preflight and execution."""
+    system_prompt, user_prompt = _source_grounded_v3_prompt(treatment, evidence)
+    return {
+        "system_prompt": system_prompt,
+        "user_prompt": user_prompt,
+        "system_prompt_sha256": hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(),
+        "user_prompt_sha256": hashlib.sha256(user_prompt.encode("utf-8")).hexdigest(),
+        "request_fingerprint": prompt_fingerprint(system_prompt, user_prompt),
+        "source_authoring_unit_fingerprint": treatment.get("source_authoring_units_fingerprint", ""),
+        "advisory_asset_context": [],
+        "schema_version": DIRECTOR_PROPOSAL_IR_VERSION,
+    }
 
 
 def _director_llm_profile_preflight() -> tuple[dict[str, Any], dict[str, Any]]:
@@ -295,8 +311,10 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
     except HTTPException as exc:
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": (exc.detail.get("code") if isinstance(exc.detail, dict) else "DIRECTOR_LLM_PROFILE_UNAVAILABLE")})
         raise
-    system_prompt, user_prompt = _source_grounded_v3_prompt(treatment, evidence)
-    request_fp = prompt_fingerprint(system_prompt, user_prompt)
+    execution_identity = build_source_grounded_director_execution_identity(treatment, evidence)
+    system_prompt = execution_identity["system_prompt"]
+    user_prompt = execution_identity["user_prompt"]
+    request_fp = execution_identity["request_fingerprint"]
     audit_records: list[dict[str, Any]] = []
     try:
         raw = llm_client.call_llm(
@@ -368,7 +386,7 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
             raise HTTPException(status_code=409, detail="Treatment decision packet disappeared while the LLM was running.")
         info = _json_object(row.model_info, {})
         info = info if isinstance(info, dict) else {}
-        info.update({"llm_draft_in_progress": False, "proposal_provenance": provenance, "profile_preflight": profile_snapshot, "request_fingerprint": request_fp, "provider_audit": provider_record, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"], "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)})
+        info.update({"llm_draft_in_progress": False, "proposal_provenance": provenance, "profile_preflight": profile_snapshot, "request_fingerprint": request_fp, "provider_audit": provider_record, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_SCHEMA_VALIDATE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"], "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)})
         row.proposal = json.dumps(candidate, ensure_ascii=False)
         row.model_info = json.dumps(info, ensure_ascii=False)
         row.status = "draft"
@@ -377,7 +395,7 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
         # The history was appended before parsing; this status records the
         # terminal proposal-only outcome without losing prior attempts.
         _set_latest_director_attempt_status(packet_id, book_id, "PROPOSAL_PERSISTED")
-        return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate, **project_legacy_flags(provenance), "deduplicated": False, "domain_write_performed": False, "provider": {**provider, "provider_request_id": provider_record.get("provider_request_id")}, "execution_manifest": {"system_prompt_sha256": hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(), "user_prompt_sha256": hashlib.sha256(user_prompt.encode("utf-8")).hexdigest(), "request_fingerprint": request_fp, "packet_fingerprint": packet_fingerprint_value, "source_authoring_unit_fingerprint": treatment.get("source_authoring_units_fingerprint")}}
+        return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate, **project_legacy_flags(provenance), "deduplicated": False, "domain_write_performed": False, "provider": {**provider, "provider_request_id": provider_record.get("provider_request_id")}, "execution_manifest": {"system_prompt_sha256": execution_identity["system_prompt_sha256"], "user_prompt_sha256": execution_identity["user_prompt_sha256"], "request_fingerprint": request_fp, "packet_fingerprint": packet_fingerprint_value, "source_authoring_unit_fingerprint": execution_identity["source_authoring_unit_fingerprint"], "advisory_asset_context": execution_identity["advisory_asset_context"], "schema_version": execution_identity["schema_version"]}}
 
 
 def _make_decision_packet(book_id: int, episode: int, treatment: dict[str, Any], evidence: dict[str, Any]) -> dict[str, Any]:
@@ -829,6 +847,8 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
     if not (req.confirmed and req.allow_external_call):
         raise HTTPException(status_code=409, detail="Calling the Treatment LLM requires confirmed=true and allowExternalCall=true.")
     req.episode = episode
+    if str(req.workflow_profile or "").strip().lower() == "production" and not str(req.scene_id or "").strip():
+        raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED", "message": "Production Treatment requires a stable scene_id."})
     treatment, evidence, _ = _build_preview(book_id, req)
     if treatment.get("schema_version") == "director_treatment_v3" and not str(req.authorization_id or "").strip():
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_LLM_AUTHORIZATION_ID_REQUIRED", "message": "Source-grounded Director LLM execution requires an explicit authorization_id."})
