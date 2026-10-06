@@ -118,6 +118,7 @@ def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projecti
     assert result["domain_write_performed"] is False
     assert result["provider"]["calls"] == 1
     assert calls[0]["retries"] == 1
+    assert calls[0]["response_format"] == {"type": "json_object"}
     assert downstream == (0, 0, 0)
     assert model_info["event_trace"] == ["TRANSPORT", "RAW_PERSIST", "PARSE", "VALIDATE", "PROPOSAL_PERSIST"]
     assert model_info["raw_response_forensic"]["persisted_before_parse"] is True
@@ -207,6 +208,7 @@ def test_real_v3_endpoint_branch_is_proposal_only(monkeypatch):
     req = api.DirectorTreatmentLlmDraftRequest(episode=1, confirmed=True, allow_external_call=True, workflow_profile="production", packet_fingerprint=packet["packet_fingerprint"])
     result = api.generate_director_treatment_llm_draft(book_id, 1, req)
     assert result["domain_write_performed"] is False
+    assert calls[0]["response_format"] == {"type": "json_object"}
     assert calls[0]["retries"] == 1
     with Session() as session:
         assert session.query(DirectorTreatment).filter_by(book_id=book_id).count() == 0

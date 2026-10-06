@@ -307,7 +307,16 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
     request_fp = prompt_fingerprint(system_prompt, user_prompt)
     audit_records: list[dict[str, Any]] = []
     try:
-        raw = llm_client.call_llm(user_prompt, system=system_prompt, model_profile=profile, retries=1, estimated_tokens=5000, audit_callback=lambda record: audit_records.append(dict(record)) if isinstance(record, dict) else None, audit_extra={"director_execution_boundary": "v3_one_call"})
+        raw = llm_client.call_llm(
+            user_prompt,
+            system=system_prompt,
+            model_profile=profile,
+            retries=1,
+            estimated_tokens=5000,
+            response_format={"type": "json_object"},
+            audit_callback=lambda record: audit_records.append(dict(record)) if isinstance(record, dict) else None,
+            audit_extra={"director_execution_boundary": "v3_one_call"},
+        )
     except httpx.ReadTimeout as exc:
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_SUBMISSION_AMBIGUOUS", "transport_retry": 0})
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_SUBMISSION_AMBIGUOUS", "retry": 0}) from exc
