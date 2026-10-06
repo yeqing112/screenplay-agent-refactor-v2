@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "schema": {
+    "status": "PASS",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "text_completeness": {
+    "status": "PASS",
+    "errors": []
+  },
+  "runtime": {
+    "status": "qualified",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1",
+    "source_unit_count": 12,
+    "covered_source_unit_count": 12,
+    "creative_beat_count": 6,
+    "local_creative_completion_count": 0
+  },
+  "has_true": true,
+  "has_false": true,
+  "materialized": {
+    "version": "director_beat_plan_ir_v1",
+    "scene_label": "string",
+    "scene_objective": "完整中文句子。",
+    "dramatic_question": "完整中文疑问句？",
+    "beats": [
+      {
+        "beat_ref": "DBP_E01_SC001_001",
+        "refs": [
+          "SAU_E01_SC001_001",
+          "SAU_E01_SC001_002"
+        ],
+        "purpose": "完整中文句子。",
+        "objective": "完整中文句子。",
+        "information_change": "完整中文句子。",
+        "hook": true
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_002",
+        "refs": [
+          "SAU_E01_SC001_003",
+          "SAU_E01_SC001_004"
+        ],
+        "purpose": "完整中文句子。",
+        "objective": "完整中文句子。",
+        "information_change": "完整中文句子。",
+        "hook": false
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_003",
+        "refs": [
+          "SAU_E01_SC001_005",
+          "SAU_E01_SC001_006"
+        ],
+        "purpose": "完整中文句子。",
+        "objective": "完整中文句子。",
+        "information_change": "完整中文句子。",
+        "hook": false
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_004",
+        "refs": [
+          "SAU_E01_SC001_007",
+          "SAU_E01_SC001_008"
+        ],
+        "purpose": "完整中文句子。",
+        "objective": "完整中文句子。",
+        "information_change": "完整中文句子。",
+        "hook": false
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_005",
+        "refs": [
+          "SAU_E01_SC001_009",
+          "SAU_E01_SC001_010"
+        ],
+        "purpose": "完整中文句子。",
+        "objective": "完整中文句子。",
+        "information_change": "完整中文句子。",
+        "hook": false
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_006",
+        "refs": [
+          "SAU_E01_SC001_011",
+          "SAU_E01_SC001_012"
+        ],
+        "purpose": "完整中文句子。",
+        "objective": "完整中文句子。",
+        "information_change": "完整中文句子。",
+        "hook": false
+      }
+    ],
+    "passthrough_refs": [],
+    "unknowns": [],
+    "confidence": 0.8,
+    "note": "string",
+    "authoring_stage": "AUTHORING_STAGE_A",
+    "proposal_origin": "PROVIDER_PROPOSAL",
+    "authority": "PROVIDER_PROPOSAL"
+  },
+  "provider_calls": 0
+}

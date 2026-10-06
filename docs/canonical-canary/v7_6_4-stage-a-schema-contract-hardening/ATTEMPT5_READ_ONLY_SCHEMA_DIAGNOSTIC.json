@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "mode": "READ_ONLY_SCHEMA_DIAGNOSTIC",
+  "parse": "PASS",
+  "schema": {
+    "status": "FAIL",
+    "errors": [
+      {
+        "path": "$.beats[0].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[1].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[2].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[3].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[4].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[5].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      }
+    ],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "raw_response_sha256": "34bdae748ee533b123e1c436a864623797b13cbc6d4868791323b118e2208421",
+  "raw_changed": false,
+  "repaired_result_created": false,
+  "other_schema_errors": 0,
+  "confidence": "high",
+  "confidence_error": false
+}

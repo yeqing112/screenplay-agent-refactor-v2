@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "attempt": "attempt-5",
+  "raw_response_sha256": "34bdae748ee533b123e1c436a864623797b13cbc6d4868791323b118e2208421",
+  "schema_error_count": 6,
+  "errors": [
+    {
+      "path": "$.beats[0].hook",
+      "code": "SCHEMA_TYPE_INVALID",
+      "expected": "boolean"
+    },
+    {
+      "path": "$.beats[1].hook",
+      "code": "SCHEMA_TYPE_INVALID",
+      "expected": "boolean"
+    },
+    {
+      "path": "$.beats[2].hook",
+      "code": "SCHEMA_TYPE_INVALID",
+      "expected": "boolean"
+    },
+    {
+      "path": "$.beats[3].hook",
+      "code": "SCHEMA_TYPE_INVALID",
+      "expected": "boolean"
+    },
+    {
+      "path": "$.beats[4].hook",
+      "code": "SCHEMA_TYPE_INVALID",
+      "expected": "boolean"
+    },
+    {
+      "path": "$.beats[5].hook",
+      "code": "SCHEMA_TYPE_INVALID",
+      "expected": "boolean"
+    }
+  ],
+  "other_schema_errors": 0,
+  "confidence_string_allowed": true,
+  "raw_immutable": true,
+  "no_repair": true
+}

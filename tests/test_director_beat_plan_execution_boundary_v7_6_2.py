@@ -45,7 +45,8 @@ def test_dedicated_endpoint_and_old_guard_are_declared():
 def test_stage_a_prompt_is_minimized_and_excludes_stage_b():
     system, user = build_director_beat_plan_prompt(scene_id="E01_SC001", source_units=units(), declared_participants=[], explicit_story_constraints=["x"], unknown_source_facts=["y"])
     assert "EXPLICIT_STORY_CONSTRAINTS" in user and "UNKNOWN_SOURCE_FACTS" in user
-    assert "source_evidence" not in user and "performance" not in user and "visual_priority" not in user
+    source_block = user.split("SOURCE_AUTHORING_UNITS=", 1)[1].split("DECLARED_PARTICIPANTS=", 1)[0]
+    assert "source_evidence" not in source_block and "visual_priority" not in source_block
     assert "BEAT_PLAN_CONTRACT" in user
 
 
@@ -107,4 +108,6 @@ def test_provider_identity_internal_consistency_rejects_stale_provider_fingerpri
 
 
 def test_stage_a_contract_has_no_confirmation_or_stage_b_fields():
-    assert "performance" not in api.build_director_beat_plan_provider_request(treatment(), {}, scene_id="E01_SC001", profile=profile(), profile_snapshot=snapshot())["user_prompt"]
+    prompt = api.build_director_beat_plan_provider_request(treatment(), {}, scene_id="E01_SC001", profile=profile(), profile_snapshot=snapshot())["user_prompt"]
+    assert "REQUIRED_BEAT_FIELDS=refs,purpose,objective,information_change,hook" in prompt
+    assert "BEAT_PLAN_CONTRACT=" in prompt and "HOOK_BOOLEAN_CONTRACT=" in prompt

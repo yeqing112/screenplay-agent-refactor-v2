@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "attempt5_prompt_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+  "attempt6_prompt_fingerprint": "ddf1662a8583a48d2347ac4e231c3ff27769679224ed1946069018effdbbc488",
+  "changed": true,
+  "attempt6_provider_request_fingerprint_v2": "3a73fc2e762e0572b810dfe2149c959356e8786148e040897839cba418f9cee4",
+  "reason": "typed hook contract, hook semantics and JSON shape example were added"
+}

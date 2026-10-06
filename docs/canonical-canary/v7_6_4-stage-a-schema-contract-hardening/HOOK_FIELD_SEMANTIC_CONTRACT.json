@@ -1,0 +1,11 @@
+{
+  "field": "beats[].hook",
+  "schema_type": "boolean",
+  "true_literal": true,
+  "false_literal": false,
+  "true_semantics": "beat carries unresolved question, reversal, suspense, continuation drive or next-step hook",
+  "false_semantics": "beat establishes, explains, advances or transitions without a clear hook",
+  "text_allowed": false,
+  "coercion_allowed": false,
+  "compiler_output": "hook_intent copies boolean"
+}

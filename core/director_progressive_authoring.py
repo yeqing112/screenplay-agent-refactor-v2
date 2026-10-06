@@ -23,7 +23,9 @@ DIRECTOR_BEAT_PLAN_IR_V1_SYSTEM_PROMPT = (
     "不得改写或输出对白、speaker、binding、source_constraints、authority、creative_beat_id、"
     "performance、audience_effect、transition、character_effects、character_directions、"
     "performance_arc、information_strategy、rhythm_strategy、visual_priority、scene_exit_intent、"
-    "prohibited_interpretations。所有创意文本必须是完整中文句子并以。！？?!之一结束；dramatic_question 必须以疑问标点结束。"
+    "prohibited_interpretations。仅 string 类型的创意字段需要是完整中文句子并以。！？?!之一结束；"
+    "scene_objective、dramatic_question、beats[].purpose、beats[].objective、beats[].information_change 属于文本字段。"
+    "beats[].hook 是 boolean 分类标志，不是文本字段，不适用句子完整性要求。"
 )
 
 STAGE_A_BEAT_FIELDS = {"refs", "purpose", "objective", "information_change", "hook"}
@@ -382,7 +384,10 @@ def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping
         f"UNKNOWN_SOURCE_FACTS={json.dumps(unknown_source_facts or [], ensure_ascii=False, sort_keys=True)}\n"
         "REQUIRED_TOP_LEVEL_FIELDS=version,scene_label,scene_objective,dramatic_question,beats,passthrough_refs,unknowns,confidence,note\n"
         "REQUIRED_BEAT_FIELDS=refs,purpose,objective,information_change,hook\n"
-        "BEAT_PLAN_CONTRACT=只允许上述字段；每个 purpose/objective/information_change 和 scene_objective 必须为完整中文句子并以。！？?!结束；dramatic_question 以？?!结束。\n"
+        "FIELD_TYPES=version:string(exact director_beat_plan_ir_v1); scene_label:string; scene_objective:string; dramatic_question:string; beats:array<object>; beats[].refs:array<string>; beats[].purpose:string; beats[].objective:string; beats[].information_change:string; beats[].hook:boolean; passthrough_refs:array<string>; unknowns:array; confidence:number|string; note:string\n"
+        "HOOK_BOOLEAN_CONTRACT=beats[].hook MUST be a JSON boolean literal true or false. NEVER output a string for hook, NEVER write hook text, and NEVER quote true/false. hook=true means this beat carries a clear unresolved question, reversal, suspense, continuation drive, or next-step hook; hook=false means the beat mainly establishes, explains, advances, or transitions without a clear hook. hook is only a classification flag, not hook copy, audience_effect, dramatic_question, information_change, transition, performance, or scene_exit_intent.\n"
+        "JSON_SHAPE_EXAMPLE_ONLY={\"version\":\"director_beat_plan_ir_v1\",\"scene_label\":\"string\",\"scene_objective\":\"完整中文句子。\",\"dramatic_question\":\"完整中文疑问句？\",\"beats\":[{\"refs\":[\"SAU_...\"],\"purpose\":\"完整中文句子。\",\"objective\":\"完整中文句子。\",\"information_change\":\"完整中文句子。\",\"hook\":true}],\"passthrough_refs\":[],\"unknowns\":[],\"confidence\":0.8,\"note\":\"string\"}; this example specifies JSON shape and types only; do not copy its semantics.\n"
+        "BEAT_PLAN_CONTRACT=只允许上述字段；每个 string 类型文本字段必须是完整中文句子，dramatic_question 以？?!结束；hook 不得是字符串。\n"
         "禁止省略字段、增加字段、补写来源事实；禁止输出 Stage B 字段、对白内容、speaker、binding 或 source_constraints；所有 SAU 必须恰好出现在 beats[].refs 或 passthrough_refs。"
     )
     return system, user

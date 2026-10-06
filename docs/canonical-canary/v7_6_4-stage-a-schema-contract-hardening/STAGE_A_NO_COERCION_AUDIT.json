@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "schema_rejects": [
+    "true",
+    "false",
+    "制造悬念。",
+    1,
+    null
+  ],
+  "coercion": false,
+  "repair": false,
+  "fallback": false,
+  "local_creative_completion": 0,
+  "provider_calls": 0
+}

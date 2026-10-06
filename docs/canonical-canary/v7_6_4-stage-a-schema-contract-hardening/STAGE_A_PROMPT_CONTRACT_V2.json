@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "field_types": {
+    "version": "string exact director_beat_plan_ir_v1",
+    "scene_label": "string",
+    "scene_objective": "string",
+    "dramatic_question": "string",
+    "beats": "array<object>",
+    "beats[].refs": "array<string>",
+    "beats[].purpose": "string",
+    "beats[].objective": "string",
+    "beats[].information_change": "string",
+    "beats[].hook": "boolean",
+    "passthrough_refs": "array<string>",
+    "unknowns": "array",
+    "confidence": "number|string",
+    "note": "string"
+  },
+  "hook_rules": [
+    "true",
+    "false",
+    "never string",
+    "never hook text"
+  ],
+  "text_fields": [
+    "scene_objective",
+    "dramatic_question",
+    "beats[].purpose",
+    "beats[].objective",
+    "beats[].information_change"
+  ],
+  "stage_b_fields_excluded": true
+}
