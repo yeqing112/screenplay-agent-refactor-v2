@@ -1,0 +1,948 @@
+{
+  "canary_dialogue": [
+    {
+      "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+      "binding_type": "COREFERENCE_RESOLUTION",
+      "speaker": "顾沉",
+      "text": "也许是你自己"
+    }
+  ],
+  "candidate": {
+    "scenes": [
+      {
+        "actions": [
+          {
+            "context_evidence": "顾沉带林晚进入暗房。",
+            "source_evidence": "顾沉带林晚进入暗房。",
+            "text": "顾沉带林晚进入暗房。"
+          },
+          {
+            "context_evidence": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。",
+            "source_evidence": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。",
+            "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+          },
+          {
+            "context_evidence": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+            "source_evidence": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+            "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          },
+          {
+            "context_evidence": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+            "source_evidence": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+            "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+          },
+          {
+            "context_evidence": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+            "source_evidence": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+            "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+          },
+          {
+            "context_evidence": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+            "source_evidence": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+            "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          },
+          {
+            "context_evidence": "门缝下出现一双湿透的皮鞋。",
+            "source_evidence": "门缝下出现一双湿透的皮鞋。",
+            "text": "门缝下出现一双湿透的皮鞋。"
+          },
+          {
+            "context_evidence": "那人没有进门，只把一张车票塞进来。",
+            "source_evidence": "那人没有进门，只把一张车票塞进来。",
+            "text": "那人没有进门，只把一张车票塞进来。"
+          },
+          {
+            "context_evidence": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。",
+            "source_evidence": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。",
+            "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+          },
+          {
+            "context_evidence": "顾沉说胶片被人拿走了。",
+            "source_evidence": "顾沉说胶片被人拿走了。",
+            "text": "顾沉说胶片被人拿走了。"
+          },
+          {
+            "context_evidence": "林晚问是谁",
+            "source_evidence": "林晚问是谁",
+            "text": "林晚问是谁"
+          }
+        ],
+        "dialogues": [
+          {
+            "binding_type": "COREFERENCE_RESOLUTION",
+            "source_form": "QUOTED_PROSE",
+            "speaker": "顾沉",
+            "speaker_identity_evidence": [
+              "顾沉说胶片被人拿走了。"
+            ],
+            "text": "也许是你自己",
+            "utterance_evidence": [
+              "他回答“也许是你自己”，语气像在试探。"
+            ]
+          }
+        ],
+        "display_label": "",
+        "display_label_authority": "UNRESOLVED",
+        "participants": [
+          {
+            "evidence": [
+              "顾沉带林晚进入暗房。",
+              "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+              "林晚问是谁"
+            ],
+            "name": "林晚"
+          },
+          {
+            "evidence": [
+              "顾沉带林晚进入暗房。",
+              "顾沉说胶片被人拿走了。",
+              "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            ],
+            "name": "顾沉"
+          }
+        ],
+        "scene_evidence": [
+          "顾沉带林晚进入暗房。",
+          "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+          "门缝下出现一双湿透的皮鞋。"
+        ]
+      }
+    ],
+    "schema_version": "source_grounded_screenplay_structuring_candidate_v3_1",
+    "unknowns": [
+      "车票是谁塞进来的？原文只写“那人没有进门”，未指明身份。",
+      "车票背面文字“今晚十点，北堤仓库，带钥匙，不要带顾沉”是书写内容还是转述，原文未明确其载体形式。"
+    ]
+  },
+  "grounded_candidate": {
+    "errors": [],
+    "scenes": [
+      {
+        "actions": [
+          {
+            "context_evidence": {
+              "byte_end": 30,
+              "byte_start": 0,
+              "char_end": 10,
+              "char_start": 0,
+              "occurrence_count": 1,
+              "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+              "text": "顾沉带林晚进入暗房。"
+            },
+            "source_evidence": {
+              "byte_end": 30,
+              "byte_start": 0,
+              "char_end": 10,
+              "char_start": 0,
+              "evidence_id": "S1A001",
+              "occurrence_count": 1,
+              "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+              "text": "顾沉带林晚进入暗房。"
+            },
+            "text": "顾沉带林晚进入暗房。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 105,
+              "byte_start": 30,
+              "char_end": 35,
+              "char_start": 10,
+              "occurrence_count": 1,
+              "sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+              "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+            },
+            "source_evidence": {
+              "byte_end": 105,
+              "byte_start": 30,
+              "char_end": 35,
+              "char_start": 10,
+              "evidence_id": "S1A002",
+              "occurrence_count": 1,
+              "sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+              "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+            },
+            "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 195,
+              "byte_start": 105,
+              "char_end": 65,
+              "char_start": 35,
+              "occurrence_count": 1,
+              "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+              "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+            },
+            "source_evidence": {
+              "byte_end": 195,
+              "byte_start": 105,
+              "char_end": 65,
+              "char_start": 35,
+              "evidence_id": "S1A003",
+              "occurrence_count": 1,
+              "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+              "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+            },
+            "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 269,
+              "byte_start": 197,
+              "char_end": 91,
+              "char_start": 67,
+              "occurrence_count": 1,
+              "sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+              "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+            },
+            "source_evidence": {
+              "byte_end": 269,
+              "byte_start": 197,
+              "char_end": 91,
+              "char_start": 67,
+              "evidence_id": "S1A004",
+              "occurrence_count": 1,
+              "sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+              "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+            },
+            "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 377,
+              "byte_start": 269,
+              "char_end": 127,
+              "char_start": 91,
+              "occurrence_count": 1,
+              "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+              "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+            },
+            "source_evidence": {
+              "byte_end": 377,
+              "byte_start": 269,
+              "char_end": 127,
+              "char_start": 91,
+              "evidence_id": "S1A005",
+              "occurrence_count": 1,
+              "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+              "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+            },
+            "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 589,
+              "byte_start": 487,
+              "char_end": 199,
+              "char_start": 165,
+              "occurrence_count": 1,
+              "sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+              "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            },
+            "source_evidence": {
+              "byte_end": 589,
+              "byte_start": 487,
+              "char_end": 199,
+              "char_start": 165,
+              "evidence_id": "S1A006",
+              "occurrence_count": 1,
+              "sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+              "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            },
+            "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 630,
+              "byte_start": 591,
+              "char_end": 214,
+              "char_start": 201,
+              "occurrence_count": 1,
+              "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+              "text": "门缝下出现一双湿透的皮鞋。"
+            },
+            "source_evidence": {
+              "byte_end": 630,
+              "byte_start": 591,
+              "char_end": 214,
+              "char_start": 201,
+              "evidence_id": "S1A007",
+              "occurrence_count": 1,
+              "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+              "text": "门缝下出现一双湿透的皮鞋。"
+            },
+            "text": "门缝下出现一双湿透的皮鞋。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 681,
+              "byte_start": 630,
+              "char_end": 231,
+              "char_start": 214,
+              "occurrence_count": 1,
+              "sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+              "text": "那人没有进门，只把一张车票塞进来。"
+            },
+            "source_evidence": {
+              "byte_end": 681,
+              "byte_start": 630,
+              "char_end": 231,
+              "char_start": 214,
+              "evidence_id": "S1A008",
+              "occurrence_count": 1,
+              "sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+              "text": "那人没有进门，只把一张车票塞进来。"
+            },
+            "text": "那人没有进门，只把一张车票塞进来。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 762,
+              "byte_start": 681,
+              "char_end": 258,
+              "char_start": 231,
+              "occurrence_count": 1,
+              "sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+              "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+            },
+            "source_evidence": {
+              "byte_end": 762,
+              "byte_start": 681,
+              "char_end": 258,
+              "char_start": 231,
+              "evidence_id": "S1A009",
+              "occurrence_count": 1,
+              "sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+              "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+            },
+            "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 412,
+              "byte_start": 379,
+              "char_end": 140,
+              "char_start": 129,
+              "occurrence_count": 1,
+              "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+              "text": "顾沉说胶片被人拿走了。"
+            },
+            "source_evidence": {
+              "byte_end": 412,
+              "byte_start": 379,
+              "char_end": 140,
+              "char_start": 129,
+              "evidence_id": "S1A010",
+              "occurrence_count": 1,
+              "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+              "text": "顾沉说胶片被人拿走了。"
+            },
+            "text": "顾沉说胶片被人拿走了。"
+          },
+          {
+            "context_evidence": {
+              "byte_end": 427,
+              "byte_start": 412,
+              "char_end": 145,
+              "char_start": 140,
+              "occurrence_count": 1,
+              "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+              "text": "林晚问是谁"
+            },
+            "source_evidence": {
+              "byte_end": 427,
+              "byte_start": 412,
+              "char_end": 145,
+              "char_start": 140,
+              "evidence_id": "S1A011",
+              "occurrence_count": 1,
+              "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+              "text": "林晚问是谁"
+            },
+            "text": "林晚问是谁"
+          }
+        ],
+        "dialogues": [
+          {
+            "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+            "binding_type": "COREFERENCE_RESOLUTION",
+            "direct_quote": true,
+            "source_form": "QUOTED_PROSE",
+            "speaker": "顾沉",
+            "speaker_identity_evidence": [
+              {
+                "byte_end": 412,
+                "byte_start": 379,
+                "char_end": 140,
+                "char_start": 129,
+                "evidence_id": "S1D1I001",
+                "occurrence_count": 1,
+                "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                "text": "顾沉说胶片被人拿走了。"
+              }
+            ],
+            "text": "也许是你自己",
+            "utterance": {
+              "byte_end": 460,
+              "byte_start": 442,
+              "char_end": 156,
+              "char_start": 150,
+              "evidence_id": "S1D001",
+              "occurrence_count": 1,
+              "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+              "text": "也许是你自己"
+            },
+            "utterance_evidence": [
+              {
+                "byte_end": 487,
+                "byte_start": 430,
+                "char_end": 165,
+                "char_start": 146,
+                "evidence_id": "S1D1U001",
+                "occurrence_count": 1,
+                "sha256": "51259a72f022d213b58dee8ec0b48658f435db2c7568b1ea7632fa8f1b844039",
+                "text": "他回答“也许是你自己”，语气像在试探。"
+              }
+            ]
+          }
+        ],
+        "display_label": "",
+        "display_label_authority": "UNRESOLVED",
+        "participants": [
+          {
+            "evidence": [
+              {
+                "byte_end": 30,
+                "byte_start": 0,
+                "char_end": 10,
+                "char_start": 0,
+                "evidence_id": "S1P1E001",
+                "occurrence_count": 1,
+                "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                "text": "顾沉带林晚进入暗房。"
+              },
+              {
+                "byte_end": 377,
+                "byte_start": 269,
+                "char_end": 127,
+                "char_start": 91,
+                "evidence_id": "S1P1E002",
+                "occurrence_count": 1,
+                "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+                "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+              },
+              {
+                "byte_end": 427,
+                "byte_start": 412,
+                "char_end": 145,
+                "char_start": 140,
+                "evidence_id": "S1P1E003",
+                "occurrence_count": 1,
+                "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+                "text": "林晚问是谁"
+              }
+            ],
+            "name": "林晚"
+          },
+          {
+            "evidence": [
+              {
+                "byte_end": 30,
+                "byte_start": 0,
+                "char_end": 10,
+                "char_start": 0,
+                "evidence_id": "S1P2E001",
+                "occurrence_count": 1,
+                "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                "text": "顾沉带林晚进入暗房。"
+              },
+              {
+                "byte_end": 412,
+                "byte_start": 379,
+                "char_end": 140,
+                "char_start": 129,
+                "evidence_id": "S1P2E002",
+                "occurrence_count": 1,
+                "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                "text": "顾沉说胶片被人拿走了。"
+              },
+              {
+                "byte_end": 589,
+                "byte_start": 532,
+                "char_end": 199,
+                "char_start": 180,
+                "evidence_id": "S1P2E003",
+                "occurrence_count": 1,
+                "sha256": "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+                "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+              }
+            ],
+            "name": "顾沉"
+          }
+        ],
+        "scene_id": "",
+        "source_identity_evidence": [
+          {
+            "byte_end": 30,
+            "byte_start": 0,
+            "char_end": 10,
+            "char_start": 0,
+            "evidence_id": "S1I001",
+            "occurrence_count": 1,
+            "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+            "text": "顾沉带林晚进入暗房。"
+          },
+          {
+            "byte_end": 195,
+            "byte_start": 105,
+            "char_end": 65,
+            "char_start": 35,
+            "evidence_id": "S1I002",
+            "occurrence_count": 1,
+            "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+            "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          },
+          {
+            "byte_end": 630,
+            "byte_start": 591,
+            "char_end": 214,
+            "char_start": 201,
+            "evidence_id": "S1I003",
+            "occurrence_count": 1,
+            "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+            "text": "门缝下出现一双湿透的皮鞋。"
+          }
+        ],
+        "untrusted_display_label": ""
+      }
+    ],
+    "schema_version": "grounded_source_screenplay_structuring_candidate_v3",
+    "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "source_length": 762,
+    "unknowns": [
+      "车票是谁塞进来的？原文只写“那人没有进门”，未指明身份。",
+      "车票背面文字“今晚十点，北堤仓库，带钥匙，不要带顾沉”是书写内容还是转述，原文未明确其载体形式。"
+    ],
+    "validation_status": "PASS"
+  },
+  "grounding": {
+    "errors": [],
+    "grounded_candidate": {
+      "errors": [],
+      "scenes": [
+        {
+          "actions": [
+            {
+              "context_evidence": {
+                "byte_end": 30,
+                "byte_start": 0,
+                "char_end": 10,
+                "char_start": 0,
+                "occurrence_count": 1,
+                "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                "text": "顾沉带林晚进入暗房。"
+              },
+              "source_evidence": {
+                "byte_end": 30,
+                "byte_start": 0,
+                "char_end": 10,
+                "char_start": 0,
+                "evidence_id": "S1A001",
+                "occurrence_count": 1,
+                "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                "text": "顾沉带林晚进入暗房。"
+              },
+              "text": "顾沉带林晚进入暗房。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 105,
+                "byte_start": 30,
+                "char_end": 35,
+                "char_start": 10,
+                "occurrence_count": 1,
+                "sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+                "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+              },
+              "source_evidence": {
+                "byte_end": 105,
+                "byte_start": 30,
+                "char_end": 35,
+                "char_start": 10,
+                "evidence_id": "S1A002",
+                "occurrence_count": 1,
+                "sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+                "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+              },
+              "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 195,
+                "byte_start": 105,
+                "char_end": 65,
+                "char_start": 35,
+                "occurrence_count": 1,
+                "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+                "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+              },
+              "source_evidence": {
+                "byte_end": 195,
+                "byte_start": 105,
+                "char_end": 65,
+                "char_start": 35,
+                "evidence_id": "S1A003",
+                "occurrence_count": 1,
+                "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+                "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+              },
+              "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 269,
+                "byte_start": 197,
+                "char_end": 91,
+                "char_start": 67,
+                "occurrence_count": 1,
+                "sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+                "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+              },
+              "source_evidence": {
+                "byte_end": 269,
+                "byte_start": 197,
+                "char_end": 91,
+                "char_start": 67,
+                "evidence_id": "S1A004",
+                "occurrence_count": 1,
+                "sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+                "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+              },
+              "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 377,
+                "byte_start": 269,
+                "char_end": 127,
+                "char_start": 91,
+                "occurrence_count": 1,
+                "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+                "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+              },
+              "source_evidence": {
+                "byte_end": 377,
+                "byte_start": 269,
+                "char_end": 127,
+                "char_start": 91,
+                "evidence_id": "S1A005",
+                "occurrence_count": 1,
+                "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+                "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+              },
+              "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 589,
+                "byte_start": 487,
+                "char_end": 199,
+                "char_start": 165,
+                "occurrence_count": 1,
+                "sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+                "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+              },
+              "source_evidence": {
+                "byte_end": 589,
+                "byte_start": 487,
+                "char_end": 199,
+                "char_start": 165,
+                "evidence_id": "S1A006",
+                "occurrence_count": 1,
+                "sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+                "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+              },
+              "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 630,
+                "byte_start": 591,
+                "char_end": 214,
+                "char_start": 201,
+                "occurrence_count": 1,
+                "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+                "text": "门缝下出现一双湿透的皮鞋。"
+              },
+              "source_evidence": {
+                "byte_end": 630,
+                "byte_start": 591,
+                "char_end": 214,
+                "char_start": 201,
+                "evidence_id": "S1A007",
+                "occurrence_count": 1,
+                "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+                "text": "门缝下出现一双湿透的皮鞋。"
+              },
+              "text": "门缝下出现一双湿透的皮鞋。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 681,
+                "byte_start": 630,
+                "char_end": 231,
+                "char_start": 214,
+                "occurrence_count": 1,
+                "sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+                "text": "那人没有进门，只把一张车票塞进来。"
+              },
+              "source_evidence": {
+                "byte_end": 681,
+                "byte_start": 630,
+                "char_end": 231,
+                "char_start": 214,
+                "evidence_id": "S1A008",
+                "occurrence_count": 1,
+                "sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+                "text": "那人没有进门，只把一张车票塞进来。"
+              },
+              "text": "那人没有进门，只把一张车票塞进来。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 762,
+                "byte_start": 681,
+                "char_end": 258,
+                "char_start": 231,
+                "occurrence_count": 1,
+                "sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+                "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+              },
+              "source_evidence": {
+                "byte_end": 762,
+                "byte_start": 681,
+                "char_end": 258,
+                "char_start": 231,
+                "evidence_id": "S1A009",
+                "occurrence_count": 1,
+                "sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+                "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+              },
+              "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 412,
+                "byte_start": 379,
+                "char_end": 140,
+                "char_start": 129,
+                "occurrence_count": 1,
+                "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                "text": "顾沉说胶片被人拿走了。"
+              },
+              "source_evidence": {
+                "byte_end": 412,
+                "byte_start": 379,
+                "char_end": 140,
+                "char_start": 129,
+                "evidence_id": "S1A010",
+                "occurrence_count": 1,
+                "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                "text": "顾沉说胶片被人拿走了。"
+              },
+              "text": "顾沉说胶片被人拿走了。"
+            },
+            {
+              "context_evidence": {
+                "byte_end": 427,
+                "byte_start": 412,
+                "char_end": 145,
+                "char_start": 140,
+                "occurrence_count": 1,
+                "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+                "text": "林晚问是谁"
+              },
+              "source_evidence": {
+                "byte_end": 427,
+                "byte_start": 412,
+                "char_end": 145,
+                "char_start": 140,
+                "evidence_id": "S1A011",
+                "occurrence_count": 1,
+                "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+                "text": "林晚问是谁"
+              },
+              "text": "林晚问是谁"
+            }
+          ],
+          "dialogues": [
+            {
+              "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+              "binding_type": "COREFERENCE_RESOLUTION",
+              "direct_quote": true,
+              "source_form": "QUOTED_PROSE",
+              "speaker": "顾沉",
+              "speaker_identity_evidence": [
+                {
+                  "byte_end": 412,
+                  "byte_start": 379,
+                  "char_end": 140,
+                  "char_start": 129,
+                  "evidence_id": "S1D1I001",
+                  "occurrence_count": 1,
+                  "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                  "text": "顾沉说胶片被人拿走了。"
+                }
+              ],
+              "text": "也许是你自己",
+              "utterance": {
+                "byte_end": 460,
+                "byte_start": 442,
+                "char_end": 156,
+                "char_start": 150,
+                "evidence_id": "S1D001",
+                "occurrence_count": 1,
+                "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+                "text": "也许是你自己"
+              },
+              "utterance_evidence": [
+                {
+                  "byte_end": 487,
+                  "byte_start": 430,
+                  "char_end": 165,
+                  "char_start": 146,
+                  "evidence_id": "S1D1U001",
+                  "occurrence_count": 1,
+                  "sha256": "51259a72f022d213b58dee8ec0b48658f435db2c7568b1ea7632fa8f1b844039",
+                  "text": "他回答“也许是你自己”，语气像在试探。"
+                }
+              ]
+            }
+          ],
+          "display_label": "",
+          "display_label_authority": "UNRESOLVED",
+          "participants": [
+            {
+              "evidence": [
+                {
+                  "byte_end": 30,
+                  "byte_start": 0,
+                  "char_end": 10,
+                  "char_start": 0,
+                  "evidence_id": "S1P1E001",
+                  "occurrence_count": 1,
+                  "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                  "text": "顾沉带林晚进入暗房。"
+                },
+                {
+                  "byte_end": 377,
+                  "byte_start": 269,
+                  "char_end": 127,
+                  "char_start": 91,
+                  "evidence_id": "S1P1E002",
+                  "occurrence_count": 1,
+                  "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+                  "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+                },
+                {
+                  "byte_end": 427,
+                  "byte_start": 412,
+                  "char_end": 145,
+                  "char_start": 140,
+                  "evidence_id": "S1P1E003",
+                  "occurrence_count": 1,
+                  "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+                  "text": "林晚问是谁"
+                }
+              ],
+              "name": "林晚"
+            },
+            {
+              "evidence": [
+                {
+                  "byte_end": 30,
+                  "byte_start": 0,
+                  "char_end": 10,
+                  "char_start": 0,
+                  "evidence_id": "S1P2E001",
+                  "occurrence_count": 1,
+                  "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+                  "text": "顾沉带林晚进入暗房。"
+                },
+                {
+                  "byte_end": 412,
+                  "byte_start": 379,
+                  "char_end": 140,
+                  "char_start": 129,
+                  "evidence_id": "S1P2E002",
+                  "occurrence_count": 1,
+                  "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+                  "text": "顾沉说胶片被人拿走了。"
+                },
+                {
+                  "byte_end": 589,
+                  "byte_start": 532,
+                  "char_end": 199,
+                  "char_start": 180,
+                  "evidence_id": "S1P2E003",
+                  "occurrence_count": 1,
+                  "sha256": "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+                  "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+                }
+              ],
+              "name": "顾沉"
+            }
+          ],
+          "scene_id": "",
+          "source_identity_evidence": [
+            {
+              "byte_end": 30,
+              "byte_start": 0,
+              "char_end": 10,
+              "char_start": 0,
+              "evidence_id": "S1I001",
+              "occurrence_count": 1,
+              "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+              "text": "顾沉带林晚进入暗房。"
+            },
+            {
+              "byte_end": 195,
+              "byte_start": 105,
+              "char_end": 65,
+              "char_start": 35,
+              "evidence_id": "S1I002",
+              "occurrence_count": 1,
+              "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+              "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+            },
+            {
+              "byte_end": 630,
+              "byte_start": 591,
+              "char_end": 214,
+              "char_start": 201,
+              "evidence_id": "S1I003",
+              "occurrence_count": 1,
+              "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+              "text": "门缝下出现一双湿透的皮鞋。"
+            }
+          ],
+          "untrusted_display_label": ""
+        }
+      ],
+      "schema_version": "grounded_source_screenplay_structuring_candidate_v3",
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "source_length": 762,
+      "unknowns": [
+        "车票是谁塞进来的？原文只写“那人没有进门”，未指明身份。",
+        "车票背面文字“今晚十点，北堤仓库，带钥匙，不要带顾沉”是书写内容还是转述，原文未明确其载体形式。"
+      ],
+      "validation_status": "PASS"
+    },
+    "status": "PASS"
+  },
+  "migration_status": "PASS",
+  "production_writes": 0,
+  "provider_calls": 0,
+  "status": "PASS",
+  "transformation_journal": []
+}

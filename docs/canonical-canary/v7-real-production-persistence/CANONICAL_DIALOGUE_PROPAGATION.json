@@ -1,0 +1,45 @@
+{
+  "dialogues": [
+    {
+      "assertion_mode": "",
+      "speaker": "顾沉",
+      "speaker_binding": {
+        "binding_type": "COREFERENCE_RESOLUTION",
+        "classification": "AUTHORIZED_SEMANTIC_BINDING",
+        "identity_evidence": [
+          {
+            "byte_end": 412,
+            "byte_start": 379,
+            "char_end": 140,
+            "char_start": 129,
+            "evidence_id": "S1D1I001",
+            "occurrence_count": 1,
+            "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+            "text": "顾沉说胶片被人拿走了。"
+          }
+        ],
+        "utterance_evidence": [
+          {
+            "byte_end": 487,
+            "byte_start": 430,
+            "char_end": 165,
+            "char_start": 146,
+            "evidence_id": "S1D1U001",
+            "occurrence_count": 1,
+            "sha256": "51259a72f022d213b58dee8ec0b48658f435db2c7568b1ea7632fa8f1b844039",
+            "text": "他回答“也许是你自己”，语气像在试探。"
+          }
+        ]
+      },
+      "text": "也许是你自己"
+    }
+  ],
+  "expected": {
+    "assertion_mode": "",
+    "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+    "binding_type": "COREFERENCE_RESOLUTION",
+    "speaker": "顾沉",
+    "text": "也许是你自己"
+  },
+  "status": "PASS"
+}

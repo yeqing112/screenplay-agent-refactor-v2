@@ -1,0 +1,21 @@
+{
+  "actual": {
+    "book_id": 990402,
+    "chapter_id": 16,
+    "chapter_seq": 3,
+    "raw_byte_length": 762,
+    "raw_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "title": "第三章  没有底片的暗房",
+    "title_normalized": "第三章 没有底片的暗房"
+  },
+  "expected": {
+    "book_id": 990402,
+    "chapter_id": 16,
+    "chapter_seq": 3,
+    "expected_raw_byte_length": 762,
+    "expected_raw_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "expected_title": "第三章 没有底片的暗房"
+  },
+  "normalization": "unicode whitespace collapsed for title comparison",
+  "status": "PASS"
+}

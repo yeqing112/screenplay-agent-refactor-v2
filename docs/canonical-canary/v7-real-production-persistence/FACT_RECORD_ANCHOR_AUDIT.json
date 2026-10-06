@@ -1,0 +1,74 @@
+{
+  "all_authority_source_text": true,
+  "all_confirmed": true,
+  "all_have_evidence": true,
+  "creative_backlog_records": 0,
+  "records": [
+    {
+      "authority": "source_text",
+      "confidence": 1.0,
+      "evidence": [
+        "E0001"
+      ],
+      "fact_id": "SOURCE_PREP_0001",
+      "forbidden_creative_fields": false,
+      "id": 101,
+      "predicate": "scene_existence",
+      "status": "confirmed",
+      "subject_id": "1",
+      "subject_type": "episode",
+      "value": {
+        "actual": 1,
+        "minimum": 1
+      }
+    },
+    {
+      "authority": "source_text",
+      "confidence": 1.0,
+      "evidence": [
+        "E0001",
+        "E0004"
+      ],
+      "fact_id": "SOURCE_PREP_0002",
+      "forbidden_creative_fields": false,
+      "id": 102,
+      "predicate": "scene_identity_evidence",
+      "status": "confirmed",
+      "subject_id": "E01_SC001",
+      "subject_type": "scene",
+      "value": [
+        {
+          "byte_end": 30,
+          "byte_start": 0,
+          "char_end": 10,
+          "char_start": 0,
+          "evidence_id": "S1I001",
+          "occurrence_count": 1,
+          "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+          "text": "顾沉带林晚进入暗房。"
+        },
+        {
+          "byte_end": 195,
+          "byte_start": 105,
+          "char_end": 65,
+          "char_start": 35,
+          "evidence_id": "S1I002",
+          "occurrence_count": 1,
+          "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+          "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+        },
+        {
+          "byte_end": 630,
+          "byte_start": 591,
+          "char_end": 214,
+          "char_start": 201,
+          "evidence_id": "S1I003",
+          "occurrence_count": 1,
+          "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+          "text": "门缝下出现一双湿透的皮鞋。"
+        }
+      ]
+    }
+  ],
+  "status": "PASS"
+}

@@ -1,0 +1,44 @@
+{
+  "base_commit": "50b874f6869cc9e27006c2ce5bdd1ec8a8e576db",
+  "canonical_script_payload_fingerprint": "412d8b16ef4460be1a3a253ed356b044aaabe3efe07ef71e6481ce472adb53ba",
+  "expected_counts": {
+    "actions": 11,
+    "beats": 0,
+    "dialogues": 1,
+    "scenes": 1,
+    "transitions": 0
+  },
+  "expected_episode": 1,
+  "forensic_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+  "manifest_fingerprint": "8bf0de6a0e95514a449525bbc6574407359dc68528dd55eebb45b459ab17a03e",
+  "migration_fingerprint": "4541e40f88dfcdada955f2603c2d8c7d71fe328b8c802b3a0746fec2ec61ed40",
+  "origin": {
+    "book_id": 990402,
+    "chapter_id": 16,
+    "chapter_seq": 3,
+    "raw_byte_length": 762,
+    "raw_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "title": "第三章  没有底片的暗房",
+    "title_normalized": "第三章 没有底片的暗房"
+  },
+  "original_candidate_fingerprint": "ee66d644cfe91a2f3ad81865247707ac69a6746cfc405d4ddc98af1783456d21",
+  "persistence_run_id": "20261006T013634Z-8bf0de6a0e95514a",
+  "phase": "PHASE_GENERALIZED_CANARY_REAL_PRODUCTION_PERSISTENCE_V7",
+  "provider_budget": {
+    "IMAGE": 0,
+    "LLM": 0,
+    "VIDEO": 0
+  },
+  "readiness": "AUTHORING_REQUIRED",
+  "reconciliation_fingerprint": "aee7ad3b79f2da379ce42af79082653970a7d5bba6b3382cd507adfcc3f5539c",
+  "salvaged_candidate_fingerprint": "6fad483a2b7f1c73eac42321f13bdae9a41bab4a8b220f72919a6decbb4c7400",
+  "status": "FROZEN_PREWRITE",
+  "write_budget": {
+    "book": 1,
+    "downstream": 0,
+    "fact_records": 2,
+    "fact_snapshot": 1,
+    "script": 1,
+    "script_ir_version": 1
+  }
+}

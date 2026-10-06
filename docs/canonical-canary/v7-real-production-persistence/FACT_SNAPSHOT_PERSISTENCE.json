@@ -1,0 +1,21 @@
+{
+  "fact_snapshot": {
+    "book_id": 990453,
+    "episode": 1,
+    "id": 49,
+    "payload_hash": "47898887876eba48f442e05094b245e2dc04dfa0765993ad424f10ce1184526f",
+    "record_count": 2,
+    "revision": 1,
+    "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "status": "confirmed"
+  },
+  "status": "PASS",
+  "validation": {
+    "errors": [],
+    "fact_coverage": {
+      "status": "FACT_COVERAGE_SUFFICIENT"
+    },
+    "status": "qualified",
+    "warnings": []
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "beats": 0,
+  "creative_readiness_state": "AUTHORING_REQUIRED",
+  "production_block_reason": "CREATIVE_AUTHORING_REQUIRED",
+  "readiness_backlog": {
+    "backlog": [
+      "DRAMATIC_BEATS_REQUIRED",
+      "EPISODE_HOOK_REQUIRED"
+    ],
+    "creative_readiness_fingerprint": "d04684b184243ca8173b0162e9dd03a11bfb84bd37dd441edfe26ba1494e8a05",
+    "creative_readiness_state": "AUTHORING_REQUIRED",
+    "metrics": {
+      "beat_count": 0,
+      "scene_count": 1,
+      "transition_count": 0
+    }
+  },
+  "script_production_status": "blocked",
+  "script_quality_status": "production_qualified",
+  "script_workflow_profile": "production",
+  "status": "PASS",
+  "transitions": 0
+}

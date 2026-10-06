@@ -1,0 +1,12 @@
+{
+  "book": {
+    "filename": "api-b8c10d3e8f6b478d8446f10b5090f9ea.json",
+    "id": 990453,
+    "status": "imported",
+    "title": "V7 Generalized Canary 20261006T013634Z-8bf0de6a0e95514a"
+  },
+  "formal_lifecycle": "core.book_lifecycle.create_book",
+  "new_book_not_origin": true,
+  "persistence_run_id": "20261006T013634Z-8bf0de6a0e95514a",
+  "status": "PASS"
+}

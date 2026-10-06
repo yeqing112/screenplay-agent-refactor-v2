@@ -1,0 +1,23 @@
+{
+  "actual": {
+    "forensic_artifact_status": null,
+    "model": "mimo-v2.5",
+    "persisted_before_parse": true,
+    "profile": "local-llm-2vydoz",
+    "raw_bytes": 2500,
+    "raw_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+    "response_model": "mimo-v2.5",
+    "response_profile": null,
+    "retry": false,
+    "transport_attempt_count": 1
+  },
+  "expected": {
+    "model": "mimo-v2.5",
+    "persisted_before_parse": true,
+    "profile": "local-llm-2vydoz",
+    "raw_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+    "retry": false,
+    "transport_attempt_count": 1
+  },
+  "status": "PASS"
+}

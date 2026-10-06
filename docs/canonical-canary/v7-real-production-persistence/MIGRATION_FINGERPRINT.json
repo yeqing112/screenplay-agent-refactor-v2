@@ -1,0 +1,11 @@
+{
+  "migration": {
+    "grounded_candidate_fingerprint": "14808c1f649d69acefabb4cb810dae5bc70dc2d5fff88209602ac47393f26d32",
+    "input_candidate_fingerprint": "6fad483a2b7f1c73eac42321f13bdae9a41bab4a8b220f72919a6decbb4c7400",
+    "migration_version": "source_grounded_v2_salvaged_to_v3_1",
+    "output_candidate_fingerprint": "5d24ed442c7df57a845f21a596f54ebcef1a1c5e52770dbf0e3b47e2e08892cb",
+    "provider_calls": 0
+  },
+  "migration_fingerprint": "4541e40f88dfcdada955f2603c2d8c7d71fe328b8c802b3a0746fec2ec61ed40",
+  "status": "PASS"
+}

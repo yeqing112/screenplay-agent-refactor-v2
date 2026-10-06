@@ -1,0 +1,108 @@
+{
+  "checks": {
+    "fact_snapshot_preview": {
+      "record_count": 2,
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "validation": {
+        "errors": [],
+        "status": "qualified",
+        "warnings": []
+      }
+    },
+    "lineage": true,
+    "llm_forensic_refreeze": true,
+    "migration_replay": true,
+    "origin_refreeze": true,
+    "semantic_diff": {
+      "after_fingerprint": "f3f07608d4694b0b548bb17a9483266469ba003276bbffe3bc3f401e8a521601",
+      "before_fingerprint": "f3f07608d4694b0b548bb17a9483266469ba003276bbffe3bc3f401e8a521601",
+      "display_authority_upgrades": 0,
+      "location_changes": 0,
+      "new_action_count": 0,
+      "new_beat_count": 0,
+      "new_dialogue_count": 0,
+      "new_transition_count": 0,
+      "raw_structural_normalization_diff": {
+        "after_fingerprint": "2078d40fb8f06d02fe518f6b617dd3c1f11e53ccff7004a9577884e7dbe6d7b8",
+        "before_fingerprint": "055b4b40245946e4a97a68fc127536a5e0bca1894e436cc5b1a35776091983c0",
+        "display_authority_upgrades": 0,
+        "location_changes": 0,
+        "new_action_count": 0,
+        "new_beat_count": 0,
+        "new_dialogue_count": 0,
+        "new_transition_count": 0,
+        "speaker_changes": 0,
+        "status": "FAIL"
+      },
+      "speaker_changes": 0,
+      "status": "PASS"
+    },
+    "source_anchor_bindings": {
+      "bindings": {
+        "episode|scenes|scene_existence|episode": [
+          "E0001"
+        ],
+        "scene|E01_SC001|scene_identity_evidence|scene": [
+          "E0001",
+          "E0004"
+        ]
+      },
+      "errors": [],
+      "status": "PASS"
+    },
+    "source_authority_gate": {
+      "creative_readiness": {
+        "backlog": [
+          "DRAMATIC_BEATS_REQUIRED",
+          "EPISODE_HOOK_REQUIRED"
+        ],
+        "creative_readiness_fingerprint": "d04684b184243ca8173b0162e9dd03a11bfb84bd37dd441edfe26ba1494e8a05",
+        "creative_readiness_state": "AUTHORING_REQUIRED",
+        "metrics": {
+          "beat_count": 0,
+          "scene_count": 1,
+          "transition_count": 0
+        }
+      },
+      "hard_errors": [],
+      "production_writes": 0,
+      "provider_calls": 0,
+      "qualified": true,
+      "status": "SOURCE_AUTHORITY_GATE_PASS"
+    },
+    "strict_equivalence": {
+      "errors": [],
+      "status": "SOURCE_GROUNDED_STRICT_EQUIVALENCE_V3_1_PASS"
+    },
+    "structural": {
+      "errors": [],
+      "status": "qualified",
+      "warnings": [
+        {
+          "code": "SCENE_BEATS_EMPTY",
+          "message": "E01_SC001 has no beats."
+        },
+        {
+          "code": "SCENE_TRANSITIONS_EMPTY",
+          "message": "ScriptIR has no SceneTransitionContract records."
+        }
+      ]
+    }
+  },
+  "expected_counts": {
+    "actions": 11,
+    "beats": 0,
+    "dialogues": 1,
+    "scenes": 1,
+    "transitions": 0
+  },
+  "persistence_run_id": "20261006T013634Z-8bf0de6a0e95514a",
+  "production_writes": 0,
+  "provider_calls": {
+    "IMAGE": 0,
+    "LLM": 0,
+    "VIDEO": 0
+  },
+  "readiness": "AUTHORING_REQUIRED",
+  "status": "PASS"
+}

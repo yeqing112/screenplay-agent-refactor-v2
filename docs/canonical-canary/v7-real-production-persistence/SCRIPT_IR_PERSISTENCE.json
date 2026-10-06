@@ -1,0 +1,17 @@
+{
+  "activation_status": "SCRIPT_IR_AUTHORITY_ACTIVATED",
+  "current_pointer": 52,
+  "provider_calls": 0,
+  "script_ir": {
+    "book_id": 990453,
+    "episode": 1,
+    "id": 52,
+    "payload_hash": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+    "qualification_state": "PRODUCTION_QUALIFIED",
+    "revision": 1,
+    "source_fingerprint": "24d0f512d05e5721e36e60b3a0e36bf7bbbfdedd0f862de4250183ec2e0f6cb8",
+    "stale_status": "FRESH",
+    "status": "production_qualified"
+  },
+  "status": "PASS"
+}

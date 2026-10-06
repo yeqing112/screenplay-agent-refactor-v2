@@ -1,0 +1,34 @@
+{
+  "reconciliation": {
+    "diff": {
+      "binding_type_changes": 0,
+      "dialogue_rows_demoted": 2,
+      "external_semantic_decisions_added": 0,
+      "invented_action_text_count": 0,
+      "invented_dialogue_count": 0,
+      "new_character_count": 0,
+      "new_source_text_count": 0,
+      "participant_set_unchanged": true,
+      "scene_count_unchanged": true,
+      "scene_label_replaced_deterministically": true,
+      "speaker_changes": 0,
+      "status": "SALVAGE_SEMANTIC_CORE_PRESERVED",
+      "target_dialogue_text_changes": 0
+    },
+    "input_candidate_fingerprint": "ee66d644cfe91a2f3ad81865247707ac69a6746cfc405d4ddc98af1783456d21",
+    "output_candidate_fingerprint": "6fad483a2b7f1c73eac42321f13bdae9a41bab4a8b220f72919a6decbb4c7400",
+    "policy_version": "deterministic_candidate_salvage_v1",
+    "source_response_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef"
+  },
+  "reconciliation_fingerprint": "aee7ad3b79f2da379ce42af79082653970a7d5bba6b3382cd507adfcc3f5539c",
+  "semantic_change_allowance": {
+    "binding_type_changes": 0,
+    "dialogue_rows_demoted": 2,
+    "external_semantic_decisions_added": 0,
+    "new_source_text_count": 0,
+    "reported_speech_promotion_count": 0,
+    "speaker_changes": 0,
+    "target_dialogue_text_changes": 0
+  },
+  "status": "PASS"
+}

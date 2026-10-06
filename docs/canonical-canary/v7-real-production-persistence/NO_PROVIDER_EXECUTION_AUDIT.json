@@ -1,0 +1,25 @@
+{
+  "IMAGE": 0,
+  "LLM": 0,
+  "VIDEO": 0,
+  "external_hosts": 0,
+  "forbidden_stages_not_called": [
+    "DirectorTreatment",
+    "SceneBlocking",
+    "ShotPlan",
+    "Storyboard",
+    "PromptIR",
+    "IMAGE",
+    "VIDEO",
+    "OfficialMedia"
+  ],
+  "production_writes": {
+    "book": 1,
+    "downstream": 0,
+    "fact_records": 2,
+    "fact_snapshot": 1,
+    "script": 1,
+    "script_ir_version": 1
+  },
+  "status": "PASS"
+}

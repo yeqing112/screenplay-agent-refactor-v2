@@ -1,0 +1,12 @@
+{
+  "authority_profile": "SOURCE_GROUNDED_V3_1",
+  "creative_readiness_state": "AUTHORING_REQUIRED",
+  "director_treatment_created": false,
+  "next_authorization": "DIRECTOR_CREATIVE_AUTHORING_AUTHORIZATION_REQUIRED",
+  "prompt_ir_created": false,
+  "read_only_source": "production ScriptIR current pointer",
+  "scene_blocking_created": false,
+  "shot_plan_created": false,
+  "status": "READY_FOR_DIRECTOR_CREATIVE_AUTHORING",
+  "storyboard_created": false
+}

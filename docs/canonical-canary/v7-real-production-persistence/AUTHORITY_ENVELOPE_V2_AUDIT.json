@@ -1,0 +1,31 @@
+{
+  "authority_profile": "SOURCE_GROUNDED_V3_1",
+  "creative_readiness_state": "AUTHORING_REQUIRED",
+  "lineage_fields": {
+    "migration_fingerprint": "4541e40f88dfcdada955f2603c2d8c7d71fe328b8c802b3a0746fec2ec61ed40",
+    "origin_source_kind": "BOOK_CHAPTER",
+    "origin_source_package_id": "book:990402",
+    "origin_source_raw_hash": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "origin_source_version_id": "chapter:16:sha256:190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "reconciliation_fingerprint": "aee7ad3b79f2da379ce42af79082653970a7d5bba6b3382cd507adfcc3f5539c",
+    "reconciliation_policy_version": "deterministic_candidate_salvage_v1",
+    "structuring_response_fingerprint": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef"
+  },
+  "qualification_state": "PRODUCTION_QUALIFIED",
+  "qualified": null,
+  "schema_version": "script_ir_authority_envelope_v2",
+  "semantic_diff": {
+    "after_fingerprint": "2078d40fb8f06d02fe518f6b617dd3c1f11e53ccff7004a9577884e7dbe6d7b8",
+    "before_fingerprint": "2078d40fb8f06d02fe518f6b617dd3c1f11e53ccff7004a9577884e7dbe6d7b8",
+    "display_authority_upgrades": 0,
+    "location_changes": 0,
+    "new_action_count": 0,
+    "new_beat_count": 0,
+    "new_dialogue_count": 0,
+    "new_transition_count": 0,
+    "speaker_changes": 0,
+    "status": "PASS"
+  },
+  "stale_status": "FRESH",
+  "status": "PASS"
+}

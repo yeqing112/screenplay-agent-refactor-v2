@@ -1,0 +1,20 @@
+{
+  "base_commit": "50b874f6869cc9e27006c2ce5bdd1ec8a8e576db",
+  "checks": [
+    "HEAD_MATCHES_REMOTE",
+    "WORKTREE_CLEAN",
+    "V6_1_V6_2_V6_3_TARGETED_GATES_PASS"
+  ],
+  "production_writes_before_v7": 0,
+  "providers": {
+    "IMAGE": 0,
+    "LLM": 0,
+    "VIDEO": 0
+  },
+  "remote_head": "50b874f6869cc9e27006c2ce5bdd1ec8a8e576db",
+  "required_base_commit": "50b874f6869cc9e27006c2ce5bdd1ec8a8e576db",
+  "status": "FAIL",
+  "v6_1_unchanged": true,
+  "v6_targeted_gate": "90 passed",
+  "working_tree_clean": false
+}

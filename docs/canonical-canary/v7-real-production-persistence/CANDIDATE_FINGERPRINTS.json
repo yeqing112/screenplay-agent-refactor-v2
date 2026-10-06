@@ -1,0 +1,9 @@
+{
+  "candidate_objects": "nested candidate fields are authoritative",
+  "original_artifact_wrapper_fingerprint": "b25deeea8a711ff01e4ce247e71914bdb0b8c2dae38d069f9e5b27cbf19b1919",
+  "original_candidate_fingerprint": "ee66d644cfe91a2f3ad81865247707ac69a6746cfc405d4ddc98af1783456d21",
+  "salvaged_artifact_wrapper_fingerprint": "81fd13bf38d46a953969458c278c4f531d57a52556d7a8f80a44a4480245daed",
+  "salvaged_candidate_fingerprint": "6fad483a2b7f1c73eac42321f13bdae9a41bab4a8b220f72919a6decbb4c7400",
+  "source_response_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+  "status": "PASS"
+}

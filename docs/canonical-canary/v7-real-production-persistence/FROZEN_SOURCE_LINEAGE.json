@@ -1,0 +1,25 @@
+{
+  "canonical_script_payload_fingerprint": "412d8b16ef4460be1a3a253ed356b044aaabe3efe07ef71e6481ce472adb53ba",
+  "placeholder_scan": {
+    "placeholders": []
+  },
+  "source_lineage": {
+    "canonical_projection_version": "source_grounded_script_payload_v3_1",
+    "canonical_script_content_hash": "",
+    "canonical_script_payload_fingerprint": "412d8b16ef4460be1a3a253ed356b044aaabe3efe07ef71e6481ce472adb53ba",
+    "migration_fingerprint": "4541e40f88dfcdada955f2603c2d8c7d71fe328b8c802b3a0746fec2ec61ed40",
+    "origin_source_kind": "BOOK_CHAPTER",
+    "origin_source_locator": {
+      "book_id": 990402,
+      "chapter_id": 16,
+      "chapter_seq": 3
+    },
+    "origin_source_package_id": "book:990402",
+    "origin_source_raw_hash": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "origin_source_version_id": "chapter:16:sha256:190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "reconciliation_fingerprint": "aee7ad3b79f2da379ce42af79082653970a7d5bba6b3382cd507adfcc3f5539c",
+    "reconciliation_policy_version": "deterministic_candidate_salvage_v1",
+    "structuring_response_fingerprint": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef"
+  },
+  "status": "PASS"
+}
