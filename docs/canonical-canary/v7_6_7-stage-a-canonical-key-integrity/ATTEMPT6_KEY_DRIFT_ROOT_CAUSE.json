@@ -1,0 +1,29 @@
+{
+  "status": "CANONICAL_JSON_KEY_DRIFT",
+  "attempt_id": "attempt-6",
+  "immutable_reference": {
+    "status": "DIRECTOR_BEAT_PLAN_ATTEMPT6_SCHEMA_INVALID",
+    "schema_error_count": 9,
+    "raw_sha256": "04d407286aa9607e955fe57744d29d4cbf6422decccbf44ab22c13215dbdf86d"
+  },
+  "provider_alias_key_display": "信息_change",
+  "raw_alias_keys_as_decoded": [
+    "信息_change"
+  ],
+  "alias_occurrence_count": 6,
+  "beats_with_alias_and_canonical": 3,
+  "beats_with_alias_replacing_canonical": 3,
+  "classification": "CANONICAL_JSON_KEY_DRIFT",
+  "excluded_classifications": [
+    "information semantics failure",
+    "parse failure",
+    "type failure",
+    "source coverage failure"
+  ],
+  "repair": {
+    "alias_mapping": false,
+    "coercion": false,
+    "rename": false,
+    "production_repair": false
+  }
+}

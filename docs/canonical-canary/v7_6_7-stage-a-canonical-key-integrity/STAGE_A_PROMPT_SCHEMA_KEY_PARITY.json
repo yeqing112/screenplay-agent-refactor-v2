@@ -1,0 +1,88 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "prompt": {
+    "CANONICAL_TOP_LEVEL_KEYS": [
+      "version",
+      "scene_label",
+      "scene_objective",
+      "dramatic_question",
+      "beats",
+      "passthrough_refs",
+      "unknowns",
+      "confidence",
+      "note"
+    ],
+    "CANONICAL_BEAT_KEYS": [
+      "refs",
+      "purpose",
+      "objective",
+      "information_change",
+      "hook"
+    ]
+  },
+  "schema": {
+    "version": "director_beat_plan_ir_v1",
+    "top_level_keys": [
+      "version",
+      "scene_label",
+      "scene_objective",
+      "dramatic_question",
+      "beats",
+      "passthrough_refs",
+      "unknowns",
+      "confidence",
+      "note"
+    ],
+    "top_level_required": [
+      "beats",
+      "confidence",
+      "dramatic_question",
+      "note",
+      "passthrough_refs",
+      "scene_label",
+      "scene_objective",
+      "unknowns",
+      "version"
+    ],
+    "top_level_additional_properties": false,
+    "beat_keys": [
+      "refs",
+      "purpose",
+      "objective",
+      "information_change",
+      "hook"
+    ],
+    "beat_required": [
+      "hook",
+      "information_change",
+      "objective",
+      "purpose",
+      "refs"
+    ],
+    "beat_additional_properties": false,
+    "field_types": {
+      "version": "const:director_beat_plan_ir_v1",
+      "scene_label": "string",
+      "scene_objective": "string",
+      "dramatic_question": "string",
+      "beats": "array<object>",
+      "passthrough_refs": "array",
+      "unknowns": "array",
+      "confidence": "number|string",
+      "note": "string",
+      "beats[].refs": "array<string>",
+      "beats[].purpose": "string",
+      "beats[].objective": "string",
+      "beats[].information_change": "string",
+      "beats[].hook": "boolean"
+    },
+    "canonical_key_rules": {
+      "byte_for_byte": true,
+      "ascii_identifiers_only": true,
+      "chinese_allowed_only_in_values": true,
+      "additional_properties": false
+    }
+  },
+  "gate": "STAGE_A_PROMPT_SCHEMA_KEY_PARITY"
+}

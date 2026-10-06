@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "matrix": [
+    {
+      "canonical": "scene_label",
+      "mutation": "scene_标签",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "scene_objective",
+      "mutation": "scene_目标",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "dramatic_question",
+      "mutation": "dramatic_问题",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "passthrough_refs",
+      "mutation": "passthrough_引用",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "information_change",
+      "mutation": "信息_change",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "purpose",
+      "mutation": "目的",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "objective",
+      "mutation": "目标",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "hook",
+      "mutation": "钩子",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "refs",
+      "mutation": "引用",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "confidence",
+      "mutation": "置信度",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "note",
+      "mutation": "备注",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "scene_objective",
+      "mutation": "sceneObjective",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "dramatic_question",
+      "mutation": "dramaticQuestion",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "information_change",
+      "mutation": "informationChange",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "passthrough_refs",
+      "mutation": "passThroughRefs",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "information_change",
+      "mutation": "info_change",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "objective",
+      "mutation": "obj",
+      "schema_status": "FAIL"
+    },
+    {
+      "canonical": "refs",
+      "mutation": "ref",
+      "schema_status": "FAIL"
+    }
+  ]
+}

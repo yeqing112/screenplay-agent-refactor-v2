@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "provider_calls": {
+    "real_llm": 0,
+    "stage_a": 0,
+    "stage_b": 0,
+    "image": 0,
+    "video": 0,
+    "shapi": 0,
+    "poyo": 0,
+    "75api": 0
+  },
+  "ledger_before": 6,
+  "ledger_after": 6,
+  "proposal_before": {
+    "decision": "awaiting_llm"
+  },
+  "proposal_after": {
+    "decision": "awaiting_llm"
+  },
+  "domain_counts_snapshot": {
+    "DirectorTreatment": 0,
+    "Authority": 0,
+    "Pointer": 0
+  },
+  "attempt_7_appended": false,
+  "production_writes": 0,
+  "stage_b": 0
+}

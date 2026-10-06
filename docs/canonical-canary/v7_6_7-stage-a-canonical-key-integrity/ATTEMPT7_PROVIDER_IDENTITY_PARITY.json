@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "identity_internal_consistency": {
+    "status": "PASS",
+    "errors": []
+  },
+  "preflight_runtime_parity": "PASS",
+  "prompt_fingerprint": "2d6e0d66005d26edbed961ad45af4697f0954eefce99afaea0231c01b16c4c91",
+  "system_prompt_sha256": "0d33e6805d856ec167ba6c6c9327f2942c6db159fd5edbacb3df0c16c25d12a7",
+  "user_prompt_sha256": "08d8372d31f939f1629a0ed8c094be3a8c56a611570216fa599c367aa0f4f9f4",
+  "provider_request_fingerprint_v2": "eb7a104853cad07ba56da007270da4a352449c7ff0f61ecbac9f4e2f7902bab2",
+  "attempt6_prompt_fingerprint": "ddf1662a8583a48d2347ac4e231c3ff27769679224ed1946069018effdbbc488",
+  "attempt6_provider_request_fingerprint_v2": "3a73fc2e762e0572b810dfe2149c959356e8786148e040897839cba418f9cee4",
+  "changed_from_attempt6": true,
+  "response_format": {
+    "type": "json_object"
+  },
+  "profile_snapshot": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true
+  }
+}

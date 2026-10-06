@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "invalid_a": {
+    "schema": {
+      "status": "FAIL",
+      "errors": [
+        {
+          "path": "$.beats[0]",
+          "code": "SCHEMA_ADDITIONAL_PROPERTY",
+          "field": "信息_change"
+        }
+      ],
+      "version": "director_beat_plan_ir_v1"
+    },
+    "repair": false
+  },
+  "invalid_b": {
+    "schema": {
+      "status": "FAIL",
+      "errors": [
+        {
+          "path": "$.beats[0]",
+          "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+          "field": "information_change"
+        },
+        {
+          "path": "$.beats[0]",
+          "code": "SCHEMA_ADDITIONAL_PROPERTY",
+          "field": "信息_change"
+        }
+      ],
+      "version": "director_beat_plan_ir_v1"
+    },
+    "repair": false
+  },
+  "expected": {
+    "invalid_a": [
+      "SCHEMA_ADDITIONAL_PROPERTY"
+    ],
+    "invalid_b": [
+      "SCHEMA_REQUIRED_FIELD_MISSING",
+      "SCHEMA_ADDITIONAL_PROPERTY"
+    ]
+  }
+}

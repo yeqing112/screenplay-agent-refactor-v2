@@ -1,0 +1,17 @@
+{
+  "status": "DIRECTOR_BEAT_PLAN_ATTEMPT7_AUTHORIZATION_REQUIRED",
+  "authorization": "REQUIRED_NOT_GRANTED",
+  "provider_calls": 0,
+  "book_id": 990453,
+  "episode": 1,
+  "scene_id": "E01_SC001",
+  "decision_packet_id": 64,
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "source_unit_count": 12,
+  "identity_internal_consistency": "PASS",
+  "preflight_runtime_parity": "PASS",
+  "prompt_schema_key_parity": "PASS",
+  "proposal": {
+    "decision": "awaiting_llm"
+  }
+}

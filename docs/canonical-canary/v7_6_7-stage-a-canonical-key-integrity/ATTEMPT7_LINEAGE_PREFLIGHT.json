@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "history_before": 6,
+  "expected_attempt_id": "attempt-7",
+  "expected_statuses": [
+    "DIRECTOR_BEAT_PLAN_ATTEMPT7_SCHEMA_INVALID",
+    "DIRECTOR_BEAT_PLAN_ATTEMPT7_VALIDATED"
+  ],
+  "lineage_consistency": "PASS",
+  "attempt_7_appended": false
+}

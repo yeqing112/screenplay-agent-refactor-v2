@@ -28,11 +28,16 @@ DIRECTOR_BEAT_PLAN_IR_V1_SYSTEM_PROMPT = (
     "beats[].hook 是 boolean 分类标志，不是文本字段，不适用句子完整性要求。"
 )
 
-STAGE_A_BEAT_FIELDS = {"refs", "purpose", "objective", "information_change", "hook"}
-STAGE_A_TOP_LEVEL_FIELDS = {
+# These ordered tuples are the protocol source of truth.  Sets are exported
+# below for backwards-compatible membership checks, while prompt rendering,
+# examples, parity checks, and evidence use the stable tuple order.
+CANONICAL_TOP_LEVEL_KEYS = (
     "version", "scene_label", "scene_objective", "dramatic_question", "beats",
     "passthrough_refs", "unknowns", "confidence", "note",
-}
+)
+CANONICAL_BEAT_KEYS = ("refs", "purpose", "objective", "information_change", "hook")
+STAGE_A_BEAT_FIELDS = set(CANONICAL_BEAT_KEYS)
+STAGE_A_TOP_LEVEL_FIELDS = set(CANONICAL_TOP_LEVEL_KEYS)
 STAGE_B_ENRICHMENT_FIELDS = {"beat_ref", "audience_effect", "performance", "transition", "character_effects"}
 STAGE_B_TOP_LEVEL_FIELDS = {
     "version", "beat_enrichments", "character_directions", "performance_arc",
@@ -136,6 +141,115 @@ def _schema_check(value: Any, schema: Mapping[str, Any], path: str = "$", errors
     return errors
 
 
+def render_stage_a_schema_contract() -> dict[str, Any]:
+    """Render the structural Stage A contract from the formal JSON schema.
+
+    The renderer intentionally contains no new business semantics.  It turns
+    the schema's property/required/type/additionalProperties declarations into
+    a compact contract that can be embedded in the Provider prompt and stored
+    in evidence.  This prevents prompt and validator field lists drifting.
+    """
+    top = DIRECTOR_BEAT_PLAN_IR_SCHEMA
+    beat = top["properties"]["beats"]["items"]
+    def type_label(node: Mapping[str, Any]) -> str:
+        if "const" in node:
+            return f"const:{node['const']}"
+        wanted = node.get("type")
+        if isinstance(wanted, list):
+            return "|".join(str(item) for item in wanted)
+        return str(wanted or "unknown")
+
+    field_types = {key: type_label(node) for key, node in top["properties"].items()}
+    beat_field_types = {f"beats[].{key}": type_label(node) for key, node in beat["properties"].items()}
+    field_types.update(beat_field_types)
+    field_types["beats"] = "array<object>"
+    field_types["beats[].refs"] = "array<string>"
+    return {
+        "version": DIRECTOR_BEAT_PLAN_IR_VERSION,
+        "top_level_keys": list(top["properties"].keys()),
+        "top_level_required": list(top["required"]),
+        "top_level_additional_properties": top.get("additionalProperties") is True,
+        "beat_keys": list(beat["properties"].keys()),
+        "beat_required": list(beat["required"]),
+        "beat_additional_properties": beat.get("additionalProperties") is True,
+        "field_types": field_types,
+        "canonical_key_rules": {
+            "byte_for_byte": True,
+            "ascii_identifiers_only": True,
+            "chinese_allowed_only_in_values": True,
+            "additional_properties": False,
+        },
+    }
+
+
+def _stage_a_shape_example() -> dict[str, Any]:
+    """Build the prompt example from the formal schema key lists."""
+    contract = render_stage_a_schema_contract()
+    return {
+        key: (
+            DIRECTOR_BEAT_PLAN_IR_VERSION if key == "version" else
+            "string" if key in {"scene_label", "note"} else
+            "完整中文句子。" if key in {"scene_objective"} else
+            "完整中文疑问句？" if key == "dramatic_question" else
+            [{field: (["SAU_..." ] if field == "refs" else True if field == "hook" else "完整中文句子。") for field in contract["beat_keys"]}] if key == "beats" else
+            [] if key in {"passthrough_refs", "unknowns"} else
+            0.8 if key == "confidence" else
+            None
+        ) for key in contract["top_level_keys"]
+    }
+
+
+class DuplicateJSONKeyError(ValueError):
+    """Raised when a JSON object repeats an exact property name."""
+
+    def __init__(self, key: str):
+        self.key = key
+        super().__init__(f"DIRECTOR_BEAT_PLAN_DUPLICATE_JSON_KEY:{key}")
+
+
+def _reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DuplicateJSONKeyError(str(key))
+        result[key] = value
+    return result
+
+
+def audit_duplicate_json_keys(raw: str) -> dict[str, Any]:
+    """Audit raw JSON for exact duplicate object keys without repairing it."""
+    try:
+        json.loads(str(raw or ""), object_pairs_hook=_reject_duplicate_pairs)
+    except DuplicateJSONKeyError as exc:
+        return {"status": "FAIL", "duplicate_keys": [exc.key], "error": str(exc)}
+    except (TypeError, ValueError, json.JSONDecodeError) as exc:
+        return {"status": "NOT_EVALUATED", "duplicate_keys": [], "error": str(exc)}
+    return {"status": "PASS", "duplicate_keys": [], "error": None}
+
+
+def validate_stage_a_prompt_schema_key_parity(user_prompt: str) -> dict[str, Any]:
+    """Compare prompt-declared key sets with the formal schema key sets."""
+    contract = render_stage_a_schema_contract()
+    found: dict[str, Any] = {}
+    errors: list[dict[str, Any]] = []
+    for marker, expected in (("CANONICAL_TOP_LEVEL_KEYS=", contract["top_level_keys"]), ("CANONICAL_BEAT_KEYS=", contract["beat_keys"])):
+        line = next((item for item in str(user_prompt or "").splitlines() if item.startswith(marker)), "")
+        if not line:
+            errors.append({"code": "PROMPT_CANONICAL_KEY_BLOCK_MISSING", "marker": marker})
+            continue
+        try:
+            actual = json.loads(line[len(marker):])
+        except (TypeError, ValueError, json.JSONDecodeError):
+            actual = None
+        found[marker.rstrip("=")] = actual
+        if not isinstance(actual, list) or set(actual) != set(expected) or len(actual) != len(expected):
+            errors.append({"code": "STAGE_A_PROMPT_SCHEMA_KEY_PARITY", "marker": marker, "expected": expected, "actual": actual})
+    for phrase in ("byte-for-byte", "do not translate", "Chinese only in values", "never in keys"):
+        if phrase not in str(user_prompt or ""):
+            errors.append({"code": "PROMPT_CANONICAL_KEY_RULE_MISSING", "phrase": phrase})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors, "prompt": found, "schema": contract}
+
+
 def validate_director_beat_plan_ir_schema(value: Any) -> dict[str, Any]:
     errors = _schema_check(value, DIRECTOR_BEAT_PLAN_IR_SCHEMA)
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "version": DIRECTOR_BEAT_PLAN_IR_VERSION}
@@ -147,7 +261,9 @@ def parse_director_beat_plan_ir(raw: str) -> dict[str, Any]:
     if not text:
         raise ValueError("Director BeatPlan IR is empty")
     try:
-        payload = json.loads(text)
+        payload = json.loads(text, object_pairs_hook=_reject_duplicate_pairs)
+    except DuplicateJSONKeyError:
+        raise
     except (TypeError, ValueError, json.JSONDecodeError) as exc:
         raise ValueError(f"Failed to parse Director BeatPlan IR: {exc}") from exc
     if not isinstance(payload, dict):
@@ -375,6 +491,10 @@ def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping
         if _text(item.get("source_type")).upper() in {"SOURCE_DIALOGUE", "DIALOGUE"} and _text(item.get("speaker")):
             unit["speaker"] = _text(item.get("speaker"))
         minimized_units.append(unit)
+    contract = render_stage_a_schema_contract()
+    shape_example = _stage_a_shape_example()
+    top_keys = json.dumps(contract["top_level_keys"], ensure_ascii=False, separators=(",", ":"))
+    beat_keys = json.dumps(contract["beat_keys"], ensure_ascii=False, separators=(",", ":"))
     user = (
         "DIRECTOR_BEAT_PLAN_IR_V1\n"
         f"SCENE_ID={json.dumps(scene_id, ensure_ascii=False)}\n"
@@ -382,11 +502,16 @@ def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping
         f"DECLARED_PARTICIPANTS={json.dumps(declared_participants or [], ensure_ascii=False, sort_keys=True)}\n"
         f"EXPLICIT_STORY_CONSTRAINTS={json.dumps(explicit_story_constraints or [], ensure_ascii=False, sort_keys=True)}\n"
         f"UNKNOWN_SOURCE_FACTS={json.dumps(unknown_source_facts or [], ensure_ascii=False, sort_keys=True)}\n"
-        "REQUIRED_TOP_LEVEL_FIELDS=version,scene_label,scene_objective,dramatic_question,beats,passthrough_refs,unknowns,confidence,note\n"
-        "REQUIRED_BEAT_FIELDS=refs,purpose,objective,information_change,hook\n"
-        "FIELD_TYPES=version:string(exact director_beat_plan_ir_v1); scene_label:string; scene_objective:string; dramatic_question:string; beats:array<object>; beats[].refs:array<string>; beats[].purpose:string; beats[].objective:string; beats[].information_change:string; beats[].hook:boolean; passthrough_refs:array<string>; unknowns:array; confidence:number|string; note:string\n"
+        f"CANONICAL_TOP_LEVEL_KEYS={top_keys}\n"
+        f"CANONICAL_BEAT_KEYS={beat_keys}\n"
+        "KEY_RULE=Property names must match these strings exactly, byte-for-byte. do not translate; Chinese only in values, never in keys.\n"
+        "CANONICAL_JSON_KEY_CONTRACT=JSON property names are protocol tokens, not natural-language text. Every property name MUST be copied byte-for-byte from the canonical key lists. Do NOT translate, localize, paraphrase, abbreviate, rename, mix Chinese with English, change case, add prefixes/suffixes, or create aliases. Only JSON VALUES may contain Chinese natural-language text. JSON KEYS must remain the exact canonical ASCII identifiers.\n"
+        "中文键名合同=所有 JSON 键名都是协议标识符，不是自然语言。键名必须逐字符原样复制；禁止翻译、同义词、别名、大小写变化或额外翻译版本。中文只能出现在 value 中，不能出现在 property name 中。\n"
+        "REQUIRED_TOP_LEVEL_FIELDS=" + ",".join(contract["top_level_keys"]) + "\n"
+        "REQUIRED_BEAT_FIELDS=" + ",".join(contract["beat_keys"]) + "\n"
+        "FIELD_TYPES=" + "; ".join(f"{key}:{value}" for key, value in contract["field_types"].items()) + "\n"
         "HOOK_BOOLEAN_CONTRACT=beats[].hook MUST be a JSON boolean literal true or false. NEVER output a string for hook, NEVER write hook text, and NEVER quote true/false. hook=true means this beat carries a clear unresolved question, reversal, suspense, continuation drive, or next-step hook; hook=false means the beat mainly establishes, explains, advances, or transitions without a clear hook. hook is only a classification flag, not hook copy, audience_effect, dramatic_question, information_change, transition, performance, or scene_exit_intent.\n"
-        "JSON_SHAPE_EXAMPLE_ONLY={\"version\":\"director_beat_plan_ir_v1\",\"scene_label\":\"string\",\"scene_objective\":\"完整中文句子。\",\"dramatic_question\":\"完整中文疑问句？\",\"beats\":[{\"refs\":[\"SAU_...\"],\"purpose\":\"完整中文句子。\",\"objective\":\"完整中文句子。\",\"information_change\":\"完整中文句子。\",\"hook\":true}],\"passthrough_refs\":[],\"unknowns\":[],\"confidence\":0.8,\"note\":\"string\"}; this example specifies JSON shape and types only; do not copy its semantics.\n"
+        f"JSON_SHAPE_EXAMPLE_ONLY={json.dumps(shape_example, ensure_ascii=False, separators=(',', ':'))}; this example specifies JSON shape and types only; do not copy its semantics.\n"
         "BEAT_PLAN_CONTRACT=只允许上述字段；每个 string 类型文本字段必须是完整中文句子，dramatic_question 以？?!结束；hook 不得是字符串。\n"
         "禁止省略字段、增加字段、补写来源事实；禁止输出 Stage B 字段、对白内容、speaker、binding 或 source_constraints；所有 SAU 必须恰好出现在 beats[].refs 或 passthrough_refs。"
     )
@@ -416,4 +541,6 @@ __all__ = [
     "materialize_director_beat_plan_ids", "validate_director_creative_enrichment_ir_schema",
     "validate_director_creative_enrichment_ir", "compile_progressive_director_proposal",
     "build_stage_a_persistence_patch", "build_director_beat_plan_prompt", "build_director_creative_enrichment_prompt",
+    "CANONICAL_TOP_LEVEL_KEYS", "CANONICAL_BEAT_KEYS", "render_stage_a_schema_contract",
+    "validate_stage_a_prompt_schema_key_parity", "audit_duplicate_json_keys", "DuplicateJSONKeyError",
 ]

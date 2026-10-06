@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "duplicate_guard": "IMPLEMENTED",
+  "exact_duplicate": {
+    "status": "FAIL",
+    "duplicate_keys": [
+      "information_change"
+    ],
+    "error": "DIRECTOR_BEAT_PLAN_DUPLICATE_JSON_KEY:information_change"
+  },
+  "golden": {
+    "status": "PASS",
+    "duplicate_keys": [],
+    "error": null
+  },
+  "parse_error": "DIRECTOR_BEAT_PLAN_DUPLICATE_JSON_KEY",
+  "deferred": false
+}

@@ -55,6 +55,7 @@ from core.director_progressive_authoring import (
     validate_director_beat_plan_ir,
     validate_director_beat_plan_text_completeness,
     materialize_director_beat_plan_ids,
+    validate_stage_a_prompt_schema_key_parity,
 )
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
@@ -337,6 +338,9 @@ def build_director_beat_plan_provider_request(
         scene_id=scene_id, source_units=units, declared_participants=participants,
         explicit_story_constraints=explicit_constraints, unknown_source_facts=unknowns,
     )
+    prompt_parity = validate_stage_a_prompt_schema_key_parity(user_prompt)
+    if prompt_parity.get("status") != "PASS":
+        raise ValueError({"code": "STAGE_A_PROMPT_SCHEMA_KEY_PARITY", "report": prompt_parity})
     system_sha = hashlib.sha256(system_prompt.encode("utf-8")).hexdigest()
     user_sha = hashlib.sha256(user_prompt.encode("utf-8")).hexdigest()
     policy = _director_generation_policy(resolved_profile)
@@ -568,8 +572,11 @@ def _execute_source_grounded_beat_plan(*, book_id: int, packet_id: int, packet_f
     try:
         parsed = parse_director_beat_plan_ir(str(raw or ""))
     except Exception as exc:
-        code = attempt_context.status("PARSE_FAILED")
-        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE"], report={"error": str(exc)}, status=code, attempt_context=attempt_context)
+        duplicate_key = str(exc).startswith("DIRECTOR_BEAT_PLAN_DUPLICATE_JSON_KEY:")
+        outcome = "DUPLICATE_JSON_KEY" if duplicate_key else "PARSE_FAILED"
+        code = attempt_context.status(outcome)
+        report = {"error": str(exc), "error_code": "DIRECTOR_BEAT_PLAN_DUPLICATE_JSON_KEY" if duplicate_key else "DIRECTOR_BEAT_PLAN_PARSE_FAILED"}
+        _stage_a_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE"], report=report, status=code, attempt_context=attempt_context)
         raise HTTPException(status_code=502, detail={"code": code, "retry": 0}) from exc
     schema_report = validate_director_beat_plan_ir_schema(parsed)
     if schema_report.get("status") != "PASS":

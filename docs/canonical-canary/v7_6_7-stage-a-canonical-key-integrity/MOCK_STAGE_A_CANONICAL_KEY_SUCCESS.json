@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "provider_calls": 0,
+  "response_origin": "provider-free-golden",
+  "strict_parse": "PASS",
+  "schema": {
+    "status": "PASS",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "text_completeness": {
+    "status": "PASS",
+    "errors": []
+  },
+  "runtime": {
+    "status": "qualified",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1",
+    "source_unit_count": 12,
+    "covered_source_unit_count": 12,
+    "creative_beat_count": 6,
+    "local_creative_completion_count": 0
+  },
+  "source_coverage": "12/12",
+  "duplicate_refs": 0,
+  "invalid_refs": 0,
+  "local_creative_completion": 0,
+  "materialization": "PASS",
+  "hook_booleans": {
+    "true": 5,
+    "false": 1
+  },
+  "hook_string_regression": {
+    "status": "FAIL",
+    "expected": "FAIL"
+  }
+}
