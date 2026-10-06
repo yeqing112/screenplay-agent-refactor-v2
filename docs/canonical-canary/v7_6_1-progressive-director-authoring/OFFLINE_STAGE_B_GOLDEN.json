@@ -1,0 +1,155 @@
+{
+  "status": "PASS",
+  "ir": {
+    "version": "director_creative_enrichment_ir_v1",
+    "beat_enrichments": [
+      {
+        "beat_ref": "DBP_E01_SC001_001",
+        "audience_effect": "观众在阶段 1 感到不安升级。",
+        "performance": "人物在阶段 1 保持可见克制。",
+        "transition": "由阶段 1 的线索切入下一组信息。",
+        "character_effects": [
+          {
+            "character_ref": "林晚",
+            "effect": "保持未知并提高警惕"
+          },
+          {
+            "character_ref": "顾沉",
+            "effect": "保持未知并提高警惕"
+          }
+        ]
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_002",
+        "audience_effect": "观众在阶段 2 感到不安升级。",
+        "performance": "人物在阶段 2 保持可见克制。",
+        "transition": "由阶段 2 的线索切入下一组信息。",
+        "character_effects": [
+          {
+            "character_ref": "林晚",
+            "effect": "保持未知并提高警惕"
+          },
+          {
+            "character_ref": "顾沉",
+            "effect": "保持未知并提高警惕"
+          }
+        ]
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_003",
+        "audience_effect": "观众在阶段 3 感到不安升级。",
+        "performance": "人物在阶段 3 保持可见克制。",
+        "transition": "由阶段 3 的线索切入下一组信息。",
+        "character_effects": [
+          {
+            "character_ref": "林晚",
+            "effect": "保持未知并提高警惕"
+          },
+          {
+            "character_ref": "顾沉",
+            "effect": "保持未知并提高警惕"
+          }
+        ]
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_004",
+        "audience_effect": "观众在阶段 4 感到不安升级。",
+        "performance": "人物在阶段 4 保持可见克制。",
+        "transition": "由阶段 4 的线索切入下一组信息。",
+        "character_effects": [
+          {
+            "character_ref": "林晚",
+            "effect": "保持未知并提高警惕"
+          },
+          {
+            "character_ref": "顾沉",
+            "effect": "保持未知并提高警惕"
+          }
+        ]
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_005",
+        "audience_effect": "观众在阶段 5 感到不安升级。",
+        "performance": "人物在阶段 5 保持可见克制。",
+        "transition": "由阶段 5 的线索切入下一组信息。",
+        "character_effects": [
+          {
+            "character_ref": "林晚",
+            "effect": "保持未知并提高警惕"
+          },
+          {
+            "character_ref": "顾沉",
+            "effect": "保持未知并提高警惕"
+          }
+        ]
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_006",
+        "audience_effect": "观众在阶段 6 感到不安升级。",
+        "performance": "人物在阶段 6 保持可见克制。",
+        "transition": "由阶段 6 的线索切入下一组信息。",
+        "character_effects": [
+          {
+            "character_ref": "林晚",
+            "effect": "保持未知并提高警惕"
+          },
+          {
+            "character_ref": "顾沉",
+            "effect": "保持未知并提高警惕"
+          }
+        ]
+      }
+    ],
+    "character_directions": [
+      {
+        "character_ref": "林晚",
+        "direction": "试探而克制"
+      },
+      {
+        "character_ref": "顾沉",
+        "direction": "试探而克制"
+      }
+    ],
+    "performance_arc": [
+      "guarded -> suspicious"
+    ],
+    "information_strategy": [
+      "reveal object before motive"
+    ],
+    "rhythm_strategy": {
+      "tempo": "tightening"
+    },
+    "visual_priority": [
+      "铁盒",
+      "门缝下的皮鞋",
+      "车票"
+    ],
+    "scene_exit_intent": "车票把关系推向分裂。",
+    "prohibited_interpretations": [
+      "不得确定门外人物身份",
+      "不得确定车票投递者身份",
+      "不得确定顾沉真实动机",
+      "不得确定林晚童年真相"
+    ],
+    "confidence": 0.75,
+    "note": "offline golden fixture"
+  },
+  "schema_validation": {
+    "status": "PASS",
+    "errors": [],
+    "version": "director_creative_enrichment_ir_v1"
+  },
+  "runtime_validation": {
+    "status": "qualified",
+    "errors": [],
+    "version": "director_creative_enrichment_ir_v1",
+    "stage_a_beat_count": 6,
+    "beat_enrichment_count": 6,
+    "beat_coverage": "PASS",
+    "source_mutation_count": 0
+  },
+  "stage_a_beat_count": 6,
+  "beat_enrichment_count": 6,
+  "provider_calls": 0,
+  "source_mutation_count": 0
+}

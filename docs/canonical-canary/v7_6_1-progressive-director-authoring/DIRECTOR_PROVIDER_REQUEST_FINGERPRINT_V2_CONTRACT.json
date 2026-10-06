@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "function": "core.prompt_cache.provider_request_fingerprint_v2",
+  "canonical_payload_fields": [
+    "profile_id",
+    "provider",
+    "model",
+    "base_host",
+    "system_prompt_sha256",
+    "user_prompt_sha256",
+    "temperature",
+    "max_tokens",
+    "response_format",
+    "thinking",
+    "schema_version",
+    "execution_boundary_version"
+  ],
+  "execution_boundary_version": "director_provider_request_v2",
+  "hash": "SHA256(canonical_json(payload))",
+  "secrets_excluded": [
+    "api_key",
+    "authorization",
+    "bearer_token"
+  ]
+}

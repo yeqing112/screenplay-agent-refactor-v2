@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "old_single_shot": {
+    "system_chars": 698,
+    "user_chars": 9457,
+    "estimated_tokens": 2539,
+    "required_top_level_fields": 16,
+    "required_per_beat_fields": 9,
+    "expected_nested_depth": 4,
+    "expected_creative_field_count": 16
+  },
+  "stage_a": {
+    "system_chars": 67,
+    "user_chars": 7732,
+    "estimated_tokens": 1950,
+    "required_top_level_fields": 10,
+    "required_per_beat_fields": 5,
+    "expected_nested_depth": 3,
+    "expected_creative_field_count": 5
+  },
+  "stage_a_output_burden_reduced": true,
+  "stage_b_output_is_separate": true
+}

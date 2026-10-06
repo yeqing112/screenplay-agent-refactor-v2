@@ -274,6 +274,10 @@ def _build_audit_record(
     usage=None,
     latency_ms=None,
     provider_request_id=None,
+    generation_policy=None,
+    finish_reason=None,
+    choice_index=None,
+    termination_metadata=None,
 ) -> dict:
     system_str = system or ""
     user_str = user or ""
@@ -297,12 +301,30 @@ def _build_audit_record(
         "response_length": len(response_str),
         "http_status": int(status or 0),
         "parse_ok": bool(parse_ok),
+        "finish_reason": str(finish_reason or ""),
+        "choice_index": int(choice_index) if isinstance(choice_index, int) else None,
     }
     record.update(_response_debug_fields(response_str))
     if provider_request_id:
         record["provider_request_id"] = str(provider_request_id)[:200]
     metrics = cache_metrics(usage)
     record["usage"] = metrics
+    policy = generation_policy if isinstance(generation_policy, dict) else {}
+    # These are the values that were resolved into the outgoing payload, not
+    # configuration guesses.  Keep the field names stable for canary audits.
+    record["resolved_max_tokens"] = policy.get("max_tokens")
+    record["resolved_temperature"] = policy.get("temperature")
+    record["resolved_response_format"] = policy.get("response_format")
+    record["resolved_thinking"] = policy.get("thinking")
+    if isinstance(termination_metadata, dict):
+        safe_termination = {}
+        for key, value in termination_metadata.items():
+            if not isinstance(key, str) or not key:
+                continue
+            if isinstance(value, (str, int, float, bool)) or value is None:
+                safe_termination[key[:80]] = value if not isinstance(value, str) else value[:200]
+        if safe_termination:
+            record["termination_metadata"] = safe_termination
     if latency_ms is not None:
         try:
             record["latency_ms"] = round(float(latency_ms), 2)
@@ -375,6 +397,12 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
     resolved_thinking = _normalize_thinking_param(default_params.get("thinking"))
     if resolved_thinking:
         payload["thinking"] = resolved_thinking
+    generation_policy = {
+        "max_tokens": resolved_max_tokens,
+        "temperature": payload.get("temperature"),
+        "response_format": payload.get("response_format"),
+        "thinking": payload.get("thinking"),
+    }
 
     # Historical callers pass ``retries`` as the total-attempt budget.  Guard
     # the boundary so ``0`` means one non-retrying call rather than silently
@@ -417,6 +445,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                         extra=retry_extra,
                         latency_ms=(time.monotonic() - request_started) * 1000,
                         provider_request_id=provider_request_id,
+                        generation_policy=generation_policy,
                     ), audit_callback)
                     if attempt == attempt_budget - 1:
                         resp.raise_for_status()
@@ -431,6 +460,13 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
 
                 msg = data["choices"][0]["message"]
                 content = msg.get("content", "")
+                choice = data.get("choices", [{}])[0] if isinstance(data.get("choices"), list) else {}
+                finish_reason = choice.get("finish_reason") if isinstance(choice, dict) else None
+                termination_metadata = {}
+                if isinstance(choice, dict):
+                    for key in ("stop_reason", "termination_reason"):
+                        if key in choice:
+                            termination_metadata[key] = choice.get(key)
 
                 # Reasoning models may put answer in content after reasoning
                 # If content is empty but reasoning_content exists, use reasoning
@@ -451,6 +487,10 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                     usage=usage,
                     latency_ms=(time.monotonic() - request_started) * 1000,
                     provider_request_id=provider_request_id,
+                    generation_policy=generation_policy,
+                    finish_reason=finish_reason,
+                    choice_index=(choice.get("index", 0) if isinstance(choice, dict) else 0),
+                    termination_metadata=termination_metadata,
                 ), audit_callback)
                 return content
 
@@ -469,6 +509,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 extra=retry_extra,
                 latency_ms=(time.monotonic() - request_started) * 1000,
                 provider_request_id=(getattr(err_resp, "headers", {}) or {}).get("x-request-id") or (getattr(err_resp, "headers", {}) or {}).get("request-id") or "",
+                generation_policy=generation_policy,
             ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise
@@ -485,6 +526,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 extra=retry_extra,
                 latency_ms=(time.monotonic() - request_started) * 1000,
                 provider_request_id="",
+                generation_policy=generation_policy,
             ), audit_callback)
             if attempt == attempt_budget - 1:
                 raise

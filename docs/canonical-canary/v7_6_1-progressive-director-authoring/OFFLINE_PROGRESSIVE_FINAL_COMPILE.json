@@ -1,0 +1,607 @@
+{
+  "status": "PASS",
+  "candidate": {
+    "schema_version": "director_treatment_v3",
+    "scene_id": "E01_SC001",
+    "scene_name": "",
+    "source_constraints": {
+      "scene_id": "E01_SC001",
+      "scene_identity_evidence": [
+        {
+          "byte_end": 30,
+          "byte_start": 0,
+          "char_end": 10,
+          "char_start": 0,
+          "evidence_id": "S1I001",
+          "occurrence_count": 1,
+          "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+          "text": "顾沉带林晚进入暗房。"
+        },
+        {
+          "byte_end": 195,
+          "byte_start": 105,
+          "char_end": 65,
+          "char_start": 35,
+          "evidence_id": "S1I002",
+          "occurrence_count": 1,
+          "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+          "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+        },
+        {
+          "byte_end": 630,
+          "byte_start": 591,
+          "char_end": 214,
+          "char_start": 201,
+          "evidence_id": "S1I003",
+          "occurrence_count": 1,
+          "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+          "text": "门缝下出现一双湿透的皮鞋。"
+        }
+      ],
+      "declared_participants": [
+        {
+          "character_id": "林晚",
+          "evidence": [
+            {
+              "byte_end": 30,
+              "byte_start": 0,
+              "char_end": 10,
+              "char_start": 0,
+              "evidence_id": "S1P1E001",
+              "occurrence_count": 1,
+              "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+              "text": "顾沉带林晚进入暗房。"
+            },
+            {
+              "byte_end": 377,
+              "byte_start": 269,
+              "char_end": 127,
+              "char_start": 91,
+              "evidence_id": "S1P1E002",
+              "occurrence_count": 1,
+              "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+              "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+            },
+            {
+              "byte_end": 427,
+              "byte_start": 412,
+              "char_end": 145,
+              "char_start": 140,
+              "evidence_id": "S1P1E003",
+              "occurrence_count": 1,
+              "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+              "text": "林晚问是谁"
+            }
+          ],
+          "id": "林晚",
+          "name": "林晚"
+        },
+        {
+          "character_id": "顾沉",
+          "evidence": [
+            {
+              "byte_end": 30,
+              "byte_start": 0,
+              "char_end": 10,
+              "char_start": 0,
+              "evidence_id": "S1P2E001",
+              "occurrence_count": 1,
+              "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+              "text": "顾沉带林晚进入暗房。"
+            },
+            {
+              "byte_end": 412,
+              "byte_start": 379,
+              "char_end": 140,
+              "char_start": 129,
+              "evidence_id": "S1P2E002",
+              "occurrence_count": 1,
+              "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+              "text": "顾沉说胶片被人拿走了。"
+            },
+            {
+              "byte_end": 589,
+              "byte_start": 532,
+              "char_end": 199,
+              "char_start": 180,
+              "evidence_id": "S1P2E003",
+              "occurrence_count": 1,
+              "sha256": "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+              "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            }
+          ],
+          "id": "顾沉",
+          "name": "顾沉"
+        }
+      ],
+      "source_authoring_units": [
+        {
+          "unit_id": "SAU_E01_SC001_001",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A001",
+          "source_order": 1,
+          "source_evidence_refs": [
+            "S1A001"
+          ],
+          "text": "顾沉带林晚进入暗房。",
+          "source_evidence": {
+            "byte_end": 30,
+            "byte_start": 0,
+            "char_end": 10,
+            "char_start": 0,
+            "evidence_id": "S1A001",
+            "occurrence_count": 1,
+            "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+            "text": "顾沉带林晚进入暗房。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_002",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A002",
+          "source_order": 2,
+          "source_evidence_refs": [
+            "S1A002"
+          ],
+          "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。",
+          "source_evidence": {
+            "byte_end": 105,
+            "byte_start": 30,
+            "char_end": 35,
+            "char_start": 10,
+            "evidence_id": "S1A002",
+            "occurrence_count": 1,
+            "sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+            "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_003",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A003",
+          "source_order": 3,
+          "source_evidence_refs": [
+            "S1A003"
+          ],
+          "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+          "source_evidence": {
+            "byte_end": 195,
+            "byte_start": 105,
+            "char_end": 65,
+            "char_start": 35,
+            "evidence_id": "S1A003",
+            "occurrence_count": 1,
+            "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+            "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_004",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A004",
+          "source_order": 4,
+          "source_evidence_refs": [
+            "S1A004"
+          ],
+          "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+          "source_evidence": {
+            "byte_end": 269,
+            "byte_start": 197,
+            "char_end": 91,
+            "char_start": 67,
+            "evidence_id": "S1A004",
+            "occurrence_count": 1,
+            "sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+            "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_005",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A005",
+          "source_order": 5,
+          "source_evidence_refs": [
+            "S1A005"
+          ],
+          "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+          "source_evidence": {
+            "byte_end": 377,
+            "byte_start": 269,
+            "char_end": 127,
+            "char_start": 91,
+            "evidence_id": "S1A005",
+            "occurrence_count": 1,
+            "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+            "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_006",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A010",
+          "source_order": 6,
+          "source_evidence_refs": [
+            "S1A010"
+          ],
+          "text": "顾沉说胶片被人拿走了。",
+          "source_evidence": {
+            "byte_end": 412,
+            "byte_start": 379,
+            "char_end": 140,
+            "char_start": 129,
+            "evidence_id": "S1A010",
+            "occurrence_count": 1,
+            "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+            "text": "顾沉说胶片被人拿走了。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_007",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A011",
+          "source_order": 7,
+          "source_evidence_refs": [
+            "S1A011"
+          ],
+          "text": "林晚问是谁",
+          "source_evidence": {
+            "byte_end": 427,
+            "byte_start": 412,
+            "char_end": 145,
+            "char_start": 140,
+            "evidence_id": "S1A011",
+            "occurrence_count": 1,
+            "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+            "text": "林晚问是谁"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_008",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_DIALOGUE",
+          "source_ref": "E01_SC001_D001",
+          "source_order": 8,
+          "source_evidence_refs": [
+            "S1D001"
+          ],
+          "speaker": "顾沉",
+          "text": "也许是你自己",
+          "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+          "binding_type": "COREFERENCE_RESOLUTION",
+          "source_evidence": {
+            "byte_end": 460,
+            "byte_start": 442,
+            "char_end": 156,
+            "char_start": 150,
+            "evidence_id": "S1D001",
+            "occurrence_count": 1,
+            "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+            "text": "也许是你自己"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_009",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A006",
+          "source_order": 9,
+          "source_evidence_refs": [
+            "S1A006"
+          ],
+          "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+          "source_evidence": {
+            "byte_end": 589,
+            "byte_start": 487,
+            "char_end": 199,
+            "char_start": 165,
+            "evidence_id": "S1A006",
+            "occurrence_count": 1,
+            "sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+            "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_010",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A007",
+          "source_order": 10,
+          "source_evidence_refs": [
+            "S1A007"
+          ],
+          "text": "门缝下出现一双湿透的皮鞋。",
+          "source_evidence": {
+            "byte_end": 630,
+            "byte_start": 591,
+            "char_end": 214,
+            "char_start": 201,
+            "evidence_id": "S1A007",
+            "occurrence_count": 1,
+            "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+            "text": "门缝下出现一双湿透的皮鞋。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_011",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A008",
+          "source_order": 11,
+          "source_evidence_refs": [
+            "S1A008"
+          ],
+          "text": "那人没有进门，只把一张车票塞进来。",
+          "source_evidence": {
+            "byte_end": 681,
+            "byte_start": 630,
+            "char_end": 231,
+            "char_start": 214,
+            "evidence_id": "S1A008",
+            "occurrence_count": 1,
+            "sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+            "text": "那人没有进门，只把一张车票塞进来。"
+          }
+        },
+        {
+          "unit_id": "SAU_E01_SC001_012",
+          "schema_version": "source_authoring_unit_v1",
+          "source_type": "SOURCE_ACTION",
+          "source_ref": "E01_SC001_A009",
+          "source_order": 12,
+          "source_evidence_refs": [
+            "S1A009"
+          ],
+          "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。",
+          "source_evidence": {
+            "byte_end": 762,
+            "byte_start": 681,
+            "char_end": 258,
+            "char_start": 231,
+            "evidence_id": "S1A009",
+            "occurrence_count": 1,
+            "sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+            "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+          }
+        }
+      ],
+      "explicit_story_constraints": []
+    },
+    "creative_projection": {
+      "status": "PROPOSED",
+      "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+      "director_scene_label": "暗房",
+      "director_scene_label_authority": "AUTHORIZED_CREATIVE_PROJECTION",
+      "scene_objective": "把物件线索推向关系不信任。",
+      "dramatic_question": "谁在操控这场相遇？",
+      "creative_beats": [
+        {
+          "creative_beat_id": "DCB_E01_SC001_001",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_001",
+            "SAU_E01_SC001_002"
+          ],
+          "dramatic_purpose": "结构分组 1",
+          "director_objective": "推进信息阶段 1",
+          "information_change": "新增可见线索 1",
+          "audience_effect": "观众在阶段 1 感到不安升级。",
+          "character_effects": [
+            {
+              "character_ref": "林晚",
+              "effect": "保持未知并提高警惕"
+            },
+            {
+              "character_ref": "顾沉",
+              "effect": "保持未知并提高警惕"
+            }
+          ],
+          "performance_intent": "人物在阶段 1 保持可见克制。",
+          "transition_intent": "由阶段 1 的线索切入下一组信息。",
+          "hook_intent": true
+        },
+        {
+          "creative_beat_id": "DCB_E01_SC001_002",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_003",
+            "SAU_E01_SC001_004"
+          ],
+          "dramatic_purpose": "结构分组 2",
+          "director_objective": "推进信息阶段 2",
+          "information_change": "新增可见线索 2",
+          "audience_effect": "观众在阶段 2 感到不安升级。",
+          "character_effects": [
+            {
+              "character_ref": "林晚",
+              "effect": "保持未知并提高警惕"
+            },
+            {
+              "character_ref": "顾沉",
+              "effect": "保持未知并提高警惕"
+            }
+          ],
+          "performance_intent": "人物在阶段 2 保持可见克制。",
+          "transition_intent": "由阶段 2 的线索切入下一组信息。",
+          "hook_intent": false
+        },
+        {
+          "creative_beat_id": "DCB_E01_SC001_003",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_005",
+            "SAU_E01_SC001_006"
+          ],
+          "dramatic_purpose": "结构分组 3",
+          "director_objective": "推进信息阶段 3",
+          "information_change": "新增可见线索 3",
+          "audience_effect": "观众在阶段 3 感到不安升级。",
+          "character_effects": [
+            {
+              "character_ref": "林晚",
+              "effect": "保持未知并提高警惕"
+            },
+            {
+              "character_ref": "顾沉",
+              "effect": "保持未知并提高警惕"
+            }
+          ],
+          "performance_intent": "人物在阶段 3 保持可见克制。",
+          "transition_intent": "由阶段 3 的线索切入下一组信息。",
+          "hook_intent": false
+        },
+        {
+          "creative_beat_id": "DCB_E01_SC001_004",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_007",
+            "SAU_E01_SC001_008"
+          ],
+          "dramatic_purpose": "结构分组 4",
+          "director_objective": "推进信息阶段 4",
+          "information_change": "新增可见线索 4",
+          "audience_effect": "观众在阶段 4 感到不安升级。",
+          "character_effects": [
+            {
+              "character_ref": "林晚",
+              "effect": "保持未知并提高警惕"
+            },
+            {
+              "character_ref": "顾沉",
+              "effect": "保持未知并提高警惕"
+            }
+          ],
+          "performance_intent": "人物在阶段 4 保持可见克制。",
+          "transition_intent": "由阶段 4 的线索切入下一组信息。",
+          "hook_intent": false
+        },
+        {
+          "creative_beat_id": "DCB_E01_SC001_005",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_009",
+            "SAU_E01_SC001_010"
+          ],
+          "dramatic_purpose": "结构分组 5",
+          "director_objective": "推进信息阶段 5",
+          "information_change": "新增可见线索 5",
+          "audience_effect": "观众在阶段 5 感到不安升级。",
+          "character_effects": [
+            {
+              "character_ref": "林晚",
+              "effect": "保持未知并提高警惕"
+            },
+            {
+              "character_ref": "顾沉",
+              "effect": "保持未知并提高警惕"
+            }
+          ],
+          "performance_intent": "人物在阶段 5 保持可见克制。",
+          "transition_intent": "由阶段 5 的线索切入下一组信息。",
+          "hook_intent": true
+        },
+        {
+          "creative_beat_id": "DCB_E01_SC001_006",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_011",
+            "SAU_E01_SC001_012"
+          ],
+          "dramatic_purpose": "结构分组 6",
+          "director_objective": "推进信息阶段 6",
+          "information_change": "新增可见线索 6",
+          "audience_effect": "观众在阶段 6 感到不安升级。",
+          "character_effects": [
+            {
+              "character_ref": "林晚",
+              "effect": "保持未知并提高警惕"
+            },
+            {
+              "character_ref": "顾沉",
+              "effect": "保持未知并提高警惕"
+            }
+          ],
+          "performance_intent": "人物在阶段 6 保持可见克制。",
+          "transition_intent": "由阶段 6 的线索切入下一组信息。",
+          "hook_intent": false
+        }
+      ],
+      "explicit_passthrough_unit_refs": [],
+      "character_directions": [
+        {
+          "character_ref": "林晚",
+          "direction": "试探而克制"
+        },
+        {
+          "character_ref": "顾沉",
+          "direction": "试探而克制"
+        }
+      ],
+      "performance_arc": [
+        "guarded -> suspicious"
+      ],
+      "information_strategy": [
+        "reveal object before motive"
+      ],
+      "rhythm_strategy": {
+        "tempo": "tightening"
+      },
+      "visual_priority": [
+        "铁盒",
+        "门缝下的皮鞋",
+        "车票"
+      ],
+      "scene_exit_intent": "车票把关系推向分裂。",
+      "prohibited_interpretations": [
+        "不得确定门外人物身份",
+        "不得确定车票投递者身份",
+        "不得确定顾沉真实动机",
+        "不得确定林晚童年真相"
+      ]
+    },
+    "unknowns": [
+      "门外人物身份",
+      "车票投递者身份",
+      "顾沉真实动机",
+      "林晚童年真相"
+    ],
+    "decision": "ready_for_review",
+    "confidence": 0.75,
+    "human_confirmation_required": true,
+    "note": "offline golden fixture",
+    "compiler_report": {
+      "status": "PASS",
+      "local_new_creative_decision_count": 0,
+      "local_direction_semantic_expansion_count": 0,
+      "stage_a": {
+        "status": "qualified",
+        "errors": [],
+        "version": "director_beat_plan_ir_v1",
+        "source_unit_count": 12,
+        "covered_source_unit_count": 12,
+        "creative_beat_count": 6,
+        "local_creative_completion_count": 0
+      },
+      "stage_b": {
+        "status": "qualified",
+        "errors": [],
+        "version": "director_creative_enrichment_ir_v1",
+        "stage_a_beat_count": 6,
+        "beat_enrichment_count": 6,
+        "beat_coverage": "PASS",
+        "source_mutation_count": 0
+      }
+    }
+  },
+  "final_status": "PROPOSED",
+  "human_confirmation_required": true,
+  "local_new_creative_decision_count": 0,
+  "local_direction_semantic_expansion_count": 0,
+  "provider_calls": 0
+}

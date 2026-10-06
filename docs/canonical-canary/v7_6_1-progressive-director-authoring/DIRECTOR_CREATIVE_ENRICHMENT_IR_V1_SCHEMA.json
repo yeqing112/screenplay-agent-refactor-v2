@@ -1,0 +1,89 @@
+{
+  "status": "PASS",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "beat_enrichments",
+      "character_directions",
+      "confidence",
+      "information_strategy",
+      "note",
+      "performance_arc",
+      "prohibited_interpretations",
+      "rhythm_strategy",
+      "scene_exit_intent",
+      "version",
+      "visual_priority"
+    ],
+    "properties": {
+      "version": {
+        "const": "director_creative_enrichment_ir_v1"
+      },
+      "beat_enrichments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "audience_effect",
+            "beat_ref",
+            "character_effects",
+            "performance",
+            "transition"
+          ],
+          "properties": {
+            "beat_ref": {
+              "type": "string"
+            },
+            "audience_effect": {
+              "type": "string"
+            },
+            "performance": {
+              "type": "string"
+            },
+            "transition": {
+              "type": "string"
+            },
+            "character_effects": {
+              "type": "array"
+            }
+          }
+        }
+      },
+      "character_directions": {
+        "type": "array"
+      },
+      "performance_arc": {
+        "type": "array"
+      },
+      "information_strategy": {
+        "type": "array"
+      },
+      "rhythm_strategy": {
+        "type": "object"
+      },
+      "visual_priority": {
+        "type": "array"
+      },
+      "scene_exit_intent": {
+        "type": "string"
+      },
+      "prohibited_interpretations": {
+        "type": "array"
+      },
+      "confidence": {
+        "type": [
+          "number",
+          "string"
+        ]
+      },
+      "note": {
+        "type": "string"
+      }
+    }
+  },
+  "version": "director_creative_enrichment_ir_v1",
+  "authority": "PROVIDER_PROPOSAL",
+  "authoring_stage": "AUTHORING_STAGE_B"
+}

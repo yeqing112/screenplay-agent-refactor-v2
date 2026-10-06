@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "stage_a_success_storage": "DecisionPacketRecord.model_info.progressive_director_authoring.stage_a",
+  "stage_a_proposal_boundary": "DecisionPacketRecord.proposal remains {\"decision\":\"awaiting_llm\"}",
+  "stage_a_confirm_allowed": false,
+  "stage_b_auto_call": false,
+  "final_proposal_write_allowed_only_after": "Stage A PASS + Stage B PASS",
+  "attempt_stage_metadata": [
+    "BEAT_PLAN",
+    "CREATIVE_ENRICHMENT"
+  ]
+}

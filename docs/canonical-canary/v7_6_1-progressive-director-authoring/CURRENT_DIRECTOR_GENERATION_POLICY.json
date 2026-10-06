@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "profile": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true
+  },
+  "profile_default_params": {
+    "max_tokens": 8192,
+    "temperature": 0.3,
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "profile_overrides_max_tokens": true,
+  "resolved_policy": {
+    "max_tokens": 8192,
+    "temperature": 0.0,
+    "response_format": {
+      "type": "json_object"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "director_temperature_is_explicit_override": true,
+  "resolved_response_format_is_explicit": true
+}

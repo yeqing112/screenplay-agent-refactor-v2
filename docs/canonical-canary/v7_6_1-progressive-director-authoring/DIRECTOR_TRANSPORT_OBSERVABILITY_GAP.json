@@ -1,0 +1,33 @@
+{
+  "status": "IMPLEMENTED",
+  "historical_audit_fields_present": [
+    "prompt_tokens",
+    "completion_tokens",
+    "total_tokens",
+    "http_status",
+    "response_length"
+  ],
+  "historical_audit_fields_missing": [
+    "finish_reason",
+    "resolved_max_tokens",
+    "resolved_temperature",
+    "resolved_response_format",
+    "resolved_thinking",
+    "choice_index",
+    "numeric_completion_tokens_details",
+    "numeric_prompt_tokens_details"
+  ],
+  "current_audit_fields_added": [
+    "finish_reason",
+    "choice_index",
+    "resolved_max_tokens",
+    "resolved_temperature",
+    "resolved_response_format",
+    "resolved_thinking",
+    "termination_metadata",
+    "usage.reasoning_tokens",
+    "usage.completion_tokens_details",
+    "usage.prompt_tokens_details"
+  ],
+  "secret_exposure": "NONE"
+}

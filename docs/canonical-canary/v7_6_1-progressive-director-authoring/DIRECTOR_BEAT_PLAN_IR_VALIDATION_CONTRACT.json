@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "required_fields": [
+    "hook",
+    "information_change",
+    "objective",
+    "purpose",
+    "refs"
+  ],
+  "coverage_rule": "every SAU exactly once in beats.refs or passthrough_refs",
+  "local_identity_rule": "DBP_<scene_id>_<ordinal> assigned only after validation",
+  "local_creative_completion_count": 0,
+  "schema_report": {
+    "status": "PASS",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "runtime_report": {
+    "status": "qualified",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1",
+    "source_unit_count": 12,
+    "covered_source_unit_count": 12,
+    "creative_beat_count": 6,
+    "local_creative_completion_count": 0
+  }
+}

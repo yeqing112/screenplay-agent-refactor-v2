@@ -36,6 +36,58 @@ def prompt_fingerprint(*parts: Any) -> str:
     return hashlib.sha256("\n--prompt-part--\n".join(encoded_parts).encode("utf-8")).hexdigest()
 
 
+def provider_request_payload_v2(
+    *,
+    profile_id: Any,
+    provider: Any,
+    model: Any,
+    base_host: Any,
+    system_prompt_sha256: Any,
+    user_prompt_sha256: Any,
+    temperature: Any,
+    max_tokens: Any,
+    response_format: Any,
+    thinking: Any,
+    schema_version: Any,
+    execution_boundary_version: str = "director_provider_request_v2",
+) -> dict[str, Any]:
+    """Return the complete non-secret Provider request identity payload."""
+
+    def safe_value(value: Any) -> Any:
+        if isinstance(value, dict):
+            return {
+                str(key): safe_value(item)
+                for key, item in value.items()
+                if str(key).lower() not in {"api_key", "apikey", "authorization", "token", "secret", "password"}
+            }
+        if isinstance(value, list):
+            return [safe_value(item) for item in value]
+        if isinstance(value, (str, int, float, bool)) or value is None:
+            return value
+        return str(value)
+
+    return {
+        "profile_id": str(profile_id or ""),
+        "provider": str(provider or ""),
+        "model": str(model or ""),
+        "base_host": str(base_host or ""),
+        "system_prompt_sha256": str(system_prompt_sha256 or ""),
+        "user_prompt_sha256": str(user_prompt_sha256 or ""),
+        "temperature": temperature,
+        "max_tokens": int(max_tokens) if max_tokens is not None else None,
+        "response_format": safe_value(response_format),
+        "thinking": safe_value(thinking),
+        "schema_version": str(schema_version or ""),
+        "execution_boundary_version": str(execution_boundary_version or "director_provider_request_v2"),
+    }
+
+
+def provider_request_fingerprint_v2(**kwargs: Any) -> str:
+    """Hash the canonical, non-secret Provider request identity payload."""
+
+    return hashlib.sha256(canonical_json(provider_request_payload_v2(**kwargs)).encode("utf-8")).hexdigest()
+
+
 def model_request_snapshot(profile: dict[str, Any] | None) -> dict[str, Any]:
     """Return the non-secret model/parameter portion of a request identity.
 
@@ -94,6 +146,11 @@ def summarize_audit_records(records: list[dict[str, Any]] | None) -> dict[str, A
         "last_latency_ms": float(last.get("latency_ms") or 0),
         "last_http_status": int(last.get("http_status") or 0),
         "last_parse_ok": bool(last.get("parse_ok")),
+        "last_finish_reason": str(last.get("finish_reason") or ""),
+        "last_resolved_max_tokens": _as_int(last.get("resolved_max_tokens")),
+        "last_resolved_temperature": last.get("resolved_temperature"),
+        "last_resolved_response_format": last.get("resolved_response_format"),
+        "last_resolved_thinking": last.get("resolved_thinking"),
     }
 
 
@@ -107,6 +164,23 @@ def cache_metrics(usage: dict[str, Any] | None) -> dict[str, int | float | None]
     cached_tokens = _as_int(details.get("cached_tokens"))
     completion_tokens = _as_int(usage.get("completion_tokens"))
     total_tokens = _as_int(usage.get("total_tokens"))
+    completion_details = usage.get("completion_tokens_details")
+    completion_details = completion_details if isinstance(completion_details, dict) else {}
+    prompt_details = usage.get("prompt_tokens_details")
+    prompt_details = prompt_details if isinstance(prompt_details, dict) else {}
+    reasoning_tokens = _as_int(completion_details.get("reasoning_tokens"))
+    # Preserve numeric provider detail fields without allowing arbitrary
+    # provider payloads or secrets into the audit envelope.
+    safe_completion_details = {
+        str(key): _as_int(value)
+        for key, value in completion_details.items()
+        if isinstance(key, str) and _as_int(value) is not None
+    }
+    safe_prompt_details = {
+        str(key): _as_int(value)
+        for key, value in prompt_details.items()
+        if isinstance(key, str) and _as_int(value) is not None
+    }
     hit_rate = None
     if prompt_tokens and cached_tokens is not None:
         hit_rate = round(max(0, cached_tokens) / prompt_tokens, 6)
@@ -116,6 +190,9 @@ def cache_metrics(usage: dict[str, Any] | None) -> dict[str, int | float | None]
         "completion_tokens": completion_tokens,
         "total_tokens": total_tokens,
         "cache_hit_rate": hit_rate,
+        "reasoning_tokens": reasoning_tokens,
+        "completion_tokens_details": safe_completion_details,
+        "prompt_tokens_details": safe_prompt_details,
     }
 
 

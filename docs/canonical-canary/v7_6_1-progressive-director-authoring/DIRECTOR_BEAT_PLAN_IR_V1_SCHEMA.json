@@ -1,0 +1,88 @@
+{
+  "status": "PASS",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "beats",
+      "confidence",
+      "dramatic_question",
+      "note",
+      "passthrough_refs",
+      "scene_label",
+      "scene_objective",
+      "unknowns",
+      "version"
+    ],
+    "properties": {
+      "version": {
+        "const": "director_beat_plan_ir_v1"
+      },
+      "scene_label": {
+        "type": "string"
+      },
+      "scene_objective": {
+        "type": "string"
+      },
+      "dramatic_question": {
+        "type": "string"
+      },
+      "beats": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "hook",
+            "information_change",
+            "objective",
+            "purpose",
+            "refs"
+          ],
+          "properties": {
+            "refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "objective": {
+              "type": "string"
+            },
+            "information_change": {
+              "type": "string"
+            },
+            "hook": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "passthrough_refs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "unknowns": {
+        "type": "array"
+      },
+      "confidence": {
+        "type": [
+          "number",
+          "string"
+        ]
+      },
+      "note": {
+        "type": "string"
+      }
+    }
+  },
+  "version": "director_beat_plan_ir_v1",
+  "authority": "PROVIDER_PROPOSAL",
+  "authoring_stage": "AUTHORING_STAGE_A"
+}

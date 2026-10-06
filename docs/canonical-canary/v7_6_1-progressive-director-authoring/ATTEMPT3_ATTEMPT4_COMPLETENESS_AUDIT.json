@@ -1,0 +1,58 @@
+{
+  "status": "STRUCTURALLY_PARSEABLE_BUT_SEMANTICALLY_INCOMPLETE",
+  "historical_attempts_are_forensic_only": true,
+  "attempt3": {
+    "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+    "raw_length": 4922,
+    "beat_count": 6,
+    "coverage": "12/12",
+    "incomplete_semantic_strings": [
+      {
+        "field": "beats[1].objective",
+        "value": "把场景的悬念核心——母亲留下的",
+        "non_empty": true,
+        "semantic_completeness": "INCOMPLETE_STRING_RETAINED_FOR_FORENSIC"
+      },
+      {
+        "field": "beats[3].objective",
+        "value": "把外部失窃转化为对林晚的内在指控，将悬疑从",
+        "non_empty": true,
+        "semantic_completeness": "INCOMPLETE_STRING_RETAINED_FOR_FORENSIC"
+      },
+      {
+        "field": "beats[5].performance",
+        "value": "车票从门缝滑入时两人视线同时被吸引；林晚拾起车票，借着微弱余光辨认字迹，读到",
+        "non_empty": true,
+        "semantic_completeness": "INCOMPLETE_STRING_RETAINED_FOR_FORENSIC"
+      },
+      {
+        "field": "scene_exit_intent",
+        "value": "以林晚读完车票、抬头与顾沉对视的静止瞬间收束，把",
+        "non_empty": true,
+        "semantic_completeness": "INCOMPLETE_STRING_RETAINED_FOR_FORENSIC"
+      }
+    ],
+    "status": "IR_INVALID"
+  },
+  "attempt4": {
+    "raw_response_sha256": "98ea44dd68877b14c733b4bf49fd01252cd76c8aeacbf3c3d561a481b1a3679b",
+    "raw_length": 1070,
+    "completion_tokens": 555,
+    "beat_count": 2,
+    "beat2_objective": "让",
+    "beats_note": "placeholder",
+    "missing_top_level_fields": [
+      "character_directions",
+      "performance_arc",
+      "information_strategy",
+      "rhythm_strategy",
+      "visual_priority",
+      "scene_exit_intent",
+      "prohibited_interpretations",
+      "unknowns"
+    ],
+    "status": "SCHEMA_INVALID"
+  },
+  "no_default_based_salvage": true,
+  "offline_promotion": false
+}

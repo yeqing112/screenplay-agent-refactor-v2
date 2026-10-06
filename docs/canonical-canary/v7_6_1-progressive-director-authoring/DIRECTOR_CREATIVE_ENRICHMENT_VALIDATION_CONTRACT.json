@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "required_fields": [
+    "audience_effect",
+    "beat_ref",
+    "character_effects",
+    "performance",
+    "transition"
+  ],
+  "coverage_rule": "exactly one enrichment per DBP beat_ref",
+  "stage_a_fields_immutable": [
+    "refs",
+    "purpose",
+    "objective",
+    "information_change",
+    "hook",
+    "scene_objective",
+    "dramatic_question"
+  ],
+  "direction_fields": [
+    "direction",
+    "objective",
+    "obstacle",
+    "performance_notes",
+    "strategy"
+  ],
+  "schema_report": {
+    "status": "PASS",
+    "errors": [],
+    "version": "director_creative_enrichment_ir_v1"
+  },
+  "runtime_report": {
+    "status": "qualified",
+    "errors": [],
+    "version": "director_creative_enrichment_ir_v1",
+    "stage_a_beat_count": 6,
+    "beat_enrichment_count": 6,
+    "beat_coverage": "PASS",
+    "source_mutation_count": 0
+  }
+}

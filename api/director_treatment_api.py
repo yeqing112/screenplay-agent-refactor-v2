@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import config
 from datetime import datetime
 from typing import Any
 
@@ -35,7 +36,7 @@ from core.director_treatment_authority import (
 from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
 from core.script_ir import resolve_script_payload
 import core.llm as llm_client
-from core.prompt_cache import prompt_fingerprint
+from core.prompt_cache import prompt_fingerprint, provider_request_fingerprint_v2, provider_request_payload_v2
 from core.structured_output import parse_json_object
 from core.director_proposal_ir import (
     DIRECTOR_PROPOSAL_IR_SCHEMA,
@@ -236,6 +237,63 @@ def _director_llm_profile_preflight() -> tuple[dict[str, Any], dict[str, Any]]:
     return profile, snapshot
 
 
+def _director_generation_policy(profile: dict[str, Any]) -> dict[str, Any]:
+    """Resolve the exact Director payload policy without exposing secrets."""
+
+    defaults = profile.get("default_params") if isinstance(profile.get("default_params"), dict) else {}
+    max_tokens = llm_client._normalize_max_tokens(defaults.get("max_tokens", config.LLM_MAX_TOKENS))
+    thinking = llm_client._normalize_thinking_param(defaults.get("thinking"))
+    return {
+        "max_tokens": max_tokens,
+        "temperature": 0.0,
+        "response_format": {"type": "json_object"},
+        "thinking": thinking,
+    }
+
+
+def build_source_grounded_director_provider_request(
+    treatment: dict[str, Any],
+    evidence: dict[str, Any],
+    *,
+    profile: dict[str, Any] | None = None,
+    profile_snapshot: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the complete V2 request identity shared by preflight/endpoint."""
+
+    preflight_profile = None
+    preflight_snapshot = None
+    if not isinstance(profile, dict) or not isinstance(profile_snapshot, dict):
+        preflight_profile, preflight_snapshot = _director_llm_profile_preflight()
+    resolved_profile = profile if isinstance(profile, dict) else preflight_profile
+    snapshot = profile_snapshot if isinstance(profile_snapshot, dict) else preflight_snapshot
+    system_prompt, user_prompt = _source_grounded_v3_prompt(treatment, evidence)
+    system_sha = hashlib.sha256(system_prompt.encode("utf-8")).hexdigest()
+    user_sha = hashlib.sha256(user_prompt.encode("utf-8")).hexdigest()
+    policy = _director_generation_policy(resolved_profile)
+    prompt_fp = prompt_fingerprint(system_prompt, user_prompt)
+    provider_payload = provider_request_payload_v2(
+        profile_id=snapshot.get("profile_id"), provider=snapshot.get("provider"), model=snapshot.get("model"),
+        base_host=snapshot.get("base_host"), system_prompt_sha256=system_sha, user_prompt_sha256=user_sha,
+        temperature=policy["temperature"], max_tokens=policy["max_tokens"], response_format=policy["response_format"],
+        thinking=policy["thinking"], schema_version=DIRECTOR_PROPOSAL_IR_VERSION,
+    )
+    return {
+        "system_prompt": system_prompt,
+        "user_prompt": user_prompt,
+        "profile_snapshot": dict(snapshot),
+        "generation_policy": policy,
+        "prompt_fingerprint": prompt_fp,
+        "provider_request_payload_v2": provider_payload,
+        "provider_request_fingerprint_v2": provider_request_fingerprint_v2(**provider_payload),
+        "system_prompt_sha256": system_sha,
+        "user_prompt_sha256": user_sha,
+        "source_authoring_unit_fingerprint": treatment.get("source_authoring_units_fingerprint", ""),
+        "advisory_asset_context": [],
+        "schema_version": DIRECTOR_PROPOSAL_IR_VERSION,
+        "execution_boundary_version": "director_provider_request_v2",
+    }
+
+
 def _update_director_packet_info(packet_id: int, book_id: int, patch: dict[str, Any]) -> None:
     with Session() as session:
         row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
@@ -311,10 +369,13 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
     except HTTPException as exc:
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": (exc.detail.get("code") if isinstance(exc.detail, dict) else "DIRECTOR_LLM_PROFILE_UNAVAILABLE")})
         raise
-    execution_identity = build_source_grounded_director_execution_identity(treatment, evidence)
-    system_prompt = execution_identity["system_prompt"]
-    user_prompt = execution_identity["user_prompt"]
-    request_fp = execution_identity["request_fingerprint"]
+    provider_identity = build_source_grounded_director_provider_request(
+        treatment, evidence, profile=profile, profile_snapshot=profile_snapshot,
+    )
+    system_prompt = provider_identity["system_prompt"]
+    user_prompt = provider_identity["user_prompt"]
+    request_fp = provider_identity["prompt_fingerprint"]
+    generation_policy = provider_identity["generation_policy"]
     audit_records: list[dict[str, Any]] = []
     try:
         raw = llm_client.call_llm(
@@ -322,11 +383,16 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
             system=system_prompt,
             model_profile=profile,
             retries=1,
-            estimated_tokens=5000,
-            temperature=0.0,
-            response_format={"type": "json_object"},
+            estimated_tokens=generation_policy["max_tokens"],
+            max_tokens=generation_policy["max_tokens"],
+            temperature=generation_policy["temperature"],
+            response_format=generation_policy["response_format"],
             audit_callback=lambda record: audit_records.append(dict(record)) if isinstance(record, dict) else None,
-            audit_extra={"director_execution_boundary": "v3_one_call"},
+            audit_extra={
+                "director_execution_boundary": "v3_one_call",
+                "provider_request_fingerprint_v2": provider_identity["provider_request_fingerprint_v2"],
+                "execution_boundary_version": provider_identity["execution_boundary_version"],
+            },
         )
     except httpx.ReadTimeout as exc:
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_SUBMISSION_AMBIGUOUS", "transport_retry": 0})
@@ -376,7 +442,11 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
         _set_latest_director_attempt_status(packet_id, book_id, "COMPILED_CANDIDATE_INVALID")
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_CREATIVE_PROPOSAL_INVALID", "retry": 0}) from exc
 
-    provider = {"called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"], "request_fingerprint": request_fp, "response_fingerprint": forensic["raw_response_sha256"]}
+    provider = {
+        "called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"],
+        "request_fingerprint": request_fp, "provider_request_fingerprint_v2": provider_identity["provider_request_fingerprint_v2"],
+        "response_fingerprint": forensic["raw_response_sha256"],
+    }
     provenance = proposal_provenance("PROVIDER_PROPOSAL", provider=provider)
     candidate["proposal_origin"] = "PROVIDER_PROPOSAL"
     candidate["proposal_provenance"] = provenance
@@ -386,7 +456,7 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
             raise HTTPException(status_code=409, detail="Treatment decision packet disappeared while the LLM was running.")
         info = _json_object(row.model_info, {})
         info = info if isinstance(info, dict) else {}
-        info.update({"llm_draft_in_progress": False, "proposal_provenance": provenance, "profile_preflight": profile_snapshot, "request_fingerprint": request_fp, "provider_audit": provider_record, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_SCHEMA_VALIDATE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"], "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)})
+        info.update({"llm_draft_in_progress": False, "proposal_provenance": provenance, "profile_preflight": profile_snapshot, "request_fingerprint": request_fp, "provider_request_fingerprint_v2": provider_identity["provider_request_fingerprint_v2"], "generation_policy": provider_identity["generation_policy"], "provider_audit": provider_record, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_SCHEMA_VALIDATE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"], "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)})
         row.proposal = json.dumps(candidate, ensure_ascii=False)
         row.model_info = json.dumps(info, ensure_ascii=False)
         row.status = "draft"
@@ -395,7 +465,24 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
         # The history was appended before parsing; this status records the
         # terminal proposal-only outcome without losing prior attempts.
         _set_latest_director_attempt_status(packet_id, book_id, "PROPOSAL_PERSISTED")
-        return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate, **project_legacy_flags(provenance), "deduplicated": False, "domain_write_performed": False, "provider": {**provider, "provider_request_id": provider_record.get("provider_request_id")}, "execution_manifest": {"system_prompt_sha256": execution_identity["system_prompt_sha256"], "user_prompt_sha256": execution_identity["user_prompt_sha256"], "request_fingerprint": request_fp, "packet_fingerprint": packet_fingerprint_value, "source_authoring_unit_fingerprint": execution_identity["source_authoring_unit_fingerprint"], "advisory_asset_context": execution_identity["advisory_asset_context"], "schema_version": execution_identity["schema_version"]}}
+        return {
+            "packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate,
+            **project_legacy_flags(provenance), "deduplicated": False, "domain_write_performed": False,
+            "provider": {**provider, "provider_request_id": provider_record.get("provider_request_id")},
+            "execution_manifest": {
+                "system_prompt_sha256": provider_identity["system_prompt_sha256"],
+                "user_prompt_sha256": provider_identity["user_prompt_sha256"],
+                "prompt_fingerprint": provider_identity["prompt_fingerprint"],
+                "provider_request_fingerprint_v2": provider_identity["provider_request_fingerprint_v2"],
+                "provider_request_payload_v2": provider_identity["provider_request_payload_v2"],
+                "generation_policy": provider_identity["generation_policy"],
+                "request_fingerprint": request_fp, "packet_fingerprint": packet_fingerprint_value,
+                "source_authoring_unit_fingerprint": provider_identity["source_authoring_unit_fingerprint"],
+                "advisory_asset_context": provider_identity["advisory_asset_context"],
+                "schema_version": provider_identity["schema_version"],
+                "execution_boundary_version": provider_identity["execution_boundary_version"],
+            },
+        }
 
 
 def _make_decision_packet(book_id: int, episode: int, treatment: dict[str, Any], evidence: dict[str, Any]) -> dict[str, Any]:

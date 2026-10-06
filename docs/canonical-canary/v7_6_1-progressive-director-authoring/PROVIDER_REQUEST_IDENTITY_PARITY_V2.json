@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "builder": "build_source_grounded_director_provider_request",
+  "preflight_builder": "api.build_source_grounded_director_provider_request",
+  "endpoint_builder": "api._execute_source_grounded_v3_proposal -> build_source_grounded_director_provider_request",
+  "preflight_prompt_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+  "endpoint_prompt_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+  "preflight_provider_request_fingerprint_v2": "069f3ce0c81c369bc0db6a0da0383deb0a05e2e0855a736e0845806d331ef1fb",
+  "endpoint_provider_request_fingerprint_v2": "069f3ce0c81c369bc0db6a0da0383deb0a05e2e0855a736e0845806d331ef1fb",
+  "equal": true,
+  "byte_equivalent_payload": true,
+  "provider_calls": 0
+}

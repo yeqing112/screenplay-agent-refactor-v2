@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "stage_a_fields_immutable": [
+    "scene_label",
+    "scene_objective",
+    "dramatic_question",
+    "beats.refs",
+    "beats.purpose",
+    "beats.objective",
+    "beats.information_change",
+    "beats.hook",
+    "passthrough_refs",
+    "unknowns"
+  ],
+  "stage_b_fields_allowed": [
+    "beat_enrichments.audience_effect",
+    "beat_enrichments.performance",
+    "beat_enrichments.transition",
+    "beat_enrichments.character_effects",
+    "character_directions",
+    "performance_arc",
+    "information_strategy",
+    "rhythm_strategy",
+    "visual_priority",
+    "scene_exit_intent",
+    "prohibited_interpretations"
+  ],
+  "stage_a_before_hash": "e5b57210857850b08a5093f0eb9f4f162d0e6f24a5985155bf2b4cbb48bf88f1",
+  "stage_a_after_hash": "e5b57210857850b08a5093f0eb9f4f162d0e6f24a5985155bf2b4cbb48bf88f1",
+  "equal": true,
+  "local_new_creative_decision_count": 0
+}

@@ -12,19 +12,23 @@ def append_director_attempt(
     raw_response_sha256: str,
     authorization_id: str,
     status: str = "RAW_PERSISTED",
+    authoring_stage: str | None = None,
 ) -> dict[str, Any]:
     """Return updated model info without dropping prior attempts."""
     result = copy.deepcopy(dict(info or {}))
     history = result.get("director_llm_attempts")
     history = copy.deepcopy(history) if isinstance(history, list) else []
     attempt_id = f"attempt-{len(history) + 1}"
-    history.append({
+    attempt = {
         "attempt_id": attempt_id,
         "authorization_id": str(authorization_id or ""),
         "request_fingerprint": str(request_fingerprint or ""),
         "raw_response_sha256": str(raw_response_sha256 or ""),
         "status": str(status or "RAW_PERSISTED"),
-    })
+    }
+    if authoring_stage:
+        attempt["authoring_stage"] = str(authoring_stage)
+    history.append(attempt)
     result["director_llm_attempts"] = history
     return result
 

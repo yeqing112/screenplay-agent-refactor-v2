@@ -1,0 +1,185 @@
+{
+  "status": "PASS",
+  "fixture_source": "current target SourceAuthoringUnits read-only projection",
+  "ir": {
+    "version": "director_beat_plan_ir_v1",
+    "scene_label": "暗房",
+    "scene_objective": "把物件线索推向关系不信任。",
+    "dramatic_question": "谁在操控这场相遇？",
+    "beats": [
+      {
+        "refs": [
+          "SAU_E01_SC001_001",
+          "SAU_E01_SC001_002"
+        ],
+        "purpose": "结构分组 1",
+        "objective": "推进信息阶段 1",
+        "information_change": "新增可见线索 1",
+        "hook": true
+      },
+      {
+        "refs": [
+          "SAU_E01_SC001_003",
+          "SAU_E01_SC001_004"
+        ],
+        "purpose": "结构分组 2",
+        "objective": "推进信息阶段 2",
+        "information_change": "新增可见线索 2",
+        "hook": false
+      },
+      {
+        "refs": [
+          "SAU_E01_SC001_005",
+          "SAU_E01_SC001_006"
+        ],
+        "purpose": "结构分组 3",
+        "objective": "推进信息阶段 3",
+        "information_change": "新增可见线索 3",
+        "hook": false
+      },
+      {
+        "refs": [
+          "SAU_E01_SC001_007",
+          "SAU_E01_SC001_008"
+        ],
+        "purpose": "结构分组 4",
+        "objective": "推进信息阶段 4",
+        "information_change": "新增可见线索 4",
+        "hook": false
+      },
+      {
+        "refs": [
+          "SAU_E01_SC001_009",
+          "SAU_E01_SC001_010"
+        ],
+        "purpose": "结构分组 5",
+        "objective": "推进信息阶段 5",
+        "information_change": "新增可见线索 5",
+        "hook": true
+      },
+      {
+        "refs": [
+          "SAU_E01_SC001_011",
+          "SAU_E01_SC001_012"
+        ],
+        "purpose": "结构分组 6",
+        "objective": "推进信息阶段 6",
+        "information_change": "新增可见线索 6",
+        "hook": false
+      }
+    ],
+    "passthrough_refs": [],
+    "unknowns": [
+      "门外人物身份",
+      "车票投递者身份",
+      "顾沉真实动机",
+      "林晚童年真相"
+    ],
+    "confidence": 0.8,
+    "note": "offline golden fixture"
+  },
+  "schema_validation": {
+    "status": "PASS",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "runtime_validation": {
+    "status": "qualified",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1",
+    "source_unit_count": 12,
+    "covered_source_unit_count": 12,
+    "creative_beat_count": 6,
+    "local_creative_completion_count": 0
+  },
+  "materialized_local_plan": {
+    "version": "director_beat_plan_ir_v1",
+    "scene_label": "暗房",
+    "scene_objective": "把物件线索推向关系不信任。",
+    "dramatic_question": "谁在操控这场相遇？",
+    "beats": [
+      {
+        "beat_ref": "DBP_E01_SC001_001",
+        "refs": [
+          "SAU_E01_SC001_001",
+          "SAU_E01_SC001_002"
+        ],
+        "purpose": "结构分组 1",
+        "objective": "推进信息阶段 1",
+        "information_change": "新增可见线索 1",
+        "hook": true
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_002",
+        "refs": [
+          "SAU_E01_SC001_003",
+          "SAU_E01_SC001_004"
+        ],
+        "purpose": "结构分组 2",
+        "objective": "推进信息阶段 2",
+        "information_change": "新增可见线索 2",
+        "hook": false
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_003",
+        "refs": [
+          "SAU_E01_SC001_005",
+          "SAU_E01_SC001_006"
+        ],
+        "purpose": "结构分组 3",
+        "objective": "推进信息阶段 3",
+        "information_change": "新增可见线索 3",
+        "hook": false
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_004",
+        "refs": [
+          "SAU_E01_SC001_007",
+          "SAU_E01_SC001_008"
+        ],
+        "purpose": "结构分组 4",
+        "objective": "推进信息阶段 4",
+        "information_change": "新增可见线索 4",
+        "hook": false
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_005",
+        "refs": [
+          "SAU_E01_SC001_009",
+          "SAU_E01_SC001_010"
+        ],
+        "purpose": "结构分组 5",
+        "objective": "推进信息阶段 5",
+        "information_change": "新增可见线索 5",
+        "hook": true
+      },
+      {
+        "beat_ref": "DBP_E01_SC001_006",
+        "refs": [
+          "SAU_E01_SC001_011",
+          "SAU_E01_SC001_012"
+        ],
+        "purpose": "结构分组 6",
+        "objective": "推进信息阶段 6",
+        "information_change": "新增可见线索 6",
+        "hook": false
+      }
+    ],
+    "passthrough_refs": [],
+    "unknowns": [
+      "门外人物身份",
+      "车票投递者身份",
+      "顾沉真实动机",
+      "林晚童年真相"
+    ],
+    "confidence": 0.8,
+    "note": "offline golden fixture",
+    "authoring_stage": "AUTHORING_STAGE_A",
+    "proposal_origin": "PROVIDER_PROPOSAL",
+    "authority": "PROVIDER_PROPOSAL"
+  },
+  "source_unit_count": 12,
+  "covered_source_unit_count": 12,
+  "local_creative_completion_count": 0,
+  "provider_calls": 0
+}
