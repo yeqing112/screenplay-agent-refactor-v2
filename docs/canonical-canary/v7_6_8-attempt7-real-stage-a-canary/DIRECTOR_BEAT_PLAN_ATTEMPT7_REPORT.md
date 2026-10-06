@@ -66,6 +66,8 @@ Read-only content quality audit is stored separately and did not modify or gate 
 - compileall: `PASS`
 - git diff --check: `PASS`
 - working tree: verified after evidence commit
+- Commit SHA (implementation and evidence): `387ce66` (`387ce660fa2c92c9960b8be8f78567ca45db89bd`)
+- Remote HEAD at implementation/evidence push: `387ce660fa2c92c9960b8be8f78567ca45db89bd`
 
 ## Identity
 
