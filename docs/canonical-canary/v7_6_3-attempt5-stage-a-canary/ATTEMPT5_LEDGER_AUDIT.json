@@ -1,11 +1,11 @@
 {
-  "status": "PREFLIGHT_ONLY",
+  "status": "PASS",
   "before_count": 4,
-  "after_count": 4,
+  "after_count": 5,
   "historical_attempts_immutable": true,
   "next_attempt": "attempt-5",
-  "attempt_5_append_count": 0,
-  "historical_attempts": [
+  "attempt_5_append_count": 1,
+  "attempts": [
     {
       "attempt_id": "v7_3_attempt_1",
       "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
@@ -33,6 +33,16 @@
       "request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
       "raw_response_sha256": "98ea44dd68877b14c733b4bf49fd01252cd76c8aeacbf3c3d561a481b1a3679b",
       "status": "SCHEMA_INVALID"
+    },
+    {
+      "attempt_id": "attempt-5",
+      "authorization_id": "v7.6.3-attempt5-stage-a-single-call",
+      "request_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+      "raw_response_sha256": "34bdae748ee533b123e1c436a864623797b13cbc6d4868791323b118e2208421",
+      "status": "DIRECTOR_BEAT_PLAN_ATTEMPT5_SCHEMA_INVALID",
+      "authoring_stage": "BEAT_PLAN",
+      "prompt_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+      "provider_request_fingerprint_v2": "d56b76506818878f29a2677c3652e566fe905e489a6eb6a263b578df3e1cef4e"
     }
   ]
 }

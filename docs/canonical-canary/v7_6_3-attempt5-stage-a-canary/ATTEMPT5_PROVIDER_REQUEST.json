@@ -1,5 +1,5 @@
 {
-  "status": "NOT_EXECUTED_BEFORE_CANARY",
+  "status": "EXECUTED_ONCE",
   "provider_request_payload_v2": {
     "profile_id": "local-llm-2vydoz",
     "provider": "openai-compatible",

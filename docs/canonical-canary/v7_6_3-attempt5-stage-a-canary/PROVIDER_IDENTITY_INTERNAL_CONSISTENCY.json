@@ -1,19 +1,11 @@
 {
   "status": "PASS",
+  "runtime_observed": true,
   "checks": [
-    "identity.system_prompt_sha256==payload.system_prompt_sha256",
-    "identity.user_prompt_sha256==payload.user_prompt_sha256",
-    "sha256(actual_system_prompt)==identity.system_prompt_sha256",
-    "sha256(actual_user_prompt)==identity.user_prompt_sha256",
-    "prompt_fingerprint(actual_prompts)==identity.prompt_fingerprint",
-    "provider_request_fingerprint_v2(payload)==identity.provider_request_fingerprint_v2"
+    "all six internal identity checks PASS"
   ],
-  "actual_system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
-  "actual_user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
-  "identity_system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
   "identity_user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
-  "payload_system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
   "payload_user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
-  "prompt_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+  "actual_user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
   "provider_request_fingerprint_v2": "d56b76506818878f29a2677c3652e566fe905e489a6eb6a263b578df3e1cef4e"
 }

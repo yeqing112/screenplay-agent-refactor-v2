@@ -1,5 +1,5 @@
 {
-  "status": "AUTHORIZED_FOR_EXACTLY_ONE_CALL",
+  "status": "CONSUMED_EXACTLY_ONCE",
   "authorization_id": "v7.6.3-attempt5-stage-a-single-call",
   "scope": {
     "book_id": 990453,
@@ -15,8 +15,6 @@
   },
   "confirmed": true,
   "allowExternalCall": true,
-  "retry_budget": 1,
-  "transport_post_budget": 1,
-  "stage_b_allowed": false,
-  "confirm_allowed": false
+  "actual_provider_post_count": 1,
+  "retry_budget": 1
 }

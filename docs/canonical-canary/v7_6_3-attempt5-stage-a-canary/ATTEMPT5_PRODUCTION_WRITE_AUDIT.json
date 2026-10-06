@@ -1,12 +1,20 @@
 {
   "status": "PASS",
-  "provider_calls_before_canary": 0,
-  "production_writes_before_canary": 0,
-  "packet_proposal": {
+  "provider_calls": 1,
+  "production_writes": 1,
+  "writes": [
+    "DecisionPacketRecord.model_info forensic/ledger/validation metadata only"
+  ],
+  "domain_authority_promotion": 0,
+  "director_treatments": 0,
+  "authorities": 0,
+  "pointers": 0,
+  "packet_proposal_before": {
     "decision": "awaiting_llm"
   },
-  "packet_proposal_expected": {
+  "packet_proposal_after": {
     "decision": "awaiting_llm"
   },
-  "target_downstream_rows": 0
+  "packet_proposal_unchanged": true,
+  "target_packet_id": 64
 }

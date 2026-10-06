@@ -1,7 +1,57 @@
 {
-  "status": "NOT_EXECUTED_BEFORE_CANARY",
-  "schema": null,
-  "text_completeness": null,
-  "source_coverage": null,
-  "local_creative_completion_count": null
+  "status": "DIRECTOR_BEAT_PLAN_ATTEMPT5_SCHEMA_INVALID",
+  "parse": "PASS",
+  "schema": {
+    "status": "FAIL",
+    "errors": [
+      {
+        "path": "$.beats[0].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[1].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[2].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[3].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[4].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      },
+      {
+        "path": "$.beats[5].hook",
+        "code": "SCHEMA_TYPE_INVALID",
+        "expected": "boolean"
+      }
+    ],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "text_completeness": {
+    "status": "NOT_RUN",
+    "reason": "schema gate failed closed"
+  },
+  "source_coverage": {
+    "status": "NOT_RUN",
+    "reason": "schema gate failed closed"
+  },
+  "beat_count": 6,
+  "local_creative_completion_count": 0,
+  "event_trace": [
+    "TRANSPORT",
+    "RAW_PERSIST",
+    "FINISH_REASON_GATE",
+    "PARSE",
+    "STAGE_A_SCHEMA_VALIDATE"
+  ]
 }

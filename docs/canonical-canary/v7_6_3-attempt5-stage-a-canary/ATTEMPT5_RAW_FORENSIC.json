@@ -1,6 +1,13 @@
 {
-  "status": "NOT_EXECUTED_BEFORE_CANARY",
-  "raw_response_present": false,
-  "raw_response_sha256": null,
-  "persisted_before_parse_contract": true
+  "status": "PASS",
+  "authoring_stage": "BEAT_PLAN",
+  "persisted_before_parse": true,
+  "parse_started": true,
+  "raw_response_sha256": "34bdae748ee533b123e1c436a864623797b13cbc6d4868791323b118e2208421",
+  "raw_response_length": 2079,
+  "raw_response": "{\n  \"version\": \"director_beat_plan_ir_v1\",\n  \"scene_label\": \"E01_SC001\",\n  \"scene_objective\": \"让林晚在暗房中面对母亲留下的空铁盒与海鸥别针，同时被顾沉的指控和门外神秘来客逼入无法自证的困境。\",\n  \"dramatic_question\": \"拿走胶片的人究竟是谁，而林晚是否真的来过这座暗房？\",\n  \"beats\": [\n    {\n      \"refs\": [\"SAU_E01_SC001_001\", \"SAU_E01_SC001_002\"],\n      \"purpose\": \"建立暗房这一封闭空间的压抑氛围并交代顾沉与林晚的进入关系。\",\n      \"objective\": \"让观众与林晚一同被带入红色安全灯下的暗房并感受到环境的不安。\",\n      \"information_change\": \"观众得知顾沉主动将林晚引入暗房，且暗房的水渍与灯光暗示这里隐藏着未解的过去。\",\n      \"hook\": \"红色安全灯的忽明忽暗与墙上倒置地图般的水渍让观众追问这座暗房究竟藏着什么秘密。\"\n    },\n    {\n      \"refs\": [\"SAU_E01_SC001_003\", \"SAU_E01_SC001_004\"],\n      \"purpose\": \"揭示暗房中央的铁盒及其母亲手写标签，并展示盒内仅剩的烧焦胶片与海鸥别针。\",\n      \"objective\": \"让林晚与观众聚焦于母亲留下的线索并意识到关键证据已经缺失。\",\n      \"information_change\": \"观众得知铁盒标签为第七次潮汐，而盒内只剩烧焦胶片与海鸥别针，胶片本体已不在。\",\n      \"hook\": \"母亲手写的第七次潮汐标签与空盒中的残片让观众追问胶片原本记录了什么。\"\n    },\n    {\n      \"refs\": [\"SAU_E01_SC001_005\"],\n      \"purpose\": \"呈现林晚对海鸥别针的辨认与她对自己童年记忆的怀疑。\",\n      \"objective\": \"让林晚在别针与照片小女孩的关联中陷入自我怀疑。\",\n      \"information_change\": \"观众得知林晚认出别针与照片中女孩佩戴的一模一样，却无法确认自己童年是否来过暗房。\",\n      \"hook\": \"别针与照片的重合让观众追问林晚与照片中的小女孩究竟是什么关系。\"\n    },\n    {\n      \"refs\": [\"SAU_E01_SC001_006\", \"SAU_E01_SC001_007\", \"SAU_E01_SC001_008\"],\n      \"purpose\": \"通过顾沉的陈述与林晚的追问引出顾沉对林晚的指控。\",\n      \"objective\": \"让林晚在顾沉的暗示下被迫面对自己可能是拿走胶片之人的可能。\",\n      \"information_change\": \"观众得知顾沉声称胶片被人拿走，并在林晚追问是谁时暗示拿走胶片的人也许就是林晚自己。\",\n      \"hook\": \"顾沉那句也许是你自己让观众追问林晚是否真的隐瞒了自己的过去。\"\n    },\n    {\n      \"refs\": [\"SAU_E01_SC001_009\", \"SAU_E01_SC001_010\"],\n      \"purpose\": \"以铜铃声与门缝下的湿皮鞋打断暗房内的对峙并制造外部威胁。\",\n      \"objective\": \"让顾沉与林晚在熄灯躲藏中从记忆的纠缠转入对门外来客的警觉。\",\n      \"information_change\": \"观众得知门外有人到来，顾沉熄灭安全灯并拉着林晚躲到药水柜后，门缝下出现湿透的皮鞋。\",\n      \"hook\": \"门缝下的湿皮鞋让观众追问门外之人是谁以及他为何而来。\"\n    },\n    {\n      \"refs\": [\"SAU_E01_SC001_011\", \"SAU_E01_SC001_012\"],\n      \"purpose\": \"通过门外之人塞入的车票将暗房内的秘密指向新的地点与新的指令。\",\n      \"objective\": \"让林晚与顾沉在躲藏中面对一张带有明确要求的车票。\",\n      \"information_change\": \"观众得知门外之人没有进门，只塞进一张车票，车票背面写着今晚十点北堤仓库带钥匙不要带顾沉。\",\n      \"hook\": \"车票上不要带顾沉的指令让观众追问林晚是否会独自前往北堤仓库。\"\n    }\n  ],\n  \"passthrough_refs\": [],\n  \"unknowns\": [],\n  \"confidence\": \"high\",\n  \"note\": \"本计划仅依据来源单元进行戏剧分组，未补写任何来源之外的事实。\"\n}",
+  "finish_reason": "stop",
+  "provider_request_id": "",
+  "prompt_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+  "provider_request_fingerprint_v2": "d56b76506818878f29a2677c3652e566fe905e489a6eb6a263b578df3e1cef4e"
 }
