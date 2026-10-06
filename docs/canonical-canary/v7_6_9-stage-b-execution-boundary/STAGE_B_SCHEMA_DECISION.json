@@ -1,0 +1,10 @@
+{
+  "ambiguity_blocked": false,
+  "authority": "director_creative_enrichment_ir_v1",
+  "information_strategy": "director_information_strategy_v2 object",
+  "performance_arc": "phase/state object array",
+  "prohibited_interpretations": "array<string>",
+  "rhythm_strategy": "opening/reveal/escalation/button object",
+  "status": "PASS",
+  "visual_priority": "array<string>"
+}

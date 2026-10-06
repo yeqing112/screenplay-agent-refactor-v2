@@ -1,0 +1,23 @@
+{
+  "attempt_history_count": 7,
+  "authorization": "REQUIRED_NOT_GRANTED",
+  "image_calls": 0,
+  "next_attempt": "attempt-8",
+  "provider_calls": 0,
+  "scope": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "kind": "CANONICAL_CANARY_TARGET",
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "stage_b_calls": 0,
+  "status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_AUTHORIZATION_REQUIRED",
+  "status_prefix": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8",
+  "video_calls": 0
+}

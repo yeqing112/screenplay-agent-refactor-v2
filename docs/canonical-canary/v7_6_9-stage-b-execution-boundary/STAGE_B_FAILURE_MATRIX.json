@@ -1,0 +1,33 @@
+{
+  "cases": [
+    {
+      "case": "duplicate_key",
+      "result": "blocked"
+    },
+    {
+      "case": "missing_beat_enrichment",
+      "result": "blocked"
+    },
+    {
+      "case": "unknown_beat_ref",
+      "result": "blocked"
+    },
+    {
+      "case": "invalid_participant",
+      "result": "blocked"
+    },
+    {
+      "case": "Stage A fingerprint drift",
+      "result": "blocked"
+    },
+    {
+      "case": "confirm before Stage B",
+      "result": "blocked"
+    },
+    {
+      "case": "confirm after merged proposal",
+      "result": "allowed_to_semantic_gate"
+    }
+  ],
+  "status": "PASS"
+}

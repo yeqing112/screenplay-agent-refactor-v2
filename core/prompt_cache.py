@@ -50,6 +50,7 @@ def provider_request_payload_v2(
     thinking: Any,
     schema_version: Any,
     execution_boundary_version: str = "director_provider_request_v2",
+    upstream_binding_fingerprint: str | None = None,
 ) -> dict[str, Any]:
     """Return the complete non-secret Provider request identity payload."""
 
@@ -66,7 +67,7 @@ def provider_request_payload_v2(
             return value
         return str(value)
 
-    return {
+    payload = {
         "profile_id": str(profile_id or ""),
         "provider": str(provider or ""),
         "model": str(model or ""),
@@ -80,6 +81,9 @@ def provider_request_payload_v2(
         "schema_version": str(schema_version or ""),
         "execution_boundary_version": str(execution_boundary_version or "director_provider_request_v2"),
     }
+    if upstream_binding_fingerprint:
+        payload["upstream_binding_fingerprint"] = str(upstream_binding_fingerprint)
+    return payload
 
 
 def provider_request_fingerprint_v2(**kwargs: Any) -> str:

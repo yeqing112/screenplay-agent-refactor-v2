@@ -1,0 +1,12 @@
+{
+  "existing_contracts": [
+    "core.director_progressive_authoring.DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA",
+    "core.director_information_strategy.INFORMATION_STRATEGY_SCHEMA_VERSION",
+    "core.director_treatment.director_treatment_v3"
+  ],
+  "historical_conflicts": [
+    "legacy suspicion_or_information_strategy is not Stage B authority",
+    "scene strategy shot projection is downstream and not Stage B authority"
+  ],
+  "status": "PASS"
+}

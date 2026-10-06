@@ -1,0 +1,9 @@
+{
+  "execution_boundary_version": "director_creative_enrichment_provider_request_v1",
+  "provider_calls": 0,
+  "response_format": {
+    "type": "json_object"
+  },
+  "status": "PASS",
+  "upstream_binding": "Stage A materialized_fingerprint"
+}

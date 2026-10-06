@@ -1,0 +1,13 @@
+{
+  "empty_text": "blocked",
+  "placeholder_markers": [
+    "placeholder",
+    "tbd",
+    "todo",
+    "n/a",
+    "待补",
+    "未完成"
+  ],
+  "source_mutation_count": 0,
+  "status": "PASS"
+}

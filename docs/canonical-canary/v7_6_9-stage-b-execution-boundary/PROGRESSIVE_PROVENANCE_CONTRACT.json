@@ -1,0 +1,12 @@
+{
+  "required": [
+    "stage_a_materialized_fingerprint",
+    "attempt_id",
+    "authorization_id",
+    "provider_request_fingerprint_v2",
+    "raw_response_sha256",
+    "authoring_stage"
+  ],
+  "source_fact_mutation": 0,
+  "status": "PASS"
+}

@@ -1,0 +1,256 @@
+{
+  "checks": [
+    "one enrichment per Stage A beat",
+    "4/4 coverage",
+    "duplicate beat_ref blocked",
+    "unknown beat_ref blocked",
+    "participant references fail closed",
+    "nested information/reveal/rhythm shapes validated"
+  ],
+  "schema": {
+    "additionalProperties": false,
+    "properties": {
+      "beat_enrichments": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "audience_effect": {
+              "type": "string"
+            },
+            "beat_ref": {
+              "type": "string"
+            },
+            "character_effects": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "character_ref": {
+                    "type": "string"
+                  },
+                  "effect": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "character_ref",
+                  "effect"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "performance": {
+              "type": "string"
+            },
+            "transition": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "beat_ref",
+            "audience_effect",
+            "performance",
+            "transition",
+            "character_effects"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "character_directions": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "character_ref": {
+              "type": "string"
+            },
+            "direction": {
+              "type": "string"
+            },
+            "objective": {
+              "type": "string"
+            },
+            "obstacle": {
+              "type": "string"
+            },
+            "performance_notes": {
+              "type": "string"
+            },
+            "strategy": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "character_ref",
+            "direction"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "confidence": {
+        "type": [
+          "number",
+          "string"
+        ]
+      },
+      "information_strategy": {
+        "additionalProperties": false,
+        "properties": {
+          "audience_focus": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "known_to_audience": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reaction_priority": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reveal_plan": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "audience_should_not_yet_know": {
+                  "type": "string"
+                },
+                "audience_should_notice": {
+                  "type": "string"
+                },
+                "beat_id": {
+                  "type": "string"
+                },
+                "reveals": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "withholds": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "beat_id",
+                "reveals",
+                "withholds",
+                "audience_should_notice",
+                "audience_should_not_yet_know"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "schema_version": {
+            "const": "director_information_strategy_v2"
+          },
+          "withheld_from_audience": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "schema_version",
+          "known_to_audience",
+          "withheld_from_audience",
+          "reveal_plan",
+          "reaction_priority",
+          "audience_focus"
+        ],
+        "type": "object"
+      },
+      "note": {
+        "type": "string"
+      },
+      "performance_arc": {
+        "items": {
+          "additionalProperties": false,
+          "properties": {
+            "phase": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "phase",
+            "state"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "prohibited_interpretations": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "rhythm_strategy": {
+        "additionalProperties": false,
+        "properties": {
+          "button": {
+            "type": "string"
+          },
+          "escalation": {
+            "type": "string"
+          },
+          "opening": {
+            "type": "string"
+          },
+          "reveal": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "opening",
+          "reveal",
+          "escalation",
+          "button"
+        ],
+        "type": "object"
+      },
+      "scene_exit_intent": {
+        "type": "string"
+      },
+      "version": {
+        "const": "director_creative_enrichment_ir_v1"
+      },
+      "visual_priority": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "beat_enrichments",
+      "character_directions",
+      "confidence",
+      "information_strategy",
+      "note",
+      "performance_arc",
+      "prohibited_interpretations",
+      "rhythm_strategy",
+      "scene_exit_intent",
+      "version",
+      "visual_priority"
+    ],
+    "type": "object"
+  },
+  "status": "PASS"
+}

@@ -56,6 +56,13 @@ from core.director_progressive_authoring import (
     validate_director_beat_plan_text_completeness,
     materialize_director_beat_plan_ids,
     validate_stage_a_prompt_schema_key_parity,
+    build_director_creative_enrichment_prompt,
+    validate_stage_b_prompt_schema_key_parity,
+    validate_director_creative_enrichment_ir_schema,
+    validate_director_creative_enrichment_ir,
+    validate_director_creative_enrichment_text_completeness,
+    parse_director_creative_enrichment_ir,
+    is_progressive_stage_validated,
 )
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
@@ -82,6 +89,16 @@ class DirectorTreatmentLlmDraftRequest(DirectorTreatmentPreviewRequest):
 
 
 class DirectorBeatPlanLlmDraftRequest(BaseModel):
+    episode: int | None = Field(default=None, ge=1)
+    scene_id: str = Field(default="", validation_alias=AliasChoices("scene_id", "sceneId"))
+    workflow_profile: str = Field(default="production", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
+    packet_fingerprint: str = Field(default="", validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
+    confirmed: bool = False
+    allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
+    authorization_id: str = Field(default="", validation_alias=AliasChoices("authorization_id", "authorizationId"))
+
+
+class DirectorCreativeEnrichmentLlmDraftRequest(BaseModel):
     episode: int | None = Field(default=None, ge=1)
     scene_id: str = Field(default="", validation_alias=AliasChoices("scene_id", "sceneId"))
     workflow_profile: str = Field(default="production", validation_alias=AliasChoices("workflow_profile", "workflowProfile"))
@@ -390,6 +407,79 @@ def validate_director_beat_plan_provider_identity(identity: dict[str, Any]) -> d
     for name, actual, expected in checks:
         if actual != expected:
             errors.append({"code": "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", "check": name, "actual": actual, "expected": expected})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors}
+
+
+def build_director_creative_enrichment_provider_request(
+    *, scene_id: str, materialized_beat_plan: dict[str, Any], stage_a_materialized_fingerprint: str,
+    declared_participants: list[Any] | None = None, profile: dict[str, Any] | None = None,
+    profile_snapshot: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the provider identity for Stage B without executing it.
+
+    The upstream Stage A materialized fingerprint is part of the request
+    identity.  This prevents a Stage B response from being reused after the
+    validated beat plan changes.
+    """
+    if not isinstance(materialized_beat_plan, dict) or not str(stage_a_materialized_fingerprint or "").strip():
+        raise ValueError({"code": "DIRECTOR_STAGE_A_BINDING_REQUIRED"})
+    preflight_profile = None
+    preflight_snapshot = None
+    if not isinstance(profile, dict) or not isinstance(profile_snapshot, dict):
+        preflight_profile, preflight_snapshot = _director_llm_profile_preflight()
+    resolved_profile = profile if isinstance(profile, dict) else preflight_profile
+    snapshot = profile_snapshot if isinstance(profile_snapshot, dict) else preflight_snapshot
+    system_prompt, user_prompt = build_director_creative_enrichment_prompt(
+        scene_id=scene_id, beat_plan=materialized_beat_plan, declared_participants=declared_participants or [],
+    )
+    parity = validate_stage_b_prompt_schema_key_parity(user_prompt)
+    if parity.get("status") != "PASS":
+        raise ValueError({"code": "STAGE_B_PROMPT_SCHEMA_KEY_PARITY", "report": parity})
+    system_sha = hashlib.sha256(system_prompt.encode("utf-8")).hexdigest()
+    user_sha = hashlib.sha256(user_prompt.encode("utf-8")).hexdigest()
+    policy = _director_generation_policy(resolved_profile)
+    payload = provider_request_payload_v2(
+        profile_id=snapshot.get("profile_id"), provider=snapshot.get("provider"), model=snapshot.get("model"),
+        base_host=snapshot.get("base_host"), system_prompt_sha256=system_sha, user_prompt_sha256=user_sha,
+        temperature=policy["temperature"], max_tokens=policy["max_tokens"], response_format=policy["response_format"],
+        thinking=policy["thinking"], schema_version="director_creative_enrichment_ir_v1",
+        execution_boundary_version="director_creative_enrichment_provider_request_v1",
+        upstream_binding_fingerprint=stage_a_materialized_fingerprint,
+    )
+    identity = {
+        "system_prompt": system_prompt, "user_prompt": user_prompt,
+        "system_prompt_sha256": system_sha, "user_prompt_sha256": user_sha,
+        "prompt_fingerprint": prompt_fingerprint(system_prompt, user_prompt),
+        "profile_snapshot": dict(snapshot), "generation_policy": policy,
+        "provider_request_payload_v2": payload, "provider_request_fingerprint_v2": provider_request_fingerprint_v2(**payload),
+        "schema_version": "director_creative_enrichment_ir_v1", "authoring_stage": "CREATIVE_ENRICHMENT",
+        "upstream_binding_fingerprint": str(stage_a_materialized_fingerprint),
+        "execution_boundary_version": "director_creative_enrichment_provider_request_v1",
+    }
+    consistency = validate_director_creative_enrichment_provider_identity(identity)
+    if consistency.get("status") != "PASS":
+        raise ValueError({"code": "DIRECTOR_CREATIVE_ENRICHMENT_PROVIDER_IDENTITY_INCONSISTENT", "report": consistency})
+    identity["provider_identity_internal_consistency"] = consistency
+    return identity
+
+
+def validate_director_creative_enrichment_provider_identity(identity: dict[str, Any]) -> dict[str, Any]:
+    errors: list[dict[str, Any]] = []
+    if not isinstance(identity, dict):
+        return {"status": "FAIL", "errors": [{"code": "IDENTITY_NOT_OBJECT"}]}
+    payload = identity.get("provider_request_payload_v2") if isinstance(identity.get("provider_request_payload_v2"), dict) else {}
+    system = str(identity.get("system_prompt") or "")
+    user = str(identity.get("user_prompt") or "")
+    checks = [
+        ("system_prompt_sha256", hashlib.sha256(system.encode("utf-8")).hexdigest(), identity.get("system_prompt_sha256")),
+        ("user_prompt_sha256", hashlib.sha256(user.encode("utf-8")).hexdigest(), identity.get("user_prompt_sha256")),
+        ("prompt_fingerprint", prompt_fingerprint(system, user), identity.get("prompt_fingerprint")),
+        ("provider_request_fingerprint_v2", provider_request_fingerprint_v2(**payload), identity.get("provider_request_fingerprint_v2")),
+        ("upstream_binding_fingerprint", payload.get("upstream_binding_fingerprint"), identity.get("upstream_binding_fingerprint")),
+    ]
+    for name, actual, expected in checks:
+        if actual != expected:
+            errors.append({"code": "DIRECTOR_CREATIVE_ENRICHMENT_PROVIDER_IDENTITY_INCONSISTENT", "check": name, "actual": actual, "expected": expected})
     return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
@@ -1203,6 +1293,45 @@ def generate_director_beat_plan_llm_draft(book_id: int, episode: int, req: Direc
     return _execute_source_grounded_beat_plan(book_id=book_id, packet_id=packet_id, packet_fingerprint_value=packet["packet_fingerprint"], treatment=treatment, evidence=evidence, scene_id=req.scene_id, authorization_id=req.authorization_id)
 
 
+@router.post("/{book_id}/episodes/{episode}/director-treatment/creative-enrichment/llm-draft")
+def generate_director_creative_enrichment_llm_draft(book_id: int, episode: int, req: DirectorCreativeEnrichmentLlmDraftRequest) -> dict[str, Any]:
+    """Stage B boundary preflight.
+
+    This phase deliberately stops before transport.  It proves that the
+    frozen Stage A materialization, prompt identity, and confirmation gate are
+    ready for a future authorized Attempt 8.
+    """
+    if req.episode is not None and req.episode != episode:
+        raise HTTPException(status_code=400, detail="Episode in path and body must match.")
+    if not str(req.scene_id or "").strip():
+        raise HTTPException(status_code=409, detail={"code": "SCENE_ID_REQUIRED"})
+    if str(req.workflow_profile or "production").strip().lower() != "production":
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_PRODUCTION_ONLY"})
+    preview_req = DirectorTreatmentPreviewRequest(episode=episode, scene_id=req.scene_id, workflow_profile="production")
+    treatment, evidence, _ = _build_preview(book_id, preview_req)
+    packet = _make_decision_packet(book_id, episode, treatment, evidence)
+    if req.packet_fingerprint and req.packet_fingerprint != packet["packet_fingerprint"]:
+        raise HTTPException(status_code=409, detail="Treatment evidence changed; reload the preview before calling Stage B.")
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=packet["packet_fingerprint"]).first()
+        info = _json_object(row.model_info, {}) if row else {}
+    progressive = info.get("progressive_director_authoring") if isinstance(info, dict) else {}
+    stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
+    if not is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN"):
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_VALIDATION_REQUIRED"})
+    materialized = stage_a.get("materialized_beat_plan") if isinstance(stage_a, dict) else None
+    materialized_fp = str(stage_a.get("materialized_fingerprint") or "") if isinstance(stage_a, dict) else ""
+    constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
+    identity = build_director_creative_enrichment_provider_request(
+        scene_id=req.scene_id, materialized_beat_plan=materialized if isinstance(materialized, dict) else {},
+        stage_a_materialized_fingerprint=materialized_fp,
+        declared_participants=constraints.get("declared_participants") if isinstance(constraints.get("declared_participants"), list) else [],
+    )
+    if not (req.confirmed and req.allow_external_call and str(req.authorization_id or "").strip()):
+        return {"status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_AUTHORIZATION_REQUIRED", "provider": {"called": False, "calls": 0}, "execution_manifest": identity}
+    raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_EXECUTION_DEFERRED", "message": "Stage B transport is intentionally disabled in this boundary phase."})
+
+
 @router.post("/{book_id}/episodes/{episode}/director-treatment/llm-draft")
 def generate_director_treatment_llm_draft(book_id: int, episode: int, req: DirectorTreatmentLlmDraftRequest) -> dict[str, Any]:
     """Generate a reviewable Treatment candidate after explicit confirmation.
@@ -1396,8 +1525,10 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         info = _json_object(packet.model_info, {})
         if not isinstance(info, dict):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_REQUIRED", "message": "Production confirmation requires proposal provenance."})
-        stage_a = info.get("progressive_director_authoring", {}).get("stage_a") if isinstance(info.get("progressive_director_authoring"), dict) else None
-        if isinstance(stage_a, dict) and stage_a.get("status") == "VALIDATED" and _json_object(packet.proposal, {}).get("decision") == "awaiting_llm":
+        progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
+        stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
+        stage_b = progressive.get("stage_b") if isinstance(progressive, dict) else None
+        if is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") and not is_progressive_stage_validated(stage_b, authoring_stage="CREATIVE_ENRICHMENT"):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REQUIRED", "message": "Stage A BeatPlan is not confirmable until Stage B creative enrichment is complete."})
         scope = _json_object(packet.scope, {})
         scene_name = str(scope.get("scene_name") or "").strip() if isinstance(scope, dict) else ""
@@ -1489,6 +1620,11 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         info = _json_object(packet.model_info, {})
         if not isinstance(info, dict):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_REQUIRED", "message": "Production confirmation requires proposal provenance."})
+        progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
+        stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
+        stage_b = progressive.get("stage_b") if isinstance(progressive, dict) else None
+        if is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") and not is_progressive_stage_validated(stage_b, authoring_stage="CREATIVE_ENRICHMENT"):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REQUIRED", "message": "Stage A BeatPlan is not confirmable until Stage B creative enrichment is complete."})
         scope = _json_object(packet.scope, {})
         scene_id = str(scope.get("scene_id") or "").strip() if isinstance(scope, dict) else ""
         scene_name = str(scope.get("scene_name") or "").strip() if isinstance(scope, dict) else ""

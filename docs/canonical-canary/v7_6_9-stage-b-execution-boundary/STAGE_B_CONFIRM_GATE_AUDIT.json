@@ -1,0 +1,6 @@
+{
+  "authority_write_before_stage_b": false,
+  "stage_a_only": "DIRECTOR_CREATIVE_ENRICHMENT_REQUIRED",
+  "stage_b_validated_and_merged": "confirmation path may continue to semantic validation",
+  "status": "PASS"
+}

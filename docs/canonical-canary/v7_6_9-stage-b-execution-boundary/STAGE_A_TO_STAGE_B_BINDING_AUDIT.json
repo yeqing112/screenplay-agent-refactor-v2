@@ -1,0 +1,8 @@
+{
+  "binding_required": true,
+  "stage_a_attempt_id": "attempt-7",
+  "stage_a_ir_mutation": 0,
+  "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "stage_a_status": "DIRECTOR_BEAT_PLAN_ATTEMPT7_VALIDATED",
+  "status": "PASS"
+}

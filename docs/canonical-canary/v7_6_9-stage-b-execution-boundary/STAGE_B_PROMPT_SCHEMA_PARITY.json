@@ -1,0 +1,6 @@
+{
+  "builder": "build_director_creative_enrichment_prompt",
+  "canonical_keys_derived": true,
+  "schema_version": "director_creative_enrichment_ir_v1",
+  "status": "PASS"
+}

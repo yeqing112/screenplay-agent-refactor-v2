@@ -1,0 +1,13 @@
+{
+  "attempt_8": {
+    "attempt_id": "attempt-8",
+    "status_prefix": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8"
+  },
+  "attempt_9": {
+    "attempt_id": "attempt-9",
+    "status_prefix": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9"
+  },
+  "global_attempt_ids_append_only": true,
+  "history_count": 7,
+  "status": "PASS"
+}

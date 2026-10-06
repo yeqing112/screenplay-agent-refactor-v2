@@ -1,0 +1,82 @@
+{
+  "beat_enrichment_keys": [
+    "beat_ref",
+    "audience_effect",
+    "performance",
+    "transition",
+    "character_effects"
+  ],
+  "canonical_key_rules": {
+    "additional_properties": false,
+    "ascii_identifiers_only": true,
+    "byte_for_byte": true
+  },
+  "character_direction_keys": [
+    "character_ref",
+    "direction",
+    "objective",
+    "obstacle",
+    "strategy",
+    "performance_notes"
+  ],
+  "character_effect_keys": [
+    "character_ref",
+    "effect"
+  ],
+  "information_reveal_keys": [
+    "beat_id",
+    "reveals",
+    "withholds",
+    "audience_should_notice",
+    "audience_should_not_yet_know"
+  ],
+  "information_strategy_keys": [
+    "schema_version",
+    "known_to_audience",
+    "withheld_from_audience",
+    "reveal_plan",
+    "reaction_priority",
+    "audience_focus"
+  ],
+  "rhythm_strategy_keys": [
+    "opening",
+    "reveal",
+    "escalation",
+    "button"
+  ],
+  "shape_decisions": {
+    "information_strategy": "director_information_strategy_v2 object",
+    "performance_arc": "array<{phase:string,state:string}>",
+    "prohibited_interpretations": "array<string>",
+    "rhythm_strategy": "object<opening,reveal,escalation,button>",
+    "visual_priority": "array<string>"
+  },
+  "top_level_additional_properties": false,
+  "top_level_keys": [
+    "version",
+    "beat_enrichments",
+    "character_directions",
+    "performance_arc",
+    "information_strategy",
+    "rhythm_strategy",
+    "visual_priority",
+    "scene_exit_intent",
+    "prohibited_interpretations",
+    "confidence",
+    "note"
+  ],
+  "top_level_required": [
+    "beat_enrichments",
+    "character_directions",
+    "confidence",
+    "information_strategy",
+    "note",
+    "performance_arc",
+    "prohibited_interpretations",
+    "rhythm_strategy",
+    "scene_exit_intent",
+    "version",
+    "visual_priority"
+  ],
+  "version": "director_creative_enrichment_ir_v1"
+}

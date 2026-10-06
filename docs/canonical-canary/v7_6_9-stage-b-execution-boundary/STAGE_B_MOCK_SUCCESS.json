@@ -1,0 +1,18 @@
+{
+  "beat_coverage": "4/4",
+  "event_trace": [
+    "FROZEN_STAGE_A",
+    "PARSE",
+    "SCHEMA_VALIDATE",
+    "TEXT_COMPLETENESS",
+    "RUNTIME_VALIDATE",
+    "STAGE_A_BINDING",
+    "DETERMINISTIC_MERGE",
+    "COMPILED_V3_VALIDATE"
+  ],
+  "local_creative_completion_count": 0,
+  "production_writes": 0,
+  "proposal_status": "PROPOSED",
+  "provider_calls": 0,
+  "status": "PASS"
+}

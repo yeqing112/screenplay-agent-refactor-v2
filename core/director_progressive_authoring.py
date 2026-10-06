@@ -8,6 +8,7 @@ merges proposals, but never invents missing creative text.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import re
 from typing import Any, Mapping
@@ -38,14 +39,24 @@ CANONICAL_TOP_LEVEL_KEYS = (
 CANONICAL_BEAT_KEYS = ("refs", "purpose", "objective", "information_change", "hook")
 STAGE_A_BEAT_FIELDS = set(CANONICAL_BEAT_KEYS)
 STAGE_A_TOP_LEVEL_FIELDS = set(CANONICAL_TOP_LEVEL_KEYS)
-STAGE_B_ENRICHMENT_FIELDS = {"beat_ref", "audience_effect", "performance", "transition", "character_effects"}
-STAGE_B_TOP_LEVEL_FIELDS = {
+STAGE_B_TOP_LEVEL_KEYS = (
     "version", "beat_enrichments", "character_directions", "performance_arc",
     "information_strategy", "rhythm_strategy", "visual_priority",
     "scene_exit_intent", "prohibited_interpretations", "confidence", "note",
-}
-CHARACTER_DIRECTION_FIELDS = {"character_ref", "direction", "objective", "obstacle", "strategy", "performance_notes"}
-CHARACTER_EFFECT_FIELDS = {"character_ref", "effect"}
+)
+STAGE_B_ENRICHMENT_KEYS = ("beat_ref", "audience_effect", "performance", "transition", "character_effects")
+CHARACTER_DIRECTION_KEYS = ("character_ref", "direction", "objective", "obstacle", "strategy", "performance_notes")
+CHARACTER_EFFECT_KEYS = ("character_ref", "effect")
+STAGE_B_TOP_LEVEL_FIELDS = set(STAGE_B_TOP_LEVEL_KEYS)
+STAGE_B_ENRICHMENT_FIELDS = set(STAGE_B_ENRICHMENT_KEYS)
+CHARACTER_DIRECTION_FIELDS = set(CHARACTER_DIRECTION_KEYS)
+CHARACTER_EFFECT_FIELDS = set(CHARACTER_EFFECT_KEYS)
+INFORMATION_STRATEGY_KEYS = (
+    "schema_version", "known_to_audience", "withheld_from_audience", "reveal_plan",
+    "reaction_priority", "audience_focus",
+)
+INFORMATION_REVEAL_KEYS = ("beat_id", "reveals", "withholds", "audience_should_notice", "audience_should_not_yet_know")
+RHYTHM_STRATEGY_KEYS = ("opening", "reveal", "escalation", "button")
 
 
 DIRECTOR_BEAT_PLAN_IR_SCHEMA: dict[str, Any] = {
@@ -84,22 +95,55 @@ DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA: dict[str, Any] = {
         "version": {"const": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION},
         "beat_enrichments": {"type": "array", "items": {
             "type": "object", "additionalProperties": False,
-            "required": sorted(STAGE_B_ENRICHMENT_FIELDS),
+            "required": list(STAGE_B_ENRICHMENT_KEYS),
             "properties": {
                 "beat_ref": {"type": "string"},
                 "audience_effect": {"type": "string"},
                 "performance": {"type": "string"},
                 "transition": {"type": "string"},
-                "character_effects": {"type": "array"},
+                "character_effects": {"type": "array", "items": {
+                    "type": "object", "additionalProperties": False,
+                    "required": list(CHARACTER_EFFECT_KEYS),
+                    "properties": {"character_ref": {"type": "string"}, "effect": {"type": "string"}},
+                }},
             },
         }},
-        "character_directions": {"type": "array"},
-        "performance_arc": {"type": "array"},
-        "information_strategy": {"type": "array"},
-        "rhythm_strategy": {"type": "object"},
-        "visual_priority": {"type": "array"},
+        "character_directions": {"type": "array", "items": {
+            "type": "object", "additionalProperties": False,
+            "required": ["character_ref", "direction"],
+            "properties": {key: {"type": "string"} for key in CHARACTER_DIRECTION_KEYS},
+        }},
+        "performance_arc": {"type": "array", "items": {
+            "type": "object", "additionalProperties": False,
+            "required": ["phase", "state"],
+            "properties": {"phase": {"type": "string"}, "state": {"type": "string"}},
+        }},
+        "information_strategy": {"type": "object", "additionalProperties": False,
+            "required": list(INFORMATION_STRATEGY_KEYS),
+            "properties": {
+                "schema_version": {"const": "director_information_strategy_v2"},
+                "known_to_audience": {"type": "array", "items": {"type": "string"}},
+                "withheld_from_audience": {"type": "array", "items": {"type": "string"}},
+                "reveal_plan": {"type": "array", "items": {
+                    "type": "object", "additionalProperties": False,
+                    "required": list(INFORMATION_REVEAL_KEYS),
+                    "properties": {
+                        "beat_id": {"type": "string"}, "reveals": {"type": "array", "items": {"type": "string"}},
+                        "withholds": {"type": "array", "items": {"type": "string"}},
+                        "audience_should_notice": {"type": "string"}, "audience_should_not_yet_know": {"type": "string"},
+                    },
+                }},
+                "reaction_priority": {"type": "array", "items": {"type": "string"}},
+                "audience_focus": {"type": "array", "items": {"type": "string"}},
+            },
+        },
+        "rhythm_strategy": {"type": "object", "additionalProperties": False,
+            "required": list(RHYTHM_STRATEGY_KEYS),
+            "properties": {key: {"type": "string"} for key in RHYTHM_STRATEGY_KEYS},
+        },
+        "visual_priority": {"type": "array", "items": {"type": "string"}},
         "scene_exit_intent": {"type": "string"},
-        "prohibited_interpretations": {"type": "array"},
+        "prohibited_interpretations": {"type": "array", "items": {"type": "string"}},
         "confidence": {"type": ["number", "string"]},
         "note": {"type": "string"},
     },
@@ -202,9 +246,11 @@ def _stage_a_shape_example() -> dict[str, Any]:
 class DuplicateJSONKeyError(ValueError):
     """Raised when a JSON object repeats an exact property name."""
 
-    def __init__(self, key: str):
+    def __init__(self, key: str, stage: str = "BEAT_PLAN"):
         self.key = key
-        super().__init__(f"DIRECTOR_BEAT_PLAN_DUPLICATE_JSON_KEY:{key}")
+        self.stage = stage
+        prefix = "DIRECTOR_CREATIVE_ENRICHMENT" if stage == "CREATIVE_ENRICHMENT" else "DIRECTOR_BEAT_PLAN"
+        super().__init__(f"{prefix}_DUPLICATE_JSON_KEY:{key}")
 
 
 def _reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -212,6 +258,15 @@ def _reject_duplicate_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     for key, value in pairs:
         if key in result:
             raise DuplicateJSONKeyError(str(key))
+        result[key] = value
+    return result
+
+
+def _reject_duplicate_stage_b_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DuplicateJSONKeyError(str(key), "CREATIVE_ENRICHMENT")
         result[key] = value
     return result
 
@@ -304,6 +359,100 @@ def validate_director_creative_enrichment_ir_schema(value: Any) -> dict[str, Any
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "version": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION}
 
 
+def render_stage_b_schema_contract() -> dict[str, Any]:
+    top = DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA
+    return {
+        "version": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION,
+        "top_level_keys": list(STAGE_B_TOP_LEVEL_KEYS),
+        "top_level_required": list(top["required"]),
+        "top_level_additional_properties": top.get("additionalProperties") is True,
+        "beat_enrichment_keys": list(STAGE_B_ENRICHMENT_KEYS),
+        "character_direction_keys": list(CHARACTER_DIRECTION_KEYS),
+        "character_effect_keys": list(CHARACTER_EFFECT_KEYS),
+        "information_strategy_keys": list(INFORMATION_STRATEGY_KEYS),
+        "information_reveal_keys": list(INFORMATION_REVEAL_KEYS),
+        "rhythm_strategy_keys": list(RHYTHM_STRATEGY_KEYS),
+        "canonical_key_rules": {"byte_for_byte": True, "ascii_identifiers_only": True, "additional_properties": False},
+        "shape_decisions": {
+            "information_strategy": "director_information_strategy_v2 object",
+            "performance_arc": "array<{phase:string,state:string}>",
+            "rhythm_strategy": "object<opening,reveal,escalation,button>",
+            "visual_priority": "array<string>",
+            "prohibited_interpretations": "array<string>",
+        },
+    }
+
+
+def validate_stage_b_prompt_schema_key_parity(user_prompt: str) -> dict[str, Any]:
+    contract = render_stage_b_schema_contract()
+    errors: list[dict[str, Any]] = []
+    found: dict[str, Any] = {}
+    markers = {
+        "CANONICAL_STAGE_B_TOP_LEVEL_KEYS=": contract["top_level_keys"],
+        "CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS=": contract["beat_enrichment_keys"],
+        "CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS=": contract["character_direction_keys"],
+        "CANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS=": contract["character_effect_keys"],
+    }
+    for marker, expected in markers.items():
+        line = next((item for item in str(user_prompt or "").splitlines() if item.startswith(marker)), "")
+        if not line:
+            errors.append({"code": "PROMPT_CANONICAL_KEY_BLOCK_MISSING", "marker": marker})
+            continue
+        try:
+            actual = json.loads(line[len(marker):])
+        except (TypeError, ValueError, json.JSONDecodeError):
+            actual = None
+        found[marker.rstrip("=")] = actual
+        if actual != expected:
+            errors.append({"code": "STAGE_B_PROMPT_SCHEMA_KEY_PARITY", "marker": marker, "expected": expected, "actual": actual})
+    for phrase in ("byte-for-byte", "do not translate", "Chinese only in values", "never in keys", "Stage A is immutable"):
+        if phrase not in str(user_prompt or ""):
+            errors.append({"code": "PROMPT_CANONICAL_KEY_RULE_MISSING", "phrase": phrase})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors, "prompt": found, "schema": contract}
+
+
+def parse_director_creative_enrichment_ir(raw: str) -> dict[str, Any]:
+    text = str(raw or "").strip()
+    if not text:
+        raise ValueError("Director CreativeEnrichment IR is empty")
+    try:
+        payload = json.loads(text, object_pairs_hook=_reject_duplicate_stage_b_pairs)
+    except DuplicateJSONKeyError:
+        raise
+    except (TypeError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Failed to parse Director CreativeEnrichment IR: {exc}") from exc
+    if not isinstance(payload, dict) or payload.get("version") != DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION:
+        raise ValueError("Director CreativeEnrichment IR has an invalid version")
+    return payload
+
+
+def validate_director_creative_enrichment_text_completeness(value: Any) -> dict[str, Any]:
+    errors: list[dict[str, Any]] = []
+    if not isinstance(value, Mapping):
+        return {"status": "FAIL", "errors": [{"code": "DIRECTOR_CREATIVE_ENRICHMENT_TEXT_INCOMPLETE", "path": "$"}]}
+    text_paths: list[tuple[str, Any]] = [("scene_exit_intent", value.get("scene_exit_intent")), ("note", value.get("note"))]
+    for idx, item in enumerate(value.get("beat_enrichments", []) if isinstance(value.get("beat_enrichments"), list) else []):
+        if isinstance(item, Mapping):
+            for field in ("audience_effect", "performance", "transition"):
+                text_paths.append((f"beat_enrichments[{idx}].{field}", item.get(field)))
+            for j, effect in enumerate(item.get("character_effects", []) if isinstance(item.get("character_effects"), list) else []):
+                if isinstance(effect, Mapping): text_paths.append((f"beat_enrichments[{idx}].character_effects[{j}].effect", effect.get("effect")))
+    for section in ("character_directions", "performance_arc"):
+        for idx, item in enumerate(value.get(section, []) if isinstance(value.get(section), list) else []):
+            if isinstance(item, Mapping):
+                for key, raw in item.items():
+                    if key not in {"character_ref", "phase"}: text_paths.append((f"{section}[{idx}].{key}", raw))
+    rhythm = value.get("rhythm_strategy")
+    if isinstance(rhythm, Mapping):
+        text_paths.extend((f"rhythm_strategy.{key}", rhythm.get(key)) for key in RHYTHM_STRATEGY_KEYS)
+    for path, raw in text_paths:
+        text = _text(raw)
+        lower = text.lower()
+        if not text or any(marker in lower for marker in _INCOMPLETE_TEXT_MARKERS):
+            errors.append({"code": "DIRECTOR_CREATIVE_ENRICHMENT_TEXT_INCOMPLETE", "path": path})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors}
+
+
 def _source_unit_map(source_units: list[Mapping[str, Any]]) -> dict[str, Mapping[str, Any]]:
     return {_text(item.get("unit_id")): item for item in source_units if _text(item.get("unit_id"))}
 
@@ -366,6 +515,8 @@ def materialize_director_beat_plan_ids(value: Mapping[str, Any], *, scene_id: st
 def validate_director_creative_enrichment_ir(value: Any, *, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None) -> dict[str, Any]:
     schema = validate_director_creative_enrichment_ir_schema(value)
     errors = list(schema["errors"])
+    text_report = validate_director_creative_enrichment_text_completeness(value)
+    errors.extend(text_report.get("errors", []))
     beat_ids = [_text(item.get("beat_ref")) for item in beat_plan.get("beats", []) if isinstance(item, Mapping)]
     beat_set = set(beat_ids)
     seen: list[str] = []
@@ -376,6 +527,26 @@ def validate_director_creative_enrichment_ir(value: Any, *, beat_plan: Mapping[s
         elif _text(item):
             participants.add(_text(item))
     if isinstance(value, Mapping):
+        if not isinstance(value.get("information_strategy"), Mapping):
+            errors.append({"code": "DIRECTOR_ENRICHMENT_INFORMATION_STRATEGY_INVALID"})
+        else:
+            info = value["information_strategy"]
+            reveal_plan = info.get("reveal_plan") if isinstance(info.get("reveal_plan"), list) else []
+            reveal_ids: list[str] = []
+            for item in reveal_plan:
+                if isinstance(item, Mapping):
+                    reveal_ids.append(_text(item.get("beat_id")))
+                    if _text(item.get("beat_id")) not in beat_set:
+                        errors.append({"code": "DIRECTOR_ENRICHMENT_INFORMATION_BEAT_REF_UNKNOWN", "beat_id": _text(item.get("beat_id"))})
+            if len(reveal_ids) != len(set(reveal_ids)):
+                errors.append({"code": "DIRECTOR_ENRICHMENT_INFORMATION_BEAT_REF_DUPLICATE"})
+        if not isinstance(value.get("performance_arc"), list) or not all(isinstance(item, Mapping) for item in value.get("performance_arc", [])):
+            errors.append({"code": "DIRECTOR_ENRICHMENT_PERFORMANCE_ARC_INVALID"})
+        if not isinstance(value.get("rhythm_strategy"), Mapping):
+            errors.append({"code": "DIRECTOR_ENRICHMENT_RHYTHM_STRATEGY_INVALID"})
+        for list_field in ("visual_priority", "prohibited_interpretations"):
+            if not isinstance(value.get(list_field), list) or not all(isinstance(item, str) and _text(item) for item in value.get(list_field, [])):
+                errors.append({"code": "DIRECTOR_ENRICHMENT_TEXT_LIST_INVALID", "field": list_field})
         for enrichment in value.get("beat_enrichments", []) if isinstance(value.get("beat_enrichments"), list) else []:
             if not isinstance(enrichment, Mapping):
                 continue
@@ -384,7 +555,7 @@ def validate_director_creative_enrichment_ir(value: Any, *, beat_plan: Mapping[s
                 errors.append({"code": "DIRECTOR_ENRICHMENT_BEAT_REF_UNKNOWN", "beat_ref": ref})
             effects = enrichment.get("character_effects") if isinstance(enrichment.get("character_effects"), list) else []
             for effect in effects:
-                if not isinstance(effect, Mapping) or set(effect) != CHARACTER_EFFECT_FIELDS or not _text(effect.get("character_ref")) or not isinstance(effect.get("effect"), str):
+                if not isinstance(effect, Mapping) or set(effect) != CHARACTER_EFFECT_FIELDS or not _text(effect.get("character_ref")) or not isinstance(effect.get("effect"), str) or not _text(effect.get("effect")):
                     errors.append({"code": "DIRECTOR_ENRICHMENT_CHARACTER_EFFECT_INVALID", "beat_ref": ref})
                 elif participants and _text(effect.get("character_ref")) not in participants:
                     errors.append({"code": "DIRECTOR_ENRICHMENT_PARTICIPANT_INVALID", "participant_ref": _text(effect.get("character_ref"))})
@@ -415,14 +586,20 @@ def validate_director_creative_enrichment_ir(value: Any, *, beat_plan: Mapping[s
     }
 
 
-def compile_progressive_director_proposal(*, beat_plan_ir: Mapping[str, Any], enrichment_ir: Mapping[str, Any], baseline_treatment: Mapping[str, Any], source_scene: Mapping[str, Any]) -> dict[str, Any]:
+def compile_progressive_director_proposal(*, beat_plan_ir: Mapping[str, Any], enrichment_ir: Mapping[str, Any], baseline_treatment: Mapping[str, Any], source_scene: Mapping[str, Any], materialized_beat_plan: Mapping[str, Any] | None = None, materialized_fingerprint: str = "") -> dict[str, Any]:
     """Merge two validated proposals without creating new creative semantics."""
 
     source_units = (baseline_treatment.get("source_constraints") or {}).get("source_authoring_units", [])
     stage_a = validate_director_beat_plan_ir(beat_plan_ir, source_units=source_units)
     if stage_a["status"] != "qualified":
         raise ValueError({"code": "DIRECTOR_BEAT_PLAN_IR_INVALID", "report": stage_a})
-    materialized = materialize_director_beat_plan_ids(beat_plan_ir, scene_id=_text(source_scene.get("scene_id") or baseline_treatment.get("scene_id")))
+    expected_materialized = materialize_director_beat_plan_ids(beat_plan_ir, scene_id=_text(source_scene.get("scene_id") or baseline_treatment.get("scene_id")))
+    materialized = copy.deepcopy(dict(materialized_beat_plan)) if isinstance(materialized_beat_plan, Mapping) else expected_materialized
+    if isinstance(materialized_beat_plan, Mapping) and json.dumps(materialized, ensure_ascii=False, sort_keys=True, separators=(",", ":")) != json.dumps(expected_materialized, ensure_ascii=False, sort_keys=True, separators=(",", ":")):
+        raise ValueError({"code": "DIRECTOR_STAGE_A_MATERIALIZED_MUTATION"})
+    expected_materialized_fp = hashlib.sha256(json.dumps(materialized, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    if materialized_fingerprint and expected_materialized_fp != str(materialized_fingerprint):
+        raise ValueError({"code": "DIRECTOR_STAGE_A_MATERIALIZED_FINGERPRINT_MISMATCH", "expected": str(materialized_fingerprint), "actual": expected_materialized_fp})
     stage_b = validate_director_creative_enrichment_ir(enrichment_ir, beat_plan=materialized, declared_participants=source_scene.get("participants", []))
     if stage_b["status"] != "qualified":
         raise ValueError({"code": "DIRECTOR_CREATIVE_ENRICHMENT_IR_INVALID", "report": stage_b})
@@ -479,6 +656,28 @@ def build_stage_a_persistence_patch(*, ir: Mapping[str, Any], fingerprint: str, 
     return {"progressive_director_authoring": {"stage_a": stage}}
 
 
+def build_stage_b_persistence_patch(*, ir: Mapping[str, Any], fingerprint: str, authorization_id: str, attempt_id: str, stage_a_materialized_fingerprint: str, provider_provenance: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    stage = {
+        "status": "VALIDATED", "ir": copy.deepcopy(dict(ir)), "fingerprint": str(fingerprint), "ir_fingerprint": str(fingerprint),
+        "authorization_id": str(authorization_id), "attempt_id": str(attempt_id), "authoring_stage": "CREATIVE_ENRICHMENT",
+        "stage_a_materialized_fingerprint": str(stage_a_materialized_fingerprint),
+    }
+    if provider_provenance is not None:
+        stage["provider_provenance"] = copy.deepcopy(dict(provider_provenance))
+    return {"progressive_director_authoring": {"stage_b": stage}}
+
+
+def is_progressive_stage_validated(stage: Any, *, authoring_stage: str | None = None) -> bool:
+    if not isinstance(stage, Mapping):
+        return False
+    status = _text(stage.get("status"))
+    if authoring_stage and _text(stage.get("authoring_stage")).upper() != _text(authoring_stage).upper():
+        return False
+    if status == "VALIDATED":
+        return True
+    return status.endswith("_VALIDATED")
+
+
 def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping[str, Any]], declared_participants: list[Any] | None = None, explicit_story_constraints: list[Any] | None = None, unknown_source_facts: list[Any] | None = None) -> tuple[str, str]:
     """Build the small Stage A prompt without any Stage B output burden."""
 
@@ -522,13 +721,20 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
     """Build the Stage B prompt over a validated local beat plan."""
 
     system = "你是受 Stage A 约束的导演表现层助手。只输出 director_creative_enrichment_ir_v1 JSON，不得重排或修改 Stage A。"
+    contract = render_stage_b_schema_contract()
     user = (
         "DIRECTOR_CREATIVE_ENRICHMENT_IR_V1\n"
         f"SCENE_ID={json.dumps(scene_id, ensure_ascii=False)}\n"
         f"VALIDATED_BEAT_PLAN={json.dumps(beat_plan, ensure_ascii=False, sort_keys=True)}\n"
         f"DECLARED_PARTICIPANTS={json.dumps(declared_participants or [], ensure_ascii=False, sort_keys=True)}\n"
-        "每个 DBP beat_ref 必须恰好有一个 beat_enrichment；只填写 audience_effect,performance,transition,character_effects。"
-        "不得输出或修改 refs、purpose、objective、information_change、hook、scene_objective、dramatic_question。"
+        f"CANONICAL_STAGE_B_TOP_LEVEL_KEYS={json.dumps(contract['top_level_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS={json.dumps(contract['beat_enrichment_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS={json.dumps(contract['character_direction_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"CANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS={json.dumps(contract['character_effect_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        "KEY_RULE=Property names must match these strings exactly, byte-for-byte. do not translate; Chinese only in values, never in keys.\n"
+        "Stage A is immutable: refs,purpose,objective,information_change,hook,scene_objective,dramatic_question are read-only and must not be repeated or changed.\n"
+        "每个 DBP beat_ref 必须恰好有一个 beat_enrichment；character_effects 只能引用 DECLARED_PARTICIPANTS。"
+        "information_strategy 必须使用 director_information_strategy_v2 对象；performance_arc 使用 phase/state 对象数组；rhythm_strategy 使用 opening/reveal/escalation/button。"
     )
     return system, user
 
@@ -538,9 +744,10 @@ __all__ = [
     "DIRECTOR_BEAT_PLAN_IR_SCHEMA", "DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA",
     "validate_director_beat_plan_ir_schema", "validate_director_beat_plan_ir",
     "parse_director_beat_plan_ir", "validate_director_beat_plan_text_completeness", "DIRECTOR_BEAT_PLAN_IR_V1_SYSTEM_PROMPT",
-    "materialize_director_beat_plan_ids", "validate_director_creative_enrichment_ir_schema",
-    "validate_director_creative_enrichment_ir", "compile_progressive_director_proposal",
-    "build_stage_a_persistence_patch", "build_director_beat_plan_prompt", "build_director_creative_enrichment_prompt",
+    "materialize_director_beat_plan_ids", "validate_director_creative_enrichment_ir_schema", "parse_director_creative_enrichment_ir",
+    "validate_director_creative_enrichment_ir", "validate_director_creative_enrichment_text_completeness", "compile_progressive_director_proposal",
+    "build_stage_a_persistence_patch", "build_stage_b_persistence_patch", "is_progressive_stage_validated", "build_director_beat_plan_prompt", "build_director_creative_enrichment_prompt",
     "CANONICAL_TOP_LEVEL_KEYS", "CANONICAL_BEAT_KEYS", "render_stage_a_schema_contract",
-    "validate_stage_a_prompt_schema_key_parity", "audit_duplicate_json_keys", "DuplicateJSONKeyError",
+    "STAGE_B_TOP_LEVEL_KEYS", "STAGE_B_ENRICHMENT_KEYS", "CHARACTER_DIRECTION_KEYS", "CHARACTER_EFFECT_KEYS", "render_stage_b_schema_contract",
+    "validate_stage_a_prompt_schema_key_parity", "validate_stage_b_prompt_schema_key_parity", "audit_duplicate_json_keys", "DuplicateJSONKeyError",
 ]
