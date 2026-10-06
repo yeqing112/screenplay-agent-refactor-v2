@@ -39,9 +39,9 @@ This phase made no real Provider call and made no production authority write. Hi
 29. Provider calls: `0` in V7.6.1.
 30. Production writes: `0`.
 31. Tests: `71 passed`; compileall PASS; diff check PASS.
-32. Commit SHA: to be recorded after commit.
-33. Remote HEAD: to be recorded after push.
-34. Working tree: clean after push.
+32. Evidence commit SHA: `80f0eef1e4f264e4a8b45e2ae0007b14a2fd4dda`.
+33. Remote HEAD at evidence push: `80f0eef1e4f264e4a8b45e2ae0007b14a2fd4dda`; the report-metadata commit is the final branch tip.
+34. Working tree: verified clean after the final report-metadata push.
 35. Stage A attempt-5 authorization: can be requested; it was not created or consumed in this phase.
 
 ## Evidence
@@ -50,4 +50,5 @@ This phase made no real Provider call and made no production authority write. Hi
 - Profile: `local-llm-2vydoz / mimo-v2.5 / https://api.xiaomimimo.com`.
 - V2 parity: PASS, both paths use `build_source_grounded_director_provider_request`.
 - No Provider, media, confirmation, or downstream calls occurred.
+
 
