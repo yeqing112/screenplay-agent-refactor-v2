@@ -61,3 +61,17 @@ SCENE_BLOCKING_WRITES = 0
 IMAGE = 0
 VIDEO = 0
 ```
+
+## Post-failure offline remediation
+
+After the single authorized execution ended with `DIRECTOR_LLM_OUTPUT_INVALID`,
+the persisted raw response was inspected without rewriting or promoting it.
+The response closed `creative_beats` and `creative_projection` before the
+`DCB_E01_SC001_03` object at JSON position `1540`. The safe policy remains to
+reject this response and retain the forensic record.
+
+The V3 execution boundary now sends the OpenAI-compatible
+`response_format={"type":"json_object"}` request option. This change was
+validated with provider-free V7.1/V7.2 tests (`36 passed`), including an HTTP
+payload assertion. It has not been used for another external call under this
+authorization. A future retry requires a new explicit authorization.
