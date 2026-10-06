@@ -1,0 +1,34 @@
+{
+  "status": "BLOCKED",
+  "source_grounded_runtime_report": {
+    "status": "blocked",
+    "errors": [
+      {
+        "code": "DIRECTOR_PROPOSAL_IR_CHARACTER_DIRECTION_FIELD_UNEXPECTED",
+        "fields": [
+          "direction"
+        ]
+      },
+      {
+        "code": "DIRECTOR_PROPOSAL_IR_CHARACTER_DIRECTION_FIELD_UNEXPECTED",
+        "fields": [
+          "direction"
+        ]
+      }
+    ],
+    "warnings": [],
+    "version": "director_proposal_ir_v1",
+    "source_unit_count": 12,
+    "covered_source_unit_count": 12,
+    "creative_beat_count": 6,
+    "passthrough_count": 0,
+    "semantic_fields_in": 42,
+    "forbidden_field_count": 0
+  },
+  "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+  "blocking_codes": [
+    "DIRECTOR_PROPOSAL_IR_CHARACTER_DIRECTION_FIELD_UNEXPECTED"
+  ],
+  "compiler_reached": false,
+  "proposal_persisted": false
+}

@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "snapshot": {
+    "decision_packet_records": {
+      "count": 63,
+      "sha256": "d5a1d9e287035d7a0ad2ea096f70cde14c0b2106234dfee32edf9ceed0fce152"
+    },
+    "director_treatments": {
+      "count": 64,
+      "sha256": "167bbfef968b1824ea9045b425e95c369302baa17a3103b02a17b92eaa206ffb"
+    },
+    "director_treatment_authorities": {
+      "count": 44,
+      "sha256": "314033b7880adb132f69e96ed68ee82f61a0740f73f07b9738caec0d8e49ec9d"
+    },
+    "director_treatment_pointers": {
+      "count": 44,
+      "sha256": "ebd20442ee2224d1163a13d9bc5cce2986480a2f9133f22acea857748dfec3f7"
+    },
+    "scene_blockings": {
+      "count": 79,
+      "sha256": "d9b52a5042191ad55a2f665c64b390fbf01e58a0986e57cbc760962d2be5967f"
+    },
+    "shot_plans": {
+      "count": 34,
+      "sha256": "8ab27ef77e6695d3e4f46ebb9f3be620e2961d08f68f45fe63ae111046205ab9"
+    },
+    "storyboard_shots": {
+      "count": 387,
+      "sha256": "d00ffd15862c9d81292f5872359d6002063bc1186be7232ea8d2e187be028d56"
+    },
+    "storyboard_prompt_versions": {
+      "count": 24,
+      "sha256": "3dcb014a17eae8209f587932ceb621feaab6f431775c7899d5fae0f038207df4"
+    },
+    "prompt_ir_versions": {
+      "count": 36,
+      "sha256": "430d7cd90fbfd911f3f289a444f7e2b1ebf05e8ea3999eea7dffc427cfb62980"
+    },
+    "generation_execution_records": {
+      "count": 4,
+      "sha256": "add6ab3e88a7520ce23f3b84bdb30d5351de8107f16b433407b2e0a8d94cee9b"
+    },
+    "media_candidate_records": {
+      "count": 4,
+      "sha256": "bae1aeebb2e98406494e432ffce365ae45e3c513d8b45f502c69803ca790fa02"
+    },
+    "official_media_versions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "target": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
+  },
+  "source_lineage": {
+    "book_id": 990453,
+    "fact_snapshot_id": 49,
+    "script_id": 64,
+    "script_ir_version_id": 52,
+    "source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f"
+  },
+  "packet": {
+    "id": 64,
+    "book_id": 990453,
+    "domain": "director_treatment",
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "status": "draft",
+    "proposal": {
+      "decision": "awaiting_llm"
+    },
+    "proposal_sha256": "2207201bd6bef70c12df0059e883af91993475f914fe17cdd4f495fdab4b2c77",
+    "model_info_sha256": "82125a968ac1df3392f06485744afa57b429623f59f50e19a0745c6389d62da9",
+    "model_info_keys": [
+      "director_llm_attempts",
+      "event_trace",
+      "last_llm_draft_failure",
+      "llm_draft_in_progress",
+      "llm_draft_started_at",
+      "mode",
+      "parse_attempts",
+      "parse_error",
+      "profile_preflight",
+      "proposal_ir_validation",
+      "proposal_provenance",
+      "provider_audit",
+      "raw_response_forensic",
+      "request_fingerprint",
+      "validation_error"
+    ],
+    "director_llm_attempts": [
+      {
+        "attempt_id": "v7_3_attempt_1",
+        "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+        "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+        "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+        "status": "PARSE_FAILED"
+      },
+      {
+        "attempt_id": "v7_3_attempt_2",
+        "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+        "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+        "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+        "status": "PARSE_FAILED"
+      },
+      {
+        "attempt_id": "attempt-3",
+        "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+        "request_fingerprint": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+        "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+        "status": "IR_INVALID"
+      }
+    ],
+    "last_llm_draft_failure": "DIRECTOR_PROPOSAL_IR_INVALID",
+    "event_trace": [
+      "TRANSPORT",
+      "RAW_PERSIST",
+      "PARSE",
+      "IR_VALIDATE"
+    ],
+    "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+    "updated_at": "2026-10-06T16:18:00.235574"
+  },
+  "mutation_scope": "DecisionPacketRecord.model_info forensic ledger only; proposal remains awaiting_llm; no domain/downstream rows created."
+}

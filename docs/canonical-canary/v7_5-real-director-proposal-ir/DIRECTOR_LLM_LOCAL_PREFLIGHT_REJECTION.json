@@ -1,0 +1,11 @@
+{
+  "status": "LOCAL_REJECTION",
+  "http_status": 409,
+  "code": "SCENE_ID_REQUIRED",
+  "message": "Production Treatment requires a stable scene_id.",
+  "provider_reached": false,
+  "retry": false,
+  "request_count": 1,
+  "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+  "note": "Recorded for completeness; does not consume the Provider transport budget."
+}

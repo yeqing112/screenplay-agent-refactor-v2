@@ -1,0 +1,14 @@
+{
+  "status": "PASS_TRANSPORT_ONLY",
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "vendor_model": "mimo-v2.5",
+  "vendor_host": "api.xiaomimimo.com",
+  "request_fingerprint_actual": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+  "request_fingerprint_frozen_expected": "26b0a52fd64508d33482be227459a5892039e0924ab96ec9c2eab2375ed77d93",
+  "request_fingerprint_match": false,
+  "mismatch_reason": "Frozen preflight used advisory asset context characters=[] while endpoint rebuilt evidence with asset characters; no retry permitted.",
+  "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+  "provider_request_id": "",
+  "provider_calls": 1
+}

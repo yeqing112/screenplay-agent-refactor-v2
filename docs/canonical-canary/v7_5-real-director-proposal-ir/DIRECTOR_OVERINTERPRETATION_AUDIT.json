@@ -1,0 +1,8 @@
+{
+  "status": "FORENSIC_ONLY_NOT_CANONICAL",
+  "unknowns_present": true,
+  "prohibited_interpretations_present": true,
+  "canonization_allowed": false,
+  "authority_written": false,
+  "compiler_run": false
+}

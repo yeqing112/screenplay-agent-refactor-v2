@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "provider_calls": 1,
+  "transport_attempts": 1,
+  "retry_count": 0,
+  "repair_request_count": 0,
+  "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "vendor_model": "mimo-v2.5",
+  "vendor_host": "api.xiaomimimo.com",
+  "http_status": 200,
+  "provider_request_id": "",
+  "request_fingerprint": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+  "response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+  "response_length": 4922,
+  "no_secret_fields_written": true
+}

@@ -1,0 +1,6 @@
+{
+  "status": "NOT_RUN",
+  "authority_created": false,
+  "reason": "No compile and no proposal persistence after IR_INVALID.",
+  "confirm_called": false
+}

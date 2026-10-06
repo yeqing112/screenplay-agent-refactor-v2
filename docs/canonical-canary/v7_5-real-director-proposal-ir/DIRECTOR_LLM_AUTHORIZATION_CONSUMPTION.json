@@ -1,0 +1,29 @@
+{
+  "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+  "authorized_calls": 1,
+  "consumed_calls": 1,
+  "status": "CONSUMED",
+  "provider_transport_attempts": 1,
+  "transport_retry": 0,
+  "parse_retry": 0,
+  "repair": 0,
+  "fallback": 0,
+  "local_preflight_rejection": {
+    "count": 1,
+    "code": "SCENE_ID_REQUIRED",
+    "http_status": 409,
+    "provider_reached": false,
+    "retry": false
+  },
+  "provider_call": {
+    "count": 1,
+    "attempt_id": "attempt-3",
+    "provider_reached": true,
+    "retry": false,
+    "http_status": 200
+  },
+  "old_history_preserved": true,
+  "attempt3_present": true,
+  "no_second_provider_call": true,
+  "note": "The first app POST lacked scene_id and was rejected locally. The corrected POST was the single and only Provider transport call."
+}

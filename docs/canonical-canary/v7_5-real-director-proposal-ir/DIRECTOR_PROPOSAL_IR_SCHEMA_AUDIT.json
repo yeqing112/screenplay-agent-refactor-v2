@@ -1,0 +1,19 @@
+{
+  "status": "FAIL",
+  "evaluator": "core.director_proposal_ir.validate_director_proposal_ir_schema",
+  "errors": [
+    {
+      "path": "$.character_directions[0]",
+      "code": "SCHEMA_ADDITIONAL_PROPERTY",
+      "field": "direction"
+    },
+    {
+      "path": "$.character_directions[1]",
+      "code": "SCHEMA_ADDITIONAL_PROPERTY",
+      "field": "direction"
+    }
+  ],
+  "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+  "endpoint_schema_gate_called": false,
+  "note": "Offline formal schema audit of the persisted provider JSON. Runtime endpoint reached IR validation but does not currently invoke this formal helper."
+}

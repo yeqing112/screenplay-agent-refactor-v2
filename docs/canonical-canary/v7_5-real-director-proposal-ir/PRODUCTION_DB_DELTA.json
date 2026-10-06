@@ -1,0 +1,120 @@
+{
+  "status": "PASS_NO_DOWNSTREAM_ROWS",
+  "target": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
+  },
+  "counts": {
+    "decision_packet_records": {
+      "before_count": 1,
+      "after_count": 63,
+      "delta_count": 62,
+      "before_sha256": "076fe48a4ffc75fe5f8935398d391c668cc380fa39f2bf7b91d10007f6f2a22f",
+      "after_sha256": "d5a1d9e287035d7a0ad2ea096f70cde14c0b2106234dfee32edf9ceed0fce152",
+      "count_unchanged": false
+    },
+    "director_treatments": {
+      "before_count": 0,
+      "after_count": 64,
+      "delta_count": 64,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "167bbfef968b1824ea9045b425e95c369302baa17a3103b02a17b92eaa206ffb",
+      "count_unchanged": false
+    },
+    "director_treatment_authorities": {
+      "before_count": 0,
+      "after_count": 44,
+      "delta_count": 44,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "314033b7880adb132f69e96ed68ee82f61a0740f73f07b9738caec0d8e49ec9d",
+      "count_unchanged": false
+    },
+    "director_treatment_pointers": {
+      "before_count": 0,
+      "after_count": 44,
+      "delta_count": 44,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "ebd20442ee2224d1163a13d9bc5cce2986480a2f9133f22acea857748dfec3f7",
+      "count_unchanged": false
+    },
+    "scene_blockings": {
+      "before_count": 0,
+      "after_count": 79,
+      "delta_count": 79,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "d9b52a5042191ad55a2f665c64b390fbf01e58a0986e57cbc760962d2be5967f",
+      "count_unchanged": false
+    },
+    "shot_plans": {
+      "before_count": 0,
+      "after_count": 34,
+      "delta_count": 34,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "8ab27ef77e6695d3e4f46ebb9f3be620e2961d08f68f45fe63ae111046205ab9",
+      "count_unchanged": false
+    },
+    "storyboard_shots": {
+      "before_count": 0,
+      "after_count": 387,
+      "delta_count": 387,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "d00ffd15862c9d81292f5872359d6002063bc1186be7232ea8d2e187be028d56",
+      "count_unchanged": false
+    },
+    "storyboard_prompt_versions": {
+      "before_count": 0,
+      "after_count": 24,
+      "delta_count": 24,
+      "before_sha256": null,
+      "after_sha256": "3dcb014a17eae8209f587932ceb621feaab6f431775c7899d5fae0f038207df4",
+      "count_unchanged": false
+    },
+    "prompt_ir_versions": {
+      "before_count": 0,
+      "after_count": 36,
+      "delta_count": 36,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "430d7cd90fbfd911f3f289a444f7e2b1ebf05e8ea3999eea7dffc427cfb62980",
+      "count_unchanged": false
+    },
+    "generation_execution_records": {
+      "before_count": 0,
+      "after_count": 4,
+      "delta_count": 4,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "add6ab3e88a7520ce23f3b84bdb30d5351de8107f16b433407b2e0a8d94cee9b",
+      "count_unchanged": false
+    },
+    "media_candidate_records": {
+      "before_count": 0,
+      "after_count": 4,
+      "delta_count": 4,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "bae1aeebb2e98406494e432ffce365ae45e3c513d8b45f502c69803ca790fa02",
+      "count_unchanged": false
+    },
+    "official_media_versions": {
+      "before_count": 0,
+      "after_count": 0,
+      "delta_count": 0,
+      "before_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "after_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "count_unchanged": true
+    }
+  },
+  "packet": {
+    "packet_id": 64,
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "status": "draft",
+    "proposal_before": "2207201bd6bef70c12df0059e883af91993475f914fe17cdd4f495fdab4b2c77",
+    "proposal_after": "2207201bd6bef70c12df0059e883af91993475f914fe17cdd4f495fdab4b2c77",
+    "proposal_unchanged": true,
+    "model_info_forensic_changed": true
+  },
+  "source_lineage_unchanged": true
+}

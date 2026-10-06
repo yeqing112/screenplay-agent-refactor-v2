@@ -1,0 +1,48 @@
+{
+  "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+  "base_head": "c16b0d66a89fb5af84f426aba9bc7fcc9693b7ed",
+  "confirm_allowed": false,
+  "downstream_allowed": false,
+  "expected_attempt_id": "attempt-3",
+  "historical_request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "profile": {
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true,
+    "model": "mimo-v2.5",
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible"
+  },
+  "proposal_only": true,
+  "remote_head": "c16b0d66a89fb5af84f426aba9bc7fcc9693b7ed",
+  "request_fingerprint": "26b0a52fd64508d33482be227459a5892039e0924ab96ec9c2eab2375ed77d93",
+  "source_authoring_units": {
+    "action_count": 11,
+    "beat_count": 0,
+    "count": 12,
+    "dialogue_count": 1,
+    "fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f"
+  },
+  "stale_flag_cleared": true,
+  "status": "FROZEN_EXECUTION_MANIFEST_PASS",
+  "target": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
+  },
+  "transport_budget": {
+    "authorized_calls": 1,
+    "consumed_calls": 0,
+    "fallback": 0,
+    "parse_retry": 0,
+    "repair": 0,
+    "retry": 0,
+    "status": "CONSUMING",
+    "transport_attempts_max": 1
+  }
+}

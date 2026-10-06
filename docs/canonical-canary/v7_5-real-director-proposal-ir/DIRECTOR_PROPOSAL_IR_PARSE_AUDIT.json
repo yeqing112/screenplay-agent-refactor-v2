@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "parse_attempts": 1,
+  "parser_retry": 0,
+  "repair_attempts": 0,
+  "raw_persisted_before_parse": true,
+  "top_level_object": true,
+  "top_level_keys": [
+    "beats",
+    "character_directions",
+    "confidence",
+    "dramatic_question",
+    "information_strategy",
+    "note",
+    "passthrough_refs",
+    "performance_arc",
+    "prohibited_interpretations",
+    "rhythm_strategy",
+    "scene_exit_intent",
+    "scene_label",
+    "scene_objective",
+    "unknowns",
+    "version",
+    "visual_priority"
+  ],
+  "returned_version": "director_proposal_ir_v1",
+  "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+  "no_repair_or_extraction": true
+}

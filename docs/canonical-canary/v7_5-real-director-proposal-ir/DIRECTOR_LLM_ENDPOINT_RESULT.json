@@ -1,0 +1,22 @@
+{
+  "url": "http://127.0.0.1:8765/api/books/990453/episodes/1/director-treatment/llm-draft",
+  "request": {
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "workflow_profile": "production",
+    "confirmed": true,
+    "allowExternalCall": true,
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3"
+  },
+  "started_at": 1791274621.9695776,
+  "preflight_retry_reason": "first app request was rejected before Provider transport with SCENE_ID_REQUIRED; this is the single Provider transport attempt",
+  "http_status": 502,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"detail\":{\"code\":\"DIRECTOR_PROPOSAL_IR_INVALID\",\"retry\":0}}",
+  "error": "HTTPError",
+  "finished_at": 1791274680.2422407,
+  "provider_transport_attempt_budget": 1
+}

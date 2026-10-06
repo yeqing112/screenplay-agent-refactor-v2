@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "source_fingerprint_before": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "source_fingerprint_after": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "source_authority_before": {
+    "authority_profile": "SOURCE_GROUNDED_V3_1",
+    "book_id": 990453,
+    "creative_readiness_state": "AUTHORING_REQUIRED",
+    "fact_snapshot_id": 49,
+    "qualification_state": "PRODUCTION_QUALIFIED",
+    "script_id": 64,
+    "script_ir_version_id": 52,
+    "source_scene_id": "E01_SC001",
+    "stale_status": "FRESH",
+    "status": "PASS"
+  },
+  "source_authority_after": {
+    "authority_profile": "SOURCE_GROUNDED_V3_1",
+    "book_id": 990453,
+    "creative_readiness_state": "AUTHORING_REQUIRED",
+    "fact_snapshot_id": 49,
+    "qualification_state": "PRODUCTION_QUALIFIED",
+    "script_id": 64,
+    "script_ir_version_id": 52,
+    "source_scene_id": "E01_SC001",
+    "stale_status": "FRESH",
+    "status": "PASS"
+  },
+  "script_ir_mutated": false,
+  "fact_snapshot_mutated": false,
+  "script_mutated": false,
+  "source_lineage_unchanged": true
+}

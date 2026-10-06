@@ -1,0 +1,8 @@
+{
+  "status": "NOT_RUN",
+  "compiler": "compile_director_proposal_ir",
+  "creative_semantics_evaluated": 0,
+  "compiled_status": "NOT_AVAILABLE",
+  "reason": "IR validation blocked on unexpected character_directions.direction fields before compiler boundary.",
+  "proposal_persisted": false
+}

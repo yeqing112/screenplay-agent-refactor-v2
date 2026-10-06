@@ -1,0 +1,12 @@
+{
+  "status": "NOT_AVAILABLE_RUNTIME_IR_INVALID",
+  "reviewable": false,
+  "promotion_allowed": false,
+  "confirm_allowed": false,
+  "reason_codes": [
+    "DIRECTOR_PROPOSAL_IR_CHARACTER_DIRECTION_FIELD_UNEXPECTED"
+  ],
+  "raw_forensic_available": true,
+  "compiler_status": "NOT_RUN",
+  "proposal_status": "awaiting_llm"
+}

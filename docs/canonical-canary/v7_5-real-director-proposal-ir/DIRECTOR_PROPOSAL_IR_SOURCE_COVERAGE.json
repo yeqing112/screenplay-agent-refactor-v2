@@ -1,0 +1,12 @@
+{
+  "status": "PASS_FOR_COVERAGE_ONLY",
+  "source_unit_count": 12,
+  "covered_source_unit_count": 12,
+  "coverage_ratio": 1.0,
+  "creative_beat_count": 6,
+  "passthrough_count": 0,
+  "semantic_fields_in": 42,
+  "source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+  "overall_ir_status": "BLOCKED"
+}
