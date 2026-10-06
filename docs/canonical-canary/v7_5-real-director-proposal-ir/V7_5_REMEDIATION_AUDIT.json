@@ -1,0 +1,33 @@
+{
+  "status": "REMEDIATION_READY_NO_PROVIDER_CALL",
+  "historical_canary_commit": "1338bc7",
+  "remediation_commit": "8cbd7ca30b18915fc4d22f976e8d3dcf66f387dc",
+  "provider_calls_in_remediation": 0,
+  "changes": [
+    {
+      "area": "formal_schema_gate",
+      "result": "API now validates validate_director_proposal_ir_schema immediately after parse and before runtime/compiler."
+    },
+    {
+      "area": "provider_character_direction_contract",
+      "result": "Flat v1 accepts compact character_directions.direction and runtime candidate validation preserves it without local semantic expansion."
+    },
+    {
+      "area": "prompt_identity",
+      "result": "ADVISORY_ASSET_CONTEXT is frozen to [] for source-grounded V3 so mutable advisory assets cannot drift the provider request fingerprint."
+    }
+  ],
+  "request_fingerprint_dry_run": {
+    "expected": "26b0a52fd64508d33482be227459a5892039e0924ab96ec9c2eab2375ed77d93",
+    "computed": "26b0a52fd64508d33482be227459a5892039e0924ab96ec9c2eab2375ed77d93",
+    "match": true,
+    "advisory_asset_context": "[]"
+  },
+  "verification": {
+    "directed_tests_passed": 42,
+    "directed_tests_failed": 0,
+    "compileall": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "next_gate": "A new explicit authorization is required before any real Provider POST. This remediation does not consume the prior authorization."
+}
