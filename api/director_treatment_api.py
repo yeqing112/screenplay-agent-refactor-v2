@@ -178,7 +178,8 @@ SOURCE_CONSTRAINTS 是不可修改事实。
 
 你不得：修改 source unit、action、dialogue、speaker 或 binding；新增 source character；把 creative decision 声称为 source fact；输出镜头规格；执行 SceneBlocking 或 ShotPlan。
 
-只输出一个 JSON object，不要 Markdown，不要复制 source_constraints 或 source_authoring_units。"""
+只输出一个 JSON object，不要 Markdown，不要复制 source_constraints 或 source_authoring_units。
+必须输出语法有效、可直接由 json.loads 解析的 JSON。creative_beats 必须是一个连续的 JSON array；每个 beat object 之间只用逗号分隔，所有 beat 完成后才关闭 creative_beats array，然后只关闭一次 creative_projection object 和根 object。禁止在 beat 之间重复输出 ]} 或生成多个顶层 object。"""
 
 
 def _source_grounded_v3_prompt(treatment: dict[str, Any], evidence: dict[str, Any]) -> tuple[str, str]:
@@ -227,6 +228,8 @@ def _source_grounded_v3_prompt(treatment: dict[str, Any], evidence: dict[str, An
         "每个 creative beat 的 derived_from_source_unit_refs 只能引用上述 SAU ID。所有 story unit 必须由 creative beat 引用或 explicit_passthrough_unit_refs 覆盖。"
         "SourceDialogueUnit 只能产生表演意图、潜台词、反应意图、观众效果和 timing intent；不得改写 dialogue、speaker 或 binding。"
         "返回顶层 schema_version、creative_projection、unknowns、confidence、note；不要返回 source_constraints、source_authoring_units、actions 或 dialogues。"
+        "JSON_SYNTAX_CHECK: creative_beats 只能是一个 array，必须在最后一个 beat 后才输出 ]，随后输出 creative_projection 的 } 和根 object 的 }；不要在 beat 之间输出 ]}。"
+        "MINIMAL_VALID_SHAPE={\"schema_version\":\"director_treatment_v3\",\"creative_projection\":{\"creative_beats\":[]},\"unknowns\":[],\"confidence\":0.0,\"note\":\"\"}"
     )
     return V3_DIRECTOR_SYSTEM_PROMPT, user_prompt
 
@@ -313,6 +316,7 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
             model_profile=profile,
             retries=1,
             estimated_tokens=5000,
+            temperature=0.0,
             response_format={"type": "json_object"},
             audit_callback=lambda record: audit_records.append(dict(record)) if isinstance(record, dict) else None,
             audit_extra={"director_execution_boundary": "v3_one_call"},

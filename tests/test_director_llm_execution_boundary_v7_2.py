@@ -110,6 +110,8 @@ def test_v3_prompt_is_source_grounded_and_has_no_old_beat_requirement():
     assert "CREATIVE_PROJECTION_SCHEMA" in user
     assert "必须沿用已有 character id 和 beat_id" not in user
     assert "不是改写原始剧本" in system
+    assert "creative_beats 必须是一个连续的 JSON array" in system
+    assert "JSON_SYNTAX_CHECK" in user
 
 
 def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projection(monkeypatch):
@@ -118,6 +120,7 @@ def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projecti
     assert result["domain_write_performed"] is False
     assert result["provider"]["calls"] == 1
     assert calls[0]["retries"] == 1
+    assert calls[0]["temperature"] == 0.0
     assert calls[0]["response_format"] == {"type": "json_object"}
     assert downstream == (0, 0, 0)
     assert model_info["event_trace"] == ["TRANSPORT", "RAW_PERSIST", "PARSE", "VALIDATE", "PROPOSAL_PERSIST"]
@@ -209,6 +212,7 @@ def test_real_v3_endpoint_branch_is_proposal_only(monkeypatch):
     result = api.generate_director_treatment_llm_draft(book_id, 1, req)
     assert result["domain_write_performed"] is False
     assert calls[0]["response_format"] == {"type": "json_object"}
+    assert calls[0]["temperature"] == 0.0
     assert calls[0]["retries"] == 1
     with Session() as session:
         assert session.query(DirectorTreatment).filter_by(book_id=book_id).count() == 0
