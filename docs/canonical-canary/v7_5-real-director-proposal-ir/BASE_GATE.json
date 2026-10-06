@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "expected_head": "c16b0d66a89fb5af84f426aba9bc7fcc9693b7ed",
+  "execution_base_head": "c16b0d66a89fb5af84f426aba9bc7fcc9693b7ed",
+  "local_head_at_audit": "072e39aedb3961d99c5debcdce2d336f415f882a",
+  "remote_head_at_audit": "072e39aedb3961d99c5debcdce2d336f415f882a",
+  "remote_equals_local": true,
+  "working_tree_clean": true,
+  "core_api_models_changed_since_execution_base": [],
+  "core_api_models_modified_during_call": false,
+  "directed_tests": {
+    "command": "pytest -q tests/test_director_proposal_ir_v7_4.py tests/test_director_proposal_integrity_closure_v7_4_1.py tests/test_director_llm_execution_boundary_v7_2.py",
+    "status": "PASS",
+    "passed": 38,
+    "failed": 0
+  },
+  "compileall": {
+    "command": "python -m compileall -q api core models",
+    "status": "PASS"
+  },
+  "diff_check": {
+    "command": "git diff --check",
+    "status": "PASS"
+  },
+  "note": "Execution call was already consumed before the evidence-only documentation commit; no Provider retry was made."
+}

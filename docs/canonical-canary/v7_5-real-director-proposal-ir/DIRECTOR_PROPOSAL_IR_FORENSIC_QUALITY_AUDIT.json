@@ -1,0 +1,187 @@
+{
+  "status": "FORENSIC_ONLY_NOT_REVIEWABLE",
+  "canonical_promotion_allowed": false,
+  "scene_label": "E01_SC001 暗房：第七次潮汐",
+  "scene_objective": "让林晚在暗房中遭遇一段无法确认的童年记忆与一个指向自己的指控，同时以门外湿鞋与车票把威胁从暗处推到明处，确立顾沉既是引路人又是可疑者的双重身份。",
+  "dramatic_question": "拿走胶片的人是谁——是门外的陌生人，还是林晚自己？",
+  "beat_count": 6,
+  "beats": [
+    {
+      "beat": 1,
+      "refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002"
+      ],
+      "hook": false,
+      "purpose": "建立暗房空间与红色安全灯下的不安氛围，交代顾沉主动带林晚进入这一私密场所。",
+      "objective": "让观众与林晚同步进入一个陌生、潮湿、被红光笼罩的空间，感受顾沉对这里的熟悉与掌控。",
+      "information_change": "观众获知顾沉掌握暗房入口与内部环境，林晚处于被引导的被动位置。",
+      "audience_effect": "红色忽明忽暗的光与墙上倒置地图般的水渍制造幽闭与失序感，暗示记忆的不可靠。",
+      "performance": "顾沉开门动作熟练、不假思索，带路时身体语言放松但不回头确认林晚是否跟上；林晚进门时有轻微迟疑，目光扫视墙面水渍，呼吸略浅。",
+      "transition": "红光闪烁节奏逐渐稳定，视线被引向暗房中央。",
+      "character_effects": [
+        {
+          "character_ref": "顾沉",
+          "effect": "确立为暗房的主人与引导者，掌握信息优势"
+        },
+        {
+          "character_ref": "林晚",
+          "effect": "进入陌生空间，处于被动与警觉状态"
+        }
+      ]
+    },
+    {
+      "beat": 2,
+      "refs": [
+        "SAU_E01_SC001_003",
+        "SAU_E01_SC001_004"
+      ],
+      "hook": true,
+      "purpose": "揭示暗房中央的铁盒及其母亲手写标签，随即打开发现盒内只剩烧焦胶片段与海鸥别针。",
+      "objective": "把场景的悬念核心——母亲留下的",
+      "information_change": "观众获知铁盒存在、标签为母亲手写",
+      "audience_effect": "母亲的手写标签带来私人情感重量，空盒与烧焦胶片则制造失落与被破坏感。",
+      "performance": "顾沉打开铁盒时动作克制，不急于展示内容；林晚俯身查看时手指悬停在别针上方，迟迟不触碰，仿佛害怕确认什么。",
+      "transition": "镜头停在别针上，为林晚的辨认做铺垫。",
+      "character_effects": [
+        {
+          "character_ref": "林晚",
+          "effect": "被别针触发潜在记忆，情感防线出现裂缝"
+        },
+        {
+          "character_ref": "顾沉",
+          "effect": "以知情者姿态观察林晚反应，掌握节奏"
+        }
+      ]
+    },
+    {
+      "beat": 3,
+      "refs": [
+        "SAU_E01_SC001_005"
+      ],
+      "hook": false,
+      "purpose": "呈现林晚认出别针与照片中女孩佩戴的一致，却无法确认自己童年是否到过暗房。",
+      "objective": "让林晚的内在矛盾外化：熟悉感与记忆空白并存，观众开始怀疑她的过去。",
+      "information_change": "观众获知别针与林晚童年照片存在关联，但林晚本人无法证实这段记忆。",
+      "audience_effect": "熟悉却想不起来的体验制造心理悬疑，观众与林晚一同陷入不确定。",
+      "performance": "林晚拿起别针时手微颤，反复翻看，眉头渐锁；她抬头环顾暗房，试图从环境中唤起什么，最终眼神空茫地收回目光。",
+      "transition": "林晚的沉默被顾沉的陈述打破。",
+      "character_effects": [
+        {
+          "character_ref": "林晚",
+          "effect": "自我认知动摇，开始怀疑自身记忆的完整性"
+        },
+        {
+          "character_ref": "顾沉",
+          "effect": "观察到林晚的动摇，掌握进一步引导的时机"
+        }
+      ]
+    },
+    {
+      "beat": 4,
+      "refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "hook": true,
+      "purpose": "顾沉告知胶片已被拿走，林晚追问是谁，顾沉给出指向林晚自己的回答。",
+      "objective": "把外部失窃转化为对林晚的内在指控，将悬疑从",
+      "information_change": "观众获知胶片不在盒中且被人为取走，顾沉暗示取走者可能是林晚本人。",
+      "audience_effect": "顾沉的回答将怀疑的矛头转向林晚，观众对她的信任产生动摇。",
+      "performance": "顾沉陈述胶片被拿走时语气平静，近乎陈述事实；被追问时停顿片刻，目光直视林晚，说出指向性回答时声音放轻，不带攻击性却更具压迫感；林晚追问时语速快、音调上扬，听到回答后身体僵住，呼吸停滞。",
+      "transition": "对话的紧张被门外铜铃声骤然打断。",
+      "character_effects": [
+        {
+          "character_ref": "顾沉",
+          "effect": "从引导者转为指控者，与林晚的关系出现裂痕"
+        },
+        {
+          "character_ref": "林晚",
+          "effect": "从追问者变为被指控者，心理压力骤增"
+        }
+      ]
+    },
+    {
+      "beat": 5,
+      "refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010"
+      ],
+      "hook": true,
+      "purpose": "铜铃响起，顾沉熄灭安全灯拉着林晚躲到药水柜后，门缝下出现湿透的皮鞋。",
+      "objective": "将场景从心理悬疑切换为即时威胁，顾沉的保护性动作与其此前的指控形成张力。",
+      "information_change": "观众获知门外有未知来者，且顾沉对铜铃声有即时、熟练的反应。",
+      "audience_effect": "红光熄灭、黑暗降临与湿鞋的出现制造强烈的不安与被窥视感。",
+      "performance": "顾沉熄灯动作迅速果断，拉林晚时力道明确但不粗暴，躲藏后两人呼吸压低、身体紧贴药水柜；林晚被拉时有一瞬的抗拒与困惑，随即配合压低身形，目光紧盯门缝。",
+      "transition": "黑暗中只剩门缝下的湿鞋与两人的呼吸声。",
+      "character_effects": [
+        {
+          "character_ref": "顾沉",
+          "effect": "展现对危险的预判与保护本能，与指控者形象形成矛盾"
+        },
+        {
+          "character_ref": "林晚",
+          "effect": "被迫与顾沉结成临时同盟，对他的信任与怀疑并存"
+        }
+      ]
+    },
+    {
+      "beat": 6,
+      "refs": [
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "hook": true,
+      "purpose": "门外之人不进入，只塞进一张车票，车票背面写有时间、地点、要求带钥匙且不要带顾沉的指令。",
+      "objective": "以一张车票把威胁具象化为明确的下一步行动指令，并在林晚与顾沉之间埋下分离的种子。",
+      "information_change": "观众获知存在一个知晓林晚与顾沉关系的第三方，且此人要求林晚单独赴约。",
+      "audience_effect": "车票上的指令制造新的悬念与紧迫感，观众意识到林晚即将被推向一个顾沉不在场的危险情境。",
+      "performance": "车票从门缝滑入时两人视线同时被吸引；林晚拾起车票，借着微弱余光辨认字迹，读到",
+      "transition": "场景在林晚读完车票、抬头看向顾沉的对视中收束，留下未决的猜疑。",
+      "character_effects": [
+        {
+          "character_ref": "林晚",
+          "effect": "获得独立行动的指令，同时对顾沉的信任进一步瓦解"
+        },
+        {
+          "character_ref": "顾沉",
+          "effect": "被车票上的指令排除在外，从保护者变为被排斥者"
+        }
+      ]
+    }
+  ],
+  "hook_count": 4,
+  "hook_beats": [
+    2,
+    4,
+    5,
+    6
+  ],
+  "dialogue_unit": "SAU_E01_SC001_008",
+  "dialogue_beat": 4,
+  "dialogue_performance_intent": "顾沉在压力中保持表面平静，以停顿、视线扫描和短促回答制造不确定性；不把真实动机说死。",
+  "director_reading": "以潮湿、封闭的空间线索逐层推进，从物件异常进入身份怀疑，再由铜铃、湿鞋和车票把悬念推向场景出口。",
+  "information_progression": "总体递进成立：空间氛围→母亲标签与胶片→童年相片疑点→对白反问→铜铃与湿鞋威胁→车票指令与下一场钩子。",
+  "prop_usage": {
+    "海鸥别针": "作为母亲标签和胶片缺失的视觉证据，触发身份与记忆疑点。",
+    "烧焦胶片": "作为被破坏信息的残留物，承载童年相片和不可验证记忆。",
+    "铜铃": "作为声音转折点，把室内调查从静态怀疑推向即时威胁。",
+    "湿鞋": "作为未知来者已经进入或逼近的外部威胁线索。",
+    "车票": "作为带有时间、地点和要求的退出指令，建立 scene exit 与下一场 hook。"
+  },
+  "overinterpretation": {
+    "door_person_identity_canonized": false,
+    "ticket_sender_identity_canonized": false,
+    "gu_chen_motive_canonized": false,
+    "lin_wan_childhood_truth_canonized": false,
+    "new_character_detected_by_runtime": false,
+    "new_source_event_canonized": false,
+    "note": "Provider 文本保留 unknowns/prohibited_interpretations，但由于 IR 被阻断，任何语义仅作取证阅读，未进入 authority。"
+  },
+  "quality_risks": [
+    "两个 character_directions 使用了契约外的 direction 字段，导致 Schema 与 Runtime 双重阻断。",
+    "冻结 request fingerprint 与实际 endpoint fingerprint 不一致，说明预检与正式请求的 evidence 组装未完全同构。",
+    "raw response 的字符显示存在编码可读性风险，需在后续代码修复中确认 UTF-8 传输与审计展示一致。"
+  ]
+}
