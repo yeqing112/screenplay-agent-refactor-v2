@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "valid_authored_hook": "PRODUCTION_QUALIFIED",
+  "authored_missing_hook": "CREATIVE_QUALITY_BLOCKED",
+  "global_gate_weakened": false
+}

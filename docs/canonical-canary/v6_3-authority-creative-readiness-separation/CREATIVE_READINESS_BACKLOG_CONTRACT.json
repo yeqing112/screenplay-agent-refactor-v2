@@ -1,0 +1,11 @@
+{
+  "state": "AUTHORING_REQUIRED",
+  "backlog": [
+    "DRAMATIC_BEATS_REQUIRED",
+    "EPISODE_HOOK_REQUIRED"
+  ],
+  "fingerprint": "d04684b184243ca8173b0162e9dd03a11bfb84bd37dd441edfe26ba1494e8a05",
+  "deterministic": true,
+  "llm_used": false,
+  "materializes_content": false
+}

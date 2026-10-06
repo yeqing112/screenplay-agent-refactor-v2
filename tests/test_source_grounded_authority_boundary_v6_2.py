@@ -147,8 +147,8 @@ def test_v3_1_temporary_full_persistence_and_resolve_with_generic_source() -> No
     origin_hash = hashlib.sha256(raw.encode()).hexdigest()
     lineage = SourceLineageContext(origin_source_kind="BOOK_CHAPTER", origin_source_package_id="book:generic", origin_source_version_id="chapter:2:v1", origin_source_locator={"book_id": 1, "chapter_seq": 2}, origin_source_raw_hash=origin_hash, structuring_response_fingerprint="1" * 64, reconciliation_policy_version="reconciliation_v1", reconciliation_fingerprint="2" * 64, migration_fingerprint="3" * 64, canonical_projection_version="source_grounded_script_payload_v3_1")
     canonical = canonical_script_payload_v3(grounded["grounded_candidate"], source_lineage=lineage)
-    canonical["scenes"][0]["beats"] = [{"beat_id": "E02_SC001_B01", "type": "HOOK", "beat_type": "HOOK", "event": "A different chapter source.", "importance": "critical", "requires_reaction": True}]
-    canonical["scenes"][0]["script_blocks"].append({"order": 30, "type": "ACTION", "ref": "E02_SC001_B01"})
+    assert canonical["scenes"][0].get("beats", []) == []
+    assert canonical.get("scene_transitions", []) == []
     content = json.dumps(canonical, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     canonical_hash = hashlib.sha256(content.encode()).hexdigest()
     candidate = build_production_candidate(canonical, book_id=1, episode=2)
@@ -180,6 +180,15 @@ def test_v3_1_temporary_full_persistence_and_resolve_with_generic_source() -> No
         session.add(draft); session.flush()
         result = activate_script_ir(session=session, script_row=script, draft_row=draft, source_structure=candidate, source_package_id=lineage.origin_source_package_id, source_version_id=lineage.origin_source_version_id, immutable_source_raw_hash=origin_hash, source_evidence_index=index, source_anchor_bindings=anchors, fact_snapshot_row=snapshot, origin_raw_bytes=raw.encode(), canonical_script_content_hash=canonical_hash, source_lineage=lineage)
         assert result["authority_envelope"]["schema_version"] == "script_ir_authority_envelope_v2"
+        assert result["authority_envelope"]["authority_profile"] == "SOURCE_GROUNDED_V3_1"
+        assert result["authority_envelope"]["creative_readiness_state"] == "AUTHORING_REQUIRED"
+        assert "DRAMATIC_BEATS_REQUIRED" in result["authority_envelope"]["creative_readiness_backlog"]
+        assert result["authority_envelope"]["source_authority_semantic_diff"]["status"] == "PASS"
+        assert result["authority_envelope"]["source_authority_semantic_diff"]["new_beat_count"] == 0
+        assert result["authority_envelope"]["source_authority_semantic_diff"]["new_transition_count"] == 0
+        assert script.production_status == "blocked"
+        assert "CREATIVE_AUTHORING_REQUIRED" in draft.validation_report
+        assert json.loads(snapshot.records_json)[0].get("predicate") != "creative_readiness_backlog"
         session.refresh(script)
         assert resolve_script_payload(session, script, workflow_profile="production")["source_grounded_schema_version"] == "source_grounded_script_payload_v3_1"
 
@@ -194,8 +203,8 @@ def test_prepare_production_route_uses_origin_chapter_and_writes_only_isolated_d
     grounded = ground_candidate_v3(raw, {"schema_version": SCHEMA_VERSION_V3_1, "scenes": [{"scene_id": "E03_SC001", "scene_evidence": [raw], "participants": [{"name": "MAYA", "evidence": [raw]}], "actions": [{"text": "Generic route chapter.", "source_evidence": raw}], "dialogues": [{"speaker": "MAYA", "text": "Hold.", "source_form": "SPEAKER_LABELED", "utterance_evidence": [raw], "speaker_identity_evidence": [raw], "binding_type": "SOURCE_LITERAL"}]}], "unknowns": []})
     lineage = SourceLineageContext(origin_source_kind="BOOK_CHAPTER", origin_source_package_id="book:route", origin_source_version_id="chapter:3:v1", origin_source_locator={"book_id": 1, "chapter_seq": 3}, origin_source_raw_hash=hashlib.sha256(raw.encode()).hexdigest(), structuring_response_fingerprint="4" * 64, reconciliation_policy_version="reconciliation_v1", reconciliation_fingerprint="5" * 64, migration_fingerprint="6" * 64, canonical_projection_version="source_grounded_script_payload_v3_1")
     canonical = canonical_script_payload_v3(grounded["grounded_candidate"], source_lineage=lineage)
-    canonical["scenes"][0]["beats"] = [{"beat_id": "E03_SC001_B01", "type": "HOOK", "beat_type": "HOOK", "event": "Generic route chapter.", "importance": "critical", "requires_reaction": True}]
-    canonical["scenes"][0]["script_blocks"].append({"order": 30, "type": "ACTION", "ref": "E03_SC001_B01"})
+    assert canonical["scenes"][0].get("beats", []) == []
+    assert canonical.get("scene_transitions", []) == []
     content = json.dumps(canonical, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     with SessionLocal() as session:
         book = Book(title="route", filename="route.txt"); session.add(book); session.flush()
@@ -204,9 +213,16 @@ def test_prepare_production_route_uses_origin_chapter_and_writes_only_isolated_d
     monkeypatch.setattr(preparation_api, "Session", SessionLocal)
     result = prepare_script_ir_production(book_id, 3, PrepareProductionRequest(confirmed=True))
     assert result["activation"]["authority_envelope"]["schema_version"] == "script_ir_authority_envelope_v2"
+    assert result["activation"]["authority_envelope"]["creative_readiness_state"] == "AUTHORING_REQUIRED"
+    assert result["activation"]["authority_envelope"]["source_authority_semantic_diff"]["new_beat_count"] == 0
     with SessionLocal() as session:
         script = session.query(Script).filter_by(book_id=book_id, episode=3).one()
         assert resolve_script_payload(session, script, workflow_profile="production")["source_grounded_schema_version"] == "source_grounded_script_payload_v3_1"
+        from core.director_treatment_authority import resolve_scene_for_treatment
+        director_scene, _, director_payload, director_envelope = resolve_scene_for_treatment(session, script, scene_id="E03_SC001", workflow_profile="production")
+        assert director_scene["scene_id"] == "E03_SC001"
+        assert director_envelope["authority_profile"] == "SOURCE_GROUNDED_V3_1"
+        assert director_envelope["creative_readiness_state"] == "AUTHORING_REQUIRED"
         script.content = content + "x"; session.commit()
         with pytest.raises(Exception) as canonical_exc:
             resolve_script_payload(session, script, workflow_profile="production")

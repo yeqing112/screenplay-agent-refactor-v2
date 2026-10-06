@@ -1,0 +1,10 @@
+{
+  "NEW_LLM_REQUIRED": false,
+  "authoritative_semantic_inputs": [
+    "historical unique MiMo response",
+    "deterministic reconciliation",
+    "V3.1 deterministic migration"
+  ],
+  "new_external_llm_calls": 0,
+  "creative_backlog_generation": "deterministic canonical JSON only"
+}

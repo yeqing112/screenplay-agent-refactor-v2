@@ -118,6 +118,8 @@ def _payload(row: ScriptIRVersion) -> dict[str, Any]:
         "qualification_state": row.qualification_state,
         "payload_hash": row.payload_hash,
         "authority_envelope": envelope,
+        "authority_profile": envelope.get("authority_profile", ""),
+        "creative_readiness_state": envelope.get("creative_readiness_state", ""),
         "payload": payload,
     }
 

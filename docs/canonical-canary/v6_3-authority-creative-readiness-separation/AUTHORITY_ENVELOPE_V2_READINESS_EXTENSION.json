@@ -1,0 +1,7 @@
+{
+  "schema_version": "script_ir_authority_envelope_v2",
+  "authority_profile": "SOURCE_GROUNDED_V3_1",
+  "creative_readiness_state": "AUTHORING_REQUIRED",
+  "creative_readiness_fingerprint": "d04684b184243ca8173b0162e9dd03a11bfb84bd37dd441edfe26ba1494e8a05",
+  "readiness_is_not_source_proof": true
+}

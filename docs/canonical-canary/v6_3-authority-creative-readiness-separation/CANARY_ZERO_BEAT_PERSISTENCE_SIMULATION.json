@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "beats": 0,
+  "transitions": 0,
+  "authority": "PASS",
+  "creative_readiness": "AUTHORING_REQUIRED",
+  "production_status": "blocked",
+  "provider_calls": 0,
+  "database": "isolated SQLite"
+}

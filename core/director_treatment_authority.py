@@ -323,8 +323,34 @@ def _current_script_ir(session: Any, script_row: Any) -> tuple[Any, dict[str, An
     envelope = _json(getattr(version, "authority_envelope_json", "{}"), {})
     if not isinstance(payload, dict) or not isinstance(envelope, dict) or not envelope.get("envelope_fingerprint"):
         raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_ENVELOPE_INVALID", "message": "Current ScriptIR authority envelope is missing."})
-    from core.script_ir_authority import validate_authority_envelope
-    report = validate_authority_envelope(envelope, payload=payload)
+    from core.script_ir_authority import validate_authority_envelope, validate_authority_envelope_v2
+    if str(envelope.get("schema_version") or "") == "script_ir_authority_envelope_v2":
+        # resolve_script_payload already performed the dual-source freshness
+        # and origin checks.  Reuse the V2 contract here instead of applying
+        # the legacy V1 envelope schema to a source-grounded authority.
+        from core.source_authority import SourceLineageContext, resolve_origin_source
+        from core.source_evidence_index import build_source_evidence_index
+        lineage = SourceLineageContext(
+            origin_source_kind=str(envelope.get("origin_source_kind") or ""),
+            origin_source_package_id=str(envelope.get("origin_source_package_id") or ""),
+            origin_source_version_id=str(envelope.get("origin_source_version_id") or ""),
+            origin_source_locator=envelope.get("origin_source_locator") if isinstance(envelope.get("origin_source_locator"), dict) else {},
+            origin_source_raw_hash=str(envelope.get("origin_source_raw_hash") or ""),
+            structuring_response_fingerprint=str(envelope.get("structuring_response_fingerprint") or ""),
+            reconciliation_policy_version=str(envelope.get("reconciliation_policy_version") or ""),
+            reconciliation_fingerprint=str(envelope.get("reconciliation_fingerprint") or ""),
+            migration_fingerprint=str(envelope.get("migration_fingerprint") or ""),
+            canonical_projection_version=str(payload.get("source_grounded_schema_version") or ""),
+            canonical_script_content_hash=str(envelope.get("canonical_script_content_hash") or ""),
+            canonical_script_payload_fingerprint=str(envelope.get("canonical_script_payload_fingerprint") or ""),
+        )
+        origin = resolve_origin_source(session, lineage)
+        origin_index = build_source_evidence_index(origin["raw_bytes"], source_package_id=origin["source_package_id"], source_version_id=origin["source_version_id"], source_raw_hash=origin["raw_sha256"])
+        from models import FactSnapshot
+        snapshot = session.query(FactSnapshot).filter_by(id=int(envelope.get("fact_snapshot_id"))).first()
+        report = validate_authority_envelope_v2(envelope, payload=payload, lineage=lineage, source_evidence_index=origin_index, fact_snapshot={"id": snapshot.id, "revision": snapshot.revision, "payload_hash": snapshot.payload_hash} if snapshot else None, canonical_script_content_hash=str(envelope.get("canonical_script_content_hash") or ""), origin_raw_hash=origin["raw_sha256"])
+    else:
+        report = validate_authority_envelope(envelope, payload=payload)
     if report.get("status") != "PASS":
         raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_STALE", "message": "Current ScriptIR authority is stale.", "errors": report.get("errors", [])})
     return version, payload, envelope
@@ -402,9 +428,33 @@ def resolve_current_authoritative_treatment(session: Any, *, book_id: int, episo
     # The ScriptIR authority envelope is itself an input to Treatment
     # authority.  A changed or tampered upstream envelope must invalidate the
     # downstream pointer even when the ScriptIR row id/hash is unchanged.
-    from core.script_ir_authority import validate_authority_envelope
+    from core.script_ir_authority import validate_authority_envelope, validate_authority_envelope_v2
     current_ir_envelope = _json(getattr(current_ir, "authority_envelope_json", "{}"), {})
-    upstream_report = validate_authority_envelope(current_ir_envelope, payload=_json(current_ir.payload_json, {}))
+    current_ir_payload = _json(current_ir.payload_json, {})
+    if str(current_ir_envelope.get("schema_version") or "") == "script_ir_authority_envelope_v2":
+        from core.source_authority import SourceLineageContext, resolve_origin_source
+        from core.source_evidence_index import build_source_evidence_index
+        lineage = SourceLineageContext(
+            origin_source_kind=str(current_ir_envelope.get("origin_source_kind") or ""),
+            origin_source_package_id=str(current_ir_envelope.get("origin_source_package_id") or ""),
+            origin_source_version_id=str(current_ir_envelope.get("origin_source_version_id") or ""),
+            origin_source_locator=current_ir_envelope.get("origin_source_locator") if isinstance(current_ir_envelope.get("origin_source_locator"), dict) else {},
+            origin_source_raw_hash=str(current_ir_envelope.get("origin_source_raw_hash") or ""),
+            structuring_response_fingerprint=str(current_ir_envelope.get("structuring_response_fingerprint") or ""),
+            reconciliation_policy_version=str(current_ir_envelope.get("reconciliation_policy_version") or ""),
+            reconciliation_fingerprint=str(current_ir_envelope.get("reconciliation_fingerprint") or ""),
+            migration_fingerprint=str(current_ir_envelope.get("migration_fingerprint") or ""),
+            canonical_projection_version=str(current_ir_payload.get("source_grounded_schema_version") or ""),
+            canonical_script_content_hash=str(current_ir_envelope.get("canonical_script_content_hash") or ""),
+            canonical_script_payload_fingerprint=str(current_ir_envelope.get("canonical_script_payload_fingerprint") or ""),
+        )
+        origin = resolve_origin_source(session, lineage)
+        origin_index = build_source_evidence_index(origin["raw_bytes"], source_package_id=origin["source_package_id"], source_version_id=origin["source_version_id"], source_raw_hash=origin["raw_sha256"])
+        from models import FactSnapshot
+        snapshot = session.query(FactSnapshot).filter_by(id=int(current_ir_envelope.get("fact_snapshot_id"))).first()
+        upstream_report = validate_authority_envelope_v2(current_ir_envelope, payload=current_ir_payload, lineage=lineage, source_evidence_index=origin_index, fact_snapshot={"id": snapshot.id, "revision": snapshot.revision, "payload_hash": snapshot.payload_hash} if snapshot else None, canonical_script_content_hash=str(current_ir_envelope.get("canonical_script_content_hash") or ""), origin_raw_hash=origin["raw_sha256"])
+    else:
+        upstream_report = validate_authority_envelope(current_ir_envelope, payload=current_ir_payload)
     if upstream_report.get("status") != "PASS" or _text(envelope_script.get("authority_envelope_fingerprint")) != _text(current_ir_envelope.get("envelope_fingerprint")):
         _stale_raise("Treatment upstream ScriptIR authority is stale.", ["SCRIPT_IR_AUTHORITY_CHANGED"])
     current_scene = None

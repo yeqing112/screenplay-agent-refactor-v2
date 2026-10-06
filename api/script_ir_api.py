@@ -84,6 +84,8 @@ def _payload(row: ScriptIRVersion) -> dict[str, Any]:
         "validation_status": row.validation_status,
         "validation_report": report,
         "authority_envelope": _json_object(getattr(row, "authority_envelope_json", "{}"), {}),
+        "authority_profile": _json_object(getattr(row, "authority_envelope_json", "{}"), {}).get("authority_profile", ""),
+        "creative_readiness_state": _json_object(getattr(row, "authority_envelope_json", "{}"), {}).get("creative_readiness_state", ""),
         "qualification_state": getattr(row, "qualification_state", "STRUCTURALLY_VALID"),
         "stale_status": getattr(row, "stale_status", "UNKNOWN"),
         "stale_reasons": _json_object(getattr(row, "stale_reasons", "[]"), []),

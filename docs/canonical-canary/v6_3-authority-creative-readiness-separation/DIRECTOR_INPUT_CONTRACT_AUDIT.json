@@ -1,0 +1,16 @@
+{
+  "status": "DIRECTOR_INPUT_CONTRACT_READY",
+  "accepted_input": {
+    "qualification_state": "PRODUCTION_QUALIFIED",
+    "authority_profile": "SOURCE_GROUNDED_V3_1",
+    "creative_readiness_state": "AUTHORING_REQUIRED"
+  },
+  "director_owns": [
+    "dramatic interpretation",
+    "beats",
+    "transitions",
+    "scene dramatic purpose",
+    "visual authoring"
+  ],
+  "conflict": false
+}

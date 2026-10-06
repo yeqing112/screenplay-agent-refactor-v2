@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "fact_snapshot_authority": "source_text",
+  "creative_backlog_persisted_as_source_fact": false,
+  "hook_or_critical_in_fact_snapshot": false
+}

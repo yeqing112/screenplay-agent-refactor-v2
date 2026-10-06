@@ -1,0 +1,13 @@
+{
+  "existing_qualification_state_preserved": true,
+  "production_qualified_meaning": "canonical production authority qualified",
+  "authority_profile": "SOURCE_GROUNDED_V3_1",
+  "creative_readiness_state": "AUTHORING_REQUIRED",
+  "consumers": [
+    "resolve_script_payload",
+    "DirectorTreatment",
+    "SceneBlocking",
+    "ShotPlan"
+  ],
+  "blind_rename_performed": false
+}

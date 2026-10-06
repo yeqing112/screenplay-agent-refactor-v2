@@ -1,0 +1,9 @@
+{
+  "beat_authority": "AUTHORIZED_CREATIVE_PROJECTION",
+  "transition_authority": "AUTHORIZED_CREATIVE_PROJECTION",
+  "required": [
+    "derived_from_source_refs[]",
+    "director_decision_ref"
+  ],
+  "source_fact_snapshot_pollution": false
+}

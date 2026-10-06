@@ -1,0 +1,10 @@
+{
+  "command": "DATABASE_URL=sqlite:///work/db/v6_3_full_regression.sqlite APP_ENV=test DEPLOYMENT_ENV=test E2E_EXTERNAL_RUNTIME=mock pytest -q",
+  "passed": 2299,
+  "failed": 11,
+  "warnings": 8774,
+  "duration": "15:07",
+  "new_v6_3_failures": 0,
+  "baseline_or_environment_failures": 11,
+  "previous_baseline": "2293 passed / 11 known baseline/environment failures"
+}

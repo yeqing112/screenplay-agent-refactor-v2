@@ -14,11 +14,11 @@ from datetime import datetime, timezone
 from typing import Any
 
 from core.fact_coverage import fingerprint
-from core.source_authority import SourceLineageContext, canonical_json_sha256
+from core.source_authority import SourceLineageContext, canonical_json_sha256, source_semantic_diff
 from core.fact_snapshot import snapshot_hash
 from core.source_evidence_index import build_source_evidence_index, validate_source_evidence_index
 from core.script_ir import script_ir_hash, validate_script_ir
-from core.script_creative_quality import run_script_creative_quality_gate
+from core.script_creative_quality import build_creative_readiness_backlog, run_script_creative_quality_gate, run_source_grounded_authority_quality_gate
 from core.script_ir_source_requirements import (
     CONTRACT_SCHEMA_VERSION,
     compile_script_ir_source_requirements,
@@ -111,7 +111,7 @@ def build_authority_envelope(*, book_id: int, episode: int, script_ir_payload: d
     return envelope
 
 
-def build_authority_envelope_v2(*, book_id: int, episode: int, script_ir_payload: dict[str, Any], lineage: SourceLineageContext, fact_snapshot: dict[str, Any], source_evidence_index: dict[str, Any], requirement_set: dict[str, Any], coverage_result: dict[str, Any], source_anchor_bindings: dict[str, Any], source_requirement_contract_fingerprint: str = "", reconciliation_policy_version: str = "", reconciliation_fingerprint: str = "", migration_fingerprint: str = "", authority_revision: int = 1, canonical_script_content_hash: str = "") -> dict[str, Any]:
+def build_authority_envelope_v2(*, book_id: int, episode: int, script_ir_payload: dict[str, Any], lineage: SourceLineageContext, fact_snapshot: dict[str, Any], source_evidence_index: dict[str, Any], requirement_set: dict[str, Any], coverage_result: dict[str, Any], source_anchor_bindings: dict[str, Any], source_requirement_contract_fingerprint: str = "", reconciliation_policy_version: str = "", reconciliation_fingerprint: str = "", migration_fingerprint: str = "", authority_revision: int = 1, canonical_script_content_hash: str = "", creative_readiness: dict[str, Any] | None = None, semantic_diff: dict[str, Any] | None = None) -> dict[str, Any]:
     """Build the dual-source V2 envelope used only by source-grounded V3.1."""
     payload_hash = script_ir_hash(script_ir_payload)
     canonical_content_hash = canonical_script_content_hash or lineage.canonical_script_content_hash
@@ -124,6 +124,8 @@ def build_authority_envelope_v2(*, book_id: int, episode: int, script_ir_payload
         raise ScriptIRAuthorityError("CANONICAL_SCRIPT_PAYLOAD_FINGERPRINT_REQUIRED", "Canonical payload fingerprint is required for authority V2.")
     if not lineage.structuring_response_fingerprint:
         raise ScriptIRAuthorityError("STRUCTURING_RESPONSE_FINGERPRINT_REQUIRED", "A real raw structuring response fingerprint is required.")
+    readiness = creative_readiness or build_creative_readiness_backlog(script_ir_payload)
+    semantic = semantic_diff or {"status": "PASS", "new_beat_count": 0, "new_transition_count": 0, "new_dialogue_count": 0, "new_action_count": 0, "speaker_changes": 0, "location_changes": 0, "display_authority_upgrades": 0}
     envelope = {
         "schema_version": AUTHORITY_ENVELOPE_SCHEMA_VERSION_V2,
         "authority_policy_version": AUTHORITY_POLICY_VERSION_V2,
@@ -147,6 +149,11 @@ def build_authority_envelope_v2(*, book_id: int, episode: int, script_ir_payload
         "reconciliation_fingerprint": reconciliation_fingerprint or lineage.reconciliation_fingerprint,
         "migration_fingerprint": migration_fingerprint or lineage.migration_fingerprint,
         "source_anchor_bindings": copy.deepcopy(source_anchor_bindings),
+        "authority_profile": "SOURCE_GROUNDED_V3_1",
+        "creative_readiness_state": _text(readiness.get("creative_readiness_state")) or "AUTHORING_REQUIRED",
+        "creative_readiness_fingerprint": _text(readiness.get("creative_readiness_fingerprint")),
+        "creative_readiness_backlog": list(readiness.get("backlog") or []),
+        "source_authority_semantic_diff": copy.deepcopy(semantic),
         "qualification_state": "PRODUCTION_QUALIFIED", "stale_status": "FRESH", "stale_reasons": [], "authority_revision": int(authority_revision),
     }
     envelope["source_lineage"] = {
@@ -180,6 +187,14 @@ def validate_authority_envelope_v2(envelope: dict[str, Any], *, payload: dict[st
         errors.append({"code": "ORIGIN_SOURCE_CHANGED"})
     if envelope.get("origin_source_evidence_index_fingerprint") != _index_fingerprint(source_evidence_index):
         errors.append({"code": "ORIGIN_EVIDENCE_INDEX_CHANGED"})
+    if envelope.get("authority_profile") != "SOURCE_GROUNDED_V3_1":
+        errors.append({"code": "AUTHORITY_PROFILE_INVALID"})
+    readiness = build_creative_readiness_backlog(payload)
+    if envelope.get("creative_readiness_state") != readiness.get("creative_readiness_state") or envelope.get("creative_readiness_fingerprint") != readiness.get("creative_readiness_fingerprint") or list(envelope.get("creative_readiness_backlog") or []) != list(readiness.get("backlog") or []):
+        errors.append({"code": "CREATIVE_READINESS_CHANGED"})
+    semantic = envelope.get("source_authority_semantic_diff") if isinstance(envelope.get("source_authority_semantic_diff"), dict) else {}
+    if semantic and (semantic.get("status") != "PASS" or any(int(semantic.get(key) or 0) != 0 for key in ("new_beat_count", "new_transition_count", "new_dialogue_count", "new_action_count", "speaker_changes", "location_changes", "display_authority_upgrades"))):
+        errors.append({"code": "SOURCE_AUTHORITY_SEMANTIC_MUTATION"})
     for field in ("origin_source_kind", "origin_source_package_id", "origin_source_version_id", "origin_source_raw_hash"):
         if str(envelope.get(field) or "") != str(getattr(lineage, field) or ""):
             errors.append({"code": "ORIGIN_SOURCE_LINEAGE_CHANGED", "field": field})
@@ -303,14 +318,6 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     structural = validate_script_ir(payload)
     if structural.get("status") != "qualified":
         raise ScriptIRAuthorityError("SCRIPT_IR_NOT_STRUCTURALLY_VALID", "ScriptIR structural validation failed.", details={"validation": structural})
-    creative = run_script_creative_quality_gate(payload, production=True)
-    if not creative.get("qualified"):
-        first_error = (creative.get("hard_errors") or [{}])[0]
-        raise ScriptIRAuthorityError(
-            str(first_error.get("code") or "SCRIPT_CREATIVE_QUALITY_BLOCKED"),
-            "ScriptIR creative quality and explicit timeline gates failed.",
-            details={"creative_quality": creative},
-        )
     scenes = payload.get("scenes") if isinstance(payload.get("scenes"), list) else []
     if any(_text(scene.get("name")).startswith("未命名场景") for scene in scenes if isinstance(scene, dict)):
         raise ScriptIRAuthorityError("SCENE_NAME_SOURCE_AUTHORITY_REQUIRED", "Placeholder scene names cannot become production authority.")
@@ -318,6 +325,31 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     current_source_hash = hashlib.sha256(canonical_bytes).hexdigest()
     v3_1 = str(source_structure.get("source_grounded_schema_version") or "") == "source_grounded_script_payload_v3_1"
     raw_source_bytes = origin_raw_bytes if v3_1 and origin_raw_bytes is not None else canonical_bytes
+    source_authority_gate = None
+    creative_readiness = None
+    if v3_1:
+        try:
+            canonical_source_payload = json.loads(getattr(script_row, "content", "") or "{}")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            canonical_source_payload = source_structure
+        source_authority_gate = run_source_grounded_authority_quality_gate(payload, canonical_source=canonical_source_payload if isinstance(canonical_source_payload, dict) else source_structure)
+        if not source_authority_gate.get("qualified"):
+            first_error = (source_authority_gate.get("hard_errors") or [{}])[0]
+            raise ScriptIRAuthorityError(
+                str(first_error.get("code") or "SOURCE_AUTHORITY_GATE_BLOCKED"),
+                "Source-grounded ScriptIR failed source authority qualification.",
+                details={"source_authority_gate": source_authority_gate},
+            )
+        creative_readiness = source_authority_gate.get("creative_readiness") or build_creative_readiness_backlog(payload)
+    else:
+        creative = run_script_creative_quality_gate(payload, production=True)
+        if not creative.get("qualified"):
+            first_error = (creative.get("hard_errors") or [{}])[0]
+            raise ScriptIRAuthorityError(
+                str(first_error.get("code") or "SCRIPT_CREATIVE_QUALITY_BLOCKED"),
+                "ScriptIR creative quality and explicit timeline gates failed.",
+                details={"creative_quality": creative},
+            )
     if v3_1:
         from core.script_ir_production_preparation import validate_source_grounded_strict_equivalence
         try:
@@ -386,8 +418,11 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     fact_coverage = fact_report.get("fact_coverage") if isinstance(fact_report, dict) else None
     if isinstance(fact_coverage, dict) and str(fact_coverage.get("status") or "").startswith("FACT_COVERAGE_") and fact_coverage.get("status") != "FACT_COVERAGE_SUFFICIENT":
         raise ScriptIRAuthorityError("FACT_SNAPSHOT_COVERAGE_INSUFFICIENT", "Bound FactSnapshot is not coverage-qualified.")
+    semantic_diff = source_semantic_diff(payload, _json(getattr(draft_row, "payload_json", "{}"), {})) if v3_1 else None
+    if v3_1 and semantic_diff and semantic_diff.get("status") != "PASS":
+        raise ScriptIRAuthorityError("SOURCE_AUTHORITY_SEMANTIC_MUTATION", "Source-grounded activation changed story semantics.", details={"semantic_diff": semantic_diff})
     if v3_1:
-        envelope = build_authority_envelope_v2(book_id=script_row.book_id, episode=script_row.episode, script_ir_payload=payload, lineage=source_lineage, fact_snapshot={"id": fact_snapshot_row.id, "revision": fact_snapshot_row.revision, "payload_hash": fact_snapshot_row.payload_hash}, source_evidence_index=source_evidence_index, requirement_set=requirement_set, coverage_result=coverage, source_anchor_bindings=anchor_check["bindings"], source_requirement_contract_fingerprint=contract.get("fingerprint"), authority_revision=authority_revision or int(getattr(draft_row, "revision", 1) or 1), canonical_script_content_hash=canonical_script_content_hash)
+        envelope = build_authority_envelope_v2(book_id=script_row.book_id, episode=script_row.episode, script_ir_payload=payload, lineage=source_lineage, fact_snapshot={"id": fact_snapshot_row.id, "revision": fact_snapshot_row.revision, "payload_hash": fact_snapshot_row.payload_hash}, source_evidence_index=source_evidence_index, requirement_set=requirement_set, coverage_result=coverage, source_anchor_bindings=anchor_check["bindings"], source_requirement_contract_fingerprint=contract.get("fingerprint"), authority_revision=authority_revision or int(getattr(draft_row, "revision", 1) or 1), canonical_script_content_hash=canonical_script_content_hash, creative_readiness=creative_readiness, semantic_diff=semantic_diff)
     else:
         envelope = build_authority_envelope(book_id=script_row.book_id, episode=script_row.episode, script_ir_payload=payload, source_package_id=source_package_id, source_version_id=source_version_id, immutable_source_raw_hash=immutable_source_raw_hash, source_evidence_index=source_evidence_index, fact_snapshot={"id": fact_snapshot_row.id, "revision": fact_snapshot_row.revision, "payload_hash": fact_snapshot_row.payload_hash}, contract=contract, requirement_set=requirement_set, coverage_result=coverage, authority_revision=authority_revision or int(getattr(draft_row, "revision", 1) or 1))
         envelope["source_anchor_bindings"] = copy.deepcopy(anchor_check["bindings"])
@@ -399,6 +434,20 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     draft_row.qualification_state = "PRODUCTION_QUALIFIED"
     draft_row.stale_status = "FRESH"
     draft_row.stale_reasons = "[]"
+    validation_report = _json(getattr(draft_row, "validation_report", "{}"), {})
+    if not isinstance(validation_report, dict):
+        validation_report = {}
+    if v3_1:
+        validation_report.update({
+            "authority_profile": "SOURCE_GROUNDED_V3_1",
+            "source_authority_gate": source_authority_gate,
+            "creative_readiness": creative_readiness,
+            "creative_readiness_state": (creative_readiness or {}).get("creative_readiness_state", "AUTHORING_REQUIRED"),
+            "production_status": "blocked",
+            "production_block_reason": "CREATIVE_AUTHORING_REQUIRED",
+            "source_authority_semantic_diff": semantic_diff,
+        })
+    draft_row.validation_report = json.dumps(validation_report, ensure_ascii=False, sort_keys=True)
     draft_row.authority_envelope_json = json.dumps(envelope, ensure_ascii=False, sort_keys=True)
     draft_row.updated_at = datetime.now()
     previous = session.query(type(draft_row)).filter_by(book_id=script_row.book_id, episode=script_row.episode, status="production_qualified").filter(type(draft_row).id != draft_row.id).order_by(type(draft_row).revision.desc(), type(draft_row).id.desc()).all()
@@ -412,7 +461,7 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     script_row.production_status = "blocked"
     session.commit()
     session.refresh(draft_row)
-    return {"status": "SCRIPT_IR_AUTHORITY_ACTIVATED", "script_ir_version_id": draft_row.id, "revision": draft_row.revision, "qualification_state": draft_row.qualification_state, "authority_envelope": envelope, "downstream_requirement_backlog": "preserved", "provider_calls": 0, "production_writes": 1}
+    return {"status": "SCRIPT_IR_AUTHORITY_ACTIVATED", "script_ir_version_id": draft_row.id, "revision": draft_row.revision, "qualification_state": draft_row.qualification_state, "authority_envelope": envelope, "downstream_requirement_backlog": creative_readiness or "preserved", "provider_calls": 0, "production_writes": 1}
 
 
 __all__ = ["AUTHORITY_ENVELOPE_SCHEMA_VERSION", "AUTHORITY_POLICY_VERSION", "AUTHORITY_ENVELOPE_SCHEMA_VERSION_V2", "AUTHORITY_POLICY_VERSION_V2", "QUALIFICATION_STATES", "STALE_STATUSES", "ScriptIRAuthorityError", "build_authority_envelope", "build_authority_envelope_v2", "validate_source_anchor_bindings", "validate_source_evidence_binding", "validate_authority_envelope", "validate_authority_envelope_v2", "activate_script_ir"]

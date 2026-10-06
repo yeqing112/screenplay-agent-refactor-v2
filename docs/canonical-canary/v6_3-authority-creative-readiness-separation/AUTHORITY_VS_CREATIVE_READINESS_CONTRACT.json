@@ -1,0 +1,24 @@
+{
+  "authority_qualification": [
+    "structural validity",
+    "exact source evidence",
+    "origin freshness",
+    "canonical freshness",
+    "FactSnapshot coverage",
+    "anchor binding",
+    "speaker/dialogue provenance",
+    "source timeline ordering",
+    "strict equivalence",
+    "no semantic invention"
+  ],
+  "creative_readiness": [
+    "dramatic beats",
+    "critical beats",
+    "episode hook",
+    "scene transitions",
+    "dramatic escalation",
+    "authored state transitions",
+    "treatment decisions"
+  ],
+  "blocking_gate_shared": false
+}

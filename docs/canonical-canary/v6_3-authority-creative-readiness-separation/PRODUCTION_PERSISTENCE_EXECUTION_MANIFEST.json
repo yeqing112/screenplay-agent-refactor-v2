@@ -1,0 +1,17 @@
+{
+  "authorized": false,
+  "next_state": "GENERALIZED_CANARY_PRODUCTION_PERSISTENCE_AUTHORIZATION_REQUIRED",
+  "origin_locator": "BOOK_CHAPTER locator required",
+  "origin_source_raw_hash": "bound at runtime",
+  "real_llm_response_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
+  "reconciliation_fingerprint": "bound to V5.4 deterministic reconciliation",
+  "migration_fingerprint": "bound to V6/V6.1 V3.1 migration",
+  "canonical_projection_version": "source_grounded_script_payload_v3_1",
+  "expected_semantic_counts": {
+    "beats": 0,
+    "transitions": 0
+  },
+  "expected_creative_readiness_state": "AUTHORING_REQUIRED",
+  "api_secrets_included": false,
+  "external_llm_required": false
+}

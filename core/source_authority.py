@@ -26,6 +26,63 @@ def reconciliation_fingerprint(*, policy_version: str, transformations: list[dic
     return canonical_json_sha256({"policy_version": str(policy_version or ""), "transformations": transformations, "input_candidate_fingerprint": str(input_candidate_fingerprint or ""), "output_candidate_fingerprint": str(output_candidate_fingerprint or "")})
 
 
+def source_semantic_projection(payload: Mapping[str, Any]) -> dict[str, Any]:
+    """Return the story-bearing projection used for activation diffing."""
+    scenes = payload.get("scenes") if isinstance(payload, Mapping) and isinstance(payload.get("scenes"), list) else []
+    projected_scenes: list[dict[str, Any]] = []
+    for scene in scenes:
+        if not isinstance(scene, Mapping):
+            continue
+        projected_scenes.append({
+            "scene_id": scene.get("scene_id"),
+            "location_name": scene.get("location_name"),
+            "display_name": scene.get("display_name"),
+            "display_name_authority": scene.get("display_name_authority"),
+            "participants": scene.get("participants") or [],
+            "actions": scene.get("actions") or [],
+            "dialogues": scene.get("dialogues") or [],
+            "beats": scene.get("dramatic_beats") or scene.get("beats") or [],
+            "script_blocks": scene.get("script_blocks") or [],
+        })
+    return {"scenes": projected_scenes, "scene_transitions": payload.get("scene_transitions") or []}
+
+
+def source_semantic_diff(before: Mapping[str, Any], after: Mapping[str, Any]) -> dict[str, Any]:
+    """Compare source authority story fields without treating metadata as story."""
+    left = source_semantic_projection(before)
+    right = source_semantic_projection(after)
+    left_scenes = {str(item.get("scene_id") or ""): item for item in left["scenes"]}
+    right_scenes = {str(item.get("scene_id") or ""): item for item in right["scenes"]}
+    new_beats = sum(max(0, len(right_scenes.get(key, {}).get("beats", [])) - len(item.get("beats", []))) for key, item in left_scenes.items())
+    new_actions = sum(max(0, len(right_scenes.get(key, {}).get("actions", [])) - len(item.get("actions", []))) for key, item in left_scenes.items())
+    new_dialogues = sum(max(0, len(right_scenes.get(key, {}).get("dialogues", [])) - len(item.get("dialogues", []))) for key, item in left_scenes.items())
+    new_transitions = max(0, len(right.get("scene_transitions", [])) - len(left.get("scene_transitions", [])))
+    speaker_changes = 0
+    location_changes = 0
+    display_authority_upgrades = 0
+    for key, item in left_scenes.items():
+        other = right_scenes.get(key, {})
+        if [str(d.get("speaker") or "") for d in item.get("dialogues", []) if isinstance(d, Mapping)] != [str(d.get("speaker") or "") for d in other.get("dialogues", []) if isinstance(d, Mapping)]:
+            speaker_changes += 1
+        if item.get("location_name") != other.get("location_name"):
+            location_changes += 1
+        if item.get("display_name_authority") != other.get("display_name_authority"):
+            display_authority_upgrades += 1
+    changed = left != right
+    return {
+        "status": "PASS" if not changed else "FAIL",
+        "new_beat_count": new_beats,
+        "new_transition_count": new_transitions,
+        "new_dialogue_count": new_dialogues,
+        "new_action_count": new_actions,
+        "speaker_changes": speaker_changes,
+        "location_changes": location_changes,
+        "display_authority_upgrades": display_authority_upgrades,
+        "before_fingerprint": canonical_json_sha256(left),
+        "after_fingerprint": canonical_json_sha256(right),
+    }
+
+
 @dataclass(frozen=True)
 class SourceLineageContext:
     origin_source_kind: str
@@ -93,4 +150,4 @@ def resolve_origin_source(session: Any, context: SourceLineageContext) -> dict[s
     return {"raw_bytes": raw_bytes, "source_package_id": package_id, "source_version_id": version_id, "raw_sha256": raw_hash, "origin_row_id": getattr(row, "id", None)}
 
 
-__all__ = ["SourceLineageContext", "canonical_json_bytes", "canonical_json_sha256", "reconciliation_fingerprint", "resolve_origin_source"]
+__all__ = ["SourceLineageContext", "canonical_json_bytes", "canonical_json_sha256", "reconciliation_fingerprint", "source_semantic_projection", "source_semantic_diff", "resolve_origin_source"]

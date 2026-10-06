@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "SOURCE_AUTHORITY_ACTIVATION_SEMANTIC_MUTATION_COUNT": 0,
+  "new_beat_count": 0,
+  "new_transition_count": 0,
+  "new_dialogue_count": 0,
+  "new_action_count": 0,
+  "speaker_changes": 0,
+  "location_changes": 0,
+  "display_authority_upgrades": 0
+}

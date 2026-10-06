@@ -1,0 +1,22 @@
+{
+  "status": "SOURCE_AUTHORITY_GATE_PASS",
+  "checks": [
+    "timeline_origin",
+    "timeline_authority",
+    "script_blocks",
+    "all actions resolve",
+    "all dialogues resolve",
+    "origin authority",
+    "canonical freshness",
+    "source coverage",
+    "strict equivalence",
+    "semantic diff"
+  ],
+  "creative_fields_not_required": [
+    "HOOK",
+    "critical",
+    "requires_reaction",
+    "dramatic escalation",
+    "synthetic transition"
+  ]
+}

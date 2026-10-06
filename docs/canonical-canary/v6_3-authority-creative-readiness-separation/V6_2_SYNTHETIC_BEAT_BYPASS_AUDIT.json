@@ -1,0 +1,14 @@
+{
+  "status": "SOURCE_AUTHORITY_BLOCKED_BY_CREATIVE_AUTHORING_GATE",
+  "historical_activation_error": "CRITICAL_BEAT_MISSING",
+  "historical_activation_command": "activate_script_ir() with pure V3.1 payload beats=[] transitions=[]",
+  "historical_creative_gate_errors": [
+    "CRITICAL_BEAT_MISSING",
+    "CRITICAL_BEAT_MISSING"
+  ],
+  "synthetic_beats_in_old_v6_2_persistence_tests": 1,
+  "synthetic_hook_present": true,
+  "synthetic_requires_reaction": true,
+  "synthetic_critical": true,
+  "current_tests_remove_all_synthetic_semantics": true
+}

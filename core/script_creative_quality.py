@@ -19,6 +19,8 @@ import re
 from collections import Counter
 from typing import Any
 
+from core.source_authority import canonical_json_sha256
+
 # ---------------------------------------------------------------------------
 # Canonical beat taxonomy
 # ---------------------------------------------------------------------------
@@ -523,6 +525,101 @@ def run_hard_gates(script_ir: dict[str, Any], *, production: bool = False) -> li
     errors.extend(_gate_critical_beat(script_ir))
     errors.extend(_gate_script_blocks(script_ir))
     return errors
+
+
+def build_creative_readiness_backlog(script_ir: dict[str, Any]) -> dict[str, Any]:
+    """Classify missing authoring decisions without materializing any content.
+
+    This is intentionally independent from source authority.  It only reads
+    the current canonical payload and produces a deterministic backlog that a
+    Director/Treatment stage may later resolve.
+    """
+    scenes = _scene_order(script_ir)
+    backlog: list[str] = []
+    beat_count = sum(len(_beats_of(scene)) for scene in scenes)
+    transition_count = len(_transitions(script_ir))
+    if not scenes:
+        backlog.extend(["DRAMATIC_BEATS_REQUIRED", "EPISODE_HOOK_REQUIRED"])
+    elif beat_count == 0:
+        backlog.extend(["DRAMATIC_BEATS_REQUIRED", "EPISODE_HOOK_REQUIRED"])
+    else:
+        if any(not _beats_of(scene) for scene in scenes):
+            backlog.append("DRAMATIC_BEATS_REQUIRED")
+        if not any(
+            _text(beat.get("importance")) == "critical" or _text(beat.get("requires_reaction")).lower() in {"true", "1", "yes"}
+            for scene in scenes for beat in _beats_of(scene)
+        ):
+            backlog.append("CRITICAL_BEATS_REQUIRED")
+        last_beats = _beats_of(scenes[-1])
+        last_type = normalize_beat_type(last_beats[-1].get("type")) if last_beats else ""
+        if last_type not in {"HOOK", "ESCALATION", "REVERSAL", "TRANSITION"}:
+            backlog.append("EPISODE_HOOK_REQUIRED")
+    if len(scenes) > 1 and transition_count == 0:
+        backlog.append("SCENE_TRANSITIONS_REQUIRED")
+    backlog = sorted(set(backlog))
+    state = "READY" if not backlog else "AUTHORING_REQUIRED"
+    body = {
+        "creative_readiness_state": state,
+        "backlog": backlog,
+        "metrics": {"scene_count": len(scenes), "beat_count": beat_count, "transition_count": transition_count},
+    }
+    body["creative_readiness_fingerprint"] = canonical_json_sha256(body)
+    return body
+
+
+def _gate_source_content_resolution(script_ir: dict[str, Any]) -> list[dict[str, Any]]:
+    """Require source actions and dialogues to have explicit timeline refs."""
+    errors: list[dict[str, Any]] = []
+    for scene in _scene_order(script_ir):
+        scene_id = _text(scene.get("scene_id"))
+        blocks = [item for item in (scene.get("script_blocks") or []) if isinstance(item, dict)]
+        refs = {_text(item.get("ref")) for item in blocks if _text(item.get("ref"))}
+        action_ids = {_text(item.get("action_id")) for item in (scene.get("actions") or []) if isinstance(item, dict) and _text(item.get("action_id"))}
+        dialogue_ids = {_text(item.get("dialogue_id")) for item in (scene.get("dialogues") or []) if isinstance(item, dict) and _text(item.get("dialogue_id"))}
+        missing_actions = sorted(action_ids - refs)
+        missing_dialogues = sorted(dialogue_ids - refs)
+        if missing_actions:
+            errors.append(_error("SOURCE_ACTION_UNRESOLVED", f"场景 {scene_id} 的 source action 未进入 timeline：{missing_actions[:8]}", scene_id=scene_id, missing=missing_actions[:12]))
+        if missing_dialogues:
+            errors.append(_error("SOURCE_DIALOGUE_UNRESOLVED", f"场景 {scene_id} 的 source dialogue 未进入 timeline：{missing_dialogues[:8]}", scene_id=scene_id, missing=missing_dialogues[:12]))
+    return errors
+
+
+def run_source_grounded_authority_quality_gate(script_ir: dict[str, Any], *, canonical_source: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Validate only source-derived invariants for a V3.1 canonical payload."""
+    errors: list[dict[str, Any]] = []
+    if not isinstance(script_ir, dict) or str(script_ir.get("source_grounded_schema_version") or script_ir.get("schema_version") or "") != "source_grounded_script_payload_v3_1":
+        errors.append(_error("SOURCE_GROUNDED_V3_1_REQUIRED", "Source authority gate requires a V3.1 source-grounded payload."))
+    if str(script_ir.get("preparation_policy") or "SOURCE_GROUNDED_STRICT").upper() not in {"SOURCE_GROUNDED_STRICT", ""}:
+        errors.append(_error("SOURCE_GROUNDED_STRICT_POLICY_REQUIRED", "Source authority gate requires SOURCE_GROUNDED_STRICT."))
+    lineage = script_ir.get("source_lineage") if isinstance(script_ir, dict) else None
+    if not isinstance(lineage, dict):
+        errors.append(_error("SOURCE_LINEAGE_REQUIRED", "Source authority gate requires dual-source lineage."))
+    else:
+        for field in ("origin_source_kind", "origin_source_package_id", "origin_source_version_id", "origin_source_raw_hash", "structuring_response_fingerprint", "reconciliation_policy_version", "reconciliation_fingerprint", "migration_fingerprint"):
+            if not _text(lineage.get(field)):
+                errors.append(_error("SOURCE_LINEAGE_REQUIRED", f"Source lineage field is missing: {field}."))
+        source_for_fingerprint = canonical_source if isinstance(canonical_source, dict) else script_ir
+        payload_fingerprint = _text(source_for_fingerprint.get("canonical_script_payload_fingerprint") or script_ir.get("canonical_script_payload_fingerprint"))
+        projection = {key: value for key, value in source_for_fingerprint.items() if key not in {"canonical_script_payload_fingerprint", "source_lineage", "preparation_policy", "payload_hash"}}
+        if not payload_fingerprint or canonical_json_sha256(projection) != payload_fingerprint:
+            errors.append(_error("CANONICAL_SCRIPT_PAYLOAD_FINGERPRINT_CHANGED", "Canonical source projection fingerprint is missing or stale."))
+    errors.extend(_gate_timeline_origin(script_ir))
+    errors.extend(_gate_character_knowledge(script_ir))
+    errors.extend(_gate_character_state_discontinuity(script_ir))
+    errors.extend(_gate_prop_state_conflict(script_ir))
+    errors.extend(_gate_timeline_conflict(script_ir))
+    errors.extend(_gate_script_blocks(script_ir))
+    errors.extend(_gate_source_content_resolution(script_ir))
+    backlog = build_creative_readiness_backlog(script_ir)
+    return {
+        "status": "SOURCE_AUTHORITY_GATE_PASS" if not errors else "SOURCE_AUTHORITY_GATE_BLOCKED",
+        "qualified": not errors,
+        "hard_errors": errors,
+        "creative_readiness": backlog,
+        "provider_calls": 0,
+        "production_writes": 0,
+    }
 
 
 # ---------------------------------------------------------------------------
