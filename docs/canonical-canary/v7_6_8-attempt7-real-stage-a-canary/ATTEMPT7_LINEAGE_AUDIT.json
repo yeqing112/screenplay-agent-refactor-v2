@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "execution_attempt_id": "attempt-7",
+  "latest_ledger_attempt_id": "attempt-7",
+  "stage_a_attempt_id": "attempt-7",
+  "expected_attempt_id": "attempt-7",
+  "all_equal_attempt_7": true,
+  "history_count_before": 6,
+  "history_count_after": 7
+}

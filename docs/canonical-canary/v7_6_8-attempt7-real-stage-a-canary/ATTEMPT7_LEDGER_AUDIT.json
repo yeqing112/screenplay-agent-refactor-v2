@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "ledger_before": 6,
+  "ledger_after": 7,
+  "latest_attempt": {
+    "attempt_id": "attempt-7",
+    "authorization_id": "v7.6.8-attempt7-stage-a-single-call",
+    "request_fingerprint": "2d6e0d66005d26edbed961ad45af4697f0954eefce99afaea0231c01b16c4c91",
+    "raw_response_sha256": "83b935f4062a3f9be1009fb91ce0d9e7c548020275ac478d4dbd05eaba7a38c7",
+    "status": "DIRECTOR_BEAT_PLAN_ATTEMPT7_VALIDATED",
+    "authoring_stage": "BEAT_PLAN",
+    "prompt_fingerprint": "2d6e0d66005d26edbed961ad45af4697f0954eefce99afaea0231c01b16c4c91",
+    "provider_request_fingerprint_v2": "eb7a104853cad07ba56da007270da4a352449c7ff0f61ecbac9f4e2f7902bab2"
+  },
+  "latest_status": "DIRECTOR_BEAT_PLAN_ATTEMPT7_VALIDATED",
+  "stage_a_persisted_attempt_id": "attempt-7",
+  "packet_proposal_before": {
+    "decision": "awaiting_llm"
+  },
+  "packet_proposal_after": {
+    "decision": "awaiting_llm"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "stage_b_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "75api_calls": 0,
+  "attempt8_calls": 0,
+  "authority_promotions": 0,
+  "scene_blocking": 0,
+  "shot_plan": 0
+}

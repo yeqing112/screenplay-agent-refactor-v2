@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "allowed_write": "DecisionPacketRecord.model_info.progressive_director_authoring.stage_a only",
+  "packet_proposal_before": {
+    "decision": "awaiting_llm"
+  },
+  "packet_proposal_after": {
+    "decision": "awaiting_llm"
+  },
+  "DirectorTreatment_rows": 0,
+  "Authority_rows": 0,
+  "Pointer_rows": 0,
+  "source_fact_mutations": 0,
+  "final_merge": 0,
+  "confirm": 0,
+  "compile": 0
+}

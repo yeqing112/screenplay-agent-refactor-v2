@@ -1,0 +1,29 @@
+{
+  "beat_count": 4,
+  "source_ref_count": 12,
+  "unique_source_ref_count": 12,
+  "purpose_specificity": {
+    "status": "PASS",
+    "non_empty_count": 4
+  },
+  "objective_directorial_specificity": {
+    "status": "PASS",
+    "non_empty_count": 4
+  },
+  "information_change_quality": {
+    "status": "PASS",
+    "non_empty_count": 4
+  },
+  "hook_distribution": {
+    "true": 4,
+    "false": 0
+  },
+  "scene_objective_quality": "PASS",
+  "dramatic_question_quality": "PASS",
+  "canonical_key_violations": 0,
+  "stage_b_semantic_leakage": 0,
+  "source_fact_invention_risk": "AUDIT_ONLY_NO_AUTOMATIC_DECISION",
+  "template_repetition_risk": "AUDIT_ONLY_NO_AUTOMATIC_DECISION",
+  "status": "AUDIT_ONLY",
+  "production_gate": false
+}

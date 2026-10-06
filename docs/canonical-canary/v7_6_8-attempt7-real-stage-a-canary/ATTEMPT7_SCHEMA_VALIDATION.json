@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "schema": {
+    "status": "PASS",
+    "errors": [],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "schema_error_count": 0,
+  "canonical_key_violations": 0,
+  "hook_type": "PASS",
+  "additional_property_violations": 0,
+  "required_field_omissions": 0,
+  "repair": false,
+  "coercion": false
+}

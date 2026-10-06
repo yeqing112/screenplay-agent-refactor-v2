@@ -1,0 +1,71 @@
+{
+  "vendor_model": "mimo-v2.5",
+  "vendor_host": "api.xiaomimimo.com",
+  "profile_id": "local-llm-2vydoz",
+  "system_prompt_sha256": "0d33e6805d856ec167ba6c6c9327f294",
+  "system_prompt_length": 549,
+  "user_prompt_sha256": "08d8372d31f939f1629a0ed8c094be3a",
+  "user_prompt_length": 5680,
+  "request_messages_sha256": "2a30d04a30e610c82bd1b0a756272383",
+  "request_fingerprint": "2d6e0d66005d26edbed961ad45af4697f0954eefce99afaea0231c01b16c4c91",
+  "has_repair_request": false,
+  "repair_request_sha256": "",
+  "repair_request_length": 0,
+  "response_sha256": "83b935f4062a3f9be1009fb91ce0d9e7",
+  "response_length": 1326,
+  "http_status": 200,
+  "parse_ok": true,
+  "finish_reason": "stop",
+  "choice_index": 0,
+  "top_level_keys": [
+    "beats",
+    "confidence",
+    "dramatic_question",
+    "note",
+    "passthrough_refs",
+    "scene_label",
+    "scene_objective",
+    "unknowns",
+    "version"
+  ],
+  "returned_schema_version": "",
+  "response_debug_excerpt": "{\"beats\": [{\"hook\": true, \"information_change\": \"林晚得知暗房中央存在一只母亲手写标签为第七次潮汐的铁盒，空间与物件的来历被初步交代。\", \"objective\": \"让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。\", \"purpose\": \"把观众带入暗房这一封闭空间，用红色安全灯与水渍地图铺陈不安的视觉基调，并让母亲手写的铁盒成为场景的中心谜题。\", \"refs\": [\"SAU_E01_SC001_001\", \"SAU_E01_SC001_002\", \"SAU_E01_SC001_003\"]}, {\"hook\": true, \"information_change\": \"铁盒被证实为空，只剩烧焦胶片与海鸥别针，林晚认出别针却无法确认自己童年是否来过暗房。\", \"objective\": \"让林晚在别针与照片小女孩的重合中意识到自己与这个空间可能存在被遗忘的联系。\", \"purpose\": \"揭开铁盒内部的空缺，用烧焦胶片与海鸥别针触发林晚对自身童年的怀疑，把物件之谜转向身份之谜。\", \"refs\": [\"SAU_E01_SC001_004\", \"SAU_E01_SC001_005\"]}, {\"hook\": true, \"information_change\": \"顾沉确认胶片被人拿走，并暗示拿走胶片的人可能就是林晚自己，林晚的嫌疑被直接建立。\", \"objective\": \"让林晚在追问是谁的过程中被迫面对顾沉那句也许是你自己的指控。\", \"purpose\": \"由顾沉抛出胶片被拿走的事实并给出指向林晚自身的暗示，把外部失窃转化为对林晚内心的拷问。\", \"refs\": [\"SAU_E01_SC001_006\", \"SAU_E01_SC001_007\", \"SAU_E01_SC001_008\"]}, {\"hook\": true, \"information_change\": \"门外出现湿透皮鞋的神秘人，其塞入的车票背面写明今晚十点北堤仓库、带钥匙、不要带顾沉的指令。\", \"objective\": \"让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。\", \"purpose\": \"用铜铃声与门缝下的湿皮鞋打断审问节奏，把场景从心理对峙推向外部威胁，并以车票上的指令留下明确的下一步钩子。\", \"refs\": [\"SAU_E01_SC001_009\", \"SAU_E01_SC001_010\", \"SAU_E01_SC001_011\", \"SAU_E01_SC001_012\"]}], \"confidence\": 0.9, \"dramatic_question\": \"林晚究竟是不是那个拿走胶片的人？\", \"note\": \"本计划仅对来源单元进行戏剧分组与目标标注，未改写任何来源事实、对白或角色绑定。\", \"passthrough_refs\": [], \"scene_label\": \"E01_SC001\", \"scene_objective\": \"建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。\", \"unknowns\": [], \"version\": \"director_beat_plan_ir_v1\"}",
+  "usage": {
+    "prompt_tokens": 2460,
+    "cached_tokens": null,
+    "completion_tokens": 735,
+    "total_tokens": 3195,
+    "cache_hit_rate": null,
+    "reasoning_tokens": 0,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens_details": {}
+  },
+  "resolved_max_tokens": 8192,
+  "resolved_temperature": 0.0,
+  "resolved_response_format": {
+    "type": "json_object"
+  },
+  "resolved_thinking": {
+    "type": "disabled"
+  },
+  "latency_ms": 24243.7,
+  "extra": {
+    "director_execution_boundary": "director_beat_plan_provider_request_v1",
+    "authoring_stage": "BEAT_PLAN",
+    "provider_request_fingerprint_v2": "eb7a104853cad07ba56da007270da4a352449c7ff0f61ecbac9f4e2f7902bab2",
+    "transport_attempt_number": 1,
+    "transport_retry": false
+  },
+  "actual_provider_post_count": 1,
+  "transport_attempt_count": 1,
+  "transport_retry": false,
+  "provider_request_id": "",
+  "response_format": {
+    "type": "json_object"
+  },
+  "thinking": {
+    "type": "disabled"
+  }
+}

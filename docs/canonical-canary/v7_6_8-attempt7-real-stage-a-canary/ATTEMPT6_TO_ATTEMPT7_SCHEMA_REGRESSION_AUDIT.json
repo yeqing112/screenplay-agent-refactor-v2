@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "attempt6": {
+    "hook_problem": "resolved",
+    "canonical_key_drift": "present",
+    "schema_error_count": 9
+  },
+  "attempt7": {
+    "hook_regression": 0,
+    "canonical_key_drift": "resolved",
+    "additional_property_violations": 0,
+    "required_field_omissions": 0,
+    "duplicate_json_keys": 0,
+    "new_schema_failure": "no"
+  }
+}

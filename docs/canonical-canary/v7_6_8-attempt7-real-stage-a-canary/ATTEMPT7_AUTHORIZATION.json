@@ -1,0 +1,18 @@
+{
+  "authorization_id": "v7.6.8-attempt7-stage-a-single-call",
+  "scope": {
+    "attempt_id": "attempt-7",
+    "authoring_stage": "BEAT_PLAN",
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "decision_packet_id": 64,
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5"
+  },
+  "retry": false,
+  "attempt_8": false,
+  "stage_b": false,
+  "image": false,
+  "video": false
+}
