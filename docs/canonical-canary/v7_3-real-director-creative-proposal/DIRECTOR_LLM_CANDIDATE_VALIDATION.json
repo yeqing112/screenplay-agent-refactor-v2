@@ -1,0 +1,8 @@
+{
+  "authority_invalid_count": null,
+  "candidate_persisted": false,
+  "creative_beat_count": null,
+  "provider_calls": 1,
+  "status": "NOT_RUN_DUE_TO_INVALID_JSON",
+  "validation_status": "DIRECTOR_LLM_OUTPUT_INVALID"
+}

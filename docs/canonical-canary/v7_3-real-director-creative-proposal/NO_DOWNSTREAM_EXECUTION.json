@@ -1,0 +1,18 @@
+{
+  "75api_calls": 0,
+  "authority_writes": 0,
+  "confirm_endpoint_called": false,
+  "director_treatment_writes": 0,
+  "image_calls": 0,
+  "known_scene_blocking_blocker": "SCENE_BLOCKING_CREATIVE_BEAT_CONTRACT_REQUIRES_REFACTOR",
+  "media_writes": 0,
+  "pointer_writes": 0,
+  "poyo_calls": 0,
+  "prompt_ir_writes": 0,
+  "scene_blocking_writes": 0,
+  "shapi_calls": 0,
+  "shot_plan_writes": 0,
+  "status": "PASS",
+  "storyboard_writes": 0,
+  "video_calls": 0
+}

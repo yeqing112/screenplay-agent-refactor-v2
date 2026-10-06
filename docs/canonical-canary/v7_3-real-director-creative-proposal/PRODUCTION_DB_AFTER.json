@@ -1,0 +1,17 @@
+{
+  "books": 1,
+  "decision_packet_records": 1,
+  "director_treatment_authorities": 0,
+  "director_treatment_pointers": 0,
+  "director_treatments": 0,
+  "fact_snapshots": 1,
+  "generation_executions": 4,
+  "media_candidates": 4,
+  "official_media_versions": 0,
+  "prompt_ir_versions": 0,
+  "scene_blockings": 0,
+  "script_ir_versions": 1,
+  "scripts": 1,
+  "shot_plans": 0,
+  "storyboard_shots": 0
+}

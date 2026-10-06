@@ -1,0 +1,15 @@
+{
+  "decision_packet_id": 64,
+  "proposal_origin": null,
+  "proposal_written": false,
+  "provider": {
+    "called": true,
+    "calls": 1,
+    "model": "mimo-v2.5",
+    "profile_id": "local-llm-2vydoz",
+    "provider_request_id": "",
+    "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+    "response_fingerprint": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566"
+  },
+  "status": "TRANSPORT_RECORDED_PROPOSAL_NOT_PERSISTED"
+}

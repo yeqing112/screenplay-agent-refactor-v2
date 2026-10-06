@@ -1,0 +1,17 @@
+{
+  "http_status": 200,
+  "image_calls": 0,
+  "model": "mimo-v2.5",
+  "profile_id": "local-llm-2vydoz",
+  "provider_host": "https://api.xiaomimimo.com",
+  "provider_post_count": 1,
+  "provider_request_id": "",
+  "provider_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+  "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+  "response_length": 5914,
+  "retry": 0,
+  "status": "PASS_TRANSPORT_COMPLETED_BUT_PROPOSAL_INVALID",
+  "transport_attempt_number": 1,
+  "transport_retry": false,
+  "video_calls": 0
+}

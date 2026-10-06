@@ -1,0 +1,10 @@
+{
+  "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+  "binding_type": "COREFERENCE_RESOLUTION",
+  "director_interpretation": null,
+  "reason": "No valid proposal was accepted; raw invalid JSON is not treated as a Director proposal.",
+  "source_ref": "E01_SC001_D001",
+  "speaker": "顾沉",
+  "status": "NOT_AVAILABLE_INVALID_JSON",
+  "text": "也许是你自己"
+}

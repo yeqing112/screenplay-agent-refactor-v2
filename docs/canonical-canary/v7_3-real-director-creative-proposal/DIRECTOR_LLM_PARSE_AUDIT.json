@@ -1,0 +1,12 @@
+{
+  "director_treatment_writes": 0,
+  "fallback": 0,
+  "parse_attempts": 1,
+  "parse_error": "Failed to parse Director V3 proposal: no candidate contained required keys ['creative_projection']. Preview: {\"schema_version\":\"director_treatment_v3\",\"creative_projection\":{\"director_scene_label\":\"暗房·第七次潮汐\",\"scene_objective\":\"在暗房的封闭空间里，让林晚第一次直面自己记忆的空洞，并以一张车票把顾沉从'引路人'推向'被怀疑者'，为后续北堤仓库的对峙埋下不可逆的钩子。\",\"dramatic_question\":\"铁盒里的海鸥别针指向林晚的童年，而门外递进车票的人是谁——他为什么要林晚'不要带顾沉'？\",\"creative_beats\":[{\"creative_beat_id\":\"DCB_E01_SC001_01\",\"derived_from_source_unit_refs\":[\"SAU_E01_SC001_001\",\"SAU_E01_SC001_002\"],\"dir",
+  "parser_retry": 0,
+  "proposal_authority_writes": 0,
+  "provider_calls": 1,
+  "raw_forensic_retained": true,
+  "repair_llm": 0,
+  "status": "DIRECTOR_LLM_OUTPUT_INVALID"
+}

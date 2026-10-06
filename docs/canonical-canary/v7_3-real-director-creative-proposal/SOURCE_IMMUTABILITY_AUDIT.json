@@ -1,0 +1,13 @@
+{
+  "actions_unchanged": true,
+  "binding_unchanged": true,
+  "dialogue_unchanged": true,
+  "fact_snapshot_unchanged": true,
+  "script_ir_unchanged": true,
+  "source_authoring_units_unchanged": true,
+  "source_constraints_unchanged": true,
+  "source_semantic_mutation_count": 0,
+  "speaker_unchanged": true,
+  "status": "PASS",
+  "target_dialogue_preserved": true
+}

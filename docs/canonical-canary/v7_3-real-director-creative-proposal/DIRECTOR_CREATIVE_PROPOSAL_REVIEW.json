@@ -1,0 +1,11 @@
+{
+  "coverage": null,
+  "creative_beats": [],
+  "creative_projection": null,
+  "failure_code": "DIRECTOR_LLM_OUTPUT_INVALID",
+  "human_review_required": true,
+  "packet_id": 64,
+  "proposal_origin": null,
+  "recommendation": "Do not confirm; obtain separate authorization only if a new execution is explicitly requested.",
+  "status": "NOT_READY_FOR_HUMAN_REVIEW"
+}

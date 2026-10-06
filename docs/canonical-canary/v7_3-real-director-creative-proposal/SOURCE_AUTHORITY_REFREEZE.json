@@ -1,0 +1,16 @@
+{
+  "authority_profile": "SOURCE_GROUNDED_V3_1",
+  "book_id": 990453,
+  "creative_readiness_state": "AUTHORING_REQUIRED",
+  "fact_snapshot_id": 49,
+  "qualification_state": "PRODUCTION_QUALIFIED",
+  "scene_id": "E01_SC001",
+  "scene_name": "",
+  "script_id": 64,
+  "script_ir_authority_fingerprint": "48da3932b179a9379ee8bdfe54e9426e7e3664039737df3a5bb7ff6935d33682",
+  "script_ir_version_id": 52,
+  "source_beats": 0,
+  "stale_status": "FRESH",
+  "status": "PASS",
+  "transitions": 0
+}

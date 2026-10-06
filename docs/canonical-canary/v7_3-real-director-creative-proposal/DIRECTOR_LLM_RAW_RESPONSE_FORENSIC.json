@@ -1,0 +1,21 @@
+{
+  "model": "mimo-v2.5",
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "packet_id": 64,
+  "parse_started": true,
+  "persisted_before_parse": true,
+  "profile_id": "local-llm-2vydoz",
+  "provider_host": "https://api.xiaomimimo.com",
+  "provider_request_id": "",
+  "raw_response_excerpt": "{\"schema_version\":\"director_treatment_v3\",\"creative_projection\":{\"director_scene_label\":\"暗房·第七次潮汐\",\"scene_objective\":\"在暗房的封闭空间里，让林晚第一次直面自己记忆的空洞，并以一张车票把顾沉从'引路人'推向'被怀疑者'，为后续北堤仓库的对峙埋下不可逆的钩子。\",\"dramatic_question\":\"铁盒里的海鸥别针指向林晚的童年，而门外递进车票的人是谁——他为什么要林晚'不要带顾沉'？\",\"creative_beats\":[{\"creative_beat_id\":\"DCB_E01_SC001_01\",\"derived_from_source_unit_refs\":[\"SAU_E01_SC001_001\",\"SAU_E01_SC001_002\"],\"director_objective\":\"建立暗房作为'记忆容器'的空间压迫感，让观众和林晚一起被红光与水渍吞没。\",\"dramatic_purpose\":\"把观众从外部世界拽入一个潮湿、失真的内部空间，为后续'倒置的地图'意象定调。\",\"information_change\":\"观众获知：这是一个被水渍侵蚀的暗房，安全灯不稳定，空间本身在'呼吸'。\",\"performance_intent\":\"顾沉带路时应有主人的熟稔与一丝不易察觉的紧张；林晚进门瞬间应有身体性的迟疑——她对这里既陌生又似曾相识。\",\"audience_effect\":\"不安与好奇并存：观众会本能地寻找水渍中隐藏的'地图'线索。\",\"hook_intent\":true,\"transition_intent\":\"从空间压迫过渡到物件聚焦，红光忽明忽暗的节奏为铁盒的出现制造'显影'般的揭示感。\",\"character_effects\":[{\"character_id\":\"顾沉\",\"effect\":\"掌控者姿态，但带路动作中隐含对林晚反应的观察\"},{\"character_id\":\"林晚\",\"effect\":\"被动进入者，身体语言呈现'被牵引中的自我怀疑'}\"}]},{\"creative_beat_id\":\"DCB_E01_SC001_02\",\"derived_from_source_unit_refs\":[\"SAU_E01_SC001_003\",\"SAU_E01_SC001_004\"],\"director_objective\":\"让铁盒成为暗房的'心脏'，用'第七次潮汐'的手写标签制造悬念，并以'空盒+烧焦胶片+海鸥别针'的组合把悬念具体化。\",\"dramatic_purpose\":\"将抽象的'母亲的秘密'压缩成三个可触摸的物件，让观众和林晚同时进入解谜状态。\",\"information_change\":\"观众获知：铁盒被打开过，胶片被烧毁或取走，但海鸥别针被留下——留下别针是刻意的。\",\"performance_intent\":\"林晚触碰别针时应有'认出'与'否认'的双重反应；顾沉在旁应保持克制的观察者姿态，不急于解释。\",\"audience_effect\":\"谜题感上升：观众会开始猜测别针与林晚童年照片的关联。\",\"hook_intent\":true,\"transition_intent\":\"从物件特写过渡到人物内心，为林晚的'认出却想不起'做铺垫。\",\"character_effects\":[{\"character_id\":\"林晚\",\"effect\":\"从旁观者转为'被物件唤醒'的当事人\"},{\"character_id\":\"顾沉\",\"effect\":\"信息持有者，但选择暂时沉默\"}]}]},{\"creative_beat_id\":\"DCB_E01_SC001_03\",\"derived_from_source_unit_refs\":[\"SAU_E01_SC001_005\"],\"director_objective\":\"让林晚的'认出却想不起'成为场景的情感核心，用表演而非台词呈现记忆的断裂。\",\"dramatic_purpose\":\"建立林晚作为'不可靠记忆者'的人物定位，为后续剧情中她的自我怀疑提供锚点。\",\"information_change\":\"观众获知：林晚与照片中的小女孩有直接关联，但她的童年记忆存在系统性缺失。\",\"performance_intent\":\"林晚的反应应分两层：第一层是身体性的'认出'（手指停顿、呼吸变化），第二层是认知性的'否认'（眼神游移、试图回忆却失败）。顾沉应在此刻保持静止，让林晚的内心挣扎独占空间。\",\"audience_effect\":\"共情与不安：观众会开始怀疑林晚的过去是否被人为抹去。\",\"hook_intent\":false,\"transition",
+  "raw_response_length": 5914,
+  "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+  "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+  "schema_version": "director_llm_raw_response_forensic_v1",
+  "secret_scan": {
+    "api_key": false,
+    "authorization_header": false,
+    "credential": false
+  },
+  "status": "PASS_RAW_PERSISTED_BEFORE_PARSE"
+}

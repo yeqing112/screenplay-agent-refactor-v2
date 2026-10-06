@@ -1,0 +1,10 @@
+{
+  "authorized_calls": 1,
+  "consumed_calls": 1,
+  "effective_provider_transport_calls": 1,
+  "endpoint": "/api/books/990453/episodes/1/director-treatment/llm-draft",
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "packet_id": 64,
+  "preflight_rejected_http_requests_before_transport": 1,
+  "status": "CONSUMED"
+}

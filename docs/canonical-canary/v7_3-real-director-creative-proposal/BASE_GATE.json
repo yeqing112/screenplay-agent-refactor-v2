@@ -1,0 +1,8 @@
+{
+  "head": "15c289a3f2ffd710c91293e2e1ff3d24f30d4cfc",
+  "real_provider_calls_before": 0,
+  "remote_head": "15c289a3f2ffd710c91293e2e1ff3d24f30d4cfc",
+  "status": "PASS",
+  "v7_2_targeted_tests": "17 passed",
+  "working_tree_clean_before_execution": true
+}
