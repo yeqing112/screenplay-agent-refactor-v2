@@ -75,3 +75,6 @@ V7.6.7 completed provider-free. Attempt-6 remains immutable. Attempt-7 was not e
 - Attempt-6 regression: `PASS`
 - compileall: `PASS`
 - git diff --check: `PASS`
+- Commit SHA (implementation and evidence): `51ea0aab02680d718ff1a83b41504322b3482866`
+- Remote HEAD at implementation/evidence push: `51ea0aab02680d718ff1a83b41504322b3482866`
+- Working tree: `clean` after final verification
