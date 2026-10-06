@@ -299,6 +299,48 @@ def test_call_llm_transport_matrix_has_one_post(kind, monkeypatch):
     assert len(calls) == 1
 
 
+def test_call_llm_sends_json_response_format_to_provider(monkeypatch):
+    monkeypatch.delenv("E2E_EXTERNAL_RUNTIME", raising=False)
+    requests = []
+
+    class Resp:
+        status_code = 200
+        text = '{"choices":[{"message":{"content":"{\\"ok\\":true}"}}]}'
+        headers = {}
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"choices": [{"message": {"content": '{"ok":true}'}}], "usage": {"total_tokens": 1}}
+
+    class Client:
+        def __init__(self, **_kwargs): pass
+        def __enter__(self): return self
+        def __exit__(self, *_args): return False
+        def post(self, *args, **kwargs):
+            requests.append((args, kwargs))
+            return Resp()
+
+    monkeypatch.setattr(llm.httpx, "Client", Client)
+    monkeypatch.setattr(llm, "_resolve_llm_profile", lambda *_args, **_kwargs: _profile())
+    monkeypatch.setattr(llm._limiter, "wait_if_needed", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(llm._limiter, "record", lambda *_args, **_kwargs: None)
+
+    result = llm.call_llm(
+        "prompt",
+        model_profile=_profile(),
+        retries=1,
+        estimated_tokens=1,
+        response_format={"type": "json_object"},
+    )
+
+    assert result == '{"ok":true}'
+    assert len(requests) == 1
+    payload = requests[0][1]["json"]
+    assert payload["response_format"] == {"type": "json_object"}
+
+
 def test_v3_profile_preflight_does_not_persist_secret(monkeypatch):
     profile = {**_profile(), "api_key": "secret-must-not-persist"}
     monkeypatch.setattr(api.llm_client, "_resolve_llm_profile", lambda *_args, **_kwargs: profile)
