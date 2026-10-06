@@ -1,0 +1,36 @@
+{
+  "status": "AUDIT_ONLY",
+  "validation_participation": false,
+  "quality": {
+    "beat_count": 8,
+    "source_refs": [
+      "SAU_E01_SC001_001",
+      "SAU_E01_SC001_002",
+      "SAU_E01_SC001_003",
+      "SAU_E01_SC001_004",
+      "SAU_E01_SC001_005",
+      "SAU_E01_SC001_006",
+      "SAU_E01_SC001_007",
+      "SAU_E01_SC001_008",
+      "SAU_E01_SC001_009",
+      "SAU_E01_SC001_010",
+      "SAU_E01_SC001_011",
+      "SAU_E01_SC001_012"
+    ],
+    "source_ref_count": 12,
+    "source_ref_unique_count": 12,
+    "purpose_nonempty": true,
+    "objective_nonempty": true,
+    "information_change_nonempty": false,
+    "hook_distribution": {
+      "true": 7,
+      "false": 1,
+      "non_boolean": 0
+    },
+    "scene_objective_nonempty": true,
+    "dramatic_question_nonempty": true,
+    "stage_b_fields_present": [],
+    "source_fact_invention_assessment": "NOT_DETERMINED_BY_VALIDATOR; audit-only qualitative review",
+    "template_or_repetition": "not mechanically adjudicated; no production mutation"
+  }
+}

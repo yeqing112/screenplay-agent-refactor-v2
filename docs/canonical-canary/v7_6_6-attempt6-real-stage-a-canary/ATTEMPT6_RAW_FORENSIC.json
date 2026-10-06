@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "authoring_stage": "BEAT_PLAN",
+  "persisted_before_parse": true,
+  "parse_started": true,
+  "raw_response": "{\"version\":\"director_beat_plan_ir_v1\",\"scene_label\":\"E01_SC001\",\"scene_objective\":\"建立暗房的压抑氛围并抛出母亲遗留铁盒与海鸥别针的谜团，让林晚在记忆缺失与顾沉的指控之间陷入动摇。\",\"dramatic_question\":\"拿走胶片的人究竟是谁，林晚是否真的来过这里？\",\"beats\":[{\"refs\":[\"SAU_E01_SC001_001\",\"SAU_E01_SC001_002\"],\"purpose\":\"交代顾沉带林晚进入暗房这一空间转换，用红光与水渍铺垫压抑不安的基调。\",\"objective\":\"让观众与林晚一同被引入封闭、陌生的暗房环境。\",\"information_change\":\"场景从外部转移到暗房内部，环境细节首次呈现。\",\"hook\":false},{\"refs\":[\"SAU_E01_SC001_003\"],\"purpose\":\"揭示暗房中央的铁盒及其母亲手写标签，抛出核心谜题物件。\",\"objective\":\"把观众注意力聚焦到铁盒这一关键道具上。\",\"信息_change\":\"铁盒与'第七次潮汐'标签首次出现，暗示母亲的遗留线索。\",\"information_change\":\"铁盒与'第七次潮汐'标签首次出现，暗示母亲的遗留线索。\",\"hook\":true},{\"refs\":[\"SAU_E01_SC001_004\"],\"purpose\":\"打开铁盒发现空无一物，只剩烧焦胶片与海鸥别针，制造落空与悬念。\",\"objective\":\"让观众意识到关键证据已被取走或破坏。\",\"information_change\":\"铁盒内容物揭晓：空盒、烧焦胶片、海鸥别针。\",\"hook\":true},{\"refs\":[\"SAU_E01_SC001_005\"],\"purpose\":\"林晚认出别针与照片中女孩佩戴的一致，却无法回忆童年是否来过此处，埋下身份谜团。\",\"objective\":\"让林晚的自我认知出现裂缝，观众开始怀疑她的过去。\",\"信息_change\":\"林晚与照片中女孩的关联被暗示，但她的记忆仍缺失。\",\"information_change\":\"林晚与照片中女孩的关联被暗示，但她的记忆仍缺失。\",\"hook\":true},{\"refs\":[\"SAU_E01_SC001_006\",\"SAU_E01_SC001_007\"],\"purpose\":\"顾沉断言胶片被人拿走，林晚追问是谁，将悬念从物件转向人物。\",\"objective\":\"把观众的疑问从'盒里有什么'推进到'谁动了手脚'。\",\"信息_change\":\"胶片被取走的事实被确认，嫌疑人问题浮出水面。\",\"information_change\":\"胶片被取走的事实被确认，嫌疑人问题浮出水面。\",\"hook\":true},{\"refs\":[\"SAU_E01_SC001_008\"],\"purpose\":\"顾沉抛出'也许是你自己'的指控，将矛头指向林晚自身，制造心理反转。\",\"objective\":\"让林晚与观众同时陷入自我怀疑的漩涡。\",\"信息_change\":\"顾沉暗示林晚可能是拿走胶片的人，指控首次出现。\",\"hook\":true},{\"refs\":[\"SAU_E01_SC001_009\",\"SAU_E01_SC001_010\"],\"purpose\":\"门外铜铃响起，顾沉熄灯拉着林晚躲藏，门缝下出现湿皮鞋，外部威胁逼近。\",\"objective\":\"把场景从心理悬疑切换到即时危险的躲藏状态。\",\"信息_change\":\"未知来者已到门外，安全灯熄灭，两人转入隐蔽。\",\"hook\":true},{\"refs\":[\"SAU_E01_SC001_011\",\"SAU_E01_SC001_012\"],\"purpose\":\"来者不进门只塞入车票，背面留言指明时间地点并要求林晚单独赴约，抛出新的行动钩子。\",\"objective\":\"以车票留言把悬念引向下一场景的北堤仓库之约。\",\"信息_change\":\"车票与'今晚十点、北堤仓库、带钥匙、不要带顾沉'的指令首次出现。\",\"hook\":true}],\"passthrough_refs\":[],\"unknowns\":[],\"confidence\":0.9,\"note\":\"所有来源单元已按戏剧节奏分组为八个beats，未改写任何来源事实，未补写对白或角色方向。\"}",
+  "raw_response_length": 1856,
+  "raw_response_sha256": "04d407286aa9607e955fe57744d29d4cbf6422decccbf44ab22c13215dbdf86d",
+  "finish_reason": "stop",
+  "prompt_fingerprint": "ddf1662a8583a48d2347ac4e231c3ff27769679224ed1946069018effdbbc488",
+  "provider_request_fingerprint_v2": "3a73fc2e762e0572b810dfe2149c959356e8786148e040897839cba418f9cee4"
+}

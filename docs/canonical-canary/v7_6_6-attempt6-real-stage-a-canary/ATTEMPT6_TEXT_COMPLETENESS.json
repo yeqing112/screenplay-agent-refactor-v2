@@ -1,0 +1,5 @@
+{
+  "status": "NOT_RUN",
+  "reason": "schema gate failed before text completeness",
+  "local_completion": 0
+}

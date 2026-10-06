@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "http_status": 200,
+  "provider_request_id": null,
+  "finish_reason": "stop",
+  "choice_index": 0,
+  "usage": {
+    "prompt_tokens": 2234,
+    "cached_tokens": null,
+    "completion_tokens": 961,
+    "total_tokens": 3195,
+    "cache_hit_rate": null,
+    "reasoning_tokens": 0,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens_details": {}
+  },
+  "resolved_max_tokens": 8192,
+  "resolved_temperature": 0.0,
+  "resolved_response_format": {
+    "type": "json_object"
+  },
+  "resolved_thinking": {
+    "type": "disabled"
+  },
+  "actual_provider_post_count": 1,
+  "transport_retry": false,
+  "transport_attempt_number": 1
+}

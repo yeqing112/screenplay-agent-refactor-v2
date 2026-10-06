@@ -1,0 +1,4 @@
+{
+  "status": "NOT_RUN",
+  "reason": "schema gate failed before materialization"
+}

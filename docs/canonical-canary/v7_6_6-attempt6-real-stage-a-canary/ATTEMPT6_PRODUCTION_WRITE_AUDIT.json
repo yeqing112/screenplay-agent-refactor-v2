@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "allowed_write": "DecisionPacketRecord.model_info forensic/ledger/validation metadata only",
+  "domain_authority_promotion": 0,
+  "director_treatment_rows": 0,
+  "authority_rows": 0,
+  "pointer_rows": 0,
+  "packet_proposal_before": {
+    "decision": "awaiting_llm"
+  },
+  "packet_proposal_after": {
+    "decision": "awaiting_llm"
+  },
+  "packet_proposal_unchanged": true
+}

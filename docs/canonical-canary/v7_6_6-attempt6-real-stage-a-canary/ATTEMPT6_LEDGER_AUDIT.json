@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "before_count": 5,
+  "after_count": 6,
+  "attempt_1_to_5_immutable": true,
+  "latest": {
+    "attempt_id": "attempt-6",
+    "authorization_id": "v7.6.6-attempt6-stage-a-single-call",
+    "request_fingerprint": "ddf1662a8583a48d2347ac4e231c3ff27769679224ed1946069018effdbbc488",
+    "raw_response_sha256": "04d407286aa9607e955fe57744d29d4cbf6422decccbf44ab22c13215dbdf86d",
+    "status": "DIRECTOR_BEAT_PLAN_ATTEMPT6_SCHEMA_INVALID",
+    "authoring_stage": "BEAT_PLAN",
+    "prompt_fingerprint": "ddf1662a8583a48d2347ac4e231c3ff27769679224ed1946069018effdbbc488",
+    "provider_request_fingerprint_v2": "3a73fc2e762e0572b810dfe2149c959356e8786148e040897839cba418f9cee4"
+  },
+  "append_count": 1
+}

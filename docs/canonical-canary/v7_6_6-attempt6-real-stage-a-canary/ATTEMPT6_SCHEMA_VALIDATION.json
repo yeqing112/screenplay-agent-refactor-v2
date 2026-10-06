@@ -1,0 +1,58 @@
+{
+  "status": "DIRECTOR_BEAT_PLAN_ATTEMPT6_SCHEMA_INVALID",
+  "parse": "PASS",
+  "schema": {
+    "status": "FAIL",
+    "errors": [
+      {
+        "path": "$.beats[1]",
+        "code": "SCHEMA_ADDITIONAL_PROPERTY",
+        "field": "信息_change"
+      },
+      {
+        "path": "$.beats[3]",
+        "code": "SCHEMA_ADDITIONAL_PROPERTY",
+        "field": "信息_change"
+      },
+      {
+        "path": "$.beats[4]",
+        "code": "SCHEMA_ADDITIONAL_PROPERTY",
+        "field": "信息_change"
+      },
+      {
+        "path": "$.beats[5]",
+        "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+        "field": "information_change"
+      },
+      {
+        "path": "$.beats[5]",
+        "code": "SCHEMA_ADDITIONAL_PROPERTY",
+        "field": "信息_change"
+      },
+      {
+        "path": "$.beats[6]",
+        "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+        "field": "information_change"
+      },
+      {
+        "path": "$.beats[6]",
+        "code": "SCHEMA_ADDITIONAL_PROPERTY",
+        "field": "信息_change"
+      },
+      {
+        "path": "$.beats[7]",
+        "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+        "field": "information_change"
+      },
+      {
+        "path": "$.beats[7]",
+        "code": "SCHEMA_ADDITIONAL_PROPERTY",
+        "field": "信息_change"
+      }
+    ],
+    "version": "director_beat_plan_ir_v1"
+  },
+  "schema_error_count": 9,
+  "repair": false,
+  "coercion": false
+}

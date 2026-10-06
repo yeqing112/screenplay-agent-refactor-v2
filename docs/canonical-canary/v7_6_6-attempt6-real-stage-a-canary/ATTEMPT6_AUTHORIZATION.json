@@ -1,0 +1,16 @@
+{
+  "status": "CONSUMED_EXACTLY_ONCE",
+  "authorization_id": "v7.6.6-attempt6-stage-a-single-call",
+  "scope": {
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "packet_id": 64,
+    "attempt_id": "attempt-6",
+    "authoring_stage": "BEAT_PLAN",
+    "model": "mimo-v2.5"
+  },
+  "actual_provider_http_posts": 1,
+  "retry": 0,
+  "stage_b_authorized": false
+}

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "target": {
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64
+  },
+  "attempt_history_count_before": 5,
+  "expected_attempt": "attempt-6",
+  "preflight_identity_parity": "PASS",
+  "lineage_consistency": "PASS",
+  "authorization_id": "v7.6.6-attempt6-stage-a-single-call",
+  "provider_calls_before": 0
+}

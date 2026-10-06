@@ -1,0 +1,59 @@
+{
+  "status": "EXECUTED_ONCE",
+  "identity": {
+    "system_prompt": "你是受来源约束的导演结构规划助手。只输出 director_beat_plan_ir_v1 JSON。只负责把不可变来源单元分组为戏剧 beats，并填写场景目标、戏剧问题、目的、导演目标和信息变化。不得改写或输出对白、speaker、binding、source_constraints、authority、creative_beat_id、performance、audience_effect、transition、character_effects、character_directions、performance_arc、information_strategy、rhythm_strategy、visual_priority、scene_exit_intent、prohibited_interpretations。仅 string 类型的创意字段需要是完整中文句子并以。！？?!之一结束；scene_objective、dramatic_question、beats[].purpose、beats[].objective、beats[].information_change 属于文本字段。beats[].hook 是 boolean 分类标志，不是文本字段，不适用句子完整性要求。",
+    "user_prompt": "DIRECTOR_BEAT_PLAN_IR_V1\nSCENE_ID=\"E01_SC001\"\nSOURCE_AUTHORING_UNITS=[{\"source_order\": 1, \"source_type\": \"SOURCE_ACTION\", \"text\": \"顾沉带林晚进入暗房。\", \"unit_id\": \"SAU_E01_SC001_001\"}, {\"source_order\": 2, \"source_type\": \"SOURCE_ACTION\", \"text\": \"红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。\", \"unit_id\": \"SAU_E01_SC001_002\"}, {\"source_order\": 3, \"source_type\": \"SOURCE_ACTION\", \"text\": \"暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。\", \"unit_id\": \"SAU_E01_SC001_003\"}, {\"source_order\": 4, \"source_type\": \"SOURCE_ACTION\", \"text\": \"铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。\", \"unit_id\": \"SAU_E01_SC001_004\"}, {\"source_order\": 5, \"source_type\": \"SOURCE_ACTION\", \"text\": \"林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。\", \"unit_id\": \"SAU_E01_SC001_005\"}, {\"source_order\": 6, \"source_type\": \"SOURCE_ACTION\", \"text\": \"顾沉说胶片被人拿走了。\", \"unit_id\": \"SAU_E01_SC001_006\"}, {\"source_order\": 7, \"source_type\": \"SOURCE_ACTION\", \"text\": \"林晚问是谁\", \"unit_id\": \"SAU_E01_SC001_007\"}, {\"source_order\": 8, \"source_type\": \"SOURCE_DIALOGUE\", \"speaker\": \"顾沉\", \"text\": \"也许是你自己\", \"unit_id\": \"SAU_E01_SC001_008\"}, {\"source_order\": 9, \"source_type\": \"SOURCE_ACTION\", \"text\": \"两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。\", \"unit_id\": \"SAU_E01_SC001_009\"}, {\"source_order\": 10, \"source_type\": \"SOURCE_ACTION\", \"text\": \"门缝下出现一双湿透的皮鞋。\", \"unit_id\": \"SAU_E01_SC001_010\"}, {\"source_order\": 11, \"source_type\": \"SOURCE_ACTION\", \"text\": \"那人没有进门，只把一张车票塞进来。\", \"unit_id\": \"SAU_E01_SC001_011\"}, {\"source_order\": 12, \"source_type\": \"SOURCE_ACTION\", \"text\": \"车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。\", \"unit_id\": \"SAU_E01_SC001_012\"}]\nDECLARED_PARTICIPANTS=[{\"character_id\": \"林晚\", \"evidence\": [{\"byte_end\": 30, \"byte_start\": 0, \"char_end\": 10, \"char_start\": 0, \"evidence_id\": \"S1P1E001\", \"occurrence_count\": 1, \"sha256\": \"25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59\", \"text\": \"顾沉带林晚进入暗房。\"}, {\"byte_end\": 377, \"byte_start\": 269, \"char_end\": 127, \"char_start\": 91, \"evidence_id\": \"S1P1E002\", \"occurrence_count\": 1, \"sha256\": \"bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b\", \"text\": \"林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。\"}, {\"byte_end\": 427, \"byte_start\": 412, \"char_end\": 145, \"char_start\": 140, \"evidence_id\": \"S1P1E003\", \"occurrence_count\": 1, \"sha256\": \"8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923\", \"text\": \"林晚问是谁\"}], \"id\": \"林晚\", \"name\": \"林晚\"}, {\"character_id\": \"顾沉\", \"evidence\": [{\"byte_end\": 30, \"byte_start\": 0, \"char_end\": 10, \"char_start\": 0, \"evidence_id\": \"S1P2E001\", \"occurrence_count\": 1, \"sha256\": \"25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59\", \"text\": \"顾沉带林晚进入暗房。\"}, {\"byte_end\": 412, \"byte_start\": 379, \"char_end\": 140, \"char_start\": 129, \"evidence_id\": \"S1P2E002\", \"occurrence_count\": 1, \"sha256\": \"f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820\", \"text\": \"顾沉说胶片被人拿走了。\"}, {\"byte_end\": 589, \"byte_start\": 532, \"char_end\": 199, \"char_start\": 180, \"evidence_id\": \"S1P2E003\", \"occurrence_count\": 1, \"sha256\": \"3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32\", \"text\": \"顾沉熄灭安全灯，拉着林晚躲到药水柜后。\"}], \"id\": \"顾沉\", \"name\": \"顾沉\"}]\nEXPLICIT_STORY_CONSTRAINTS=[]\nUNKNOWN_SOURCE_FACTS=[]\nREQUIRED_TOP_LEVEL_FIELDS=version,scene_label,scene_objective,dramatic_question,beats,passthrough_refs,unknowns,confidence,note\nREQUIRED_BEAT_FIELDS=refs,purpose,objective,information_change,hook\nFIELD_TYPES=version:string(exact director_beat_plan_ir_v1); scene_label:string; scene_objective:string; dramatic_question:string; beats:array<object>; beats[].refs:array<string>; beats[].purpose:string; beats[].objective:string; beats[].information_change:string; beats[].hook:boolean; passthrough_refs:array<string>; unknowns:array; confidence:number|string; note:string\nHOOK_BOOLEAN_CONTRACT=beats[].hook MUST be a JSON boolean literal true or false. NEVER output a string for hook, NEVER write hook text, and NEVER quote true/false. hook=true means this beat carries a clear unresolved question, reversal, suspense, continuation drive, or next-step hook; hook=false means the beat mainly establishes, explains, advances, or transitions without a clear hook. hook is only a classification flag, not hook copy, audience_effect, dramatic_question, information_change, transition, performance, or scene_exit_intent.\nJSON_SHAPE_EXAMPLE_ONLY={\"version\":\"director_beat_plan_ir_v1\",\"scene_label\":\"string\",\"scene_objective\":\"完整中文句子。\",\"dramatic_question\":\"完整中文疑问句？\",\"beats\":[{\"refs\":[\"SAU_...\"],\"purpose\":\"完整中文句子。\",\"objective\":\"完整中文句子。\",\"information_change\":\"完整中文句子。\",\"hook\":true}],\"passthrough_refs\":[],\"unknowns\":[],\"confidence\":0.8,\"note\":\"string\"}; this example specifies JSON shape and types only; do not copy its semantics.\nBEAT_PLAN_CONTRACT=只允许上述字段；每个 string 类型文本字段必须是完整中文句子，dramatic_question 以？?!结束；hook 不得是字符串。\n禁止省略字段、增加字段、补写来源事实；禁止输出 Stage B 字段、对白内容、speaker、binding 或 source_constraints；所有 SAU 必须恰好出现在 beats[].refs 或 passthrough_refs。",
+    "system_prompt_sha256": "0d33e6805d856ec167ba6c6c9327f2942c6db159fd5edbacb3df0c16c25d12a7",
+    "user_prompt_sha256": "250d67053dd3ca95c8a698bc69f756986fb100eb3f83dbef857d4a9bc16744a4",
+    "prompt_fingerprint": "ddf1662a8583a48d2347ac4e231c3ff27769679224ed1946069018effdbbc488",
+    "profile_snapshot": {
+      "profile_id": "local-llm-2vydoz",
+      "provider": "openai-compatible",
+      "model": "mimo-v2.5",
+      "base_host": "https://api.xiaomimimo.com",
+      "enabled": true,
+      "key_configured": true
+    },
+    "generation_policy": {
+      "max_tokens": 8192,
+      "temperature": 0.0,
+      "response_format": {
+        "type": "json_object"
+      },
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "provider_request_payload_v2": {
+      "profile_id": "local-llm-2vydoz",
+      "provider": "openai-compatible",
+      "model": "mimo-v2.5",
+      "base_host": "https://api.xiaomimimo.com",
+      "system_prompt_sha256": "0d33e6805d856ec167ba6c6c9327f2942c6db159fd5edbacb3df0c16c25d12a7",
+      "user_prompt_sha256": "250d67053dd3ca95c8a698bc69f756986fb100eb3f83dbef857d4a9bc16744a4",
+      "temperature": 0.0,
+      "max_tokens": 8192,
+      "response_format": {
+        "type": "json_object"
+      },
+      "thinking": {
+        "type": "disabled"
+      },
+      "schema_version": "director_beat_plan_ir_v1",
+      "execution_boundary_version": "director_beat_plan_provider_request_v1"
+    },
+    "provider_request_fingerprint_v2": "3a73fc2e762e0572b810dfe2149c959356e8786148e040897839cba418f9cee4",
+    "source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+    "schema_version": "director_beat_plan_ir_v1",
+    "authoring_stage": "BEAT_PLAN",
+    "execution_boundary_version": "director_beat_plan_provider_request_v1",
+    "provider_identity_internal_consistency": {
+      "status": "PASS",
+      "errors": []
+    }
+  },
+  "internal_consistency": {
+    "status": "PASS",
+    "errors": []
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "execution_attempt_id": "attempt-6",
+  "latest_ledger_attempt_id": "attempt-6",
+  "stage_a_persisted_attempt_id": null,
+  "lineage_consistent": true,
+  "failure_before_stage_a_persistence": true
+}
