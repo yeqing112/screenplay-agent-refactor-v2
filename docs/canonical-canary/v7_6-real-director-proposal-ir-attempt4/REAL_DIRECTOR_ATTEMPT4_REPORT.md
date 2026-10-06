@@ -61,9 +61,10 @@ The single authorized Director MiMo call completed with HTTP 200 and a parseable
 51. Director quality improvement vs attempt-3: `NOT EVALUATED`; attempt-4 stopped at schema gate.
 52. Tests / compileall / diff: `46 passed`; compileall PASS; diff check PASS before execution.
 53. Working tree: evidence files pending commit; no core/api/models changes.
-54. Commit SHA: to be recorded after evidence commit.
-55. Remote HEAD: to be recorded after push.
+54. Evidence commit SHA: `c7cd60f542a8b7ea2ca2078ece8504dcd4e9a967`.
+55. Remote HEAD at evidence push: `c7cd60f542a8b7ea2ca2078ece8504dcd4e9a967`; the final report-metadata commit is reported by the task delivery.
 
 ## Failure boundary
 
 The authorization was consumed by the one real POST. No retry, repair LLM, fallback, confirm, SceneBlocking, ShotPlan, Storyboard, PromptIR, IMAGE, VIDEO, SHAPI, Poyo, or 75API call was made. Attempt-3 and V7.5 historical evidence remain unchanged.
+
