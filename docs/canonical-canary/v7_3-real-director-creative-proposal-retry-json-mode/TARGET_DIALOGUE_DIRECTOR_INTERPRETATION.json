@@ -1,0 +1,11 @@
+{
+  "status": "UNAVAILABLE_INVALID_PROVIDER_JSON",
+  "source_dialogue_unchanged": true,
+  "speaker": "顾沉",
+  "text": "也许是你自己",
+  "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+  "binding_type": "COREFERENCE_RESOLUTION",
+  "director_performance_intent": null,
+  "director_subtext": null,
+  "reason": "No valid proposal was available for interpretation."
+}

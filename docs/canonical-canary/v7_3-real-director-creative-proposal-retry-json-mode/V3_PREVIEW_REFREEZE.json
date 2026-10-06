@@ -1,0 +1,45 @@
+{
+  "scene_id": "E01_SC001",
+  "scene_name": "",
+  "source_action_count": 11,
+  "source_dialogue_count": 1,
+  "source_beat_count": 0,
+  "creative_beat_count": 0,
+  "source_unit_count": 12,
+  "source_authoring_units_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "status": "AUTHORING_REQUIRED",
+  "target_dialogue": {
+    "unit_id": "SAU_E01_SC001_008",
+    "schema_version": "source_authoring_unit_v1",
+    "source_type": "SOURCE_DIALOGUE",
+    "source_ref": "E01_SC001_D001",
+    "source_order": 8,
+    "source_evidence_refs": [
+      "S1D001"
+    ],
+    "speaker": "顾沉",
+    "text": "也许是你自己",
+    "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+    "binding_type": "COREFERENCE_RESOLUTION",
+    "source_evidence": {
+      "byte_end": 460,
+      "byte_start": 442,
+      "char_end": 156,
+      "char_start": 150,
+      "evidence_id": "S1D001",
+      "occurrence_count": 1,
+      "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+      "text": "也许是你自己"
+    }
+  },
+  "checks": {
+    "packet_fingerprint": true,
+    "request_fingerprint": true,
+    "system_prompt_sha256": true,
+    "user_prompt_sha256": true,
+    "profile": true,
+    "source_units_fingerprint": true,
+    "preview_shape": true,
+    "dialogue": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "source_mutation_count": 0,
+  "source_constraints_unchanged": true,
+  "source_authoring_units_unchanged": true,
+  "actions_unchanged": true,
+  "dialogue_unchanged": true,
+  "target_dialogue": {
+    "speaker": "顾沉",
+    "text": "也许是你自己",
+    "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+    "binding_type": "COREFERENCE_RESOLUTION"
+  },
+  "fact_snapshot_unchanged": true,
+  "script_ir_unchanged": true
+}

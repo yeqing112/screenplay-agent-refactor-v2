@@ -1,0 +1,20 @@
+{
+  "status": "PASS_NO_DOWNSTREAM_EXECUTION",
+  "provider_calls": {
+    "director_llm": 1,
+    "image": 0,
+    "video": 0
+  },
+  "confirm_calls": 0,
+  "domain_writes": {
+    "decision_packet_records_delta": 0,
+    "director_treatments": 0,
+    "director_treatment_authorities": 0,
+    "director_treatment_pointers": 0,
+    "scene_blockings": 0,
+    "shot_plans": 0,
+    "storyboard_shots": 0,
+    "prompt_ir_versions": 0,
+    "media": 0
+  }
+}

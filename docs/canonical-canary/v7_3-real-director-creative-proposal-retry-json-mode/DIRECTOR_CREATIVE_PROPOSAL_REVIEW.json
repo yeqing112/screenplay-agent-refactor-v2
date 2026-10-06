@@ -1,0 +1,8 @@
+{
+  "status": "NOT_READY_FOR_HUMAN_REVIEW",
+  "proposal_available": false,
+  "proposal_origin": null,
+  "packet_id": 64,
+  "recommend_confirm": false,
+  "reason": "The single retry returned structurally invalid JSON; do not promote or confirm."
+}

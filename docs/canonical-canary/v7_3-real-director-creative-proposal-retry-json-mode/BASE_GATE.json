@@ -1,0 +1,12 @@
+{
+  "base_head": "7b93c13f4ecd9a7bcb73c8610dfbda9eea97a036",
+  "remote_head": "7b93c13f4ecd9a7bcb73c8610dfbda9eea97a036",
+  "status": "PASS",
+  "working_tree_clean_before_execution": true,
+  "v7_1_v7_2_targeted_tests": "36 passed",
+  "real_provider_calls_before": 0,
+  "response_format": {
+    "type": "json_object"
+  },
+  "previous_failed_packet_id": 64
+}

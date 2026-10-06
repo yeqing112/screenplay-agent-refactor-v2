@@ -1,0 +1,46 @@
+{
+  "status": "FROZEN_EXECUTION_MANIFEST_PASS",
+  "base_head": "7b93c13f4ecd9a7bcb73c8610dfbda9eea97a036",
+  "remote_head": "7b93c13f4ecd9a7bcb73c8610dfbda9eea97a036",
+  "book_id": 990453,
+  "episode": 1,
+  "script_id": 64,
+  "fact_snapshot_id": 49,
+  "script_ir_version_id": 52,
+  "scene_id": "E01_SC001",
+  "scene_name": "",
+  "script_ir_authority_fingerprint": "48da3932b179a9379ee8bdfe54e9426e7e3664039737df3a5bb7ff6935d33682",
+  "source_unit_count": 12,
+  "source_action_count": 11,
+  "source_dialogue_count": 1,
+  "source_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "profile_id": "local-llm-2vydoz",
+  "model": "mimo-v2.5",
+  "provider": "openai-compatible",
+  "base_host": "https://api.xiaomimimo.com",
+  "system_prompt_sha256": "d2f37f97ec51f7ea0f86bf34442edd52e908a73aa1cfe07cc10375b1866444bf",
+  "user_prompt_sha256": "d4d0c7639888ad0cbc0cfc3822e88f4f172c81034399758d8c9d0718686ca6d5",
+  "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+  "request_format": {
+    "type": "json_object"
+  },
+  "transport_budget": {
+    "max_calls": 1,
+    "retries": 0,
+    "parser_retry": 0,
+    "repair": 0,
+    "fallback": 0
+  },
+  "write_budget": {
+    "decision_packet_records_max_delta": 1,
+    "director_treatment": 0,
+    "authority": 0,
+    "pointer": 0,
+    "scene_blocking": 0,
+    "shot_plan": 0,
+    "storyboard": 0,
+    "prompt_ir": 0,
+    "media": 0
+  }
+}

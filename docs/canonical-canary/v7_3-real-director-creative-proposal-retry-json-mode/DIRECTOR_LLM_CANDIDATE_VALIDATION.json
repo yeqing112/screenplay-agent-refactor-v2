@@ -1,0 +1,7 @@
+{
+  "status": "NOT_RUN_DUE_TO_INVALID_JSON",
+  "candidate_validation": "NOT_RUN",
+  "reason": "JSON parse failed before deterministic candidate validation",
+  "provider_calls": 1,
+  "writes": 0
+}

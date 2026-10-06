@@ -1,0 +1,20 @@
+{
+  "status": "PASS_TRANSPORT_COMPLETED_BUT_PROPOSAL_INVALID",
+  "http_status": 200,
+  "provider_post_count": 1,
+  "transport_attempt_number": 1,
+  "transport_retry": false,
+  "retry": 0,
+  "provider_host": "https://api.xiaomimimo.com",
+  "profile_id": "local-llm-2vydoz",
+  "model": "mimo-v2.5",
+  "provider_request_id": "",
+  "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+  "provider_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+  "response_length": 5914,
+  "response_format": {
+    "type": "json_object"
+  },
+  "image_calls": 0,
+  "video_calls": 0
+}

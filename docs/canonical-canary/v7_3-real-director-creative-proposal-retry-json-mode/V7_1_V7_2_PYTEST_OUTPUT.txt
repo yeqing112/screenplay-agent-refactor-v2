@@ -1,0 +1,39 @@
+....................................                                     [100%]
+============================== warnings summary ===============================
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+  D:\Work\Project\screenplay-agent-refactor-v2\alembic\versions\y8h9i0j1k2l3_add_generation_execution_records.py:19: SADeprecationWarning: The from_engine() method on Inspector is deprecated and will be removed in a future release.  Please use the sqlalchemy.inspect() function on an Engine or Connection in order to acquire an Inspector. (deprecated since: 1.4)
+    return set(Inspector.from_engine(bind).get_table_names())
+
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+  D:\Work\Project\screenplay-agent-refactor-v2\alembic\versions\z0a1b2c3d4e5_add_media_authority_foundation.py:19: SADeprecationWarning: The from_engine() method on Inspector is deprecated and will be removed in a future release.  Please use the sqlalchemy.inspect() function on an Engine or Connection in order to acquire an Inspector. (deprecated since: 1.4)
+    return set(Inspector.from_engine(bind).get_table_names())
+
+tests/test_director_source_grounded_authoring_v7_1.py: 12 warnings
+  D:\Work\Project\screenplay-agent-refactor-v2\alembic\versions\a1b2c3d4e5f6_add_h2_production_asset_authority.py:37: SADeprecationWarning: The from_engine() method on Inspector is deprecated and will be removed in a future release.  Please use the sqlalchemy.inspect() function on an Engine or Connection in order to acquire an Inspector. (deprecated since: 1.4)
+    return set(Inspector.from_engine(bind).get_table_names())
+
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+  D:\Work\Project\screenplay-agent-refactor-v2\alembic\versions\c8d9e0f1a2b3_add_media_promotion_runtime.py:23: SADeprecationWarning: The from_engine() method on Inspector is deprecated and will be removed in a future release.  Please use the sqlalchemy.inspect() function on an Engine or Connection in order to acquire an Inspector. (deprecated since: 1.4)
+    return set(Inspector.from_engine(bind).get_table_names())
+
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+  D:\Work\Project\screenplay-agent-refactor-v2\alembic\versions\c8d9e0f1a2b3_add_media_promotion_runtime.py:27: SADeprecationWarning: The from_engine() method on Inspector is deprecated and will be removed in a future release.  Please use the sqlalchemy.inspect() function on an Engine or Connection in order to acquire an Inspector. (deprecated since: 1.4)
+    return {item["name"] for item in Inspector.from_engine(bind).get_columns(table)}
+
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+tests/test_director_source_grounded_authoring_v7_1.py::test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale
+  D:\Work\Project\screenplay-agent-refactor-v2\alembic\versions\d9e0f1a2b3c4_add_production_batch_runtime.py:15: SADeprecationWarning: The from_engine() method on Inspector is deprecated and will be removed in a future release.  Please use the sqlalchemy.inspect() function on an Engine or Connection in order to acquire an Inspector. (deprecated since: 1.4)
+    return set(Inspector.from_engine(bind).get_table_names())
+
+tests/test_director_source_grounded_authoring_v7_1.py: 1 warning
+tests/test_director_llm_execution_boundary_v7_2.py: 9 warnings
+  C:\Users\yeqing\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+36 passed, 33 warnings in 5.81s
