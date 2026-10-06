@@ -1,0 +1,12 @@
+{
+  "order": [
+    "origin evidence index",
+    "requirements",
+    "validated bindings",
+    "FactSnapshot records",
+    "FactSnapshot",
+    "ScriptIR draft",
+    "activation"
+  ],
+  "fact_records_before_bindings": false
+}

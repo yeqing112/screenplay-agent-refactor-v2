@@ -1,0 +1,6 @@
+{
+  "canonical_json_bytes": "ensure_ascii=False, sort_keys=True, separators=(',', ':') UTF-8",
+  "canonical_json_sha256": "015abd7f5cc57a2dd94b7590f04ad8084273905ee33ec5cebeae62276a97f862",
+  "python_repr_hash_forbidden": true,
+  "authority_modules_sha_str_literals": 0
+}

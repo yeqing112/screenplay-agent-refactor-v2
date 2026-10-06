@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 
 from core.source_structuring_v2 import SourceEvidenceError, resolve_exact_source_evidence
+from core.source_authority import SourceLineageContext, canonical_json_sha256, reconciliation_fingerprint
 
 SCHEMA_VERSION = "source_grounded_screenplay_structuring_candidate_v3"
 GROUNDED_VERSION = "grounded_source_screenplay_structuring_candidate_v3"
@@ -326,6 +327,7 @@ def reconcile_candidate_v3(raw_source: str, candidate: Any) -> dict[str, Any]:
     if not isinstance(candidate, dict):
         return {"status": "SOURCE_STRUCTURING_RECONCILIATION_FAILED", "errors": [{"code": "CANDIDATE_NOT_OBJECT"},], "transformation_journal": []}
     result = copy.deepcopy(candidate)
+    input_candidate_fingerprint = canonical_json_sha256(candidate)
     journal: list[dict[str, Any]] = []
     errors: list[dict[str, Any]] = []
     for scene_index, scene in enumerate(result.get("scenes") or [], 1):
@@ -402,8 +404,10 @@ def reconcile_candidate_v3(raw_source: str, candidate: Any) -> dict[str, Any]:
             retained.append(updated)
         scene["dialogues"] = retained
     if errors:
-        return {"status": "SOURCE_STRUCTURING_RECONCILIATION_FAILED", "errors": errors, "candidate": result, "transformation_journal": journal}
-    return {"status": "SOURCE_STRUCTURING_RECONCILIATION_PASS", "errors": [], "candidate": result, "transformation_journal": journal, "provider_calls": 0, "production_writes": 0}
+        return {"status": "SOURCE_STRUCTURING_RECONCILIATION_FAILED", "errors": errors, "candidate": result, "transformation_journal": journal, "reconciliation_status": "FAILED"}
+    output_candidate_fingerprint = canonical_json_sha256(result)
+    evidence = {"policy_version": "source_structuring_reconciliation_v3", "transformations": journal, "input_candidate_fingerprint": input_candidate_fingerprint, "output_candidate_fingerprint": output_candidate_fingerprint}
+    return {"status": "SOURCE_STRUCTURING_RECONCILIATION_PASS", "errors": [], "candidate": result, "transformation_journal": journal, "reconciliation_status": "PASS", "reconciliation_fingerprint": reconciliation_fingerprint(policy_version=evidence["policy_version"], transformations=journal, input_candidate_fingerprint=input_candidate_fingerprint, output_candidate_fingerprint=output_candidate_fingerprint), "reconciliation_evidence": evidence, "provider_calls": 0, "production_writes": 0}
 
 
 def migrate_candidate_v2_to_v3(raw_source: str, candidate_v2: Any) -> dict[str, Any]:
@@ -425,12 +429,12 @@ def migrate_candidate_v2_to_v3(raw_source: str, candidate_v2: Any) -> dict[str, 
     candidate = {"schema_version": SCHEMA_VERSION_V3_1, "scenes": scenes, "unknowns": list(candidate_v2.get("unknowns") or [])}
     reconciliation = reconcile_candidate_v3(raw_source, candidate)
     if reconciliation.get("status") != "SOURCE_STRUCTURING_RECONCILIATION_PASS":
-        return {"status": "CANARY_V2_TO_V3_MIGRATION_NOT_PROVEN", "errors": reconciliation.get("errors", []), "candidate": reconciliation.get("candidate"), "transformation_journal": reconciliation.get("transformation_journal", [])}
+        return {"status": "CANARY_V2_TO_V3_MIGRATION_NOT_PROVEN", "errors": reconciliation.get("errors", []), "candidate": reconciliation.get("candidate"), "transformation_journal": reconciliation.get("transformation_journal", []), "reconciliation_fingerprint": reconciliation.get("reconciliation_fingerprint", "")}
     grounded = ground_candidate_v3(raw_source, reconciliation["candidate"])
-    return {"status": "PASS" if grounded.get("status") == "PASS" else "CANARY_V2_TO_V3_MIGRATION_NOT_PROVEN", "candidate": reconciliation["candidate"], "grounded_candidate": grounded.get("grounded_candidate"), "grounding": grounded, "transformation_journal": reconciliation.get("transformation_journal", []), "provider_calls": 0, "production_writes": 0}
+    return {"status": "PASS" if grounded.get("status") == "PASS" else "CANARY_V2_TO_V3_MIGRATION_NOT_PROVEN", "candidate": reconciliation["candidate"], "grounded_candidate": grounded.get("grounded_candidate"), "grounding": grounded, "transformation_journal": reconciliation.get("transformation_journal", []), "reconciliation_fingerprint": reconciliation.get("reconciliation_fingerprint", ""), "provider_calls": 0, "production_writes": 0}
 
 
-def canonical_script_payload_v3(grounded: Any, *, identity_context: SourceIdentityContext | None = None) -> dict[str, Any]:
+def canonical_script_payload_v3(grounded: Any, *, identity_context: SourceIdentityContext | None = None, source_lineage: SourceLineageContext | None = None) -> dict[str, Any]:
     if not isinstance(grounded, dict) or grounded.get("schema_version") not in {GROUNDED_VERSION, GROUNDED_VERSION_V3_1} or grounded.get("validation_status") != "PASS":
         raise ValueError("GROUNDED_CANDIDATE_V3_REQUIRED")
     context = identity_context or SourceIdentityContext()
@@ -446,9 +450,13 @@ def canonical_script_payload_v3(grounded: Any, *, identity_context: SourceIdenti
         timeline_items.sort(key=lambda item: int(item[0]))
         blocks = [{"order": (n + 1) * 10, "type": kind, "ref": ref} for n, (_, kind, ref) in enumerate(timeline_items)]
         scenes.append({"scene_id": scene_id, "name": "", "display_name": scene.get("display_label", ""), "display_name_authority": scene.get("display_label_authority", "UNRESOLVED"), "untrusted_display_label": scene.get("untrusted_display_label", ""), "source_identity_evidence": scene.get("source_identity_evidence", []), "location_name": "", "location_authority": "UNRESOLVED", "location_evidence": None, "participants": participants, "actions": actions, "dialogues": dialogues, "scene_evidence": scene.get("source_identity_evidence", []), "script_blocks": blocks, "timeline_origin": "SOURCE_GROUNDED", "timeline_authority": "SOURCE_EVIDENCE_ORDER", "production_eligible": True})
-    body = {"schema_version": PAYLOAD_SCHEMA_VERSION_V3_1, "source_grounded_schema_version": PAYLOAD_SCHEMA_VERSION_V3_1, "source_fingerprint": grounded["source_fingerprint"], "scenes": scenes, "scene_transitions": []}
-    canonical_fingerprint = _sha(str(body))
-    body["source_lineage"] = {"origin_source_kind": "AUTHORIZED_SOURCE", "origin_source_id": "source", "origin_source_fingerprint": grounded["source_fingerprint"], "structuring_response_fingerprint": _sha(str(grounded)), "reconciliation_fingerprint": _sha(str(grounded.get("reconciliation") or grounded)), "canonical_script_fingerprint": canonical_fingerprint}
+    body = {"schema_version": PAYLOAD_SCHEMA_VERSION_V3_1, "source_grounded_schema_version": PAYLOAD_SCHEMA_VERSION_V3_1, "origin_source_raw_hash": grounded["source_fingerprint"], "scenes": scenes, "scene_transitions": []}
+    canonical_fingerprint = canonical_json_sha256(body)
+    body["canonical_script_payload_fingerprint"] = canonical_fingerprint
+    if source_lineage is not None:
+        lineage = source_lineage.to_dict()
+        lineage["canonical_script_payload_fingerprint"] = canonical_fingerprint
+        body["source_lineage"] = lineage
     return body
 
 

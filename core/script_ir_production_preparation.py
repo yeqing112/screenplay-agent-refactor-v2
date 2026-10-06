@@ -9,6 +9,7 @@ and validation functions remain the only activation boundary.
 from __future__ import annotations
 
 import copy
+import json
 from typing import Any
 
 from core.script_ir import build_script_ir, script_ir_hash
@@ -62,8 +63,56 @@ def _build_source_grounded_candidate(source: dict[str, Any], *, book_id: int, ep
     candidate["preparation_policy"] = SOURCE_GROUNDED_STRICT_POLICY
     if is_v3:
         candidate["source_grounded_schema_version"] = source.get("source_grounded_schema_version") or SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3
+        if isinstance(source.get("source_lineage"), dict):
+            candidate["source_lineage"] = copy.deepcopy(source["source_lineage"])
+            candidate["origin_source_raw_hash"] = str(source["source_lineage"].get("origin_source_raw_hash") or "")
+        if source.get("canonical_script_payload_fingerprint"):
+            candidate["canonical_script_payload_fingerprint"] = str(source["canonical_script_payload_fingerprint"])
     candidate["payload_hash"] = script_ir_hash(candidate)
     return candidate
+
+
+def validate_source_grounded_strict_equivalence(source: dict[str, Any], candidate: dict[str, Any]) -> dict[str, Any]:
+    """Compare source projection and normalized ScriptIR by authority fields."""
+    errors: list[dict[str, Any]] = []
+    if not isinstance(source, dict) or str(source.get("schema_version") or source.get("source_grounded_schema_version") or "") != SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3_1:
+        errors.append({"code": "V3_1_SOURCE_SCHEMA_REQUIRED"})
+    if str(candidate.get("preparation_policy") or "").upper() != SOURCE_GROUNDED_STRICT_POLICY:
+        errors.append({"code": "SOURCE_GROUNDED_STRICT_POLICY_REQUIRED"})
+    if str(candidate.get("source_grounded_schema_version") or "") != SOURCE_GROUNDED_PAYLOAD_SCHEMA_V3_1:
+        errors.append({"code": "V3_1_NORMALIZED_SCHEMA_REQUIRED"})
+    source_scenes = source.get("scenes") if isinstance(source.get("scenes"), list) else []
+    candidate_scenes = candidate.get("scenes") if isinstance(candidate.get("scenes"), list) else []
+    if len(source_scenes) != len(candidate_scenes):
+        errors.append({"code": "SCENE_COUNT_CHANGED"})
+    for index, (left, right) in enumerate(zip(source_scenes, candidate_scenes), 1):
+        if str(left.get("scene_id") or "") != str(right.get("scene_id") or ""):
+            errors.append({"code": "SCENE_ID_CHANGED", "scene_index": index})
+        left_identity = [item.get("text") if isinstance(item, dict) else item for item in (left.get("source_identity_evidence") or [])]
+        right_identity = [item.get("text") if isinstance(item, dict) else item for item in (right.get("source_identity_evidence") or [])]
+        if left_identity != right_identity:
+            errors.append({"code": "SOURCE_STRUCTURAL_FIELD_CHANGED", "field": "source_identity_evidence", "scene_index": index})
+        left_participants = [str(item.get("name") or item.get("id") or "") for item in (left.get("participants") or []) if isinstance(item, dict)]
+        right_participants = [str(item.get("name") or item.get("id") or "") for item in (right.get("participants") or []) if isinstance(item, dict)]
+        if left_participants != right_participants:
+            errors.append({"code": "PARTICIPANT_CHANGED", "scene_index": index})
+        left_actions = [(str(item.get("text") or ""), json.dumps(item.get("source_evidence") or {}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))) for item in (left.get("actions") or []) if isinstance(item, dict)]
+        right_actions = [(str(item.get("text") or ""), json.dumps(item.get("source_evidence") or {}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))) for item in (right.get("actions") or []) if isinstance(item, dict)]
+        if left_actions != right_actions:
+            errors.append({"code": "ACTION_SOURCE_SPAN_CHANGED", "scene_index": index})
+        left_dialogues = [(str(item.get("speaker") or ""), str(item.get("text") or ""), json.dumps(item.get("speaker_binding") or {}, ensure_ascii=False, sort_keys=True, separators=(",", ":")), json.dumps(item.get("source_evidence") or {}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))) for item in (left.get("dialogues") or []) if isinstance(item, dict)]
+        right_dialogues = [(str(item.get("speaker") or ""), str(item.get("text") or ""), json.dumps(item.get("speaker_binding") or {}, ensure_ascii=False, sort_keys=True, separators=(",", ":")), json.dumps(item.get("source_evidence") or {}, ensure_ascii=False, sort_keys=True, separators=(",", ":"))) for item in (right.get("dialogues") or []) if isinstance(item, dict)]
+        if left_dialogues != right_dialogues:
+            errors.append({"code": "DIALOGUE_OR_BINDING_CHANGED", "scene_index": index})
+        left_blocks = [(item.get("order"), item.get("type"), item.get("ref")) for item in (left.get("script_blocks") or []) if isinstance(item, dict)]
+        right_blocks = [(item.get("order"), item.get("type"), item.get("ref")) for item in (right.get("script_blocks") or []) if isinstance(item, dict)]
+        if left_blocks != right_blocks:
+            errors.append({"code": "SCRIPT_BLOCK_ORDER_CHANGED", "scene_index": index})
+        if str(right.get("display_name_authority") or "") in {"AUTHORIZED_SEMANTIC_LABEL", "SOURCE_FACT"}:
+            errors.append({"code": "DISPLAY_AUTHORITY_UPGRADE"})
+        if str(right.get("location_authority") or "") in {"AUTHORIZED_SEMANTIC_LABEL", "SOURCE_FACT"}:
+            errors.append({"code": "LOCATION_AUTHORITY_UPGRADE"})
+    return {"status": "SOURCE_GROUNDED_STRICT_EQUIVALENCE_V3_1_PASS" if not errors else "SOURCE_GROUNDED_STRICT_EQUIVALENCE_V3_1_FAIL", "errors": errors}
 
 
 def build_production_candidate(source: Any, *, book_id: int, episode: int, preparation_policy: str | None = None) -> dict[str, Any]:
@@ -161,4 +210,4 @@ def build_production_candidate(source: Any, *, book_id: int, episode: int, prepa
     return candidate
 
 
-__all__ = ["build_production_candidate"]
+__all__ = ["build_production_candidate", "validate_source_grounded_strict_equivalence"]

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "bindings": {
+    "scene|S1|scene_identity_evidence|scene": [
+      "E0001"
+    ]
+  },
+  "all_identity_excerpts_bound": true
+}

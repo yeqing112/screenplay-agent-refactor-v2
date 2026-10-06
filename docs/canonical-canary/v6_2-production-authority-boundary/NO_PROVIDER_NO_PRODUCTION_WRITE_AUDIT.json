@@ -1,0 +1,35 @@
+{
+  "external_llm_calls": 0,
+  "llm_transport_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "75api_calls": 0,
+  "production_writes": 0,
+  "production_db_counts_before": {
+    "books": 55,
+    "scripts": 60,
+    "fact_snapshots": 47,
+    "fact_records": 98,
+    "script_ir_versions": 50,
+    "prompt_ir_versions": 36,
+    "official_media_versions": 0,
+    "missing_tables": [
+      "media_candidates"
+    ]
+  },
+  "production_db_counts_after": {
+    "books": 55,
+    "scripts": 60,
+    "fact_snapshots": 47,
+    "fact_records": 98,
+    "script_ir_versions": 50,
+    "prompt_ir_versions": 36,
+    "official_media_versions": 0,
+    "missing_tables": [
+      "media_candidates"
+    ]
+  },
+  "production_db_delta": 0
+}

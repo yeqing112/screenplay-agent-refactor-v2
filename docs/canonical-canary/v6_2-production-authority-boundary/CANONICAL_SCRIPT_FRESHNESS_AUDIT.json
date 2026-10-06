@@ -1,0 +1,5 @@
+{
+  "field": "ScriptIRVersion.source_fingerprint",
+  "meaning": "CANONICAL_SCRIPT_CONTENT_HASH",
+  "tamper_code": "CANONICAL_SCRIPT_CHANGED"
+}

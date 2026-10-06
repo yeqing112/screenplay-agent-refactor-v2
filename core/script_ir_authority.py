@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from core.fact_coverage import fingerprint
+from core.source_authority import SourceLineageContext, canonical_json_sha256
 from core.fact_snapshot import snapshot_hash
 from core.source_evidence_index import build_source_evidence_index, validate_source_evidence_index
 from core.script_ir import script_ir_hash, validate_script_ir
@@ -27,6 +28,8 @@ from core.script_ir_source_requirements import (
 
 AUTHORITY_ENVELOPE_SCHEMA_VERSION = "script_ir_authority_envelope_v1"
 AUTHORITY_POLICY_VERSION = "script_ir_authority_policy_v1"
+AUTHORITY_ENVELOPE_SCHEMA_VERSION_V2 = "script_ir_authority_envelope_v2"
+AUTHORITY_POLICY_VERSION_V2 = "script_ir_authority_policy_v2"
 QUALIFICATION_STATES = ("STRUCTURALLY_VALID", "SOURCE_COVERAGE_QUALIFIED", "AUTHORITY_BOUND", "PRODUCTION_QUALIFIED")
 STALE_STATUSES = ("UNKNOWN", "FRESH", "STALE")
 
@@ -58,7 +61,7 @@ def _index_fingerprint(index: dict[str, Any]) -> str:
 
 def _envelope_fingerprint(payload: dict[str, Any]) -> str:
     body = {key: value for key, value in payload.items() if key != "envelope_fingerprint"}
-    return fingerprint(body)
+    return canonical_json_sha256(body)
 
 
 def _anchor_contains_value(anchor_text: Any, expected: Any) -> bool:
@@ -108,6 +111,91 @@ def build_authority_envelope(*, book_id: int, episode: int, script_ir_payload: d
     return envelope
 
 
+def build_authority_envelope_v2(*, book_id: int, episode: int, script_ir_payload: dict[str, Any], lineage: SourceLineageContext, fact_snapshot: dict[str, Any], source_evidence_index: dict[str, Any], requirement_set: dict[str, Any], coverage_result: dict[str, Any], source_anchor_bindings: dict[str, Any], source_requirement_contract_fingerprint: str = "", reconciliation_policy_version: str = "", reconciliation_fingerprint: str = "", migration_fingerprint: str = "", authority_revision: int = 1, canonical_script_content_hash: str = "") -> dict[str, Any]:
+    """Build the dual-source V2 envelope used only by source-grounded V3.1."""
+    payload_hash = script_ir_hash(script_ir_payload)
+    canonical_content_hash = canonical_script_content_hash or lineage.canonical_script_content_hash
+    if not canonical_content_hash:
+        raise ScriptIRAuthorityError("CANONICAL_SCRIPT_CONTENT_HASH_REQUIRED", "Canonical Script content hash is required for authority V2.")
+    if not lineage.origin_source_raw_hash:
+        raise ScriptIRAuthorityError("ORIGIN_SOURCE_RAW_HASH_REQUIRED", "Origin source hash is required for authority V2.")
+    canonical_payload_fingerprint = lineage.canonical_script_payload_fingerprint or str(script_ir_payload.get("canonical_script_payload_fingerprint") or "")
+    if not canonical_payload_fingerprint:
+        raise ScriptIRAuthorityError("CANONICAL_SCRIPT_PAYLOAD_FINGERPRINT_REQUIRED", "Canonical payload fingerprint is required for authority V2.")
+    if not lineage.structuring_response_fingerprint:
+        raise ScriptIRAuthorityError("STRUCTURING_RESPONSE_FINGERPRINT_REQUIRED", "A real raw structuring response fingerprint is required.")
+    envelope = {
+        "schema_version": AUTHORITY_ENVELOPE_SCHEMA_VERSION_V2,
+        "authority_policy_version": AUTHORITY_POLICY_VERSION_V2,
+        "book_id": int(book_id), "episode": int(episode),
+        "script_ir_payload_hash": payload_hash,
+        "canonical_script_content_hash": canonical_content_hash,
+        "canonical_script_payload_fingerprint": canonical_payload_fingerprint,
+        "origin_source_kind": lineage.origin_source_kind,
+        "origin_source_package_id": lineage.origin_source_package_id,
+        "origin_source_version_id": lineage.origin_source_version_id,
+        "origin_source_locator": dict(lineage.origin_source_locator),
+        "origin_source_raw_hash": lineage.origin_source_raw_hash,
+        "origin_source_evidence_index_fingerprint": _index_fingerprint(source_evidence_index),
+        "fact_snapshot_id": fact_snapshot.get("id"), "fact_snapshot_revision": int(fact_snapshot.get("revision") or 0),
+        "fact_snapshot_payload_hash": _text(fact_snapshot.get("payload_hash")),
+        "source_requirement_contract_fingerprint": source_requirement_contract_fingerprint or _text(requirement_set.get("contract_fingerprint")),
+        "compiled_requirement_set_fingerprint": _text(requirement_set.get("fingerprint")),
+        "source_coverage_result_fingerprint": _text(coverage_result.get("fingerprint")) or canonical_json_sha256(coverage_result),
+        "structuring_response_fingerprint": lineage.structuring_response_fingerprint,
+        "reconciliation_policy_version": reconciliation_policy_version or lineage.reconciliation_policy_version,
+        "reconciliation_fingerprint": reconciliation_fingerprint or lineage.reconciliation_fingerprint,
+        "migration_fingerprint": migration_fingerprint or lineage.migration_fingerprint,
+        "source_anchor_bindings": copy.deepcopy(source_anchor_bindings),
+        "qualification_state": "PRODUCTION_QUALIFIED", "stale_status": "FRESH", "stale_reasons": [], "authority_revision": int(authority_revision),
+    }
+    envelope["source_lineage"] = {
+        "origin_source_kind": lineage.origin_source_kind,
+        "origin_source_package_id": lineage.origin_source_package_id,
+        "origin_source_version_id": lineage.origin_source_version_id,
+        "origin_source_locator": dict(lineage.origin_source_locator),
+        "origin_source_raw_hash": lineage.origin_source_raw_hash,
+        "source_package_id": lineage.origin_source_package_id,
+        "source_version_id": lineage.origin_source_version_id,
+        "immutable_source_raw_hash": lineage.origin_source_raw_hash,
+        "source_evidence_index_fingerprint": _index_fingerprint(source_evidence_index),
+    }
+    envelope["envelope_fingerprint"] = _envelope_fingerprint(envelope)
+    return envelope
+
+
+def validate_authority_envelope_v2(envelope: dict[str, Any], *, payload: dict[str, Any], lineage: SourceLineageContext, source_evidence_index: dict[str, Any], fact_snapshot: dict[str, Any] | None = None, canonical_script_content_hash: str = "", origin_raw_hash: str = "") -> dict[str, Any]:
+    errors: list[dict[str, Any]] = []
+    if not isinstance(envelope, dict) or envelope.get("schema_version") != AUTHORITY_ENVELOPE_SCHEMA_VERSION_V2:
+        return {"status": "FAIL", "errors": [{"code": "SCRIPT_IR_AUTHORITY_ENVELOPE_V2_INVALID"}]}
+    if envelope.get("envelope_fingerprint") != _envelope_fingerprint(envelope):
+        errors.append({"code": "SCRIPT_IR_AUTHORITY_ENVELOPE_TAMPERED"})
+    if envelope.get("script_ir_payload_hash") != script_ir_hash(payload):
+        errors.append({"code": "CANONICAL_SCRIPT_CHANGED"})
+    if str(payload.get("canonical_script_payload_fingerprint") or "") and envelope.get("canonical_script_payload_fingerprint") != payload.get("canonical_script_payload_fingerprint"):
+        errors.append({"code": "CANONICAL_SCRIPT_PAYLOAD_FINGERPRINT_CHANGED"})
+    if canonical_script_content_hash and envelope.get("canonical_script_content_hash") != canonical_script_content_hash:
+        errors.append({"code": "CANONICAL_SCRIPT_CHANGED"})
+    if origin_raw_hash and envelope.get("origin_source_raw_hash") != origin_raw_hash:
+        errors.append({"code": "ORIGIN_SOURCE_CHANGED"})
+    if envelope.get("origin_source_evidence_index_fingerprint") != _index_fingerprint(source_evidence_index):
+        errors.append({"code": "ORIGIN_EVIDENCE_INDEX_CHANGED"})
+    for field in ("origin_source_kind", "origin_source_package_id", "origin_source_version_id", "origin_source_raw_hash"):
+        if str(envelope.get(field) or "") != str(getattr(lineage, field) or ""):
+            errors.append({"code": "ORIGIN_SOURCE_LINEAGE_CHANGED", "field": field})
+    for field in ("structuring_response_fingerprint", "reconciliation_policy_version", "reconciliation_fingerprint", "migration_fingerprint"):
+        if str(envelope.get(field) or "") != str(getattr(lineage, field) or ""):
+            errors.append({"code": "SOURCE_LINEAGE_FINGERPRINT_CHANGED", "field": field})
+    if fact_snapshot is not None:
+        for field in ("id", "revision", "payload_hash"):
+            env_field = {"id": "fact_snapshot_id", "revision": "fact_snapshot_revision", "payload_hash": "fact_snapshot_payload_hash"}[field]
+            if str(envelope.get(env_field)) != str(fact_snapshot.get(field)):
+                errors.append({"code": "FACT_SNAPSHOT_CHANGED", "field": field})
+    if envelope.get("qualification_state") != "PRODUCTION_QUALIFIED" or envelope.get("stale_status") != "FRESH":
+        errors.append({"code": "SCRIPT_IR_NOT_PRODUCTION_QUALIFIED"})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors}
+
+
 def validate_source_anchor_bindings(*, requirement_set: dict[str, Any], source_evidence_index: dict[str, Any], bindings: dict[str, Any] | None) -> dict[str, Any]:
     anchors = {str(row.get("anchor_ref")): row for row in (source_evidence_index.get("anchors") or []) if isinstance(row, dict) and row.get("anchor_ref")}
     errors: list[dict[str, Any]] = []
@@ -131,6 +219,11 @@ def validate_source_anchor_bindings(*, requirement_set: dict[str, Any], source_e
         expected = req.get("expected_value")
         if req.get("contract_requirement_id") == "SIR_SCENE_NAME" and expected and not any(_anchor_contains_value(anchors[ref].get("exact_text"), expected) for ref in refs):
             errors.append({"code": "SOURCE_ANCHOR_SCENE_NAME_MISMATCH", "requirement_id": req_id, "expected": expected, "refs": refs})
+        if req.get("contract_requirement_id") == "SIR_SCENE_IDENTITY_EVIDENCE":
+            expected_texts = [str(item.get("text") or "") for item in (req.get("source_value") or []) if isinstance(item, dict)]
+            missing = [text for text in expected_texts if text and not any(_anchor_contains_value(anchors[ref].get("exact_text"), text) for ref in refs)]
+            if missing:
+                errors.append({"code": "SOURCE_ANCHOR_SCENE_IDENTITY_MISMATCH", "requirement_id": req_id, "missing": missing, "refs": refs})
         result[req_id] = refs
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "bindings": result}
 
@@ -198,7 +291,7 @@ def validate_source_evidence_binding(*, source_evidence_index: dict[str, Any], r
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "fingerprint": _index_fingerprint(source_evidence_index)}
 
 
-def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_structure: dict[str, Any], source_package_id: str, source_version_id: str, immutable_source_raw_hash: str, source_evidence_index: dict[str, Any], source_anchor_bindings: dict[str, Any], fact_snapshot_row: Any, authority_revision: int | None = None) -> dict[str, Any]:
+def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_structure: dict[str, Any], source_package_id: str, source_version_id: str, immutable_source_raw_hash: str, source_evidence_index: dict[str, Any], source_anchor_bindings: dict[str, Any], fact_snapshot_row: Any, authority_revision: int | None = None, origin_raw_bytes: bytes | None = None, canonical_script_content_hash: str = "", source_lineage: SourceLineageContext | None = None) -> dict[str, Any]:
     """Atomically create production authority and update the current pointer."""
 
     if not isinstance(source_structure, dict):
@@ -221,15 +314,35 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     scenes = payload.get("scenes") if isinstance(payload.get("scenes"), list) else []
     if any(_text(scene.get("name")).startswith("未命名场景") for scene in scenes if isinstance(scene, dict)):
         raise ScriptIRAuthorityError("SCENE_NAME_SOURCE_AUTHORITY_REQUIRED", "Placeholder scene names cannot become production authority.")
-    raw_source_bytes = str(getattr(script_row, "content", "") or "").encode("utf-8")
-    current_source_hash = hashlib.sha256(raw_source_bytes).hexdigest()
-    if _text(getattr(draft_row, "source_fingerprint", "")) and _text(getattr(draft_row, "source_fingerprint", "")) != current_source_hash:
+    canonical_bytes = str(getattr(script_row, "content", "") or "").encode("utf-8")
+    current_source_hash = hashlib.sha256(canonical_bytes).hexdigest()
+    v3_1 = str(source_structure.get("source_grounded_schema_version") or "") == "source_grounded_script_payload_v3_1"
+    raw_source_bytes = origin_raw_bytes if v3_1 and origin_raw_bytes is not None else canonical_bytes
+    if v3_1:
+        from core.script_ir_production_preparation import validate_source_grounded_strict_equivalence
+        try:
+            parsed_source = json.loads(getattr(script_row, "content", "") or "{}")
+        except (TypeError, ValueError, json.JSONDecodeError):
+            parsed_source = None
+        equivalence = validate_source_grounded_strict_equivalence(parsed_source if isinstance(parsed_source, dict) else {}, payload)
+        if equivalence.get("status") != "SOURCE_GROUNDED_STRICT_EQUIVALENCE_V3_1_PASS":
+            raise ScriptIRAuthorityError("V3_1_ACTIVATION_EQUIVALENCE_BLOCKED", "V3.1 source payload and normalized ScriptIR are not deterministically equivalent.", details={"equivalence": equivalence})
+        if not source_lineage:
+            raise ScriptIRAuthorityError("SOURCE_LINEAGE_REQUIRED", "V3.1 authority requires origin lineage context.")
+        payload_lineage = payload.get("source_lineage") if isinstance(payload.get("source_lineage"), dict) else {}
+        for field in ("origin_source_kind", "origin_source_package_id", "origin_source_version_id", "origin_source_raw_hash", "structuring_response_fingerprint", "reconciliation_policy_version", "reconciliation_fingerprint", "migration_fingerprint"):
+            if payload_lineage and str(payload_lineage.get(field) or "") != str(getattr(source_lineage, field) or ""):
+                raise ScriptIRAuthorityError("SOURCE_LINEAGE_MISMATCH", "Canonical payload lineage does not match the authority lineage.", details={"field": field})
+        if not canonical_script_content_hash or current_source_hash != canonical_script_content_hash:
+            raise ScriptIRAuthorityError("CANONICAL_SCRIPT_CHANGED", "Canonical Script content hash does not match the immutable Script row.")
+    expected_draft_fingerprint = current_source_hash
+    if _text(getattr(draft_row, "source_fingerprint", "")) and _text(getattr(draft_row, "source_fingerprint", "")) != expected_draft_fingerprint:
         raise ScriptIRAuthorityError("SCRIPT_IR_DRAFT_STALE", "ScriptIR draft was built from a different immutable source revision.")
     try:
         parsed_source = json.loads(getattr(script_row, "content", "") or "{}")
     except (TypeError, ValueError, json.JSONDecodeError):
         parsed_source = None
-    if isinstance(parsed_source, dict) and parsed_source != source_structure:
+    if isinstance(parsed_source, dict) and parsed_source != source_structure and not v3_1:
         # SOURCE_GROUNDED_STRICT deliberately keeps the immutable Script row in
         # the source-grounded payload schema.  The preparation boundary then
         # derives a normalized ScriptIR candidate from that payload.  These
@@ -260,7 +373,7 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
         raise ScriptIRAuthorityError("SOURCE_EVIDENCE_BINDING_REQUIRED", "Blocking ScriptIR requirements are not bound to immutable source anchors.", details=anchor_check)
     if not _text(source_package_id) or not _text(source_version_id) or not _text(immutable_source_raw_hash) or not _index_fingerprint(source_evidence_index):
         raise ScriptIRAuthorityError("SOURCE_LINEAGE_REQUIRED", "Source package, version, raw hash and evidence index are required.")
-    if current_source_hash != _text(immutable_source_raw_hash):
+    if hashlib.sha256(raw_source_bytes).hexdigest() != _text(immutable_source_raw_hash):
         raise ScriptIRAuthorityError("SOURCE_HASH_MISMATCH", "Immutable source raw hash does not match the current script source.")
     if not _text(getattr(fact_snapshot_row, "payload_hash", "")):
         raise ScriptIRAuthorityError("FACT_SNAPSHOT_PAYLOAD_HASH_REQUIRED", "Bound FactSnapshot payload hash is required.")
@@ -273,8 +386,11 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     fact_coverage = fact_report.get("fact_coverage") if isinstance(fact_report, dict) else None
     if isinstance(fact_coverage, dict) and str(fact_coverage.get("status") or "").startswith("FACT_COVERAGE_") and fact_coverage.get("status") != "FACT_COVERAGE_SUFFICIENT":
         raise ScriptIRAuthorityError("FACT_SNAPSHOT_COVERAGE_INSUFFICIENT", "Bound FactSnapshot is not coverage-qualified.")
-    envelope = build_authority_envelope(book_id=script_row.book_id, episode=script_row.episode, script_ir_payload=payload, source_package_id=source_package_id, source_version_id=source_version_id, immutable_source_raw_hash=immutable_source_raw_hash, source_evidence_index=source_evidence_index, fact_snapshot={"id": fact_snapshot_row.id, "revision": fact_snapshot_row.revision, "payload_hash": fact_snapshot_row.payload_hash}, contract=contract, requirement_set=requirement_set, coverage_result=coverage, authority_revision=authority_revision or int(getattr(draft_row, "revision", 1) or 1))
-    envelope["source_anchor_bindings"] = copy.deepcopy(anchor_check["bindings"])
+    if v3_1:
+        envelope = build_authority_envelope_v2(book_id=script_row.book_id, episode=script_row.episode, script_ir_payload=payload, lineage=source_lineage, fact_snapshot={"id": fact_snapshot_row.id, "revision": fact_snapshot_row.revision, "payload_hash": fact_snapshot_row.payload_hash}, source_evidence_index=source_evidence_index, requirement_set=requirement_set, coverage_result=coverage, source_anchor_bindings=anchor_check["bindings"], source_requirement_contract_fingerprint=contract.get("fingerprint"), authority_revision=authority_revision or int(getattr(draft_row, "revision", 1) or 1), canonical_script_content_hash=canonical_script_content_hash)
+    else:
+        envelope = build_authority_envelope(book_id=script_row.book_id, episode=script_row.episode, script_ir_payload=payload, source_package_id=source_package_id, source_version_id=source_version_id, immutable_source_raw_hash=immutable_source_raw_hash, source_evidence_index=source_evidence_index, fact_snapshot={"id": fact_snapshot_row.id, "revision": fact_snapshot_row.revision, "payload_hash": fact_snapshot_row.payload_hash}, contract=contract, requirement_set=requirement_set, coverage_result=coverage, authority_revision=authority_revision or int(getattr(draft_row, "revision", 1) or 1))
+        envelope["source_anchor_bindings"] = copy.deepcopy(anchor_check["bindings"])
     envelope["envelope_fingerprint"] = _envelope_fingerprint(envelope)
     draft_row.status = "production_qualified"
     draft_row.validation_status = "qualified"
@@ -299,4 +415,4 @@ def activate_script_ir(*, session: Any, script_row: Any, draft_row: Any, source_
     return {"status": "SCRIPT_IR_AUTHORITY_ACTIVATED", "script_ir_version_id": draft_row.id, "revision": draft_row.revision, "qualification_state": draft_row.qualification_state, "authority_envelope": envelope, "downstream_requirement_backlog": "preserved", "provider_calls": 0, "production_writes": 1}
 
 
-__all__ = ["AUTHORITY_ENVELOPE_SCHEMA_VERSION", "AUTHORITY_POLICY_VERSION", "QUALIFICATION_STATES", "STALE_STATUSES", "ScriptIRAuthorityError", "build_authority_envelope", "validate_source_anchor_bindings", "validate_source_evidence_binding", "validate_authority_envelope", "activate_script_ir"]
+__all__ = ["AUTHORITY_ENVELOPE_SCHEMA_VERSION", "AUTHORITY_POLICY_VERSION", "AUTHORITY_ENVELOPE_SCHEMA_VERSION_V2", "AUTHORITY_POLICY_VERSION_V2", "QUALIFICATION_STATES", "STALE_STATUSES", "ScriptIRAuthorityError", "build_authority_envelope", "build_authority_envelope_v2", "validate_source_anchor_bindings", "validate_source_evidence_binding", "validate_authority_envelope", "validate_authority_envelope_v2", "activate_script_ir"]

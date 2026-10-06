@@ -1,0 +1,6 @@
+{
+  "origin_source_raw_hash": "origin Chapter raw bytes",
+  "canonical_script_content_hash": "Script.content bytes",
+  "canonical_script_payload_fingerprint": "canonical JSON projection",
+  "shared_source_fingerprint_forbidden": true
+}

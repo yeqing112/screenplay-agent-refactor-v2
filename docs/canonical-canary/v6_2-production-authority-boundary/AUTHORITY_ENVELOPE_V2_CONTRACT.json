@@ -1,0 +1,22 @@
+{
+  "schema_version": "script_ir_authority_envelope_v2",
+  "dual_source": true,
+  "required_lineage": {
+    "origin_source_kind": "BOOK_CHAPTER",
+    "origin_source_package_id": "book:generic",
+    "origin_source_version_id": "chapter:generic:v1",
+    "origin_source_locator": {
+      "book_id": 1,
+      "chapter_seq": 1
+    },
+    "origin_source_raw_hash": "d7beb812eb2e44ddf0894b191a236d9dbfef7660dc52b865473aa8d3a68ca6b1",
+    "structuring_response_fingerprint": "1111111111111111111111111111111111111111111111111111111111111111",
+    "reconciliation_policy_version": "reconciliation_v1",
+    "reconciliation_fingerprint": "2222222222222222222222222222222222222222222222222222222222222222",
+    "migration_fingerprint": "3333333333333333333333333333333333333333333333333333333333333333",
+    "canonical_projection_version": "source_grounded_script_payload_v3_1",
+    "canonical_script_content_hash": "",
+    "canonical_script_payload_fingerprint": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "production_persistence_required": true
+}

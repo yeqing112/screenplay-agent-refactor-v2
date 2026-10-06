@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "new_book": 1,
+  "new_script": 1,
+  "fact_snapshot": 1,
+  "fact_records": ">0",
+  "script_ir_version": 1,
+  "qualification_state": "PRODUCTION_QUALIFIED",
+  "database": "isolated in-memory SQLite"
+}

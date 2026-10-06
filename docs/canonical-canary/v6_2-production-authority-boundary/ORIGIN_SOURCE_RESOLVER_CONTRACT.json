@@ -1,0 +1,6 @@
+{
+  "supported_kind": "BOOK_CHAPTER",
+  "not_found_code": "ORIGIN_SOURCE_NOT_FOUND",
+  "changed_code": "ORIGIN_SOURCE_CHANGED",
+  "provider_calls": 0
+}

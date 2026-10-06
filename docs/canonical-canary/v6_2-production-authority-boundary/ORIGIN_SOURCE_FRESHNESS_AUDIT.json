@@ -1,0 +1,5 @@
+{
+  "field": "FactSnapshot.source_fingerprint and envelope.origin_source_raw_hash",
+  "meaning": "ORIGIN_SOURCE_RAW_HASH",
+  "tamper_code": "ORIGIN_SOURCE_CHANGED"
+}

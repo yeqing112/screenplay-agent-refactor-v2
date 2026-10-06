@@ -17,6 +17,8 @@ class ScriptIRVersion(Base):
     schema_version = Column(String, nullable=False, default="script_ir_v1")
     source_outline_revision = Column(String, nullable=False, default="")
     source_fact_snapshot_id = Column(String, nullable=False, default="")
+    # For V3.1 this is the canonical Script.content bytes hash. Origin source
+    # authority lives in the V2 envelope's origin_source_raw_hash.
     source_fingerprint = Column(String, nullable=False, default="")
     payload_json = Column(Text, nullable=False, default="{}")
     payload_hash = Column(String, nullable=False, default="")

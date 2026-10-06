@@ -1,0 +1,14 @@
+{
+  "status": "SOURCE_GROUNDED_STRICT_EQUIVALENCE_V3_1_PASS",
+  "checks": [
+    "schema",
+    "strict policy",
+    "scene identity",
+    "participants",
+    "action spans",
+    "dialogue spans",
+    "speaker binding",
+    "script block order",
+    "unresolved display/location"
+  ]
+}

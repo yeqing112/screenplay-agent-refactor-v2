@@ -376,6 +376,52 @@ def resolve_script_payload(session: Any, script_row: Any, *, workflow_profile: s
         except (TypeError, ValueError, json.JSONDecodeError) as exc:
             raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_ENVELOPE_INVALID", "message": "Production ScriptIR authority envelope is invalid."}) from exc
         raw_source_bytes = str(script_row.content or "").encode("utf-8")
+        if envelope.get("schema_version") == "script_ir_authority_envelope_v2":
+            from core.source_authority import SourceLineageContext, resolve_origin_source
+            from core.script_ir_authority import validate_authority_envelope_v2, validate_source_anchor_bindings
+            try:
+                lineage = SourceLineageContext(
+                    origin_source_kind=str(envelope.get("origin_source_kind") or ""),
+                    origin_source_package_id=str(envelope.get("origin_source_package_id") or ""),
+                    origin_source_version_id=str(envelope.get("origin_source_version_id") or ""),
+                    origin_source_locator=envelope.get("origin_source_locator") if isinstance(envelope.get("origin_source_locator"), dict) else {},
+                    origin_source_raw_hash=str(envelope.get("origin_source_raw_hash") or ""),
+                    structuring_response_fingerprint=str(envelope.get("structuring_response_fingerprint") or ""),
+                    reconciliation_policy_version=str(envelope.get("reconciliation_policy_version") or ""),
+                    reconciliation_fingerprint=str(envelope.get("reconciliation_fingerprint") or ""),
+                    migration_fingerprint=str(envelope.get("migration_fingerprint") or ""),
+                    canonical_projection_version=str(payload.get("source_grounded_schema_version") or ""),
+                    canonical_script_content_hash=str(envelope.get("canonical_script_content_hash") or ""),
+                    canonical_script_payload_fingerprint=str(envelope.get("canonical_script_payload_fingerprint") or ""),
+                )
+                origin = resolve_origin_source(session, lineage)
+                canonical_hash = hashlib.sha256(raw_source_bytes).hexdigest()
+                payload_lineage = payload.get("source_lineage") if isinstance(payload.get("source_lineage"), dict) else {}
+                for field in ("origin_source_kind", "origin_source_package_id", "origin_source_version_id", "origin_source_raw_hash", "structuring_response_fingerprint", "reconciliation_policy_version", "reconciliation_fingerprint", "migration_fingerprint"):
+                    if payload_lineage and str(payload_lineage.get(field) or "") != str(getattr(lineage, field) or ""):
+                        raise HTTPException(status_code=409, detail={"code": "SOURCE_LINEAGE_MISMATCH", "message": "Canonical payload lineage does not match the authority envelope."})
+                if str(version.source_fingerprint or "") != canonical_hash:
+                    raise HTTPException(status_code=409, detail={"code": "CANONICAL_SCRIPT_CHANGED", "message": "ScriptIR freshness hash does not match Script.content bytes."})
+                from core.source_evidence_index import build_source_evidence_index
+                origin_index = build_source_evidence_index(origin["raw_bytes"], source_package_id=origin["source_package_id"], source_version_id=origin["source_version_id"], source_raw_hash=origin["raw_sha256"])
+                from core.script_ir_source_requirements import compile_script_ir_source_requirements
+                current_requirements = compile_script_ir_source_requirements(source_structure=payload)
+                snapshot_id = envelope.get("fact_snapshot_id")
+                from models import FactSnapshot
+                snapshot = session.query(FactSnapshot).filter_by(id=int(snapshot_id)).first() if str(snapshot_id or "").isdigit() else None
+                if not snapshot or str(snapshot.source_fingerprint or "") != origin["raw_sha256"]:
+                    raise HTTPException(status_code=409, detail={"code": "ORIGIN_SOURCE_CHANGED", "message": "Origin source or bound FactSnapshot is stale."})
+                anchor_check = validate_source_anchor_bindings(requirement_set=current_requirements, source_evidence_index=origin_index, bindings=envelope.get("source_anchor_bindings"))
+                if anchor_check.get("status") != "PASS":
+                    raise HTTPException(status_code=409, detail={"code": "SOURCE_EVIDENCE_BINDING_INVALID", "details": anchor_check})
+                report = validate_authority_envelope_v2(envelope, payload=payload, lineage=lineage, source_evidence_index=origin_index, fact_snapshot={"id": snapshot.id, "revision": snapshot.revision, "payload_hash": snapshot.payload_hash}, canonical_script_content_hash=canonical_hash, origin_raw_hash=origin["raw_sha256"])
+                if report.get("status") != "PASS":
+                    raise HTTPException(status_code=409, detail={"code": "SCRIPT_IR_AUTHORITY_STALE", "errors": report.get("errors", [])})
+                return payload if isinstance(payload, dict) else {"scenes": []}
+            except HTTPException:
+                raise
+            except ValueError as exc:
+                raise HTTPException(status_code=409, detail={"code": str(exc), "message": "Dual-source ScriptIR authority validation failed."}) from exc
         expected: dict[str, Any] = {"book_id": script_row.book_id, "episode": script_row.episode, "immutable_source_raw_hash": hashlib.sha256(raw_source_bytes).hexdigest()}
         try:
             source_package_id = str(envelope.get("source_package_id") or "").strip()

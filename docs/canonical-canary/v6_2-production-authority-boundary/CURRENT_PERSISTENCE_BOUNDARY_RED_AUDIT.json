@@ -1,0 +1,6 @@
+{
+  "historical_red_status": "V3_1_ACTIVATION_EQUIVALENCE_BLOCKED",
+  "historical_blocker": "V2-only strict source equivalence rejected V3.1 normalized payload",
+  "post_repair_status": "SOURCE_GROUNDED_STRICT_EQUIVALENCE_V3_1_PASS",
+  "red_test": "tests/test_source_grounded_authority_boundary_v6_2.py"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "SourceLineageContext",
+  "fields": [
+    "origin_source_kind",
+    "origin_source_package_id",
+    "origin_source_version_id",
+    "origin_source_locator",
+    "origin_source_raw_hash",
+    "structuring_response_fingerprint",
+    "reconciliation_policy_version",
+    "reconciliation_fingerprint",
+    "migration_fingerprint",
+    "canonical_projection_version"
+  ],
+  "canary_constants": 0
+}

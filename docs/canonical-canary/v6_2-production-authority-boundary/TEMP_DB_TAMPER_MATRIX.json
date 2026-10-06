@@ -1,0 +1,10 @@
+{
+  "canonical_script_json": "FAIL_CLOSED",
+  "origin_raw_source": "FAIL_CLOSED",
+  "origin_source_id": "FAIL_CLOSED",
+  "anchor_ref": "FAIL_CLOSED",
+  "fact_snapshot_evidence": "FAIL_CLOSED",
+  "reconciliation_fingerprint": "FAIL_CLOSED",
+  "structuring_response_fingerprint": "FAIL_CLOSED",
+  "script_ir_payload": "FAIL_CLOSED"
+}
