@@ -3,6 +3,9 @@
   "all_confirmed": true,
   "all_have_evidence": true,
   "creative_backlog_records": 0,
+  "evidence_refs_are_validated_origin_refs": true,
+  "origin_anchor_binding_validation": "FINAL_PREWRITE_PREFLIGHT.checks.source_anchor_bindings.status=PASS",
+  "origin_source_raw_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
   "records": [
     {
       "authority": "source_text",

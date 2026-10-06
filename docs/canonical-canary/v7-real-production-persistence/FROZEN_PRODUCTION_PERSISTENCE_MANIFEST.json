@@ -1,5 +1,6 @@
 {
   "base_commit": "50b874f6869cc9e27006c2ce5bdd1ec8a8e576db",
+  "canonical_projection_version": "source_grounded_script_payload_v3_1",
   "canonical_script_payload_fingerprint": "412d8b16ef4460be1a3a253ed356b044aaabe3efe07ef71e6481ce472adb53ba",
   "expected_counts": {
     "actions": 11,
@@ -10,7 +11,9 @@
   },
   "expected_episode": 1,
   "forensic_sha256": "f4204059934cf19eebf4fcb94278756c48eaefce853d947cb5af16db133452ef",
-  "manifest_fingerprint": "8bf0de6a0e95514a449525bbc6574407359dc68528dd55eebb45b459ab17a03e",
+  "grounded_candidate_fingerprint": "14808c1f649d69acefabb4cb810dae5bc70dc2d5fff88209602ac47393f26d32",
+  "manifest_fingerprint": "3b26e37276251d7dc58b03a72ff1993c2d28a4bbfecc0284c4f20e3dd1563833",
+  "migrated_candidate_fingerprint": "5d24ed442c7df57a845f21a596f54ebcef1a1c5e52770dbf0e3b47e2e08892cb",
   "migration_fingerprint": "4541e40f88dfcdada955f2603c2d8c7d71fe328b8c802b3a0746fec2ec61ed40",
   "origin": {
     "book_id": 990402,
@@ -24,6 +27,7 @@
   "original_candidate_fingerprint": "ee66d644cfe91a2f3ad81865247707ac69a6746cfc405d4ddc98af1783456d21",
   "persistence_run_id": "20261006T013634Z-8bf0de6a0e95514a",
   "phase": "PHASE_GENERALIZED_CANARY_REAL_PRODUCTION_PERSISTENCE_V7",
+  "prewrite_manifest_fingerprint": "8bf0de6a0e95514a449525bbc6574407359dc68528dd55eebb45b459ab17a03e",
   "provider_budget": {
     "IMAGE": 0,
     "LLM": 0,
@@ -32,7 +36,12 @@
   "readiness": "AUTHORING_REQUIRED",
   "reconciliation_fingerprint": "aee7ad3b79f2da379ce42af79082653970a7d5bba6b3382cd507adfcc3f5539c",
   "salvaged_candidate_fingerprint": "6fad483a2b7f1c73eac42321f13bdae9a41bab4a8b220f72919a6decbb4c7400",
-  "status": "FROZEN_PREWRITE",
+  "self_consistency_checks": [
+    "all required frozen fields concrete",
+    "manifest fingerprint recomputed over frozen body",
+    "run id uniqueness checked before write"
+  ],
+  "status": "FROZEN_COMPLETE_SELF_CONSISTENT",
   "write_budget": {
     "book": 1,
     "downstream": 0,

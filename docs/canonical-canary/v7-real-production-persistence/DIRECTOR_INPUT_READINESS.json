@@ -5,8 +5,14 @@
   "next_authorization": "DIRECTOR_CREATIVE_AUTHORING_AUTHORIZATION_REQUIRED",
   "prompt_ir_created": false,
   "read_only_source": "production ScriptIR current pointer",
+  "read_only_validation": {
+    "accepted_authority_profile": "SOURCE_GROUNDED_V3_1",
+    "accepted_creative_readiness": "AUTHORING_REQUIRED",
+    "accepted_qualification_state": "PRODUCTION_QUALIFIED",
+    "production_writes": 0
+  },
   "scene_blocking_created": false,
   "shot_plan_created": false,
-  "status": "READY_FOR_DIRECTOR_CREATIVE_AUTHORING",
+  "status": "DIRECTOR_INPUT_READY",
   "storyboard_created": false
 }

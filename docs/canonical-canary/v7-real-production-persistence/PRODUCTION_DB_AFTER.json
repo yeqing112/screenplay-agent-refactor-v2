@@ -126,5 +126,44 @@
   "new_book_id": 990453,
   "new_fact_snapshot_id": 49,
   "new_script_id": 64,
-  "new_script_ir_version_id": 52
+  "new_script_ir_version_id": 52,
+  "requested_table_audit": {
+    "books": 56,
+    "chapters": 69,
+    "director_treatments": 64,
+    "fact_records": 100,
+    "fact_snapshots": 48,
+    "generation_executions": null,
+    "media_candidates": null,
+    "missing_requested_tables": [
+      "generation_executions",
+      "media_candidates",
+      "storyboards"
+    ],
+    "official_media_versions": 0,
+    "prompt_ir_versions": 36,
+    "scene_blocking_tables": {
+      "scene_blocking_authorities": 17,
+      "scene_blocking_pointers": 17,
+      "scene_blockings": 79
+    },
+    "script_ir_versions": 51,
+    "scripts": 61,
+    "shot_plan_tables": {
+      "shot_plan_authorities": 10,
+      "shot_plan_pointers": 10,
+      "shot_plans": 34
+    },
+    "storyboard_tables": {
+      "storyboard_acceptance_records": 0,
+      "storyboard_materialization_pointers": 11,
+      "storyboard_materialization_sets": 11,
+      "storyboard_prompt_versions": 24,
+      "storyboard_shots": 387,
+      "storyboard_transition_continuity_reviews": 0,
+      "storyboard_transition_contracts": 3,
+      "storyboard_transition_frames": 3,
+      "storyboard_video_retry_attempts": 0
+    }
+  }
 }

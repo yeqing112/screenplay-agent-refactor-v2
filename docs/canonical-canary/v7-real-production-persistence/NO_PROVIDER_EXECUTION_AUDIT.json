@@ -2,6 +2,7 @@
   "IMAGE": 0,
   "LLM": 0,
   "VIDEO": 0,
+  "external_host_requests": 0,
   "external_hosts": 0,
   "forbidden_stages_not_called": [
     "DirectorTreatment",
@@ -13,6 +14,8 @@
     "VIDEO",
     "OfficialMedia"
   ],
+  "historical_mimo_response_read_only": true,
+  "llm_post_requests": 0,
   "production_writes": {
     "book": 1,
     "downstream": 0,
@@ -20,6 +23,14 @@
     "fact_snapshot": 1,
     "script": 1,
     "script_ir_version": 1
+  },
+  "provider_calls_by_provider": {
+    "75API": 0,
+    "IMAGE": 0,
+    "Poyo": 0,
+    "SHAPI": 0,
+    "VIDEO": 0,
+    "external_llm": 0
   },
   "status": "PASS"
 }
