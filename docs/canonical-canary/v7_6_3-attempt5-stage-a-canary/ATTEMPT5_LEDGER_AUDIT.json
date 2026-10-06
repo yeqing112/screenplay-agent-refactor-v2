@@ -1,0 +1,38 @@
+{
+  "status": "PREFLIGHT_ONLY",
+  "before_count": 4,
+  "after_count": 4,
+  "historical_attempts_immutable": true,
+  "next_attempt": "attempt-5",
+  "attempt_5_append_count": 0,
+  "historical_attempts": [
+    {
+      "attempt_id": "v7_3_attempt_1",
+      "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "status": "PARSE_FAILED"
+    },
+    {
+      "attempt_id": "v7_3_attempt_2",
+      "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "status": "PARSE_FAILED"
+    },
+    {
+      "attempt_id": "attempt-3",
+      "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+      "request_fingerprint": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+      "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+      "status": "IR_INVALID"
+    },
+    {
+      "attempt_id": "attempt-4",
+      "authorization_id": "v7_6-director-proposal-ir-attempt4-authorization-4",
+      "request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+      "raw_response_sha256": "98ea44dd68877b14c733b4bf49fd01252cd76c8aeacbf3c3d561a481b1a3679b",
+      "status": "SCHEMA_INVALID"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "timestamp_utc": "2026-10-06T10:59:19.532876+00:00",
+  "target": {
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64
+  },
+  "packet": {
+    "id": 64,
+    "book_id": 990453,
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "proposal": {
+      "decision": "awaiting_llm"
+    },
+    "attempt_count": 4,
+    "attempts": [
+      {
+        "attempt_id": "v7_3_attempt_1",
+        "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+        "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+        "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+        "status": "PARSE_FAILED"
+      },
+      {
+        "attempt_id": "v7_3_attempt_2",
+        "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+        "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+        "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+        "status": "PARSE_FAILED"
+      },
+      {
+        "attempt_id": "attempt-3",
+        "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+        "request_fingerprint": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+        "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+        "status": "IR_INVALID"
+      },
+      {
+        "attempt_id": "attempt-4",
+        "authorization_id": "v7_6-director-proposal-ir-attempt4-authorization-4",
+        "request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+        "raw_response_sha256": "98ea44dd68877b14c733b4bf49fd01252cd76c8aeacbf3c3d561a481b1a3679b",
+        "status": "SCHEMA_INVALID"
+      }
+    ]
+  },
+  "next_attempt": "attempt-5",
+  "source_unit_count": 12,
+  "profile": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true
+  },
+  "schema_version": "director_beat_plan_ir_v1",
+  "execution_boundary_version": "director_beat_plan_provider_request_v1",
+  "system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
+  "user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
+  "prompt_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+  "provider_request_payload_v2": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
+    "user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "response_format": {
+      "type": "json_object"
+    },
+    "thinking": {
+      "type": "disabled"
+    },
+    "schema_version": "director_beat_plan_ir_v1",
+    "execution_boundary_version": "director_beat_plan_provider_request_v1"
+  },
+  "provider_request_fingerprint_v2": "d56b76506818878f29a2677c3652e566fe905e489a6eb6a263b578df3e1cef4e",
+  "source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "generation_policy": {
+    "max_tokens": 8192,
+    "temperature": 0.0,
+    "response_format": {
+      "type": "json_object"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "key_configured": true,
+  "stage_b_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "provider_calls_before_canary": 0,
+  "authorization_id": "v7.6.3-attempt5-stage-a-single-call"
+}

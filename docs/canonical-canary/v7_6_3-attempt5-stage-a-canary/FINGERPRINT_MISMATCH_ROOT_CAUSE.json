@@ -1,0 +1,12 @@
+{
+  "status": "RESOLVED",
+  "historical_artifact": "V7.6.2 manually updated top-level preflight hash while retaining stale provider_request_payload_v2.user_prompt_sha256",
+  "stale_payload_sha256": "0bc0b7eb5f1d64bfef8956fc88d655a5c825716cb63b1262ec9fdd4740c5e74f",
+  "historical_top_level_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
+  "runtime_actual_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
+  "root_cause": "evidence_generator drift / partial artifact patch; runtime canonical builder was single and deterministic",
+  "duplicated_runtime_builder": false,
+  "payload_mutation": false,
+  "serialization_difference": false,
+  "fix": "canonical builder now validates every internal binding before Provider and evidence is regenerated from that builder"
+}

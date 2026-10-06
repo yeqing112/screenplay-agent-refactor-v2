@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "stage_b_calls": 0,
+  "confirm_calls": 0,
+  "compile_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "scene_blocking_calls": 0,
+  "shot_plan_calls": 0,
+  "keyframe_calls": 0,
+  "downstream_production_rows": 0
+}

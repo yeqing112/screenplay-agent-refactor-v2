@@ -1,0 +1,6 @@
+{
+  "status": "NOT_EXECUTED_BEFORE_CANARY",
+  "actual_provider_post_count": 0,
+  "max_allowed_post_count": 1,
+  "retry_semantics": "call_llm retries=1 means one HTTP attempt; no automatic retry"
+}

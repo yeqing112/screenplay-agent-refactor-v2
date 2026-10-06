@@ -1,0 +1,22 @@
+{
+  "status": "AUTHORIZED_FOR_EXACTLY_ONE_CALL",
+  "authorization_id": "v7.6.3-attempt5-stage-a-single-call",
+  "scope": {
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "decision_packet_id": 64,
+    "attempt": "attempt-5",
+    "authoring_stage": "BEAT_PLAN",
+    "schema_version": "director_beat_plan_ir_v1",
+    "model": "mimo-v2.5",
+    "provider": "openai-compatible",
+    "host": "https://api.xiaomimimo.com"
+  },
+  "confirmed": true,
+  "allowExternalCall": true,
+  "retry_budget": 1,
+  "transport_post_budget": 1,
+  "stage_b_allowed": false,
+  "confirm_allowed": false
+}

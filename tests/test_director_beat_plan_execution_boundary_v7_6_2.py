@@ -88,6 +88,23 @@ def test_provider_identity_contains_stage_a_boundary_and_both_hashes():
     assert value["system_prompt_sha256"] and value["user_prompt_sha256"] and value["prompt_fingerprint"] and value["provider_request_fingerprint_v2"]
 
 
+def test_provider_identity_internal_consistency_rejects_top_level_payload_mismatch():
+    value = api.build_director_beat_plan_provider_request(treatment(), {}, scene_id="E01_SC001", profile=profile(), profile_snapshot=snapshot())
+    value["provider_request_payload_v2"]["user_prompt_sha256"] = "stale"
+    assert api.validate_director_beat_plan_provider_identity(value)["status"] == "FAIL"
+
+
+def test_provider_identity_internal_consistency_rejects_actual_prompt_mismatch():
+    value = api.build_director_beat_plan_provider_request(treatment(), {}, scene_id="E01_SC001", profile=profile(), profile_snapshot=snapshot())
+    value["user_prompt"] += "漂移"
+    assert api.validate_director_beat_plan_provider_identity(value)["status"] == "FAIL"
+
+
+def test_provider_identity_internal_consistency_rejects_stale_provider_fingerprint():
+    value = api.build_director_beat_plan_provider_request(treatment(), {}, scene_id="E01_SC001", profile=profile(), profile_snapshot=snapshot())
+    value["provider_request_fingerprint_v2"] = "stale"
+    assert api.validate_director_beat_plan_provider_identity(value)["status"] == "FAIL"
+
+
 def test_stage_a_contract_has_no_confirmation_or_stage_b_fields():
     assert "performance" not in api.build_director_beat_plan_provider_request(treatment(), {}, scene_id="E01_SC001", profile=profile(), profile_snapshot=snapshot())["user_prompt"]
-

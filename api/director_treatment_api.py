@@ -348,7 +348,7 @@ def build_director_beat_plan_provider_request(
         thinking=policy["thinking"], schema_version=DIRECTOR_BEAT_PLAN_IR_VERSION,
         execution_boundary_version="director_beat_plan_provider_request_v1",
     )
-    return {
+    identity = {
         "system_prompt": system_prompt, "user_prompt": user_prompt,
         "system_prompt_sha256": system_sha, "user_prompt_sha256": user_sha,
         "prompt_fingerprint": prompt_fp, "profile_snapshot": dict(snapshot),
@@ -358,6 +358,35 @@ def build_director_beat_plan_provider_request(
         "schema_version": DIRECTOR_BEAT_PLAN_IR_VERSION, "authoring_stage": "BEAT_PLAN",
         "execution_boundary_version": "director_beat_plan_provider_request_v1",
     }
+    consistency = validate_director_beat_plan_provider_identity(identity)
+    if consistency.get("status") != "PASS":
+        raise ValueError({"code": "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", "report": consistency})
+    identity["provider_identity_internal_consistency"] = consistency
+    return identity
+
+
+def validate_director_beat_plan_provider_identity(identity: dict[str, Any]) -> dict[str, Any]:
+    """Validate every internal hash and payload binding before any Provider call."""
+    errors: list[dict[str, Any]] = []
+    if not isinstance(identity, dict):
+        return {"status": "FAIL", "errors": [{"code": "IDENTITY_NOT_OBJECT"}]}
+    payload = identity.get("provider_request_payload_v2") if isinstance(identity.get("provider_request_payload_v2"), dict) else {}
+    system = str(identity.get("system_prompt") or "")
+    user = str(identity.get("user_prompt") or "")
+    system_sha = hashlib.sha256(system.encode("utf-8")).hexdigest()
+    user_sha = hashlib.sha256(user.encode("utf-8")).hexdigest()
+    checks = [
+        ("identity.system_prompt_sha256==payload", identity.get("system_prompt_sha256"), payload.get("system_prompt_sha256")),
+        ("identity.user_prompt_sha256==payload", identity.get("user_prompt_sha256"), payload.get("user_prompt_sha256")),
+        ("sha256(system_prompt)==identity", system_sha, identity.get("system_prompt_sha256")),
+        ("sha256(user_prompt)==identity", user_sha, identity.get("user_prompt_sha256")),
+        ("prompt_fingerprint", prompt_fingerprint(system, user), identity.get("prompt_fingerprint")),
+        ("provider_request_fingerprint_v2", provider_request_fingerprint_v2(**payload), identity.get("provider_request_fingerprint_v2")),
+    ]
+    for name, actual, expected in checks:
+        if actual != expected:
+            errors.append({"code": "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", "check": name, "actual": actual, "expected": expected})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
 def _update_director_packet_info(packet_id: int, book_id: int, patch: dict[str, Any]) -> None:
@@ -483,7 +512,11 @@ def _execute_source_grounded_beat_plan(*, book_id: int, packet_id: int, packet_f
     if not str(authorization_id or "").strip():
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_AUTHORIZATION_ID_REQUIRED"})
     profile, profile_snapshot = _director_llm_profile_preflight()
-    identity = build_director_beat_plan_provider_request(treatment, evidence, scene_id=scene_id, profile=profile, profile_snapshot=profile_snapshot)
+    try:
+        identity = build_director_beat_plan_provider_request(treatment, evidence, scene_id=scene_id, profile=profile, profile_snapshot=profile_snapshot)
+    except ValueError as exc:
+        _stage_a_failure(packet_id, book_id, "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", trace=["PREFLIGHT_IDENTITY_VALIDATE"], status="PREFLIGHT_BLOCKED")
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_PROVIDER_IDENTITY_INCONSISTENT", "message": "Stage A Provider identity failed internal consistency validation."}) from exc
     audits: list[dict[str, Any]] = []
     try:
         raw = llm_client.call_llm(identity["user_prompt"], system=identity["system_prompt"], model_profile=profile,
@@ -527,7 +560,7 @@ def _execute_source_grounded_beat_plan(*, book_id: int, packet_id: int, packet_f
     materialized = materialize_director_beat_plan_ids(parsed, scene_id=scene_id)
     raw_fp = hashlib.sha256(json.dumps(parsed, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
     materialized_fp = hashlib.sha256(json.dumps(materialized, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-    _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "stage_a_status": "VALIDATED", "event_trace": ["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_RUNTIME_VALIDATE", "STAGE_A_PERSIST"], "progressive_director_authoring": {"stage_a": {"status": "VALIDATED", "authoring_stage": "BEAT_PLAN", "ir": parsed, "ir_fingerprint": raw_fp, "materialized_beat_plan": materialized, "materialized_fingerprint": materialized_fp, "authorization_id": authorization_id, "attempt_id": "attempt-5", "provider_provenance": {"called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"], "prompt_fingerprint": identity["prompt_fingerprint"], "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"], "raw_response_sha256": forensic["raw_response_sha256"]}}}})
+    _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "stage_a_status": "VALIDATED", "event_trace": ["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_A_SCHEMA_VALIDATE", "STAGE_A_TEXT_COMPLETENESS", "STAGE_A_RUNTIME_VALIDATE", "STAGE_A_PERSIST"], "progressive_director_authoring": {"stage_a": {"status": "VALIDATED", "authoring_stage": "BEAT_PLAN", "ir": parsed, "ir_fingerprint": raw_fp, "materialized_beat_plan": materialized, "materialized_fingerprint": materialized_fp, "authorization_id": authorization_id, "attempt_id": "attempt-5", "provider_provenance": {"called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"], "prompt_fingerprint": identity["prompt_fingerprint"], "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"], "raw_response_sha256": forensic["raw_response_sha256"]}}}})
     _set_latest_director_attempt_status(packet_id, book_id, "VALIDATED")
     return {"packet_id": packet_id, "packet_fingerprint": packet_fingerprint_value, "status": "VALIDATED", "authoring_stage": "BEAT_PLAN", "ir": parsed, "materialized_beat_plan": materialized, "next_state": "DIRECTOR_CREATIVE_ENRICHMENT_AUTHORIZATION_REQUIRED", "confirm_allowed": False, "provider": {"called": True, "calls": 1}, "execution_manifest": identity}
 

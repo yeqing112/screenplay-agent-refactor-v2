@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "provider_calls_before_canary": 0,
+  "production_writes_before_canary": 0,
+  "packet_proposal": {
+    "decision": "awaiting_llm"
+  },
+  "packet_proposal_expected": {
+    "decision": "awaiting_llm"
+  },
+  "target_downstream_rows": 0
+}
