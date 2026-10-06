@@ -1,0 +1,62 @@
+{
+  "candidate_creative_beat_count": 2,
+  "candidate_origin": "OFFLINE_FIXTURE",
+  "invalid_candidate_codes": {
+    "authority_mutation": {
+      "codes": [
+        "DIRECTOR_CREATIVE_AUTHORITY_INVALID"
+      ],
+      "required_code_present": true
+    },
+    "dialogue_mutation": {
+      "codes": [
+        "DIRECTOR_SOURCE_DIALOGUE_MUTATION",
+        "DIRECTOR_SOURCE_SPEAKER_MUTATION"
+      ],
+      "required_code_present": true
+    },
+    "missing_derived_ref": {
+      "codes": [
+        "DIRECTOR_CREATIVE_BEAT_SOURCE_REF_REQUIRED",
+        "DIRECTOR_SOURCE_TIMELINE_COVERAGE_INCOMPLETE"
+      ],
+      "required_code_present": true
+    },
+    "participant_ref": {
+      "codes": [
+        "DIRECTOR_PARTICIPANT_REF_INVALID"
+      ],
+      "required_code_present": true
+    },
+    "speaker_mutation": {
+      "codes": [
+        "DIRECTOR_SOURCE_AUTHORING_UNITS_MUTATED",
+        "DIRECTOR_SOURCE_SPEAKER_MUTATION"
+      ],
+      "required_code_present": true
+    },
+    "unknown_unit": {
+      "codes": [
+        "DIRECTOR_SOURCE_TIMELINE_COVERAGE_INCOMPLETE",
+        "DIRECTOR_SOURCE_UNIT_REF_INVALID"
+      ],
+      "required_code_present": true
+    }
+  },
+  "production_writes": 0,
+  "provider_calls": 0,
+  "status": "PASS",
+  "validation": {
+    "covered_story_unit_count": 5,
+    "creative_beat_count": 2,
+    "errors": [],
+    "source_action_count": 3,
+    "source_dialogue_count": 2,
+    "source_unit_count": 5,
+    "status": "qualified",
+    "story_unit_count": 5,
+    "synthetic_source_beat_count": 0,
+    "synthetic_source_scene_name_count": 0,
+    "warnings": []
+  }
+}

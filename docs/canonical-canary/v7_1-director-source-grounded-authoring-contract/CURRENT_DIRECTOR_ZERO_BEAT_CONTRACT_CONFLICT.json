@@ -1,0 +1,19 @@
+{
+  "legacy_confirmation_required": [
+    "director_contract_version",
+    "director_beat_decisions"
+  ],
+  "legacy_shadow_placeholders": {
+    "scene_name": "未命名场景",
+    "source_beats": [
+      "建立场景关系",
+      "完成当前节拍"
+    ]
+  },
+  "required_source_fields": [
+    "scene_name",
+    "source_beats"
+  ],
+  "script_ir_beat_ids": [],
+  "status": "DIRECTOR_ZERO_BEAT_AUTHORING_CONTRACT_CONFLICT_REPRODUCED"
+}

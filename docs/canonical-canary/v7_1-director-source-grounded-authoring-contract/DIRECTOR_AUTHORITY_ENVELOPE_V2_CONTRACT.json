@@ -1,0 +1,32 @@
+{
+  "authority_policy_version": "director_treatment_authority_policy_v2",
+  "bound_fact_snapshot": {
+    "id": 49,
+    "payload_hash": "47898887876eba48f442e05094b245e2dc04dfa0765993ad424f10ce1184526f",
+    "revision": 1
+  },
+  "bound_script_ir": {
+    "envelope_fingerprint": "48da3932b179a9379ee8bdfe54e9426e7e3664039737df3a5bb7ff6935d33682",
+    "id": 52,
+    "payload_hash": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+    "revision": 1
+  },
+  "contract_fingerprint": "147f5ad503cb6bb5d25c3ed5cb6dfbb789d7e80e3bfc868c8064a66aa492ca23",
+  "contract_schema_version": "director_treatment_authority_contract_v2",
+  "lineage_downgrade_allowed": false,
+  "required_lineage_fields": [
+    "origin_source_kind",
+    "origin_source_package_id",
+    "origin_source_version_id",
+    "origin_source_raw_hash",
+    "origin_source_evidence_index_fingerprint",
+    "canonical_script_content_hash",
+    "canonical_script_payload_fingerprint",
+    "structuring_response_fingerprint",
+    "reconciliation_fingerprint",
+    "migration_fingerprint",
+    "script_ir",
+    "fact_snapshot"
+  ],
+  "schema_version": "director_treatment_authority_envelope_v2"
+}

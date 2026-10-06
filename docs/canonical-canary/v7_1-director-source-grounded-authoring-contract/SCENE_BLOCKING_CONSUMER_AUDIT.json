@@ -1,0 +1,6 @@
+{
+  "action": "do_not_add_script_ir_beats",
+  "creative_projection_read": false,
+  "source_beat_only_consumer_check": true,
+  "status": "SCENE_BLOCKING_CREATIVE_BEAT_CONTRACT_REQUIRES_REFACTOR"
+}

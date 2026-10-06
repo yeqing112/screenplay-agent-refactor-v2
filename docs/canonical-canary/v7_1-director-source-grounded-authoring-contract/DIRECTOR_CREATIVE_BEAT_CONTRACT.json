@@ -1,0 +1,18 @@
+{
+  "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+  "hook_authority": "creative_projection_only",
+  "required_fields": [
+    "creative_beat_id",
+    "derived_from_source_unit_refs",
+    "authority",
+    "dramatic_purpose",
+    "director_objective",
+    "information_change",
+    "audience_effect",
+    "character_effects",
+    "performance_intent"
+  ],
+  "source_literal_forbidden": true,
+  "source_reference_required": true,
+  "transition_authority": "creative_projection_only"
+}

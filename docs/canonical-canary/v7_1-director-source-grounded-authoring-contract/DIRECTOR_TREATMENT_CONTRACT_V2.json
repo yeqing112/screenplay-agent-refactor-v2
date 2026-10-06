@@ -1,0 +1,88 @@
+{
+  "authority_policy_version": "director_treatment_authority_policy_v2",
+  "consumer_basis": "source-grounded Director authoring; downstream consumers must read creative projection refs",
+  "creative_projection_fields": [
+    "director_scene_label",
+    "scene_objective",
+    "dramatic_question",
+    "creative_beats",
+    "character_directions",
+    "performance_arc",
+    "information_strategy",
+    "rhythm_strategy",
+    "visual_priority",
+    "scene_exit_intent",
+    "prohibited_interpretations"
+  ],
+  "fields": [
+    {
+      "allowed_mutation": "immutable",
+      "authority_class": "SOURCE_CONSTRAINT",
+      "field": "scene_id",
+      "required": true
+    },
+    {
+      "allowed_mutation": "immutable",
+      "authority_class": "SOURCE_CONSTRAINT",
+      "field": "scene_identity_evidence",
+      "required": true
+    },
+    {
+      "allowed_mutation": "immutable",
+      "authority_class": "SOURCE_CONSTRAINT",
+      "field": "declared_participants",
+      "required": true
+    },
+    {
+      "allowed_mutation": "immutable",
+      "authority_class": "SOURCE_CONSTRAINT",
+      "field": "source_authoring_units",
+      "required": true
+    },
+    {
+      "allowed_mutation": "immutable",
+      "authority_class": "SOURCE_CONSTRAINT",
+      "field": "explicit_story_constraints",
+      "required": true
+    },
+    {
+      "allowed_mutation": "creative_projection_only",
+      "authority_class": "PRESENTATION_METADATA",
+      "field": "scene_name",
+      "required": false
+    },
+    {
+      "allowed_mutation": "absent",
+      "authority_class": "PRESENTATION_METADATA",
+      "field": "source_beats",
+      "required": false
+    },
+    {
+      "allowed_mutation": "reviewed_edit",
+      "authority_class": "AUTHORIZED_CREATIVE_PROJECTION",
+      "field": "creative_projection",
+      "required": true
+    },
+    {
+      "allowed_mutation": "reviewed_edit",
+      "authority_class": "AUTHORIZED_CREATIVE_PROJECTION",
+      "field": "creative_beats",
+      "required": true
+    }
+  ],
+  "fingerprint": "147f5ad503cb6bb5d25c3ed5cb6dfbb789d7e80e3bfc868c8064a66aa492ca23",
+  "legacy_contract": "director_treatment_authority_contract_v1",
+  "legacy_v1_unchanged": true,
+  "optional_presentation_fields": [
+    "scene_name",
+    "source_beats"
+  ],
+  "schema_version": "director_treatment_authority_contract_v2",
+  "source_constraint_fields": [
+    "scene_id",
+    "scene_identity_evidence",
+    "declared_participants",
+    "source_authoring_units",
+    "explicit_story_constraints"
+  ]
+}

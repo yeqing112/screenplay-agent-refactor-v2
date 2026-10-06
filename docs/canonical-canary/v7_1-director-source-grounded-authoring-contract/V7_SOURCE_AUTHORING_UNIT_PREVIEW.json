@@ -1,0 +1,55 @@
+{
+  "book_id": 990453,
+  "creative_beat_count": 0,
+  "provider_calls": 0,
+  "scene_id": "E01_SC001",
+  "scene_name": "",
+  "script_id": 64,
+  "script_ir_version_id": 52,
+  "source_action_count": 11,
+  "source_beat_count": 0,
+  "source_dialogue_count": 1,
+  "source_unit_count": 12,
+  "status": "AUTHORING_REQUIRED",
+  "target_dialogue": {
+    "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+    "binding_type": "COREFERENCE_RESOLUTION",
+    "schema_version": "source_authoring_unit_v1",
+    "source_evidence": {
+      "byte_end": 460,
+      "byte_start": 442,
+      "char_end": 156,
+      "char_start": 150,
+      "evidence_id": "S1D001",
+      "occurrence_count": 1,
+      "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+      "text": "也许是你自己"
+    },
+    "source_evidence_refs": [
+      "S1D001"
+    ],
+    "source_order": 8,
+    "source_ref": "E01_SC001_D001",
+    "source_type": "SOURCE_DIALOGUE",
+    "speaker": "顾沉",
+    "text": "也许是你自己",
+    "unit_id": "SAU_E01_SC001_008"
+  },
+  "validation": {
+    "covered_story_unit_count": 12,
+    "creative_beat_count": 0,
+    "errors": [],
+    "source_action_count": 11,
+    "source_dialogue_count": 1,
+    "source_unit_count": 12,
+    "status": "AUTHORING_REQUIRED",
+    "story_unit_count": 12,
+    "synthetic_source_beat_count": 0,
+    "synthetic_source_scene_name_count": 0,
+    "warnings": [
+      {
+        "code": "DIRECTOR_CREATIVE_AUTHORING_REQUIRED"
+      }
+    ]
+  }
+}

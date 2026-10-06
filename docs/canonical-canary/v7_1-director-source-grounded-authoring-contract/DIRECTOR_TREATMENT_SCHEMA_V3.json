@@ -1,0 +1,25 @@
+{
+  "creative_projection": [
+    "director_scene_label",
+    "scene_objective",
+    "dramatic_question",
+    "creative_beats",
+    "character_directions",
+    "performance_arc",
+    "information_strategy",
+    "rhythm_strategy",
+    "visual_priority",
+    "scene_exit_intent",
+    "prohibited_interpretations"
+  ],
+  "preview_policy": "AUTHORING_REQUIRED with empty creative fields",
+  "schema_version": "director_treatment_v3",
+  "source_constraints": [
+    "scene_id",
+    "scene_identity_evidence",
+    "declared_participants",
+    "source_authoring_units",
+    "explicit_story_constraints"
+  ],
+  "source_name_empty_legal": true
+}

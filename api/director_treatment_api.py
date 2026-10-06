@@ -19,9 +19,12 @@ from pydantic import AliasChoices, BaseModel, Field
 
 from core.director_treatment import build_shadow_treatment
 from core.director_semantics import validate_director_contract, build_suggested_director_decisions, DIRECTOR_CONTRACT_VERSION
+from core.director_semantics import validate_director_contract_v2
+from core.director_source_grounded import build_source_grounded_director_preview, is_source_grounded_scene, validate_director_contract_v2 as validate_source_grounded_contract_v2
 from core.director_provenance import confirmation_event, project_legacy_flags, proposal_provenance, resolve_canonical_origin
 from core.director_treatment_authority import (
     build_treatment_authority_envelope,
+    build_treatment_authority_envelope_v2,
     classify_asset_authority,
     payload_hash as treatment_payload_hash,
     resolve_scene_for_treatment,
@@ -125,6 +128,44 @@ def _candidate_fingerprint(candidate: dict[str, Any], evidence_fingerprint: str)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def _validate_source_grounded_llm_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any]:
+    """Normalize a future Director proposal without allowing source edits."""
+
+    if not isinstance(raw, dict):
+        raise ValueError("DirectorTreatment LLM output must be a JSON object")
+    allowed = {"schema_version", "scene_id", "scene_name", "source_constraints", "creative_projection", "unknowns", "decision", "confidence", "note", "proposal_origin", "proposal_provenance"}
+    unexpected = sorted(set(raw) - allowed)
+    if unexpected:
+        raise ValueError(f"LLM candidate contains non-whitelisted fields: {', '.join(unexpected)}")
+    source_constraints = baseline.get("source_constraints") if isinstance(baseline.get("source_constraints"), dict) else {}
+    proposed_constraints = raw.get("source_constraints")
+    if proposed_constraints is not None and proposed_constraints != source_constraints:
+        raise ValueError("source_constraints are immutable for source-grounded Director proposals")
+    base_projection = baseline.get("creative_projection") if isinstance(baseline.get("creative_projection"), dict) else {}
+    proposed_projection = raw.get("creative_projection") if isinstance(raw.get("creative_projection"), dict) else {}
+    projection = {**base_projection, **proposed_projection}
+    candidate = {
+        "schema_version": "director_treatment_v3",
+        "scene_id": str(baseline.get("scene_id") or ""),
+        "scene_name": "",
+        "source_constraints": source_constraints,
+        "creative_projection": projection,
+        "unknowns": list(raw.get("unknowns") if isinstance(raw.get("unknowns"), list) else baseline.get("unknowns") or []),
+        "decision": str(raw.get("decision") or "ready_for_review"),
+        "confidence": raw.get("confidence", 0.0),
+        "human_confirmation_required": True,
+        "note": str(raw.get("note") or "Director candidate only; explicit confirmation required."),
+    }
+    actions = [{"action_id": unit.get("source_ref"), "text": unit.get("text", ""), "source_evidence": unit.get("source_evidence")} for unit in source_constraints.get("source_authoring_units", []) if unit.get("source_type") == "SOURCE_ACTION"]
+    dialogues = [{"dialogue_id": unit.get("source_ref"), "speaker": unit.get("speaker", ""), "text": unit.get("text", ""), "speaker_binding": {"classification": unit.get("binding_classification", ""), "binding_type": unit.get("binding_type", "")}, "source_evidence": unit.get("source_evidence")} for unit in source_constraints.get("source_authoring_units", []) if unit.get("source_type") == "SOURCE_DIALOGUE"]
+    source_scene = {"scene_id": source_constraints.get("scene_id"), "source_identity_evidence": source_constraints.get("scene_identity_evidence", []), "participants": source_constraints.get("declared_participants", []), "script_blocks": [{"order": unit.get("source_order"), "type": str(unit.get("source_type", "")).replace("SOURCE_", ""), "ref": unit.get("source_ref")} for unit in source_constraints.get("source_authoring_units", [])], "actions": actions, "dialogues": dialogues, "beats": []}
+    report = validate_source_grounded_contract_v2(candidate, scene=source_scene, production=False)
+    if report.get("status") == "blocked":
+        raise ValueError(json.dumps(report, ensure_ascii=False))
+    candidate["validation"] = report
+    return candidate
+
+
 def _make_decision_packet(book_id: int, episode: int, treatment: dict[str, Any], evidence: dict[str, Any]) -> dict[str, Any]:
     evidence_items = [
         {"id": f"script:{evidence['script']['id']}", "tier": "source_text", "summary": json.dumps(evidence["scene"], ensure_ascii=False), "version": evidence["script"]["revision"]},
@@ -160,6 +201,8 @@ TREATMENT_CANDIDATE_FIELDS = {
 
 
 def _validate_llm_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any]:
+    if str(baseline.get("schema_version") or "") == "director_treatment_v3":
+        return _validate_source_grounded_llm_candidate(raw, baseline)
     if not isinstance(raw, dict):
         raise ValueError("DirectorTreatment LLM output must be a JSON object")
     # Models often echo the frozen scene identity. It is evidence, not an
@@ -329,7 +372,13 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
             "constraints": ["locked_asset_facts_are_immutable", "treatment_does_not_mutate_shots"],
         }
         evidence["evidence_fingerprint"] = _evidence_fingerprint(evidence)
-        treatment = build_shadow_treatment(
+        source_grounded = profile == "production" and is_source_grounded_scene(scene)
+        treatment = build_source_grounded_director_preview(
+            scene=scene,
+            source_script_revision=source_revision,
+            source_script_hash=source_hash,
+            source_script_ir_version_id=getattr(script_ir_version, "id", None),
+        ) if source_grounded else build_shadow_treatment(
             scene=scene,
             characters=characters,
             source_script_revision=source_revision,
@@ -345,21 +394,24 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
         treatment["source_fact_snapshot_id"] = (script_ir_envelope or {}).get("fact_snapshot_id", "") if profile == "production" else ""
         treatment["source_fact_snapshot_revision"] = (script_ir_envelope or {}).get("fact_snapshot_revision") if profile == "production" else None
         treatment["source_fact_snapshot_hash"] = (script_ir_envelope or {}).get("fact_snapshot_payload_hash", "") if profile == "production" else ""
-        treatment["source_constraints"] = {
-            "scene_identity": evidence["scene_identity"],
-            "declared_participants": scene.get("participants") if isinstance(scene.get("participants"), list) else [],
-            "source_beats": treatment.get("beat_map", []),
-            "explicit_story_constraints": scene.get("required_visual_proofs") if isinstance(scene.get("required_visual_proofs"), list) else [],
-        }
-        treatment["director_decisions"] = {field: treatment.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if treatment.get(field) not in (None, "", [], {})}
+        if not source_grounded:
+            treatment["source_constraints"] = {
+                "scene_identity": evidence["scene_identity"],
+                "declared_participants": scene.get("participants") if isinstance(scene.get("participants"), list) else [],
+                "source_beats": treatment.get("beat_map", []),
+                "explicit_story_constraints": scene.get("required_visual_proofs") if isinstance(scene.get("required_visual_proofs"), list) else [],
+            }
+            treatment["director_decisions"] = {field: treatment.get(field) for field in ("dramatic_objective", "audience_question", "character_intents", "relationship_power_shift", "audience_emotion", "information_strategy", "performance_direction", "visual_strategy", "coverage_strategy", "sound_strategy", "edit_rhythm", "scene_objective", "dramatic_question", "audience_state_in", "audience_state_out", "suspicion_or_information_strategy", "character_directions", "beat_directions", "director_beat_decisions", "director_contract_version", "performance_arc", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations") if treatment.get(field) not in (None, "", [], {})}
         treatment["asset_authority"] = classify_asset_authority({"characters": characters, "locked_references": locked_refs})
-        treatment["qualification_state"] = "REVIEW_REQUIRED" if profile == "production" else "DRAFT"
-        if profile == "production":
+        treatment["qualification_state"] = "AUTHORING_REQUIRED" if source_grounded else ("REVIEW_REQUIRED" if profile == "production" else "DRAFT")
+        if profile == "production" and not source_grounded:
             # Production preview carries a deterministic, reviewable semantic
             # candidate.  Confirmation still rewrites decision provenance at
             # the service boundary and revalidates the contract.
             treatment["director_contract_version"] = DIRECTOR_CONTRACT_VERSION
             treatment["director_beat_decisions"] = build_suggested_director_decisions(scene)
+        if source_grounded:
+            treatment["validation"] = validate_source_grounded_contract_v2(treatment, scene=scene, production=False)
         treatment["proposal_origin"] = "GENERATED_DRAFT"
         treatment["proposal_provenance"] = proposal_provenance("GENERATED_DRAFT", provider={"called": False, "calls": 0}, human_input=False)
         treatment["evidence_fingerprint"] = evidence["evidence_fingerprint"]
@@ -395,6 +447,7 @@ def _treatment_row_payload(row: DirectorTreatment) -> dict[str, Any]:
         "beat_map": _json_object(row.beat_map, []),
         "source_constraints": _json_object(getattr(row, "source_constraints", "{}"), {}),
         "director_decisions": _json_object(getattr(row, "director_decisions", "{}"), {}),
+        "schema_version": (_json_object(getattr(row, "source_constraints", "{}"), {}) or {}).get("schema_version", "") if isinstance(_json_object(getattr(row, "source_constraints", "{}"), {}), dict) else "",
         "unknown_unresolved": _json_object(getattr(row, "unknown_unresolved", "[]"), []),
         "relationship_power_shift": row.relationship_power_shift,
         "audience_emotion": row.audience_emotion,
@@ -536,7 +589,7 @@ def preview_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         "requires_approval": True,
         "review_status": "REVIEW_REQUIRED" if str(req.workflow_profile or "").strip().lower() == "production" else "DRAFT",
         "production_contract_required": str(req.workflow_profile or "").strip().lower() == "production",
-        "required_production_fields": ["director_contract_version", "director_beat_decisions"] if str(req.workflow_profile or "").strip().lower() == "production" else [],
+        "required_production_fields": (["source_constraints.source_authoring_units", "creative_projection"] if treatment.get("schema_version") == "director_treatment_v3" else ["director_contract_version", "director_beat_decisions"]) if str(req.workflow_profile or "").strip().lower() == "production" else [],
         "message": "这是只读导演方案草案；批准门禁和 SceneBlocking 尚未执行。",
     }
 
@@ -829,6 +882,51 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
         raw_candidate = req.candidate if req.candidate is not None else _json_object(packet.proposal, {})
         if not isinstance(raw_candidate, dict):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Production confirmation requires a structured Director semantic contract."})
+        if baseline.get("schema_version") == "director_treatment_v3":
+            raw_provenance = info.get("proposal_provenance") or raw_candidate.get("proposal_provenance")
+            if not isinstance(raw_provenance, dict):
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_PROVENANCE_REQUIRED", "message": "Production confirmation requires explicit proposal provenance."})
+            try:
+                provenance = proposal_provenance(raw_provenance.get("proposal_origin", ""), provider=raw_provenance.get("provider"), human_input=(raw_provenance.get("authoring") or {}).get("human_input", False))
+                event = confirmation_event(provenance, confirmed_at=datetime.now().isoformat())
+                canonical_origin = resolve_canonical_origin(provenance, event)
+                candidate = _validate_llm_candidate(raw_candidate, baseline)
+            except (TypeError, ValueError) as exc:
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CANDIDATE_INVALID", "message": str(exc)}) from exc
+            candidate["proposal_origin"] = provenance["proposal_origin"]
+            candidate["proposal_provenance"] = provenance
+            creative = candidate.get("creative_projection") if isinstance(candidate.get("creative_projection"), dict) else {}
+            for creative_beat in creative.get("creative_beats", []) if isinstance(creative.get("creative_beats"), list) else []:
+                if isinstance(creative_beat, dict):
+                    creative_beat["proposal_origin"] = provenance["proposal_origin"]
+                    creative_beat["confirmation_event_ref"] = "production_confirm_service"
+            candidate["creative_projection"] = creative
+            semantic_report = validate_source_grounded_contract_v2(candidate, scene=scene, production=True)
+            if semantic_report.get("status") != "qualified":
+                first = (semantic_report.get("errors") or [{}])[0]
+                raise HTTPException(status_code=409, detail={"code": first.get("code") or "DIRECTOR_TREATMENT_CONTRACT_V2_INVALID", "message": "source-grounded DirectorTreatment V2 is not production-qualified", "validation": semantic_report})
+            previous = session.query(DirectorTreatment).filter_by(book_id=book_id, episode=episode, scene_id=scene_id, status="approved").order_by(DirectorTreatment.revision.desc(), DirectorTreatment.id.desc()).first()
+            next_revision = previous.revision + 1 if previous else 1
+            previous_id = previous.id if previous else None
+            if previous:
+                previous.status = "superseded"; previous.stale_status = "STALE"; previous.qualification_state = "STALE"; previous.stale_reasons = json.dumps(["SUPERSEDED_BY_NEW_AUTHORITY"], ensure_ascii=False); previous.updated_at = datetime.now()
+            source_constraints = {**(candidate.get("source_constraints") if isinstance(candidate.get("source_constraints"), dict) else {}), "schema_version": "director_treatment_v3"}
+            formal = {"schema_version": "director_treatment_v3", "scene_id": scene_id, "scene_name": "", "source_constraints": source_constraints, "creative_projection": candidate.get("creative_projection") or {}, "unknowns": candidate.get("unknowns") or []}
+            model_info = {"mode": "confirmed_source_grounded_director_candidate", "proposal_provenance": provenance, "confirmation_event": event, "canonical_origin": canonical_origin, **project_legacy_flags(provenance), "candidate_fingerprint": _candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), "authority_state": "pending_binding"}
+            row = DirectorTreatment(book_id=book_id, episode=episode, scene_id=scene_id, scene_name="", revision=next_revision, status="approved", source_script_revision=str(script_ir_version.revision), source_script_hash=str(script_ir_version.payload_hash or ""), source_script_ir_version_id=script_ir_version.id, source_script_ir_revision=script_ir_version.revision, source_script_ir_hash=str(script_ir_version.payload_hash or ""), source_script_authority_fingerprint=str(script_ir_envelope.get("envelope_fingerprint") or ""), source_fact_snapshot_id=str(script_ir_envelope.get("fact_snapshot_id") or ""), source_fact_snapshot_revision=script_ir_envelope.get("fact_snapshot_revision"), source_fact_snapshot_hash=str(script_ir_envelope.get("fact_snapshot_payload_hash") or ""), dramatic_objective="", audience_question="", character_intents="{}", beat_map="[]", source_constraints=json.dumps(source_constraints, ensure_ascii=False), director_decisions=json.dumps({"schema_version": "director_treatment_v3", "creative_projection": candidate.get("creative_projection") or {}}, ensure_ascii=False), unknown_unresolved=json.dumps(candidate.get("unknowns") or [], ensure_ascii=False), relationship_power_shift="", audience_emotion="", information_strategy="", performance_direction="", visual_strategy="", coverage_strategy="", sound_strategy="", edit_rhythm="", constraints="[]", unknowns=json.dumps(candidate.get("unknowns") or [], ensure_ascii=False), decision_packet_id=packet.id, model_info=json.dumps(model_info, ensure_ascii=False), prompt_fingerprint=_candidate_fingerprint(candidate, current_packet["packet_fingerprint"]), payload_hash=treatment_payload_hash(formal), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=datetime.now(), activated_at=datetime.now(), created_at=datetime.now(), updated_at=datetime.now(), workflow_profile="production")
+            session.add(row); session.flush()
+            envelope = build_treatment_authority_envelope_v2(treatment=formal, evidence=evidence, script_ir=script_ir_payload, script_ir_version=script_ir_version, script_ir_envelope=script_ir_envelope, treatment_id=row.id, treatment_revision=row.revision, qualification_state="PRODUCTION_QUALIFIED", provenance=provenance, confirmation=event, canonical_origin=canonical_origin)
+            authority = DirectorTreatmentAuthority(book_id=book_id, episode=episode, scene_id=scene_id, treatment_id=row.id, treatment_revision=row.revision, payload_hash=row.payload_hash, envelope_fingerprint=envelope["envelope_fingerprint"], envelope_json=json.dumps(envelope, ensure_ascii=False, sort_keys=True), qualification_state="PRODUCTION_QUALIFIED", stale_status="FRESH", stale_reasons="[]", approved_at=row.approved_at, activated_at=row.activated_at, created_at=datetime.now(), updated_at=datetime.now())
+            session.add(authority); session.flush(); row.authority_envelope_id = authority.id
+            pointer = session.query(DirectorTreatmentPointer).filter_by(book_id=book_id, episode=episode, scene_id=scene_id).first()
+            if pointer:
+                pointer.treatment_id = row.id; pointer.treatment_revision = row.revision; pointer.authority_envelope_fingerprint = envelope["envelope_fingerprint"]; pointer.qualification_state = "PRODUCTION_QUALIFIED"; pointer.updated_at = datetime.now()
+            else:
+                session.add(DirectorTreatmentPointer(book_id=book_id, episode=episode, scene_id=scene_id, treatment_id=row.id, treatment_revision=row.revision, authority_envelope_fingerprint=envelope["envelope_fingerprint"], qualification_state="PRODUCTION_QUALIFIED", created_at=datetime.now(), updated_at=datetime.now()))
+            model_info["authority_state"] = "production_qualified"; row.model_info = json.dumps(model_info, ensure_ascii=False)
+            packet.status = "confirmed"; packet.confirmed_at = datetime.now(); packet.proposal = json.dumps(candidate, ensure_ascii=False); packet.updated_at = datetime.now()
+            session.commit(); session.refresh(row)
+            return {"approved": True, "authority_bound": True, "qualification_state": "PRODUCTION_QUALIFIED", "treatment": _treatment_row_payload(row), "authority_envelope": envelope, "packet_id": packet.id, "packet_fingerprint": packet.packet_fingerprint, "rollback_anchor": {"previous_treatment_id": previous_id, "previous_revision": previous.revision if previous else None}, "mutated": True, "production_operations": ["director_treatment_authority_bound", "current_treatment_pointer_updated"], "provider_calls": provenance["provider"]["calls"]}
         missing_contract = [key for key in ("director_contract_version", "director_beat_decisions") if key not in raw_candidate or raw_candidate.get(key) in (None, "", [])]
         if missing_contract:
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_SEMANTIC_CONTRACT_REQUIRED", "message": "Production confirmation requires director_contract_version and director_beat_decisions.", "missing": missing_contract})

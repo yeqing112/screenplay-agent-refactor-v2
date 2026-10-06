@@ -1,0 +1,15 @@
+{
+  "allowed_fields": [
+    "creative_projection",
+    "unknowns",
+    "confidence",
+    "note",
+    "proposal_provenance"
+  ],
+  "human_confirmation_required": true,
+  "proposal_origin": "OFFLINE_CANDIDATE_ONLY",
+  "provider_calls_current_run": 0,
+  "source_constraints_immutable": true,
+  "source_dialogue_and_speaker_immutable": true,
+  "status": "PASS"
+}

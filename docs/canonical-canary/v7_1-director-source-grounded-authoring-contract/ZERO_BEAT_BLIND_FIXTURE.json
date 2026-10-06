@@ -1,0 +1,25 @@
+{
+  "actions": 3,
+  "dialogues": 2,
+  "preview_status": "AUTHORING_REQUIRED",
+  "scene_id": "E99_SC001",
+  "source_beats": 0,
+  "status": "PASS",
+  "validation": {
+    "covered_story_unit_count": 5,
+    "creative_beat_count": 0,
+    "errors": [],
+    "source_action_count": 3,
+    "source_dialogue_count": 2,
+    "source_unit_count": 5,
+    "status": "AUTHORING_REQUIRED",
+    "story_unit_count": 5,
+    "synthetic_source_beat_count": 0,
+    "synthetic_source_scene_name_count": 0,
+    "warnings": [
+      {
+        "code": "DIRECTOR_CREATIVE_AUTHORING_REQUIRED"
+      }
+    ]
+  }
+}

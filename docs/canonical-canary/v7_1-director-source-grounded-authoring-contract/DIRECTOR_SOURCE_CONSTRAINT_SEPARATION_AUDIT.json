@@ -1,0 +1,14 @@
+{
+  "creative_projection_authority": "AUTHORIZED_CREATIVE_PROJECTION",
+  "fact_snapshot_writeback": false,
+  "script_ir_writeback": false,
+  "source_constraints_fields": [
+    "scene_id",
+    "scene_identity_evidence",
+    "declared_participants",
+    "source_authoring_units",
+    "explicit_story_constraints"
+  ],
+  "source_constraints_immutable": true,
+  "status": "PASS"
+}

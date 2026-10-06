@@ -1,0 +1,13 @@
+{
+  "current_director_llm_calls": 0,
+  "future_budget": {
+    "fallback": 0,
+    "max_director_llm_calls": 1,
+    "repair": 0,
+    "retry": 0
+  },
+  "raw_persist_boundary_before_parser": true,
+  "raw_response_callback_supported": true,
+  "raw_response_persisted_before_parse": true,
+  "status": "PASS"
+}

@@ -520,6 +520,7 @@ def call_llm_json(
     required_keys: set[str] | None = None,
     json_parse_retries: int = 1,
     audit_callback=None,
+    raw_response_callback=None,
     audit_extra=None,
     audit_repair_request=None,
     **kwargs,
@@ -536,6 +537,16 @@ def call_llm_json(
         raw = call_llm(active_prompt, system=system, model_profile=model_profile,
                        audit_callback=audit_callback, audit_extra=audit_extra,
                        audit_repair_request=audit_repair_request, **call_kwargs)
+        # The Director proposal boundary may require raw forensic persistence
+        # before any local repair or JSON parsing.  The callback is invoked on
+        # every provider response, including a parser-retry response, and must
+        # remain side-effect-free for legacy callers that do not provide it.
+        if callable(raw_response_callback):
+            raw_response_callback({
+                "raw_response": str(raw or ""),
+                "parse_attempt": attempt + 1,
+                "parse_retry": attempt < parse_attempts - 1,
+            })
         text = _repair_common_json_text(str(raw or "").strip())
         try:
             return parse_json_object(

@@ -15,12 +15,17 @@ from typing import Any
 from fastapi import HTTPException
 
 SCHEMA_VERSION = "director_treatment_authority_envelope_v1"
+SCHEMA_VERSION_V2 = "director_treatment_authority_envelope_v2"
 CONTRACT_SCHEMA_VERSION = "director_treatment_authority_contract_v1"
+CONTRACT_SCHEMA_VERSION_V2 = "director_treatment_authority_contract_v2"
 AUTHORITY_POLICY_VERSION = "director_treatment_authority_policy_v1"
+AUTHORITY_POLICY_VERSION_V2 = "director_treatment_authority_policy_v2"
+TREATMENT_SCHEMA_VERSION_V3 = "director_treatment_v3"
 QUALIFICATION_STATES = ("DRAFT", "CANDIDATE", "REVIEW_REQUIRED", "APPROVED", "AUTHORITY_BOUND", "PRODUCTION_QUALIFIED", "STALE")
 STALE_STATUSES = ("UNKNOWN", "FRESH", "STALE")
 
 SOURCE_CONSTRAINT_FIELDS = ("scene_id", "scene_name", "declared_participants", "source_beats", "explicit_story_constraints")
+SOURCE_GROUNDED_SOURCE_CONSTRAINT_FIELDS = ("scene_id", "scene_identity_evidence", "declared_participants", "source_authoring_units", "explicit_story_constraints")
 DIRECTOR_DECISION_FIELDS = (
     "dramatic_objective", "audience_question", "character_intents",
     "relationship_power_shift", "audience_emotion", "information_strategy",
@@ -95,8 +100,53 @@ def contract_fingerprint() -> str:
     return fingerprint(treatment_contract())
 
 
+def treatment_contract_v2() -> dict[str, Any]:
+    """Source-grounded contract that does not require source beats or names."""
+
+    fields = [
+        {"field": "scene_id", "authority_class": "SOURCE_CONSTRAINT", "required": True, "allowed_mutation": "immutable"},
+        {"field": "scene_identity_evidence", "authority_class": "SOURCE_CONSTRAINT", "required": True, "allowed_mutation": "immutable"},
+        {"field": "declared_participants", "authority_class": "SOURCE_CONSTRAINT", "required": True, "allowed_mutation": "immutable"},
+        {"field": "source_authoring_units", "authority_class": "SOURCE_CONSTRAINT", "required": True, "allowed_mutation": "immutable"},
+        {"field": "explicit_story_constraints", "authority_class": "SOURCE_CONSTRAINT", "required": True, "allowed_mutation": "immutable"},
+        {"field": "scene_name", "authority_class": "PRESENTATION_METADATA", "required": False, "allowed_mutation": "creative_projection_only"},
+        {"field": "source_beats", "authority_class": "PRESENTATION_METADATA", "required": False, "allowed_mutation": "absent"},
+        {"field": "creative_projection", "authority_class": "AUTHORIZED_CREATIVE_PROJECTION", "required": True, "allowed_mutation": "reviewed_edit"},
+        {"field": "creative_beats", "authority_class": "AUTHORIZED_CREATIVE_PROJECTION", "required": True, "allowed_mutation": "reviewed_edit"},
+    ]
+    return {
+        "schema_version": CONTRACT_SCHEMA_VERSION_V2,
+        "authority_policy_version": AUTHORITY_POLICY_VERSION_V2,
+        "source_constraint_fields": list(SOURCE_GROUNDED_SOURCE_CONSTRAINT_FIELDS),
+        "optional_presentation_fields": ["scene_name", "source_beats"],
+        "creative_projection_fields": ["director_scene_label", "scene_objective", "dramatic_question", "creative_beats", "character_directions", "performance_arc", "information_strategy", "rhythm_strategy", "visual_priority", "scene_exit_intent", "prohibited_interpretations"],
+        "fields": fields,
+        "legacy_contract": CONTRACT_SCHEMA_VERSION,
+        "consumer_basis": "source-grounded Director authoring; downstream consumers must read creative projection refs",
+    }
+
+
+def contract_fingerprint_v2() -> str:
+    return fingerprint(treatment_contract_v2())
+
+
 def treatment_payload_from_row(row: Any) -> dict[str, Any]:
     """Canonical formal payload; metadata never participates in payload hash."""
+    source_constraints = _json(getattr(row, "source_constraints", "{}"), {})
+    decisions = _json(getattr(row, "director_decisions", "{}"), {})
+    if isinstance(source_constraints, dict) and (
+        _text(source_constraints.get("schema_version")) == TREATMENT_SCHEMA_VERSION_V3
+        or isinstance(source_constraints.get("source_authoring_units"), list)
+    ):
+        projection = decisions.get("creative_projection") if isinstance(decisions, dict) and isinstance(decisions.get("creative_projection"), dict) else decisions
+        return {
+            "schema_version": TREATMENT_SCHEMA_VERSION_V3,
+            "scene_id": _text(getattr(row, "scene_id", "")),
+            "scene_name": _text(getattr(row, "scene_name", "")),
+            "source_constraints": source_constraints,
+            "creative_projection": projection if isinstance(projection, dict) else {},
+            "unknowns": _json(getattr(row, "unknowns", "[]"), []),
+        }
     payload = {
         "scene_id": _text(getattr(row, "scene_id", "")),
         "scene_name": _text(getattr(row, "scene_name", "")),
@@ -190,6 +240,87 @@ def build_treatment_authority_envelope(*, treatment: dict[str, Any], evidence: d
         "stale_reasons": [],
         "approved_at": approved_at or datetime.now(timezone.utc).isoformat(),
         "activated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    envelope["envelope_fingerprint"] = _envelope_fingerprint(envelope)
+    return envelope
+
+
+def build_treatment_authority_envelope_v2(*, treatment: dict[str, Any], evidence: dict[str, Any], script_ir: dict[str, Any], script_ir_version: Any, script_ir_envelope: dict[str, Any], treatment_id: int, treatment_revision: int, qualification_state: str = "PRODUCTION_QUALIFIED", provenance: dict[str, Any] | None = None, confirmation: dict[str, Any] | None = None, canonical_origin: str = "") -> dict[str, Any]:
+    """Bind a source-grounded DirectorTreatment without downgrading lineage."""
+
+    if _text(script_ir_envelope.get("schema_version")) != "script_ir_authority_envelope_v2":
+        raise ValueError("DIRECTOR_ORIGIN_LINEAGE_NOT_BOUND")
+    from core.director_source_grounded import DIRECTOR_TREATMENT_SCHEMA_VERSION_V3, validate_director_contract_v2
+
+    scene = evidence.get("scene") if isinstance(evidence.get("scene"), dict) else {}
+    validation = validate_director_contract_v2(treatment, scene=scene, production=True)
+    if validation.get("status") not in {"qualified", "AUTHORING_REQUIRED"}:
+        raise ValueError("DIRECTOR_TREATMENT_CONTRACT_V2_INVALID")
+    if _text(treatment.get("schema_version")) != DIRECTOR_TREATMENT_SCHEMA_VERSION_V3:
+        raise ValueError("DIRECTOR_TREATMENT_SCHEMA_V3_REQUIRED")
+    required_lineage = (
+        "origin_source_kind", "origin_source_package_id", "origin_source_version_id", "origin_source_raw_hash",
+        "origin_source_evidence_index_fingerprint", "canonical_script_content_hash", "canonical_script_payload_fingerprint",
+        "structuring_response_fingerprint", "reconciliation_fingerprint", "migration_fingerprint",
+    )
+    if any(not _text(script_ir_envelope.get(field)) for field in required_lineage):
+        raise ValueError("DIRECTOR_ORIGIN_LINEAGE_NOT_BOUND")
+    provenance = provenance if isinstance(provenance, dict) else {}
+    confirmation = confirmation if isinstance(confirmation, dict) else {}
+    lineage = {field: script_ir_envelope.get(field) for field in required_lineage}
+    lineage["origin_source_locator"] = script_ir_envelope.get("origin_source_locator") or {}
+    envelope = {
+        "schema_version": SCHEMA_VERSION_V2,
+        "authority_policy_version": AUTHORITY_POLICY_VERSION_V2,
+        "treatment_schema_version": DIRECTOR_TREATMENT_SCHEMA_VERSION_V3,
+        "book_id": int(evidence["book_id"]),
+        "episode": int(evidence["episode"]),
+        "scene_id": _text(treatment.get("scene_id") or evidence.get("scene_id")),
+        "scene_identity": {
+            "scene_id": _text(scene.get("scene_id") or evidence.get("scene_id")),
+            "scene_identity_evidence": json.loads(json.dumps((treatment.get("source_constraints") or {}).get("scene_identity_evidence", []), ensure_ascii=False)),
+            "declared_participants": json.loads(json.dumps((treatment.get("source_constraints") or {}).get("declared_participants", []), ensure_ascii=False)),
+        },
+        "treatment_id": int(treatment_id),
+        "treatment_revision": int(treatment_revision),
+        "treatment_payload_hash": payload_hash(treatment),
+        "workflow_profile": "production",
+        "script_ir": {
+            "id": int(script_ir_version.id),
+            "revision": int(script_ir_version.revision),
+            "payload_hash": _text(script_ir_version.payload_hash),
+            "authority_envelope_fingerprint": _text(script_ir_envelope.get("envelope_fingerprint")),
+            "authority_profile": _text(script_ir_envelope.get("authority_profile")),
+            "canonical_script_payload_fingerprint": _text(script_ir_envelope.get("canonical_script_payload_fingerprint")),
+        },
+        "source_lineage": lineage,
+        "origin_source_kind": lineage["origin_source_kind"],
+        "origin_source_package_id": lineage["origin_source_package_id"],
+        "origin_source_version_id": lineage["origin_source_version_id"],
+        "origin_source_raw_hash": lineage["origin_source_raw_hash"],
+        "origin_source_evidence_index_fingerprint": lineage["origin_source_evidence_index_fingerprint"],
+        "canonical_script_content_hash": lineage["canonical_script_content_hash"],
+        "canonical_script_payload_fingerprint": lineage["canonical_script_payload_fingerprint"],
+        "structuring_response_fingerprint": lineage["structuring_response_fingerprint"],
+        "reconciliation_fingerprint": lineage["reconciliation_fingerprint"],
+        "migration_fingerprint": lineage["migration_fingerprint"],
+        "fact_snapshot": {
+            "id": script_ir_envelope.get("fact_snapshot_id"),
+            "revision": script_ir_envelope.get("fact_snapshot_revision"),
+            "payload_hash": _text(script_ir_envelope.get("fact_snapshot_payload_hash")),
+        },
+        "contract": {"schema_version": CONTRACT_SCHEMA_VERSION_V2, "fingerprint": contract_fingerprint_v2()},
+        "creative_projection": treatment.get("creative_projection") if isinstance(treatment.get("creative_projection"), dict) else {},
+        "provenance": {"proposal_provenance": provenance, "confirmation_event": confirmation, "canonical_origin": _text(canonical_origin), "provider": provenance.get("provider", {}) if isinstance(provenance, dict) else {}},
+        "proposal_provenance": provenance,
+        "confirmation_event": confirmation,
+        "canonical_origin_summary": _text(canonical_origin),
+        "provider_provenance": provenance.get("provider", {}) if isinstance(provenance, dict) else {},
+        "qualification_state": qualification_state,
+        "stale_status": "FRESH",
+        "stale_reasons": [],
+        "source_semantic_mutation_count": 0,
+        "fact_snapshot_mutation_count": 0,
     }
     envelope["envelope_fingerprint"] = _envelope_fingerprint(envelope)
     return envelope
@@ -380,6 +511,62 @@ def resolve_scene_for_treatment(session: Any, script_row: Any, *, scene_id: str 
     return scene, version, payload, envelope
 
 
+def _resolve_current_authoritative_treatment_v2(session: Any, *, book_id: int, episode: int, scene_id: str, treatment: Any, authority: Any, envelope: dict[str, Any]) -> tuple[Any, dict[str, Any]]:
+    """Resolve V2 authority against the current V7 ScriptIR lineage."""
+
+    from models import FactSnapshot, Script, ScriptIRVersion
+    from core.director_source_grounded import validate_director_contract_v2
+    from core.script_ir import resolve_script_payload
+
+    def stale(message: str, reasons: list[str]) -> None:
+        mark_treatment_stale(session, treatment, reasons)
+        session.commit()
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_STALE", "message": message, "stale_reasons": reasons})
+
+    if str(envelope.get("schema_version") or "") != SCHEMA_VERSION_V2 or str(envelope.get("authority_policy_version") or "") != AUTHORITY_POLICY_VERSION_V2:
+        stale("Treatment V2 authority policy is stale.", ["TREATMENT_AUTHORITY_POLICY_CHANGED"])
+    if str(treatment.status) != "approved" or str(treatment.qualification_state) != "PRODUCTION_QUALIFIED" or str(authority.stale_status) == "STALE":
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_NOT_PRODUCTION_QUALIFIED", "message": "Current DirectorTreatment is not production-qualified."})
+    if str(envelope.get("treatment_id")) != str(treatment.id) or str(envelope.get("treatment_revision")) != str(treatment.revision) or _text(envelope.get("treatment_payload_hash")) != _text(treatment.payload_hash):
+        stale("Treatment authority row lineage does not match.", ["DIRECTOR_TREATMENT_AUTHORITY_LINEAGE_CHANGED"])
+    if authority.envelope_fingerprint != _envelope_fingerprint(envelope):
+        stale("Treatment authority envelope fingerprint does not match.", ["DIRECTOR_TREATMENT_AUTHORITY_TAMPERED"])
+    contract_meta = envelope.get("contract") if isinstance(envelope.get("contract"), dict) else {}
+    if contract_meta.get("schema_version") != CONTRACT_SCHEMA_VERSION_V2 or contract_meta.get("fingerprint") != contract_fingerprint_v2():
+        stale("Treatment V2 contract has changed.", ["TREATMENT_CONTRACT_CHANGED"])
+    script_row = session.query(Script).filter_by(book_id=book_id, episode=episode).order_by(Script.id.desc()).first()
+    if not script_row:
+        stale("Bound Script is missing.", ["SCRIPT_CHANGED"])
+    try:
+        current_payload = resolve_script_payload(session, script_row, workflow_profile="production")
+    except HTTPException as exc:
+        stale("Bound ScriptIR authority is stale.", ["SCRIPT_IR_AUTHORITY_CHANGED"])
+    current_ir = session.query(ScriptIRVersion).filter_by(id=getattr(script_row, "current_script_ir_version_id", None), book_id=book_id, episode=episode).first()
+    ir_meta = envelope.get("script_ir") if isinstance(envelope.get("script_ir"), dict) else {}
+    if not current_ir or current_ir.status != "production_qualified" or str(ir_meta.get("id")) != str(current_ir.id) or str(ir_meta.get("revision")) != str(current_ir.revision) or str(ir_meta.get("payload_hash")) != str(current_ir.payload_hash):
+        stale("Treatment ScriptIR lineage is stale or no longer current.", ["SCRIPT_IR_CHANGED"])
+    current_ir_envelope = _json(current_ir.authority_envelope_json, {})
+    for field in (
+        "origin_source_kind", "origin_source_package_id", "origin_source_version_id", "origin_source_raw_hash",
+        "origin_source_evidence_index_fingerprint", "canonical_script_content_hash", "canonical_script_payload_fingerprint",
+        "structuring_response_fingerprint", "reconciliation_fingerprint", "migration_fingerprint",
+    ):
+        if _text(envelope.get(field)) != _text(current_ir_envelope.get(field)):
+            stale("Treatment lineage does not match the current ScriptIR authority.", ["SCRIPT_IR_AUTHORITY_CHANGED"])
+    fact_meta = envelope.get("fact_snapshot") if isinstance(envelope.get("fact_snapshot"), dict) else {}
+    fact = session.query(FactSnapshot).filter_by(id=int(fact_meta.get("id")), book_id=book_id, episode=episode).first() if str(fact_meta.get("id") or "").isdigit() else None
+    if not fact or str(fact.revision) != str(fact_meta.get("revision")) or _text(fact.payload_hash) != _text(fact_meta.get("payload_hash")) or _text(fact.status).lower() != "confirmed":
+        stale("Bound FactSnapshot has changed.", ["FACT_SNAPSHOT_CHANGED"])
+    current_scene = next((item for item in (current_payload.get("scenes") or []) if isinstance(item, dict) and _text(item.get("scene_id")) == _text(scene_id)), None)
+    if not current_scene:
+        stale("Scene identity is no longer present.", ["SCENE_IDENTITY_CHANGED"])
+    treatment_payload = treatment_payload_from_row(treatment)
+    semantic = validate_director_contract_v2(treatment_payload, scene=current_scene, production=True)
+    if semantic.get("status") != "qualified":
+        stale("Director source-grounded contract is no longer valid.", ["DIRECTOR_TREATMENT_CONTRACT_CHANGED"])
+    return treatment, envelope
+
+
 def resolve_current_authoritative_treatment(session: Any, *, book_id: int, episode: int, scene_id: str) -> tuple[Any, dict[str, Any]]:
     """Resolve only the explicit pointer; never latest-approved fallback."""
     from models import DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, Script, ScriptIRVersion, FactSnapshot, VisualMakeup, VisualReferenceAsset
@@ -391,6 +578,8 @@ def resolve_current_authoritative_treatment(session: Any, *, book_id: int, episo
     if not treatment or not authority or str(pointer.treatment_revision) != str(getattr(treatment, "revision", "")) or str(authority.treatment_revision) != str(getattr(treatment, "revision", "")) or str(authority.scene_id) != _text(scene_id) or str(authority.book_id) != str(book_id) or str(authority.episode) != str(episode) or treatment.status != "approved" or treatment.qualification_state != "PRODUCTION_QUALIFIED" or authority.qualification_state != "PRODUCTION_QUALIFIED":
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_NOT_PRODUCTION_QUALIFIED", "message": "Current DirectorTreatment is not production-qualified."})
     envelope = _json(authority.envelope_json, {})
+    if str(envelope.get("schema_version") or "") == SCHEMA_VERSION_V2:
+        return _resolve_current_authoritative_treatment_v2(session, book_id=book_id, episode=episode, scene_id=scene_id, treatment=treatment, authority=authority, envelope=envelope)
     model_info = _json(getattr(treatment, "model_info", "{}"), {})
     provenance_readiness = validate_phase_b_provenance_readiness(envelope=envelope, model_info=model_info)
     if provenance_readiness.get("invalid"):
@@ -511,4 +700,4 @@ def mark_treatment_stale(session: Any, treatment: Any, reasons: list[str]) -> No
     session.query(DirectorTreatmentPointer).filter_by(treatment_id=treatment.id).delete(synchronize_session=False)
 
 
-__all__ = ["SCHEMA_VERSION", "CONTRACT_SCHEMA_VERSION", "AUTHORITY_POLICY_VERSION", "QUALIFICATION_STATES", "STALE_STATUSES", "SOURCE_CONSTRAINT_FIELDS", "DIRECTOR_DECISION_FIELDS", "DOWNSTREAM_AUTHORING_FIELDS", "treatment_contract", "contract_fingerprint", "treatment_payload_from_row", "payload_hash", "classify_asset_authority", "build_treatment_authority_envelope", "validate_treatment_candidate", "validate_phase_b_provenance_readiness", "resolve_scene_for_treatment", "resolve_current_authoritative_treatment", "mark_treatment_stale"]
+__all__ = ["SCHEMA_VERSION", "SCHEMA_VERSION_V2", "CONTRACT_SCHEMA_VERSION", "CONTRACT_SCHEMA_VERSION_V2", "AUTHORITY_POLICY_VERSION", "AUTHORITY_POLICY_VERSION_V2", "TREATMENT_SCHEMA_VERSION_V3", "QUALIFICATION_STATES", "STALE_STATUSES", "SOURCE_CONSTRAINT_FIELDS", "SOURCE_GROUNDED_SOURCE_CONSTRAINT_FIELDS", "DIRECTOR_DECISION_FIELDS", "DOWNSTREAM_AUTHORING_FIELDS", "treatment_contract", "treatment_contract_v2", "contract_fingerprint", "contract_fingerprint_v2", "treatment_payload_from_row", "payload_hash", "classify_asset_authority", "build_treatment_authority_envelope", "build_treatment_authority_envelope_v2", "validate_treatment_candidate", "validate_phase_b_provenance_readiness", "resolve_scene_for_treatment", "resolve_current_authoritative_treatment", "mark_treatment_stale"]

@@ -1,0 +1,11 @@
+{
+  "database": "pytest isolated sqlite runtime",
+  "lineage_recheck": true,
+  "pointer_bound": true,
+  "qualification_state": "PRODUCTION_QUALIFIED",
+  "scene_blocking_created": false,
+  "script_ir_authority_profile": "SOURCE_GROUNDED_V3_1",
+  "status": "PASS",
+  "test": "test_v2_authority_resolver_rechecks_current_script_ir_and_can_stale",
+  "treatment_authority_schema": "director_treatment_authority_envelope_v2"
+}

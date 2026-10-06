@@ -134,4 +134,18 @@ def review_director_creative_quality(treatment: dict[str, Any]) -> dict[str, Any
     return {"dramatic_purpose_distribution": dict(sorted(purposes.items())), "duplicate_purpose_counts": duplicate_counts, "mutated": False, "authority_write": 0, "pointer_move": 0, "source_fact_write": 0}
 
 
-__all__ = ["DRAMATIC_PURPOSES", "STATE_DIMENSIONS", "PERFORMANCE_ACTIONS", "REACTION_TYPES", "DIRECTOR_CONTRACT_VERSION", "validate_director_contract", "build_suggested_director_decisions", "review_director_creative_quality"]
+def validate_director_contract_v2(treatment: dict[str, Any], *, scene: dict[str, Any], production: bool = False) -> dict[str, Any]:
+    """Validate the source-grounded V3 treatment contract.
+
+    Kept as a public sibling of the legacy validator so callers can select V2
+    by source authority profile without changing legacy beat-centric users.
+    The implementation lives in a provider-free module to avoid importing the
+    legacy semantic constants into the source projection layer.
+    """
+
+    from core.director_source_grounded import validate_director_contract_v2 as _validate
+
+    return _validate(treatment, scene=scene, production=production)
+
+
+__all__ = ["DRAMATIC_PURPOSES", "STATE_DIMENSIONS", "PERFORMANCE_ACTIONS", "REACTION_TYPES", "DIRECTOR_CONTRACT_VERSION", "validate_director_contract", "validate_director_contract_v2", "build_suggested_director_decisions", "review_director_creative_quality"]

@@ -12,6 +12,7 @@ import json
 from typing import Any
 
 from core.director_semantics import build_suggested_director_decisions, validate_director_contract
+from core.director_source_grounded import build_source_grounded_director_preview, is_source_grounded_scene
 
 
 DIRECTOR_PLACEHOLDER_CODES = {
@@ -46,6 +47,17 @@ def build_shadow_treatment(
     skill_version: str = "",
 ) -> dict[str, Any]:
     """Build a stable shadow treatment; never calls an external model."""
+
+    # Source-grounded V3.1 scenes intentionally have no authored ScriptIR
+    # beats or presentation scene name.  Keep that immutable input visible as
+    # generic authoring units and leave all creative fields empty.  Legacy
+    # creative-draft scenes continue through the historical beat-centric
+    # projection below.
+    if is_source_grounded_scene(scene):
+        return build_source_grounded_director_preview(
+            scene=scene,
+            source_script_revision=source_script_revision,
+        )
 
     scene_name = str(scene.get("name") or "未命名场景").strip()
     beats = scene.get("beats") or []
