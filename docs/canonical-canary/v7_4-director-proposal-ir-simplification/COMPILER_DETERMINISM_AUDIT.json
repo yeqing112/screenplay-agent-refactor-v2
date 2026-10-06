@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "same_input_twice_equal": true,
+  "first_sha256": "05c08f9964b7120a9120c0b5c5ae8157421705fb8eaac523eeedb2db1765cb53",
+  "second_sha256": "05c08f9964b7120a9120c0b5c5ae8157421705fb8eaac523eeedb2db1765cb53",
+  "local_compiler_new_creative_decision_count": 0
+}

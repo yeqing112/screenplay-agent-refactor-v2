@@ -1,0 +1,9 @@
+{
+  "assessment": "The observed malformed shape highly matches the nested closure pattern presented in the prior prompt.",
+  "audited_prompt_revision": "a20b8e003bd9ca1a6a2df47284a2732da39fe7bf",
+  "observed_failure_pattern": "Both raw responses closed creative_beats and creative_projection before continuing with DCB_E01_SC001_03 at JSON position 1540.",
+  "observed_prompt_pattern": "CREATIVE_PROJECTION_SCHEMA contained nested creative_beats:[{...}] followed by closure tokens for the array, creative_projection object, and root object.",
+  "provider_internal_root_cause_claimed": false,
+  "required_change": "Use a flat director_proposal_ir_v1 contract with an empty shape example and plain-text beat contract; keep V3 authority structure local.",
+  "status": "SCHEMA_EXAMPLE_CLOSURE_PATTERN_RISK"
+}

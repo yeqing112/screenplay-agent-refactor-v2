@@ -1,0 +1,22 @@
+{
+  "director_llm_attempts": [
+    {
+      "attempt_id": "v7_3_attempt_1",
+      "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "status": "PARSE_FAILED"
+    },
+    {
+      "attempt_id": "v7_3_attempt_2",
+      "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "status": "PARSE_FAILED"
+    }
+  ],
+  "future_storage_contract": "api._persist_v3_raw_forensic appends director_llm_attempts and never overwrites history",
+  "packet_id": 64,
+  "production_db_modified": false,
+  "status": "FORENSIC_HISTORY_PRESERVED"
+}

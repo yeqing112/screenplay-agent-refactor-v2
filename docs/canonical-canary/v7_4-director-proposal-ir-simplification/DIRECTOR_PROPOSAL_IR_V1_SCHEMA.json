@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "beat_fields": [
+    "audience_effect",
+    "character_effects",
+    "hook",
+    "information_change",
+    "objective",
+    "performance",
+    "purpose",
+    "refs",
+    "transition"
+  ],
+  "character_effect_fields": [
+    "character_ref",
+    "effect"
+  ],
+  "forbidden_fields": [
+    "authority",
+    "authority_envelope",
+    "binding",
+    "creative_beat_id",
+    "creative_projection",
+    "declared_participants",
+    "dialogue",
+    "proposal_origin",
+    "proposal_provenance",
+    "scene_identity_evidence",
+    "source_authoring_units",
+    "source_constraints",
+    "speaker",
+    "speaker_binding"
+  ],
+  "properties": {
+    "beats": {
+      "items": {
+        "additionalProperties": false,
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "character_directions": {
+      "type": "array"
+    },
+    "confidence": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "dramatic_question": {
+      "type": "string"
+    },
+    "information_strategy": {
+      "type": "array"
+    },
+    "note": {
+      "type": "string"
+    },
+    "passthrough_refs": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "performance_arc": {
+      "type": "array"
+    },
+    "prohibited_interpretations": {
+      "type": "array"
+    },
+    "rhythm_strategy": {
+      "type": "object"
+    },
+    "scene_exit_intent": {
+      "type": "string"
+    },
+    "scene_label": {
+      "type": "string"
+    },
+    "scene_objective": {
+      "type": "string"
+    },
+    "unknowns": {
+      "type": "array"
+    },
+    "version": {
+      "const": "director_proposal_ir_v1"
+    },
+    "visual_priority": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "beats",
+    "character_directions",
+    "confidence",
+    "dramatic_question",
+    "information_strategy",
+    "note",
+    "passthrough_refs",
+    "performance_arc",
+    "prohibited_interpretations",
+    "rhythm_strategy",
+    "scene_exit_intent",
+    "scene_label",
+    "scene_objective",
+    "unknowns",
+    "version",
+    "visual_priority"
+  ],
+  "title": "DirectorProposalIR v1",
+  "type": "object"
+}

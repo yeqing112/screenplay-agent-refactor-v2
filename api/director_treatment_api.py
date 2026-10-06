@@ -37,6 +37,13 @@ from core.script_ir import resolve_script_payload
 import core.llm as llm_client
 from core.prompt_cache import prompt_fingerprint
 from core.structured_output import parse_json_object
+from core.director_proposal_ir import (
+    DIRECTOR_PROPOSAL_IR_SCHEMA,
+    DIRECTOR_PROPOSAL_IR_VERSION,
+    DirectorProposalIRValidationError,
+    compile_director_proposal_ir,
+    parse_director_proposal_ir,
+)
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
 
@@ -131,87 +138,40 @@ def _candidate_fingerprint(candidate: dict[str, Any], evidence_fingerprint: str)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
-def _validate_source_grounded_llm_candidate(raw: Any, baseline: dict[str, Any]) -> dict[str, Any]:
-    """Normalize a future Director proposal without allowing source edits."""
+def _validate_source_grounded_llm_candidate(raw: Any, baseline: dict[str, Any], source_scene: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Compile only the flat ProposalIR; source facts are local compiler input."""
 
     if not isinstance(raw, dict):
-        raise ValueError("DirectorTreatment LLM output must be a JSON object")
-    allowed = {"schema_version", "scene_id", "scene_name", "source_constraints", "creative_projection", "unknowns", "decision", "confidence", "note", "proposal_origin", "proposal_provenance"}
-    unexpected = sorted(set(raw) - allowed)
-    if unexpected:
-        raise ValueError(f"LLM candidate contains non-whitelisted fields: {', '.join(unexpected)}")
+        raise ValueError("Director ProposalIR output must be a JSON object")
     source_constraints = baseline.get("source_constraints") if isinstance(baseline.get("source_constraints"), dict) else {}
-    proposed_constraints = raw.get("source_constraints")
-    if proposed_constraints is not None and proposed_constraints != source_constraints:
-        raise ValueError("source_constraints are immutable for source-grounded Director proposals")
-    base_projection = baseline.get("creative_projection") if isinstance(baseline.get("creative_projection"), dict) else {}
-    proposed_projection = raw.get("creative_projection") if isinstance(raw.get("creative_projection"), dict) else {}
-    projection = {**base_projection, **proposed_projection}
-    candidate = {
-        "schema_version": "director_treatment_v3",
-        "scene_id": str(baseline.get("scene_id") or ""),
-        "scene_name": "",
-        "source_constraints": source_constraints,
-        "creative_projection": projection,
-        "unknowns": list(raw.get("unknowns") if isinstance(raw.get("unknowns"), list) else baseline.get("unknowns") or []),
-        "decision": str(raw.get("decision") or "ready_for_review"),
-        "confidence": raw.get("confidence", 0.0),
-        "human_confirmation_required": True,
-        "note": str(raw.get("note") or "Director candidate only; explicit confirmation required."),
+    reconstructed_scene = {
+        "scene_id": source_constraints.get("scene_id"),
+        "source_identity_evidence": source_constraints.get("scene_identity_evidence", []),
+        "participants": source_constraints.get("declared_participants", []),
+        "script_blocks": [{
+            "order": unit.get("source_order"),
+            "type": str(unit.get("source_type", "")).replace("SOURCE_", ""),
+            "ref": unit.get("source_ref"),
+        } for unit in source_constraints.get("source_authoring_units", [])],
+        "actions": [{"action_id": unit.get("source_ref"), "text": unit.get("text", ""), "source_evidence": unit.get("source_evidence")} for unit in source_constraints.get("source_authoring_units", []) if unit.get("source_type") == "SOURCE_ACTION"],
+        "dialogues": [{"dialogue_id": unit.get("source_ref"), "speaker": unit.get("speaker", ""), "text": unit.get("text", ""), "speaker_binding": {"classification": unit.get("binding_classification", ""), "binding_type": unit.get("binding_type", "")}, "source_evidence": unit.get("source_evidence")} for unit in source_constraints.get("source_authoring_units", []) if unit.get("source_type") == "SOURCE_DIALOGUE"],
+        "beats": [],
     }
-    actions = [{"action_id": unit.get("source_ref"), "text": unit.get("text", ""), "source_evidence": unit.get("source_evidence")} for unit in source_constraints.get("source_authoring_units", []) if unit.get("source_type") == "SOURCE_ACTION"]
-    dialogues = [{"dialogue_id": unit.get("source_ref"), "speaker": unit.get("speaker", ""), "text": unit.get("text", ""), "speaker_binding": {"classification": unit.get("binding_classification", ""), "binding_type": unit.get("binding_type", "")}, "source_evidence": unit.get("source_evidence")} for unit in source_constraints.get("source_authoring_units", []) if unit.get("source_type") == "SOURCE_DIALOGUE"]
-    source_scene = {"scene_id": source_constraints.get("scene_id"), "source_identity_evidence": source_constraints.get("scene_identity_evidence", []), "participants": source_constraints.get("declared_participants", []), "script_blocks": [{"order": unit.get("source_order"), "type": str(unit.get("source_type", "")).replace("SOURCE_", ""), "ref": unit.get("source_ref")} for unit in source_constraints.get("source_authoring_units", [])], "actions": actions, "dialogues": dialogues, "beats": []}
-    report = validate_source_grounded_contract_v2(candidate, scene=source_scene, production=False)
-    if report.get("status") == "blocked":
-        raise ValueError(json.dumps(report, ensure_ascii=False))
-    candidate["validation"] = report
-    return candidate
+    return compile_director_proposal_ir(raw, baseline, source_scene or reconstructed_scene)
 
 
-V3_DIRECTOR_SYSTEM_PROMPT = """你是受权威来源约束的影视导演创作助手。
+DIRECTOR_PROPOSAL_IR_V1_SYSTEM_PROMPT = """你是受权威来源约束的影视导演创作助手。
 
-你负责创作 Director creative projection，不是改写原始剧本。
-SOURCE_CONSTRAINTS 是不可修改事实。
-
-你可以创作：场景导演标签、戏剧目标、戏剧问题、DirectorCreativeBeat、人物导演指令、表演弧、信息策略、节奏策略、视觉优先级、场景退出意图。
-
-你不得：修改 source unit、action、dialogue、speaker 或 binding；新增 source character；把 creative decision 声称为 source fact；输出镜头规格；执行 SceneBlocking 或 ShotPlan。
-
-只输出一个 JSON object，不要 Markdown，不要复制 source_constraints 或 source_authoring_units。
-必须输出语法有效、可直接由 json.loads 解析的 JSON。creative_beats 必须是一个连续的 JSON array；每个 beat object 之间只用逗号分隔，所有 beat 完成后才关闭 creative_beats array，然后只关闭一次 creative_projection object 和根 object。禁止在 beat 之间重复输出 ]} 或生成多个顶层 object。"""
+你只输出 director_proposal_ir_v1：一个扁平的创意提案中间结构，不是 DirectorTreatment，不是 authority object，也不是剧本改写。
+所有源事实由本地编译器提供并保持不变。你不得输出 creative_projection、creative_beat_id、authority、source_constraints、source_authoring_units、scene_identity_evidence、declared_participants、proposal_origin、proposal_provenance、dialogue、speaker 或 binding。
+不得新增 source character，不得输出镜头规格、SceneBlocking 或 ShotPlan。对白只能通过 refs 关联并转化为表演意图、观众效果和 timing intent，不能复述或改写对白。
+返回一个可被 json.loads 直接解析的 JSON object。每个 beat 只包含 refs、purpose、objective、information_change、audience_effect、performance、transition、hook、character_effects；refs 只能使用给出的 SAU ID。
+所有 source authoring unit 必须出现在 beats[].refs 或 passthrough_refs 中，不能遗漏，不能自动补全。"""
 
 
 def _source_grounded_v3_prompt(treatment: dict[str, Any], evidence: dict[str, Any]) -> tuple[str, str]:
     constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
     units = constraints.get("source_authoring_units") if isinstance(constraints.get("source_authoring_units"), list) else []
-    projection_schema = {
-        "schema_version": "director_treatment_v3",
-        "director_scene_label": "",
-        "scene_objective": "",
-        "dramatic_question": "",
-        "creative_beats": [{
-            "creative_beat_id": "DCB_<scene>_<ordinal>",
-            "authority": "AUTHORIZED_CREATIVE_PROJECTION",
-            "derived_from_source_unit_refs": ["SAU_<scene>_<ordinal>"],
-            "dramatic_purpose": "",
-            "director_objective": "",
-            "information_change": "",
-            "audience_effect": "",
-            "character_effects": [],
-            "performance_intent": "",
-            "transition_intent": "",
-            "hook_intent": False,
-        }],
-        "character_directions": [],
-        "performance_arc": [],
-        "information_strategy": [],
-        "rhythm_strategy": {},
-        "visual_priority": [],
-        "scene_exit_intent": "",
-        "prohibited_interpretations": [],
-        "explicit_passthrough_unit_refs": [],
-    }
     immutable_constraints = {
         "scene_id": constraints.get("scene_id"),
         "scene_identity_evidence": constraints.get("scene_identity_evidence", []),
@@ -224,14 +184,13 @@ def _source_grounded_v3_prompt(treatment: dict[str, Any], evidence: dict[str, An
         f"SOURCE_AUTHORING_UNITS={json.dumps(units, ensure_ascii=False, sort_keys=True)}\n"
         f"DECLARED_PARTICIPANTS={json.dumps(constraints.get('declared_participants', []), ensure_ascii=False, sort_keys=True)}\n"
         f"ADVISORY_ASSET_CONTEXT={json.dumps(evidence.get('characters', []), ensure_ascii=False, sort_keys=True)}\n"
-        f"CREATIVE_PROJECTION_SCHEMA={json.dumps(projection_schema, ensure_ascii=False, sort_keys=True)}\n"
-        "每个 creative beat 的 derived_from_source_unit_refs 只能引用上述 SAU ID。所有 story unit 必须由 creative beat 引用或 explicit_passthrough_unit_refs 覆盖。"
-        "SourceDialogueUnit 只能产生表演意图、潜台词、反应意图、观众效果和 timing intent；不得改写 dialogue、speaker 或 binding。"
-        "返回顶层 schema_version、creative_projection、unknowns、confidence、note；不要返回 source_constraints、source_authoring_units、actions 或 dialogues。"
-        "JSON_SYNTAX_CHECK: creative_beats 只能是一个 array，必须在最后一个 beat 后才输出 ]，随后输出 creative_projection 的 } 和根 object 的 }；不要在 beat 之间输出 ]}。"
-        "MINIMAL_VALID_SHAPE={\"schema_version\":\"director_treatment_v3\",\"creative_projection\":{\"creative_beats\":[]},\"unknowns\":[],\"confidence\":0.0,\"note\":\"\"}"
+        f"PROPOSAL_IR_VERSION={DIRECTOR_PROPOSAL_IR_VERSION}\n"
+        f"PROPOSAL_IR_SCHEMA_KEYS={json.dumps(sorted(DIRECTOR_PROPOSAL_IR_SCHEMA['properties']), ensure_ascii=False)}\n"
+        "BEAT_CONTRACT=refs[]; purpose; objective; information_change; audience_effect; performance; transition; hook(boolean); character_effects[{character_ref,effect}]\n"
+        "每个 beat 的 refs 只能引用上述 SAU ID。所有 source authoring unit 必须由 beats[].refs 或 passthrough_refs 覆盖。"
+        "MINIMAL_VALID_SHAPE={\"version\":\"director_proposal_ir_v1\",\"scene_label\":\"\",\"scene_objective\":\"\",\"dramatic_question\":\"\",\"beats\":[],\"character_directions\":[],\"performance_arc\":[],\"information_strategy\":[],\"rhythm_strategy\":{},\"visual_priority\":[],\"scene_exit_intent\":\"\",\"prohibited_interpretations\":[],\"passthrough_refs\":[],\"unknowns\":[],\"confidence\":0.0,\"note\":\"\"}"
     )
-    return V3_DIRECTOR_SYSTEM_PROMPT, user_prompt
+    return DIRECTOR_PROPOSAL_IR_V1_SYSTEM_PROMPT, user_prompt
 
 
 def _director_llm_profile_preflight() -> tuple[dict[str, Any], dict[str, Any]]:
@@ -267,6 +226,23 @@ def _update_director_packet_info(packet_id: int, book_id: int, patch: dict[str, 
         session.commit()
 
 
+def _set_latest_director_attempt_status(packet_id: int, book_id: int, status: str) -> None:
+    """Update only the latest forensic attempt status; preserve all history."""
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        if not row:
+            return
+        info = _json_object(row.model_info, {})
+        history = info.get("director_llm_attempts") if isinstance(info, dict) else None
+        if not isinstance(history, list) or not history:
+            return
+        history[-1] = {**history[-1], "status": status}
+        info["director_llm_attempts"] = history
+        row.model_info = json.dumps(info, ensure_ascii=False)
+        row.updated_at = datetime.now()
+        session.commit()
+
+
 def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], request_fingerprint: str, provider_record: dict[str, Any], event_trace: list[str]) -> dict[str, Any]:
     raw_text = str(raw_response or "")
     forensic = {
@@ -291,7 +267,15 @@ def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint
                 raise RuntimeError("decision packet disappeared before forensic persistence")
             info = _json_object(row.model_info, {})
             info = info if isinstance(info, dict) else {}
-            info.update({"profile_preflight": profile_snapshot, "request_fingerprint": request_fingerprint, "raw_response_forensic": forensic, "provider_audit": provider_record, "event_trace": [*event_trace, "RAW_PERSIST"]})
+            history = list(info.get("director_llm_attempts") or []) if isinstance(info.get("director_llm_attempts"), list) else []
+            attempt_id = f"attempt-{len(history) + 1}"
+            history.append({
+                "attempt_id": attempt_id,
+                "request_fingerprint": request_fingerprint,
+                "raw_response_sha256": forensic["raw_response_sha256"],
+                "status": "RAW_PERSISTED",
+            })
+            info.update({"profile_preflight": profile_snapshot, "request_fingerprint": request_fingerprint, "raw_response_forensic": forensic, "provider_audit": provider_record, "director_llm_attempts": history, "event_trace": [*event_trace, "RAW_PERSIST"]})
             row.model_info = json.dumps(info, ensure_ascii=False)
             row.updated_at = datetime.now()
             session.commit()
@@ -343,18 +327,24 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED", "retry": 0}) from exc
 
     try:
-        parsed = parse_json_object(str(raw or ""), label="Director V3 proposal", required_keys={"creative_projection"})
+        parsed = parse_director_proposal_ir(str(raw or ""))
     except Exception as exc:
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_OUTPUT_INVALID", "parse_attempts": 1, "parse_error": str(exc)[:500], "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE"]})
+        _set_latest_director_attempt_status(packet_id, book_id, "PARSE_FAILED")
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_OUTPUT_INVALID", "retry": 0, "parse_attempts": 1}) from exc
 
     try:
-        candidate = _validate_source_grounded_llm_candidate(parsed, treatment)
-        semantic_report = validate_source_grounded_contract_v2(candidate, scene=evidence["scene"], production=True)
+        candidate = _validate_source_grounded_llm_candidate(parsed, treatment, evidence.get("scene") if isinstance(evidence.get("scene"), dict) else None)
+        semantic_report = candidate.get("compiler_report", {}).get("compiled_contract_validation", {})
         if semantic_report.get("status") != "qualified":
             raise ValueError(json.dumps(semantic_report, ensure_ascii=False))
+    except DirectorProposalIRValidationError as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_PROPOSAL_IR_INVALID", "proposal_ir_validation": exc.report, "validation_error": str(exc)[:1000], "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_VALIDATE"]})
+        _set_latest_director_attempt_status(packet_id, book_id, "IR_INVALID")
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_PROPOSAL_IR_INVALID", "retry": 0}) from exc
     except Exception as exc:
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_CREATIVE_PROPOSAL_INVALID", "validation_error": str(exc)[:1000], "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "VALIDATE"]})
+        _set_latest_director_attempt_status(packet_id, book_id, "COMPILED_CANDIDATE_INVALID")
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_CREATIVE_PROPOSAL_INVALID", "retry": 0}) from exc
 
     provider = {"called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"], "request_fingerprint": request_fp, "response_fingerprint": forensic["raw_response_sha256"]}
@@ -373,6 +363,9 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
         row.status = "draft"
         row.updated_at = datetime.now()
         session.commit()
+        # The history was appended before parsing; this status records the
+        # terminal proposal-only outcome without losing prior attempts.
+        _set_latest_director_attempt_status(packet_id, book_id, "PROPOSAL_PERSISTED")
         return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate, **project_legacy_flags(provenance), "deduplicated": False, "domain_write_performed": False, "provider": {**provider, "provider_request_id": provider_record.get("provider_request_id")}, "execution_manifest": {"system_prompt_sha256": hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(), "user_prompt_sha256": hashlib.sha256(user_prompt.encode("utf-8")).hexdigest(), "request_fingerprint": request_fp, "packet_fingerprint": packet_fingerprint_value, "source_authoring_unit_fingerprint": treatment.get("source_authoring_units_fingerprint")}}
 
 

@@ -1,0 +1,551 @@
+{
+  "beat_count": 5,
+  "candidate": {
+    "compiler_report": {
+      "compiled_contract_validation": {
+        "covered_story_unit_count": 12,
+        "creative_beat_count": 5,
+        "errors": [],
+        "source_action_count": 11,
+        "source_dialogue_count": 1,
+        "source_unit_count": 12,
+        "status": "qualified",
+        "story_unit_count": 12,
+        "synthetic_source_beat_count": 0,
+        "synthetic_source_scene_name_count": 0,
+        "warnings": []
+      },
+      "compiler": "director_proposal_ir_v1_deterministic",
+      "local_authority": "AUTHORIZED_CREATIVE_PROJECTION",
+      "local_compiler_new_creative_decision_count": 0,
+      "local_ids": [
+        "DCB_E01_SC001_001",
+        "DCB_E01_SC001_002",
+        "DCB_E01_SC001_003",
+        "DCB_E01_SC001_004",
+        "DCB_E01_SC001_005"
+      ],
+      "semantic_fields_in": 35,
+      "semantic_fields_out": 35,
+      "source_constraints": "copied_from_baseline"
+    },
+    "confidence": 0.8,
+    "creative_projection": {
+      "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+      "character_directions": [],
+      "creative_beats": [
+        {
+          "audience_effect": "PROPOSAL_AUDIENCE_1",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "character_effects": [],
+          "creative_beat_id": "DCB_E01_SC001_001",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_001",
+            "SAU_E01_SC001_002",
+            "SAU_E01_SC001_003"
+          ],
+          "director_objective": "PROPOSAL_OBJECTIVE_1",
+          "dramatic_purpose": "PROPOSAL_PURPOSE_1",
+          "hook_intent": false,
+          "information_change": "PROPOSAL_INFORMATION_1",
+          "performance_intent": "PROPOSAL_PERFORMANCE_1",
+          "transition_intent": "PROPOSAL_TRANSITION_1"
+        },
+        {
+          "audience_effect": "PROPOSAL_AUDIENCE_2",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "character_effects": [],
+          "creative_beat_id": "DCB_E01_SC001_002",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_004",
+            "SAU_E01_SC001_005",
+            "SAU_E01_SC001_006"
+          ],
+          "director_objective": "PROPOSAL_OBJECTIVE_2",
+          "dramatic_purpose": "PROPOSAL_PURPOSE_2",
+          "hook_intent": false,
+          "information_change": "PROPOSAL_INFORMATION_2",
+          "performance_intent": "PROPOSAL_PERFORMANCE_2",
+          "transition_intent": "PROPOSAL_TRANSITION_2"
+        },
+        {
+          "audience_effect": "PROPOSAL_AUDIENCE_3",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "character_effects": [],
+          "creative_beat_id": "DCB_E01_SC001_003",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_007",
+            "SAU_E01_SC001_008"
+          ],
+          "director_objective": "PROPOSAL_OBJECTIVE_3",
+          "dramatic_purpose": "PROPOSAL_PURPOSE_3",
+          "hook_intent": false,
+          "information_change": "PROPOSAL_INFORMATION_3",
+          "performance_intent": "PROPOSAL_PERFORMANCE_3",
+          "transition_intent": "PROPOSAL_TRANSITION_3"
+        },
+        {
+          "audience_effect": "PROPOSAL_AUDIENCE_4",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "character_effects": [],
+          "creative_beat_id": "DCB_E01_SC001_004",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_009",
+            "SAU_E01_SC001_010"
+          ],
+          "director_objective": "PROPOSAL_OBJECTIVE_4",
+          "dramatic_purpose": "PROPOSAL_PURPOSE_4",
+          "hook_intent": false,
+          "information_change": "PROPOSAL_INFORMATION_4",
+          "performance_intent": "PROPOSAL_PERFORMANCE_4",
+          "transition_intent": "PROPOSAL_TRANSITION_4"
+        },
+        {
+          "audience_effect": "PROPOSAL_AUDIENCE_5",
+          "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+          "character_effects": [],
+          "creative_beat_id": "DCB_E01_SC001_005",
+          "derived_from_source_unit_refs": [
+            "SAU_E01_SC001_011",
+            "SAU_E01_SC001_012"
+          ],
+          "director_objective": "PROPOSAL_OBJECTIVE_5",
+          "dramatic_purpose": "PROPOSAL_PURPOSE_5",
+          "hook_intent": true,
+          "information_change": "PROPOSAL_INFORMATION_5",
+          "performance_intent": "PROPOSAL_PERFORMANCE_5",
+          "transition_intent": "PROPOSAL_TRANSITION_5"
+        }
+      ],
+      "director_scene_label": "",
+      "director_scene_label_authority": "AUTHORIZED_CREATIVE_PROJECTION",
+      "dramatic_question": "What changes after the line?",
+      "explicit_passthrough_unit_refs": [],
+      "information_strategy": [],
+      "performance_arc": [],
+      "prohibited_interpretations": [],
+      "rhythm_strategy": {},
+      "scene_exit_intent": "Leave a reviewable hook.",
+      "scene_objective": "Hold the uncertainty.",
+      "status": "CONFIRMED",
+      "visual_priority": []
+    },
+    "decision": "ready_for_review",
+    "human_confirmation_required": true,
+    "note": "provider-free five-beat golden fixture",
+    "proposal_ir_validation": {
+      "covered_source_unit_count": 12,
+      "creative_beat_count": 5,
+      "errors": [],
+      "forbidden_field_count": 0,
+      "passthrough_count": 0,
+      "semantic_fields_in": 35,
+      "source_unit_count": 12,
+      "status": "qualified",
+      "version": "director_proposal_ir_v1",
+      "warnings": []
+    },
+    "scene_id": "E01_SC001",
+    "scene_name": "",
+    "schema_version": "director_treatment_v3",
+    "source_constraints": {
+      "declared_participants": [
+        {
+          "character_id": "林晚",
+          "evidence": [
+            {
+              "byte_end": 30,
+              "byte_start": 0,
+              "char_end": 10,
+              "char_start": 0,
+              "evidence_id": "S1P1E001",
+              "occurrence_count": 1,
+              "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+              "text": "顾沉带林晚进入暗房。"
+            },
+            {
+              "byte_end": 377,
+              "byte_start": 269,
+              "char_end": 127,
+              "char_start": 91,
+              "evidence_id": "S1P1E002",
+              "occurrence_count": 1,
+              "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+              "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+            },
+            {
+              "byte_end": 427,
+              "byte_start": 412,
+              "char_end": 145,
+              "char_start": 140,
+              "evidence_id": "S1P1E003",
+              "occurrence_count": 1,
+              "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+              "text": "林晚问是谁"
+            }
+          ],
+          "id": "林晚",
+          "name": "林晚"
+        },
+        {
+          "character_id": "顾沉",
+          "evidence": [
+            {
+              "byte_end": 30,
+              "byte_start": 0,
+              "char_end": 10,
+              "char_start": 0,
+              "evidence_id": "S1P2E001",
+              "occurrence_count": 1,
+              "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+              "text": "顾沉带林晚进入暗房。"
+            },
+            {
+              "byte_end": 412,
+              "byte_start": 379,
+              "char_end": 140,
+              "char_start": 129,
+              "evidence_id": "S1P2E002",
+              "occurrence_count": 1,
+              "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+              "text": "顾沉说胶片被人拿走了。"
+            },
+            {
+              "byte_end": 589,
+              "byte_start": 532,
+              "char_end": 199,
+              "char_start": 180,
+              "evidence_id": "S1P2E003",
+              "occurrence_count": 1,
+              "sha256": "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+              "text": "顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+            }
+          ],
+          "id": "顾沉",
+          "name": "顾沉"
+        }
+      ],
+      "explicit_story_constraints": [],
+      "scene_id": "E01_SC001",
+      "scene_identity_evidence": [
+        {
+          "byte_end": 30,
+          "byte_start": 0,
+          "char_end": 10,
+          "char_start": 0,
+          "evidence_id": "S1I001",
+          "occurrence_count": 1,
+          "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+          "text": "顾沉带林晚进入暗房。"
+        },
+        {
+          "byte_end": 195,
+          "byte_start": 105,
+          "char_end": 65,
+          "char_start": 35,
+          "evidence_id": "S1I002",
+          "occurrence_count": 1,
+          "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+          "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+        },
+        {
+          "byte_end": 630,
+          "byte_start": 591,
+          "char_end": 214,
+          "char_start": 201,
+          "evidence_id": "S1I003",
+          "occurrence_count": 1,
+          "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+          "text": "门缝下出现一双湿透的皮鞋。"
+        }
+      ],
+      "source_authoring_units": [
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 30,
+            "byte_start": 0,
+            "char_end": 10,
+            "char_start": 0,
+            "evidence_id": "S1A001",
+            "occurrence_count": 1,
+            "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+            "text": "顾沉带林晚进入暗房。"
+          },
+          "source_evidence_refs": [
+            "S1A001"
+          ],
+          "source_order": 1,
+          "source_ref": "E01_SC001_A001",
+          "source_type": "SOURCE_ACTION",
+          "text": "顾沉带林晚进入暗房。",
+          "unit_id": "SAU_E01_SC001_001"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 105,
+            "byte_start": 30,
+            "char_end": 35,
+            "char_start": 10,
+            "evidence_id": "S1A002",
+            "occurrence_count": 1,
+            "sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+            "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+          },
+          "source_evidence_refs": [
+            "S1A002"
+          ],
+          "source_order": 2,
+          "source_ref": "E01_SC001_A002",
+          "source_type": "SOURCE_ACTION",
+          "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。",
+          "unit_id": "SAU_E01_SC001_002"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 195,
+            "byte_start": 105,
+            "char_end": 65,
+            "char_start": 35,
+            "evidence_id": "S1A003",
+            "occurrence_count": 1,
+            "sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+            "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          },
+          "source_evidence_refs": [
+            "S1A003"
+          ],
+          "source_order": 3,
+          "source_ref": "E01_SC001_A003",
+          "source_type": "SOURCE_ACTION",
+          "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+          "unit_id": "SAU_E01_SC001_003"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 269,
+            "byte_start": 197,
+            "char_end": 91,
+            "char_start": 67,
+            "evidence_id": "S1A004",
+            "occurrence_count": 1,
+            "sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+            "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+          },
+          "source_evidence_refs": [
+            "S1A004"
+          ],
+          "source_order": 4,
+          "source_ref": "E01_SC001_A004",
+          "source_type": "SOURCE_ACTION",
+          "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+          "unit_id": "SAU_E01_SC001_004"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 377,
+            "byte_start": 269,
+            "char_end": 127,
+            "char_start": 91,
+            "evidence_id": "S1A005",
+            "occurrence_count": 1,
+            "sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+            "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+          },
+          "source_evidence_refs": [
+            "S1A005"
+          ],
+          "source_order": 5,
+          "source_ref": "E01_SC001_A005",
+          "source_type": "SOURCE_ACTION",
+          "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+          "unit_id": "SAU_E01_SC001_005"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 412,
+            "byte_start": 379,
+            "char_end": 140,
+            "char_start": 129,
+            "evidence_id": "S1A010",
+            "occurrence_count": 1,
+            "sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+            "text": "顾沉说胶片被人拿走了。"
+          },
+          "source_evidence_refs": [
+            "S1A010"
+          ],
+          "source_order": 6,
+          "source_ref": "E01_SC001_A010",
+          "source_type": "SOURCE_ACTION",
+          "text": "顾沉说胶片被人拿走了。",
+          "unit_id": "SAU_E01_SC001_006"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 427,
+            "byte_start": 412,
+            "char_end": 145,
+            "char_start": 140,
+            "evidence_id": "S1A011",
+            "occurrence_count": 1,
+            "sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+            "text": "林晚问是谁"
+          },
+          "source_evidence_refs": [
+            "S1A011"
+          ],
+          "source_order": 7,
+          "source_ref": "E01_SC001_A011",
+          "source_type": "SOURCE_ACTION",
+          "text": "林晚问是谁",
+          "unit_id": "SAU_E01_SC001_007"
+        },
+        {
+          "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+          "binding_type": "COREFERENCE_RESOLUTION",
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 460,
+            "byte_start": 442,
+            "char_end": 156,
+            "char_start": 150,
+            "evidence_id": "S1D001",
+            "occurrence_count": 1,
+            "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+            "text": "也许是你自己"
+          },
+          "source_evidence_refs": [
+            "S1D001"
+          ],
+          "source_order": 8,
+          "source_ref": "E01_SC001_D001",
+          "source_type": "SOURCE_DIALOGUE",
+          "speaker": "顾沉",
+          "text": "也许是你自己",
+          "unit_id": "SAU_E01_SC001_008"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 589,
+            "byte_start": 487,
+            "char_end": 199,
+            "char_start": 165,
+            "evidence_id": "S1A006",
+            "occurrence_count": 1,
+            "sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+            "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          },
+          "source_evidence_refs": [
+            "S1A006"
+          ],
+          "source_order": 9,
+          "source_ref": "E01_SC001_A006",
+          "source_type": "SOURCE_ACTION",
+          "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+          "unit_id": "SAU_E01_SC001_009"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 630,
+            "byte_start": 591,
+            "char_end": 214,
+            "char_start": 201,
+            "evidence_id": "S1A007",
+            "occurrence_count": 1,
+            "sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+            "text": "门缝下出现一双湿透的皮鞋。"
+          },
+          "source_evidence_refs": [
+            "S1A007"
+          ],
+          "source_order": 10,
+          "source_ref": "E01_SC001_A007",
+          "source_type": "SOURCE_ACTION",
+          "text": "门缝下出现一双湿透的皮鞋。",
+          "unit_id": "SAU_E01_SC001_010"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 681,
+            "byte_start": 630,
+            "char_end": 231,
+            "char_start": 214,
+            "evidence_id": "S1A008",
+            "occurrence_count": 1,
+            "sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+            "text": "那人没有进门，只把一张车票塞进来。"
+          },
+          "source_evidence_refs": [
+            "S1A008"
+          ],
+          "source_order": 11,
+          "source_ref": "E01_SC001_A008",
+          "source_type": "SOURCE_ACTION",
+          "text": "那人没有进门，只把一张车票塞进来。",
+          "unit_id": "SAU_E01_SC001_011"
+        },
+        {
+          "schema_version": "source_authoring_unit_v1",
+          "source_evidence": {
+            "byte_end": 762,
+            "byte_start": 681,
+            "char_end": 258,
+            "char_start": 231,
+            "evidence_id": "S1A009",
+            "occurrence_count": 1,
+            "sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+            "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+          },
+          "source_evidence_refs": [
+            "S1A009"
+          ],
+          "source_order": 12,
+          "source_ref": "E01_SC001_A009",
+          "source_type": "SOURCE_ACTION",
+          "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。",
+          "unit_id": "SAU_E01_SC001_012"
+        }
+      ]
+    },
+    "unknowns": []
+  },
+  "candidate_validation": {
+    "covered_story_unit_count": 12,
+    "creative_beat_count": 5,
+    "errors": [],
+    "source_action_count": 11,
+    "source_dialogue_count": 1,
+    "source_unit_count": 12,
+    "status": "qualified",
+    "story_unit_count": 12,
+    "synthetic_source_beat_count": 0,
+    "synthetic_source_scene_name_count": 0,
+    "warnings": []
+  },
+  "source_action_count": 11,
+  "source_dialogue_count": 1,
+  "source_unit_count": 12,
+  "status": "MULTI_BEAT_GOLDEN_PASS",
+  "validation": {
+    "covered_source_unit_count": 12,
+    "creative_beat_count": 5,
+    "errors": [],
+    "forbidden_field_count": 0,
+    "passthrough_count": 0,
+    "semantic_fields_in": 35,
+    "source_unit_count": 12,
+    "status": "qualified",
+    "version": "director_proposal_ir_v1",
+    "warnings": []
+  }
+}

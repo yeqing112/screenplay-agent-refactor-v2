@@ -1,0 +1,26 @@
+{
+  "authority_writes": 0,
+  "compile": "PASS",
+  "compiled_candidate_invalid_simulation": {
+    "fail_closed": true
+  },
+  "decision_packet_persisted": "proposal_only_isolated_boundary",
+  "director_treatment_writes": 0,
+  "invalid_ir_simulation": {
+    "ir_validation": "FAIL",
+    "parse": "PASS",
+    "promotion": false
+  },
+  "invalid_json_simulation": {
+    "compiler_run": false,
+    "parse": "FAIL",
+    "raw_retained": true
+  },
+  "json_parse": "PASS",
+  "pointer_writes": 0,
+  "proposal_ir_validation": "PASS",
+  "provider_calls": 0,
+  "raw_forensic": true,
+  "status": "PASS",
+  "v2_validation": "PASS"
+}

@@ -1,0 +1,8 @@
+{
+  "cache_buster": false,
+  "dialogue_policy": "refs and performance intent only; no dialogue, speaker, binding output",
+  "example": "empty flat shape only",
+  "forbidden_schema_example": "full director_treatment_v3 / nested creative_projection example",
+  "required_coverage": "every source authoring unit in beats[].refs or passthrough_refs",
+  "system_prompt_name": "DIRECTOR_PROPOSAL_IR_V1_SYSTEM_PROMPT"
+}

@@ -1,0 +1,25 @@
+{
+  "forbidden": [
+    "repair malformed JSON",
+    "invent missing refs",
+    "invent participants",
+    "rewrite source dialogue",
+    "add creative semantics"
+  ],
+  "input": [
+    "director_proposal_ir_v1",
+    "baseline director_treatment_v3 preview",
+    "source_scene"
+  ],
+  "local_compiler_new_creative_decision_count": 0,
+  "steps": [
+    "validate flat IR",
+    "validate refs, participants, and complete source coverage",
+    "copy baseline source_constraints locally",
+    "create DCB_<scene_id>_<ordinal:03d> IDs",
+    "set AUTHORIZED_CREATIVE_PROJECTION locally",
+    "map only supplied semantic fields",
+    "validate director_treatment_v3 with validate_director_contract_v2"
+  ],
+  "version": "director_proposal_ir_v1_deterministic_compiler_v1"
+}

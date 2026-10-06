@@ -1,0 +1,13 @@
+{
+  "coverage": "all source authoring units, with no automatic passthrough",
+  "dialogue_safety": "dialogue/speaker/binding fields rejected recursively",
+  "participant_source": "source_scene.participants",
+  "required_codes": [
+    "DIRECTOR_PROPOSAL_IR_SOURCE_REF_INVALID",
+    "DIRECTOR_PROPOSAL_IR_PARTICIPANT_INVALID",
+    "DIRECTOR_PROPOSAL_IR_SOURCE_COVERAGE_INCOMPLETE",
+    "DIRECTOR_PROPOSAL_IR_FORBIDDEN_FIELD",
+    "DIRECTOR_PROPOSAL_IR_COMPILED_CANDIDATE_INVALID"
+  ],
+  "version": "director_proposal_ir_v1_validation_v1"
+}

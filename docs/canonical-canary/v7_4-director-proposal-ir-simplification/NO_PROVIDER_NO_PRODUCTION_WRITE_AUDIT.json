@@ -1,0 +1,123 @@
+{
+  "after": {
+    "books": {
+      "count": 1,
+      "sha256": "2e4a455785da633ad5ad5eac7236809745f4cde39bb2a388f0187e0485bdd3ce"
+    },
+    "decision_packet_records": {
+      "count": 1,
+      "sha256": "32a56175b4f0a6d742d7a6081c56806fd58d9823d8b0cff7397fe524c50f8bf3"
+    },
+    "director_treatment_authorities": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "director_treatment_pointers": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "director_treatments": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "fact_snapshots": {
+      "count": 1,
+      "sha256": "ff6789e0905daecb3d72b5c3ffbc5c929cdc0888a49df2a2e139628cce0bd07a"
+    },
+    "media_candidate_records": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "official_media_versions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "prompt_ir_versions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "scene_blockings": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "script_ir_versions": {
+      "count": 1,
+      "sha256": "3ccbd0f32c8d9acc4b8c2f8b2a096d0637a9adeaf9fea0b04ad7a3ed0e36add4"
+    },
+    "scripts": {
+      "count": 1,
+      "sha256": "a367e93335325600d3c2042383fd57f259cda90a90091785a89db8d8de1109fa"
+    },
+    "shot_plans": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "before": {
+    "books": {
+      "count": 1,
+      "sha256": "2e4a455785da633ad5ad5eac7236809745f4cde39bb2a388f0187e0485bdd3ce"
+    },
+    "decision_packet_records": {
+      "count": 1,
+      "sha256": "32a56175b4f0a6d742d7a6081c56806fd58d9823d8b0cff7397fe524c50f8bf3"
+    },
+    "director_treatment_authorities": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "director_treatment_pointers": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "director_treatments": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "fact_snapshots": {
+      "count": 1,
+      "sha256": "ff6789e0905daecb3d72b5c3ffbc5c929cdc0888a49df2a2e139628cce0bd07a"
+    },
+    "media_candidate_records": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "official_media_versions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "prompt_ir_versions": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "scene_blockings": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "script_ir_versions": {
+      "count": 1,
+      "sha256": "3ccbd0f32c8d9acc4b8c2f8b2a096d0637a9adeaf9fea0b04ad7a3ed0e36add4"
+    },
+    "scripts": {
+      "count": 1,
+      "sha256": "a367e93335325600d3c2042383fd57f259cda90a90091785a89db8d8de1109fa"
+    },
+    "shot_plans": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "exact_equal": true,
+  "image_calls": 0,
+  "production_db_writes": 0,
+  "provider_calls": 0,
+  "status": "PASS",
+  "target_lineage": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "fact_snapshot_id": 49,
+    "script_id": 64,
+    "script_ir_version_id": 52
+  },
+  "video_calls": 0
+}

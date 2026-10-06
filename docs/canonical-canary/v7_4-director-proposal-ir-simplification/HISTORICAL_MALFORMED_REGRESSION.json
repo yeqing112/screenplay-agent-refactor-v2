@@ -1,0 +1,9 @@
+{
+  "assertion": "historical malformed response remains invalid and forensic-only",
+  "compiler_invocations": 0,
+  "parse_failure_position": 1540,
+  "promotion": false,
+  "raw_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+  "repair_attempts": 0,
+  "status": "PASS"
+}

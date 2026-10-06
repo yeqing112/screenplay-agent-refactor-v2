@@ -1,0 +1,49 @@
+{
+  "authorization_count": 2,
+  "authorizations": [
+    {
+      "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+      "call_count": 1,
+      "evidence_dir": "v7_3-real-director-creative-proposal"
+    },
+    {
+      "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+      "call_count": 1,
+      "evidence_dir": "v7_3-real-director-creative-proposal-retry-json-mode"
+    }
+  ],
+  "call_count_total": 2,
+  "failure_position_equal": true,
+  "failure_shape_equal": true,
+  "historical_output_status": "HISTORICAL_INVALID_DIRECTOR_OUTPUT_FORENSIC_ONLY",
+  "raw_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+  "raw_sha_equal": true,
+  "response_format_run2": "json_object",
+  "runs": [
+    {
+      "failure_shape": "creative_beats_and_creative_projection_closed_before_DCB_E01_SC001_03",
+      "http_status": 200,
+      "parse_failure_position": 1540,
+      "raw_forensic_before_parse": true,
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "response_format": null,
+      "run_id": "v7_3_run_1",
+      "transport_attempts": 1
+    },
+    {
+      "failure_shape": "creative_beats_and_creative_projection_closed_before_DCB_E01_SC001_03",
+      "http_status": 200,
+      "parse_failure_position": 1540,
+      "raw_forensic_before_parse": true,
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "response_format": {
+        "type": "json_object"
+      },
+      "run_id": "v7_3_run_2",
+      "transport_attempts": 1
+    }
+  ],
+  "schema_version": "double_failure_forensic_comparison_v1",
+  "source_of_truth": "frozen V7.3 evidence; no provider call in V7.4",
+  "status": "DETERMINISTIC_STRUCTURAL_FAILURE_REPRODUCED"
+}

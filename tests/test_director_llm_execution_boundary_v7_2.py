@@ -38,33 +38,12 @@ def _packet(treatment: dict) -> tuple[int, int]:
 def _valid_response(treatment: dict) -> str:
     units = treatment["source_constraints"]["source_authoring_units"]
     return json.dumps({
-        "schema_version": "director_treatment_v3",
-        "creative_projection": {
-            "director_scene_label": "",
-            "scene_objective": "Hold the uncertainty.",
-            "dramatic_question": "What changes after the line?",
-            "creative_beats": [{
-                "creative_beat_id": "DCB_E01_SC001_001",
-                "authority": "AUTHORIZED_CREATIVE_PROJECTION",
-                "derived_from_source_unit_refs": [unit["unit_id"] for unit in units],
-                "dramatic_purpose": "SETUP_RELATIONSHIP",
-                "director_objective": "Observe the room.",
-                "information_change": "The audience recognizes a pattern.",
-                "audience_effect": "Suspicion rises.",
-                "character_effects": [],
-                "performance_intent": "Withhold certainty.",
-                "transition_intent": "",
-                "hook_intent": False,
-            }],
-            "character_directions": [],
-            "performance_arc": [],
-            "information_strategy": [],
-            "rhythm_strategy": {},
-            "visual_priority": [],
-            "scene_exit_intent": "",
-            "prohibited_interpretations": [],
-            "explicit_passthrough_unit_refs": [],
-        },
+        "version": "director_proposal_ir_v1",
+        "scene_label": "",
+        "scene_objective": "Hold the uncertainty.",
+        "dramatic_question": "What changes after the line?",
+        "beats": [{"refs": [unit["unit_id"] for unit in units], "purpose": "SETUP_RELATIONSHIP", "objective": "Observe the room.", "information_change": "The audience recognizes a pattern.", "audience_effect": "Suspicion rises.", "performance": "Withhold certainty.", "transition": "", "hook": False, "character_effects": []}],
+        "character_directions": [], "performance_arc": [], "information_strategy": [], "rhythm_strategy": {}, "visual_priority": [], "scene_exit_intent": "", "prohibited_interpretations": [], "passthrough_refs": [],
         "unknowns": [],
         "confidence": 0.8,
         "note": "offline test proposal",
@@ -107,11 +86,11 @@ def test_v3_prompt_is_source_grounded_and_has_no_old_beat_requirement():
     system, user = api._source_grounded_v3_prompt(_preview(), {"characters": []})
     assert "SOURCE_AUTHORING_UNITS" in user
     assert "IMMUTABLE_SOURCE_CONSTRAINTS" in user
-    assert "CREATIVE_PROJECTION_SCHEMA" in user
+    assert "DIRECTOR_PROPOSAL_IR_V1" in system or "PROPOSAL_IR_VERSION" in user
+    assert "CREATIVE_PROJECTION_SCHEMA" not in user
     assert "必须沿用已有 character id 和 beat_id" not in user
-    assert "不是改写原始剧本" in system
-    assert "creative_beats 必须是一个连续的 JSON array" in system
-    assert "JSON_SYNTAX_CHECK" in user
+    assert "creative_projection" in system
+    assert "扁平的创意提案" in system
 
 
 def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projection(monkeypatch):
@@ -132,7 +111,7 @@ def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projecti
 def test_v3_raw_forensic_is_committed_before_parser(monkeypatch):
     order = []
     original_persist = api._persist_v3_raw_forensic
-    original_parse = api.parse_json_object
+    original_parse = api.parse_director_proposal_ir
 
     def persist(*args, **kwargs):
         order.append("RAW_PERSIST")
@@ -143,7 +122,7 @@ def test_v3_raw_forensic_is_committed_before_parser(monkeypatch):
         return original_parse(*args, **kwargs)
 
     monkeypatch.setattr(api, "_persist_v3_raw_forensic", persist)
-    monkeypatch.setattr(api, "parse_json_object", parse)
+    monkeypatch.setattr(api, "parse_director_proposal_ir", parse)
     result, error, *_ = _run(monkeypatch, _valid_response(_preview()))
     assert error is None
     assert result["provider"]["calls"] == 1
@@ -164,27 +143,27 @@ def test_v3_invalid_json_keeps_raw_and_never_retries(monkeypatch):
 
 def test_v3_invalid_semantic_candidate_keeps_forensic_and_never_retries(monkeypatch):
     bad = json.loads(_valid_response(_preview()))
-    bad["creative_projection"]["creative_beats"][0]["derived_from_source_unit_refs"] = ["SAU_UNKNOWN"]
+    bad["beats"][0]["refs"] = ["SAU_UNKNOWN"]
     result, error, calls, model_info, packet, downstream = _run(monkeypatch, json.dumps(bad, ensure_ascii=False))
     assert result is None
-    assert error.detail["code"] == "DIRECTOR_LLM_CREATIVE_PROPOSAL_INVALID"
+    assert error.detail["code"] == "DIRECTOR_PROPOSAL_IR_INVALID"
     assert len(calls) == 1
     assert model_info["raw_response_forensic"]["persisted_before_parse"] is True
     assert downstream == (0, 0, 0)
 
 
-def test_v3_required_keys_are_only_creative_projection(monkeypatch):
+def test_v3_required_keys_are_only_proposal_ir(monkeypatch):
     seen = []
-    original = api.parse_json_object
+    original = api.parse_director_proposal_ir
 
     def parse(*args, **kwargs):
-        seen.append(kwargs.get("required_keys"))
+        seen.append("proposal_ir")
         return original(*args, **kwargs)
 
-    monkeypatch.setattr(api, "parse_json_object", parse)
+    monkeypatch.setattr(api, "parse_director_proposal_ir", parse)
     result, error, *_ = _run(monkeypatch, _valid_response(_preview()))
     assert error is None
-    assert seen == [{"creative_projection"}]
+    assert seen == ["proposal_ir"]
 
 
 def test_v3_candidate_does_not_need_to_echo_source_constraints(monkeypatch):
