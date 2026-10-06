@@ -1,0 +1,28 @@
+{
+  "schema_version": "director_llm_invalid_output_diagnostic_v1",
+  "status": "DIRECTOR_LLM_OUTPUT_INVALID",
+  "packet_id": 64,
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+  "raw_response_length": 5914,
+  "parse_attempts": 1,
+  "parser_retry": 0,
+  "repair_llm": 0,
+  "parse_error": "Failed to parse Director V3 proposal: no candidate contained required keys ['creative_projection']. Preview: {\"schema_version\":\"director_treatment_v3\",\"creative_projection\":{\"director_scene_label\":\"暗房·第七次潮汐\",\"scene_objective\":\"在暗房的封闭空间里，让林晚第一次直面自己记忆的空洞，并以一张车票把顾沉从'引路人'推向'被怀疑者'，为后续北堤仓库的对峙埋下不可逆的钩子。\",\"dramatic_question\":\"铁盒里的海鸥别针指向林晚的童年，而门外递进车票的人是谁——他为什么要林晚'不要带顾沉'？\",\"creative_beats\":[{\"creative_beat_id\":\"DCB_E01_SC001_01\",\"derived_from_source_unit_refs\":[\"SAU_E01_SC001_001\",\"SAU_E01_SC001_002\"],\"dir",
+  "json_decode_error_position": 1540,
+  "structural_finding": {
+    "code": "CREATIVE_BEATS_ARRAY_CLOSED_BEFORE_NEXT_OBJECT",
+    "detail": "The provider response closes the creative_beats array and creative_projection object before the DCB_E01_SC001_03 object; the following object is therefore outside the expected JSON structure.",
+    "source": "offline inspection of persisted raw response",
+    "safe_repair": false,
+    "reason": "The proposal content must not be manually rewritten or promoted after an invalid provider response."
+  },
+  "execution_policy": {
+    "provider_calls": 1,
+    "additional_calls_allowed_under_current_authorization": 0,
+    "proposal_persisted": false,
+    "downstream_writes": 0,
+    "image_calls": 0,
+    "video_calls": 0
+  }
+}
