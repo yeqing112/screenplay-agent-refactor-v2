@@ -1,0 +1,342 @@
+{
+  "status": "PASS",
+  "scope_descriptor": {
+    "kind": "CANONICAL_CANARY_TARGET",
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "tables": {
+    "decision_packet_records": {
+      "table": "decision_packet_records",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "decision_packet_records.id = 64",
+        "decision_packet_records.book_id = 990453"
+      ],
+      "lineage_join_path": [],
+      "count": 1,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "packet_fingerprint",
+        "domain",
+        "status"
+      ],
+      "row_identity_hash": "49aa881823677f55abd60d4ed835246f1238ab09c8a5d3479a265bad362252eb"
+    },
+    "director_treatments": {
+      "table": "director_treatments",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "director_treatments.book_id = 990453",
+        "director_treatments.episode = 1",
+        "director_treatments.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "scene_id",
+        "revision",
+        "status"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "director_treatment_authorities": {
+      "table": "director_treatment_authorities",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "director_treatment_authorities.book_id = 990453",
+        "director_treatment_authorities.episode = 1",
+        "director_treatment_authorities.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "scene_id",
+        "treatment_id",
+        "treatment_revision"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "director_treatment_pointers": {
+      "table": "director_treatment_pointers",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "director_treatment_pointers.book_id = 990453",
+        "director_treatment_pointers.episode = 1",
+        "director_treatment_pointers.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "scene_id",
+        "treatment_id",
+        "treatment_revision"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "scene_blockings": {
+      "table": "scene_blockings",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "scene_blockings.book_id = 990453",
+        "scene_blockings.episode = 1",
+        "scene_blockings.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "scene_id",
+        "revision",
+        "status"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "shot_plans": {
+      "table": "shot_plans",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "shot_plans.book_id = 990453",
+        "shot_plans.episode = 1",
+        "shot_plans.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "scene_id",
+        "revision",
+        "status"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "storyboard_shots": {
+      "table": "storyboard_shots",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "storyboard_shots.book_id = 990453",
+        "storyboard_shots.episode = 1",
+        "storyboard_shots.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "scene_id",
+        "shot_id",
+        "materialization_status"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "prompt_ir_versions": {
+      "table": "prompt_ir_versions",
+      "scope_mode": "DIRECT_FILTER",
+      "query_predicates": [
+        "prompt_ir_versions.book_id = 990453",
+        "prompt_ir_versions.episode = 1",
+        "prompt_ir_versions.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "scene_id",
+        "storyboard_shot_id",
+        "materialization_set_id"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "storyboard_prompt_versions": {
+      "table": "storyboard_prompt_versions",
+      "scope_mode": "LINEAGE_JOIN",
+      "query_predicates": [
+        "storyboard_prompt_versions.book_id = 990453",
+        "storyboard_prompt_versions.episode = 1",
+        "StoryboardShot.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [
+        "StoryboardPromptVersion.shot_id = StoryboardShot.shot_id",
+        "StoryboardShot.book_id/episode/scene_id -> target scope"
+      ],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "book_id",
+        "episode",
+        "shot_id",
+        "version"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "generation_execution_records": {
+      "table": "generation_execution_records",
+      "scope_mode": "LINEAGE_JOIN",
+      "query_predicates": [
+        "generation_execution_records.book_id = 990453",
+        "generation_execution_records.episode = 1",
+        "StoryboardShot.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [
+        "GenerationExecutionRecord.storyboard_shot_id = StoryboardShot.id",
+        "StoryboardShot.book_id/episode/scene_id -> target scope"
+      ],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "execution_id",
+        "book_id",
+        "episode",
+        "storyboard_shot_id",
+        "target_media"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "media_candidate_records": {
+      "table": "media_candidate_records",
+      "scope_mode": "LINEAGE_JOIN",
+      "query_predicates": [
+        "GenerationExecutionRecord.book_id = 990453",
+        "GenerationExecutionRecord.episode = 1",
+        "StoryboardShot.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [
+        "MediaCandidateRecord.execution_id = GenerationExecutionRecord.execution_id",
+        "GenerationExecutionRecord.storyboard_shot_id = StoryboardShot.id",
+        "StoryboardShot scene scope"
+      ],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "candidate_id",
+        "execution_id",
+        "prompt_ir_version_id"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "official_media_versions": {
+      "table": "official_media_versions",
+      "scope_mode": "LINEAGE_JOIN",
+      "query_predicates": [
+        "official_media_versions.book_id = 990453",
+        "official_media_versions.episode = 1",
+        "StoryboardShot.scene_id = E01_SC001"
+      ],
+      "lineage_join_path": [
+        "OfficialMediaVersion.storyboard_shot_id = StoryboardShot.id",
+        "StoryboardShot scene scope"
+      ],
+      "count": 0,
+      "row_identity_fields": [
+        "id",
+        "official_media_version_id",
+        "book_id",
+        "episode",
+        "storyboard_shot_id",
+        "media_role",
+        "revision"
+      ],
+      "row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "same_scope_repeat_equal": true,
+  "packet": {
+    "id": 64,
+    "book_id": 990453,
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "status": "draft",
+    "proposal": {
+      "decision": "awaiting_llm"
+    },
+    "proposal_sha256": "2207201bd6bef70c12df0059e883af91993475f914fe17cdd4f495fdab4b2c77",
+    "model_info_sha256": "82125a968ac1df3392f06485744afa57b429623f59f50e19a0745c6389d62da9",
+    "attempt_count": 3,
+    "attempt_ids": [
+      "v7_3_attempt_1",
+      "v7_3_attempt_2",
+      "attempt-3"
+    ],
+    "attempt_3": {
+      "attempt_id": "attempt-3",
+      "authorization_id": "v7_5-director-proposal-ir-real-canary-authorization-3",
+      "request_fingerprint": "a151a26c6e5514d6657e24362906ea3638d8cfff20366493fc5ee2a60527f8f9",
+      "raw_response_sha256": "bc7af44934f4b3a0f9652fdaddc28b8cc67a24404c0bad6da7aa5170000fe7c5",
+      "status": "IR_INVALID"
+    }
+  },
+  "source_lineage": {
+    "book": {
+      "id": 990453,
+      "status": "imported",
+      "title_sha256": "480772f634a115ab3d6fc96b428b5e26f5672d45a6029b42dc3ce518589c7996",
+      "filename_sha256": "d33eb4109a42f4987432839bd7c49702f4aa298206078d350808d28fed8ee73b"
+    },
+    "script": {
+      "id": 64,
+      "book_id": 990453,
+      "episode": 1,
+      "content_sha256": "24d0f512d05e5721e36e60b3a0e36bf7bbbfdedd0f862de4250183ec2e0f6cb8",
+      "current_script_ir_version_id": 52
+    },
+    "fact_snapshot": {
+      "id": 49,
+      "book_id": 990453,
+      "episode": 1,
+      "revision": 1,
+      "status": "confirmed",
+      "payload_hash": "47898887876eba48f442e05094b245e2dc04dfa0765993ad424f10ce1184526f",
+      "records_json_sha256": "2c2d1462c39fe55c9b52bbfc0b30a7db0a83938ed988d9d99aefa025ac6298e7"
+    },
+    "script_ir": {
+      "id": 52,
+      "book_id": 990453,
+      "episode": 1,
+      "revision": 1,
+      "status": "production_qualified",
+      "qualification_state": "PRODUCTION_QUALIFIED",
+      "stale_status": "FRESH",
+      "source_fact_snapshot_id": "49",
+      "payload_hash": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+      "payload_json_sha256": "e7d3a8b39d6b6cb04729cc0712b79def17151dea4f214535c0a9599b1fafc02e",
+      "authority_profile": "SOURCE_GROUNDED_V3_1",
+      "creative_readiness_state": "AUTHORING_REQUIRED"
+    }
+  },
+  "expected_target_counts": {
+    "decision_packet_records": 1,
+    "director_treatments": 0,
+    "director_treatment_authorities": 0,
+    "director_treatment_pointers": 0,
+    "scene_blockings": 0,
+    "shot_plans": 0,
+    "storyboard_shots": 0,
+    "storyboard_prompt_versions": 0,
+    "prompt_ir_versions": 0,
+    "generation_execution_records": 0,
+    "media_candidate_records": 0,
+    "official_media_versions": 0
+  }
+}

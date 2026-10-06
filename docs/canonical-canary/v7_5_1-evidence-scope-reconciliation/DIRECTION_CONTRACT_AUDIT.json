@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "field": "character_directions[].direction",
+  "formal_json_schema": "PASS",
+  "runtime_validator": "PASS",
+  "deterministic_compiler": "COPY_ONLY",
+  "offline_endpoint_test": "PASS",
+  "local_direction_semantic_expansion_count": 0,
+  "historical_raw_not_recompiled": true
+}

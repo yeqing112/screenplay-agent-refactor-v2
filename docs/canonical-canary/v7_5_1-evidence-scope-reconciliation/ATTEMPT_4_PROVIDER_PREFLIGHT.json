@@ -1,0 +1,72 @@
+{
+  "status": "DIRECTOR_ATTEMPT4_PREFLIGHT_READY",
+  "authorization": "REQUIRED_NOT_GRANTED",
+  "new_explicit_authorization_required": true,
+  "provider_calls": 0,
+  "next_attempt": "attempt-4",
+  "attempt_history_count": 3,
+  "scope_descriptor": {
+    "kind": "CANONICAL_CANARY_TARGET",
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "target": {
+    "book_id": 990453,
+    "episode": 1,
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64,
+    "scene_id": "E01_SC001"
+  },
+  "source_units": {
+    "count": 12,
+    "action_count": 11,
+    "dialogue_count": 1,
+    "beat_count": 0,
+    "fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f"
+  },
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "profile": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true
+  },
+  "system_prompt_sha256": "47bc465337d344f2fd991f1c874083f7e250256c4dd96cf7bb8c01256324820d",
+  "user_prompt_sha256": "d2a4d76417cd4254e64abb9cd7872e2a87d3b0234e82b29c087ab3b98160b50f",
+  "request_fingerprint": "331223e1a5d7ee567a3b73091e35d00055212df6f5b57205043873819c951402",
+  "advisory_asset_context": [],
+  "schema_version": "director_proposal_ir_v1",
+  "proposal_only": true,
+  "confirm_allowed": false,
+  "downstream_allowed": false,
+  "transport_attempts_max": 1,
+  "retry": 0,
+  "parse_retry": 0,
+  "repair": 0,
+  "fallback": 0,
+  "runtime_code_state": {
+    "commit": "532b1ad8cc8e9776ab21495db670386bfc3aa231",
+    "formal_schema_gate_order": [
+      "PARSE",
+      "IR_SCHEMA_VALIDATE",
+      "IR_VALIDATE",
+      "COMPILE"
+    ],
+    "identity_builder": "build_source_grounded_director_execution_identity",
+    "scene_id_gate": "SCENE_ID_REQUIRED"
+  },
+  "prompt_contract": {
+    "character_direction": "character_ref plus one or more of direction/objective/obstacle/strategy/performance_notes",
+    "local_direction_semantic_expansion_count": 0
+  }
+}

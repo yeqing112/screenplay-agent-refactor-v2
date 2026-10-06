@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "scope_descriptor": {
+    "kind": "CANONICAL_CANARY_TARGET",
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "before_after_scope_invariant": "before.scope_fingerprint == after.scope_fingerprint",
+  "target_filter_policy": {
+    "direct_keys": [
+      "book_id=990453",
+      "episode=1",
+      "scene_id=E01_SC001"
+    ],
+    "decision_packet_override": [
+      "id=64",
+      "book_id=990453"
+    ],
+    "lineage_required_for": [
+      "storyboard_prompt_versions",
+      "generation_execution_records",
+      "media_candidate_records",
+      "official_media_versions"
+    ],
+    "global_inventory_never_used_for_delta": true
+  }
+}

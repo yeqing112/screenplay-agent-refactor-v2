@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "missing_scene_id": {
+    "local_status": 409,
+    "code": "SCENE_ID_REQUIRED",
+    "provider_calls": 0
+  },
+  "explicit_scene_id": {
+    "scene_id": "E01_SC001",
+    "mock_source_grounded_path": "PASS",
+    "provider_calls": 1
+  },
+  "future_request_requires_explicit_scene_id": true
+}

@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "formal_schema_gate_order": [
+    "PARSE",
+    "IR_SCHEMA_VALIDATE",
+    "IR_VALIDATE",
+    "COMPILE"
+  ],
+  "direction_contract": {
+    "formal_schema": true,
+    "runtime_validator": true,
+    "deterministic_compiler_copy_only": true,
+    "local_direction_semantic_expansion_count": 0,
+    "raw_sha_special_case": false
+  },
+  "advisory_asset_context": "[]",
+  "mutable_asset_identity_input": false,
+  "identity_builder": "api.director_treatment_api.build_source_grounded_director_execution_identity",
+  "shared_by_preflight_and_endpoint": true,
+  "code_head": "532b1ad8cc8e9776ab21495db670386bfc3aa231",
+  "provider_calls_during_audit": 0,
+  "directed_tests": {
+    "passed": 46,
+    "failed": 0,
+    "command": "pytest -q tests/test_canary_scope_snapshot_v7_5_1.py tests/test_director_llm_execution_boundary_v7_2.py tests/test_director_proposal_ir_v7_4.py tests/test_director_proposal_integrity_closure_v7_4_1.py"
+  },
+  "event_trace_success": [
+    "TRANSPORT",
+    "RAW_PERSIST",
+    "PARSE",
+    "IR_SCHEMA_VALIDATE",
+    "IR_VALIDATE",
+    "COMPILE",
+    "PROPOSAL_PERSIST"
+  ]
+}

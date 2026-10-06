@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "external_llm_calls": 0,
+  "director_llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "75api_calls": 0,
+  "production_writes": 0,
+  "packet_64_mutated_during_phase": false,
+  "target_snapshot_double_read_equal": true,
+  "proposal_unchanged": true,
+  "attempt_history_unchanged_count": 3,
+  "director_treatment_target_count": 0,
+  "downstream_target_counts": {
+    "director_treatment_authorities": 0,
+    "director_treatment_pointers": 0,
+    "scene_blockings": 0,
+    "shot_plans": 0,
+    "storyboard_shots": 0,
+    "prompt_ir_versions": 0,
+    "storyboard_prompt_versions": 0,
+    "generation_execution_records": 0,
+    "media_candidate_records": 0,
+    "official_media_versions": 0
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "status": "PASS_TARGET_SCOPE_RECONCILED",
+  "scope_descriptor": {
+    "kind": "CANONICAL_CANARY_TARGET",
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "before_after_scope_equal": true,
+  "tables": {
+    "decision_packet_records": {
+      "historical_before_count": 1,
+      "current_target_count": 1,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "076fe48a4ffc75fe5f8935398d391c668cc380fa39f2bf7b91d10007f6f2a22f",
+      "current_target_row_identity_hash": "49aa881823677f55abd60d4ed835246f1238ab09c8a5d3479a265bad362252eb",
+      "scope_match": true
+    },
+    "director_treatments": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "director_treatment_authorities": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "director_treatment_pointers": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "scene_blockings": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "shot_plans": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "storyboard_shots": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "prompt_ir_versions": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "storyboard_prompt_versions": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": null,
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "generation_execution_records": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "media_candidate_records": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    },
+    "official_media_versions": {
+      "historical_before_count": 0,
+      "current_target_count": 0,
+      "target_delta_not_global": 0,
+      "historical_before_row_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "current_target_row_identity_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "scope_match": true
+    }
+  },
+  "packet": {
+    "count": 1,
+    "proposal": {
+      "decision": "awaiting_llm"
+    },
+    "proposal_unchanged": true,
+    "content_hash_may_change_due_to_attempt3": true
+  },
+  "historical_global_after_not_used": true,
+  "historical_delta_artifact_preserved": "docs/canonical-canary/v7_5-real-director-proposal-ir/PRODUCTION_DB_DELTA.json"
+}

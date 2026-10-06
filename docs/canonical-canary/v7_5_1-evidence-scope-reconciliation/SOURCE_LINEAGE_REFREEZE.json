@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "scope_descriptor": {
+    "kind": "CANONICAL_CANARY_TARGET",
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "fact_snapshot_id": 49,
+    "script_ir_version_id": 52,
+    "decision_packet_id": 64
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "source_lineage": {
+    "book": {
+      "id": 990453,
+      "status": "imported",
+      "title_sha256": "480772f634a115ab3d6fc96b428b5e26f5672d45a6029b42dc3ce518589c7996",
+      "filename_sha256": "d33eb4109a42f4987432839bd7c49702f4aa298206078d350808d28fed8ee73b"
+    },
+    "script": {
+      "id": 64,
+      "book_id": 990453,
+      "episode": 1,
+      "content_sha256": "24d0f512d05e5721e36e60b3a0e36bf7bbbfdedd0f862de4250183ec2e0f6cb8",
+      "current_script_ir_version_id": 52
+    },
+    "fact_snapshot": {
+      "id": 49,
+      "book_id": 990453,
+      "episode": 1,
+      "revision": 1,
+      "status": "confirmed",
+      "payload_hash": "47898887876eba48f442e05094b245e2dc04dfa0765993ad424f10ce1184526f",
+      "records_json_sha256": "2c2d1462c39fe55c9b52bbfc0b30a7db0a83938ed988d9d99aefa025ac6298e7"
+    },
+    "script_ir": {
+      "id": 52,
+      "book_id": 990453,
+      "episode": 1,
+      "revision": 1,
+      "status": "production_qualified",
+      "qualification_state": "PRODUCTION_QUALIFIED",
+      "stale_status": "FRESH",
+      "source_fact_snapshot_id": "49",
+      "payload_hash": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+      "payload_json_sha256": "e7d3a8b39d6b6cb04729cc0712b79def17151dea4f214535c0a9599b1fafc02e",
+      "authority_profile": "SOURCE_GROUNDED_V3_1",
+      "creative_readiness_state": "AUTHORING_REQUIRED"
+    }
+  },
+  "source_units": {
+    "count": 12,
+    "action_count": 11,
+    "dialogue_count": 1,
+    "beat_count": 0,
+    "fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f"
+  },
+  "dialogue_contract": {
+    "unit_id": "SAU_E01_SC001_008",
+    "schema_version": "source_authoring_unit_v1",
+    "source_type": "SOURCE_DIALOGUE",
+    "source_ref": "E01_SC001_D001",
+    "source_order": 8,
+    "source_evidence_refs": [
+      "S1D001"
+    ],
+    "speaker": "顾沉",
+    "text": "也许是你自己",
+    "binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+    "binding_type": "COREFERENCE_RESOLUTION",
+    "source_evidence": {
+      "byte_end": 460,
+      "byte_start": 442,
+      "char_end": 156,
+      "char_start": 150,
+      "evidence_id": "S1D001",
+      "occurrence_count": 1,
+      "sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+      "text": "也许是你自己"
+    }
+  },
+  "source_mutation_count": 0,
+  "book_script_fact_snapshot_script_ir_byte_equivalent_on_double_read": true
+}

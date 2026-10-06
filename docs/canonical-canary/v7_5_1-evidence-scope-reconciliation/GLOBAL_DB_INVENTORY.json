@@ -1,0 +1,20 @@
+{
+  "inventory_only": true,
+  "not_used_for_canary_delta": true,
+  "scope_descriptor": null,
+  "tables": {
+    "decision_packet_records": 64,
+    "director_treatments": 64,
+    "director_treatment_authorities": 44,
+    "director_treatment_pointers": 44,
+    "scene_blockings": 79,
+    "shot_plans": 34,
+    "storyboard_shots": 387,
+    "storyboard_prompt_versions": 24,
+    "prompt_ir_versions": 36,
+    "generation_execution_records": 4,
+    "media_candidate_records": 4,
+    "official_media_versions": 0
+  },
+  "note": "Global counts are diagnostic only; TARGET_SCOPE_RECONCILED_DELTA.json uses target predicates and lineage joins."
+}

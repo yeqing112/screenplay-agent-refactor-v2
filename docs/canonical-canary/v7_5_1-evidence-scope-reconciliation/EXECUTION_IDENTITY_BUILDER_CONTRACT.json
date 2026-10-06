@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "builder": "build_source_grounded_director_execution_identity",
+  "returns": [
+    "system_prompt",
+    "user_prompt",
+    "system_prompt_sha256",
+    "user_prompt_sha256",
+    "request_fingerprint",
+    "source_authoring_unit_fingerprint",
+    "advisory_asset_context",
+    "schema_version"
+  ],
+  "no_nonce_timestamp_random_identity_input": true,
+  "advisory_asset_context": [],
+  "schema_version": "director_proposal_ir_v1"
+}
