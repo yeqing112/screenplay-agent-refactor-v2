@@ -1,0 +1,15 @@
+{
+  "historical_findings": [
+    "DIRECTOR_LLM_PROMPT_CONTRACT_STALE",
+    "DIRECTOR_LLM_REQUIRED_KEYS_STALE",
+    "DIRECTOR_LLM_REAL_FORENSIC_SINK_NOT_WIRED"
+  ],
+  "legacy_v1_path_preserved": true,
+  "real_provider_called": false,
+  "status": "RECONCILED_SOURCE_GROUNDED_V3_BOUNDARY",
+  "v3_prompt_uses_legacy_beat_requirement": false,
+  "v3_raw_forensic_sink_wired": true,
+  "v3_required_keys": [
+    "creative_projection"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "cases": [
+    {
+      "case": "ConnectError",
+      "provider_post_count": 1,
+      "retry": 0
+    },
+    {
+      "case": "ReadTimeout",
+      "provider_post_count": 1,
+      "retry": 0
+    },
+    {
+      "case": "HTTP 500",
+      "provider_post_count": 1,
+      "retry": 0
+    },
+    {
+      "case": "429",
+      "provider_post_count": 1,
+      "retry": 0
+    }
+  ],
+  "status": "PASS",
+  "test": "test_call_llm_transport_matrix_has_one_post"
+}

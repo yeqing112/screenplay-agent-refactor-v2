@@ -1,0 +1,10 @@
+{
+  "fallback": 0,
+  "max_director_llm_calls": 1,
+  "parse_once": true,
+  "repair": 0,
+  "response_fingerprint_is_full_sha256": true,
+  "retry": 0,
+  "status": "PASS",
+  "transport_attempt_budget": 1
+}

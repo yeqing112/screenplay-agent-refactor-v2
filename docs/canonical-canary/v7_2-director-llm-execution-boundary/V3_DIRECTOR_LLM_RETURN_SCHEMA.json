@@ -1,0 +1,33 @@
+{
+  "creative_beat_fields": [
+    "creative_beat_id",
+    "authority",
+    "derived_from_source_unit_refs",
+    "dramatic_purpose",
+    "director_objective",
+    "information_change",
+    "audience_effect",
+    "character_effects",
+    "performance_intent",
+    "transition_intent",
+    "hook_intent"
+  ],
+  "creative_projection_required_fields": [
+    "scene_objective",
+    "dramatic_question",
+    "creative_beats",
+    "character_directions",
+    "performance_arc",
+    "information_strategy",
+    "rhythm_strategy",
+    "visual_priority",
+    "scene_exit_intent",
+    "prohibited_interpretations"
+  ],
+  "source_authoring_units_echo_required": false,
+  "source_constraints_echo_required": false,
+  "status": "PASS",
+  "top_level_required_keys": [
+    "creative_projection"
+  ]
+}

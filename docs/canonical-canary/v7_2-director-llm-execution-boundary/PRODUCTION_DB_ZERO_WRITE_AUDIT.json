@@ -1,0 +1,44 @@
+{
+  "after": {
+    "books": 1,
+    "decision_packets": 0,
+    "director_treatment_authorities": 0,
+    "director_treatment_pointers": 0,
+    "director_treatments": 0,
+    "fact_snapshots": 1,
+    "scene_blockings": 0,
+    "script_ir_versions": 1,
+    "scripts": 1,
+    "shot_plans": 0,
+    "storyboard_shots": 0
+  },
+  "before": {
+    "books": 1,
+    "decision_packets": 0,
+    "director_treatment_authorities": 0,
+    "director_treatment_pointers": 0,
+    "director_treatments": 0,
+    "fact_snapshots": 1,
+    "scene_blockings": 0,
+    "script_ir_versions": 1,
+    "scripts": 1,
+    "shot_plans": 0,
+    "storyboard_shots": 0
+  },
+  "book_990453_script_64_fact_snapshot_49_script_ir_52_unchanged": true,
+  "delta": {
+    "books": 0,
+    "decision_packets": 0,
+    "director_treatment_authorities": 0,
+    "director_treatment_pointers": 0,
+    "director_treatments": 0,
+    "fact_snapshots": 0,
+    "scene_blockings": 0,
+    "script_ir_versions": 0,
+    "scripts": 0,
+    "shot_plans": 0,
+    "storyboard_shots": 0
+  },
+  "provider_calls": 0,
+  "status": "PASS"
+}

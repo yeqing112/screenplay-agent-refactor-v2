@@ -15,6 +15,7 @@ from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
+import httpx
 from pydantic import AliasChoices, BaseModel, Field
 
 from core.director_treatment import build_shadow_treatment
@@ -34,6 +35,8 @@ from core.director_treatment_authority import (
 from core.decision_packet import decision_packet_fingerprint, normalize_decision_packet
 from core.script_ir import resolve_script_payload
 import core.llm as llm_client
+from core.prompt_cache import prompt_fingerprint
+from core.structured_output import parse_json_object
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
 
@@ -164,6 +167,200 @@ def _validate_source_grounded_llm_candidate(raw: Any, baseline: dict[str, Any]) 
         raise ValueError(json.dumps(report, ensure_ascii=False))
     candidate["validation"] = report
     return candidate
+
+
+V3_DIRECTOR_SYSTEM_PROMPT = """你是受权威来源约束的影视导演创作助手。
+
+你负责创作 Director creative projection，不是改写原始剧本。
+SOURCE_CONSTRAINTS 是不可修改事实。
+
+你可以创作：场景导演标签、戏剧目标、戏剧问题、DirectorCreativeBeat、人物导演指令、表演弧、信息策略、节奏策略、视觉优先级、场景退出意图。
+
+你不得：修改 source unit、action、dialogue、speaker 或 binding；新增 source character；把 creative decision 声称为 source fact；输出镜头规格；执行 SceneBlocking 或 ShotPlan。
+
+只输出一个 JSON object，不要 Markdown，不要复制 source_constraints 或 source_authoring_units。"""
+
+
+def _source_grounded_v3_prompt(treatment: dict[str, Any], evidence: dict[str, Any]) -> tuple[str, str]:
+    constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
+    units = constraints.get("source_authoring_units") if isinstance(constraints.get("source_authoring_units"), list) else []
+    projection_schema = {
+        "schema_version": "director_treatment_v3",
+        "director_scene_label": "",
+        "scene_objective": "",
+        "dramatic_question": "",
+        "creative_beats": [{
+            "creative_beat_id": "DCB_<scene>_<ordinal>",
+            "authority": "AUTHORIZED_CREATIVE_PROJECTION",
+            "derived_from_source_unit_refs": ["SAU_<scene>_<ordinal>"],
+            "dramatic_purpose": "",
+            "director_objective": "",
+            "information_change": "",
+            "audience_effect": "",
+            "character_effects": [],
+            "performance_intent": "",
+            "transition_intent": "",
+            "hook_intent": False,
+        }],
+        "character_directions": [],
+        "performance_arc": [],
+        "information_strategy": [],
+        "rhythm_strategy": {},
+        "visual_priority": [],
+        "scene_exit_intent": "",
+        "prohibited_interpretations": [],
+        "explicit_passthrough_unit_refs": [],
+    }
+    immutable_constraints = {
+        "scene_id": constraints.get("scene_id"),
+        "scene_identity_evidence": constraints.get("scene_identity_evidence", []),
+        "explicit_story_constraints": constraints.get("explicit_story_constraints", []),
+    }
+    user_prompt = (
+        "SOURCE_GROUNDED_DIRECTOR_PROPOSAL_V3\n"
+        f"SCENE_ID={json.dumps(treatment.get('scene_id'), ensure_ascii=False)}\n"
+        f"IMMUTABLE_SOURCE_CONSTRAINTS={json.dumps(immutable_constraints, ensure_ascii=False, sort_keys=True)}\n"
+        f"SOURCE_AUTHORING_UNITS={json.dumps(units, ensure_ascii=False, sort_keys=True)}\n"
+        f"DECLARED_PARTICIPANTS={json.dumps(constraints.get('declared_participants', []), ensure_ascii=False, sort_keys=True)}\n"
+        f"ADVISORY_ASSET_CONTEXT={json.dumps(evidence.get('characters', []), ensure_ascii=False, sort_keys=True)}\n"
+        f"CREATIVE_PROJECTION_SCHEMA={json.dumps(projection_schema, ensure_ascii=False, sort_keys=True)}\n"
+        "每个 creative beat 的 derived_from_source_unit_refs 只能引用上述 SAU ID。所有 story unit 必须由 creative beat 引用或 explicit_passthrough_unit_refs 覆盖。"
+        "SourceDialogueUnit 只能产生表演意图、潜台词、反应意图、观众效果和 timing intent；不得改写 dialogue、speaker 或 binding。"
+        "返回顶层 schema_version、creative_projection、unknowns、confidence、note；不要返回 source_constraints、source_authoring_units、actions 或 dialogues。"
+    )
+    return V3_DIRECTOR_SYSTEM_PROMPT, user_prompt
+
+
+def _director_llm_profile_preflight() -> tuple[dict[str, Any], dict[str, Any]]:
+    profile = llm_client._resolve_llm_profile()
+    if not isinstance(profile, dict) or not str(profile.get("id") or "").strip() or not str(profile.get("model_name") or "").strip():
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_LLM_PROFILE_UNAVAILABLE", "message": "No enabled default LLM profile is available."})
+    if profile.get("enabled") is False:
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_LLM_PROFILE_DISABLED", "message": "The default LLM profile is disabled."})
+    base_url = str(profile.get("base_url") or "").strip()
+    parsed = re.match(r"^(https?://[^/]+)", base_url)
+    provider_host = parsed.group(1) if parsed else (base_url.split("/", 1)[0] if base_url else "")
+    snapshot = {
+        "profile_id": str(profile.get("id")),
+        "provider": str(profile.get("provider") or ""),
+        "model": str(profile.get("model_name") or ""),
+        "base_host": provider_host,
+        "enabled": bool(profile.get("enabled", True)),
+        "key_configured": bool(profile.get("key_configured", False) or (profile.get("api_key") and profile.get("api_key") != "sk-placeholder")),
+    }
+    return profile, snapshot
+
+
+def _update_director_packet_info(packet_id: int, book_id: int, patch: dict[str, Any]) -> None:
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        if not row:
+            return
+        info = _json_object(row.model_info, {})
+        info = info if isinstance(info, dict) else {}
+        info.update(patch)
+        row.model_info = json.dumps(info, ensure_ascii=False)
+        row.updated_at = datetime.now()
+        session.commit()
+
+
+def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], request_fingerprint: str, provider_record: dict[str, Any], event_trace: list[str]) -> dict[str, Any]:
+    raw_text = str(raw_response or "")
+    forensic = {
+        "schema_version": "director_llm_raw_response_forensic_v1",
+        "packet_id": str(packet_id),
+        "packet_fingerprint": packet_fingerprint_value,
+        "raw_response": raw_text,
+        "raw_response_sha256": hashlib.sha256(raw_text.encode("utf-8")).hexdigest(),
+        "raw_response_length": len(raw_text),
+        "profile_id": profile_snapshot["profile_id"],
+        "model": profile_snapshot["model"],
+        "provider_host": profile_snapshot["base_host"],
+        "provider_request_id": str(provider_record.get("provider_request_id") or ""),
+        "request_fingerprint": request_fingerprint,
+        "persisted_before_parse": True,
+        "parse_started": False,
+    }
+    try:
+        with Session() as session:
+            row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+            if not row:
+                raise RuntimeError("decision packet disappeared before forensic persistence")
+            info = _json_object(row.model_info, {})
+            info = info if isinstance(info, dict) else {}
+            info.update({"profile_preflight": profile_snapshot, "request_fingerprint": request_fingerprint, "raw_response_forensic": forensic, "provider_audit": provider_record, "event_trace": [*event_trace, "RAW_PERSIST"]})
+            row.model_info = json.dumps(info, ensure_ascii=False)
+            row.updated_at = datetime.now()
+            session.commit()
+    except Exception as exc:
+        raise RuntimeError("DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED") from exc
+    return forensic
+
+
+def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any]) -> dict[str, Any]:
+    try:
+        profile, profile_snapshot = _director_llm_profile_preflight()
+    except HTTPException as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": (exc.detail.get("code") if isinstance(exc.detail, dict) else "DIRECTOR_LLM_PROFILE_UNAVAILABLE")})
+        raise
+    system_prompt, user_prompt = _source_grounded_v3_prompt(treatment, evidence)
+    request_fp = prompt_fingerprint(system_prompt, user_prompt)
+    audit_records: list[dict[str, Any]] = []
+    try:
+        raw = llm_client.call_llm(user_prompt, system=system_prompt, model_profile=profile, retries=1, estimated_tokens=5000, audit_callback=lambda record: audit_records.append(dict(record)) if isinstance(record, dict) else None, audit_extra={"director_execution_boundary": "v3_one_call"})
+    except httpx.ReadTimeout as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_SUBMISSION_AMBIGUOUS", "transport_retry": 0})
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_SUBMISSION_AMBIGUOUS", "retry": 0}) from exc
+    except httpx.HTTPStatusError as exc:
+        status = int(getattr(getattr(exc, "response", None), "status_code", 0) or 0)
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_CALL_FAILED", "http_status": status, "transport_retry": 0})
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_CALL_FAILED", "http_status": status, "retry": 0}) from exc
+    except httpx.ConnectError as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_CALL_FAILED", "transport_retry": 0})
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_CALL_FAILED", "retry": 0}) from exc
+    except Exception as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_CALL_FAILED", "transport_retry": 0})
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_CALL_FAILED", "retry": 0, "message": str(exc)[:240]}) from exc
+
+    provider_record = audit_records[-1] if audit_records else {}
+    try:
+        forensic = _persist_v3_raw_forensic(packet_id=packet_id, book_id=book_id, packet_fingerprint_value=packet_fingerprint_value, raw_response=str(raw or ""), profile_snapshot=profile_snapshot, request_fingerprint=request_fp, provider_record=provider_record, event_trace=["TRANSPORT"])
+    except RuntimeError as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED"})
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED", "retry": 0}) from exc
+
+    try:
+        parsed = parse_json_object(str(raw or ""), label="Director V3 proposal", required_keys={"creative_projection"})
+    except Exception as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_OUTPUT_INVALID", "parse_attempts": 1, "parse_error": str(exc)[:500], "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE"]})
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_OUTPUT_INVALID", "retry": 0, "parse_attempts": 1}) from exc
+
+    try:
+        candidate = _validate_source_grounded_llm_candidate(parsed, treatment)
+        semantic_report = validate_source_grounded_contract_v2(candidate, scene=evidence["scene"], production=True)
+        if semantic_report.get("status") != "qualified":
+            raise ValueError(json.dumps(semantic_report, ensure_ascii=False))
+    except Exception as exc:
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_CREATIVE_PROPOSAL_INVALID", "validation_error": str(exc)[:1000], "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "VALIDATE"]})
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_CREATIVE_PROPOSAL_INVALID", "retry": 0}) from exc
+
+    provider = {"called": True, "calls": 1, "profile_id": profile_snapshot["profile_id"], "model": profile_snapshot["model"], "request_fingerprint": request_fp, "response_fingerprint": forensic["raw_response_sha256"]}
+    provenance = proposal_provenance("PROVIDER_PROPOSAL", provider=provider)
+    candidate["proposal_origin"] = "PROVIDER_PROPOSAL"
+    candidate["proposal_provenance"] = provenance
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
+        if not row:
+            raise HTTPException(status_code=409, detail="Treatment decision packet disappeared while the LLM was running.")
+        info = _json_object(row.model_info, {})
+        info = info if isinstance(info, dict) else {}
+        info.update({"llm_draft_in_progress": False, "proposal_provenance": provenance, "profile_preflight": profile_snapshot, "request_fingerprint": request_fp, "provider_audit": provider_record, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "VALIDATE", "PROPOSAL_PERSIST"], "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)})
+        row.proposal = json.dumps(candidate, ensure_ascii=False)
+        row.model_info = json.dumps(info, ensure_ascii=False)
+        row.status = "draft"
+        row.updated_at = datetime.now()
+        session.commit()
+        return {"packet_id": row.id, "packet_fingerprint": row.packet_fingerprint, "candidate": candidate, **project_legacy_flags(provenance), "deduplicated": False, "domain_write_performed": False, "provider": {**provider, "provider_request_id": provider_record.get("provider_request_id")}, "execution_manifest": {"system_prompt_sha256": hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(), "user_prompt_sha256": hashlib.sha256(user_prompt.encode("utf-8")).hexdigest(), "request_fingerprint": request_fp, "packet_fingerprint": packet_fingerprint_value, "source_authoring_unit_fingerprint": treatment.get("source_authoring_units_fingerprint")}}
 
 
 def _make_decision_packet(book_id: int, episode: int, treatment: dict[str, Any], evidence: dict[str, Any]) -> dict[str, Any]:
@@ -415,6 +612,12 @@ def _build_preview(book_id: int, req: DirectorTreatmentPreviewRequest) -> tuple[
         treatment["proposal_origin"] = "GENERATED_DRAFT"
         treatment["proposal_provenance"] = proposal_provenance("GENERATED_DRAFT", provider={"called": False, "calls": 0}, human_input=False)
         treatment["evidence_fingerprint"] = evidence["evidence_fingerprint"]
+        if source_grounded:
+            # V3 previews do not use the legacy shadow builder's prompt hash,
+            # but DecisionPacket still needs one stable treatment fingerprint
+            # for deduplication and the explicit human confirmation boundary.
+            treatment["source_authoring_units_fingerprint"] = treatment.get("source_authoring_units_fingerprint") or hashlib.sha256(json.dumps(treatment.get("source_constraints", {}).get("source_authoring_units", []), ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+            treatment["prompt_fingerprint"] = _candidate_fingerprint(treatment, evidence["evidence_fingerprint"])
         return treatment, evidence, script_row
 
 
@@ -614,7 +817,8 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
     if req.packet_fingerprint and req.packet_fingerprint != packet["packet_fingerprint"]:
         raise HTTPException(status_code=409, detail="Treatment evidence changed; reload the preview before calling the LLM.")
 
-    prompt = (
+    source_grounded = treatment.get("schema_version") == "director_treatment_v3"
+    prompt = "" if source_grounded else (
         "你是受证据约束的影视导演方案助手。仅输出 JSON object，不要 Markdown。\n"
         "根据以下冻结证据生成 DirectorTreatment 候选。只能改写候选字段，必须沿用已有 character id 和 beat_id；"
         "不得新增角色、道具、场景事实，不得输出镜头或执行操作。所有候选仍需人工确认。\n\n"
@@ -651,6 +855,17 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
         row.status = "draft"
         session.commit()
         packet_id = row.id
+
+        source_grounded_packet_id = packet_id if source_grounded else None
+
+    if source_grounded:
+        return _execute_source_grounded_v3_proposal(
+            book_id=book_id,
+            packet_id=source_grounded_packet_id,
+            packet_fingerprint_value=packet["packet_fingerprint"],
+            treatment=treatment,
+            evidence=evidence,
+        )
 
     audit_records: list[dict[str, Any]] = []
     try:

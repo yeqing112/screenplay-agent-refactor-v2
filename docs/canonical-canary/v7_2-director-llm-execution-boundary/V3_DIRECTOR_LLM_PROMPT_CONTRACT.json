@@ -1,0 +1,18 @@
+{
+  "contains": [
+    "SCENE_ID",
+    "IMMUTABLE_SOURCE_CONSTRAINTS",
+    "SOURCE_AUTHORING_UNITS",
+    "DECLARED_PARTICIPANTS",
+    "ADVISORY_ASSET_CONTEXT",
+    "CREATIVE_PROJECTION_SCHEMA"
+  ],
+  "no_camera_or_scene_blocking_instruction": false,
+  "old_beat_id_requirement_absent": true,
+  "source_action_count": 11,
+  "source_authoring_unit_count": 12,
+  "source_dialogue_count": 1,
+  "status": "V3_LLM_PROMPT_CONTRACT_PASS",
+  "system_prompt_sha256": "d2f37f97ec51f7ea0f86bf34442edd52e908a73aa1cfe07cc10375b1866444bf",
+  "user_prompt_sha256": "d4d0c7639888ad0cbc0cfc3822e88f4f172c81034399758d8c9d0718686ca6d5"
+}

@@ -1,0 +1,23 @@
+{
+  "forensic_failure_code": "DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED",
+  "location": "DecisionPacketRecord.model_info.raw_response_forensic",
+  "persisted_before_parse": true,
+  "raw_response_stored_exactly": true,
+  "required_fields": [
+    "packet_id",
+    "packet_fingerprint",
+    "raw_response",
+    "raw_response_sha256",
+    "raw_response_length",
+    "profile_id",
+    "model",
+    "provider_host",
+    "provider_request_id",
+    "request_fingerprint",
+    "persisted_before_parse",
+    "parse_started"
+  ],
+  "schema_version": "director_llm_raw_response_forensic_v1",
+  "secrets_persisted": false,
+  "status": "PASS"
+}

@@ -1,0 +1,9 @@
+{
+  "base_host": "https://api.xiaomimimo.com",
+  "enabled": true,
+  "key_configured": true,
+  "model": "mimo-v2.5",
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "status": "PASS"
+}

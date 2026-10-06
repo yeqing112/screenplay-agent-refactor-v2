@@ -1,0 +1,10 @@
+{
+  "legacy_call_llm_json_unchanged": true,
+  "status": "PASS",
+  "v3_fallback": 0,
+  "v3_parser_retry": 0,
+  "v3_repair_llm": 0,
+  "v3_transport_attempt_budget": 1,
+  "v3_transport_retry": 0,
+  "v3_uses_call_llm_json": false
+}

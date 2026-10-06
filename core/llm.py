@@ -407,7 +407,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                     retry_after = int(resp.headers.get("Retry-After", 2 ** (attempt + 2)))
                     logger.warning("[throttle] 429, retry after %ss", retry_after)
                     retry_extra = dict(audit_extra or {})
-                    retry_extra.update({"transport_attempt_number": attempt + 1, "transport_retry": True})
+                    retry_extra.update({"transport_attempt_number": attempt + 1, "transport_retry": attempt < attempt_budget - 1})
                     _dispatch_audit_record(_build_audit_record(
                         system=system, user=prompt,
                         vendor_model=model_name, vendor_host=base_url,
@@ -418,6 +418,8 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                         latency_ms=(time.monotonic() - request_started) * 1000,
                         provider_request_id=provider_request_id,
                     ), audit_callback)
+                    if attempt == attempt_budget - 1:
+                        resp.raise_for_status()
                     time.sleep(retry_after)
                     continue
 

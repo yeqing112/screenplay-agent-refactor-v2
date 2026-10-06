@@ -1,0 +1,7 @@
+{
+  "legacy_tests": "tests/test_director_treatment.py + tests/test_director_treatment_authority_contract.py",
+  "legacy_v1_prompt_and_call_llm_json": true,
+  "source_grounded_v3_branch": true,
+  "status": "PASS",
+  "v1_required_keys_unchanged": true
+}
