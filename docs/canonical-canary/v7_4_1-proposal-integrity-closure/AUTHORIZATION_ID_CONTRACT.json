@@ -1,0 +1,12 @@
+{
+  "aliases": [
+    "authorization_id",
+    "authorizationId"
+  ],
+  "legacy_non_source_grounded_path": "compatibility unchanged",
+  "missing_id_error": "DIRECTOR_LLM_AUTHORIZATION_ID_REQUIRED",
+  "persisted_in_attempt_ledger": true,
+  "provider_post_when_missing": 0,
+  "request_field": "authorization_id",
+  "status": "PASS"
+}

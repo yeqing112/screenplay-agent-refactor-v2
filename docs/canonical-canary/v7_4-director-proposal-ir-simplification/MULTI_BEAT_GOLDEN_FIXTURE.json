@@ -127,7 +127,7 @@
       "rhythm_strategy": {},
       "scene_exit_intent": "Leave a reviewable hook.",
       "scene_objective": "Hold the uncertainty.",
-      "status": "CONFIRMED",
+      "status": "PROPOSED",
       "visual_priority": []
     },
     "decision": "ready_for_review",

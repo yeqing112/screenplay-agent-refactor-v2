@@ -1,0 +1,10 @@
+{
+  "authorization_bound_required": true,
+  "fingerprint_unchanged": true,
+  "nested_schema_example_present": false,
+  "previous_v7_4_fingerprint": "26b0a52fd64508d33482be227459a5892039e0924ab96ec9c2eab2375ed77d93",
+  "prompt_contract": "flat field list + textual BEAT_CONTRACT + empty MINIMAL_VALID_SHAPE",
+  "provider_calls": 0,
+  "request_fingerprint": "26b0a52fd64508d33482be227459a5892039e0924ab96ec9c2eab2375ed77d93",
+  "status": "PASS"
+}

@@ -32,11 +32,37 @@ BEAT_FIELDS = {
     "performance", "transition", "hook", "character_effects",
 }
 CHARACTER_EFFECT_FIELDS = {"character_ref", "effect"}
+CHARACTER_DIRECTION_FIELDS = {"character_ref", "objective", "obstacle", "strategy", "performance_notes"}
 FORBIDDEN_FIELDS = {
     "creative_projection", "creative_beat_id", "authority", "source_constraints",
     "source_authoring_units", "scene_identity_evidence", "declared_participants",
     "proposal_origin", "proposal_provenance", "authority_envelope", "dialogue",
     "speaker", "binding", "speaker_binding",
+}
+
+BEAT_JSON_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": sorted(BEAT_FIELDS),
+    "properties": {
+        "refs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "purpose": {"type": "string"},
+        "objective": {"type": "string"},
+        "information_change": {"type": "string"},
+        "audience_effect": {"type": "string"},
+        "performance": {"type": "string"},
+        "transition": {"type": "string"},
+        "hook": {"type": "boolean"},
+        "character_effects": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": sorted(CHARACTER_EFFECT_FIELDS),
+                "properties": {"character_ref": {"type": "string"}, "effect": {"type": "string"}},
+            },
+        },
+    },
 }
 
 
@@ -51,8 +77,22 @@ DIRECTOR_PROPOSAL_IR_SCHEMA: dict[str, Any] = {
         "scene_label": {"type": "string"},
         "scene_objective": {"type": "string"},
         "dramatic_question": {"type": "string"},
-        "beats": {"type": "array", "items": {"type": "object", "additionalProperties": False}},
-        "character_directions": {"type": "array"},
+        "beats": {"type": "array", "items": BEAT_JSON_SCHEMA},
+        "character_directions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["character_ref"],
+                "properties": {
+                    "character_ref": {"type": "string"},
+                    "objective": {"type": "string"},
+                    "obstacle": {"type": "string"},
+                    "strategy": {"type": "string"},
+                    "performance_notes": {"type": "string"},
+                },
+            },
+        },
         "performance_arc": {"type": "array"},
         "information_strategy": {"type": "array"},
         "rhythm_strategy": {"type": "object"},
@@ -66,6 +106,7 @@ DIRECTOR_PROPOSAL_IR_SCHEMA: dict[str, Any] = {
     },
     "beat_fields": sorted(BEAT_FIELDS),
     "character_effect_fields": sorted(CHARACTER_EFFECT_FIELDS),
+    "character_direction_fields": sorted(CHARACTER_DIRECTION_FIELDS),
     "forbidden_fields": sorted(FORBIDDEN_FIELDS),
 }
 
@@ -214,9 +255,17 @@ def validate_director_proposal_ir(
         if not isinstance(direction, Mapping):
             errors.append({"code": "DIRECTOR_PROPOSAL_IR_PARTICIPANT_INVALID"})
             continue
+        direction_unexpected = sorted(set(direction) - CHARACTER_DIRECTION_FIELDS)
+        if direction_unexpected:
+            errors.append({"code": "DIRECTOR_PROPOSAL_IR_CHARACTER_DIRECTION_FIELD_UNEXPECTED", "fields": direction_unexpected})
         ref = _text(direction.get("character_ref"))
-        if ref and ref not in participant_set:
+        if not ref:
+            errors.append({"code": "DIRECTOR_PROPOSAL_IR_CHARACTER_DIRECTION_REF_REQUIRED"})
+        elif ref not in participant_set:
             errors.append({"code": "DIRECTOR_PROPOSAL_IR_PARTICIPANT_INVALID", "participant_ref": ref})
+        for field in set(direction) & (CHARACTER_DIRECTION_FIELDS - {"character_ref"}):
+            if not isinstance(direction.get(field), str):
+                errors.append({"code": "DIRECTOR_PROPOSAL_IR_CHARACTER_DIRECTION_FIELD_INVALID", "field": field})
 
     missing = sorted(set(by_id) - covered)
     if missing:
@@ -233,6 +282,48 @@ def validate_director_proposal_ir(
         "semantic_fields_in": semantic_fields_in,
         "forbidden_field_count": len(forbidden),
     }
+
+
+def validate_director_proposal_ir_schema(value: Any) -> dict[str, Any]:
+    """Small dependency-free JSON Schema 2020-12 subset used by the audit.
+
+    The emitted schema remains the contract of record; this evaluator handles
+    the keywords used by that schema so runtime tests can run without adding a
+    third-party dependency to the application.
+    """
+    errors: list[dict[str, Any]] = []
+
+    def check(item: Any, schema: Mapping[str, Any], path: str) -> None:
+        wanted = schema.get("type")
+        if wanted:
+            types = wanted if isinstance(wanted, list) else [wanted]
+            ok = any((kind == "object" and isinstance(item, Mapping)) or (kind == "array" and isinstance(item, list)) or (kind == "string" and isinstance(item, str)) or (kind == "boolean" and isinstance(item, bool)) or (kind == "number" and isinstance(item, (int, float)) and not isinstance(item, bool)) for kind in types)
+            if not ok:
+                errors.append({"path": path, "code": "SCHEMA_TYPE_INVALID", "expected": wanted}); return
+        if "const" in schema and item != schema["const"]:
+            errors.append({"path": path, "code": "SCHEMA_CONST_INVALID"})
+        if isinstance(item, Mapping):
+            required = schema.get("required", [])
+            for key in required:
+                if key not in item:
+                    errors.append({"path": path, "code": "SCHEMA_REQUIRED_FIELD_MISSING", "field": key})
+            properties = schema.get("properties", {})
+            if schema.get("additionalProperties") is False:
+                for key in item:
+                    if key not in properties:
+                        errors.append({"path": path, "code": "SCHEMA_ADDITIONAL_PROPERTY", "field": key})
+            for key, child in properties.items():
+                if key in item:
+                    check(item[key], child, f"{path}.{key}")
+        elif isinstance(item, list):
+            if isinstance(schema.get("minItems"), int) and len(item) < schema["minItems"]:
+                errors.append({"path": path, "code": "SCHEMA_MIN_ITEMS"})
+            if isinstance(schema.get("items"), Mapping):
+                for index, child in enumerate(item):
+                    check(child, schema["items"], f"{path}[{index}]")
+
+    check(value, DIRECTOR_PROPOSAL_IR_SCHEMA, "$")
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
 def parse_director_proposal_ir(raw: str) -> dict[str, Any]:
@@ -285,7 +376,9 @@ def compile_director_proposal_ir(
         })
     directions = copy.deepcopy(ir["character_directions"])
     projection = {
-        "status": "CONFIRMED",
+        # Compilation creates a reviewable proposal.  Confirmation is owned
+        # exclusively by the explicit production confirmation service.
+        "status": "PROPOSED",
         "authority": DIRECTOR_CREATIVE_AUTHORITY,
         "director_scene_label": ir["scene_label"],
         "director_scene_label_authority": DIRECTOR_CREATIVE_AUTHORITY,
@@ -314,7 +407,7 @@ def compile_director_proposal_ir(
         "note": ir["note"],
     }
     semantic_out = report["semantic_fields_in"]
-    candidate_report = validate_director_contract_v2(candidate, scene=source_scene, production=True)
+    candidate_report = validate_director_contract_v2(candidate, scene=source_scene, production=False)
     if candidate_report.get("status") != "qualified":
         raise DirectorProposalIRValidationError({"status": "blocked", "errors": [{"code": "DIRECTOR_PROPOSAL_IR_COMPILED_CANDIDATE_INVALID", "validation": candidate_report}]})
     candidate["proposal_ir_validation"] = report
@@ -331,7 +424,29 @@ def compile_director_proposal_ir(
     return candidate
 
 
+def creative_semantic_diff(before_candidate: Mapping[str, Any], after_candidate: Mapping[str, Any]) -> dict[str, Any]:
+    """Compare creative meaning while ignoring confirmation metadata only."""
+    ignored = {"status", "confirmation_event_ref", "proposal_origin", "proposal_provenance", "authority", "creative_beat_id"}
+
+    def strip(value: Any) -> Any:
+        if isinstance(value, Mapping):
+            return {str(k): strip(v) for k, v in value.items() if str(k) not in ignored}
+        if isinstance(value, list):
+            return [strip(item) for item in value]
+        return value
+
+    before = strip((before_candidate.get("creative_projection") if isinstance(before_candidate, Mapping) else {}) or {})
+    after = strip((after_candidate.get("creative_projection") if isinstance(after_candidate, Mapping) else {}) or {})
+    return {"creative_semantic_change_count": 0 if before == after else 1, "before_sha256": _sha256_json(before), "after_sha256": _sha256_json(after), "equal": before == after}
+
+
+def _sha256_json(value: Any) -> str:
+    import hashlib
+    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
 __all__ = [
     "DIRECTOR_PROPOSAL_IR_VERSION", "DIRECTOR_PROPOSAL_IR_SCHEMA", "DirectorProposalIRValidationError",
-    "validate_director_proposal_ir", "parse_director_proposal_ir", "compile_director_proposal_ir",
+    "validate_director_proposal_ir", "validate_director_proposal_ir_schema", "parse_director_proposal_ir", "compile_director_proposal_ir",
+    "creative_semantic_diff",
 ]

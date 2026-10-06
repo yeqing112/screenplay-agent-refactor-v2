@@ -1,7 +1,4 @@
 {
-  "compiled_candidate_invalid_simulation": {
-    "fail_closed": true
-  },
   "coverage": "12/12",
   "downstream_writes": 0,
   "event_trace": [
@@ -14,16 +11,6 @@
   ],
   "five_beat": true,
   "human_confirmation_required": true,
-  "invalid_ir_simulation": {
-    "ir_validation": "FAIL",
-    "parse": "PASS",
-    "promotion": false
-  },
-  "invalid_json_simulation": {
-    "compiler_run": false,
-    "parse": "FAIL",
-    "raw_retained": true
-  },
   "packet_proposal_status": "PROPOSED",
   "proposal_validator": {
     "covered_story_unit_count": 12,

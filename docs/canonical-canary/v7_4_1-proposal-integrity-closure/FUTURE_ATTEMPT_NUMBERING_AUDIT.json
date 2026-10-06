@@ -1,0 +1,8 @@
+{
+  "authorization_id_required": true,
+  "history_append_only": true,
+  "next_attempt_id": "attempt-3",
+  "next_attempt_number": 3,
+  "preexisting_attempt_count": 2,
+  "status": "PASS"
+}

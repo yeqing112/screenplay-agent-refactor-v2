@@ -1,0 +1,10 @@
+{
+  "duplicate_attempt_rows": 0,
+  "first_run_history_count": 2,
+  "first_run_writes": 1,
+  "payload_unchanged_on_second_run": true,
+  "second_run_duplicates": 2,
+  "second_run_history_count": 2,
+  "second_run_writes": 0,
+  "status": "PASS"
+}

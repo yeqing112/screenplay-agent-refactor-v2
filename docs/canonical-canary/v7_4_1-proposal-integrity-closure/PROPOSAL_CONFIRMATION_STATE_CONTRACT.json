@@ -1,0 +1,13 @@
+{
+  "compiler_confirmation_permission": false,
+  "confirmation_metadata": [
+    "status",
+    "confirmation_event_ref",
+    "proposal_origin",
+    "confirmation provenance"
+  ],
+  "confirmation_owner": "production_confirm_service",
+  "production_confirmation_status": "CONFIRMED",
+  "production_validator_rejects_unconfirmed_code": "DIRECTOR_CREATIVE_PROJECTION_NOT_CONFIRMED",
+  "proposal_status": "PROPOSED"
+}

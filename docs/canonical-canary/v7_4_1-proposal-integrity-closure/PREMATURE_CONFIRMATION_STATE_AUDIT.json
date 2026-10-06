@@ -1,0 +1,9 @@
+{
+  "current_candidate_decision": "ready_for_review",
+  "current_compiler_status": "PROPOSED",
+  "current_human_confirmation_required": true,
+  "finding": "compiler previously marked an unconfirmed proposal CONFIRMED; current compiler emits PROPOSED",
+  "historical_source": "git:86e88c7 core/director_proposal_ir.py line 288",
+  "historical_v7_4_compiler_status": "CONFIRMED",
+  "status": "PROPOSAL_PREMATURE_CONFIRMATION_STATE_REPRODUCED_AND_CLOSED"
+}

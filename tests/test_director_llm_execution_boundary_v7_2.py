@@ -70,7 +70,7 @@ def _run(monkeypatch, response: str):
     result = None
     error = None
     try:
-        result = api._execute_source_grounded_v3_proposal(book_id=book_id, packet_id=packet_id, packet_fingerprint_value=packet_fingerprint_value, treatment=treatment, evidence=evidence)
+        result = api._execute_source_grounded_v3_proposal(book_id=book_id, packet_id=packet_id, packet_fingerprint_value=packet_fingerprint_value, treatment=treatment, evidence=evidence, authorization_id="isolated-v7-2-authorization")
     except Exception as exc:  # test callers assert the exact HTTP detail
         error = exc
     with Session() as session:
@@ -102,7 +102,7 @@ def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projecti
     assert calls[0]["temperature"] == 0.0
     assert calls[0]["response_format"] == {"type": "json_object"}
     assert downstream == (0, 0, 0)
-    assert model_info["event_trace"] == ["TRANSPORT", "RAW_PERSIST", "PARSE", "VALIDATE", "PROPOSAL_PERSIST"]
+    assert model_info["event_trace"] == ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"]
     assert model_info["raw_response_forensic"]["persisted_before_parse"] is True
     assert len(model_info["raw_response_forensic"]["raw_response_sha256"]) == 64
     assert json.loads(packet.proposal)["proposal_origin"] == "PROVIDER_PROPOSAL"
@@ -187,7 +187,7 @@ def test_real_v3_endpoint_branch_is_proposal_only(monkeypatch):
     calls = []
     monkeypatch.setattr(api.llm_client, "_resolve_llm_profile", lambda *_args, **_kwargs: _profile())
     monkeypatch.setattr(api.llm_client, "call_llm", lambda *args, **kwargs: calls.append(kwargs) or _valid_response(treatment))
-    req = api.DirectorTreatmentLlmDraftRequest(episode=1, confirmed=True, allow_external_call=True, workflow_profile="production", packet_fingerprint=packet["packet_fingerprint"])
+    req = api.DirectorTreatmentLlmDraftRequest(episode=1, confirmed=True, allow_external_call=True, workflow_profile="production", packet_fingerprint=packet["packet_fingerprint"], authorization_id="isolated-v7-2-endpoint-authorization")
     result = api.generate_director_treatment_llm_draft(book_id, 1, req)
     assert result["domain_write_performed"] is False
     assert calls[0]["response_format"] == {"type": "json_object"}
@@ -219,7 +219,7 @@ def test_v3_transport_failures_are_single_attempt(monkeypatch, failure, expected
     with Session() as session:
         packet_fingerprint_value = session.query(DecisionPacketRecord).filter_by(id=packet_id).one().packet_fingerprint
     with pytest.raises(Exception) as exc:
-        api._execute_source_grounded_v3_proposal(book_id=book_id, packet_id=packet_id, packet_fingerprint_value=packet_fingerprint_value, treatment=treatment, evidence=evidence)
+        api._execute_source_grounded_v3_proposal(book_id=book_id, packet_id=packet_id, packet_fingerprint_value=packet_fingerprint_value, treatment=treatment, evidence=evidence, authorization_id="isolated-v7-2-transport-authorization")
     assert exc.value.detail["code"] == expected
 
 

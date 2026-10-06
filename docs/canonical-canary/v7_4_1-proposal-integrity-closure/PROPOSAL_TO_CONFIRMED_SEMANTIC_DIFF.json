@@ -1,0 +1,12 @@
+{
+  "after_status": "CONFIRMED",
+  "before_status": "PROPOSED",
+  "confirmation_event_ref": "production_confirm_service",
+  "diff": {
+    "after_sha256": "482aa556d5e4f4c005b23ff4447fdfe7704aa65075e36d022e245948d4b4b323",
+    "before_sha256": "482aa556d5e4f4c005b23ff4447fdfe7704aa65075e36d022e245948d4b4b323",
+    "creative_semantic_change_count": 0,
+    "equal": true
+  },
+  "status": "PASS"
+}

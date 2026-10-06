@@ -1,0 +1,219 @@
+{
+  "all_invalid_rejected_by_both": true,
+  "invalid_fixtures": [
+    {
+      "name": "extra_top_level",
+      "runtime": {
+        "covered_source_unit_count": 12,
+        "creative_beat_count": 5,
+        "errors": [
+          {
+            "code": "DIRECTOR_PROPOSAL_IR_FIELD_UNEXPECTED",
+            "fields": [
+              "extra_top"
+            ]
+          }
+        ],
+        "forbidden_field_count": 0,
+        "passthrough_count": 0,
+        "semantic_fields_in": 35,
+        "source_unit_count": 12,
+        "status": "blocked",
+        "version": "director_proposal_ir_v1",
+        "warnings": []
+      },
+      "schema": {
+        "errors": [
+          {
+            "code": "SCHEMA_ADDITIONAL_PROPERTY",
+            "field": "extra_top",
+            "path": "$"
+          }
+        ],
+        "status": "FAIL"
+      }
+    },
+    {
+      "name": "extra_beat_field",
+      "runtime": {
+        "covered_source_unit_count": 12,
+        "creative_beat_count": 5,
+        "errors": [
+          {
+            "code": "DIRECTOR_PROPOSAL_IR_BEAT_FIELD_UNEXPECTED",
+            "fields": [
+              "extra_beat"
+            ],
+            "ordinal": 1
+          }
+        ],
+        "forbidden_field_count": 0,
+        "passthrough_count": 0,
+        "semantic_fields_in": 35,
+        "source_unit_count": 12,
+        "status": "blocked",
+        "version": "director_proposal_ir_v1",
+        "warnings": []
+      },
+      "schema": {
+        "errors": [
+          {
+            "code": "SCHEMA_ADDITIONAL_PROPERTY",
+            "field": "extra_beat",
+            "path": "$.beats[0]"
+          }
+        ],
+        "status": "FAIL"
+      }
+    },
+    {
+      "name": "missing_beat_field",
+      "runtime": {
+        "covered_source_unit_count": 12,
+        "creative_beat_count": 5,
+        "errors": [
+          {
+            "code": "DIRECTOR_PROPOSAL_IR_BEAT_FIELD_REQUIRED",
+            "field": "objective",
+            "ordinal": 1
+          }
+        ],
+        "forbidden_field_count": 0,
+        "passthrough_count": 0,
+        "semantic_fields_in": 34,
+        "source_unit_count": 12,
+        "status": "blocked",
+        "version": "director_proposal_ir_v1",
+        "warnings": []
+      },
+      "schema": {
+        "errors": [
+          {
+            "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+            "field": "objective",
+            "path": "$.beats[0]"
+          }
+        ],
+        "status": "FAIL"
+      }
+    },
+    {
+      "name": "invalid_hook_type",
+      "runtime": {
+        "covered_source_unit_count": 12,
+        "creative_beat_count": 5,
+        "errors": [
+          {
+            "code": "DIRECTOR_PROPOSAL_IR_BEAT_FIELD_REQUIRED",
+            "field": "hook",
+            "ordinal": 1
+          }
+        ],
+        "forbidden_field_count": 0,
+        "passthrough_count": 0,
+        "semantic_fields_in": 34,
+        "source_unit_count": 12,
+        "status": "blocked",
+        "version": "director_proposal_ir_v1",
+        "warnings": []
+      },
+      "schema": {
+        "errors": [
+          {
+            "code": "SCHEMA_TYPE_INVALID",
+            "expected": "boolean",
+            "path": "$.beats[0].hook"
+          }
+        ],
+        "status": "FAIL"
+      }
+    },
+    {
+      "name": "invalid_refs_type",
+      "runtime": {
+        "covered_source_unit_count": 9,
+        "creative_beat_count": 5,
+        "errors": [
+          {
+            "code": "DIRECTOR_PROPOSAL_IR_BEAT_REFS_REQUIRED",
+            "ordinal": 1
+          },
+          {
+            "code": "DIRECTOR_PROPOSAL_IR_SOURCE_COVERAGE_INCOMPLETE",
+            "missing_unit_refs": [
+              "SAU_E01_SC001_001",
+              "SAU_E01_SC001_002",
+              "SAU_E01_SC001_003"
+            ]
+          }
+        ],
+        "forbidden_field_count": 0,
+        "passthrough_count": 0,
+        "semantic_fields_in": 35,
+        "source_unit_count": 12,
+        "status": "blocked",
+        "version": "director_proposal_ir_v1",
+        "warnings": []
+      },
+      "schema": {
+        "errors": [
+          {
+            "code": "SCHEMA_TYPE_INVALID",
+            "expected": "array",
+            "path": "$.beats[0].refs"
+          }
+        ],
+        "status": "FAIL"
+      }
+    },
+    {
+      "name": "invalid_character_effect",
+      "runtime": {
+        "covered_source_unit_count": 12,
+        "creative_beat_count": 5,
+        "errors": [
+          {
+            "code": "DIRECTOR_PROPOSAL_IR_CHARACTER_EFFECT_INVALID",
+            "ordinal": 1
+          }
+        ],
+        "forbidden_field_count": 0,
+        "passthrough_count": 0,
+        "semantic_fields_in": 35,
+        "source_unit_count": 12,
+        "status": "blocked",
+        "version": "director_proposal_ir_v1",
+        "warnings": []
+      },
+      "schema": {
+        "errors": [
+          {
+            "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+            "field": "effect",
+            "path": "$.beats[0].character_effects[0]"
+          }
+        ],
+        "status": "FAIL"
+      }
+    }
+  ],
+  "status": "PASS",
+  "valid": {
+    "runtime": {
+      "covered_source_unit_count": 12,
+      "creative_beat_count": 5,
+      "errors": [],
+      "forbidden_field_count": 0,
+      "passthrough_count": 0,
+      "semantic_fields_in": 35,
+      "source_unit_count": 12,
+      "status": "qualified",
+      "version": "director_proposal_ir_v1",
+      "warnings": []
+    },
+    "schema": {
+      "errors": [],
+      "status": "PASS"
+    }
+  }
+}

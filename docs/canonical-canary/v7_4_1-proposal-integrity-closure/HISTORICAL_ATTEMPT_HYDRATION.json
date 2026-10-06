@@ -1,0 +1,55 @@
+{
+  "canonical_attempts": [
+    {
+      "attempt_id": "v7_3_attempt_1",
+      "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "status": "PARSE_FAILED"
+    },
+    {
+      "attempt_id": "v7_3_attempt_2",
+      "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+      "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+      "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+      "status": "PARSE_FAILED"
+    }
+  ],
+  "first_run": {
+    "changed": true,
+    "duplicates": 0,
+    "history_row_count": 2,
+    "writes": 1
+  },
+  "post_state": {
+    "attempts": [
+      {
+        "attempt_id": "v7_3_attempt_1",
+        "authorization_id": "v7_3-real-director-creative-proposal-authorization-1",
+        "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+        "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+        "status": "PARSE_FAILED"
+      },
+      {
+        "attempt_id": "v7_3_attempt_2",
+        "authorization_id": "v7_3-real-director-creative-proposal-retry-json-mode-authorization-2",
+        "raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+        "request_fingerprint": "f241d63965020afab0e9e8fc92f0c7ec05f22761e9f75214102f02a0f22c0e8c",
+        "status": "PARSE_FAILED"
+      }
+    ],
+    "history_row_count": 2,
+    "idempotent_second_run": {
+      "duplicates": 2,
+      "same_payload": true,
+      "writes": 0
+    },
+    "latest_raw_response_forensic_present": true,
+    "latest_raw_response_sha256": "9a4792265b52e9f42c91c925f296d3ef110649c4318edf614ff7f439ef6b3566",
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "packet_id": 64,
+    "proposal_sha256": "2207201bd6bef70c12df0059e883af91993475f914fe17cdd4f495fdab4b2c77",
+    "status": "draft"
+  },
+  "status": "DIRECTOR_FORENSIC_HISTORY_HYDRATED"
+}

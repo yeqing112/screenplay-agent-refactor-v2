@@ -44,6 +44,7 @@ from core.director_proposal_ir import (
     compile_director_proposal_ir,
     parse_director_proposal_ir,
 )
+from core.director_forensic import append_director_attempt
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
 
 
@@ -65,6 +66,7 @@ class DirectorTreatmentLlmDraftRequest(DirectorTreatmentPreviewRequest):
     packet_fingerprint: str = Field(default="", validation_alias=AliasChoices("packet_fingerprint", "packetFingerprint"))
     confirmed: bool = False
     allow_external_call: bool = Field(default=False, validation_alias=AliasChoices("allow_external_call", "allowExternalCall"))
+    authorization_id: str = Field(default="", validation_alias=AliasChoices("authorization_id", "authorizationId"))
 
 
 class DirectorTreatmentConfirmRequest(BaseModel):
@@ -243,7 +245,9 @@ def _set_latest_director_attempt_status(packet_id: int, book_id: int, status: st
         session.commit()
 
 
-def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], request_fingerprint: str, provider_record: dict[str, Any], event_trace: list[str]) -> dict[str, Any]:
+def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint_value: str, raw_response: str, profile_snapshot: dict[str, Any], request_fingerprint: str, provider_record: dict[str, Any], event_trace: list[str], authorization_id: str = "") -> dict[str, Any]:
+    if not str(authorization_id or "").strip():
+        raise ValueError("DIRECTOR_LLM_AUTHORIZATION_ID_REQUIRED")
     raw_text = str(raw_response or "")
     forensic = {
         "schema_version": "director_llm_raw_response_forensic_v1",
@@ -267,15 +271,8 @@ def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint
                 raise RuntimeError("decision packet disappeared before forensic persistence")
             info = _json_object(row.model_info, {})
             info = info if isinstance(info, dict) else {}
-            history = list(info.get("director_llm_attempts") or []) if isinstance(info.get("director_llm_attempts"), list) else []
-            attempt_id = f"attempt-{len(history) + 1}"
-            history.append({
-                "attempt_id": attempt_id,
-                "request_fingerprint": request_fingerprint,
-                "raw_response_sha256": forensic["raw_response_sha256"],
-                "status": "RAW_PERSISTED",
-            })
-            info.update({"profile_preflight": profile_snapshot, "request_fingerprint": request_fingerprint, "raw_response_forensic": forensic, "provider_audit": provider_record, "director_llm_attempts": history, "event_trace": [*event_trace, "RAW_PERSIST"]})
+            info = append_director_attempt(info, request_fingerprint=request_fingerprint, raw_response_sha256=forensic["raw_response_sha256"], authorization_id=authorization_id)
+            info.update({"profile_preflight": profile_snapshot, "request_fingerprint": request_fingerprint, "raw_response_forensic": forensic, "provider_audit": provider_record, "event_trace": [*event_trace, "RAW_PERSIST"]})
             row.model_info = json.dumps(info, ensure_ascii=False)
             row.updated_at = datetime.now()
             session.commit()
@@ -284,7 +281,10 @@ def _persist_v3_raw_forensic(*, packet_id: int, book_id: int, packet_fingerprint
     return forensic
 
 
-def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any]) -> dict[str, Any]:
+def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any], authorization_id: str = "") -> dict[str, Any]:
+    authorization_id = str(authorization_id or "").strip()
+    if not authorization_id:
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_LLM_AUTHORIZATION_ID_REQUIRED", "message": "Source-grounded Director LLM execution requires an explicit authorization_id."})
     try:
         profile, profile_snapshot = _director_llm_profile_preflight()
     except HTTPException as exc:
@@ -321,7 +321,7 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
 
     provider_record = audit_records[-1] if audit_records else {}
     try:
-        forensic = _persist_v3_raw_forensic(packet_id=packet_id, book_id=book_id, packet_fingerprint_value=packet_fingerprint_value, raw_response=str(raw or ""), profile_snapshot=profile_snapshot, request_fingerprint=request_fp, provider_record=provider_record, event_trace=["TRANSPORT"])
+        forensic = _persist_v3_raw_forensic(packet_id=packet_id, book_id=book_id, packet_fingerprint_value=packet_fingerprint_value, raw_response=str(raw or ""), profile_snapshot=profile_snapshot, request_fingerprint=request_fp, provider_record=provider_record, event_trace=["TRANSPORT"], authorization_id=authorization_id)
     except RuntimeError as exc:
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED"})
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_FORENSIC_PERSISTENCE_FAILED", "retry": 0}) from exc
@@ -357,7 +357,7 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
             raise HTTPException(status_code=409, detail="Treatment decision packet disappeared while the LLM was running.")
         info = _json_object(row.model_info, {})
         info = info if isinstance(info, dict) else {}
-        info.update({"llm_draft_in_progress": False, "proposal_provenance": provenance, "profile_preflight": profile_snapshot, "request_fingerprint": request_fp, "provider_audit": provider_record, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "VALIDATE", "PROPOSAL_PERSIST"], "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)})
+        info.update({"llm_draft_in_progress": False, "proposal_provenance": provenance, "profile_preflight": profile_snapshot, "request_fingerprint": request_fp, "provider_audit": provider_record, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_VALIDATE", "COMPILE", "PROPOSAL_PERSIST"], "generated_at": datetime.now().isoformat(), **project_legacy_flags(provenance)})
         row.proposal = json.dumps(candidate, ensure_ascii=False)
         row.model_info = json.dumps(info, ensure_ascii=False)
         row.status = "draft"
@@ -819,6 +819,8 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
         raise HTTPException(status_code=409, detail="Calling the Treatment LLM requires confirmed=true and allowExternalCall=true.")
     req.episode = episode
     treatment, evidence, _ = _build_preview(book_id, req)
+    if treatment.get("schema_version") == "director_treatment_v3" and not str(req.authorization_id or "").strip():
+        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_LLM_AUTHORIZATION_ID_REQUIRED", "message": "Source-grounded Director LLM execution requires an explicit authorization_id."})
     packet = _make_decision_packet(book_id, episode, treatment, evidence)
     if req.packet_fingerprint and req.packet_fingerprint != packet["packet_fingerprint"]:
         raise HTTPException(status_code=409, detail="Treatment evidence changed; reload the preview before calling the LLM.")
@@ -871,6 +873,7 @@ def generate_director_treatment_llm_draft(book_id: int, episode: int, req: Direc
             packet_fingerprint_value=packet["packet_fingerprint"],
             treatment=treatment,
             evidence=evidence,
+            authorization_id=req.authorization_id,
         )
 
     audit_records: list[dict[str, Any]] = []
@@ -1117,6 +1120,10 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
             candidate["proposal_origin"] = provenance["proposal_origin"]
             candidate["proposal_provenance"] = provenance
             creative = candidate.get("creative_projection") if isinstance(candidate.get("creative_projection"), dict) else {}
+            # Only this explicit confirmation service may cross the proposal
+            # state boundary.  The compiler always emits PROPOSED.
+            creative["status"] = "CONFIRMED"
+            creative["confirmation_event_ref"] = "production_confirm_service"
             for creative_beat in creative.get("creative_beats", []) if isinstance(creative.get("creative_beats"), list) else []:
                 if isinstance(creative_beat, dict):
                     creative_beat["proposal_origin"] = provenance["proposal_origin"]

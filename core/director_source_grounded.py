@@ -244,6 +244,11 @@ def validate_director_contract_v2(candidate: dict[str, Any], *, scene: Mapping[s
     expected_units = project_source_authoring_units(scene)
     expected_by_id = {str(unit["unit_id"]): unit for unit in expected_units}
     constraints, projection = _candidate_projection(candidate)
+    projection_status = _text(projection.get("status"))
+    if production and projection_status != "CONFIRMED":
+        errors.append({"code": "DIRECTOR_CREATIVE_PROJECTION_NOT_CONFIRMED", "status": projection_status or None})
+    elif not production and projection_status not in {"PROPOSED", "CONFIRMED", "AUTHORING_REQUIRED", ""}:
+        errors.append({"code": "DIRECTOR_CREATIVE_PROJECTION_STATUS_INVALID", "status": projection_status})
     if _text(constraints.get("scene_id")) != _text(scene.get("scene_id")):
         errors.append({"code": "DIRECTOR_SOURCE_SCENE_ID_INVALID"})
     if _text(candidate.get("scene_name")) or _text(constraints.get("scene_name")):
@@ -284,8 +289,14 @@ def validate_director_contract_v2(candidate: dict[str, Any], *, scene: Mapping[s
         if not isinstance(direction, Mapping):
             errors.append({"code": "DIRECTOR_PARTICIPANT_REF_INVALID"})
             continue
+        allowed_direction_fields = {"character_ref", "objective", "obstacle", "strategy", "performance_notes"}
+        unexpected_direction_fields = sorted(set(direction) - allowed_direction_fields)
+        if unexpected_direction_fields:
+            errors.append({"code": "DIRECTOR_CHARACTER_DIRECTION_FIELD_INVALID", "fields": unexpected_direction_fields})
         ref = _text(direction.get("character_ref") or direction.get("character") or direction.get("name"))
-        if ref and ref not in declared:
+        if not ref:
+            errors.append({"code": "DIRECTOR_PARTICIPANT_REF_INVALID"})
+        elif ref not in declared:
             errors.append({"code": "DIRECTOR_PARTICIPANT_REF_INVALID", "participant_ref": ref})
 
     creative_beats = projection.get("creative_beats")
