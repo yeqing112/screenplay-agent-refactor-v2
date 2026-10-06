@@ -1,0 +1,17 @@
+{
+  "event_trace": [
+    "TRANSPORT",
+    "RAW_PERSIST",
+    "FINISH_REASON_GATE",
+    "PARSE",
+    "STAGE_A_SCHEMA_VALIDATE",
+    "STAGE_A_RUNTIME_VALIDATE",
+    "STAGE_A_PERSIST"
+  ],
+  "raw_before_parse": true,
+  "finish_reason_length": "DIRECTOR_BEAT_PLAN_OUTPUT_TRUNCATED_BY_LENGTH",
+  "finish_reason_unavailable": "FINISH_REASON_UNAVAILABLE",
+  "parse_retries": 0,
+  "repair": 0,
+  "fallback": 0
+}

@@ -229,7 +229,7 @@ def test_v3_candidate_does_not_need_to_echo_source_constraints(monkeypatch):
     assert result["candidate"]["source_constraints"]
 
 
-def test_real_v3_endpoint_branch_is_proposal_only(monkeypatch):
+def test_real_v3_endpoint_branch_is_fail_closed_until_progressive_stage_a(monkeypatch):
     init_db()
     with Session() as session:
         book = Book(title="V7.2 endpoint", filename=f"endpoint-{uuid.uuid4().hex}", status="imported")
@@ -245,11 +245,10 @@ def test_real_v3_endpoint_branch_is_proposal_only(monkeypatch):
     monkeypatch.setattr(api.llm_client, "_resolve_llm_profile", lambda *_args, **_kwargs: _profile())
     monkeypatch.setattr(api.llm_client, "call_llm", lambda *args, **kwargs: calls.append(kwargs) or _valid_response(treatment))
     req = api.DirectorTreatmentLlmDraftRequest(episode=1, scene_id="E01_SC001", confirmed=True, allow_external_call=True, workflow_profile="production", packet_fingerprint=packet["packet_fingerprint"], authorization_id="isolated-v7-2-endpoint-authorization")
-    result = api.generate_director_treatment_llm_draft(book_id, 1, req)
-    assert result["domain_write_performed"] is False
-    assert calls[0]["response_format"] == {"type": "json_object"}
-    assert calls[0]["temperature"] == 0.0
-    assert calls[0]["retries"] == 1
+    with pytest.raises(HTTPException) as exc:
+        api.generate_director_treatment_llm_draft(book_id, 1, req)
+    assert exc.value.detail["code"] == "DIRECTOR_PROGRESSIVE_AUTHORING_REQUIRED"
+    assert calls == []
     with Session() as session:
         assert session.query(DirectorTreatment).filter_by(book_id=book_id).count() == 0
         assert session.query(DirectorTreatmentAuthority).filter_by(book_id=book_id).count() == 0

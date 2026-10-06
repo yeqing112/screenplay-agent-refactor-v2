@@ -13,6 +13,8 @@ def append_director_attempt(
     authorization_id: str,
     status: str = "RAW_PERSISTED",
     authoring_stage: str | None = None,
+    prompt_fingerprint: str | None = None,
+    provider_request_fingerprint_v2: str | None = None,
 ) -> dict[str, Any]:
     """Return updated model info without dropping prior attempts."""
     result = copy.deepcopy(dict(info or {}))
@@ -28,6 +30,10 @@ def append_director_attempt(
     }
     if authoring_stage:
         attempt["authoring_stage"] = str(authoring_stage)
+    if prompt_fingerprint:
+        attempt["prompt_fingerprint"] = str(prompt_fingerprint)
+    if provider_request_fingerprint_v2:
+        attempt["provider_request_fingerprint_v2"] = str(provider_request_fingerprint_v2)
     history.append(attempt)
     result["director_llm_attempts"] = history
     return result

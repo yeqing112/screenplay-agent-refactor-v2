@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "path": "DecisionPacketRecord.model_info.progressive_director_authoring.stage_a",
+  "proposal": "{\"decision\":\"awaiting_llm\"}",
+  "confirm_allowed": false,
+  "stage_b_auto_call": false,
+  "writes": [
+    "model_info only"
+  ]
+}

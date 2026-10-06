@@ -1,0 +1,12 @@
+{
+  "future_attempt": "attempt-5",
+  "authoring_stage": "BEAT_PLAN",
+  "fields": [
+    "prompt_fingerprint",
+    "provider_request_fingerprint_v2",
+    "raw_response_sha256",
+    "finish_reason",
+    "status"
+  ],
+  "historical_attempts_1_to_4_immutable": true
+}

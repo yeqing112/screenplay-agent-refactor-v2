@@ -1,0 +1,20 @@
+{
+  "status": "DIRECTOR_BEAT_PLAN_SOURCE_COVERAGE_INCOMPLETE",
+  "runtime": {
+    "status": "blocked",
+    "errors": [
+      {
+        "code": "DIRECTOR_BEAT_PLAN_SOURCE_COVERAGE_INCOMPLETE",
+        "missing_unit_refs": [
+          "SAU_E01_SC001_012"
+        ]
+      }
+    ],
+    "version": "director_beat_plan_ir_v1",
+    "source_unit_count": 12,
+    "covered_source_unit_count": 11,
+    "creative_beat_count": 6,
+    "local_creative_completion_count": 0
+  },
+  "stage_a_persisted": false
+}

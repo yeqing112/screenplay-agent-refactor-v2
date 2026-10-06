@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "production_schema": "director_treatment_v3",
+  "old_endpoint_result": "DIRECTOR_PROGRESSIVE_AUTHORING_REQUIRED",
+  "provider_calls": 0,
+  "legacy_authored_path": "compatible"
+}

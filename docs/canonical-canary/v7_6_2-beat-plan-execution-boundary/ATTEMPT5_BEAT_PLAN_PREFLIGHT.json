@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "stage": "BEAT_PLAN",
+  "schema_version": "director_beat_plan_ir_v1",
+  "scene_id": "E01_SC001",
+  "book_id": 990453,
+  "episode": 1,
+  "script_id": 64,
+  "fact_snapshot_id": 49,
+  "script_ir_version_id": 52,
+  "decision_packet_id": 64,
+  "attempt_history_count": 4,
+  "expected_attempt": "attempt-5",
+  "system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
+  "user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
+  "prompt_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+  "provider_request_fingerprint_v2": "d56b76506818878f29a2677c3652e566fe905e489a6eb6a263b578df3e1cef4e",
+  "source_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "profile": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true
+  },
+  "generation_policy": {
+    "max_tokens": 8192,
+    "temperature": 0.0,
+    "response_format": {
+      "type": "json_object"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "authorization": "REQUIRED_NOT_GRANTED",
+  "provider_calls": 0,
+  "packet_id": 64,
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "source_unit_count": 12
+}

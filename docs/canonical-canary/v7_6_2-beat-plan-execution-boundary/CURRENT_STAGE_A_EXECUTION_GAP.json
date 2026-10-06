@@ -1,0 +1,6 @@
+{
+  "status": "STAGE_A_SCHEMA_READY_BUT_PROVIDER_BOUNDARY_MISSING",
+  "historical_endpoint": "/api/books/{book_id}/episodes/{episode}/director-treatment/llm-draft",
+  "historical_path": "_execute_source_grounded_v3_proposal -> director_proposal_ir_v1",
+  "new_boundary": "director_beat_plan_provider_request_v1"
+}

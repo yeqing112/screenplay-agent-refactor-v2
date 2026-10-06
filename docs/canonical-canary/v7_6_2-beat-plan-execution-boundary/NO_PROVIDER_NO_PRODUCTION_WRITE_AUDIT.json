@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "phase_provider_calls": 0,
+  "external_llm_calls": 0,
+  "director_llm_calls": 0,
+  "image_calls": 0,
+  "video_calls": 0,
+  "shapi_calls": 0,
+  "poyo_calls": 0,
+  "75api_calls": 0,
+  "production_writes": 0,
+  "target_scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "target_packet_id": 64,
+  "target_packet_proposal": "{\"decision\":\"awaiting_llm\"}",
+  "attempt_history_count": 4
+}

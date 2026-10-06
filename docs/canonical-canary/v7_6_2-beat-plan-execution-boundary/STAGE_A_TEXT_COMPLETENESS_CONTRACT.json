@@ -1,0 +1,26 @@
+{
+  "validator": "validate_director_beat_plan_text_completeness",
+  "required_fields": [
+    "scene_objective",
+    "dramatic_question",
+    "beats[].purpose",
+    "beats[].objective",
+    "beats[].information_change"
+  ],
+  "placeholder_markers": [
+    "placeholder",
+    "TBD",
+    "TODO",
+    "N/A",
+    "待补",
+    "未完成"
+  ],
+  "sentence_endings": [
+    "。",
+    "！",
+    "？",
+    "?",
+    "!"
+  ],
+  "local_completion": 0
+}

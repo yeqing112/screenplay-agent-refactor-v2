@@ -1,0 +1,18 @@
+{
+  "method": "POST",
+  "path": "/api/books/{book_id}/episodes/{episode}/director-treatment/beat-plan/llm-draft",
+  "required": [
+    "episode",
+    "scene_id",
+    "workflow_profile",
+    "packet_fingerprint",
+    "confirmed",
+    "allowExternalCall",
+    "authorization_id"
+  ],
+  "gates": {
+    "scene_id": "SCENE_ID_REQUIRED",
+    "authorization": "DIRECTOR_BEAT_PLAN_AUTHORIZATION_ID_REQUIRED"
+  },
+  "next_state": "DIRECTOR_CREATIVE_ENRICHMENT_AUTHORIZATION_REQUIRED"
+}

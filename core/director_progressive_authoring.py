@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import copy
 import json
+import re
 from typing import Any, Mapping
 
 from core.director_source_grounded import DIRECTOR_CREATIVE_AUTHORITY
@@ -16,6 +17,14 @@ from core.director_source_grounded import DIRECTOR_CREATIVE_AUTHORITY
 
 DIRECTOR_BEAT_PLAN_IR_VERSION = "director_beat_plan_ir_v1"
 DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION = "director_creative_enrichment_ir_v1"
+DIRECTOR_BEAT_PLAN_IR_V1_SYSTEM_PROMPT = (
+    "你是受来源约束的导演结构规划助手。只输出 director_beat_plan_ir_v1 JSON。"
+    "只负责把不可变来源单元分组为戏剧 beats，并填写场景目标、戏剧问题、目的、导演目标和信息变化。"
+    "不得改写或输出对白、speaker、binding、source_constraints、authority、creative_beat_id、"
+    "performance、audience_effect、transition、character_effects、character_directions、"
+    "performance_arc、information_strategy、rhythm_strategy、visual_priority、scene_exit_intent、"
+    "prohibited_interpretations。所有创意文本必须是完整中文句子并以。！？?!之一结束；dramatic_question 必须以疑问标点结束。"
+)
 
 STAGE_A_BEAT_FIELDS = {"refs", "purpose", "objective", "information_change", "hook"}
 STAGE_A_TOP_LEVEL_FIELDS = {
@@ -128,6 +137,48 @@ def _schema_check(value: Any, schema: Mapping[str, Any], path: str = "$", errors
 def validate_director_beat_plan_ir_schema(value: Any) -> dict[str, Any]:
     errors = _schema_check(value, DIRECTOR_BEAT_PLAN_IR_SCHEMA)
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "version": DIRECTOR_BEAT_PLAN_IR_VERSION}
+
+
+def parse_director_beat_plan_ir(raw: str) -> dict[str, Any]:
+    """Parse Stage A once with no extraction or repair heuristics."""
+    text = str(raw or "").strip()
+    if not text:
+        raise ValueError("Director BeatPlan IR is empty")
+    try:
+        payload = json.loads(text)
+    except (TypeError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Failed to parse Director BeatPlan IR: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("Director BeatPlan IR is not a JSON object")
+    if payload.get("version") != DIRECTOR_BEAT_PLAN_IR_VERSION:
+        raise ValueError("Director BeatPlan IR has an invalid version")
+    return payload
+
+
+_INCOMPLETE_TEXT_MARKERS = ("placeholder", "tbd", "todo", "n/a", "待补", "未完成")
+
+
+def validate_director_beat_plan_text_completeness(value: Any) -> dict[str, Any]:
+    """Reject empty, placeholder, or fragmentary Stage A creative text."""
+    errors: list[dict[str, Any]] = []
+    if not isinstance(value, Mapping):
+        return {"status": "FAIL", "errors": [{"code": "DIRECTOR_BEAT_PLAN_TEXT_INCOMPLETE", "path": "$"}]}
+    required = [("scene_objective", value.get("scene_objective")), ("dramatic_question", value.get("dramatic_question"))]
+    for index, beat in enumerate(value.get("beats", []) if isinstance(value.get("beats"), list) else []):
+        if isinstance(beat, Mapping):
+            for field in ("purpose", "objective", "information_change"):
+                required.append((f"beats[{index}].{field}", beat.get(field)))
+    for path, raw in required:
+        text = _text(raw)
+        lower = text.lower()
+        if not text or any(marker in lower for marker in _INCOMPLETE_TEXT_MARKERS):
+            errors.append({"code": "DIRECTOR_BEAT_PLAN_TEXT_INCOMPLETE", "path": path, "reason": "empty_or_placeholder"})
+            continue
+        if not re.search(r"[。！？?!]$", text):
+            errors.append({"code": "DIRECTOR_BEAT_PLAN_TEXT_INCOMPLETE", "path": path, "reason": "sentence_punctuation_required"})
+        if path == "dramatic_question" and not re.search(r"[？?!]$", text):
+            errors.append({"code": "DIRECTOR_BEAT_PLAN_TEXT_INCOMPLETE", "path": path, "reason": "question_punctuation_required"})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
 def validate_director_creative_enrichment_ir_schema(value: Any) -> dict[str, Any]:
@@ -297,24 +348,42 @@ def compile_progressive_director_proposal(*, beat_plan_ir: Mapping[str, Any], en
     }
 
 
-def build_stage_a_persistence_patch(*, ir: Mapping[str, Any], fingerprint: str, authorization_id: str, attempt_id: str) -> dict[str, Any]:
+def build_stage_a_persistence_patch(*, ir: Mapping[str, Any], fingerprint: str, authorization_id: str, attempt_id: str, materialized_beat_plan: Mapping[str, Any] | None = None, materialized_fingerprint: str = "", provider_provenance: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Return model_info-only state; never replaces DecisionPacket.proposal."""
 
-    return {"progressive_director_authoring": {"stage_a": {"status": "VALIDATED", "ir": copy.deepcopy(dict(ir)), "fingerprint": str(fingerprint), "authorization_id": str(authorization_id), "attempt_id": str(attempt_id), "authoring_stage": "BEAT_PLAN"}}}
+    stage = {"status": "VALIDATED", "ir": copy.deepcopy(dict(ir)), "fingerprint": str(fingerprint), "ir_fingerprint": str(fingerprint), "authorization_id": str(authorization_id), "attempt_id": str(attempt_id), "authoring_stage": "BEAT_PLAN"}
+    if materialized_beat_plan is not None:
+        stage["materialized_beat_plan"] = copy.deepcopy(dict(materialized_beat_plan))
+    if materialized_fingerprint:
+        stage["materialized_fingerprint"] = str(materialized_fingerprint)
+    if provider_provenance is not None:
+        stage["provider_provenance"] = copy.deepcopy(dict(provider_provenance))
+    return {"progressive_director_authoring": {"stage_a": stage}}
 
 
-def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping[str, Any]], declared_participants: list[Any] | None = None) -> tuple[str, str]:
+def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping[str, Any]], declared_participants: list[Any] | None = None, explicit_story_constraints: list[Any] | None = None, unknown_source_facts: list[Any] | None = None) -> tuple[str, str]:
     """Build the small Stage A prompt without any Stage B output burden."""
 
-    system = "你是受来源约束的导演结构规划助手。只输出 director_beat_plan_ir_v1 JSON，不输出表演、镜头或人物表演语义。"
+    system = DIRECTOR_BEAT_PLAN_IR_V1_SYSTEM_PROMPT
+    minimized_units = []
+    for item in source_units:
+        if not isinstance(item, Mapping):
+            continue
+        unit = {"unit_id": _text(item.get("unit_id") or item.get("source_ref")), "source_type": _text(item.get("source_type")), "source_order": item.get("source_order"), "text": _text(item.get("text"))}
+        if _text(item.get("source_type")).upper() in {"SOURCE_DIALOGUE", "DIALOGUE"} and _text(item.get("speaker")):
+            unit["speaker"] = _text(item.get("speaker"))
+        minimized_units.append(unit)
     user = (
         "DIRECTOR_BEAT_PLAN_IR_V1\n"
         f"SCENE_ID={json.dumps(scene_id, ensure_ascii=False)}\n"
-        f"SOURCE_AUTHORING_UNITS={json.dumps(source_units, ensure_ascii=False, sort_keys=True)}\n"
+        f"SOURCE_AUTHORING_UNITS={json.dumps(minimized_units, ensure_ascii=False, sort_keys=True)}\n"
         f"DECLARED_PARTICIPANTS={json.dumps(declared_participants or [], ensure_ascii=False, sort_keys=True)}\n"
+        f"EXPLICIT_STORY_CONSTRAINTS={json.dumps(explicit_story_constraints or [], ensure_ascii=False, sort_keys=True)}\n"
+        f"UNKNOWN_SOURCE_FACTS={json.dumps(unknown_source_facts or [], ensure_ascii=False, sort_keys=True)}\n"
         "REQUIRED_TOP_LEVEL_FIELDS=version,scene_label,scene_objective,dramatic_question,beats,passthrough_refs,unknowns,confidence,note\n"
         "REQUIRED_BEAT_FIELDS=refs,purpose,objective,information_change,hook\n"
-        "禁止省略字段、增加字段、补写来源事实；所有 SAU 必须恰好出现在 beats[].refs 或 passthrough_refs。"
+        "BEAT_PLAN_CONTRACT=只允许上述字段；每个 purpose/objective/information_change 和 scene_objective 必须为完整中文句子并以。！？?!结束；dramatic_question 以？?!结束。\n"
+        "禁止省略字段、增加字段、补写来源事实；禁止输出 Stage B 字段、对白内容、speaker、binding 或 source_constraints；所有 SAU 必须恰好出现在 beats[].refs 或 passthrough_refs。"
     )
     return system, user
 
@@ -338,6 +407,7 @@ __all__ = [
     "DIRECTOR_BEAT_PLAN_IR_VERSION", "DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION",
     "DIRECTOR_BEAT_PLAN_IR_SCHEMA", "DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA",
     "validate_director_beat_plan_ir_schema", "validate_director_beat_plan_ir",
+    "parse_director_beat_plan_ir", "validate_director_beat_plan_text_completeness", "DIRECTOR_BEAT_PLAN_IR_V1_SYSTEM_PROMPT",
     "materialize_director_beat_plan_ids", "validate_director_creative_enrichment_ir_schema",
     "validate_director_creative_enrichment_ir", "compile_progressive_director_proposal",
     "build_stage_a_persistence_patch", "build_director_beat_plan_prompt", "build_director_creative_enrichment_prompt",

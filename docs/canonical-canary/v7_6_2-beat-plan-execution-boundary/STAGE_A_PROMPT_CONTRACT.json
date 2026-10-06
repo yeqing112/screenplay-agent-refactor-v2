@@ -1,0 +1,32 @@
+{
+  "system_prompt": "你是受来源约束的导演结构规划助手。只输出 director_beat_plan_ir_v1 JSON。只负责把不可变来源单元分组为戏剧 beats，并填写场景目标、戏剧问题、目的、导演目标和信息变化。不得改写或输出对白、speaker、binding、source_constraints、authority、creative_beat_id、performance、audience_effect、transition、character_effects、character_directions、performance_arc、information_strategy、rhythm_strategy、visual_priority、scene_exit_intent、prohibited_interpretations。所有创意文本必须是完整中文句子并以。！？?!之一结束；dramatic_question 必须以疑问标点结束。",
+  "schema_version": "director_beat_plan_ir_v1",
+  "allowed_top_level": [
+    "beats",
+    "confidence",
+    "dramatic_question",
+    "note",
+    "passthrough_refs",
+    "scene_label",
+    "scene_objective",
+    "unknowns",
+    "version"
+  ],
+  "allowed_per_beat": [
+    "hook",
+    "information_change",
+    "objective",
+    "purpose",
+    "refs"
+  ],
+  "excluded": [
+    "performance",
+    "visual_priority",
+    "character_directions",
+    "dialogue",
+    "speaker",
+    "binding",
+    "source_constraints",
+    "authority"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "director_beat_plan_ir_v1",
+  "authoring_stage": "BEAT_PLAN",
+  "execution_boundary_version": "director_beat_plan_provider_request_v1",
+  "system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
+  "user_prompt_sha256": "bad2bcde00e01f2f65e72ca90c9d536f04a6de6e2ee4d306c584f4fedac460d6",
+  "prompt_fingerprint": "90b3c6109c422096ac944c05cbc186f0d471c8ec53bdbf990c3075108225ff5b",
+  "provider_request_payload_v2": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "system_prompt_sha256": "63d78804b933754c2534577134adc0d7181cbc4cfaaa73bc3a0d4a98d4abed53",
+    "user_prompt_sha256": "0bc0b7eb5f1d64bfef8956fc88d655a5c825716cb63b1262ec9fdd4740c5e74f",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "response_format": {
+      "type": "json_object"
+    },
+    "thinking": {
+      "type": "disabled"
+    },
+    "schema_version": "director_beat_plan_ir_v1",
+    "execution_boundary_version": "director_beat_plan_provider_request_v1"
+  },
+  "provider_request_fingerprint_v2": "d56b76506818878f29a2677c3652e566fe905e489a6eb6a263b578df3e1cef4e",
+  "source_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "generation_policy": {
+    "max_tokens": 8192,
+    "temperature": 0.0,
+    "response_format": {
+      "type": "json_object"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "profile": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true
+  }
+}
