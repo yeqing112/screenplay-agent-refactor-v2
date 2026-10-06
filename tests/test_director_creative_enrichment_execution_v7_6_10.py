@@ -190,3 +190,31 @@ def test_confirm_gate_requires_merged_proposal_after_stage_b_validation():
     info["progressive_director_authoring"]["stage_b"]["merge_state"] = "MERGED"
     candidate = {"decision": "ready_for_review", "creative_projection": {"status": "PROPOSED"}}
     assert api._progressive_stage_b_complete(info, candidate) is True
+
+
+@pytest.mark.parametrize(
+    "label,mode,expected",
+    [
+        ("forensic", "forensic", "DIRECTOR_CREATIVE_ENRICHMENT_FORENSIC_PERSISTENCE_FAILED"),
+        ("merge", "merge", "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_COMPILED_CONTRACT_INVALID"),
+        ("compiled", "compiled", "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_COMPILED_CONTRACT_INVALID"),
+    ],
+)
+def test_stage_b_persistence_merge_and_compiled_failures_cleanup(monkeypatch, label, mode, expected):
+    init_db(); scene, treatment, stage_a, materialized, stage_b = _payloads(); packet_fp = f"stage-b-{label}"; _seed_packet(treatment, stage_a, materialized, packet_fp)
+    monkeypatch.setattr(api, "_build_preview", lambda *_args, **_kwargs: (treatment, {"scene": scene}, None))
+    monkeypatch.setattr(api, "_make_decision_packet", lambda *_args, **_kwargs: {"packet_fingerprint": packet_fp})
+    monkeypatch.setattr(api, "_director_llm_profile_preflight", lambda: (_profile(), {"profile_id": "test-profile", "provider": "openai-compatible", "model": "mimo", "base_host": "https://example.test", "enabled": True}))
+    monkeypatch.setattr(api.llm_client, "call_llm", lambda *_args, **kwargs: kwargs["audit_callback"]({"finish_reason": "stop"}) or json.dumps(stage_b, ensure_ascii=False))
+    if mode == "forensic":
+        monkeypatch.setattr(api, "_persist_stage_b_raw_forensic", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("forensic unavailable")))
+    elif mode == "merge":
+        monkeypatch.setattr(api, "compile_progressive_director_proposal", lambda **_kwargs: (_ for _ in ()).throw(ValueError("merge unavailable")))
+    else:
+        monkeypatch.setattr(api, "validate_source_grounded_contract_v2", lambda *_args, **_kwargs: {"status": "blocked", "errors": [{"code": "MOCK_COMPILED_INVALID"}]})
+    with pytest.raises(api.HTTPException) as exc:
+        api.generate_director_creative_enrichment_llm_draft(990453, 1, api.DirectorCreativeEnrichmentLlmDraftRequest(scene_id="E01_SC001", packet_fingerprint=packet_fp, confirmed=True, allow_external_call=True, authorization_id="mock-stage-b-auth"))
+    assert exc.value.detail["code"] == expected
+    with Session() as session:
+        row = session.query(DecisionPacketRecord).filter_by(packet_fingerprint=packet_fp).first(); info = json.loads(row.model_info)
+        assert info["llm_draft_in_progress"] is False
