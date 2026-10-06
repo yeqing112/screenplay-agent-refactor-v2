@@ -41,9 +41,9 @@ This phase consumed one explicitly authorized real Director LLM transport. The p
 33. IMAGE / VIDEO calls: `0 / 0`.
 34. Next step confirm: `NO`; do not confirm.
 35. Maximum quality risk: no reviewable proposal exists; the raw response cannot be safely promoted or manually treated as canonical JSON.
-36. Working tree: evidence files are pending commit; core/api/models were not changed during execution.
-37. Commit SHA: pending evidence commit.
-38. Remote HEAD: pending evidence push.
+36. Working tree: core/api/models were not changed during execution; the evidence capture commit is `438a8b86f34ff824cf87d1a6d213e42cccbd7a92`.
+37. Commit SHA: `438a8b86f34ff824cf87d1a6d213e42cccbd7a92` (evidence capture commit; final closure commit is reported in delivery).
+38. Remote HEAD: `438a8b86f34ff824cf87d1a6d213e42cccbd7a92` at evidence capture; final closure push is reported in delivery.
 
 Required failure state:
 
