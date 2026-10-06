@@ -289,7 +289,10 @@ def validate_director_contract_v2(candidate: dict[str, Any], *, scene: Mapping[s
         if not isinstance(direction, Mapping):
             errors.append({"code": "DIRECTOR_PARTICIPANT_REF_INVALID"})
             continue
-        allowed_direction_fields = {"character_ref", "objective", "obstacle", "strategy", "performance_notes"}
+        # Keep the provider's compact ``direction`` shorthand aligned with
+        # the flat DirectorProposalIR v1 contract.  The compiler copies this
+        # field as creative intent; it does not infer or expand semantics.
+        allowed_direction_fields = {"character_ref", "objective", "obstacle", "strategy", "performance_notes", "direction"}
         unexpected_direction_fields = sorted(set(direction) - allowed_direction_fields)
         if unexpected_direction_fields:
             errors.append({"code": "DIRECTOR_CHARACTER_DIRECTION_FIELD_INVALID", "fields": unexpected_direction_fields})

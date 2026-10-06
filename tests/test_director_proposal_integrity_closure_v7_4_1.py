@@ -66,6 +66,17 @@ def test_schema_and_runtime_accept_same_valid_ir():
     assert validate_director_proposal_ir(value, source_units=units, declared_participants=scene12()["participants"])["status"] == "qualified"
 
 
+def test_provider_direction_shorthand_is_schema_and_runtime_safe():
+    value = ir12()
+    value["character_directions"] = [{"character_ref": "P1", "direction": "withhold certainty"}]
+    units = project_source_authoring_units(scene12())
+    assert validate_director_proposal_ir_schema(value)["status"] == "PASS"
+    assert validate_director_proposal_ir(value, source_units=units, declared_participants=scene12()["participants"])["status"] == "qualified"
+    baseline = build_source_grounded_director_preview(scene=scene12())
+    candidate = compile_director_proposal_ir(value, baseline, scene12())
+    assert candidate["creative_projection"]["character_directions"][0]["direction"] == "withhold certainty"
+
+
 @pytest.mark.parametrize("mutate", [
     lambda x: x.update({"extra_top": True}),
     lambda x: x["beats"][0].update({"extra_beat": True}),
@@ -107,4 +118,3 @@ def test_source_grounded_execution_without_authorization_makes_no_provider_call(
     with pytest.raises(HTTPException) as exc:
         api._execute_source_grounded_v3_proposal(book_id=1, packet_id=1, packet_fingerprint_value="p", treatment={"schema_version": "director_treatment_v3"}, evidence={})
     assert exc.value.detail["code"] == "DIRECTOR_LLM_AUTHORIZATION_ID_REQUIRED"
-

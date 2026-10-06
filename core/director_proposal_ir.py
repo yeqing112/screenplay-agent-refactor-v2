@@ -32,7 +32,11 @@ BEAT_FIELDS = {
     "performance", "transition", "hook", "character_effects",
 }
 CHARACTER_EFFECT_FIELDS = {"character_ref", "effect"}
-CHARACTER_DIRECTION_FIELDS = {"character_ref", "objective", "obstacle", "strategy", "performance_notes"}
+# ``direction`` is the compact provider-facing shorthand used by the MiMo
+# canary.  It carries the same creative intent as the more decomposed
+# objective/obstacle/strategy/performance_notes fields and is copied without
+# local interpretation by the deterministic compiler.
+CHARACTER_DIRECTION_FIELDS = {"character_ref", "objective", "obstacle", "strategy", "performance_notes", "direction"}
 FORBIDDEN_FIELDS = {
     "creative_projection", "creative_beat_id", "authority", "source_constraints",
     "source_authoring_units", "scene_identity_evidence", "declared_participants",
@@ -90,6 +94,7 @@ DIRECTOR_PROPOSAL_IR_SCHEMA: dict[str, Any] = {
                     "obstacle": {"type": "string"},
                     "strategy": {"type": "string"},
                     "performance_notes": {"type": "string"},
+                    "direction": {"type": "string"},
                 },
             },
         },

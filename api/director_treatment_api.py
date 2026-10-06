@@ -43,6 +43,7 @@ from core.director_proposal_ir import (
     DirectorProposalIRValidationError,
     compile_director_proposal_ir,
     parse_director_proposal_ir,
+    validate_director_proposal_ir_schema,
 )
 from core.director_forensic import append_director_attempt
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, EpisodeOutline, Script, ScriptIRVersion, Session, VisualMakeup, VisualReferenceAsset
@@ -185,7 +186,11 @@ def _source_grounded_v3_prompt(treatment: dict[str, Any], evidence: dict[str, An
         f"IMMUTABLE_SOURCE_CONSTRAINTS={json.dumps(immutable_constraints, ensure_ascii=False, sort_keys=True)}\n"
         f"SOURCE_AUTHORING_UNITS={json.dumps(units, ensure_ascii=False, sort_keys=True)}\n"
         f"DECLARED_PARTICIPANTS={json.dumps(constraints.get('declared_participants', []), ensure_ascii=False, sort_keys=True)}\n"
-        f"ADVISORY_ASSET_CONTEXT={json.dumps(evidence.get('characters', []), ensure_ascii=False, sort_keys=True)}\n"
+        # Advisory asset rows are deliberately excluded from the provider
+        # request identity.  They are mutable, non-authoritative context and
+        # caused the frozen preflight prompt to differ from the production
+        # endpoint.  Source authority remains fully represented above.
+        "ADVISORY_ASSET_CONTEXT=[]\n"
         f"PROPOSAL_IR_VERSION={DIRECTOR_PROPOSAL_IR_VERSION}\n"
         f"PROPOSAL_IR_SCHEMA_KEYS={json.dumps(sorted(DIRECTOR_PROPOSAL_IR_SCHEMA['properties']), ensure_ascii=False)}\n"
         "BEAT_CONTRACT=refs[]; purpose; objective; information_change; audience_effect; performance; transition; hook(boolean); character_effects[{character_ref,effect}]\n"
@@ -332,6 +337,12 @@ def _execute_source_grounded_v3_proposal(*, book_id: int, packet_id: int, packet
         _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_LLM_OUTPUT_INVALID", "parse_attempts": 1, "parse_error": str(exc)[:500], "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE"]})
         _set_latest_director_attempt_status(packet_id, book_id, "PARSE_FAILED")
         raise HTTPException(status_code=502, detail={"code": "DIRECTOR_LLM_OUTPUT_INVALID", "retry": 0, "parse_attempts": 1}) from exc
+
+    schema_report = validate_director_proposal_ir_schema(parsed)
+    if schema_report.get("status") != "PASS":
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False, "last_llm_draft_failure": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID", "proposal_ir_schema_validation": schema_report, "raw_response_forensic": {**forensic, "parse_started": True}, "event_trace": ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_SCHEMA_VALIDATE"]})
+        _set_latest_director_attempt_status(packet_id, book_id, "SCHEMA_INVALID")
+        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID", "retry": 0})
 
     try:
         candidate = _validate_source_grounded_llm_candidate(parsed, treatment, evidence.get("scene") if isinstance(evidence.get("scene"), dict) else None)

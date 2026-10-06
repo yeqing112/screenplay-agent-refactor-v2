@@ -93,6 +93,12 @@ def test_v3_prompt_is_source_grounded_and_has_no_old_beat_requirement():
     assert "扁平的创意提案" in system
 
 
+def test_v3_prompt_freezes_advisory_asset_context_out_of_request_identity():
+    _, user = api._source_grounded_v3_prompt(_preview(), {"characters": [{"id": "mutable-asset"}]})
+    assert "ADVISORY_ASSET_CONTEXT=[]" in user
+    assert "mutable-asset" not in user
+
+
 def test_v3_execution_uses_one_transport_attempt_and_top_level_creative_projection(monkeypatch):
     result, error, calls, model_info, packet, downstream = _run(monkeypatch, _valid_response(_preview()))
     assert error is None
@@ -149,6 +155,29 @@ def test_v3_invalid_semantic_candidate_keeps_forensic_and_never_retries(monkeypa
     assert error.detail["code"] == "DIRECTOR_PROPOSAL_IR_INVALID"
     assert len(calls) == 1
     assert model_info["raw_response_forensic"]["persisted_before_parse"] is True
+    assert downstream == (0, 0, 0)
+
+
+def test_v3_schema_gate_blocks_additional_provider_fields_before_runtime(monkeypatch):
+    bad = json.loads(_valid_response(_preview()))
+    bad["character_directions"] = [{"character_ref": "P1", "unexpected": "field"}]
+    result, error, calls, model_info, packet, downstream = _run(monkeypatch, json.dumps(bad, ensure_ascii=False))
+    assert result is None
+    assert error.detail["code"] == "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID"
+    assert len(calls) == 1
+    assert model_info["event_trace"] == ["TRANSPORT", "RAW_PERSIST", "PARSE", "IR_SCHEMA_VALIDATE"]
+    assert model_info["last_llm_draft_failure"] == "DIRECTOR_PROPOSAL_IR_SCHEMA_INVALID"
+    assert downstream == (0, 0, 0)
+
+
+def test_v3_provider_direction_shorthand_reaches_proposal_only_boundary(monkeypatch):
+    value = json.loads(_valid_response(_preview()))
+    value["character_directions"] = [{"character_ref": "P1", "direction": "withhold certainty"}]
+    result, error, calls, model_info, packet, downstream = _run(monkeypatch, json.dumps(value, ensure_ascii=False))
+    assert error is None
+    assert len(calls) == 1
+    assert result["domain_write_performed"] is False
+    assert json.loads(packet.proposal)["creative_projection"]["character_directions"][0]["direction"] == "withhold certainty"
     assert downstream == (0, 0, 0)
 
 
