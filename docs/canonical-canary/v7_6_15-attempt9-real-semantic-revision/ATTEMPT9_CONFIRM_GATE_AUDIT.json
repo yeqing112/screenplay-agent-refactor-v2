@@ -1,0 +1,6 @@
+{
+  "confirm_allowed": false,
+  "confirm_called": false,
+  "reason": "preflight blocked",
+  "status": "NOT_RUN"
+}

@@ -1,0 +1,22 @@
+{
+  "expected_scope_descriptor": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "kind": "CANONICAL_CANARY_TARGET",
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
+  },
+  "expected_scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "scope_descriptor": {
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "scene_name": "",
+    "treatment_fingerprint": "4711730bcf8d27193308b2cd4195a0749588535a0d6aa94bcc515814e833f134"
+  },
+  "scope_fingerprint": "866fc1aa010d89d1bd5ac7c0f3029d913c8908a0829592dbc5bbe42d3f15b0f1",
+  "scope_match": false
+}

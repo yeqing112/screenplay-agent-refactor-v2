@@ -1,0 +1,10 @@
+{
+  "automatic_retry": 0,
+  "finish_reason": null,
+  "http_status": null,
+  "latency_ms": null,
+  "provider_post_count": 0,
+  "provider_request_id": null,
+  "reason": "preflight identity mismatch",
+  "status": "NOT_RUN"
+}

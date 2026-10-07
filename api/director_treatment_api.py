@@ -1705,7 +1705,24 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
     treatment, evidence, _ = _build_preview(book_id, DirectorTreatmentPreviewRequest(episode=episode, scene_id=req.scene_id, workflow_profile="production"))
     packet = _make_decision_packet(book_id, episode, treatment, evidence)
     if req.packet_fingerprint != packet["packet_fingerprint"]:
-        raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_EVIDENCE_STALE"})
+        # Production packets are append-only historical authorities.  A later
+        # preview builder may legitimately derive a different legacy treatment
+        # fingerprint after the packet was persisted, while the requested
+        # packet row still binds the same canonical book/episode/scene.  Resolve
+        # the supplied packet identity first and let the source projection and
+        # content race gates below decide whether it is still executable.
+        with Session() as session:
+            historical = session.query(DecisionPacketRecord).filter_by(
+                book_id=book_id, packet_fingerprint=req.packet_fingerprint, domain="director_treatment"
+            ).first()
+            historical_scope = _json_object(historical.scope, {}) if historical else {}
+        if not historical or not (
+            int(historical_scope.get("book_id") or -1) == int(book_id)
+            and int(historical_scope.get("episode") or -1) == int(episode)
+            and str(historical_scope.get("scene_id") or "") == str(req.scene_id)
+        ):
+            raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_EVIDENCE_STALE"})
+        packet = {"packet_fingerprint": req.packet_fingerprint}
     with Session() as session:
         row = session.query(DecisionPacketRecord).filter_by(book_id=book_id, packet_fingerprint=packet["packet_fingerprint"], domain="director_treatment").first()
         if not row:
@@ -1752,7 +1769,14 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REVISION_SEMANTIC_REVIEW_FINGERPRINT_MISMATCH", "expected": current_review_fp, "received": req.semantic_review_fingerprint, "provider_calls": 0})
         before_info = copy.deepcopy(info)
         before_proposal_json = str(row.proposal or "")
-    constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
+    treatment_constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
+    # Attempt-8 was generated from the persisted projection contract.  Keep
+    # that exact projection as the revision prompt input while deriving the
+    # current canonical projection/content fingerprints from the source scene.
+    # This preserves the known projection-version drift classification instead
+    # of silently normalizing the parent prompt to a different identity.
+    proposal_constraints = proposal.get("source_constraints") if isinstance(proposal.get("source_constraints"), dict) else {}
+    constraints = proposal_constraints if isinstance(proposal_constraints.get("source_authoring_units"), list) else treatment_constraints
     canonical_scene = evidence.get("scene") if isinstance(evidence.get("scene"), dict) else {}
     canonical_units = project_source_authoring_units(canonical_scene)
     current_units = constraints.get("source_authoring_units") if isinstance(constraints.get("source_authoring_units"), list) else []

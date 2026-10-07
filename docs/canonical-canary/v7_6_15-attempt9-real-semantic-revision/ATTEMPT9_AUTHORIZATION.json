@@ -1,0 +1,15 @@
+{
+  "authorization_id": "v7.6.15-attempt9-stage-b-semantic-revision-single-call",
+  "consumed": false,
+  "consumption_reason": "preflight blocked before transport",
+  "granted": true,
+  "provider_post_count": 0,
+  "scope": {
+    "attempt": "attempt-9",
+    "book_id": 990453,
+    "episode": 1,
+    "model": "mimo-v2.5",
+    "packet_id": 64,
+    "scene_id": "E01_SC001"
+  }
+}

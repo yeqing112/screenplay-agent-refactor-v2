@@ -1,0 +1,14 @@
+{
+  "attempt8_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "attempt8_review_status": "BLOCKED",
+  "classification_counts": {
+    "DOWNSTREAM_SHOTPLAN_LEAKAGE": 3,
+    "SAFE_CREATIVE_DIRECTION": 92,
+    "SOURCE_EXPLICIT": 1,
+    "UNSUPPORTED_BACKSTORY": 6,
+    "UNSUPPORTED_CHARACTER_KNOWLEDGE": 2,
+    "UNSUPPORTED_EMOTIONAL_FACT": 2,
+    "UNSUPPORTED_FACT_ASSERTION": 1
+  },
+  "status": "PASS"
+}
