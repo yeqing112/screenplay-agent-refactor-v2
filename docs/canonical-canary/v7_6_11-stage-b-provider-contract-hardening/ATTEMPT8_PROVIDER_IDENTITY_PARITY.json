@@ -1,0 +1,9 @@
+{
+  "prompt_fingerprint": "9b60b1245e10288c405b9f04a2d092b66f687a36a7c992fa6a41d232ebef53e9",
+  "provider_request_fingerprint_v2": "8b4de84c034162521b02714602a9006ffff93339851f20fa36760156137cdde8",
+  "status": "PASS",
+  "system_prompt_sha256": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
+  "upstream_binding_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "upstream_stage_a_attempt_id": "attempt-7",
+  "user_prompt_sha256": "de323e5769d3d04be502fdfd314ea52620e2c4be70a501978111ddaf4383a4b8"
+}

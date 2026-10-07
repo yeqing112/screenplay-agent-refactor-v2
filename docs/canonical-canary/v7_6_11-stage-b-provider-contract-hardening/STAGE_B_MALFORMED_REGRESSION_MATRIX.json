@@ -1,0 +1,39 @@
+{
+  "cases": [
+    {
+      "case": "missing_top_level",
+      "runtime_status": "blocked",
+      "schema_status": "FAIL"
+    },
+    {
+      "case": "missing_direction",
+      "runtime_status": "blocked",
+      "schema_status": "FAIL"
+    },
+    {
+      "case": "bad_reveal_item",
+      "runtime_status": "blocked",
+      "schema_status": "FAIL"
+    },
+    {
+      "case": "translated_key",
+      "runtime_status": "blocked",
+      "schema_status": "FAIL"
+    },
+    {
+      "case": "wrong_nested_type",
+      "runtime_status": "blocked",
+      "schema_status": "FAIL"
+    },
+    {
+      "case": "unknown_dbp",
+      "runtime_status": "blocked",
+      "schema_status": "PASS"
+    }
+  ],
+  "duplicate_key": {
+    "error": "DIRECTOR_CREATIVE_ENRICHMENT_DUPLICATE_JSON_KEY:version",
+    "status": "FAIL_CLOSED"
+  },
+  "status": "PASS"
+}

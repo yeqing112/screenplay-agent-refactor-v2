@@ -413,6 +413,7 @@ def validate_director_beat_plan_provider_identity(identity: dict[str, Any]) -> d
 
 def build_director_creative_enrichment_provider_request(
     *, scene_id: str, materialized_beat_plan: dict[str, Any], stage_a_materialized_fingerprint: str,
+    stage_a_attempt_id: str = "",
     declared_participants: list[Any] | None = None, profile: dict[str, Any] | None = None,
     profile_snapshot: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -455,6 +456,7 @@ def build_director_creative_enrichment_provider_request(
         "provider_request_payload_v2": payload, "provider_request_fingerprint_v2": provider_request_fingerprint_v2(**payload),
         "schema_version": "director_creative_enrichment_ir_v1", "authoring_stage": "CREATIVE_ENRICHMENT",
         "upstream_binding_fingerprint": str(stage_a_materialized_fingerprint),
+        "upstream_stage_a_attempt_id": str(stage_a_attempt_id or ""),
         "execution_boundary_version": "director_creative_enrichment_provider_request_v1",
     }
     consistency = validate_director_creative_enrichment_provider_identity(identity)
@@ -714,12 +716,13 @@ def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int
                 raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_ALREADY_COMPLETED"})
             progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
             stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
-            if not is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") or str(stage_a.get("attempt_id") or "") != "attempt-7":
+            if not is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") or not str(stage_a.get("attempt_id") or "").strip():
                 raise HTTPException(status_code=409, detail={"code": "DIRECTOR_BEAT_PLAN_VALIDATION_REQUIRED"})
             materialized = stage_a.get("materialized_beat_plan")
             materialized_fp = str(stage_a.get("materialized_fingerprint") or "")
             actual_fp = hashlib.sha256(json.dumps(materialized, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest() if isinstance(materialized, dict) else ""
-            if not materialized_fp or actual_fp != materialized_fp or identity.get("upstream_binding_fingerprint") != materialized_fp:
+            if (not materialized_fp or actual_fp != materialized_fp or identity.get("upstream_binding_fingerprint") != materialized_fp
+                    or (identity.get("upstream_stage_a_attempt_id") and identity.get("upstream_stage_a_attempt_id") != stage_a.get("attempt_id"))):
                 raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_STAGE_A_BINDING_CONFLICT"})
             attempt_context = resolve_next_director_attempt_context(info, authoring_stage="CREATIVE_ENRICHMENT")
             scope = _json_object(row.scope, {})
@@ -790,7 +793,7 @@ def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int
         try:
             candidate = compile_progressive_director_proposal(beat_plan_ir=stage_a["ir"], enrichment_ir=parsed, baseline_treatment=treatment, source_scene=evidence.get("scene") if isinstance(evidence.get("scene"), dict) else {}, materialized_beat_plan=stage_a["materialized_beat_plan"], materialized_fingerprint=stage_a["materialized_fingerprint"])
             compiled = validate_source_grounded_contract_v2(candidate, scene=evidence.get("scene") if isinstance(evidence.get("scene"), dict) else {}, production=False)
-            if compiled.get("status") not in {"qualified", "AUTHORING_REQUIRED"} or candidate.get("decision") != "ready_for_review" or (candidate.get("creative_projection") or {}).get("status") != "PROPOSED":
+            if compiled.get("status") != "qualified" or candidate.get("decision") != "ready_for_review" or (candidate.get("creative_projection") or {}).get("status") != "PROPOSED":
                 raise ValueError(json.dumps(compiled, ensure_ascii=False))
         except Exception as exc:
             code = attempt_context.status("COMPILED_CONTRACT_INVALID")
@@ -817,10 +820,14 @@ def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int
             session.commit()
         return {"packet_id": packet_id, "packet_fingerprint": packet_fingerprint_value, "status": attempt_context.status("VALIDATED"), "next_state": "DIRECTOR_TREATMENT_REVIEW_REQUIRED", "confirm_allowed": True, "candidate": candidate, "provider": provider, "execution_manifest": identity}
     except HTTPException:
+        # The endpoint takes the execution lock before entering this function.
+        # Pre-transport races must release it without appending an attempt.
+        _update_director_packet_info(packet_id, book_id, {"llm_draft_in_progress": False})
         raise
     except Exception as exc:
-        _stage_b_failure(packet_id, book_id, "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_EXECUTION_FAILED", trace=["EXECUTION"], attempt_context=None, update_latest=False)
-        raise HTTPException(status_code=502, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_EXECUTION_FAILED", "retry": 0, "message": str(exc)[:240]}) from exc
+        code = attempt_context.status("EXECUTION_FAILED") if attempt_context is not None else "DIRECTOR_CREATIVE_ENRICHMENT_EXECUTION_FAILED"
+        _stage_b_failure(packet_id, book_id, code, trace=["EXECUTION"], attempt_context=None, update_latest=False)
+        raise HTTPException(status_code=502, detail={"code": code, "retry": 0, "message": str(exc)[:240]}) from exc
 
 
 def _execute_source_grounded_beat_plan(*, book_id: int, packet_id: int, packet_fingerprint_value: str, treatment: dict[str, Any], evidence: dict[str, Any], scene_id: str, authorization_id: str) -> dict[str, Any]:
@@ -1530,13 +1537,15 @@ def generate_director_creative_enrichment_llm_draft(book_id: int, episode: int, 
     identity = build_director_creative_enrichment_provider_request(
         scene_id=req.scene_id, materialized_beat_plan=materialized if isinstance(materialized, dict) else {},
         stage_a_materialized_fingerprint=materialized_fp,
+        stage_a_attempt_id=str(stage_a.get("attempt_id") or "") if isinstance(stage_a, dict) else "",
         declared_participants=constraints.get("declared_participants") if isinstance(constraints.get("declared_participants"), list) else [],
         profile=profile, profile_snapshot=profile_snapshot,
     )
     if is_progressive_stage_validated(progressive.get("stage_b") if isinstance(progressive, dict) else None, authoring_stage="CREATIVE_ENRICHMENT") or _json_object(row.proposal, {}).get("decision") == "ready_for_review":
         raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_ALREADY_COMPLETED"})
     if not (req.confirmed and req.allow_external_call and str(req.authorization_id or "").strip()):
-        return {"status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_AUTHORIZATION_REQUIRED", "provider": {"called": False, "calls": 0}, "execution_manifest": identity}
+        next_context = resolve_next_director_attempt_context(info, authoring_stage="CREATIVE_ENRICHMENT")
+        return {"status": next_context.status("AUTHORIZATION_REQUIRED"), "provider": {"called": False, "calls": 0}, "execution_manifest": identity}
     with Session() as session:
         current = session.query(DecisionPacketRecord).filter_by(id=row.id, book_id=book_id).first()
         current_info = _json_object(current.model_info, {}) if current else {}

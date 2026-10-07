@@ -1,0 +1,58 @@
+{
+  "blocks": {
+    "CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS": [
+      "beat_ref",
+      "audience_effect",
+      "performance",
+      "transition",
+      "character_effects"
+    ],
+    "CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS": [
+      "character_ref",
+      "direction",
+      "objective",
+      "obstacle",
+      "strategy",
+      "performance_notes"
+    ],
+    "CANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS": [
+      "character_ref",
+      "effect"
+    ],
+    "CANONICAL_STAGE_B_INFORMATION_REVEAL_KEYS": [
+      "beat_id",
+      "reveals",
+      "withholds",
+      "audience_should_notice",
+      "audience_should_not_yet_know"
+    ],
+    "CANONICAL_STAGE_B_INFORMATION_STRATEGY_KEYS": [
+      "schema_version",
+      "known_to_audience",
+      "withheld_from_audience",
+      "reveal_plan",
+      "reaction_priority",
+      "audience_focus"
+    ],
+    "CANONICAL_STAGE_B_RHYTHM_STRATEGY_KEYS": [
+      "opening",
+      "reveal",
+      "escalation",
+      "button"
+    ],
+    "CANONICAL_STAGE_B_TOP_LEVEL_KEYS": [
+      "version",
+      "beat_enrichments",
+      "character_directions",
+      "performance_arc",
+      "information_strategy",
+      "rhythm_strategy",
+      "visual_priority",
+      "scene_exit_intent",
+      "prohibited_interpretations",
+      "confidence",
+      "note"
+    ]
+  },
+  "status": "PASS"
+}

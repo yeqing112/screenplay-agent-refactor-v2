@@ -1,0 +1,156 @@
+{
+  "prompt_shape_example": {
+    "beat_enrichments": [
+      {
+        "audience_effect": "string",
+        "beat_ref": "string",
+        "character_effects": [
+          {
+            "character_ref": "string",
+            "effect": "string"
+          }
+        ],
+        "performance": "string",
+        "transition": "string"
+      }
+    ],
+    "character_directions": [
+      {
+        "character_ref": "string",
+        "direction": "string",
+        "objective": "string",
+        "obstacle": "string",
+        "performance_notes": "string",
+        "strategy": "string"
+      }
+    ],
+    "confidence": 0,
+    "information_strategy": {
+      "audience_focus": [
+        "string"
+      ],
+      "known_to_audience": [
+        "string"
+      ],
+      "reaction_priority": [
+        "string"
+      ],
+      "reveal_plan": [
+        {
+          "audience_should_not_yet_know": "string",
+          "audience_should_notice": "string",
+          "beat_id": "string",
+          "reveals": [
+            "string"
+          ],
+          "withholds": [
+            "string"
+          ]
+        }
+      ],
+      "schema_version": "director_information_strategy_v2",
+      "withheld_from_audience": [
+        "string"
+      ]
+    },
+    "note": "string",
+    "performance_arc": [
+      {
+        "phase": "string",
+        "state": "string"
+      }
+    ],
+    "prohibited_interpretations": [
+      "string"
+    ],
+    "rhythm_strategy": {
+      "button": "string",
+      "escalation": "string",
+      "opening": "string",
+      "reveal": "string"
+    },
+    "scene_exit_intent": "string",
+    "version": "director_creative_enrichment_ir_v1",
+    "visual_priority": [
+      "string"
+    ]
+  },
+  "shape_example": {
+    "beat_enrichments": [
+      {
+        "audience_effect": "string",
+        "beat_ref": "string",
+        "character_effects": [
+          {
+            "character_ref": "string",
+            "effect": "string"
+          }
+        ],
+        "performance": "string",
+        "transition": "string"
+      }
+    ],
+    "character_directions": [
+      {
+        "character_ref": "string",
+        "direction": "string",
+        "objective": "string",
+        "obstacle": "string",
+        "performance_notes": "string",
+        "strategy": "string"
+      }
+    ],
+    "confidence": 0,
+    "information_strategy": {
+      "audience_focus": [
+        "string"
+      ],
+      "known_to_audience": [
+        "string"
+      ],
+      "reaction_priority": [
+        "string"
+      ],
+      "reveal_plan": [
+        {
+          "audience_should_not_yet_know": "string",
+          "audience_should_notice": "string",
+          "beat_id": "string",
+          "reveals": [
+            "string"
+          ],
+          "withholds": [
+            "string"
+          ]
+        }
+      ],
+      "schema_version": "director_information_strategy_v2",
+      "withheld_from_audience": [
+        "string"
+      ]
+    },
+    "note": "string",
+    "performance_arc": [
+      {
+        "phase": "string",
+        "state": "string"
+      }
+    ],
+    "prohibited_interpretations": [
+      "string"
+    ],
+    "rhythm_strategy": {
+      "button": "string",
+      "escalation": "string",
+      "opening": "string",
+      "reveal": "string"
+    },
+    "scene_exit_intent": "string",
+    "version": "director_creative_enrichment_ir_v1",
+    "visual_priority": [
+      "string"
+    ]
+  },
+  "stage_a_mutable_fields_present": false,
+  "status": "PASS"
+}

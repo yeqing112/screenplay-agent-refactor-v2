@@ -1,0 +1,16 @@
+{
+  "attempt_append": 0,
+  "authority_write": 0,
+  "llm_draft_in_progress_after_failure": false,
+  "pretransport_race_cases": [
+    "proposal_changed",
+    "stage_a_changed",
+    "stage_a_attempt_changed",
+    "stage_a_materialized_fingerprint_changed",
+    "packet_disappeared",
+    "attempt_context_conflict"
+  ],
+  "proposal_write": 0,
+  "provider_calls": 0,
+  "status": "PASS"
+}

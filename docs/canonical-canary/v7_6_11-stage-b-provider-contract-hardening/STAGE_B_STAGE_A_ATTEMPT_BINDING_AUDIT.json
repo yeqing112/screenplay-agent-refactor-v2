@@ -1,0 +1,8 @@
+{
+  "binding_revalidation": "attempt_id + materialized_fingerprint",
+  "frozen_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "frozen_stage_a_attempt_id": "attempt-7",
+  "identity_stage_a_attempt_id": "attempt-7",
+  "identity_upstream_binding_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "status": "PASS"
+}

@@ -1,0 +1,13 @@
+{
+  "baseline_commit": "bd5aae6d1eee92189eece0716fe05fc3001e11ff",
+  "baseline_executor_attempt_7_literals": 1,
+  "baseline_executor_attempt_8_literals": 2,
+  "executor_attempt_7_literals": 0,
+  "executor_attempt_8_literals": 0,
+  "resolver": {
+    "history_7": "attempt-8",
+    "history_8": "attempt-9",
+    "history_9": "attempt-10"
+  },
+  "status": "PASS"
+}

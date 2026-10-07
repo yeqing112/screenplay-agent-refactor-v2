@@ -359,13 +359,68 @@ def validate_director_creative_enrichment_ir_schema(value: Any) -> dict[str, Any
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "version": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION}
 
 
+def _stage_b_schema_projection(schema: Mapping[str, Any]) -> tuple[dict[str, list[str]], dict[str, str], list[str], Any]:
+    """Project the formal schema into deterministic prompt contract blocks."""
+    required: dict[str, list[str]] = {}
+    field_types: dict[str, str] = {}
+    additional_paths: list[str] = []
+
+    def type_label(node: Mapping[str, Any]) -> str:
+        if "const" in node:
+            return f"const:{node['const']}"
+        wanted = node.get("type")
+        if isinstance(wanted, list):
+            return "|".join(str(item) for item in wanted)
+        if wanted == "array" and isinstance(node.get("items"), Mapping):
+            item_type = node["items"].get("type")
+            return "array<object>" if item_type == "object" else "array<string>" if item_type == "string" else "array"
+        return str(wanted or "object")
+
+    def shape(node: Mapping[str, Any]) -> Any:
+        if "const" in node:
+            return node["const"]
+        wanted = node.get("type")
+        if isinstance(wanted, list):
+            return 0 if "number" in wanted else "string"
+        if wanted == "object":
+            return {key: shape(child) for key, child in (node.get("properties") or {}).items()}
+        if wanted == "array":
+            items = node.get("items")
+            return [shape(items)] if isinstance(items, Mapping) else []
+        if wanted == "number":
+            return 0
+        if wanted == "boolean":
+            return False
+        return "string"
+
+    def visit(node: Mapping[str, Any], path: str, *, expose_type: bool = False) -> None:
+        if expose_type:
+            field_types[path] = type_label(node)
+        if node.get("type") == "object":
+            required[path] = list(node.get("required") or [])
+            if node.get("additionalProperties") is False:
+                additional_paths.append(path)
+            for key, child in (node.get("properties") or {}).items():
+                child_path = key if path == "$" else f"{path}.{key}"
+                visit(child, child_path, expose_type=True)
+        elif node.get("type") == "array" and isinstance(node.get("items"), Mapping):
+            visit(node["items"], f"{path}[]")
+
+    visit(schema, "$")
+    return required, field_types, additional_paths, shape(schema)
+
+
 def render_stage_b_schema_contract() -> dict[str, Any]:
     top = DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA
+    # The formal schema is the only structural source for prompt blocks.
+    # Recompute these projections from the schema object so a future formal
+    # schema change cannot silently leave a second prompt contract behind.
+    nested_required, field_types, additional_properties_false_paths, shape_example = _stage_b_schema_projection(top)
     return {
         "version": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION,
         "top_level_keys": list(STAGE_B_TOP_LEVEL_KEYS),
         "top_level_required": list(top["required"]),
-        "top_level_additional_properties": top.get("additionalProperties") is True,
+        "top_level_additional_properties": bool(top.get("additionalProperties", True)),
         "beat_enrichment_keys": list(STAGE_B_ENRICHMENT_KEYS),
         "character_direction_keys": list(CHARACTER_DIRECTION_KEYS),
         "character_effect_keys": list(CHARACTER_EFFECT_KEYS),
@@ -373,6 +428,10 @@ def render_stage_b_schema_contract() -> dict[str, Any]:
         "information_reveal_keys": list(INFORMATION_REVEAL_KEYS),
         "rhythm_strategy_keys": list(RHYTHM_STRATEGY_KEYS),
         "canonical_key_rules": {"byte_for_byte": True, "ascii_identifiers_only": True, "additional_properties": False},
+        "nested_required": nested_required,
+        "field_types": field_types,
+        "additional_properties_false_paths": additional_properties_false_paths,
+        "shape_example": shape_example,
         "shape_decisions": {
             "information_strategy": "director_information_strategy_v2 object",
             "performance_arc": "array<{phase:string,state:string}>",
@@ -392,6 +451,11 @@ def validate_stage_b_prompt_schema_key_parity(user_prompt: str) -> dict[str, Any
         "CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS=": contract["beat_enrichment_keys"],
         "CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS=": contract["character_direction_keys"],
         "CANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS=": contract["character_effect_keys"],
+        "CANONICAL_STAGE_B_INFORMATION_STRATEGY_KEYS=": contract["information_strategy_keys"],
+        "CANONICAL_STAGE_B_INFORMATION_REVEAL_KEYS=": contract["information_reveal_keys"],
+        "CANONICAL_STAGE_B_RHYTHM_STRATEGY_KEYS=": contract["rhythm_strategy_keys"],
+        "STAGE_B_REQUIRED_FIELDS=": contract["nested_required"],
+        "STAGE_B_FIELD_TYPES=": contract["field_types"],
     }
     for marker, expected in markers.items():
         line = next((item for item in str(user_prompt or "").splitlines() if item.startswith(marker)), "")
@@ -405,10 +469,40 @@ def validate_stage_b_prompt_schema_key_parity(user_prompt: str) -> dict[str, Any
         found[marker.rstrip("=")] = actual
         if actual != expected:
             errors.append({"code": "STAGE_B_PROMPT_SCHEMA_KEY_PARITY", "marker": marker, "expected": expected, "actual": actual})
+    additional_line = next((item for item in str(user_prompt or "").splitlines() if item.startswith("STAGE_B_ADDITIONAL_PROPERTIES=")), "")
+    found["STAGE_B_ADDITIONAL_PROPERTIES"] = additional_line[len("STAGE_B_ADDITIONAL_PROPERTIES="):].strip().lower() if additional_line else None
+    if found["STAGE_B_ADDITIONAL_PROPERTIES"] != "false":
+        errors.append({"code": "STAGE_B_ADDITIONAL_PROPERTIES_NOT_FALSE", "expected": False, "actual": found["STAGE_B_ADDITIONAL_PROPERTIES"]})
+    additional_paths_marker = "STAGE_B_ADDITIONAL_PROPERTIES_FALSE_PATHS="
+    additional_paths_line = next((item for item in str(user_prompt or "").splitlines() if item.startswith(additional_paths_marker)), "")
+    if not additional_paths_line:
+        errors.append({"code": "STAGE_B_ADDITIONAL_PROPERTIES_PATHS_MISSING"})
+    else:
+        try:
+            actual_paths = json.loads(additional_paths_line[len(additional_paths_marker):])
+        except (TypeError, ValueError, json.JSONDecodeError):
+            actual_paths = None
+        found["STAGE_B_ADDITIONAL_PROPERTIES_FALSE_PATHS"] = actual_paths
+        if actual_paths != contract["additional_properties_false_paths"]:
+            errors.append({"code": "STAGE_B_ADDITIONAL_PROPERTIES_PATHS_PARITY", "expected": contract["additional_properties_false_paths"], "actual": actual_paths})
+    shape_line = next((item for item in str(user_prompt or "").splitlines() if item.startswith("JSON_SHAPE_EXAMPLE_ONLY=")), "")
+    if not shape_line:
+        errors.append({"code": "STAGE_B_SHAPE_EXAMPLE_MISSING"})
+    else:
+        try:
+            actual_shape = json.loads(shape_line[len("JSON_SHAPE_EXAMPLE_ONLY="):])
+        except (TypeError, ValueError, json.JSONDecodeError):
+            actual_shape = None
+        found["JSON_SHAPE_EXAMPLE_ONLY"] = actual_shape
+        if actual_shape != contract["shape_example"]:
+            errors.append({"code": "STAGE_B_SHAPE_EXAMPLE_PARITY", "expected": contract["shape_example"], "actual": actual_shape})
     for phrase in ("byte-for-byte", "do not translate", "Chinese only in values", "never in keys", "Stage A is immutable"):
         if phrase not in str(user_prompt or ""):
             errors.append({"code": "PROMPT_CANONICAL_KEY_RULE_MISSING", "phrase": phrase})
-    return {"status": "PASS" if not errors else "FAIL", "errors": errors, "prompt": found, "schema": contract}
+    required_phrase = "exactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid"
+    if required_phrase not in str(user_prompt or ""):
+        errors.append({"code": "STAGE_B_BEAT_COVERAGE_CONTRACT_MISSING"})
+    return {"status": "PASS" if not errors else "FAIL", "errors": errors, "prompt": found, "schema": contract, "structural_parity": "PASS" if not errors else "FAIL"}
 
 
 def parse_director_creative_enrichment_ir(raw: str) -> dict[str, Any]:
@@ -722,6 +816,7 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
 
     system = "你是受 Stage A 约束的导演表现层助手。只输出 director_creative_enrichment_ir_v1 JSON，不得重排或修改 Stage A。"
     contract = render_stage_b_schema_contract()
+    beat_refs = [str(item.get("beat_ref") or "") for item in (beat_plan.get("beats") or []) if isinstance(item, Mapping)]
     user = (
         "DIRECTOR_CREATIVE_ENRICHMENT_IR_V1\n"
         f"SCENE_ID={json.dumps(scene_id, ensure_ascii=False)}\n"
@@ -731,8 +826,18 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         f"CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS={json.dumps(contract['beat_enrichment_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS={json.dumps(contract['character_direction_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS={json.dumps(contract['character_effect_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"CANONICAL_STAGE_B_INFORMATION_STRATEGY_KEYS={json.dumps(contract['information_strategy_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"CANONICAL_STAGE_B_INFORMATION_REVEAL_KEYS={json.dumps(contract['information_reveal_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"CANONICAL_STAGE_B_RHYTHM_STRATEGY_KEYS={json.dumps(contract['rhythm_strategy_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"STAGE_B_REQUIRED_FIELDS={json.dumps(contract['nested_required'], ensure_ascii=False, sort_keys=True, separators=(',', ':'))}\n"
+        f"STAGE_B_FIELD_TYPES={json.dumps(contract['field_types'], ensure_ascii=False, sort_keys=True, separators=(',', ':'))}\n"
+        "STAGE_B_ADDITIONAL_PROPERTIES=false\n"
+        f"STAGE_B_ADDITIONAL_PROPERTIES_FALSE_PATHS={json.dumps(contract['additional_properties_false_paths'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"JSON_SHAPE_EXAMPLE_ONLY={json.dumps(contract['shape_example'], ensure_ascii=False, sort_keys=True, separators=(',', ':'))}\n"
+        f"BEAT_COVERAGE={json.dumps(beat_refs, ensure_ascii=False, separators=(',', ':'))}\n"
         "KEY_RULE=Property names must match these strings exactly, byte-for-byte. do not translate; Chinese only in values, never in keys.\n"
         "Stage A is immutable: refs,purpose,objective,information_change,hook,scene_objective,dramatic_question are read-only and must not be repeated or changed.\n"
+        "exactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid\n"
         "每个 DBP beat_ref 必须恰好有一个 beat_enrichment；character_effects 只能引用 DECLARED_PARTICIPANTS。"
         "information_strategy 必须使用 director_information_strategy_v2 对象；performance_arc 使用 phase/state 对象数组；rhythm_strategy 使用 opening/reveal/escalation/button。"
     )
