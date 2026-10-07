@@ -1714,7 +1714,27 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
         info = info if isinstance(info, dict) else {}
         proposal = _json_object(row.proposal, {})
         proposal = proposal if isinstance(proposal, dict) else {}
-        eligibility = evaluate_stage_b_semantic_revision_eligibility(info, proposal, packet_status=str(row.status or "draft"))
+        # Attempt-8 was persisted before the V7.6.13 review envelope became a
+        # packet field. Reconstruct that deterministic review in memory when
+        # the historical row has only the raw IR and proposal evidence. This
+        # is read-only preflight state; it is never written before the single
+        # authorized revision transport.
+        progressive_for_review = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
+        stage_b_for_review = progressive_for_review.get("stage_b") if isinstance(progressive_for_review, dict) else {}
+        current_review_for_eligibility = stage_b_for_review.get("semantic_review") if isinstance(stage_b_for_review, dict) and isinstance(stage_b_for_review.get("semantic_review"), dict) else (info.get("semantic_review") if isinstance(info.get("semantic_review"), dict) else None)
+        if current_review_for_eligibility is None and isinstance(stage_b_for_review, dict) and isinstance(stage_b_for_review.get("ir"), dict):
+            source_constraints_for_review = proposal.get("source_constraints") if isinstance(proposal.get("source_constraints"), dict) else {}
+            current_review_for_eligibility = validate_director_creative_semantic_review(
+                stage_b_for_review["ir"],
+                source_authoring_units=source_constraints_for_review.get("source_authoring_units") if isinstance(source_constraints_for_review.get("source_authoring_units"), list) else [],
+                declared_participants=source_constraints_for_review.get("declared_participants") if isinstance(source_constraints_for_review.get("declared_participants"), list) else [],
+            )
+            info_for_eligibility = copy.deepcopy(info)
+            info_for_eligibility.setdefault("semantic_review", current_review_for_eligibility)
+            info_for_eligibility.setdefault("progressive_director_authoring", {}).setdefault("stage_b", {})["semantic_review"] = current_review_for_eligibility
+        else:
+            info_for_eligibility = info
+        eligibility = evaluate_stage_b_semantic_revision_eligibility(info_for_eligibility, proposal, packet_status=str(row.status or "draft"))
         if not eligibility.get("eligible"):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REVISION_BOUNDARY_BLOCKED", "eligibility": eligibility, "provider_calls": 0})
         progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
@@ -1722,7 +1742,7 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
         stage_b = progressive.get("stage_b") if isinstance(progressive, dict) else {}
         current_attempt_id = str(stage_b.get("attempt_id") or "")
         current_stage_b_fp = str(stage_b.get("ir_fingerprint") or stage_b.get("fingerprint") or "")
-        current_review = stage_b.get("semantic_review") if isinstance(stage_b, dict) and isinstance(stage_b.get("semantic_review"), dict) else (info.get("semantic_review") if isinstance(info.get("semantic_review"), dict) else {})
+        current_review = current_review_for_eligibility if isinstance(current_review_for_eligibility, dict) else (stage_b.get("semantic_review") if isinstance(stage_b, dict) and isinstance(stage_b.get("semantic_review"), dict) else (info.get("semantic_review") if isinstance(info.get("semantic_review"), dict) else {}))
         current_review_fp = semantic_review_fingerprint(current_review)
         if req.revision_of_attempt_id != current_attempt_id:
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REVISION_PARENT_MISMATCH", "expected": current_attempt_id, "received": req.revision_of_attempt_id, "provider_calls": 0})
