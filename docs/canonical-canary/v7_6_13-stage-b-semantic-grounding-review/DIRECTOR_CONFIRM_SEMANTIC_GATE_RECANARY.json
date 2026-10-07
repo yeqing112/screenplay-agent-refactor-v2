@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "before_semantic_gate": {
+    "confirm_allowed": true
+  },
+  "after_semantic_gate": {
+    "confirm_allowed": false,
+    "error_code": "DIRECTOR_TREATMENT_SEMANTIC_REVIEW_REQUIRED"
+  },
+  "production_writes": 0,
+  "authority_writes": 0,
+  "pointer_writes": 0
+}

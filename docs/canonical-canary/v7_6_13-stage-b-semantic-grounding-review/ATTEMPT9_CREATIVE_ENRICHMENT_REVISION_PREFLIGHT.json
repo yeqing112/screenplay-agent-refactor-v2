@@ -1,0 +1,11 @@
+{
+  "schema_version": "director_creative_enrichment_revision_preflight_v1",
+  "status": "AUTHORIZATION_REQUIRED",
+  "history_count": 8,
+  "expected_attempt": "attempt-9",
+  "authoring_stage": "CREATIVE_ENRICHMENT",
+  "authorization": "NOT_GRANTED",
+  "provider_calls": 0,
+  "append_only": true,
+  "production_mutation": false
+}

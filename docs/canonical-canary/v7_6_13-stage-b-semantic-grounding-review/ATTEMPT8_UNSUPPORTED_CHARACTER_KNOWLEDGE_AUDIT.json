@@ -1,0 +1,23 @@
+{
+  "schema_version": "director_semantic_category_audit_v1",
+  "attempt_id": "attempt-8",
+  "category": "UNSUPPORTED_CHARACTER_KNOWLEDGE",
+  "status": "BLOCKED",
+  "finding_count": 2,
+  "findings": [
+    {
+      "path": "beat_enrichments[3].performance",
+      "claim": "顾沉熄灭安全灯的动作应果断而本能，显示出他对这种威胁并不陌生；两人躲藏时的呼吸与身体接触应传达出被迫的亲密与各自的恐惧。车票递入的瞬间是本拍的高潮——林晚读到'不要带顾沉'时，她看向顾沉的那一眼应包含怀疑、恐惧与某种被选中的困惑，而顾沉的表情应是警觉而非惊讶，暗示他知道门外的人是谁。",
+      "claim_kind": "beat_enrichments[3]",
+      "classification": "UNSUPPORTED_CHARACTER_KNOWLEDGE",
+      "matched_term": "他知道"
+    },
+    {
+      "path": "character_directions[1].direction",
+      "claim": "顾沉的表演主线是'知情者的负担'——他知道的比他说出来的多，他的每一句话都经过计算，但他的身体语言会泄露他不愿承认的情绪。",
+      "claim_kind": "character_directions[1]",
+      "classification": "UNSUPPORTED_CHARACTER_KNOWLEDGE",
+      "matched_term": "他知道"
+    }
+  ]
+}

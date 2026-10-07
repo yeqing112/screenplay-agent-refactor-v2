@@ -1,0 +1,51 @@
+{
+  "schema_version": "director_semantic_category_audit_v1",
+  "attempt_id": "attempt-8",
+  "category": "UNSUPPORTED_BACKSTORY",
+  "status": "BLOCKED",
+  "finding_count": 6,
+  "findings": [
+    {
+      "path": "beat_enrichments[0].character_effects[1].effect",
+      "claim": "顾沉在这一拍是引导者也是守门人，他打开暗房的动作带着某种仪式感与负担感，暗示他与这个空间、与铁盒背后的秘密有更深的牵连。",
+      "claim_kind": "beat_enrichments[0]",
+      "classification": "UNSUPPORTED_BACKSTORY",
+      "matched_term": "背后的秘密"
+    },
+    {
+      "path": "beat_enrichments[1].character_effects[1].effect",
+      "claim": "顾沉在这一拍是观察者，他看着林晚认出别针的反应，眼神中应有某种验证了什么的复杂情绪——他可能早就知道别针对林晚意味着什么。",
+      "claim_kind": "beat_enrichments[1]",
+      "classification": "UNSUPPORTED_BACKSTORY",
+      "matched_term": "早就"
+    },
+    {
+      "path": "beat_enrichments[2].character_effects[1].effect",
+      "claim": "顾沉在这一拍掌握话语权，他的指控带着某种私人情绪，暗示他与林晚之间有比当前事件更复杂的过往，他的平静本身就是一种压迫。",
+      "claim_kind": "beat_enrichments[2]",
+      "classification": "UNSUPPORTED_BACKSTORY",
+      "matched_term": "过往"
+    },
+    {
+      "path": "character_directions[1].performance_notes",
+      "claim": "顾沉的平静应是训练出来的，不是天生的。他在说出'也许是你自己'时应有一瞬间的自我厌恶，但立刻被压下去。熄灯躲藏时他的动作应显示出这对他来说不是第一次。",
+      "claim_kind": "character_directions[1]",
+      "classification": "UNSUPPORTED_BACKSTORY",
+      "matched_term": "训练出来"
+    },
+    {
+      "path": "information_strategy.withheld_from_audience[2]",
+      "claim": "林晚童年与暗房的真实关系",
+      "claim_kind": "information_strategy",
+      "classification": "UNSUPPORTED_BACKSTORY",
+      "matched_term": "童年与暗房"
+    },
+    {
+      "path": "information_strategy.reveal_plan[1].withholds[1]",
+      "claim": "林晚童年与暗房的真实关系",
+      "claim_kind": "information_strategy",
+      "classification": "UNSUPPORTED_BACKSTORY",
+      "matched_term": "童年与暗房"
+    }
+  ]
+}

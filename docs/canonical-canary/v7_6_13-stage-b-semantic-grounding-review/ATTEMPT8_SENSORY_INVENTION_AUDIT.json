@@ -1,0 +1,16 @@
+{
+  "schema_version": "director_semantic_category_audit_v1",
+  "attempt_id": "attempt-8",
+  "category": "UNSUPPORTED_FACT_ASSERTION",
+  "status": "BLOCKED",
+  "finding_count": 1,
+  "findings": [
+    {
+      "path": "beat_enrichments[0].transition",
+      "claim": "从门外的正常世界切入暗房的红色异质空间，用开门瞬间的光线骤变与空气里药水味的暗示完成空间转换，铁盒作为视觉锚点把观众的注意力从环境收束到物件。",
+      "claim_kind": "beat_enrichments[0]",
+      "classification": "UNSUPPORTED_FACT_ASSERTION",
+      "matched_term": "药水味"
+    }
+  ]
+}

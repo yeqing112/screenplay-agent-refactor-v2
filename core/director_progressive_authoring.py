@@ -811,16 +811,26 @@ def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping
     return system, user
 
 
-def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None) -> tuple[str, str]:
+def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None, source_authoring_unit_fingerprint: str = "") -> tuple[str, str]:
     """Build the Stage B prompt over a validated local beat plan."""
 
     system = "你是受 Stage A 约束的导演表现层助手。只输出 director_creative_enrichment_ir_v1 JSON，不得重排或修改 Stage A。"
     contract = render_stage_b_schema_contract()
     beat_refs = [str(item.get("beat_ref") or "") for item in (beat_plan.get("beats") or []) if isinstance(item, Mapping)]
+    minimized_source_units = []
+    for item in source_authoring_units or []:
+        if not isinstance(item, Mapping):
+            continue
+        minimized = {"unit_id": _text(item.get("unit_id") or item.get("source_ref")), "source_type": _text(item.get("source_type")), "source_order": item.get("source_order"), "text": _text(item.get("text") or item.get("source_text"))}
+        if _text(item.get("speaker")):
+            minimized["speaker"] = _text(item.get("speaker"))
+        minimized_source_units.append(minimized)
     user = (
         "DIRECTOR_CREATIVE_ENRICHMENT_IR_V1\n"
         f"SCENE_ID={json.dumps(scene_id, ensure_ascii=False)}\n"
         f"VALIDATED_BEAT_PLAN={json.dumps(beat_plan, ensure_ascii=False, sort_keys=True)}\n"
+        f"SOURCE_AUTHORING_UNITS={json.dumps(minimized_source_units, ensure_ascii=False, sort_keys=True)}\n"
+        f"SOURCE_AUTHORING_UNIT_FINGERPRINT={json.dumps(source_authoring_unit_fingerprint or '', ensure_ascii=False)}\n"
         f"DECLARED_PARTICIPANTS={json.dumps(declared_participants or [], ensure_ascii=False, sort_keys=True)}\n"
         f"CANONICAL_STAGE_B_TOP_LEVEL_KEYS={json.dumps(contract['top_level_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS={json.dumps(contract['beat_enrichment_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
@@ -837,6 +847,11 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         f"BEAT_COVERAGE={json.dumps(beat_refs, ensure_ascii=False, separators=(',', ':'))}\n"
         "KEY_RULE=Property names must match these strings exactly, byte-for-byte. do not translate; Chinese only in values, never in keys.\n"
         "Stage A is immutable: refs,purpose,objective,information_change,hook,scene_objective,dramatic_question are read-only and must not be repeated or changed.\n"
+        "SOURCE_GROUNDING_RULE=Creative direction may interpret presentation, but must not introduce new story facts, hidden character knowledge, backstory, relationships, motives, past events, sensory facts, or object properties not present in SOURCE_AUTHORING_UNITS or validated Stage A.\n"
+        "CHARACTER_KNOWLEDGE_CONTRACT=Do not assert 他知道、他认识、他早就知道、他经历过、他不是第一次、他曾经、他训练过 or equivalent character knowledge/history unless SOURCE_AUTHORING_UNITS explicitly support it. Phrase uncertainty as a playable performance option.\n"
+        "EMOTIONAL_FACT_CONTRACT=Do not canonize love, hatred, resentment, guilt, jealousy, attachment, or fear without source support; write playable tension or performance options instead.\n"
+        "SENSORY_FACT_CONTRACT=Do not invent smells, tastes, temperatures, textures, sounds, or other sensory facts absent from SOURCE_AUTHORING_UNITS.\n"
+        "STAGE_B_SHOTPLAN_BOUNDARY=Do not specify shot size, camera angle, lens, camera movement, frame number, keyframe, shot count, or concrete camera execution. 禁止特写、近景、全景、机位、焦段、推拉摇移、第一帧、最后一帧、镜头编号和具体镜头执行。\n"
         "exactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid\n"
         "每个 DBP beat_ref 必须恰好有一个 beat_enrichment；character_effects 只能引用 DECLARED_PARTICIPANTS。"
         "information_strategy 必须使用 director_information_strategy_v2 对象；performance_arc 使用 phase/state 对象数组；rhythm_strategy 使用 opening/reveal/escalation/button。"

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "blocked_categories": [
+    "SHOT_SIZE",
+    "CAMERA_ANGLE",
+    "CAMERA_MOVEMENT",
+    "LENS",
+    "FRAME",
+    "SHOT_NUMBER",
+    "SHOT_TRANSITION_EXECUTION",
+    "KEYFRAME"
+  ],
+  "allowed_examples": [
+    "视觉重点是海鸥别针",
+    "节奏从心理压力转向外部威胁",
+    "结束在信任裂痕"
+  ],
+  "blocked_examples": [
+    "海鸥别针特写",
+    "最后一帧停在林晚脸上"
+  ]
+}

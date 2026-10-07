@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "rules": [
+    "no new story facts",
+    "no unsupported character knowledge",
+    "no unsupported backstory",
+    "no unsupported emotional facts",
+    "no sensory invention",
+    "no ShotPlan execution language"
+  ],
+  "provider_calls": 0
+}

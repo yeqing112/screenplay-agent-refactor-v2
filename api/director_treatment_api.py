@@ -13,7 +13,7 @@ import json
 import re
 import config
 from datetime import datetime
-from typing import Any
+from typing import Any, Mapping
 
 from fastapi import APIRouter, HTTPException
 import httpx
@@ -47,6 +47,7 @@ from core.director_proposal_ir import (
     validate_director_proposal_ir_schema,
 )
 from core.director_forensic import append_director_attempt, DirectorAttemptContext, resolve_next_director_attempt_context
+from core.director_semantic_grounding import validate_director_creative_semantic_review
 from core.director_progressive_authoring import (
     DIRECTOR_BEAT_PLAN_IR_VERSION,
     build_director_beat_plan_prompt,
@@ -414,7 +415,8 @@ def validate_director_beat_plan_provider_identity(identity: dict[str, Any]) -> d
 def build_director_creative_enrichment_provider_request(
     *, scene_id: str, materialized_beat_plan: dict[str, Any], stage_a_materialized_fingerprint: str,
     stage_a_attempt_id: str = "",
-    declared_participants: list[Any] | None = None, profile: dict[str, Any] | None = None,
+    declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None,
+    source_authoring_unit_fingerprint: str = "", profile: dict[str, Any] | None = None,
     profile_snapshot: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build the provider identity for Stage B without executing it.
@@ -431,8 +433,11 @@ def build_director_creative_enrichment_provider_request(
         preflight_profile, preflight_snapshot = _director_llm_profile_preflight()
     resolved_profile = profile if isinstance(profile, dict) else preflight_profile
     snapshot = profile_snapshot if isinstance(profile_snapshot, dict) else preflight_snapshot
+    if not str(source_authoring_unit_fingerprint or "").strip() and source_authoring_units:
+        source_authoring_unit_fingerprint = hashlib.sha256(json.dumps(source_authoring_units, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
     system_prompt, user_prompt = build_director_creative_enrichment_prompt(
         scene_id=scene_id, beat_plan=materialized_beat_plan, declared_participants=declared_participants or [],
+        source_authoring_units=source_authoring_units or [], source_authoring_unit_fingerprint=source_authoring_unit_fingerprint,
     )
     parity = validate_stage_b_prompt_schema_key_parity(user_prompt)
     if parity.get("status") != "PASS":
@@ -447,6 +452,7 @@ def build_director_creative_enrichment_provider_request(
         thinking=policy["thinking"], schema_version="director_creative_enrichment_ir_v1",
         execution_boundary_version="director_creative_enrichment_provider_request_v1",
         upstream_binding_fingerprint=stage_a_materialized_fingerprint,
+        source_authoring_unit_fingerprint=source_authoring_unit_fingerprint,
     )
     identity = {
         "system_prompt": system_prompt, "user_prompt": user_prompt,
@@ -456,6 +462,7 @@ def build_director_creative_enrichment_provider_request(
         "provider_request_payload_v2": payload, "provider_request_fingerprint_v2": provider_request_fingerprint_v2(**payload),
         "schema_version": "director_creative_enrichment_ir_v1", "authoring_stage": "CREATIVE_ENRICHMENT",
         "upstream_binding_fingerprint": str(stage_a_materialized_fingerprint),
+        "source_authoring_unit_fingerprint": str(source_authoring_unit_fingerprint or ""),
         "upstream_stage_a_attempt_id": str(stage_a_attempt_id or ""),
         "execution_boundary_version": "director_creative_enrichment_provider_request_v1",
     }
@@ -479,6 +486,7 @@ def validate_director_creative_enrichment_provider_identity(identity: dict[str, 
         ("prompt_fingerprint", prompt_fingerprint(system, user), identity.get("prompt_fingerprint")),
         ("provider_request_fingerprint_v2", provider_request_fingerprint_v2(**payload), identity.get("provider_request_fingerprint_v2")),
         ("upstream_binding_fingerprint", payload.get("upstream_binding_fingerprint"), identity.get("upstream_binding_fingerprint")),
+        ("source_authoring_unit_fingerprint", payload.get("source_authoring_unit_fingerprint", ""), identity.get("source_authoring_unit_fingerprint", "")),
     ]
     for name, actual, expected in checks:
         if actual != expected:
@@ -799,15 +807,23 @@ def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int
             code = attempt_context.status("COMPILED_CONTRACT_INVALID")
             _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE", "STAGE_A_BINDING_REVALIDATE", "STAGE_B_PERSIST", "DETERMINISTIC_MERGE", "COMPILED_V3_VALIDATE"], report={"error": str(exc)}, attempt_context=attempt_context)
             raise HTTPException(status_code=502, detail={"code": code, "retry": 0}) from exc
+        source_constraints = treatment.get("source_constraints") if isinstance(treatment.get("source_constraints"), dict) else {}
+        semantic_review = validate_director_creative_semantic_review(
+            parsed,
+            candidate=candidate,
+            source_authoring_units=source_constraints.get("source_authoring_units") if isinstance(source_constraints.get("source_authoring_units"), list) else [],
+            stage_a=stage_a.get("ir") if isinstance(stage_a, dict) else None,
+            declared_participants=source_constraints.get("declared_participants") if isinstance(source_constraints.get("declared_participants"), list) else [],
+        )
         provider = {"called": True, "calls": 1, "profile_id": identity["profile_snapshot"]["profile_id"], "model": identity["profile_snapshot"]["model"], "request_fingerprint": identity["prompt_fingerprint"], "provider_request_fingerprint_v2": identity["provider_request_fingerprint_v2"], "response_fingerprint": forensic["raw_response_sha256"]}
         with Session() as session:
             row = session.query(DecisionPacketRecord).filter_by(id=packet_id, book_id=book_id).first()
             info = _json_object(row.model_info, {}) if row else {}
             info = info if isinstance(info, dict) else {}
             progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
-            stage_b = {"status": attempt_context.status("VALIDATED"), "authoring_stage": "CREATIVE_ENRICHMENT", "attempt_id": attempt_context.attempt_id, "authorization_id": authorization_id, "ir": parsed, "ir_fingerprint": stage_b_fp, "fingerprint": stage_b_fp, "stage_a_materialized_fingerprint": stage_a["materialized_fingerprint"], "provider_provenance": provider, "validation_state": "VALIDATED", "merge_state": "MERGED"}
+            stage_b = {"status": attempt_context.status("VALIDATED"), "authoring_stage": "CREATIVE_ENRICHMENT", "attempt_id": attempt_context.attempt_id, "authorization_id": authorization_id, "ir": parsed, "ir_fingerprint": stage_b_fp, "fingerprint": stage_b_fp, "stage_a_materialized_fingerprint": stage_a["materialized_fingerprint"], "provider_provenance": provider, "validation_state": "VALIDATED", "merge_state": "MERGED", "semantic_review": semantic_review}
             info["progressive_director_authoring"] = {**progressive, "stage_a": progressive.get("stage_a"), "stage_b": stage_b}
-            info.update({"llm_draft_in_progress": False, "stage_b_status": stage_b["status"], "stage_b_raw_response_forensic": {**forensic, "parse_started": True}, "stage_b_validation": {"schema": schema_report, "text": text_report, "runtime": runtime}, "event_trace": ["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE", "STAGE_A_BINDING_REVALIDATE", "STAGE_B_PERSIST", "DETERMINISTIC_MERGE", "COMPILED_V3_VALIDATE", "PROPOSAL_PERSIST"], "proposal_provenance": {"proposal_origin": "PROVIDER_PROPOSAL", "provider": provider, "authoring": {"human_input": False}, "stage_a": {"attempt_id": stage_a.get("attempt_id"), "ir_fingerprint": stage_a.get("ir_fingerprint"), "materialized_fingerprint": stage_a.get("materialized_fingerprint")}, "stage_b": {"attempt_id": attempt_context.attempt_id, "ir_fingerprint": stage_b_fp}}})
+            info.update({"llm_draft_in_progress": False, "stage_b_status": stage_b["status"], "stage_b_raw_response_forensic": {**forensic, "parse_started": True}, "stage_b_validation": {"schema": schema_report, "text": text_report, "runtime": runtime, "semantic_review": semantic_review}, "semantic_review": semantic_review, "event_trace": ["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_SCHEMA_VALIDATE", "STAGE_B_TEXT_COMPLETENESS", "STAGE_B_RUNTIME_VALIDATE", "STAGE_A_BINDING_REVALIDATE", "STAGE_B_SEMANTIC_REVIEW", "STAGE_B_PERSIST", "DETERMINISTIC_MERGE", "COMPILED_V3_VALIDATE", "PROPOSAL_PERSIST"], "proposal_provenance": {"proposal_origin": "PROVIDER_PROPOSAL", "provider": provider, "authoring": {"human_input": False}, "stage_a": {"attempt_id": stage_a.get("attempt_id"), "ir_fingerprint": stage_a.get("ir_fingerprint"), "materialized_fingerprint": stage_a.get("materialized_fingerprint")}, "stage_b": {"attempt_id": attempt_context.attempt_id, "ir_fingerprint": stage_b_fp}}})
             row.model_info = json.dumps(info, ensure_ascii=False)
             row.proposal = json.dumps(candidate, ensure_ascii=False)
             row.status = "draft"
@@ -818,7 +834,8 @@ def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int
                 info["director_llm_attempts"] = history
                 row.model_info = json.dumps(info, ensure_ascii=False)
             session.commit()
-        return {"packet_id": packet_id, "packet_fingerprint": packet_fingerprint_value, "status": attempt_context.status("VALIDATED"), "next_state": "DIRECTOR_TREATMENT_REVIEW_REQUIRED", "confirm_allowed": True, "candidate": candidate, "provider": provider, "execution_manifest": identity}
+        semantic_pass = semantic_review.get("status") == "PASS"
+        return {"packet_id": packet_id, "packet_fingerprint": packet_fingerprint_value, "status": attempt_context.status("VALIDATED"), "next_state": "DIRECTOR_TREATMENT_REVIEW_REQUIRED" if semantic_pass else "DIRECTOR_TREATMENT_SEMANTIC_REVIEW_REQUIRED", "confirm_allowed": semantic_pass, "semantic_review": semantic_review, "candidate": candidate, "provider": provider, "execution_manifest": identity}
     except HTTPException:
         # The endpoint takes the execution lock before entering this function.
         # Pre-transport races must release it without appending an attempt.
@@ -1539,6 +1556,8 @@ def generate_director_creative_enrichment_llm_draft(book_id: int, episode: int, 
         stage_a_materialized_fingerprint=materialized_fp,
         stage_a_attempt_id=str(stage_a.get("attempt_id") or "") if isinstance(stage_a, dict) else "",
         declared_participants=constraints.get("declared_participants") if isinstance(constraints.get("declared_participants"), list) else [],
+        source_authoring_units=constraints.get("source_authoring_units") if isinstance(constraints.get("source_authoring_units"), list) else [],
+        source_authoring_unit_fingerprint=str(treatment.get("source_authoring_units_fingerprint") or ""),
         profile=profile, profile_snapshot=profile_snapshot,
     )
     if is_progressive_stage_validated(progressive.get("stage_b") if isinstance(progressive, dict) else None, authoring_stage="CREATIVE_ENRICHMENT") or _json_object(row.proposal, {}).get("decision") == "ready_for_review":
@@ -1895,6 +1914,15 @@ def _confirm_production_director_treatment(book_id: int, episode: int, req: Dire
                 raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_CANDIDATE_INVALID", "message": str(exc)}) from exc
             candidate["proposal_origin"] = provenance["proposal_origin"]
             candidate["proposal_provenance"] = provenance
+            semantic_review = validate_director_creative_semantic_review(
+                progressive.get("stage_b", {}).get("ir") if isinstance(progressive.get("stage_b"), dict) else None,
+                candidate=candidate,
+                source_authoring_units=((candidate.get("source_constraints") or {}).get("source_authoring_units") if isinstance(candidate.get("source_constraints"), dict) else []),
+                stage_a=stage_a.get("ir") if isinstance(stage_a, dict) else None,
+                declared_participants=((candidate.get("source_constraints") or {}).get("declared_participants") if isinstance(candidate.get("source_constraints"), dict) else []),
+            )
+            if semantic_review.get("status") != "PASS":
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_SEMANTIC_REVIEW_REQUIRED", "message": "Creative proposal requires semantic grounding review before confirmation.", "semantic_review": semantic_review, "production_writes": 0})
             creative = candidate.get("creative_projection") if isinstance(candidate.get("creative_projection"), dict) else {}
             # Only this explicit confirmation service may cross the proposal
             # state boundary.  The compiler always emits PROPOSED.

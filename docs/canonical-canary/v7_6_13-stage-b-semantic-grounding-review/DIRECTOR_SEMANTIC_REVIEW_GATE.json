@@ -1,0 +1,11 @@
+{
+  "status": "BLOCKED",
+  "decision": "SEMANTIC_REVIEW_BLOCKED",
+  "reasons": [
+    "SOURCE_GROUNDING_BLOCKED",
+    "DOWNSTREAM_SHOTPLAN_LEAKAGE"
+  ],
+  "structural_state": "STRUCTURALLY_VALID",
+  "semantic_state": "SEMANTIC_REVIEW_BLOCKED",
+  "production_writes_allowed": false
+}

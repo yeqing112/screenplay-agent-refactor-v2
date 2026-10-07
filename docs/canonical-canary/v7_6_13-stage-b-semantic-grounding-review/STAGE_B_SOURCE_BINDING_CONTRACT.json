@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "bindings": [
+    "stage_a_materialized_fingerprint",
+    "source_authoring_unit_fingerprint"
+  ],
+  "attempt8_immutable": true,
+  "future_attempt_identity_changes": true
+}

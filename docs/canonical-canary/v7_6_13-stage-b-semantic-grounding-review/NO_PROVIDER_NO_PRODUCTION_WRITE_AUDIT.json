@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "phase": "V7.6.13",
+  "provider_calls": {
+    "real_image": 0,
+    "real_video": 0,
+    "real_llm": 0,
+    "attempt9": 0
+  },
+  "production_packet_64_mutations": 0,
+  "attempt8_raw_rewritten": false,
+  "attempt8_ir_rewritten": false,
+  "attempt8_ledger_rewritten": false
+}

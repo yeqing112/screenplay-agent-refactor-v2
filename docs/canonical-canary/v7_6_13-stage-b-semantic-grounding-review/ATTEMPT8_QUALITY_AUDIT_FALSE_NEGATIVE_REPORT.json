@@ -1,0 +1,16 @@
+{
+  "schema_version": "director_quality_audit_false_negative_report_v1",
+  "previous_audit": {
+    "status": "PASS",
+    "shotplan_semantic_leakage": "PASS",
+    "quality_is_advisory_only": true
+  },
+  "corrected_audit": {
+    "status": "BLOCKED",
+    "shotplan_semantic_leakage": "BLOCKED",
+    "violation_count": 3
+  },
+  "root_cause": "The V7.6.12 advisory audit only checked a narrow token list and did not recursively scan nested Stage B semantic fields. It therefore missed 特写 in beat_enrichments[].performance and visual_priority, and 最后一帧 in rhythm_strategy.button.",
+  "fix": "The production helper now recursively scans all textual leaves, returns category/path/matched_term, and is called by the semantic review and confirm gate.",
+  "false_negative_reproduced": true
+}

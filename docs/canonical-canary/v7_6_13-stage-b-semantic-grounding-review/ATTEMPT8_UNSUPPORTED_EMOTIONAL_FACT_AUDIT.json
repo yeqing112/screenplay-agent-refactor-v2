@@ -1,0 +1,23 @@
+{
+  "schema_version": "director_semantic_category_audit_v1",
+  "attempt_id": "attempt-8",
+  "category": "UNSUPPORTED_EMOTIONAL_FACT",
+  "status": "BLOCKED",
+  "finding_count": 2,
+  "findings": [
+    {
+      "path": "character_directions[0].performance_notes",
+      "claim": "林晚的恐惧不应是外放的尖叫，而应是内收的、身体性的——手指的颤抖、呼吸的停滞、视线的闪躲。她对'母亲'这个概念应有复杂的情感：渴望、怨恨、恐惧并存。",
+      "claim_kind": "character_directions[0]",
+      "classification": "UNSUPPORTED_EMOTIONAL_FACT",
+      "matched_term": "怨恨"
+    },
+    {
+      "path": "prohibited_interpretations[3]",
+      "claim": "不得将车票指令'不要带顾沉'演绎为简单的阴谋论，其背后应有更复杂的情感与利益纠葛",
+      "claim_kind": "prohibited_interpretations[3]",
+      "classification": "UNSUPPORTED_EMOTIONAL_FACT",
+      "matched_term": "复杂的情感"
+    }
+  ]
+}

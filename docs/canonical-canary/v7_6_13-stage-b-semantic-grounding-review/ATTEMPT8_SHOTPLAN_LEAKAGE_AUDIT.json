@@ -1,0 +1,26 @@
+{
+  "status": "BLOCKED",
+  "violations": [
+    {
+      "category": "SHOT_SIZE",
+      "path": "beat_enrichments[1].performance",
+      "matched_term": "特写",
+      "text": "开盒动作要慢，让'空'这个事实有足够的时间被观众消化；林晚拿起别针时应有细微的颤抖与一种说不清的熟悉感，她的表情不是惊喜而是困惑——认得，却想不起为什么认得，这种'认得却无法追溯'的断裂感是本拍的核心表演任务。烧焦胶片的特写应传达出'被毁掉的证据'的意味。"
+    },
+    {
+      "category": "FRAME",
+      "path": "rhythm_strategy.button",
+      "matched_term": "最后一帧",
+      "text": "以车票指令'不要带顾沉'作为场景收尾的钩子，林晚看向顾沉的那一眼应是本场戏的最后一帧画面，留下信任崩塌的余震。"
+    },
+    {
+      "category": "SHOT_SIZE",
+      "path": "visual_priority[2]",
+      "matched_term": "特写",
+      "text": "烧焦胶片与海鸥别针的特写"
+    }
+  ],
+  "violation_count": 3,
+  "attempt_id": "attempt-8",
+  "scanner": "audit_director_downstream_semantic_leakage"
+}
