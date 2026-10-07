@@ -1,5 +1,6 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "active_stage_b_attempt": "attempt-9",
+  "attempt8_archived": true,
+  "deterministic_merge": true,
+  "status": "PASS"
 }

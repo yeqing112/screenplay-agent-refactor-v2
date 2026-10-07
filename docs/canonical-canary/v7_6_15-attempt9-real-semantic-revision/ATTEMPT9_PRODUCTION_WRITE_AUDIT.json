@@ -1,7 +1,9 @@
 {
   "authority_writes": 0,
   "director_treatment_writes": 0,
-  "packet_writes": 0,
+  "downstream_writes": 0,
+  "packet_metadata_write": "append-only forensic/revision metadata writes",
   "pointer_writes": 0,
+  "source_writes": 0,
   "status": "PASS"
 }

@@ -1,5 +1,7 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "active_attempt_id": "attempt-9",
+  "active_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_VALIDATED",
+  "merge_state": "MERGED",
+  "semantic_status": "BLOCKED",
+  "status": "PASS"
 }

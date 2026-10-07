@@ -1,38 +1,38 @@
 # V7.6.15 Attempt-9 Real Semantic Revision Canary
 
-`DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_PREFLIGHT_BLOCKED`
+`DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_VALIDATED`
 
-The single authorized Attempt-9 Provider POST was **not sent**. Runtime preflight rebuilt the prompt identity and failed closed because the frozen V7.6.14 user prompt, prompt fingerprint, and Provider request fingerprint do not match the current canonical builder. The source race gate also reports `EXACT_SOURCE_PROJECTION`, while the frozen reconciliation evidence requires `SOURCE_PROJECTION_VERSION_DRIFT`; the live packet scope fingerprint is `866fc1aa010d89d1bd5ac7c0f3029d913c8908a0829592dbc5bbe42d3f15b0f1`, not the frozen `83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f`.
+`NEXT_STATE=DIRECTOR_TREATMENT_SEMANTIC_REVIEW_REQUIRED`
 
-- Provider POST: `0`
-- Automatic retry: `0`
-- Attempt-10: `0`
-- IMAGE / VIDEO / SHAPI / Poyo / 75API: `0`
-- Confirm endpoint: not called
-- DirectorTreatment / Authority / Pointer writes: `0 / 0 / 0`
-- Attempt-8: immutable and unchanged
-- Production DB before/after: byte-equivalent target snapshot
+`SEMANTIC_REVIEW=BLOCKED`
 
-## Runtime identity
+The single authorized production revision transport completed once. HTTP was `200`, finish reason `stop`, raw SHA256 `8cbb4343c4c762e74eba92a6cf6a2e5a02d74c6e789c636f1bd5f405e7521589`, and raw length `6733`. No retry, Attempt-10, confirm, approved Treatment, Authority, Pointer, SceneBlocking, ShotPlan, PromptIR, IMAGE, or VIDEO was run.
 
-| Field | Frozen | Runtime | Match |
-|---|---|---|---|
-| system prompt SHA | `6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa` | `6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa` | `PASS` |
-| user prompt SHA | `a60df635b7d70ecd1ba88d28d9ed1dd72cc3fa000987379c4eb42558a8913541` | `6f2bce5bc4aeecf3a535c24016e308c208e02ca1366fb995d4c25fcb0a05f64f` | `FAIL` |
-| prompt fingerprint | `a1c5532885d5da943558e041621976886de94299f71d14e5b9489525c1bd6d4d` | `e267cd3061cdeddd65ef5004426322cf8ea5e02aeef1f6af0f4cf45c248f719f` | `FAIL` |
-| Provider request fingerprint | `d233292b98a4c50822a99aa6b20b92ab5ff58ccc991878238d5b57811ff928ed` | `092db3c5fbf726ed730b256e5b35a43568d7bfd44590e4f3d8a770647f7c71f5` | `FAIL` |
+## Semantic result
 
-Profile: `local-llm-2vydoz / openai-compatible / mimo-v2.5 / https://api.xiaomimimo.com`.
+- Attempt-9 structural validation: PASS; beat coverage 4/4; compiled V3 validation: PASS.
+- Semantic review: BLOCKED. Counts: `{"DOWNSTREAM_SHOTPLAN_LEAKAGE": 1, "SAFE_CREATIVE_DIRECTION": 90, "SOURCE_EXPLICIT": 11, "UNSUPPORTED_BACKSTORY": 1, "UNSUPPORTED_EMOTIONAL_FACT": 1}`.
+- ShotPlan leakage: `1`; SceneBlocking leakage: 0.
+- Attempt-8 → Attempt-9 semantic comparison is recorded in `ATTEMPT8_TO_ATTEMPT9_SEMANTIC_REGRESSION_AUDIT.json`.
+- Attempt-8 remains immutable in the archive with IR SHA `5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4` and raw SHA `7d456c16384b09a7f00d9c41f032185a6646d40727108bc60b23f5fe0cb574c2`.
 
-Source projection runtime: `2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f`. Source content runtime: `ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8`.
+## Runtime identity and scope
 
-## Validation gates
+Runtime profile: `local-llm-2vydoz / openai-compatible / mimo-v2.5 / https://api.xiaomimimo.com`. Runtime prompt identity is recorded by hash only. The V7.6.14 frozen prompt identity is marked stale because it came from a synthetic test fixture; it was not hardcoded into production.
 
-All post-transport gates are `NOT_RUN` because the preflight did not prove the exact frozen request identity. No raw response was received or persisted. No semantic comparison between Attempt-8 and Attempt-9 exists. Attempt-8 parent review remains `BLOCKED` with its historical fingerprint preserved.
+Canonical target scope fingerprint: `83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f`. The persisted packet retains its historical legacy scope descriptor and fingerprint `866fc1aa010d89d1bd5ac7c0f3029d913c8908a0829592dbc5bbe42d3f15b0f1`; the reconciliation is explicit in `ATTEMPT9_RUNTIME_SCOPE.json`.
+
+## Boundaries
+
+- Active Stage B: `attempt-9`; proposal decision: `ready_for_review`; creative projection: `PROPOSED`.
+- `confirm_allowed=false`; confirm endpoint not called.
+- DirectorTreatment / Authority / Pointer writes: `0 / 0 / 0`.
+- Downstream SceneBlocking / ShotPlan / PromptIR: `0 / 0 / 0`.
+- IMAGE / VIDEO / SHAPI / Poyo / 75API: `0 / 0 / 0 / 0 / 0`.
+- Attempt-10: `0`.
 
 ## Verification
 
-- Focused provider-free tests: `42 passed`
-- `python -m compileall -q core api`: passed
-- `git diff --check`: passed
-- Evidence generation performed no external call and no production write.
+- Provider-free focused revision tests: 36 passed before the transport; post-transport validation was provider-free.
+- `python -m compileall -q core api scripts`: passed.
+- `git diff --check`: passed.

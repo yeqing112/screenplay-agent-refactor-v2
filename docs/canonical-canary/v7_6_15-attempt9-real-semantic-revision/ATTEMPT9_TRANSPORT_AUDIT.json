@@ -1,10 +1,24 @@
 {
   "automatic_retry": 0,
-  "finish_reason": null,
-  "http_status": null,
-  "latency_ms": null,
-  "provider_post_count": 0,
+  "finish_reason": "stop",
+  "http_status": 200,
+  "local_endpoint_http_status": 409,
+  "local_endpoint_response": "post-transport source-binding reconciliation failure; raw was persisted and recovered provider-free",
+  "latency_ms": 59022.42,
+  "provider_post_count": 1,
   "provider_request_id": null,
-  "reason": "preflight identity mismatch",
-  "status": "NOT_RUN"
+  "status": "PASS",
+  "transport_recorded_in": "work/attempt9_single_post_transport.json",
+  "usage": {
+    "cache_hit_rate": null,
+    "cached_tokens": null,
+    "completion_tokens": 3193,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 5507,
+    "prompt_tokens_details": {},
+    "reasoning_tokens": 0,
+    "total_tokens": 8700
+  }
 }

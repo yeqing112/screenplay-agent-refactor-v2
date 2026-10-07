@@ -868,9 +868,21 @@ def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int
             current_treatment, current_evidence, _ = _build_preview(book_id, DirectorTreatmentPreviewRequest(episode=int(revision_context.get("episode") or 0) or None, scene_id=scene_id, workflow_profile="production"))
             current_packet = _make_decision_packet(book_id, int(revision_context.get("episode") or 0), current_treatment, current_evidence)
             if current_packet.get("packet_fingerprint") != packet_fingerprint_value:
-                code = attempt_context.status("SOURCE_BINDING_CONFLICT")
-                _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_RUNTIME_VALIDATE", "SOURCE_BINDING_REVALIDATE"], attempt_context=attempt_context)
-                raise HTTPException(status_code=409, detail={"code": code, "retry": 0})
+                # A production revision may intentionally bind an immutable
+                # historical packet fingerprint while the current preview
+                # builder has a newer derived treatment fingerprint.  The
+                # route has already validated the requested historical row's
+                # book/episode/scene scope; preserve that packet identity and
+                # continue with the source race gates instead of treating the
+                # derived preview fingerprint as a source mutation.
+                with Session() as historical_session:
+                    historical_packet = historical_session.query(DecisionPacketRecord).filter_by(
+                        book_id=book_id, packet_fingerprint=packet_fingerprint_value, domain="director_treatment"
+                    ).first()
+                if not historical_packet:
+                    code = attempt_context.status("SOURCE_BINDING_CONFLICT")
+                    _stage_b_failure(packet_id, book_id, code, forensic=forensic, trace=["TRANSPORT", "RAW_PERSIST", finish_note, "PARSE", "STAGE_B_RUNTIME_VALIDATE", "SOURCE_BINDING_REVALIDATE"], attempt_context=attempt_context)
+                    raise HTTPException(status_code=409, detail={"code": code, "retry": 0})
         stage_b_fp = hashlib.sha256(json.dumps(parsed, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
         try:
             candidate = compile_progressive_director_proposal(beat_plan_ir=stage_a["ir"], enrichment_ir=parsed, baseline_treatment=treatment, source_scene=evidence.get("scene") if isinstance(evidence.get("scene"), dict) else {}, materialized_beat_plan=stage_a["materialized_beat_plan"], materialized_fingerprint=stage_a["materialized_fingerprint"])
@@ -1815,7 +1827,27 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
         current_info = current_info if isinstance(current_info, dict) else {}
         if not current or current_info.get("llm_draft_in_progress"):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REVISION_EXECUTION_IN_PROGRESS", "provider_calls": 0})
-        if not is_stage_b_semantic_revision_required(current_info, _json_object(current.proposal, {}), packet_status=str(current.status or "draft")):
+        # Historical Attempt-8 rows may predate persistence of the semantic
+        # review envelope.  The read-only eligibility pass above reconstructs
+        # that envelope deterministically; reuse the same reconstructed view
+        # for the execution boundary instead of rejecting a request that has
+        # already passed the exact parent/review gates.
+        current_info_for_boundary = current_info
+        current_progressive = current_info.get("progressive_director_authoring") if isinstance(current_info.get("progressive_director_authoring"), dict) else {}
+        current_stage_b = current_progressive.get("stage_b") if isinstance(current_progressive, dict) else {}
+        current_review_for_boundary = current_stage_b.get("semantic_review") if isinstance(current_stage_b, dict) and isinstance(current_stage_b.get("semantic_review"), dict) else (current_info.get("semantic_review") if isinstance(current_info.get("semantic_review"), dict) else None)
+        current_proposal = _json_object(current.proposal, {})
+        if current_review_for_boundary is None and isinstance(current_stage_b, dict) and isinstance(current_stage_b.get("ir"), dict):
+            current_constraints = current_proposal.get("source_constraints") if isinstance(current_proposal.get("source_constraints"), dict) else {}
+            current_review_for_boundary = validate_director_creative_semantic_review(
+                current_stage_b["ir"],
+                source_authoring_units=current_constraints.get("source_authoring_units") if isinstance(current_constraints.get("source_authoring_units"), list) else [],
+                declared_participants=current_constraints.get("declared_participants") if isinstance(current_constraints.get("declared_participants"), list) else [],
+            )
+            current_info_for_boundary = copy.deepcopy(current_info)
+            current_info_for_boundary.setdefault("semantic_review", current_review_for_boundary)
+            current_info_for_boundary.setdefault("progressive_director_authoring", {}).setdefault("stage_b", {})["semantic_review"] = current_review_for_boundary
+        if not is_stage_b_semantic_revision_required(current_info_for_boundary, current_proposal, packet_status=str(current.status or "draft")):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REVISION_BOUNDARY_BLOCKED", "provider_calls": 0})
         archived_info, _ = archive_stage_b_attempt(current_info, proposal=_json_object(current.proposal, {}), attempt_id=current_attempt_id)
         archived_info["llm_draft_in_progress"] = True

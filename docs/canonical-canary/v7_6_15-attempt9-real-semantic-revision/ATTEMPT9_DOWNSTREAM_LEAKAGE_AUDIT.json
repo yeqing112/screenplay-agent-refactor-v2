@@ -1,5 +1,12 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "status": "BLOCKED",
+  "violation_count": 1,
+  "violations": [
+    {
+      "category": "SHOT_EXECUTION",
+      "matched_term": "镜头",
+      "path": "note",
+      "text": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 validated Stage A 生成，未引入新的故事事实、角色知识、背景、关系、动机、感官事实或物件属性；所有表演方向均以可执行的表演张力呈现，未指定任何镜头执行。"
+    }
+  ]
 }

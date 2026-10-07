@@ -1,5 +1,8 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "beat_enrichment_count": 4,
+  "character_direction_count": 2,
+  "creative_quality_not_promoted": true,
+  "nonempty_text_fields": 219,
+  "semantic_safety": "BLOCKED",
+  "status": "ADVISORY"
 }

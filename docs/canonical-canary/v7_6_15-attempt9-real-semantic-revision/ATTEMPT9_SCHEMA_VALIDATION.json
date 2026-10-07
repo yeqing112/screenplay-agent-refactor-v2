@@ -1,5 +1,5 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "errors": [],
+  "status": "PASS",
+  "version": "director_creative_enrichment_ir_v1"
 }

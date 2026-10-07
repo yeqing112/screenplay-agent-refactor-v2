@@ -3,6 +3,7 @@
   "parent_fingerprint": "cf7c71df8f9d9e6f8e75470a90bd36fd10d15502415cf6beca1e9c20f8c296b6",
   "parent_immutable": true,
   "parent_ir_fingerprint": "5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4",
-  "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "parent_raw_sha256": "7d456c16384b09a7f00d9c41f032185a6646d40727108bc60b23f5fe0cb574c2",
+  "parent_semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
   "status": "PASS"
 }

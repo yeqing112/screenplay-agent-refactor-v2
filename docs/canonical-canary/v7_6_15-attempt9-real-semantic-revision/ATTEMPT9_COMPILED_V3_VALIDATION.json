@@ -1,5 +1,13 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "covered_story_unit_count": 12,
+  "creative_beat_count": 4,
+  "errors": [],
+  "source_action_count": 11,
+  "source_dialogue_count": 1,
+  "source_unit_count": 12,
+  "status": "qualified",
+  "story_unit_count": 12,
+  "synthetic_source_beat_count": 0,
+  "synthetic_source_scene_name_count": 0,
+  "warnings": []
 }

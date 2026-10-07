@@ -1,5 +1,11 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "attempt10": 0,
+  "attempt_context": {
+    "attempt_id": "attempt-9",
+    "history_count": 8,
+    "ordinal": 9,
+    "status_prefix": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9"
+  },
+  "attempt_history_count": 9,
+  "status": "PASS"
 }

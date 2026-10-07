@@ -1,6 +1,12 @@
 {
-  "changed": false,
-  "production_writes": 0,
-  "provider_calls": 0,
-  "status": "PASS"
+  "approved_domain_rows_added": 0,
+  "changed": true,
+  "changed_fields": [
+    "packet.model_info",
+    "packet.proposal"
+  ],
+  "downstream_rows_added": 0,
+  "provider_calls": 1,
+  "source_lineage_changed": false,
+  "status": "PASS_EXPECTED_REVISION_METADATA"
 }

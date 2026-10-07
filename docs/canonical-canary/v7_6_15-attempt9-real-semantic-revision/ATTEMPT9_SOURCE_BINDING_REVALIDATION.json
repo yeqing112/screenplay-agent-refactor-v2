@@ -1,5 +1,8 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "historical_packet_fingerprint_reconciled": true,
+  "source_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "source_mutation_count": 0,
+  "source_projection_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "status": "PASS"
 }

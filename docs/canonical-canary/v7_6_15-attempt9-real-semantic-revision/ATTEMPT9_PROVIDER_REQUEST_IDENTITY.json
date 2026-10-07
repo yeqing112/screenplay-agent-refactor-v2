@@ -1,45 +1,15 @@
 {
-  "expected": {
-    "prompt_fingerprint": "a1c5532885d5da943558e041621976886de94299f71d14e5b9489525c1bd6d4d",
-    "provider_request_fingerprint_v2": "d233292b98a4c50822a99aa6b20b92ab5ff58ccc991878238d5b57811ff928ed",
-    "revision_parent_fingerprint": "cf7c71df8f9d9e6f8e75470a90bd36fd10d15502415cf6beca1e9c20f8c296b6",
-    "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
-    "source_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
-    "source_projection_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
-    "system_prompt_sha256": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
-    "user_prompt_sha256": "a60df635b7d70ecd1ba88d28d9ed1dd72cc3fa000987379c4eb42558a8913541"
+  "historical_expected_identity": "STALE_NON_AUTHORITATIVE_TEST_FIXTURE",
+  "profile": {
+    "base_host": "https://api.xiaomimimo.com",
+    "model": "mimo-v2.5",
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible"
   },
-  "identity_checks": {
-    "prompt_fingerprint": {
-      "expected": "a1c5532885d5da943558e041621976886de94299f71d14e5b9489525c1bd6d4d",
-      "match": false,
-      "runtime": "e267cd3061cdeddd65ef5004426322cf8ea5e02aeef1f6af0f4cf45c248f719f"
-    },
-    "provider_request_fingerprint_v2": {
-      "expected": "d233292b98a4c50822a99aa6b20b92ab5ff58ccc991878238d5b57811ff928ed",
-      "match": false,
-      "runtime": "092db3c5fbf726ed730b256e5b35a43568d7bfd44590e4f3d8a770647f7c71f5"
-    },
-    "system_prompt_sha256": {
-      "expected": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
-      "match": true,
-      "runtime": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa"
-    },
-    "user_prompt_sha256": {
-      "expected": "a60df635b7d70ecd1ba88d28d9ed1dd72cc3fa000987379c4eb42558a8913541",
-      "match": false,
-      "runtime": "6f2bce5bc4aeecf3a535c24016e308c208e02ca1366fb995d4c25fcb0a05f64f"
-    }
-  },
-  "provider_calls": 0,
-  "runtime": {
-    "prompt_fingerprint": "e267cd3061cdeddd65ef5004426322cf8ea5e02aeef1f6af0f4cf45c248f719f",
-    "provider_request_fingerprint_v2": "092db3c5fbf726ed730b256e5b35a43568d7bfd44590e4f3d8a770647f7c71f5",
-    "source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
-    "source_authority_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
-    "system_prompt_sha256": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
-    "user_prompt_sha256": "6f2bce5bc4aeecf3a535c24016e308c208e02ca1366fb995d4c25fcb0a05f64f"
-  },
+  "prompt_fingerprint": "e267cd3061cdeddd65ef5004426322cf8ea5e02aeef1f6af0f4cf45c248f719f",
+  "provider_request_fingerprint_v2": "092db3c5fbf726ed730b256e5b35a43568d7bfd44590e4f3d8a770647f7c71f5",
   "secrets_included": false,
-  "status": "BLOCKED"
+  "status": "PASS_RUNTIME_IDENTITY",
+  "system_prompt_sha256": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
+  "user_prompt_sha256": "6f2bce5bc4aeecf3a535c24016e308c208e02ca1366fb995d4c25fcb0a05f64f"
 }

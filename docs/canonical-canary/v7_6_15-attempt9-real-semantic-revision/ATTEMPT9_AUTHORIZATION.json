@@ -1,15 +1,18 @@
 {
+  "attempt": "attempt-9",
   "authorization_id": "v7.6.15-attempt9-stage-b-semantic-revision-single-call",
-  "consumed": false,
-  "consumption_reason": "preflight blocked before transport",
+  "consumed": true,
+  "downstream_authorized": false,
   "granted": true,
-  "provider_post_count": 0,
+  "provider_post_count": 1,
   "scope": {
-    "attempt": "attempt-9",
     "book_id": 990453,
+    "decision_packet_id": 64,
     "episode": 1,
-    "model": "mimo-v2.5",
-    "packet_id": 64,
-    "scene_id": "E01_SC001"
+    "fact_snapshot_id": 49,
+    "kind": "CANONICAL_CANARY_TARGET",
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
   }
 }

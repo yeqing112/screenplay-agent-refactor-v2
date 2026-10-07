@@ -1,5 +1,6 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "attempt8_ir_fingerprint": "5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4",
+  "attempt9_ir_fingerprint": "591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa",
+  "different_from_parent": true,
+  "status": "PASS"
 }

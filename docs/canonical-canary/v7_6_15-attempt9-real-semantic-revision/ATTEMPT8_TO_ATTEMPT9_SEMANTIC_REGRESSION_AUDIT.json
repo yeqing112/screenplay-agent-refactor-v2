@@ -1,5 +1,30 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "attempt8": {
+    "DOWNSTREAM_SHOTPLAN_LEAKAGE": 3,
+    "SAFE_CREATIVE_DIRECTION": 92,
+    "SOURCE_EXPLICIT": 1,
+    "UNSUPPORTED_BACKSTORY": 6,
+    "UNSUPPORTED_CHARACTER_KNOWLEDGE": 2,
+    "UNSUPPORTED_EMOTIONAL_FACT": 2,
+    "UNSUPPORTED_FACT_ASSERTION": 1
+  },
+  "attempt9": {
+    "DOWNSTREAM_SHOTPLAN_LEAKAGE": 1,
+    "SAFE_CREATIVE_DIRECTION": 90,
+    "SOURCE_EXPLICIT": 11,
+    "UNSUPPORTED_BACKSTORY": 1,
+    "UNSUPPORTED_EMOTIONAL_FACT": 1
+  },
+  "delta": {
+    "DOWNSTREAM_SHOTPLAN_LEAKAGE": -2,
+    "SAFE_CREATIVE_DIRECTION": -2,
+    "SOURCE_EXPLICIT": 10,
+    "UNSUPPORTED_BACKSTORY": -5,
+    "UNSUPPORTED_CHARACTER_KNOWLEDGE": -2,
+    "UNSUPPORTED_EMOTIONAL_FACT": -1,
+    "UNSUPPORTED_FACT_ASSERTION": -1
+  },
+  "shotplan_leakage_attempt8": 3,
+  "shotplan_leakage_attempt9": 1,
+  "status": "PASS_COMPARISON"
 }

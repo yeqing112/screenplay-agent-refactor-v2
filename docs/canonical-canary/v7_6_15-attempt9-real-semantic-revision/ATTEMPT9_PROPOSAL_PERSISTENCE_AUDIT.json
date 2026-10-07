@@ -1,5 +1,7 @@
 {
-  "provider_calls": 0,
-  "reason": "Attempt-9 transport was fail-closed in preflight",
-  "status": "NOT_RUN"
+  "creative_projection_status": "PROPOSED",
+  "decision": "ready_for_review",
+  "domain_write_performed": false,
+  "proposal_provenance_attempt": "attempt-9",
+  "status": "PASS"
 }
