@@ -1,0 +1,17 @@
+{
+  "confirm_allowed": true,
+  "merge_state": "MERGED",
+  "next_state": "DIRECTOR_TREATMENT_REVIEW_REQUIRED",
+  "packet_id": 64,
+  "packet_status": "draft",
+  "proposal_after": {
+    "creative_projection_status": "PROPOSED",
+    "decision": "ready_for_review"
+  },
+  "proposal_before": {
+    "decision": "awaiting_llm"
+  },
+  "stage_b_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_VALIDATED",
+  "status": "PASS",
+  "validation_state": "VALIDATED"
+}

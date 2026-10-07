@@ -1,0 +1,21 @@
+{
+  "allowed_calls": 1,
+  "attempt": "attempt-8",
+  "authoring_stage": "CREATIVE_ENRICHMENT",
+  "authority_promotion_allowed": false,
+  "authorization_id": "v7.6.12-attempt8-stage-b-single-call",
+  "confirm_allowed": false,
+  "downstream_generation_allowed": false,
+  "model": "mimo-v2.5",
+  "retry_allowed": false,
+  "scope": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "kind": "CANONICAL_CANARY_TARGET",
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
+  }
+}

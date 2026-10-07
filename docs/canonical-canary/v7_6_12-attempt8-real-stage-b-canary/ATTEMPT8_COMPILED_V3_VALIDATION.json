@@ -1,0 +1,9 @@
+{
+  "confirm_called": false,
+  "creative_projection_status": "PROPOSED",
+  "decision": "ready_for_review",
+  "human_confirmation_required": true,
+  "schema_version": "director_treatment_v3",
+  "status": "PASS",
+  "validator_status": "qualified"
+}

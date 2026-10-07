@@ -1,0 +1,6 @@
+{
+  "duplicate_keys": 0,
+  "parser": "object_pairs_hook=_reject_duplicate_stage_b_pairs",
+  "raw_parse_result": "no duplicate properties",
+  "status": "PASS"
+}

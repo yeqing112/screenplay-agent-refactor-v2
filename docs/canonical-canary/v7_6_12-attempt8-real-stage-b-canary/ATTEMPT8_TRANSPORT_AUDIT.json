@@ -1,0 +1,32 @@
+{
+  "actual_http_attempt_count": 1,
+  "automatic_retry": false,
+  "choice_index": 0,
+  "finish_reason": "stop",
+  "http_status": 200,
+  "latency_ms": 68461.9,
+  "provider_request_fingerprint_v2": "8b4de84c034162521b02714602a9006ffff93339851f20fa36760156137cdde8",
+  "provider_request_id": "",
+  "request_fingerprint": "9b60b1245e10288c405b9f04a2d092b66f687a36a7c992fa6a41d232ebef53e9",
+  "resolved_max_tokens": 8192,
+  "resolved_temperature": 0.0,
+  "response_format": {
+    "type": "json_object"
+  },
+  "status": "PASS",
+  "thinking": {
+    "type": "disabled"
+  },
+  "usage": {
+    "cache_hit_rate": null,
+    "cached_tokens": null,
+    "completion_tokens": 3697,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 3152,
+    "prompt_tokens_details": {},
+    "reasoning_tokens": 0,
+    "total_tokens": 6849
+  }
+}

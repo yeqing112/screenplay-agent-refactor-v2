@@ -1,0 +1,81 @@
+{
+  "metrics": {
+    "audience_effect_specificity": {
+      "avg_length": 90.5,
+      "count": 4,
+      "min_length": 75,
+      "nonempty": 4,
+      "path": "beat_enrichments[].audience_effect"
+    },
+    "beat_enrichment_count": 4,
+    "character_directions_quality": {
+      "avg_length": 66.5,
+      "count": 2,
+      "min_length": 61,
+      "nonempty": 2,
+      "path": "character_directions[].direction"
+    },
+    "character_effect_specificity": {
+      "avg_length": 66.0,
+      "count": 8,
+      "min_length": 59,
+      "nonempty": 8,
+      "path": "beat_enrichments[].character_effects[].effect"
+    },
+    "information_strategy_quality": {
+      "known_count": 9,
+      "reveal_count": 4,
+      "reveal_refs_valid": true,
+      "schema_version": "director_information_strategy_v2",
+      "withheld_count": 7
+    },
+    "performance_arc_coherence": {
+      "all_phase_and_state": true,
+      "count": 4
+    },
+    "performance_specificity": {
+      "avg_length": 136.8,
+      "count": 4,
+      "min_length": 125,
+      "nonempty": 4,
+      "path": "beat_enrichments[].performance"
+    },
+    "prohibited_interpretations_usefulness": {
+      "count": 6
+    },
+    "repetition_template_language": {
+      "duplicate_text_count": 0
+    },
+    "rhythm_strategy_quality": {
+      "required_keys_present": true
+    },
+    "scene_exit_intent_quality": {
+      "length": 82,
+      "nonempty": true
+    },
+    "shotplan_semantic_leakage": {
+      "matches": [],
+      "status": "PASS"
+    },
+    "source_fact_invention_risk": {
+      "automated_gate": "not_used_for_persistence",
+      "status": "REVIEW_ONLY"
+    },
+    "stage_a_semantic_mutation_risk": {
+      "reason": "persisted Stage A identity and DBP IDs match frozen preflight",
+      "status": "PASS"
+    },
+    "transition_specificity": {
+      "avg_length": 66.2,
+      "count": 4,
+      "min_length": 61,
+      "nonempty": 4,
+      "path": "beat_enrichments[].transition"
+    },
+    "visual_priority_quality": {
+      "count": 6
+    }
+  },
+  "quality_is_advisory_only": true,
+  "status": "PASS"
+}

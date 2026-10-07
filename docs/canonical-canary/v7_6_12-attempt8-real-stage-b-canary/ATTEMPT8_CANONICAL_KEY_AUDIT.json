@@ -1,0 +1,14 @@
+{
+  "counts": {
+    "beat_enrichment": 0,
+    "character_direction": 0,
+    "character_effect": 0,
+    "information_strategy": 0,
+    "reveal_plan": 0,
+    "rhythm_strategy": 0,
+    "top_level": 0
+  },
+  "noncanonical_top_level_keys": [],
+  "status": "PASS",
+  "violations": []
+}

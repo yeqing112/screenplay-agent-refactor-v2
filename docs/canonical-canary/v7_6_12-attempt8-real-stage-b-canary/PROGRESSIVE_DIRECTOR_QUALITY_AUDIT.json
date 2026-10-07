@@ -1,0 +1,28 @@
+{
+  "merged_proposal": {
+    "creative_projection_status": "PROPOSED",
+    "decision": "ready_for_review",
+    "reviewable": true,
+    "schema_version": "director_treatment_v3"
+  },
+  "stage_a": {
+    "beat_count": 4,
+    "dramatic_question_nonempty": true,
+    "hook_count": 4,
+    "scene_objective_nonempty": true
+  },
+  "stage_b": {
+    "audience_layer": 4,
+    "character_direction_count": 2,
+    "exit_intent_nonempty": true,
+    "information_release": 4,
+    "performance_layer": 4,
+    "rhythm_keys": [
+      "opening",
+      "reveal",
+      "escalation",
+      "button"
+    ]
+  },
+  "status": "PASS"
+}

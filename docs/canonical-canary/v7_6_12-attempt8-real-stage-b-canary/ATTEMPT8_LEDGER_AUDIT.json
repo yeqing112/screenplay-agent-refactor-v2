@@ -1,0 +1,19 @@
+{
+  "attempt_9_present": false,
+  "history_ids": [
+    "v7_3_attempt_1",
+    "v7_3_attempt_2",
+    "attempt-3",
+    "attempt-4",
+    "attempt-5",
+    "attempt-6",
+    "attempt-7",
+    "attempt-8"
+  ],
+  "latest_attempt_id": "attempt-8",
+  "latest_authoring_stage": "CREATIVE_ENRICHMENT",
+  "latest_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT8_VALIDATED",
+  "ledger_after": 8,
+  "ledger_before": 7,
+  "status": "PASS"
+}

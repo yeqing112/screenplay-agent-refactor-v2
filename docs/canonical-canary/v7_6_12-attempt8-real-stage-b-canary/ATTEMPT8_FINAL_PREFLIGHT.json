@@ -1,0 +1,28 @@
+{
+  "authoring_stage": "CREATIVE_ENRICHMENT",
+  "expected_attempt": "attempt-8",
+  "ledger_before": 7,
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "packet_id": 64,
+  "preflight_authorization": "GRANTED_FOR_THIS_CALL",
+  "production_target_writes_before": {
+    "authority": 0,
+    "director_treatment": 0,
+    "pointer": 0
+  },
+  "scope": {
+    "book_id": 990453,
+    "decision_packet_id": 64,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "kind": "CANONICAL_CANARY_TARGET",
+    "scene_id": "E01_SC001",
+    "script_id": 64,
+    "script_ir_version_id": 52
+  },
+  "scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f",
+  "stage_a_attempt_id": "attempt-7",
+  "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "stage_b_before": "ABSENT",
+  "status": "PASS"
+}

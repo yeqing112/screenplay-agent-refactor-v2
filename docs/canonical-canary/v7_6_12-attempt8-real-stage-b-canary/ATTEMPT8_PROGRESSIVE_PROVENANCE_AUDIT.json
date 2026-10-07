@@ -1,0 +1,30 @@
+{
+  "merge": {
+    "local_semantic_additions": 0,
+    "mode": "DETERMINISTIC"
+  },
+  "stage_a": {
+    "attempt_id": "attempt-7",
+    "authoring_stage": "BEAT_PLAN",
+    "ir_fingerprint": "b3dbf2624289134c10d19f93c9cbd00614e9caa501dbe40cd002e24e42821086",
+    "materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+    "provider_provenance": {
+      "called": true,
+      "calls": 1,
+      "model": "mimo-v2.5",
+      "profile_id": "local-llm-2vydoz",
+      "prompt_fingerprint": "2d6e0d66005d26edbed961ad45af4697f0954eefce99afaea0231c01b16c4c91",
+      "provider_request_fingerprint_v2": "eb7a104853cad07ba56da007270da4a352449c7ff0f61ecbac9f4e2f7902bab2",
+      "raw_response_sha256": "83b935f4062a3f9be1009fb91ce0d9e7c548020275ac478d4dbd05eaba7a38c7"
+    }
+  },
+  "stage_b": {
+    "attempt_id": "attempt-8",
+    "authoring_stage": "CREATIVE_ENRICHMENT",
+    "ir_fingerprint": "5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4",
+    "prompt_fingerprint": "9b60b1245e10288c405b9f04a2d092b66f687a36a7c992fa6a41d232ebef53e9",
+    "provider_request_fingerprint_v2": "8b4de84c034162521b02714602a9006ffff93339851f20fa36760156137cdde8",
+    "raw_sha256": "7d456c16384b09a7f00d9c41f032185a6646d40727108bc60b23f5fe0cb574c2"
+  },
+  "status": "PASS"
+}

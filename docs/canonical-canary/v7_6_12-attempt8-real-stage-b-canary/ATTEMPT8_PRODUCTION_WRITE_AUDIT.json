@@ -1,0 +1,10 @@
+{
+  "approved_director_treatment_writes": 0,
+  "authority_promotion": false,
+  "confirm_called": false,
+  "director_treatment_authority_writes": 0,
+  "director_treatment_pointer_writes": 0,
+  "proposal_write": "one reviewable Packet 64 proposal",
+  "status": "PASS",
+  "target_scope_fingerprint": "83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f"
+}

@@ -1,0 +1,25 @@
+{
+  "75api_calls": 0,
+  "image_calls": 0,
+  "poyo_calls": 0,
+  "prompt_ir_generation": 0,
+  "scene_blocking": 0,
+  "shapi_calls": 0,
+  "shot_plan": 0,
+  "status": "PASS",
+  "target_counts": {
+    "decision_packet_records": 1,
+    "director_treatment_authorities": 0,
+    "director_treatment_pointers": 0,
+    "director_treatments": 0,
+    "generation_execution_records": 0,
+    "media_candidate_records": 0,
+    "official_media_versions": 0,
+    "prompt_ir_versions": 0,
+    "scene_blockings": 0,
+    "shot_plans": 0,
+    "storyboard_prompt_versions": 0,
+    "storyboard_shots": 0
+  },
+  "video_calls": 0
+}

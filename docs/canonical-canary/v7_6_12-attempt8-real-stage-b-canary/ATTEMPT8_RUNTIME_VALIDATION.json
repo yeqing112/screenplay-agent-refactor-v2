@@ -1,0 +1,18 @@
+{
+  "beat_coverage": "PASS",
+  "beat_enrichment_count": 4,
+  "duplicate_beat_refs": [],
+  "errors": [],
+  "information_reveal_beat_refs": "PASS",
+  "invalid_participants": [],
+  "local_creative_completion": 0,
+  "missing_beat_refs": [],
+  "participant_validation": "PASS",
+  "source_mutation_count": 0,
+  "stage_a_beat_count": 4,
+  "stage_a_mutation_count": 0,
+  "status": "qualified",
+  "unknown_beat_refs": [],
+  "unknown_reveal_beat_refs": [],
+  "version": "director_creative_enrichment_ir_v1"
+}
