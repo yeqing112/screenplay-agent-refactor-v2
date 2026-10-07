@@ -2,7 +2,7 @@
 
 `DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_PREFLIGHT_BLOCKED`
 
-The single authorized Attempt-9 Provider POST was **not sent**. Runtime preflight rebuilt the prompt identity and failed closed because the frozen V7.6.14 user prompt, prompt fingerprint, and Provider request fingerprint do not match the current canonical builder. The source race gate also reports `EXACT_SOURCE_PROJECTION`, while the frozen reconciliation evidence requires `SOURCE_PROJECTION_VERSION_DRIFT`.
+The single authorized Attempt-9 Provider POST was **not sent**. Runtime preflight rebuilt the prompt identity and failed closed because the frozen V7.6.14 user prompt, prompt fingerprint, and Provider request fingerprint do not match the current canonical builder. The source race gate also reports `EXACT_SOURCE_PROJECTION`, while the frozen reconciliation evidence requires `SOURCE_PROJECTION_VERSION_DRIFT`; the live packet scope fingerprint is `866fc1aa010d89d1bd5ac7c0f3029d913c8908a0829592dbc5bbe42d3f15b0f1`, not the frozen `83fa9de56efb24c19e296be933cc5a394ddb7887e1356315642fd5c4be4ae80f`.
 
 - Provider POST: `0`
 - Automatic retry: `0`
