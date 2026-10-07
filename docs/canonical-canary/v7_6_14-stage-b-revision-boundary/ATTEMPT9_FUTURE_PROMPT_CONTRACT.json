@@ -1,0 +1,14 @@
+{
+  "fresh_generation": true,
+  "human_authorization_required": true,
+  "parent_semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "prompt_contract": "Generate a fresh CreativeEnrichment IR; do not patch, paraphrase, or reuse the rejected response.",
+  "rejected_attempt8_raw_included": false,
+  "revision_parent_attempt_id": "attempt-8",
+  "revision_parent_fingerprint": "cf7c71df8f9d9e6f8e75470a90bd36fd10d15502415cf6beca1e9c20f8c296b6",
+  "schema_version": "attempt9_future_prompt_contract_v1",
+  "semantic_feedback_included_as_constraints": true,
+  "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "source_authority_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "status": "PASS"
+}

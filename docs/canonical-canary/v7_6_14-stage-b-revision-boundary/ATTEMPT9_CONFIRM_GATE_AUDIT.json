@@ -1,0 +1,9 @@
+{
+  "downstream_scene_blocking_allowed": false,
+  "production_confirmation_still_requires_human_approval": true,
+  "schema_version": "attempt9_confirm_gate_audit_v1",
+  "semantic_blocked_confirm_allowed": false,
+  "semantic_pass_confirm_allowed": true,
+  "stage_b_merge_state_required": "MERGED",
+  "status": "PASS"
+}

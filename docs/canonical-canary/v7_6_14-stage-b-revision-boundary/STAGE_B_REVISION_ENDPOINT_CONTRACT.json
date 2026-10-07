@@ -1,0 +1,22 @@
+{
+  "append_only": true,
+  "authorization_gate": "confirmed=true AND allowExternalCall=true AND new authorization_id",
+  "initial_endpoint_behavior": "completed/idempotency guard remains unchanged",
+  "no_authorization_result": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_AUTHORIZATION_REQUIRED",
+  "provider_calls_before_authorization": 0,
+  "request_fields": [
+    "episode",
+    "scene_id",
+    "workflow_profile",
+    "packet_fingerprint",
+    "revision_of_attempt_id",
+    "revision_of_stage_b_ir_fingerprint",
+    "semantic_review_fingerprint",
+    "confirmed",
+    "allow_external_call",
+    "authorization_id"
+  ],
+  "route": "POST /api/books/{book_id}/episodes/{episode}/director-treatment/creative-enrichment/revision/llm-draft",
+  "schema_version": "stage_b_revision_endpoint_v1",
+  "status": "PASS"
+}

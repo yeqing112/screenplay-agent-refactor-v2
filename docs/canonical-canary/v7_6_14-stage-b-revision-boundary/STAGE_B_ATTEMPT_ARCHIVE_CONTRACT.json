@@ -1,0 +1,22 @@
+{
+  "active_stage_b_is_separate_from_history": true,
+  "archive_path": "progressive_director_authoring.stage_b_attempts[]",
+  "immutable_fields": [
+    "attempt_id",
+    "ir",
+    "ir_fingerprint",
+    "structural_status",
+    "validation_state",
+    "merge_state",
+    "semantic_review",
+    "provider_provenance",
+    "raw_forensic",
+    "validation",
+    "proposal",
+    "proposal_fingerprint"
+  ],
+  "same_attempt_byte_identical": "idempotent no-op",
+  "same_attempt_different_content": "DIRECTOR_STAGE_B_ARCHIVE_CONFLICT",
+  "schema_version": "stage_b_attempt_archive_v1",
+  "status": "PASS"
+}

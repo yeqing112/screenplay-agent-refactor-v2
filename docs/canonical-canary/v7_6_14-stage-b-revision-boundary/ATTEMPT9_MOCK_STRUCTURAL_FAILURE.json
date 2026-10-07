@@ -1,0 +1,16 @@
+{
+  "active_attempt_after_failure": "attempt-8",
+  "attempt8_proposal_preserved": true,
+  "attempt9_archived_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_SCHEMA_INVALID",
+  "attempt_history_after": 9,
+  "automatic_attempt10": false,
+  "execution_mode": "isolated_mock_runtime",
+  "failure": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_SCHEMA_INVALID",
+  "history_archived_attempts": [
+    "attempt-8",
+    "attempt-9"
+  ],
+  "provider_calls": 1,
+  "schema_version": "attempt9_mock_structural_failure_v1",
+  "status": "PASS"
+}

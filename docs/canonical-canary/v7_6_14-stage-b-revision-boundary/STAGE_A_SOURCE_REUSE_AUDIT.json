@@ -1,0 +1,16 @@
+{
+  "canonical_source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "canonical_source_authority_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "reason": "Projection version drift only; source authority content is equal and Stage A remains immutable.",
+  "reuse_allowed": true,
+  "stage_a_attempt_id": "attempt-7",
+  "stage_a_ir_fingerprint": "b3dbf2624289134c10d19f93c9cbd00614e9caa501dbe40cd002e24e42821086",
+  "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "status": "PASS",
+  "v7_6_13_candidate_reconciliation": {
+    "classification": "SOURCE_PROJECTION_VERSION_DRIFT",
+    "semantic_content_equality": true,
+    "status": "PASS",
+    "timeline_order_recovered_from_authority": true
+  }
+}

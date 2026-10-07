@@ -1,0 +1,16 @@
+{
+  "attempt8_parent_required": true,
+  "initial_endpoint_completed_guard_unchanged": "DIRECTOR_CREATIVE_ENRICHMENT_ALREADY_COMPLETED",
+  "required_checks": [
+    "Stage A validated",
+    "Stage B structurally validated",
+    "semantic review BLOCKED",
+    "merge state MERGED",
+    "proposal decision ready_for_review and creative_projection.status PROPOSED",
+    "packet not confirmed or superseded",
+    "llm_draft_in_progress false"
+  ],
+  "revision_endpoint_is_explicit": true,
+  "schema_version": "stage_b_revision_eligibility_v1",
+  "status": "PASS"
+}

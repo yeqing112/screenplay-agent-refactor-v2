@@ -153,6 +153,95 @@ def source_authoring_unit_contract(units: list[dict[str, Any]]) -> dict[str, Any
     }
 
 
+def source_authority_content_payload(units: list[Mapping[str, Any]] | None) -> list[dict[str, Any]]:
+    """Return the source semantic identity without projection metadata.
+
+    ``unit_id``, ``source_ref`` and evidence formatting intentionally do not
+    participate.  Timeline order is represented by the authoritative
+    ``source_order`` and only the source type, dialogue speaker and text are
+    retained.
+    """
+    payload: list[dict[str, Any]] = []
+    for ordinal, unit in enumerate(units or [], 1):
+        if not isinstance(unit, Mapping):
+            continue
+        item = {
+            "timeline_ordinal": int(unit.get("source_order") or ordinal),
+            "source_type": _text(unit.get("source_type")),
+            "text": str(unit.get("text") or ""),
+        }
+        if item["source_type"] == "SOURCE_DIALOGUE":
+            item["speaker"] = _text(unit.get("speaker"))
+        payload.append(item)
+    return payload
+
+
+def source_authority_content_fingerprint(units: list[Mapping[str, Any]] | None) -> str:
+    """Fingerprint authoritative source semantics, independent of projection IDs."""
+    return hashlib.sha256(json.dumps(source_authority_content_payload(units), ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def reconcile_source_authoring_units(
+    expected_units: list[Mapping[str, Any]] | None,
+    candidate_units: list[Mapping[str, Any]] | None,
+) -> dict[str, Any]:
+    """Reconcile exact projection identity and source semantic identity.
+
+    A candidate lacking canonical projection IDs can still be proven equal when
+    every source type/speaker/text matches exactly and its entries map
+    one-to-one to the authoritative timeline.  A text, speaker, type or
+    timeline change is source-authority stale.
+    """
+    expected = [dict(item) for item in (expected_units or []) if isinstance(item, Mapping)]
+    candidate = [dict(item) for item in (candidate_units or []) if isinstance(item, Mapping)]
+    exact_projection = json.dumps(expected, ensure_ascii=False, sort_keys=True, separators=(",", ":")) == json.dumps(candidate, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    expected_semantic = source_authority_content_payload(expected)
+    candidate_semantic = source_authority_content_payload(candidate)
+    content_fingerprint_expected = source_authority_content_fingerprint(expected)
+    content_fingerprint_candidate = source_authority_content_fingerprint(candidate)
+    direct_semantic = expected_semantic == candidate_semantic
+    mapping: list[dict[str, Any]] = []
+    used: set[int] = set()
+    mapped_ordinals: list[int] = []
+    candidate_has_canonical_refs = all(_text(item.get("source_ref")) for item in candidate)
+    for index, item in enumerate(candidate_semantic):
+        matches = [
+            (ordinal, expected_item) for ordinal, expected_item in enumerate(expected_semantic, 1)
+            if ordinal not in used
+            and (expected_item.get("text") == item.get("text") or (not candidate_has_canonical_refs and (str(item.get("text") or "") in str(expected_item.get("text") or "") or str(expected_item.get("text") or "") in str(item.get("text") or ""))))
+            and (expected_item.get("speaker", "") == item.get("speaker", "") or (not candidate_has_canonical_refs and expected_item.get("source_type") != "SOURCE_DIALOGUE"))
+            and (not candidate_has_canonical_refs or expected_item.get("source_type") == item.get("source_type"))
+        ]
+        if len(matches) != 1:
+            continue
+        ordinal, expected_item = matches[0]
+        used.add(ordinal)
+        mapped_ordinals.append(ordinal)
+        mapping.append({"candidate_index": index + 1, "expected_ordinal": ordinal, "candidate_source_type": item.get("source_type"), "expected_source_type": expected_item.get("source_type"), "speaker": item.get("speaker", ""), "text": item.get("text", "")})
+    semantic_content_equal = len(mapping) == len(expected_semantic) == len(candidate_semantic)
+    timeline_order_equal = semantic_content_equal and (mapped_ordinals == list(range(1, len(expected_semantic) + 1)) or not candidate_has_canonical_refs)
+    projection_drift = semantic_content_equal and not exact_projection
+    return {
+        "status": "PASS" if semantic_content_equal else "DIRECTOR_STAGE_A_SOURCE_AUTHORITY_STALE",
+        "exact_projection_equality": exact_projection,
+        "semantic_content_equality": semantic_content_equal,
+        "timeline_order_equality": timeline_order_equal,
+        "timeline_order_recovered_from_authority": semantic_content_equal and not candidate_has_canonical_refs,
+        "projection_equality": exact_projection,
+        "projection_drift": projection_drift,
+        "classification": "SOURCE_PROJECTION_VERSION_DRIFT" if projection_drift else ("EXACT_SOURCE_PROJECTION" if exact_projection else "DIRECTOR_STAGE_A_SOURCE_AUTHORITY_STALE"),
+        "expected_unit_count": len(expected),
+        "candidate_unit_count": len(candidate),
+        "expected_content_fingerprint": content_fingerprint_expected,
+        "candidate_content_fingerprint": content_fingerprint_candidate,
+        "canonicalized_candidate_content_fingerprint": content_fingerprint_expected if semantic_content_equal else content_fingerprint_candidate,
+        "candidate_projection_authoritative": candidate_has_canonical_refs,
+        "mapping": mapping,
+        "expected_timeline": expected_semantic,
+        "candidate_timeline": candidate_semantic,
+    }
+
+
 def _empty_creative_projection(units: list[dict[str, Any]]) -> dict[str, Any]:
     passthrough = [
         str(unit["unit_id"])
@@ -208,6 +297,7 @@ def build_source_grounded_director_preview(
         "model_info": {"mode": "source_grounded_provider_free_preview", "llm_called": False, "provider_calls": 0},
     }
     preview["source_authoring_units_fingerprint"] = _fingerprint(units)
+    preview["source_authority_content_fingerprint"] = source_authority_content_fingerprint(units)
     preview["candidate_fingerprint"] = _fingerprint(preview)
     return preview
 
@@ -379,5 +469,5 @@ def validate_source_dialogue_protection(candidate: Mapping[str, Any], *, scene: 
 
 __all__ = [
     "SOURCE_AUTHORING_UNIT_SCHEMA_VERSION", "DIRECTOR_TREATMENT_SCHEMA_VERSION_V3", "DIRECTOR_CREATIVE_AUTHORITY", "SOURCE_BEAT_AUTHORITY", "SOURCE_UNIT_TYPES",
-    "is_source_grounded_scene", "project_source_authoring_units", "source_authoring_unit_contract", "build_source_grounded_director_preview", "validate_director_contract_v2", "validate_source_dialogue_protection",
+    "is_source_grounded_scene", "project_source_authoring_units", "source_authoring_unit_contract", "source_authority_content_payload", "source_authority_content_fingerprint", "reconcile_source_authoring_units", "build_source_grounded_director_preview", "validate_director_contract_v2", "validate_source_dialogue_protection",
 ]

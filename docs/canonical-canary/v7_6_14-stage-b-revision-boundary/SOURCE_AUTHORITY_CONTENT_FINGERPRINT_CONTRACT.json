@@ -1,0 +1,14 @@
+{
+  "algorithm": {
+    "canonical_json": "UTF-8 JSON, ensure_ascii=false, sort_keys=true, separators=(',', ':')",
+    "digest": "SHA-256",
+    "payload": "ordered source units projected to timeline_ordinal, source_type, speaker for dialogue units, and text"
+  },
+  "canonical_source_authority_content_fingerprint_v1": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "exact_projection_fingerprint_preserved": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "projection_fingerprint_is_not_content_fingerprint": true,
+  "schema_version": "source_authority_content_fingerprint_v1",
+  "source_mutation_fail_closed": "DIRECTOR_STAGE_A_SOURCE_AUTHORITY_STALE",
+  "status": "PASS",
+  "unit_count": 12
+}

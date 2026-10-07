@@ -1,0 +1,9 @@
+{
+  "active_pointer": "progressive_director_authoring.stage_b",
+  "attempt8_preserved_when_attempt9_active": true,
+  "failed_attempt9_preserves_attempt8_active": true,
+  "history_pointer": "progressive_director_authoring.stage_b_attempts[]",
+  "proposal_is_replaced_only_after_structural_and_deterministic_merge_success": true,
+  "schema_version": "stage_b_active_vs_history_v1",
+  "status": "PASS"
+}

@@ -1,0 +1,24 @@
+{
+  "append_only": true,
+  "archive_readiness": "PASS",
+  "authoring_stage": "CREATIVE_ENRICHMENT",
+  "authorization": "REQUIRED_NOT_GRANTED",
+  "expected_attempt": "attempt-9",
+  "history_count": 8,
+  "parent_attempt_id": "attempt-8",
+  "parent_ir_fingerprint": "5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4",
+  "production_mutation": false,
+  "production_writes": 0,
+  "prompt_schema_parity": "PASS",
+  "provider_calls": 0,
+  "provider_identity": "PASS",
+  "schema_version": "director_creative_enrichment_revision_preflight_v1",
+  "semantic_contract": "PASS",
+  "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "source_authority_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "source_reconciliation": {
+    "classification": "SOURCE_PROJECTION_VERSION_DRIFT",
+    "status": "PASS"
+  },
+  "status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_AUTHORIZATION_REQUIRED"
+}

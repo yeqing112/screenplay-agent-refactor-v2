@@ -1,0 +1,19 @@
+{
+  "mismatch_result": "provider_calls=0 and revision boundary rejected",
+  "parent_attempt_id": "attempt-8",
+  "parent_combined_fingerprint": "cf7c71df8f9d9e6f8e75470a90bd36fd10d15502415cf6beca1e9c20f8c296b6",
+  "parent_semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "parent_stage_b_ir_fingerprint": "5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4",
+  "request_must_match_parent": [
+    "revision_of_attempt_id",
+    "revision_of_stage_b_ir_fingerprint",
+    "semantic_review_fingerprint"
+  ],
+  "schema_version": "stage_b_revision_parent_binding_v1",
+  "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "source_authority_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "stage_a_attempt_id": "attempt-7",
+  "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "status": "PASS"
+}

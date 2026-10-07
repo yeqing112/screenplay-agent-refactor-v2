@@ -1,0 +1,96 @@
+{
+  "constraint_count": 14,
+  "constraints": [
+    {
+      "category": "UNSUPPORTED_FACT_ASSERTION",
+      "constraint": "Do not invent source fact: 药水味.",
+      "matched_term": "药水味",
+      "path": "beat_enrichments[0].transition"
+    },
+    {
+      "category": "UNSUPPORTED_BACKSTORY",
+      "constraint": "Do not add unsupported backstory or hidden relationship: 背后的秘密.",
+      "matched_term": "背后的秘密",
+      "path": "beat_enrichments[0].character_effects[1].effect"
+    },
+    {
+      "category": "UNSUPPORTED_BACKSTORY",
+      "constraint": "Do not add unsupported backstory or hidden relationship: 早就.",
+      "matched_term": "早就",
+      "path": "beat_enrichments[1].character_effects[1].effect"
+    },
+    {
+      "category": "UNSUPPORTED_BACKSTORY",
+      "constraint": "Do not add unsupported backstory or hidden relationship: 过往.",
+      "matched_term": "过往",
+      "path": "beat_enrichments[2].character_effects[1].effect"
+    },
+    {
+      "category": "UNSUPPORTED_CHARACTER_KNOWLEDGE",
+      "constraint": "Do not assert unsupported character knowledge or prior experience: 他知道.",
+      "matched_term": "他知道",
+      "path": "beat_enrichments[3].performance"
+    },
+    {
+      "category": "UNSUPPORTED_EMOTIONAL_FACT",
+      "constraint": "Do not canonize unsupported emotion; phrase it as playable performance tension: 怨恨.",
+      "matched_term": "怨恨",
+      "path": "character_directions[0].performance_notes"
+    },
+    {
+      "category": "UNSUPPORTED_CHARACTER_KNOWLEDGE",
+      "constraint": "Do not assert unsupported character knowledge or prior experience: 他知道.",
+      "matched_term": "他知道",
+      "path": "character_directions[1].direction"
+    },
+    {
+      "category": "UNSUPPORTED_BACKSTORY",
+      "constraint": "Do not add unsupported backstory or hidden relationship: 训练出来.",
+      "matched_term": "训练出来",
+      "path": "character_directions[1].performance_notes"
+    },
+    {
+      "category": "UNSUPPORTED_BACKSTORY",
+      "constraint": "Do not add unsupported backstory or hidden relationship: 童年与暗房.",
+      "matched_term": "童年与暗房",
+      "path": "information_strategy.withheld_from_audience[2]"
+    },
+    {
+      "category": "UNSUPPORTED_BACKSTORY",
+      "constraint": "Do not add unsupported backstory or hidden relationship: 童年与暗房.",
+      "matched_term": "童年与暗房",
+      "path": "information_strategy.reveal_plan[1].withholds[1]"
+    },
+    {
+      "category": "UNSUPPORTED_EMOTIONAL_FACT",
+      "constraint": "Do not canonize unsupported emotion; phrase it as playable performance tension: 复杂的情感.",
+      "matched_term": "复杂的情感",
+      "path": "prohibited_interpretations[3]"
+    },
+    {
+      "category": "DOWNSTREAM_SHOTPLAN_LEAKAGE",
+      "constraint": "Use only source-grounded creative direction.",
+      "matched_term": "特写",
+      "path": "beat_enrichments[1].performance"
+    },
+    {
+      "category": "DOWNSTREAM_SHOTPLAN_LEAKAGE",
+      "constraint": "Use only source-grounded creative direction.",
+      "matched_term": "最后一帧",
+      "path": "rhythm_strategy.button"
+    },
+    {
+      "category": "DOWNSTREAM_SHOTPLAN_LEAKAGE",
+      "constraint": "Use only source-grounded creative direction.",
+      "matched_term": "特写",
+      "path": "visual_priority[2]"
+    }
+  ],
+  "feedback_is_compact_constraint_projection": true,
+  "fresh_generation_required": true,
+  "is_repair_instruction": false,
+  "raw_attempt8_in_prompt": false,
+  "schema_version": "director_revision_feedback_v1",
+  "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "status": "PASS"
+}

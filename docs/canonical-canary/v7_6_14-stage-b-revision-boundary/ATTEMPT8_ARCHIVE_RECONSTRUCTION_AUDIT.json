@@ -1,0 +1,15 @@
+{
+  "attempt8_immutable": true,
+  "attempt8_source_artifacts_modified": false,
+  "attempt_id": "attempt-8",
+  "ir_fingerprint": "5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4",
+  "raw_forensic_artifact_sha256": "ffab6de8b24ab8c1199e8950f0aefff53baa39a62356f7c0c73e640e7564ddae",
+  "raw_response_sha256": "7d456c16384b09a7f00d9c41f032185a6646d40727108bc60b23f5fe0cb574c2",
+  "reconstructed_archive_is_copy_only": true,
+  "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "source_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "source_projection_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "stage_a_attempt_id": "attempt-7",
+  "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "status": "PASS"
+}

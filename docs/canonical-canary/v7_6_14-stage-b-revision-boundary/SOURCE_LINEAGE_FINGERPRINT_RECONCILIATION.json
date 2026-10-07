@@ -1,0 +1,121 @@
+{
+  "classification": "SOURCE_PROJECTION_VERSION_DRIFT",
+  "content_fingerprint": {
+    "canonical_source_authority_content_fingerprint_v1": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+    "canonicalized_candidate_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+    "semantic_content_equality": true,
+    "v7_6_13_raw_candidate_content_fingerprint": "0595fb5077b1a8db5ba34de97ae3be89a45e084da61da06013bc0e55ee6a47d5"
+  },
+  "mapping": [
+    {
+      "candidate_index": 1,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 1,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "顾沉带林晚进入暗房。"
+    },
+    {
+      "candidate_index": 2,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 2,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+    },
+    {
+      "candidate_index": 3,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 3,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+    },
+    {
+      "candidate_index": 4,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 4,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+    },
+    {
+      "candidate_index": 5,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 5,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+    },
+    {
+      "candidate_index": 6,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 9,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+    },
+    {
+      "candidate_index": 7,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 10,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "门缝下出现一双湿透的皮鞋。"
+    },
+    {
+      "candidate_index": 8,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 11,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "那人没有进门，只把一张车票塞进来。"
+    },
+    {
+      "candidate_index": 9,
+      "candidate_source_type": "SOURCE_ACTION",
+      "expected_ordinal": 12,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "",
+      "text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+    },
+    {
+      "candidate_index": 10,
+      "candidate_source_type": "SOURCE_DIALOGUE",
+      "expected_ordinal": 6,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "顾沉",
+      "text": "胶片被人拿走了。"
+    },
+    {
+      "candidate_index": 11,
+      "candidate_source_type": "SOURCE_DIALOGUE",
+      "expected_ordinal": 7,
+      "expected_source_type": "SOURCE_ACTION",
+      "speaker": "林晚",
+      "text": "是谁"
+    },
+    {
+      "candidate_index": 12,
+      "candidate_source_type": "SOURCE_DIALOGUE",
+      "expected_ordinal": 8,
+      "expected_source_type": "SOURCE_DIALOGUE",
+      "speaker": "顾沉",
+      "text": "也许是你自己"
+    }
+  ],
+  "production_source_unchanged": true,
+  "schema_version": "source_lineage_fingerprint_reconciliation_v1",
+  "source_mutation_result": "DIRECTOR_STAGE_A_SOURCE_AUTHORITY_STALE when canonical text/type/speaker changes",
+  "source_projection": {
+    "canonical_exact_source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+    "canonical_path": "docs/canonical-canary/v7_1-director-source-grounded-authoring-contract/SOURCE_AUTHORING_UNIT_CONTRACT.json",
+    "exact_projection_equality": false,
+    "projection_drift": true,
+    "projection_drift_explanation": "V7.6.13 evidence grouped actions before dialogues and used a different unit-id projection; it did not mutate source text.",
+    "v7_6_13_evidence_path": "docs/canonical-canary/v7_6_13-stage-b-semantic-grounding-review/ATTEMPT8_SOURCE_GROUNDING_AUDIT.json",
+    "v7_6_13_evidence_projection_fingerprint": "af3a206709921b6c068096d13c3c3d4903178f46768ab3f4408462fcf50f90c8"
+  },
+  "status": "PASS",
+  "timeline_order_recovered_from_authority": true
+}

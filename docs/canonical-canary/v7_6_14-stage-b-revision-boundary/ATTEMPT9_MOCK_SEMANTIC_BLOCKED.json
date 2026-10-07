@@ -1,0 +1,14 @@
+{
+  "active_attempt": "attempt-9",
+  "attempt8_preserved": true,
+  "attempt_history_after": 9,
+  "confirm_allowed": false,
+  "execution_mode": "isolated_mock_runtime",
+  "next_revision_preflight": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_AUTHORIZATION_REQUIRED",
+  "proposal_remains_reviewable_only": true,
+  "provider_calls": 1,
+  "schema_version": "attempt9_mock_semantic_blocked_v1",
+  "semantic_review": "BLOCKED",
+  "status": "PASS",
+  "structural_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_VALIDATED"
+}

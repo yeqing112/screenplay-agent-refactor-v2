@@ -811,7 +811,7 @@ def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping
     return system, user
 
 
-def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None, source_authoring_unit_fingerprint: str = "") -> tuple[str, str]:
+def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None, source_authoring_unit_fingerprint: str = "", source_authority_content_fingerprint: str = "", revision_feedback: Mapping[str, Any] | None = None, revision_parent: Mapping[str, Any] | None = None) -> tuple[str, str]:
     """Build the Stage B prompt over a validated local beat plan."""
 
     system = "你是受 Stage A 约束的导演表现层助手。只输出 director_creative_enrichment_ir_v1 JSON，不得重排或修改 Stage A。"
@@ -831,7 +831,10 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         f"VALIDATED_BEAT_PLAN={json.dumps(beat_plan, ensure_ascii=False, sort_keys=True)}\n"
         f"SOURCE_AUTHORING_UNITS={json.dumps(minimized_source_units, ensure_ascii=False, sort_keys=True)}\n"
         f"SOURCE_AUTHORING_UNIT_FINGERPRINT={json.dumps(source_authoring_unit_fingerprint or '', ensure_ascii=False)}\n"
+        f"SOURCE_AUTHORITY_CONTENT_FINGERPRINT={json.dumps(source_authority_content_fingerprint or '', ensure_ascii=False)}\n"
         f"DECLARED_PARTICIPANTS={json.dumps(declared_participants or [], ensure_ascii=False, sort_keys=True)}\n"
+        f"REVISION_PARENT={json.dumps(revision_parent or {}, ensure_ascii=False, sort_keys=True)}\n"
+        f"REVISION_FEEDBACK={json.dumps(revision_feedback or {}, ensure_ascii=False, sort_keys=True)}\n"
         f"CANONICAL_STAGE_B_TOP_LEVEL_KEYS={json.dumps(contract['top_level_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS={json.dumps(contract['beat_enrichment_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS={json.dumps(contract['character_direction_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
@@ -852,6 +855,7 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         "EMOTIONAL_FACT_CONTRACT=Do not canonize love, hatred, resentment, guilt, jealousy, attachment, or fear without source support; write playable tension or performance options instead.\n"
         "SENSORY_FACT_CONTRACT=Do not invent smells, tastes, temperatures, textures, sounds, or other sensory facts absent from SOURCE_AUTHORING_UNITS.\n"
         "STAGE_B_SHOTPLAN_BOUNDARY=Do not specify shot size, camera angle, lens, camera movement, frame number, keyframe, shot count, or concrete camera execution. 禁止特写、近景、全景、机位、焦段、推拉摇移、第一帧、最后一帧、镜头编号和具体镜头执行。\n"
+        "REVISION_GENERATION_CONTRACT=Generate a fresh CreativeEnrichment IR. Do not patch or paraphrase the rejected response. Do not preserve rejected assumptions. Use source facts and Stage A as authority. 重新生成全新的 CreativeEnrichment IR；禁止修补、改写或沿用被拒绝响应中的假设。REVISION_FEEDBACK is a constraint list, not repair instructions.\n"
         "exactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid\n"
         "每个 DBP beat_ref 必须恰好有一个 beat_enrichment；character_effects 只能引用 DECLARED_PARTICIPANTS。"
         "information_strategy 必须使用 director_information_strategy_v2 对象；performance_arc 使用 phase/state 对象数组；rhythm_strategy 使用 opening/reveal/escalation/button。"

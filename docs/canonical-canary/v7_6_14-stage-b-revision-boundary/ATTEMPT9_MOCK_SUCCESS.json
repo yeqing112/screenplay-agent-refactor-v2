@@ -1,0 +1,26 @@
+{
+  "active_attempt": "attempt-9",
+  "attempt8_overwritten": false,
+  "attempt_history_after": 9,
+  "attempt_history_before": 8,
+  "confirm_allowed": true,
+  "execution_mode": "isolated_mock_runtime",
+  "history_attempts": [
+    "attempt-8",
+    "attempt-9"
+  ],
+  "production_domain_writes": {
+    "Authority": 0,
+    "DirectorTreatment": 0,
+    "Pointer": 0,
+    "SceneBlocking": 0,
+    "ShotPlan": 0,
+    "Storyboard": 0
+  },
+  "proposal_persisted": true,
+  "provider_calls": 1,
+  "schema_version": "attempt9_mock_success_v1",
+  "semantic_review": "PASS",
+  "status": "PASS",
+  "structural_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT9_VALIDATED"
+}

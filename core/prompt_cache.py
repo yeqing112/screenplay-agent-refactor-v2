@@ -52,6 +52,10 @@ def provider_request_payload_v2(
     execution_boundary_version: str = "director_provider_request_v2",
     upstream_binding_fingerprint: str | None = None,
     source_authoring_unit_fingerprint: str | None = None,
+    source_authority_content_fingerprint: str | None = None,
+    revision_parent_attempt_id: str | None = None,
+    revision_parent_fingerprint: str | None = None,
+    semantic_review_fingerprint: str | None = None,
 ) -> dict[str, Any]:
     """Return the complete non-secret Provider request identity payload."""
 
@@ -86,6 +90,14 @@ def provider_request_payload_v2(
         payload["upstream_binding_fingerprint"] = str(upstream_binding_fingerprint)
     if source_authoring_unit_fingerprint:
         payload["source_authoring_unit_fingerprint"] = str(source_authoring_unit_fingerprint)
+    if source_authority_content_fingerprint:
+        payload["source_authority_content_fingerprint"] = str(source_authority_content_fingerprint)
+    if revision_parent_attempt_id:
+        payload["revision_parent_attempt_id"] = str(revision_parent_attempt_id)
+    if revision_parent_fingerprint:
+        payload["revision_parent_fingerprint"] = str(revision_parent_fingerprint)
+    if semantic_review_fingerprint:
+        payload["semantic_review_fingerprint"] = str(semantic_review_fingerprint)
     return payload
 
 
