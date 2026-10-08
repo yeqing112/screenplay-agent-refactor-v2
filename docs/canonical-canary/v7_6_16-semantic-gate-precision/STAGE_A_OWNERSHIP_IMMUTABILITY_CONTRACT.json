@@ -1,0 +1,16 @@
+{
+  "stage_b_character_direction_objective": "ALLOWED",
+  "status": "PASS",
+  "top_level_owned_paths": [
+    "scene_objective",
+    "dramatic_question",
+    "beats",
+    "refs",
+    "purpose",
+    "objective",
+    "information_change",
+    "hook",
+    "beat_plan",
+    "beat_plan_ir"
+  ]
+}

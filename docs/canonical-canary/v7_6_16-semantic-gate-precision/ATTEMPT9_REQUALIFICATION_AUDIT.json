@@ -1,0 +1,13 @@
+{
+  "attempt10_required": true,
+  "confirm_allowed": false,
+  "production_blocking_categories": [
+    "UNSUPPORTED_CERTAINTY_COLLAPSE",
+    "UNSUPPORTED_STORY_ACTION",
+    "DOWNSTREAM_SCENEBLOCKING_LEAKAGE"
+  ],
+  "semantic_v1": "BLOCKED",
+  "semantic_v2": "BLOCKED",
+  "status": "BLOCKED",
+  "structural_status": "VALIDATED"
+}

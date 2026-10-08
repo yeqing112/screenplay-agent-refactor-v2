@@ -1,0 +1,18 @@
+{
+  "historical_review": "director_creative_semantic_review_v1 immutable",
+  "new_assessment": {
+    "append_only": true,
+    "bindings": [
+      "attempt_id",
+      "ir_fingerprint",
+      "semantic_policy_fingerprint",
+      "source_projection_fingerprint",
+      "source_authority_content_fingerprint",
+      "review_fingerprint",
+      "created_at"
+    ],
+    "policy_version": "director_creative_semantic_review_v2",
+    "production_packet_write": false
+  },
+  "status": "PASS"
+}

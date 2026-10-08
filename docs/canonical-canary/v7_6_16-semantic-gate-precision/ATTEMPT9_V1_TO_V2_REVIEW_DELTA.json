@@ -1,0 +1,57 @@
+{
+  "status": "PASS_REASSESSMENT",
+  "v1_false_positives_removed": [
+    {
+      "id": "emotional_prohibition",
+      "text": "不要把林晚解读为内疚或自责",
+      "v1_actual": {
+        "UNSUPPORTED_EMOTIONAL_FACT": 1
+      },
+      "v1_expected": "UNSUPPORTED_EMOTIONAL_FACT",
+      "v2_actual": {
+        "SAFE_PROHIBITION": 1
+      },
+      "v2_expected": "SAFE_PROHIBITION",
+      "v2_status": "PASS"
+    },
+    {
+      "id": "backstory_prohibition",
+      "text": "不要为林晚的童年与暗房关系添加来源之外的背景",
+      "v1_actual": {
+        "UNSUPPORTED_BACKSTORY": 1
+      },
+      "v1_expected": "UNSUPPORTED_BACKSTORY",
+      "v2_actual": {
+        "SAFE_PROHIBITION": 1
+      },
+      "v2_expected": "SAFE_PROHIBITION",
+      "v2_status": "PASS"
+    },
+    {
+      "id": "shotplan_meta_note",
+      "text": "未指定任何镜头执行",
+      "v1_actual": {
+        "DOWNSTREAM_SHOTPLAN_LEAKAGE": 1,
+        "SAFE_CREATIVE_DIRECTION": 1
+      },
+      "v1_expected": "DOWNSTREAM_SHOTPLAN_LEAKAGE",
+      "v2_actual": {
+        "META_COMPLIANCE": 1
+      },
+      "v2_expected": "META_COMPLIANCE",
+      "v2_status": "PASS"
+    }
+  ],
+  "v1_shotplan_leakage": 1,
+  "v1_status": "BLOCKED",
+  "v2_certainty_collapse": 1,
+  "v2_counts": {
+    "SAFE_CREATIVE_DIRECTION": 87,
+    "SAFE_PROHIBITION": 6,
+    "SOURCE_EXPLICIT": 11,
+    "UNSUPPORTED_CERTAINTY_COLLAPSE": 1
+  },
+  "v2_scene_blocking_leakage": 2,
+  "v2_shotplan_leakage": 0,
+  "v2_status": "BLOCKED"
+}

@@ -1,0 +1,8 @@
+{
+  "attempt_id": "attempt-8",
+  "immutable": true,
+  "ir_fingerprint": "5bb234bb5439d0d762f4fc41d63ed5d409f855d9047dff1d26645a7ef90483f4",
+  "raw_sha256": "7d456c16384b09a7f00d9c41f032185a6646d40727108bc60b23f5fe0cb574c2",
+  "semantic_review_fingerprint": "c078b4f6dfda1549a54090ddff9d9d38432e26597aba42fd4c9c71e475eb4dcc",
+  "status": "PASS"
+}

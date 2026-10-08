@@ -1,0 +1,11 @@
+{
+  "book_id": 990453,
+  "episode": 1,
+  "historical_packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "historical_packet_scope_validation": "book/episode/scene exact",
+  "parent_attempt": "attempt-8",
+  "scene_id": "E01_SC001",
+  "source_authority_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+  "source_projection_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "status": "PASS"
+}

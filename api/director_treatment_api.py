@@ -48,7 +48,7 @@ from core.director_proposal_ir import (
     validate_director_proposal_ir_schema,
 )
 from core.director_forensic import append_director_attempt, DirectorAttemptContext, resolve_next_director_attempt_context
-from core.director_semantic_grounding import validate_director_creative_semantic_review
+from core.director_semantic_grounding import validate_director_creative_semantic_review, SEMANTIC_REVIEW_POLICY_V2, semantic_policy_v2_fingerprint, validate_semantic_review_assessment_binding
 from core.director_revision import archive_stage_b_attempt, build_revision_parent_identity, evaluate_stage_b_semantic_revision_eligibility, is_stage_b_semantic_revision_required, proposal_fingerprint, semantic_review_fingerprint, stage_b_revision_feedback
 from core.director_progressive_authoring import (
     DIRECTOR_BEAT_PLAN_IR_VERSION,
@@ -2056,6 +2056,21 @@ def confirm_director_treatment(book_id: int, episode: int, req: DirectorTreatmen
         progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), dict) else {}
         stage_a = progressive.get("stage_a") if isinstance(progressive, dict) else None
         stage_b = progressive.get("stage_b") if isinstance(progressive, dict) else None
+        # V7.6.16 policy versioning: once a progressive Stage B reaches
+        # Attempt-9 or later, confirmation must cite an append-only V2
+        # assessment bound to the active attempt and IR.  The reassessment is
+        # intentionally not synthesized or written here; absence remains a
+        # fail-closed review requirement.
+        stage_b_attempt_id = str(stage_b.get("attempt_id") or "") if isinstance(stage_b, dict) else ""
+        if stage_b_attempt_id.startswith("attempt-") and stage_b_attempt_id.split("-", 1)[1].isdigit() and int(stage_b_attempt_id.split("-", 1)[1]) >= 9:
+            assessments = info.get("semantic_review_assessments") if isinstance(info.get("semantic_review_assessments"), list) else []
+            assessment = stage_b.get("semantic_review_v2") if isinstance(stage_b, dict) and isinstance(stage_b.get("semantic_review_v2"), dict) else None
+            if assessment is None:
+                assessment = next((item for item in reversed(assessments) if isinstance(item, dict) and item.get("attempt_id") == stage_b_attempt_id), None)
+            expected_ir = str(stage_b.get("ir_fingerprint") or stage_b.get("fingerprint") or "") if isinstance(stage_b, dict) else ""
+            assessment_binding = validate_semantic_review_assessment_binding(assessment, attempt_id=stage_b_attempt_id, ir_fingerprint=expected_ir)
+            if assessment_binding.get("status") != "PASS":
+                raise HTTPException(status_code=409, detail={"code": "DIRECTOR_TREATMENT_SEMANTIC_REVIEW_POLICY_REQUIRED", "required_policy": SEMANTIC_REVIEW_POLICY_V2, "active_attempt_id": stage_b_attempt_id, "production_writes": 0})
         if is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN") and not _progressive_stage_b_complete(info, _json_object(packet.proposal, {})):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REQUIRED", "message": "Stage A BeatPlan is not confirmable until Stage B creative enrichment is complete."})
         scope = _json_object(packet.scope, {})

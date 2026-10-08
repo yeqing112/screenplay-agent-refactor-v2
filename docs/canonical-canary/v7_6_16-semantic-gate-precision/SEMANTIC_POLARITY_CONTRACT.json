@@ -1,0 +1,93 @@
+{
+  "physical_action": {
+    "ambiguous_is_not_pass": true,
+    "performance_actions": [
+      "停顿",
+      "呼吸",
+      "表情",
+      "视线",
+      "语速",
+      "身体收紧",
+      "迟疑",
+      "僵住",
+      "语气",
+      "目光"
+    ],
+    "story_action_categories": [
+      "UNSUPPORTED_STORY_ACTION",
+      "DOWNSTREAM_SCENEBLOCKING_LEAKAGE"
+    ]
+  },
+  "polarity": {
+    "meta_compliance_prefixes": [
+      "未指定",
+      "未引入",
+      "不包含",
+      "没有指定",
+      "没有引入",
+      "不涉及"
+    ],
+    "mixed_clause_fail_closed": true,
+    "prohibition_prefixes": [
+      "不要",
+      "不得",
+      "禁止",
+      "切勿",
+      "避免",
+      "不应",
+      "不准",
+      "勿"
+    ]
+  },
+  "policy_version": "director_creative_semantic_review_v2",
+  "semantic_policy_fingerprint": "9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501",
+  "shotplan": {
+    "mixed_clause_positive_terms_block": true,
+    "negated_terms_are_allowed_only_inside_negated_scope": true
+  },
+  "stage_a_ownership": {
+    "beat_owned": [
+      "hook",
+      "information_change",
+      "purpose",
+      "refs"
+    ],
+    "stage_b_character_direction_objective_allowed": true,
+    "top_level_owned": [
+      "beat_plan",
+      "beat_plan_ir",
+      "beats",
+      "dramatic_question",
+      "hook",
+      "information_change",
+      "objective",
+      "purpose",
+      "refs",
+      "scene_objective"
+    ]
+  },
+  "uncertainty": {
+    "category": "UNSUPPORTED_CERTAINTY_COLLAPSE",
+    "certainty_cues": [
+      "首次",
+      "第一次",
+      "从未",
+      "一定",
+      "就是",
+      "确定",
+      "确认",
+      "明确知道",
+      "必然"
+    ],
+    "source_cues": [
+      "是否",
+      "也许",
+      "可能",
+      "想不起",
+      "无法确认",
+      "不确定",
+      "未知",
+      "未说明"
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "count": 3,
+  "findings": [
+    {
+      "claim": "顾沉以引导者的姿态出现，动作明确而克制，把林晚带到铁盒前，为后续对话建立空间位置关系。",
+      "classification": "DOWNSTREAM_SCENEBLOCKING_LEAKAGE",
+      "creative_performance_authority": "NO",
+      "matched_term": "带到铁盒前",
+      "path": "beat_enrichments[0].character_effects[0].effect",
+      "reason": "specific spatial path or placement belongs to SceneBlocking",
+      "sceneblocking_authority": "YES",
+      "source_support": false
+    },
+    {
+      "claim": "林晚打开铁盒后动作放慢，先看到空盒内部，再拾起烧焦胶片与海鸥别针；她认出别针时表情出现短暂的停顿与困惑，想不起童年是否来过这里，表演上呈现为一种可被观众读到的自我怀疑。",
+      "classification": "UNSUPPORTED_STORY_ACTION",
+      "creative_performance_authority": "NO",
+      "matched_term": "打开铁盒",
+      "path": "beat_enrichments[1].performance",
+      "reason": "key prop manipulation changes a canonical event and is not source-supported",
+      "sceneblocking_authority": "NO",
+      "source_support": false
+    },
+    {
+      "claim": "把林晚带到铁盒前，陈述胶片被拿走的事实，并在躲藏时保护两人。",
+      "classification": "DOWNSTREAM_SCENEBLOCKING_LEAKAGE",
+      "creative_performance_authority": "NO",
+      "matched_term": "带到铁盒前",
+      "path": "character_directions[1].objective",
+      "reason": "specific spatial path or placement belongs to SceneBlocking",
+      "sceneblocking_authority": "YES",
+      "source_support": false
+    }
+  ],
+  "status": "BLOCKED"
+}

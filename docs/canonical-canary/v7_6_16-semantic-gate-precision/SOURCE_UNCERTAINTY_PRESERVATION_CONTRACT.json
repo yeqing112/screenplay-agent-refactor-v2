@@ -1,0 +1,25 @@
+{
+  "category": "UNSUPPORTED_CERTAINTY_COLLAPSE",
+  "certainty_cues": [
+    "首次",
+    "第一次",
+    "从未",
+    "一定",
+    "就是",
+    "确定",
+    "确认",
+    "明确知道",
+    "必然"
+  ],
+  "source_uncertainty_cues": [
+    "是否",
+    "也许",
+    "可能",
+    "想不起",
+    "无法确认",
+    "不确定",
+    "未知",
+    "未说明"
+  ],
+  "status": "PASS"
+}

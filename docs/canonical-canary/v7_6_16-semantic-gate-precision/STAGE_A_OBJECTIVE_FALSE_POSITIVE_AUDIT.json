@@ -1,0 +1,7 @@
+{
+  "beat_enrichment_hook": "BLOCKED",
+  "character_direction_objective": "ALLOWED",
+  "scene_objective": "BLOCKED",
+  "status": "PASS",
+  "top_level_objective": "BLOCKED"
+}

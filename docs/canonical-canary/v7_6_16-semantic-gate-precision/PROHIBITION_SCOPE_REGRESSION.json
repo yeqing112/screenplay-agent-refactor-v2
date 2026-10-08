@@ -1,0 +1,29 @@
+{
+  "cases": [
+    {
+      "clauses": [
+        {
+          "polarity": "PROHIBITION",
+          "text": "不要把林晚解读为内疚或自责"
+        }
+      ],
+      "polarity": "PROHIBITION",
+      "text": "不要把林晚解读为内疚或自责"
+    },
+    {
+      "clauses": [
+        {
+          "polarity": "PROHIBITION",
+          "text": "不要把顾沉当普通人"
+        },
+        {
+          "polarity": "POSITIVE_ASSERTION",
+          "text": "因为他过去经历过类似袭击"
+        }
+      ],
+      "polarity": "MIXED_CLAUSE",
+      "text": "不要把顾沉当普通人，因为他过去经历过类似袭击"
+    }
+  ],
+  "status": "PASS"
+}

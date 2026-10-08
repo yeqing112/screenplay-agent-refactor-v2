@@ -1,0 +1,20 @@
+{
+  "attempt9_ir_fingerprint": "591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa",
+  "attempt9_raw_sha256": "8cbb4343c4c762e74eba92a6cf6a2e5a02d74c6e789c636f1bd5f405e7521589",
+  "count": 1,
+  "findings": [
+    {
+      "claim": "林晚首次进入暗房，对空间与铁盒标签表现出陌生与迟疑，为后续的身份之谜埋下可表演的不确定状态。",
+      "classification": "UNSUPPORTED_CERTAINTY_COLLAPSE",
+      "matched_term": "首次",
+      "path": "beat_enrichments[0].character_effects[1].effect",
+      "reason": "source authority preserves an unresolved possibility but Stage B states it as certain",
+      "source_uncertainty_cues": [
+        "是否",
+        "也许",
+        "想不起"
+      ]
+    }
+  ],
+  "status": "BLOCKED"
+}

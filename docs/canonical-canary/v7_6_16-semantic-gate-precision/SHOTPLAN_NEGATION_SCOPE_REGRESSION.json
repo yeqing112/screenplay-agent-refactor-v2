@@ -1,0 +1,28 @@
+{
+  "mixed_blocked": {
+    "result": {
+      "status": "BLOCKED",
+      "violation_count": 1,
+      "violations": [
+        {
+          "category": "SHOT_SIZE",
+          "clause": "改用近景",
+          "matched_term": "近景",
+          "path": "note",
+          "polarity": "MIXED_CLAUSE",
+          "text": "不要特写，改用近景"
+        }
+      ]
+    },
+    "text": "不要特写，改用近景"
+  },
+  "safe": [
+    {
+      "text": "不要使用特写"
+    },
+    {
+      "text": "未指定任何镜头执行"
+    }
+  ],
+  "status": "PASS"
+}

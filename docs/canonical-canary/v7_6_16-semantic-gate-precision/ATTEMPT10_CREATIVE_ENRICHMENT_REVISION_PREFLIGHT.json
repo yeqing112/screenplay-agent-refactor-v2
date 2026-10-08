@@ -1,0 +1,55 @@
+{
+  "authoring_stage": "CREATIVE_ENRICHMENT",
+  "authorization": "REQUIRED_NOT_GRANTED",
+  "expected_attempt": "attempt-10",
+  "history_count": 9,
+  "production_mutation": false,
+  "provider_calls": 0,
+  "revision_feedback": {
+    "constraint_count": 4,
+    "constraints": [
+      {
+        "category": "UNSUPPORTED_CERTAINTY_COLLAPSE",
+        "constraint": "Preserve source uncertainty. Do not turn an unresolved whether/unknown fact into a first-time, never, certain, or confirmed fact.",
+        "matched_term": "首次",
+        "path": "beat_enrichments[0].character_effects[1].effect"
+      },
+      {
+        "category": "DOWNSTREAM_SCENEBLOCKING_LEAKAGE",
+        "constraint": "Do not specify concrete spatial path, placement, or blocking execution.",
+        "matched_term": "带到铁盒前",
+        "path": "beat_enrichments[0].character_effects[0].effect"
+      },
+      {
+        "category": "UNSUPPORTED_STORY_ACTION",
+        "constraint": "Do not add key prop manipulation as a canonical story event without source authority.",
+        "matched_term": "打开铁盒",
+        "path": "beat_enrichments[1].performance"
+      },
+      {
+        "category": "DOWNSTREAM_SCENEBLOCKING_LEAKAGE",
+        "constraint": "Do not specify concrete spatial path, placement, or blocking execution.",
+        "matched_term": "带到铁盒前",
+        "path": "character_directions[1].objective"
+      }
+    ],
+    "fresh_generation_required": true,
+    "is_repair_instruction": false,
+    "schema_version": "director_revision_feedback_v2",
+    "v1_false_positives_excluded": true
+  },
+  "revision_parent": {
+    "revision_parent_attempt_id": "attempt-9",
+    "revision_parent_fingerprint": "37ca0f2fb6a4eecd8d4773b44af6af01f295be5459433fdf7fa0e5584faeff8e",
+    "revision_parent_semantic_review_fingerprint": "e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a",
+    "revision_parent_stage_b_ir_fingerprint": "591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa",
+    "source_authoring_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+    "source_authority_content_fingerprint": "ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8",
+    "stage_a_attempt_id": "attempt-7",
+    "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01"
+  },
+  "schema_version": "director_creative_enrichment_revision_preflight_v2",
+  "semantic_review_fingerprint": "e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a",
+  "semantic_review_policy": "director_creative_semantic_review_v2",
+  "status": "AUTHORIZATION_REQUIRED"
+}
