@@ -68,7 +68,7 @@ certainty collapse `0`, unsupported story action `1`, SceneBlocking leakage `0`,
 - `python -m compileall -q core api scripts`: PASS.
 - `git diff --check`: PASS.
 - Working tree: `CLEAN`.
-- Commit: `217641a29e6a8c02200291264288763ede76ec5a`.
-- Remote HEAD: `217641a29e6a8c02200291264288763ede76ec5a`.
+- Evidence build commit: `217641a29e6a8c02200291264288763ede76ec5a` (captured before this final report-only metadata commit).
+- Final delivery commit and remote HEAD: verify from the repository branch link below; the final report-only commit does not alter production evidence.
 
 All evidence is derived from persisted production failure data or isolated provider-free fixtures; evidence JSON is not used as production authority.
