@@ -1,0 +1,7 @@
+{
+  "confirm_allowed": false,
+  "confirm_endpoint_called": false,
+  "production_writes": 0,
+  "reason": "structural schema failure",
+  "status": "PASS"
+}

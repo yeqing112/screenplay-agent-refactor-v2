@@ -1,0 +1,31 @@
+{
+  "actual_provider_http_posts": 1,
+  "automatic_retry": 0,
+  "choice_index": 0,
+  "finish_reason": "stop",
+  "http_status": 200,
+  "http_status_basis": "successful JSON response with finish_reason=stop; provider request id absent, recorded as null",
+  "latency_ms": 92973.83,
+  "max_tokens": 8192,
+  "provider_request_id": null,
+  "response_format": {
+    "type": "json_object"
+  },
+  "status": "PASS",
+  "temperature": 0.0,
+  "thinking": {
+    "type": "disabled"
+  },
+  "usage": {
+    "cache_hit_rate": null,
+    "cached_tokens": null,
+    "completion_tokens": 3213,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 5617,
+    "prompt_tokens_details": {},
+    "reasoning_tokens": 0,
+    "total_tokens": 8830
+  }
+}

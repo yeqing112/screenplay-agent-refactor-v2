@@ -1,0 +1,22 @@
+{
+  "audience_effect_coverage": "4/4",
+  "beat_count": 4,
+  "beat_specificity": {
+    "audience_effect": 4,
+    "performance": 4,
+    "transition": 4
+  },
+  "character_direction_count": 2,
+  "character_direction_coverage": "2/2",
+  "information_strategy_present": true,
+  "performance_arc_present": true,
+  "performance_specificity": "4/4",
+  "repetition_template_scan": {
+    "reason": "No semantic/creative approval after schema failure",
+    "status": "NOT_RUN"
+  },
+  "rhythm_strategy_present": true,
+  "scene_exit_intent_present": true,
+  "status": "DIAGNOSTIC_ONLY_SCHEMA_FAILED",
+  "visual_priority_present": false
+}

@@ -1,0 +1,4 @@
+{
+  "gate_order": "schema precedes text completeness",
+  "status": "NOT_RUN_AFTER_SCHEMA_FAILURE"
+}

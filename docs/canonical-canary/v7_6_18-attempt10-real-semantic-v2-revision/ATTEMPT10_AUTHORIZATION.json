@@ -1,0 +1,9 @@
+{
+  "attempt11": 0,
+  "authorization_id": "v7.6.18-attempt10-stage-b-semantic-v2-single-call",
+  "automatic_retry": 0,
+  "consumed": true,
+  "consumption_reason": "one real Attempt-10 provider call completed; terminal schema failure",
+  "granted": true,
+  "provider_post_count": 1
+}

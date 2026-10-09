@@ -1,0 +1,9 @@
+{
+  "counts": {
+    "PromptIR": 0,
+    "SceneBlocking": 0,
+    "ShotPlan": 0
+  },
+  "downstream_stage": "not invoked",
+  "status": "NOT_RUN_AFTER_SCHEMA_FAILURE"
+}

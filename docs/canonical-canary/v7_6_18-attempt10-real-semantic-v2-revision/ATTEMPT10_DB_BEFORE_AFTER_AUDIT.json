@@ -1,0 +1,15 @@
+{
+  "active_attempt_after": "attempt-9",
+  "archive_attempts_after": [
+    "attempt-8",
+    "attempt-9",
+    "attempt-10"
+  ],
+  "model_info_sha256_after": "6aff41437818a5aa25e5e19531e0099c087a3a16438f0cb8be09c06f2a3e5eaf",
+  "model_info_sha256_before": "26f3f16628ce7aac3008e7b0d2cde0448b6970e30d6dbcfdedd40e63bf68a7c0",
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "proposal_sha256_after": "b2dd22fbfa197b06ba61044b44db151686564c419fa030a79201f23e39a598b4",
+  "proposal_sha256_before": "b2dd22fbfa197b06ba61044b44db151686564c419fa030a79201f23e39a598b4",
+  "proposal_unchanged": true,
+  "status": "PASS"
+}

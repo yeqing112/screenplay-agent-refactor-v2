@@ -1,0 +1,9 @@
+{
+  "authority_writes": 0,
+  "director_treatment_writes": 0,
+  "downstream_writes": 0,
+  "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+  "packet_forensic_write": 1,
+  "pointer_writes": 0,
+  "status": "PASS"
+}

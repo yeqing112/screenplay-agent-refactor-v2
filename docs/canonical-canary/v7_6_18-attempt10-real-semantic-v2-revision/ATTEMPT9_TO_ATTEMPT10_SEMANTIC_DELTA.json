@@ -1,0 +1,10 @@
+{
+  "attempt10_v2": "NOT_RUN_AFTER_SCHEMA_FAILURE",
+  "attempt9_v2": {
+    "SceneBlocking_leakage": 2,
+    "ShotPlan_leakage": 0,
+    "certainty_collapse": 1,
+    "unsupported_story_action": 1
+  },
+  "status": "PARTIAL_STRUCTURAL_STOP"
+}

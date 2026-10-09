@@ -1935,7 +1935,17 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
         current_info_for_boundary.setdefault("progressive_director_authoring", {}).setdefault("stage_b", {})["semantic_review_v2" if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "semantic_review"] = current_review_for_boundary
         if not evaluate_stage_b_semantic_revision_eligibility(current_info_for_boundary, current_proposal, packet_status=str(current.status or "draft"), required_policy=required_policy, resolved_review=current_review_for_boundary).get("eligible"):
             raise HTTPException(status_code=409, detail={"code": "DIRECTOR_CREATIVE_ENRICHMENT_REVISION_BOUNDARY_BLOCKED", "provider_calls": 0})
-        archived_info, _ = archive_stage_b_attempt(current_info, proposal=_json_object(current.proposal, {}), attempt_id=current_attempt_id)
+        # The preflight above already established whether the immutable parent
+        # archive is present.  Reuse that exact archive during the authorized
+        # transition instead of rebuilding it from the mutable execution
+        # snapshot.  The latter can contain historical provider metadata that
+        # is byte-different from the append-only archive and would incorrectly
+        # raise DIRECTOR_STAGE_B_ARCHIVE_CONFLICT before transport.
+        existing_archives = current_progressive.get("stage_b_attempts") if isinstance(current_progressive.get("stage_b_attempts"), list) else []
+        if any(isinstance(item, dict) and str(item.get("attempt_id") or "") == current_attempt_id for item in existing_archives):
+            archived_info = copy.deepcopy(current_info)
+        else:
+            archived_info, _ = archive_stage_b_attempt(current_info, proposal=_json_object(current.proposal, {}), attempt_id=current_attempt_id)
         archived_info["llm_draft_in_progress"] = True
         archived_info["revision_execution_started_at"] = datetime.now().isoformat()
         archived_info["revision_boundary_status"] = context.status("AUTHORIZED")
