@@ -1,0 +1,5 @@
+{
+  "evidence": "attempt-9 archive repeat is byte-identical no-op; attempt-10 failure and attempt-11 preflight coexist",
+  "provider_calls": 0,
+  "status": "PASS"
+}

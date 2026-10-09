@@ -1,0 +1,8 @@
+{
+  "confirm_allowed": false,
+  "expected_attempt": "attempt-11",
+  "history_count": 10,
+  "production_packet_unchanged": true,
+  "provider_calls": 0,
+  "status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT11_AUTHORIZATION_REQUIRED"
+}

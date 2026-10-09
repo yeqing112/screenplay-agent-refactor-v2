@@ -1,0 +1,13 @@
+{
+  "75api": 0,
+  "active_stage_b_after": "attempt-9",
+  "latest_attempt_after": "attempt-10",
+  "poyo": 0,
+  "production_row_before_after_equal": true,
+  "provider_free_preflight_calls": 0,
+  "real_image": 0,
+  "real_provider_post": 0,
+  "real_video": 0,
+  "shapi": 0,
+  "status": "PASS"
+}

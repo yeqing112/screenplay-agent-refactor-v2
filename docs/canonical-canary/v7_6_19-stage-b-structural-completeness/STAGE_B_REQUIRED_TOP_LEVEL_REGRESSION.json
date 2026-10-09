@@ -1,0 +1,30 @@
+{
+  "count": 11,
+  "missing_each_key_schema_failure": {
+    "beat_enrichments": true,
+    "character_directions": true,
+    "confidence": true,
+    "information_strategy": true,
+    "note": true,
+    "performance_arc": true,
+    "prohibited_interpretations": true,
+    "rhythm_strategy": true,
+    "scene_exit_intent": true,
+    "version": true,
+    "visual_priority": true
+  },
+  "required_keys": [
+    "version",
+    "beat_enrichments",
+    "character_directions",
+    "performance_arc",
+    "information_strategy",
+    "rhythm_strategy",
+    "visual_priority",
+    "scene_exit_intent",
+    "prohibited_interpretations",
+    "confidence",
+    "note"
+  ],
+  "status": "PASS"
+}

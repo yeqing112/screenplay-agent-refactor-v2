@@ -1,0 +1,20 @@
+{
+  "eligibility": {
+    "active_parent_ordinal": 9,
+    "authoring_stage": "CREATIVE_ENRICHMENT",
+    "deterministic_structural_failure": true,
+    "failed_attempt_ordinal": 10,
+    "latest_failed_attempt": true,
+    "same_revision_chain": true
+  },
+  "fresh_generation_required": true,
+  "repair_instruction": false,
+  "schema_version": "director_revision_structural_feedback_v1",
+  "supported_categories": [
+    "SCHEMA_REQUIRED_FIELD_MISSING",
+    "SCHEMA_TYPE_INVALID",
+    "SCHEMA_ADDITIONAL_PROPERTY",
+    "SCHEMA_CONST_INVALID",
+    "DUPLICATE_JSON_KEY"
+  ]
+}

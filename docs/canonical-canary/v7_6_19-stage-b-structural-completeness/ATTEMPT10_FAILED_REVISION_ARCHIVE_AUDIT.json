@@ -1,0 +1,12 @@
+{
+  "active_parent": "attempt-9",
+  "archive_attempt_ids": [
+    "attempt-8",
+    "attempt-9",
+    "attempt-10"
+  ],
+  "attempt10_is_latest_failed": true,
+  "attempt10_parent": "attempt-9",
+  "no_authority_promotion": true,
+  "status": "PASS"
+}

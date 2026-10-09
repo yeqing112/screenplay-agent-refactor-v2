@@ -58,6 +58,9 @@ def provider_request_payload_v2(
     semantic_review_fingerprint: str | None = None,
     semantic_review_policy: str | None = None,
     semantic_policy_fingerprint: str | None = None,
+    structural_failure_attempt_id: str | None = None,
+    structural_failure_status: str | None = None,
+    structural_feedback_fingerprint: str | None = None,
 ) -> dict[str, Any]:
     """Return the complete non-secret Provider request identity payload."""
 
@@ -104,6 +107,12 @@ def provider_request_payload_v2(
         payload["semantic_review_policy"] = str(semantic_review_policy)
     if semantic_policy_fingerprint:
         payload["semantic_policy_fingerprint"] = str(semantic_policy_fingerprint)
+    if structural_failure_attempt_id:
+        payload["structural_failure_attempt_id"] = str(structural_failure_attempt_id)
+    if structural_failure_status:
+        payload["structural_failure_status"] = str(structural_failure_status)
+    if structural_feedback_fingerprint:
+        payload["structural_feedback_fingerprint"] = str(structural_feedback_fingerprint)
     return payload
 
 

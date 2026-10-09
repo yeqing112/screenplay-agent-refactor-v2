@@ -1,0 +1,15 @@
+{
+  "raw_sha256": "5daf096fd07ad58ffe8848b25a8d633797234ce325dba1986f21de4af4ca39f0",
+  "schema_report": {
+    "errors": [
+      {
+        "code": "SCHEMA_REQUIRED_FIELD_MISSING",
+        "field": "visual_priority",
+        "path": "$"
+      }
+    ],
+    "status": "FAIL",
+    "version": "director_creative_enrichment_ir_v1"
+  },
+  "status": "PASS"
+}

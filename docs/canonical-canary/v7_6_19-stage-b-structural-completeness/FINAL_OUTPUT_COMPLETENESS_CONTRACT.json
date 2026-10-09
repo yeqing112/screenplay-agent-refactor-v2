@@ -1,0 +1,38 @@
+{
+  "additional_properties": false,
+  "forbidden": [
+    "unknown top-level key",
+    "placeholder",
+    "TODO",
+    "null",
+    "schema commentary",
+    "shots",
+    "camera",
+    "lens",
+    "composition"
+  ],
+  "output_mode": "JSON only",
+  "required_top_level_key_count": 11,
+  "required_top_level_keys": [
+    "version",
+    "beat_enrichments",
+    "character_directions",
+    "performance_arc",
+    "information_strategy",
+    "rhythm_strategy",
+    "visual_priority",
+    "scene_exit_intent",
+    "prohibited_interpretations",
+    "confidence",
+    "note"
+  ],
+  "schema_version": "director_creative_enrichment_ir_v1",
+  "visual_priority": {
+    "not_replaced_by": [
+      "audience_focus",
+      "rhythm_strategy"
+    ],
+    "required": true,
+    "type": "array<string>"
+  }
+}

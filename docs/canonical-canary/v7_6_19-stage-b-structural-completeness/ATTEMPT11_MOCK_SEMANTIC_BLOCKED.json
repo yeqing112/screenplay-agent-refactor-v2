@@ -1,0 +1,5 @@
+{
+  "evidence": "structural pass remains semantic BLOCKED for first-entry/open-box/bring-to-box terms",
+  "provider_calls": "isolated_mock_only",
+  "status": "PASS"
+}

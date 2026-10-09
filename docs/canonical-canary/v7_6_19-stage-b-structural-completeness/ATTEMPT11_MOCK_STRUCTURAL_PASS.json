@@ -1,0 +1,5 @@
+{
+  "evidence": "complete all-eleven-key isolated fixture passes schema/text/runtime/compile",
+  "provider_calls": "isolated_mock_only",
+  "status": "PASS"
+}

@@ -1,0 +1,109 @@
+{
+  "compile": {
+    "status": "PASS"
+  },
+  "fixture": {
+    "beat_enrichments": [
+      {
+        "audience_effect": "观众先感到不安。",
+        "beat_ref": "DBP_E01_SC001_001",
+        "character_effects": [
+          {
+            "character_ref": "顾沉",
+            "effect": "保持试探。"
+          }
+        ],
+        "performance": "人物压住情绪。",
+        "transition": "视线切向门缝。"
+      },
+      {
+        "audience_effect": "观众先感到不安。",
+        "beat_ref": "DBP_E01_SC001_002",
+        "character_effects": [
+          {
+            "character_ref": "顾沉",
+            "effect": "保持试探。"
+          }
+        ],
+        "performance": "人物压住情绪。",
+        "transition": "视线切向门缝。"
+      }
+    ],
+    "character_directions": [
+      {
+        "character_ref": "顾沉",
+        "direction": "克制地试探。"
+      }
+    ],
+    "confidence": 0.75,
+    "information_strategy": {
+      "audience_focus": [
+        "铁盒"
+      ],
+      "known_to_audience": [
+        "铁盒出现。"
+      ],
+      "reaction_priority": [
+        "顾沉"
+      ],
+      "reveal_plan": [
+        {
+          "audience_should_not_yet_know": "门外身份。",
+          "audience_should_notice": "铁盒被反复确认。",
+          "beat_id": "DBP_E01_SC001_001",
+          "reveals": [
+            "铁盒"
+          ],
+          "withholds": [
+            "动机"
+          ]
+        }
+      ],
+      "schema_version": "director_information_strategy_v2",
+      "withheld_from_audience": [
+        "门外身份。"
+      ]
+    },
+    "note": "离线固定夹具。",
+    "performance_arc": [
+      {
+        "phase": "IN",
+        "state": "戒备。"
+      },
+      {
+        "phase": "TURN",
+        "state": "失控边缘。"
+      },
+      {
+        "phase": "OUT",
+        "state": "保留退路。"
+      }
+    ],
+    "prohibited_interpretations": [
+      "不得确定门外身份。"
+    ],
+    "rhythm_strategy": {
+      "button": "停在门缝。",
+      "escalation": "压缩。",
+      "opening": "收紧。",
+      "reveal": "延迟。"
+    },
+    "scene_exit_intent": "车票把关系推向分裂。",
+    "version": "director_creative_enrichment_ir_v1",
+    "visual_priority": [
+      "铁盒",
+      "门缝"
+    ]
+  },
+  "runtime": "PASS",
+  "schema": {
+    "errors": [],
+    "status": "PASS",
+    "version": "director_creative_enrichment_ir_v1"
+  },
+  "status": "PASS",
+  "text": {
+    "errors": [],
+    "status": "PASS"
+  }
+}

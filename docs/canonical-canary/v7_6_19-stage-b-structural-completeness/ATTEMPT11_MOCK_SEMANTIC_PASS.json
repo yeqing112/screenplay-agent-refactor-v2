@@ -1,0 +1,5 @@
+{
+  "evidence": "structural and semantic PASS allows review-required next state",
+  "provider_calls": "isolated_mock_only",
+  "status": "PASS"
+}

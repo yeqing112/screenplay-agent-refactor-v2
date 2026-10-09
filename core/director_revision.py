@@ -10,7 +10,7 @@ import hashlib
 import json
 from typing import Any, Mapping
 
-from core.director_progressive_authoring import is_progressive_stage_validated
+from core.director_progressive_authoring import is_progressive_stage_validated, render_stage_b_schema_contract
 from core.director_semantic_grounding import (
     SEMANTIC_REVIEW_POLICY_V1,
     SEMANTIC_REVIEW_POLICY_V2,
@@ -99,6 +99,155 @@ def stage_b_revision_feedback_v2(review: Mapping[str, Any] | None) -> dict[str, 
         "is_repair_instruction": False,
         "fresh_generation_required": True,
     }
+
+
+STRUCTURAL_REVISION_FEEDBACK_VERSION = "director_revision_structural_feedback_v1"
+_STRUCTURAL_FAILURE_CODES = {
+    "SCHEMA_REQUIRED_FIELD_MISSING",
+    "SCHEMA_TYPE_INVALID",
+    "SCHEMA_ADDITIONAL_PROPERTY",
+    "SCHEMA_CONST_INVALID",
+    "DUPLICATE_JSON_KEY",
+}
+
+
+def structural_revision_feedback_fingerprint(feedback: Mapping[str, Any] | None) -> str:
+    """Hash the deterministic failure identity and normalized constraints."""
+    value = feedback if isinstance(feedback, Mapping) else {}
+    bound = {
+        "schema_version": value.get("schema_version"),
+        "failed_attempt_id": value.get("failed_attempt_id"),
+        "failed_attempt_status": value.get("failed_attempt_status"),
+        "constraints": value.get("constraints") if isinstance(value.get("constraints"), list) else [],
+        "failed_attempt_raw_sha256": value.get("failed_attempt_raw_sha256"),
+        "provider_request_fingerprint": value.get("provider_request_fingerprint"),
+    }
+    return hashlib.sha256(_canonical(bound).encode("utf-8")).hexdigest()
+
+
+def _structural_expected_type(field: str, path: str) -> str:
+    contract = render_stage_b_schema_contract()
+    if path == "$" and field:
+        return str(contract.get("field_types", {}).get(field) or "unknown")
+    return str(contract.get("field_types", {}).get(path.lstrip("$.") or field) or "unknown")
+
+
+def _structural_constraint(error: Mapping[str, Any]) -> dict[str, Any] | None:
+    code = str(error.get("code") or error.get("error_code") or "").strip()
+    if code in {"DIRECTOR_CREATIVE_ENRICHMENT_DUPLICATE_JSON_KEY", "DIRECTOR_BEAT_PLAN_DUPLICATE_JSON_KEY"}:
+        code = "DUPLICATE_JSON_KEY"
+    if code not in _STRUCTURAL_FAILURE_CODES:
+        return None
+    path = str(error.get("path") or "$")
+    field = str(error.get("field") or error.get("key") or "")
+    if code == "SCHEMA_REQUIRED_FIELD_MISSING" and path == "$":
+        category = "REQUIRED_TOP_LEVEL_FIELD_MISSING"
+        expected_type = _structural_expected_type(field, path)
+        constraint = f"The required top-level property {field} must be present and must satisfy the source-grounded Stage B schema ({expected_type})."
+    elif code == "SCHEMA_TYPE_INVALID":
+        category = "SCHEMA_TYPE_INVALID"
+        expected_type = str(error.get("expected") or _structural_expected_type(field, path))
+        constraint = f"The value at {path} must satisfy the formal Stage B schema type {expected_type}."
+    elif code == "SCHEMA_ADDITIONAL_PROPERTY":
+        category = "SCHEMA_ADDITIONAL_PROPERTY"
+        expected_type = "no additional property"
+        constraint = f"Do not emit unknown property {field or path}; use only the formal Stage B schema keys."
+    elif code == "SCHEMA_CONST_INVALID":
+        category = "SCHEMA_CONST_INVALID"
+        expected_type = "const"
+        constraint = f"The value at {path} must equal the formal schema constant {error.get('expected')}."
+    else:
+        category = "DUPLICATE_JSON_KEY"
+        expected_type = "unique JSON property names"
+        constraint = f"Emit each JSON property name once; duplicate key {field or path} is invalid."
+    return {
+        "category": category,
+        "path": path,
+        "field": field,
+        "expected_type": expected_type,
+        "constraint": constraint,
+        "source": "persisted_attempt_failure_validation",
+    }
+
+
+def derive_structural_revision_feedback(
+    info: Mapping[str, Any] | None,
+    *,
+    active_attempt_id: str | None = None,
+) -> dict[str, Any]:
+    """Derive eligible structural feedback from the latest persisted failure.
+
+    The function is read-only and intentionally ignores report documents.  It
+    only accepts a deterministic structural failure that is later than the
+    active Stage B parent and belongs to the same revision chain.
+    """
+    info = info if isinstance(info, Mapping) else {}
+    progressive = info.get("progressive_director_authoring") if isinstance(info.get("progressive_director_authoring"), Mapping) else {}
+    stage_b = progressive.get("stage_b") if isinstance(progressive, Mapping) and isinstance(progressive.get("stage_b"), Mapping) else {}
+    parent_id = str(active_attempt_id or stage_b.get("attempt_id") or "")
+    parent_fp = str(stage_b.get("ir_fingerprint") or stage_b.get("fingerprint") or "")
+    history = info.get("director_llm_attempts") if isinstance(info.get("director_llm_attempts"), list) else []
+    latest = history[-1] if history and isinstance(history[-1], Mapping) else {}
+    failed_id = str(latest.get("attempt_id") or "")
+    if not failed_id or failed_id == parent_id or not failed_id.startswith("attempt-"):
+        return {"status": "NOT_ELIGIBLE", "reason": "LATEST_ATTEMPT_NOT_LATER_THAN_ACTIVE_PARENT"}
+    try:
+        failed_ordinal = int(failed_id.split("-", 1)[1])
+        parent_ordinal = int(parent_id.split("-", 1)[1]) if parent_id.startswith("attempt-") else -1
+    except (TypeError, ValueError):
+        return {"status": "NOT_ELIGIBLE", "reason": "ATTEMPT_ORDINAL_UNRESOLVED"}
+    if failed_ordinal <= parent_ordinal:
+        return {"status": "NOT_ELIGIBLE", "reason": "FAILED_ATTEMPT_NOT_NEWER_THAN_ACTIVE_PARENT"}
+    archives = progressive.get("stage_b_attempts") if isinstance(progressive, Mapping) and isinstance(progressive.get("stage_b_attempts"), list) else []
+    archive = next((item for item in archives if isinstance(item, Mapping) and str(item.get("attempt_id") or "") == failed_id), None)
+    if not isinstance(archive, Mapping) or str(archive.get("authoring_stage") or "").upper() != "CREATIVE_ENRICHMENT":
+        return {"status": "NOT_ELIGIBLE", "reason": "FAILED_ATTEMPT_ARCHIVE_MISSING"}
+    status = str(archive.get("structural_status") or archive.get("status") or latest.get("status") or "")
+    if "SCHEMA_INVALID" not in status and "IR_INVALID" not in status and "PARSE_FAILED" not in status:
+        return {"status": "NOT_ELIGIBLE", "reason": "LATEST_ATTEMPT_NOT_DETERMINISTIC_STRUCTURAL_FAILURE"}
+    revision_parent = archive.get("revision_parent") if isinstance(archive.get("revision_parent"), Mapping) else {}
+    if str(revision_parent.get("revision_parent_attempt_id") or "") != parent_id:
+        return {"status": "NOT_ELIGIBLE", "reason": "REVISION_CHAIN_PARENT_MISMATCH"}
+    if parent_fp and str(revision_parent.get("revision_parent_stage_b_ir_fingerprint") or "") != parent_fp:
+        return {"status": "NOT_ELIGIBLE", "reason": "REVISION_CHAIN_IR_FINGERPRINT_MISMATCH"}
+    validation = archive.get("validation") if isinstance(archive.get("validation"), Mapping) else {}
+    schema_report = validation.get("schema") if isinstance(validation.get("schema"), Mapping) else validation
+    errors = schema_report.get("errors") if isinstance(schema_report, Mapping) and isinstance(schema_report.get("errors"), list) else []
+    constraints: list[dict[str, Any]] = []
+    for error in errors:
+        if isinstance(error, Mapping):
+            item = _structural_constraint(error)
+            if item and item not in constraints:
+                constraints.append(item)
+    raw_forensic = archive.get("raw_forensic") if isinstance(archive.get("raw_forensic"), Mapping) else {}
+    provider_identity = archive.get("provider_request_identity") if isinstance(archive.get("provider_request_identity"), Mapping) else {}
+    provider_fp = str(provider_identity.get("provider_request_fingerprint_v2") or "")
+    if not constraints:
+        return {"status": "NOT_ELIGIBLE", "reason": "NO_SUPPORTED_STRUCTURAL_FAILURE"}
+    feedback: dict[str, Any] = {
+        "schema_version": STRUCTURAL_REVISION_FEEDBACK_VERSION,
+        "failed_attempt_id": failed_id,
+        "failed_attempt_status": status,
+        "failed_attempt_raw_sha256": str(raw_forensic.get("raw_response_sha256") or ""),
+        "provider_request_fingerprint": provider_fp,
+        "parent_attempt_id": parent_id,
+        "parent_ir_fingerprint": parent_fp,
+        "constraints": constraints,
+        "constraint_count": len(constraints),
+        "is_repair_instruction": False,
+        "fresh_generation_required": True,
+        "eligibility": {
+            "latest_failed_attempt": True,
+            "failed_attempt_ordinal": failed_ordinal,
+            "active_parent_ordinal": parent_ordinal,
+            "authoring_stage": "CREATIVE_ENRICHMENT",
+            "same_revision_chain": True,
+            "deterministic_structural_failure": True,
+        },
+    }
+    feedback["structural_feedback_fingerprint"] = structural_revision_feedback_fingerprint(feedback)
+    feedback["status"] = "ELIGIBLE"
+    return feedback
 
 
 def _v2_constraint_for(category: str, matched: str) -> str:
@@ -260,4 +409,4 @@ def build_revision_parent_identity_v2(*, parent_attempt_id: str, parent_ir_finge
     }
 
 
-__all__ = ["semantic_review_fingerprint", "proposal_fingerprint", "stage_b_revision_feedback", "stage_b_revision_feedback_v2", "evaluate_stage_b_semantic_revision_eligibility", "is_stage_b_semantic_revision_required", "archive_stage_b_attempt", "build_revision_parent_identity", "build_revision_parent_identity_v2"]
+__all__ = ["semantic_review_fingerprint", "proposal_fingerprint", "stage_b_revision_feedback", "stage_b_revision_feedback_v2", "STRUCTURAL_REVISION_FEEDBACK_VERSION", "structural_revision_feedback_fingerprint", "derive_structural_revision_feedback", "evaluate_stage_b_semantic_revision_eligibility", "is_stage_b_semantic_revision_required", "archive_stage_b_attempt", "build_revision_parent_identity", "build_revision_parent_identity_v2"]

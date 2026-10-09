@@ -90,7 +90,10 @@ DIRECTOR_BEAT_PLAN_IR_SCHEMA: dict[str, Any] = {
 DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
-    "required": sorted(STAGE_B_TOP_LEVEL_FIELDS),
+    # Preserve the protocol's declared order in the formal schema.  The
+    # completeness gate and evidence therefore show the same eleven keys the
+    # contract documents, while validation remains set-like.
+    "required": list(STAGE_B_TOP_LEVEL_KEYS),
     "properties": {
         "version": {"const": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION},
         "beat_enrichments": {"type": "array", "items": {
@@ -418,7 +421,10 @@ def render_stage_b_schema_contract() -> dict[str, Any]:
     nested_required, field_types, additional_properties_false_paths, shape_example = _stage_b_schema_projection(top)
     return {
         "version": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION,
-        "top_level_keys": list(STAGE_B_TOP_LEVEL_KEYS),
+        # Required top-level keys are rendered from the formal schema.  Keep
+        # this list separate from the Python compatibility tuple so adding a
+        # required field cannot leave the prompt checklist stale.
+        "top_level_keys": list(top["required"]),
         "top_level_required": list(top["required"]),
         "top_level_additional_properties": bool(top.get("additionalProperties", True)),
         "beat_enrichment_keys": list(STAGE_B_ENRICHMENT_KEYS),
@@ -502,6 +508,36 @@ def validate_stage_b_prompt_schema_key_parity(user_prompt: str) -> dict[str, Any
     required_phrase = "exactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid"
     if required_phrase not in str(user_prompt or ""):
         errors.append({"code": "STAGE_B_BEAT_COVERAGE_CONTRACT_MISSING"})
+    final_keys_marker = "FINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEYS="
+    final_keys_line = next((item for item in str(user_prompt or "").splitlines() if item.startswith(final_keys_marker)), "")
+    if not final_keys_line:
+        errors.append({"code": "STAGE_B_FINAL_OUTPUT_CHECKLIST_MISSING", "marker": final_keys_marker})
+    else:
+        try:
+            actual_final_keys = json.loads(final_keys_line[len(final_keys_marker):])
+        except (TypeError, ValueError, json.JSONDecodeError):
+            actual_final_keys = None
+        found["FINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEYS"] = actual_final_keys
+        if actual_final_keys != contract["top_level_required"]:
+            errors.append({"code": "STAGE_B_FINAL_OUTPUT_SCHEMA_KEY_PARITY", "expected": contract["top_level_required"], "actual": actual_final_keys})
+    final_count_marker = "FINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEY_COUNT="
+    final_count_line = next((item for item in str(user_prompt or "").splitlines() if item.startswith(final_count_marker)), "")
+    if not final_count_line:
+        errors.append({"code": "STAGE_B_FINAL_OUTPUT_CHECKLIST_MISSING", "marker": final_count_marker})
+    else:
+        try:
+            actual_final_count = int(final_count_line[len(final_count_marker):].strip())
+        except (TypeError, ValueError):
+            actual_final_count = None
+        found["FINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEY_COUNT"] = actual_final_count
+        if actual_final_count != len(contract["top_level_required"]):
+            errors.append({"code": "STAGE_B_FINAL_OUTPUT_SCHEMA_KEY_COUNT", "expected": len(contract["top_level_required"]), "actual": actual_final_count})
+    final_gate_marker = "FINAL_OUTPUT_COMPLETENESS_GATE="
+    if not any(item.startswith(final_gate_marker) for item in str(user_prompt or "").splitlines()):
+        errors.append({"code": "STAGE_B_FINAL_OUTPUT_COMPLETENESS_GATE_MISSING"})
+    for phrase in ("visual_priority", "no unknown top-level key", "output JSON only", "no placeholders", "beat_enrichments exactly once"):
+        if phrase not in str(user_prompt or ""):
+            errors.append({"code": "STAGE_B_FINAL_OUTPUT_COMPLETENESS_RULE_MISSING", "phrase": phrase})
     return {"status": "PASS" if not errors else "FAIL", "errors": errors, "prompt": found, "schema": contract, "structural_parity": "PASS" if not errors else "FAIL"}
 
 
@@ -811,7 +847,7 @@ def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping
     return system, user
 
 
-def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None, source_authoring_unit_fingerprint: str = "", source_authority_content_fingerprint: str = "", revision_feedback: Mapping[str, Any] | None = None, revision_parent: Mapping[str, Any] | None = None, semantic_review_policy: str = "", semantic_policy_fingerprint: str = "") -> tuple[str, str]:
+def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None, source_authoring_unit_fingerprint: str = "", source_authority_content_fingerprint: str = "", revision_feedback: Mapping[str, Any] | None = None, revision_parent: Mapping[str, Any] | None = None, semantic_review_policy: str = "", semantic_policy_fingerprint: str = "", structural_feedback: Mapping[str, Any] | None = None) -> tuple[str, str]:
     """Build the Stage B prompt over a validated local beat plan."""
 
     system = "你是受 Stage A 约束的导演表现层助手。只输出 director_creative_enrichment_ir_v1 JSON，不得重排或修改 Stage A。"
@@ -846,6 +882,7 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         f"DECLARED_PARTICIPANTS={json.dumps(declared_participants or [], ensure_ascii=False, sort_keys=True)}\n"
         f"REVISION_PARENT={json.dumps(revision_parent or {}, ensure_ascii=False, sort_keys=True)}\n"
         f"REVISION_FEEDBACK={json.dumps(revision_feedback or {}, ensure_ascii=False, sort_keys=True)}\n"
+        f"STRUCTURAL_REVISION_FEEDBACK={json.dumps(structural_feedback or {}, ensure_ascii=False, sort_keys=True)}\n"
         f"{v2_boundary}"
         f"CANONICAL_STAGE_B_TOP_LEVEL_KEYS={json.dumps(contract['top_level_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS={json.dumps(contract['beat_enrichment_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
@@ -871,6 +908,9 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         "exactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid\n"
         "每个 DBP beat_ref 必须恰好有一个 beat_enrichment；character_effects 只能引用 DECLARED_PARTICIPANTS。"
         "information_strategy 必须使用 director_information_strategy_v2 对象；performance_arc 使用 phase/state 对象数组；rhythm_strategy 使用 opening/reveal/escalation/button。"
+        f"\nFINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEYS={json.dumps(contract['top_level_required'], ensure_ascii=False, separators=(',', ':'))}\n"
+        f"FINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEY_COUNT={len(contract['top_level_required'])}\n"
+        "FINAL_OUTPUT_COMPLETENESS_GATE=Before emitting the final response, self-check that the JSON object contains every required top-level key exactly once, contains no unknown top-level key, uses visual_priority as an array<string> (required and never replaced by audience_focus or rhythm_strategy), includes beat_enrichments exactly once per validated beat, information_strategy, rhythm_strategy, performance_arc, prohibited_interpretations, scene_exit_intent, confidence, and note, emits output JSON only, and contains no placeholders, TODO, null, or schema commentary. visual_priority may contain only source-supported visual subjects; never add shots, camera, lens, composition, keyframes, or concrete shot execution.\n"
     )
     return system, user
 

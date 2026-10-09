@@ -1,0 +1,5 @@
+{
+  "evidence": "missing visual_priority fails schema and keeps attempt-9 active",
+  "provider_calls": "isolated_mock_only",
+  "status": "PASS"
+}

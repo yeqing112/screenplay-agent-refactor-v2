@@ -49,7 +49,7 @@ from core.director_proposal_ir import (
 )
 from core.director_forensic import append_director_attempt, DirectorAttemptContext, resolve_next_director_attempt_context
 from core.director_semantic_grounding import validate_director_creative_semantic_review, validate_director_creative_semantic_review_v2, SEMANTIC_REVIEW_POLICY_V1, SEMANTIC_REVIEW_POLICY_V2, semantic_policy_v2_fingerprint, resolve_required_semantic_review_policy, validate_semantic_review_assessment_binding
-from core.director_revision import archive_stage_b_attempt, build_revision_parent_identity, build_revision_parent_identity_v2, evaluate_stage_b_semantic_revision_eligibility, is_stage_b_semantic_revision_required, proposal_fingerprint, semantic_review_fingerprint, stage_b_revision_feedback, stage_b_revision_feedback_v2
+from core.director_revision import archive_stage_b_attempt, build_revision_parent_identity, build_revision_parent_identity_v2, derive_structural_revision_feedback, evaluate_stage_b_semantic_revision_eligibility, is_stage_b_semantic_revision_required, proposal_fingerprint, semantic_review_fingerprint, stage_b_revision_feedback, stage_b_revision_feedback_v2
 from core.director_progressive_authoring import (
     DIRECTOR_BEAT_PLAN_IR_VERSION,
     build_director_beat_plan_prompt,
@@ -455,6 +455,7 @@ def build_director_creative_enrichment_provider_request(
     declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None,
     source_authoring_unit_fingerprint: str = "", source_authority_content_fingerprint: str = "", revision_feedback: Mapping[str, Any] | None = None, revision_parent: Mapping[str, Any] | None = None, semantic_review_policy: str = "", semantic_policy_fingerprint: str = "", profile: dict[str, Any] | None = None,
     profile_snapshot: dict[str, Any] | None = None,
+    structural_feedback: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build the provider identity for Stage B without executing it.
 
@@ -474,7 +475,7 @@ def build_director_creative_enrichment_provider_request(
         source_authoring_unit_fingerprint = hashlib.sha256(json.dumps(source_authoring_units, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
     system_prompt, user_prompt = build_director_creative_enrichment_prompt(
         scene_id=scene_id, beat_plan=materialized_beat_plan, declared_participants=declared_participants or [],
-        source_authoring_units=source_authoring_units or [], source_authoring_unit_fingerprint=source_authoring_unit_fingerprint, source_authority_content_fingerprint=source_authority_content_fingerprint, revision_feedback=revision_feedback, revision_parent=revision_parent, semantic_review_policy=semantic_review_policy, semantic_policy_fingerprint=semantic_policy_fingerprint,
+        source_authoring_units=source_authoring_units or [], source_authoring_unit_fingerprint=source_authoring_unit_fingerprint, source_authority_content_fingerprint=source_authority_content_fingerprint, revision_feedback=revision_feedback, revision_parent=revision_parent, semantic_review_policy=semantic_review_policy, semantic_policy_fingerprint=semantic_policy_fingerprint, structural_feedback=structural_feedback,
     )
     parity = validate_stage_b_prompt_schema_key_parity(user_prompt)
     if parity.get("status") != "PASS":
@@ -496,6 +497,9 @@ def build_director_creative_enrichment_provider_request(
         semantic_review_fingerprint=(revision_parent or {}).get("revision_parent_semantic_review_fingerprint") if isinstance(revision_parent, Mapping) else None,
         semantic_review_policy=semantic_review_policy or None,
         semantic_policy_fingerprint=semantic_policy_fingerprint or None,
+        structural_failure_attempt_id=(structural_feedback or {}).get("failed_attempt_id") if isinstance(structural_feedback, Mapping) else None,
+        structural_failure_status=(structural_feedback or {}).get("failed_attempt_status") if isinstance(structural_feedback, Mapping) else None,
+        structural_feedback_fingerprint=(structural_feedback or {}).get("structural_feedback_fingerprint") if isinstance(structural_feedback, Mapping) else None,
     )
     identity = {
         "system_prompt": system_prompt, "user_prompt": user_prompt,
@@ -511,6 +515,10 @@ def build_director_creative_enrichment_provider_request(
         "revision_feedback": dict(revision_feedback or {}),
         "semantic_review_policy": str(semantic_review_policy or ""),
         "semantic_policy_fingerprint": str(semantic_policy_fingerprint or ""),
+        "structural_revision_feedback": copy.deepcopy(dict(structural_feedback or {})),
+        "structural_failure_attempt_id": str((structural_feedback or {}).get("failed_attempt_id") or "") if isinstance(structural_feedback, Mapping) else "",
+        "structural_failure_status": str((structural_feedback or {}).get("failed_attempt_status") or "") if isinstance(structural_feedback, Mapping) else "",
+        "structural_feedback_fingerprint": str((structural_feedback or {}).get("structural_feedback_fingerprint") or "") if isinstance(structural_feedback, Mapping) else "",
         "upstream_stage_a_attempt_id": str(stage_a_attempt_id or ""),
         "execution_boundary_version": "director_creative_enrichment_provider_request_v1",
     }
@@ -549,6 +557,14 @@ def validate_director_creative_enrichment_provider_identity(identity: dict[str, 
             errors.append({"code": "DIRECTOR_CREATIVE_ENRICHMENT_SEMANTIC_POLICY_DRIFT", "expected": semantic_policy_v2_fingerprint(), "received": policy_fp})
         if payload.get("semantic_review_policy") != policy or payload.get("semantic_policy_fingerprint") != policy_fp:
             errors.append({"code": "DIRECTOR_CREATIVE_ENRICHMENT_SEMANTIC_POLICY_BINDING_MISMATCH"})
+    structural_fp = str(identity.get("structural_feedback_fingerprint") or "")
+    structural_attempt = str(identity.get("structural_failure_attempt_id") or "")
+    structural_status = str(identity.get("structural_failure_status") or "")
+    if structural_fp or structural_attempt or structural_status:
+        if not structural_fp or not structural_attempt or not structural_status:
+            errors.append({"code": "DIRECTOR_CREATIVE_ENRICHMENT_STRUCTURAL_FEEDBACK_BINDING_INCOMPLETE"})
+        if payload.get("structural_feedback_fingerprint") != structural_fp or payload.get("structural_failure_attempt_id") != structural_attempt or payload.get("structural_failure_status") != structural_status:
+            errors.append({"code": "DIRECTOR_CREATIVE_ENRICHMENT_STRUCTURAL_FEEDBACK_BINDING_MISMATCH"})
     return {"status": "PASS" if not errors else "FAIL", "errors": errors}
 
 
@@ -735,6 +751,8 @@ def _restore_revision_after_failure(*, packet_id: int, book_id: int, revision_co
             "validation": copy.deepcopy(current_info.get("stage_b_validation") or {}),
             "semantic_review_fingerprint": str(revision_context.get("semantic_review_fingerprint") or ""),
         }
+        if isinstance(revision_context.get("structural_revision_feedback"), dict) and revision_context.get("structural_revision_feedback"):
+            failure_entry["structural_revision_feedback"] = copy.deepcopy(revision_context["structural_revision_feedback"])
         if str(revision_context.get("semantic_review_policy") or "") == SEMANTIC_REVIEW_POLICY_V2:
             failure_entry.update({"semantic_review_policy": SEMANTIC_REVIEW_POLICY_V2, "semantic_policy_fingerprint": semantic_policy_v2_fingerprint()})
         if not any(isinstance(item, dict) and str(item.get("attempt_id") or "") == attempt_context.attempt_id for item in archives):
@@ -988,8 +1006,12 @@ def _execute_source_grounded_creative_enrichment(*, book_id: int, packet_id: int
                 stage_b["source_authoring_unit_fingerprint"] = str(identity.get("source_authoring_unit_fingerprint") or "")
                 stage_b["source_authority_content_fingerprint"] = str(identity.get("source_authority_content_fingerprint") or "")
                 stage_b["provider_request_identity"] = copy.deepcopy(identity)
+                if isinstance(revision_context.get("structural_revision_feedback"), dict) and revision_context.get("structural_revision_feedback"):
+                    stage_b["structural_revision_feedback"] = copy.deepcopy(revision_context["structural_revision_feedback"])
                 stage_b_attempts = progressive.get("stage_b_attempts") if isinstance(progressive.get("stage_b_attempts"), list) else []
                 stage_b_attempt_entry = {"attempt_id": attempt_context.attempt_id, "authoring_stage": "CREATIVE_ENRICHMENT", "ir": copy.deepcopy(parsed), "ir_fingerprint": stage_b_fp, "structural_status": stage_b["status"], "semantic_review": copy.deepcopy(semantic_review), "semantic_review_fingerprint": semantic_review_fp, "revision_parent": copy.deepcopy(revision_context.get("revision_parent") or {}), "provider_provenance": copy.deepcopy(provider), "provider_request_identity": copy.deepcopy(identity), "raw_forensic": copy.deepcopy(forensic), "validation": {"schema": schema_report, "text": text_report, "runtime": runtime, "semantic_review": semantic_review}, "merge_state": "MERGED", "proposal_fingerprint": proposal_fingerprint(candidate)}
+                if isinstance(revision_context.get("structural_revision_feedback"), dict) and revision_context.get("structural_revision_feedback"):
+                    stage_b_attempt_entry["structural_revision_feedback"] = copy.deepcopy(revision_context["structural_revision_feedback"])
                 if semantic_policy == SEMANTIC_REVIEW_POLICY_V2:
                     stage_b_attempt_entry.update({"semantic_review_policy": semantic_policy, "semantic_policy_fingerprint": semantic_policy_fp, "semantic_review_v2": copy.deepcopy(semantic_review)})
                 stage_b_attempts.append(stage_b_attempt_entry)
@@ -1890,8 +1912,10 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
     else:
         revision_parent = build_revision_parent_identity(parent_attempt_id=current_attempt_id, parent_ir_fingerprint=current_stage_b_fp, semantic_review=current_review, stage_a_attempt_id=str(stage_a.get("attempt_id") or "") if isinstance(stage_a, dict) else "", stage_a_materialized_fingerprint=materialized_fp, source_authoring_unit_fingerprint=source_projection_fp, source_authority_content_fingerprint=source_content_fp)
         feedback = stage_b_revision_feedback(current_review)
+    structural_feedback_report = derive_structural_revision_feedback(before_info, active_attempt_id=current_attempt_id)
+    structural_feedback = structural_feedback_report if structural_feedback_report.get("status") == "ELIGIBLE" else None
     profile, profile_snapshot = _director_llm_profile_preflight()
-    identity = build_director_creative_enrichment_provider_request(scene_id=req.scene_id, materialized_beat_plan=materialized if isinstance(materialized, dict) else {}, stage_a_materialized_fingerprint=materialized_fp, stage_a_attempt_id=str(stage_a.get("attempt_id") or "") if isinstance(stage_a, dict) else "", declared_participants=constraints.get("declared_participants") if isinstance(constraints.get("declared_participants"), list) else [], source_authoring_units=current_units, source_authoring_unit_fingerprint=source_projection_fp, source_authority_content_fingerprint=source_content_fp, revision_feedback=feedback, revision_parent=revision_parent, semantic_review_policy=required_policy if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", semantic_policy_fingerprint=semantic_policy_v2_fingerprint() if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", profile=profile, profile_snapshot=profile_snapshot)
+    identity = build_director_creative_enrichment_provider_request(scene_id=req.scene_id, materialized_beat_plan=materialized if isinstance(materialized, dict) else {}, stage_a_materialized_fingerprint=materialized_fp, stage_a_attempt_id=str(stage_a.get("attempt_id") or "") if isinstance(stage_a, dict) else "", declared_participants=constraints.get("declared_participants") if isinstance(constraints.get("declared_participants"), list) else [], source_authoring_units=current_units, source_authoring_unit_fingerprint=source_projection_fp, source_authority_content_fingerprint=source_content_fp, revision_feedback=feedback, revision_parent=revision_parent, semantic_review_policy=required_policy if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", semantic_policy_fingerprint=semantic_policy_v2_fingerprint() if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", profile=profile, profile_snapshot=profile_snapshot, structural_feedback=structural_feedback)
     context = resolve_next_director_attempt_context(before_info, authoring_stage="CREATIVE_ENRICHMENT")
     existing_stage_b_archives = (
         (before_info.get("progressive_director_authoring") or {}).get("stage_b_attempts")
@@ -1902,10 +1926,10 @@ def generate_director_creative_enrichment_revision_llm_draft(book_id: int, episo
         archive_report = {"status": "PASS", "changed": False, "archived": False, "attempt_id": current_attempt_id, "archive_count": len(existing_stage_b_archives)}
     else:
         archive_preview, archive_report = archive_stage_b_attempt(before_info, proposal=proposal, attempt_id=current_attempt_id)
-    manifest = {**identity, "revision_parent": revision_parent, "revision_feedback": feedback, "semantic_review_policy": required_policy, "semantic_policy_fingerprint": semantic_policy_v2_fingerprint() if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", "semantic_review_fingerprint": current_review_fp, "source_reconciliation": source_reconciliation, "archive_readiness": archive_report, "expected_attempt": context.attempt_id, "history_count": context.history_count, "authorization": "REQUIRED_NOT_GRANTED"}
+    manifest = {**identity, "revision_parent": revision_parent, "revision_feedback": feedback, "structural_revision_feedback": copy.deepcopy(structural_feedback or {}), "structural_feedback_eligibility": structural_feedback_report, "semantic_review_policy": required_policy, "semantic_policy_fingerprint": semantic_policy_v2_fingerprint() if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", "semantic_review_fingerprint": current_review_fp, "source_reconciliation": source_reconciliation, "archive_readiness": archive_report, "expected_attempt": context.attempt_id, "history_count": context.history_count, "authorization": "REQUIRED_NOT_GRANTED"}
     if not (req.confirmed and req.allow_external_call and str(req.authorization_id or "").strip()):
         return {"status": context.status("AUTHORIZATION_REQUIRED"), "provider": {"called": False, "calls": 0}, "provider_calls": 0, "confirm_allowed": False, "execution_manifest": manifest, "revision_parent": revision_parent, "source_reconciliation": source_reconciliation}
-    revision_context = {"episode": episode, "before_info": before_info, "before_proposal_json": before_proposal_json, "revision_parent": revision_parent, "semantic_review_fingerprint": current_review_fp, "semantic_review_policy": required_policy, "semantic_policy_fingerprint": semantic_policy_v2_fingerprint() if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", "identity": identity}
+    revision_context = {"episode": episode, "before_info": before_info, "before_proposal_json": before_proposal_json, "revision_parent": revision_parent, "structural_revision_feedback": copy.deepcopy(structural_feedback or {}), "semantic_review_fingerprint": current_review_fp, "semantic_review_policy": required_policy, "semantic_policy_fingerprint": semantic_policy_v2_fingerprint() if required_policy == SEMANTIC_REVIEW_POLICY_V2 else "", "identity": identity}
     with Session() as session:
         current = session.query(DecisionPacketRecord).filter_by(id=row.id, book_id=book_id, packet_fingerprint=packet["packet_fingerprint"]).first()
         current_info = _json_object(current.model_info, {}) if current else {}

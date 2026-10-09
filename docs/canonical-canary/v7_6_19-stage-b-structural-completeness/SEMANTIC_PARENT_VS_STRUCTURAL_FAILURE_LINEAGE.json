@@ -1,0 +1,18 @@
+{
+  "next_revision": {
+    "attempt_id": "attempt-11",
+    "semantic_parent_attempt_id": "attempt-9",
+    "structural_failure_attempt_id": "attempt-10"
+  },
+  "semantic_parent": {
+    "attempt_id": "attempt-9",
+    "ir_fingerprint": "591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa",
+    "semantic_review_fingerprint": "e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a"
+  },
+  "status": "PASS",
+  "structural_failure": {
+    "attempt_id": "attempt-10",
+    "feedback_fingerprint": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4",
+    "raw_sha256": "5daf096fd07ad58ffe8848b25a8d633797234ce325dba1986f21de4af4ca39f0"
+  }
+}
