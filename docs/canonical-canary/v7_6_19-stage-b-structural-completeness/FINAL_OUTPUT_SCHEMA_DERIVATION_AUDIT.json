@@ -1,17 +1,17 @@
 {
-  "all_equal": true,
+  "all_equal": false,
   "formal_schema_required": [
-    "version",
     "beat_enrichments",
     "character_directions",
-    "performance_arc",
-    "information_strategy",
-    "rhythm_strategy",
-    "visual_priority",
-    "scene_exit_intent",
-    "prohibited_interpretations",
     "confidence",
-    "note"
+    "information_strategy",
+    "note",
+    "performance_arc",
+    "prohibited_interpretations",
+    "rhythm_strategy",
+    "scene_exit_intent",
+    "version",
+    "visual_priority"
   ],
   "prompt_parity": {
     "errors": [],
@@ -215,17 +215,17 @@
       },
       "STAGE_B_REQUIRED_FIELDS": {
         "$": [
-          "version",
           "beat_enrichments",
           "character_directions",
-          "performance_arc",
-          "information_strategy",
-          "rhythm_strategy",
-          "visual_priority",
-          "scene_exit_intent",
-          "prohibited_interpretations",
           "confidence",
-          "note"
+          "information_strategy",
+          "note",
+          "performance_arc",
+          "prohibited_interpretations",
+          "rhythm_strategy",
+          "scene_exit_intent",
+          "version",
+          "visual_priority"
         ],
         "beat_enrichments[]": [
           "beat_ref",
@@ -364,17 +364,17 @@
       ],
       "nested_required": {
         "$": [
-          "version",
           "beat_enrichments",
           "character_directions",
-          "performance_arc",
-          "information_strategy",
-          "rhythm_strategy",
-          "visual_priority",
-          "scene_exit_intent",
-          "prohibited_interpretations",
           "confidence",
-          "note"
+          "information_strategy",
+          "note",
+          "performance_arc",
+          "prohibited_interpretations",
+          "rhythm_strategy",
+          "scene_exit_intent",
+          "version",
+          "visual_priority"
         ],
         "beat_enrichments[]": [
           "beat_ref",

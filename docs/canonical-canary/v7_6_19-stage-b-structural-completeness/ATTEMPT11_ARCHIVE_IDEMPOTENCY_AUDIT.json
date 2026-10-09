@@ -1,5 +1,11 @@
 {
-  "evidence": "attempt-9 archive repeat is byte-identical no-op; attempt-10 failure and attempt-11 preflight coexist",
-  "provider_calls": 0,
+  "evidence": {
+    "archive_attempt9_repeat": "NO_OP",
+    "attempt10_failure_preserved": true,
+    "attempt11_preflight": "AUTHORIZATION_REQUIRED",
+    "attempt9_archive_conflict": false,
+    "provider_calls": 0,
+    "test": "test_attempt9_archive_idempotency_coexists_with_attempt10_failure_and_attempt11_preflight"
+  },
   "status": "PASS"
 }

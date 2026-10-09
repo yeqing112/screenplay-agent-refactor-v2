@@ -1,9 +1,536 @@
 {
+  "attempt10_raw_in_prompt": false,
+  "attempt9_raw_in_prompt": false,
   "final_gate_last": true,
-  "prompt": "DIRECTOR_CREATIVE_ENRICHMENT_IR_V1\nSCENE_ID=\"E01_SC001\"\nVALIDATED_BEAT_PLAN={\"authoring_stage\": \"AUTHORING_STAGE_A\", \"authority\": \"PROVIDER_PROPOSAL\", \"beats\": [{\"beat_ref\": \"DBP_E01_SC001_001\", \"hook\": true, \"information_change\": \"林晚得知暗房中央存在一只母亲手写标签为第七次潮汐的铁盒，空间与物件的来历被初步交代。\", \"objective\": \"让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。\", \"purpose\": \"把观众带入暗房这一封闭空间，用红色安全灯与水渍地图铺陈不安的视觉基调，并让母亲手写的铁盒成为场景的中心谜题。\", \"refs\": [\"SAU_E01_SC001_001\", \"SAU_E01_SC001_002\", \"SAU_E01_SC001_003\"]}, {\"beat_ref\": \"DBP_E01_SC001_002\", \"hook\": true, \"information_change\": \"铁盒被证实为空，只剩烧焦胶片与海鸥别针，林晚认出别针却无法确认自己童年是否来过暗房。\", \"objective\": \"让林晚在别针与照片小女孩的重合中意识到自己与这个空间可能存在被遗忘的联系。\", \"purpose\": \"揭开铁盒内部的空缺，用烧焦胶片与海鸥别针触发林晚对自身童年的怀疑，把物件之谜转向身份之谜。\", \"refs\": [\"SAU_E01_SC001_004\", \"SAU_E01_SC001_005\"]}, {\"beat_ref\": \"DBP_E01_SC001_003\", \"hook\": true, \"information_change\": \"顾沉确认胶片被人拿走，并暗示拿走胶片的人可能就是林晚自己，林晚的嫌疑被直接建立。\", \"objective\": \"让林晚在追问是谁的过程中被迫面对顾沉那句也许是你自己的指控。\", \"purpose\": \"由顾沉抛出胶片被拿走的事实并给出指向林晚自身的暗示，把外部失窃转化为对林晚内心的拷问。\", \"refs\": [\"SAU_E01_SC001_006\", \"SAU_E01_SC001_007\", \"SAU_E01_SC001_008\"]}, {\"beat_ref\": \"DBP_E01_SC001_004\", \"hook\": true, \"information_change\": \"门外出现湿透皮鞋的神秘人，其塞入的车票背面写明今晚十点北堤仓库、带钥匙、不要带顾沉的指令。\", \"objective\": \"让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。\", \"purpose\": \"用铜铃声与门缝下的湿皮鞋打断审问节奏，把场景从心理对峙推向外部威胁，并以车票上的指令留下明确的下一步钩子。\", \"refs\": [\"SAU_E01_SC001_009\", \"SAU_E01_SC001_010\", \"SAU_E01_SC001_011\", \"SAU_E01_SC001_012\"]}], \"confidence\": 0.9, \"dramatic_question\": \"林晚究竟是不是那个拿走胶片的人？\", \"note\": \"本计划仅对来源单元进行戏剧分组与目标标注，未改写任何来源事实、对白或角色绑定。\", \"passthrough_refs\": [], \"proposal_origin\": \"PROVIDER_PROPOSAL\", \"scene_label\": \"E01_SC001\", \"scene_objective\": \"建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。\", \"unknowns\": [], \"version\": \"director_beat_plan_ir_v1\"}\nSOURCE_AUTHORING_UNITS=[{\"source_order\": 1, \"source_type\": \"SOURCE_ACTION\", \"text\": \"顾沉带林晚进入暗房。\", \"unit_id\": \"SAU_E01_SC001_001\"}, {\"source_order\": 2, \"source_type\": \"SOURCE_ACTION\", \"text\": \"红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。\", \"unit_id\": \"SAU_E01_SC001_002\"}, {\"source_order\": 3, \"source_type\": \"SOURCE_ACTION\", \"text\": \"暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。\", \"unit_id\": \"SAU_E01_SC001_003\"}, {\"source_order\": 4, \"source_type\": \"SOURCE_ACTION\", \"text\": \"铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。\", \"unit_id\": \"SAU_E01_SC001_004\"}, {\"source_order\": 5, \"source_type\": \"SOURCE_ACTION\", \"text\": \"林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。\", \"unit_id\": \"SAU_E01_SC001_005\"}, {\"source_order\": 6, \"source_type\": \"SOURCE_ACTION\", \"text\": \"顾沉说胶片被人拿走了。\", \"unit_id\": \"SAU_E01_SC001_006\"}, {\"source_order\": 7, \"source_type\": \"SOURCE_ACTION\", \"text\": \"林晚问是谁\", \"unit_id\": \"SAU_E01_SC001_007\"}, {\"source_order\": 8, \"source_type\": \"SOURCE_DIALOGUE\", \"speaker\": \"顾沉\", \"text\": \"也许是你自己\", \"unit_id\": \"SAU_E01_SC001_008\"}, {\"source_order\": 9, \"source_type\": \"SOURCE_ACTION\", \"text\": \"两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。\", \"unit_id\": \"SAU_E01_SC001_009\"}, {\"source_order\": 10, \"source_type\": \"SOURCE_ACTION\", \"text\": \"门缝下出现一双湿透的皮鞋。\", \"unit_id\": \"SAU_E01_SC001_010\"}, {\"source_order\": 11, \"source_type\": \"SOURCE_ACTION\", \"text\": \"那人没有进门，只把一张车票塞进来。\", \"unit_id\": \"SAU_E01_SC001_011\"}, {\"source_order\": 12, \"source_type\": \"SOURCE_ACTION\", \"text\": \"车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。\", \"unit_id\": \"SAU_E01_SC001_012\"}]\nSOURCE_AUTHORING_UNIT_FINGERPRINT=\"2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f\"\nSOURCE_AUTHORITY_CONTENT_FINGERPRINT=\"ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8\"\nDECLARED_PARTICIPANTS=[{\"character_id\": \"林晚\", \"evidence\": [{\"byte_end\": 30, \"byte_start\": 0, \"char_end\": 10, \"char_start\": 0, \"evidence_id\": \"S1P1E001\", \"occurrence_count\": 1, \"sha256\": \"25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59\", \"text\": \"顾沉带林晚进入暗房。\"}, {\"byte_end\": 377, \"byte_start\": 269, \"char_end\": 127, \"char_start\": 91, \"evidence_id\": \"S1P1E002\", \"occurrence_count\": 1, \"sha256\": \"bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b\", \"text\": \"林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。\"}, {\"byte_end\": 427, \"byte_start\": 412, \"char_end\": 145, \"char_start\": 140, \"evidence_id\": \"S1P1E003\", \"occurrence_count\": 1, \"sha256\": \"8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923\", \"text\": \"林晚问是谁\"}], \"id\": \"林晚\", \"name\": \"林晚\"}, {\"character_id\": \"顾沉\", \"evidence\": [{\"byte_end\": 30, \"byte_start\": 0, \"char_end\": 10, \"char_start\": 0, \"evidence_id\": \"S1P2E001\", \"occurrence_count\": 1, \"sha256\": \"25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59\", \"text\": \"顾沉带林晚进入暗房。\"}, {\"byte_end\": 412, \"byte_start\": 379, \"char_end\": 140, \"char_start\": 129, \"evidence_id\": \"S1P2E002\", \"occurrence_count\": 1, \"sha256\": \"f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820\", \"text\": \"顾沉说胶片被人拿走了。\"}, {\"byte_end\": 589, \"byte_start\": 532, \"char_end\": 199, \"char_start\": 180, \"evidence_id\": \"S1P2E003\", \"occurrence_count\": 1, \"sha256\": \"3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32\", \"text\": \"顾沉熄灭安全灯，拉着林晚躲到药水柜后。\"}], \"id\": \"顾沉\", \"name\": \"顾沉\"}]\nREVISION_PARENT={\"revision_parent_attempt_id\": \"attempt-9\", \"revision_parent_fingerprint\": \"e2a53e95c74d72dcae1e7e910574994fddf34a51660c434f861262ac64ad6809\", \"revision_parent_identity_version\": \"revision_parent_identity_v2\", \"revision_parent_semantic_policy_fingerprint\": \"9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501\", \"revision_parent_semantic_review_fingerprint\": \"e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a\", \"revision_parent_semantic_review_policy\": \"director_creative_semantic_review_v2\", \"revision_parent_stage_b_ir_fingerprint\": \"591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa\", \"source_authoring_unit_fingerprint\": \"2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f\", \"source_authority_content_fingerprint\": \"ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8\", \"stage_a_attempt_id\": \"attempt-7\", \"stage_a_materialized_fingerprint\": \"328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01\"}\nREVISION_FEEDBACK={\"constraint_count\": 4, \"constraints\": [{\"category\": \"UNSUPPORTED_CERTAINTY_COLLAPSE\", \"constraint\": \"Preserve source uncertainty. Do not turn 是否、可能、想不起、无法确认 or unknown into 首次、从未、一定、确认 or 必然.\", \"matched_term\": \"首次\", \"path\": \"beat_enrichments[0].character_effects[1].effect\"}, {\"category\": \"DOWNSTREAM_SCENEBLOCKING_LEAKAGE\", \"constraint\": \"Do not specify concrete spatial blocking, paths, placement, or movement such as walking to or bringing someone to a prop; leave SceneBlocking to its downstream authority.\", \"matched_term\": \"带到铁盒前\", \"path\": \"beat_enrichments[0].character_effects[0].effect\"}, {\"category\": \"UNSUPPORTED_STORY_ACTION\", \"constraint\": \"Do not invent canonical story actions involving key props, such as opening a box, picking up a prop, taking film, or handing over a key, unless SourceAuthoringUnits explicitly support them.\", \"matched_term\": \"打开铁盒\", \"path\": \"beat_enrichments[1].performance\"}, {\"category\": \"DOWNSTREAM_SCENEBLOCKING_LEAKAGE\", \"constraint\": \"Do not specify concrete spatial blocking, paths, placement, or movement such as walking to or bringing someone to a prop; leave SceneBlocking to its downstream authority.\", \"matched_term\": \"带到铁盒前\", \"path\": \"character_directions[1].objective\"}], \"fresh_generation_required\": true, \"is_repair_instruction\": false, \"schema_version\": \"director_revision_feedback_v2\", \"semantic_policy_fingerprint\": \"9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501\", \"semantic_review_fingerprint\": \"e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a\", \"semantic_review_policy\": \"director_creative_semantic_review_v2\"}\nSTRUCTURAL_REVISION_FEEDBACK={\"constraint_count\": 1, \"constraints\": [{\"category\": \"REQUIRED_TOP_LEVEL_FIELD_MISSING\", \"constraint\": \"The required top-level property visual_priority must be present and must satisfy the source-grounded Stage B schema (array<string>).\", \"expected_type\": \"array<string>\", \"field\": \"visual_priority\", \"path\": \"$\", \"source\": \"persisted_attempt_failure_validation\"}], \"eligibility\": {\"active_parent_ordinal\": 9, \"authoring_stage\": \"CREATIVE_ENRICHMENT\", \"deterministic_structural_failure\": true, \"failed_attempt_ordinal\": 10, \"latest_failed_attempt\": true, \"same_revision_chain\": true}, \"failed_attempt_id\": \"attempt-10\", \"failed_attempt_raw_sha256\": \"5daf096fd07ad58ffe8848b25a8d633797234ce325dba1986f21de4af4ca39f0\", \"failed_attempt_status\": \"DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_SCHEMA_INVALID\", \"fresh_generation_required\": true, \"is_repair_instruction\": false, \"parent_attempt_id\": \"attempt-9\", \"parent_ir_fingerprint\": \"591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa\", \"provider_request_fingerprint\": \"b9b0592520fd13aac0eb70c671e4fc82be901e1031b4690ae030e146e885169b\", \"schema_version\": \"director_revision_structural_feedback_v1\", \"status\": \"ELIGIBLE\", \"structural_feedback_fingerprint\": \"4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4\"}\nSEMANTIC_REVIEW_POLICY=\"director_creative_semantic_review_v2\"\nSEMANTIC_POLICY_FINGERPRINT=\"9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501\"\nUNCERTAINTY_PRESERVATION_RULE=If SOURCE_AUTHORING_UNITS says 是否、可能、想不起、无法确认、不确定、未知、未说明 or equivalent unknown, do not turn it into 首次、第一次、从未、一定、就是、确定、确认、明确知道 or 必然.\nSTORY_ACTION_BOUNDARY=Do not invent canonical story actions involving key props, including opening a box, picking up a prop, taking film, or handing over a key, unless the action is explicit in SOURCE_AUTHORING_UNITS.\nSCENEBLOCKING_BOUNDARY=Stage B must not specify concrete spatial paths, placement, or movement such as walking to a prop, bringing someone to a place, standing at a place, moving to a place, or going behind someone unless it is an explicit source event.\nPERFORMANCE_ACTION_ALLOWLIST=Low-risk playable actions such as pauses, hesitation, gaze changes, facial changes, breath, tone, speech rate, body tension, and freezing remain allowed.\nV2_SHOTPLAN_BOUNDARY=Keep shot size, camera, lens, movement, frame, keyframe, shot count, and concrete shot execution out of Stage B.\nCANONICAL_STAGE_B_TOP_LEVEL_KEYS=[\"version\",\"beat_enrichments\",\"character_directions\",\"performance_arc\",\"information_strategy\",\"rhythm_strategy\",\"visual_priority\",\"scene_exit_intent\",\"prohibited_interpretations\",\"confidence\",\"note\"]\nCANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS=[\"beat_ref\",\"audience_effect\",\"performance\",\"transition\",\"character_effects\"]\nCANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS=[\"character_ref\",\"direction\",\"objective\",\"obstacle\",\"strategy\",\"performance_notes\"]\nCANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS=[\"character_ref\",\"effect\"]\nCANONICAL_STAGE_B_INFORMATION_STRATEGY_KEYS=[\"schema_version\",\"known_to_audience\",\"withheld_from_audience\",\"reveal_plan\",\"reaction_priority\",\"audience_focus\"]\nCANONICAL_STAGE_B_INFORMATION_REVEAL_KEYS=[\"beat_id\",\"reveals\",\"withholds\",\"audience_should_notice\",\"audience_should_not_yet_know\"]\nCANONICAL_STAGE_B_RHYTHM_STRATEGY_KEYS=[\"opening\",\"reveal\",\"escalation\",\"button\"]\nSTAGE_B_REQUIRED_FIELDS={\"$\":[\"version\",\"beat_enrichments\",\"character_directions\",\"performance_arc\",\"information_strategy\",\"rhythm_strategy\",\"visual_priority\",\"scene_exit_intent\",\"prohibited_interpretations\",\"confidence\",\"note\"],\"beat_enrichments[]\":[\"beat_ref\",\"audience_effect\",\"performance\",\"transition\",\"character_effects\"],\"beat_enrichments[].character_effects[]\":[\"character_ref\",\"effect\"],\"character_directions[]\":[\"character_ref\",\"direction\"],\"information_strategy\":[\"schema_version\",\"known_to_audience\",\"withheld_from_audience\",\"reveal_plan\",\"reaction_priority\",\"audience_focus\"],\"information_strategy.reveal_plan[]\":[\"beat_id\",\"reveals\",\"withholds\",\"audience_should_notice\",\"audience_should_not_yet_know\"],\"performance_arc[]\":[\"phase\",\"state\"],\"rhythm_strategy\":[\"opening\",\"reveal\",\"escalation\",\"button\"]}\nSTAGE_B_FIELD_TYPES={\"beat_enrichments\":\"array<object>\",\"beat_enrichments[].audience_effect\":\"string\",\"beat_enrichments[].beat_ref\":\"string\",\"beat_enrichments[].character_effects\":\"array<object>\",\"beat_enrichments[].character_effects[].character_ref\":\"string\",\"beat_enrichments[].character_effects[].effect\":\"string\",\"beat_enrichments[].performance\":\"string\",\"beat_enrichments[].transition\":\"string\",\"character_directions\":\"array<object>\",\"character_directions[].character_ref\":\"string\",\"character_directions[].direction\":\"string\",\"character_directions[].objective\":\"string\",\"character_directions[].obstacle\":\"string\",\"character_directions[].performance_notes\":\"string\",\"character_directions[].strategy\":\"string\",\"confidence\":\"number|string\",\"information_strategy\":\"object\",\"information_strategy.audience_focus\":\"array<string>\",\"information_strategy.known_to_audience\":\"array<string>\",\"information_strategy.reaction_priority\":\"array<string>\",\"information_strategy.reveal_plan\":\"array<object>\",\"information_strategy.reveal_plan[].audience_should_not_yet_know\":\"string\",\"information_strategy.reveal_plan[].audience_should_notice\":\"string\",\"information_strategy.reveal_plan[].beat_id\":\"string\",\"information_strategy.reveal_plan[].reveals\":\"array<string>\",\"information_strategy.reveal_plan[].withholds\":\"array<string>\",\"information_strategy.schema_version\":\"const:director_information_strategy_v2\",\"information_strategy.withheld_from_audience\":\"array<string>\",\"note\":\"string\",\"performance_arc\":\"array<object>\",\"performance_arc[].phase\":\"string\",\"performance_arc[].state\":\"string\",\"prohibited_interpretations\":\"array<string>\",\"rhythm_strategy\":\"object\",\"rhythm_strategy.button\":\"string\",\"rhythm_strategy.escalation\":\"string\",\"rhythm_strategy.opening\":\"string\",\"rhythm_strategy.reveal\":\"string\",\"scene_exit_intent\":\"string\",\"version\":\"const:director_creative_enrichment_ir_v1\",\"visual_priority\":\"array<string>\"}\nSTAGE_B_ADDITIONAL_PROPERTIES=false\nSTAGE_B_ADDITIONAL_PROPERTIES_FALSE_PATHS=[\"$\",\"beat_enrichments[]\",\"beat_enrichments[].character_effects[]\",\"character_directions[]\",\"performance_arc[]\",\"information_strategy\",\"information_strategy.reveal_plan[]\",\"rhythm_strategy\"]\nJSON_SHAPE_EXAMPLE_ONLY={\"beat_enrichments\":[{\"audience_effect\":\"string\",\"beat_ref\":\"string\",\"character_effects\":[{\"character_ref\":\"string\",\"effect\":\"string\"}],\"performance\":\"string\",\"transition\":\"string\"}],\"character_directions\":[{\"character_ref\":\"string\",\"direction\":\"string\",\"objective\":\"string\",\"obstacle\":\"string\",\"performance_notes\":\"string\",\"strategy\":\"string\"}],\"confidence\":0,\"information_strategy\":{\"audience_focus\":[\"string\"],\"known_to_audience\":[\"string\"],\"reaction_priority\":[\"string\"],\"reveal_plan\":[{\"audience_should_not_yet_know\":\"string\",\"audience_should_notice\":\"string\",\"beat_id\":\"string\",\"reveals\":[\"string\"],\"withholds\":[\"string\"]}],\"schema_version\":\"director_information_strategy_v2\",\"withheld_from_audience\":[\"string\"]},\"note\":\"string\",\"performance_arc\":[{\"phase\":\"string\",\"state\":\"string\"}],\"prohibited_interpretations\":[\"string\"],\"rhythm_strategy\":{\"button\":\"string\",\"escalation\":\"string\",\"opening\":\"string\",\"reveal\":\"string\"},\"scene_exit_intent\":\"string\",\"version\":\"director_creative_enrichment_ir_v1\",\"visual_priority\":[\"string\"]}\nBEAT_COVERAGE=[\"DBP_E01_SC001_001\",\"DBP_E01_SC001_002\",\"DBP_E01_SC001_003\",\"DBP_E01_SC001_004\"]\nKEY_RULE=Property names must match these strings exactly, byte-for-byte. do not translate; Chinese only in values, never in keys.\nStage A is immutable: refs,purpose,objective,information_change,hook,scene_objective,dramatic_question are read-only and must not be repeated or changed.\nSOURCE_GROUNDING_RULE=Creative direction may interpret presentation, but must not introduce new story facts, hidden character knowledge, backstory, relationships, motives, past events, sensory facts, or object properties not present in SOURCE_AUTHORING_UNITS or validated Stage A.\nCHARACTER_KNOWLEDGE_CONTRACT=Do not assert 他知道、他认识、他早就知道、他经历过、他不是第一次、他曾经、他训练过 or equivalent character knowledge/history unless SOURCE_AUTHORING_UNITS explicitly support it. Phrase uncertainty as a playable performance option.\nEMOTIONAL_FACT_CONTRACT=Do not canonize love, hatred, resentment, guilt, jealousy, attachment, or fear without source support; write playable tension or performance options instead.\nSENSORY_FACT_CONTRACT=Do not invent smells, tastes, temperatures, textures, sounds, or other sensory facts absent from SOURCE_AUTHORING_UNITS.\nSTAGE_B_SHOTPLAN_BOUNDARY=Do not specify shot size, camera angle, lens, camera movement, frame number, keyframe, shot count, or concrete camera execution. 禁止特写、近景、全景、机位、焦段、推拉摇移、第一帧、最后一帧、镜头编号和具体镜头执行。\nREVISION_GENERATION_CONTRACT=Generate a fresh CreativeEnrichment IR. Do not patch or paraphrase the rejected response. Do not preserve rejected assumptions. Use source facts and Stage A as authority. 重新生成全新的 CreativeEnrichment IR；禁止修补、改写或沿用被拒绝响应中的假设。REVISION_FEEDBACK is a constraint list, not repair instructions.\nexactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid\n每个 DBP beat_ref 必须恰好有一个 beat_enrichment；character_effects 只能引用 DECLARED_PARTICIPANTS。information_strategy 必须使用 director_information_strategy_v2 对象；performance_arc 使用 phase/state 对象数组；rhythm_strategy 使用 opening/reveal/escalation/button。\nFINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEYS=[\"version\",\"beat_enrichments\",\"character_directions\",\"performance_arc\",\"information_strategy\",\"rhythm_strategy\",\"visual_priority\",\"scene_exit_intent\",\"prohibited_interpretations\",\"confidence\",\"note\"]\nFINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEY_COUNT=11\nFINAL_OUTPUT_COMPLETENESS_GATE=Before emitting the final response, self-check that the JSON object contains every required top-level key exactly once, contains no unknown top-level key, uses visual_priority as an array<string> (required and never replaced by audience_focus or rhythm_strategy), includes beat_enrichments exactly once per validated beat, information_strategy, rhythm_strategy, performance_arc, prohibited_interpretations, scene_exit_intent, confidence, and note, emits output JSON only, and contains no placeholders, TODO, null, or schema commentary. visual_priority may contain only source-supported visual subjects; never add shots, camera, lens, composition, keyframes, or concrete shot execution.\n",
-  "prompt_fingerprint": "eccc26a602d23563d217775ce35b4537a9fada307d3168c1b365258855289a27",
+  "prompt": "DIRECTOR_CREATIVE_ENRICHMENT_IR_V1\nSCENE_ID=\"E01_SC001\"\nVALIDATED_BEAT_PLAN={\"authoring_stage\": \"AUTHORING_STAGE_A\", \"authority\": \"PROVIDER_PROPOSAL\", \"beats\": [{\"beat_ref\": \"DBP_E01_SC001_001\", \"hook\": true, \"information_change\": \"林晚得知暗房中央存在一只母亲手写标签为第七次潮汐的铁盒，空间与物件的来历被初步交代。\", \"objective\": \"让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。\", \"purpose\": \"把观众带入暗房这一封闭空间，用红色安全灯与水渍地图铺陈不安的视觉基调，并让母亲手写的铁盒成为场景的中心谜题。\", \"refs\": [\"SAU_E01_SC001_001\", \"SAU_E01_SC001_002\", \"SAU_E01_SC001_003\"]}, {\"beat_ref\": \"DBP_E01_SC001_002\", \"hook\": true, \"information_change\": \"铁盒被证实为空，只剩烧焦胶片与海鸥别针，林晚认出别针却无法确认自己童年是否来过暗房。\", \"objective\": \"让林晚在别针与照片小女孩的重合中意识到自己与这个空间可能存在被遗忘的联系。\", \"purpose\": \"揭开铁盒内部的空缺，用烧焦胶片与海鸥别针触发林晚对自身童年的怀疑，把物件之谜转向身份之谜。\", \"refs\": [\"SAU_E01_SC001_004\", \"SAU_E01_SC001_005\"]}, {\"beat_ref\": \"DBP_E01_SC001_003\", \"hook\": true, \"information_change\": \"顾沉确认胶片被人拿走，并暗示拿走胶片的人可能就是林晚自己，林晚的嫌疑被直接建立。\", \"objective\": \"让林晚在追问是谁的过程中被迫面对顾沉那句也许是你自己的指控。\", \"purpose\": \"由顾沉抛出胶片被拿走的事实并给出指向林晚自身的暗示，把外部失窃转化为对林晚内心的拷问。\", \"refs\": [\"SAU_E01_SC001_006\", \"SAU_E01_SC001_007\", \"SAU_E01_SC001_008\"]}, {\"beat_ref\": \"DBP_E01_SC001_004\", \"hook\": true, \"information_change\": \"门外出现湿透皮鞋的神秘人，其塞入的车票背面写明今晚十点北堤仓库、带钥匙、不要带顾沉的指令。\", \"objective\": \"让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。\", \"purpose\": \"用铜铃声与门缝下的湿皮鞋打断审问节奏，把场景从心理对峙推向外部威胁，并以车票上的指令留下明确的下一步钩子。\", \"refs\": [\"SAU_E01_SC001_009\", \"SAU_E01_SC001_010\", \"SAU_E01_SC001_011\", \"SAU_E01_SC001_012\"]}], \"confidence\": 0.9, \"dramatic_question\": \"林晚究竟是不是那个拿走胶片的人？\", \"note\": \"本计划仅对来源单元进行戏剧分组与目标标注，未改写任何来源事实、对白或角色绑定。\", \"passthrough_refs\": [], \"proposal_origin\": \"PROVIDER_PROPOSAL\", \"scene_label\": \"E01_SC001\", \"scene_objective\": \"建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。\", \"unknowns\": [], \"version\": \"director_beat_plan_ir_v1\"}\nSOURCE_AUTHORING_UNITS=[{\"source_order\": 1, \"source_type\": \"SOURCE_ACTION\", \"text\": \"顾沉带林晚进入暗房。\", \"unit_id\": \"SAU_E01_SC001_001\"}, {\"source_order\": 2, \"source_type\": \"SOURCE_ACTION\", \"text\": \"红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。\", \"unit_id\": \"SAU_E01_SC001_002\"}, {\"source_order\": 3, \"source_type\": \"SOURCE_ACTION\", \"text\": \"暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。\", \"unit_id\": \"SAU_E01_SC001_003\"}, {\"source_order\": 4, \"source_type\": \"SOURCE_ACTION\", \"text\": \"铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。\", \"unit_id\": \"SAU_E01_SC001_004\"}, {\"source_order\": 5, \"source_type\": \"SOURCE_ACTION\", \"text\": \"林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。\", \"unit_id\": \"SAU_E01_SC001_005\"}, {\"source_order\": 6, \"source_type\": \"SOURCE_ACTION\", \"text\": \"顾沉说胶片被人拿走了。\", \"unit_id\": \"SAU_E01_SC001_006\"}, {\"source_order\": 7, \"source_type\": \"SOURCE_ACTION\", \"text\": \"林晚问是谁\", \"unit_id\": \"SAU_E01_SC001_007\"}, {\"source_order\": 8, \"source_type\": \"SOURCE_DIALOGUE\", \"speaker\": \"顾沉\", \"text\": \"也许是你自己\", \"unit_id\": \"SAU_E01_SC001_008\"}, {\"source_order\": 9, \"source_type\": \"SOURCE_ACTION\", \"text\": \"两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。\", \"unit_id\": \"SAU_E01_SC001_009\"}, {\"source_order\": 10, \"source_type\": \"SOURCE_ACTION\", \"text\": \"门缝下出现一双湿透的皮鞋。\", \"unit_id\": \"SAU_E01_SC001_010\"}, {\"source_order\": 11, \"source_type\": \"SOURCE_ACTION\", \"text\": \"那人没有进门，只把一张车票塞进来。\", \"unit_id\": \"SAU_E01_SC001_011\"}, {\"source_order\": 12, \"source_type\": \"SOURCE_ACTION\", \"text\": \"车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。\", \"unit_id\": \"SAU_E01_SC001_012\"}]\nSOURCE_AUTHORING_UNIT_FINGERPRINT=\"2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f\"\nSOURCE_AUTHORITY_CONTENT_FINGERPRINT=\"ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8\"\nDECLARED_PARTICIPANTS=[{\"character_id\": \"林晚\", \"evidence\": [{\"byte_end\": 30, \"byte_start\": 0, \"char_end\": 10, \"char_start\": 0, \"evidence_id\": \"S1P1E001\", \"occurrence_count\": 1, \"sha256\": \"25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59\", \"text\": \"顾沉带林晚进入暗房。\"}, {\"byte_end\": 377, \"byte_start\": 269, \"char_end\": 127, \"char_start\": 91, \"evidence_id\": \"S1P1E002\", \"occurrence_count\": 1, \"sha256\": \"bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b\", \"text\": \"林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。\"}, {\"byte_end\": 427, \"byte_start\": 412, \"char_end\": 145, \"char_start\": 140, \"evidence_id\": \"S1P1E003\", \"occurrence_count\": 1, \"sha256\": \"8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923\", \"text\": \"林晚问是谁\"}], \"id\": \"林晚\", \"name\": \"林晚\"}, {\"character_id\": \"顾沉\", \"evidence\": [{\"byte_end\": 30, \"byte_start\": 0, \"char_end\": 10, \"char_start\": 0, \"evidence_id\": \"S1P2E001\", \"occurrence_count\": 1, \"sha256\": \"25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59\", \"text\": \"顾沉带林晚进入暗房。\"}, {\"byte_end\": 412, \"byte_start\": 379, \"char_end\": 140, \"char_start\": 129, \"evidence_id\": \"S1P2E002\", \"occurrence_count\": 1, \"sha256\": \"f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820\", \"text\": \"顾沉说胶片被人拿走了。\"}, {\"byte_end\": 589, \"byte_start\": 532, \"char_end\": 199, \"char_start\": 180, \"evidence_id\": \"S1P2E003\", \"occurrence_count\": 1, \"sha256\": \"3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32\", \"text\": \"顾沉熄灭安全灯，拉着林晚躲到药水柜后。\"}], \"id\": \"顾沉\", \"name\": \"顾沉\"}]\nREVISION_PARENT={\"revision_parent_attempt_id\": \"attempt-9\", \"revision_parent_fingerprint\": \"e2a53e95c74d72dcae1e7e910574994fddf34a51660c434f861262ac64ad6809\", \"revision_parent_identity_version\": \"revision_parent_identity_v2\", \"revision_parent_semantic_policy_fingerprint\": \"9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501\", \"revision_parent_semantic_review_fingerprint\": \"e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a\", \"revision_parent_semantic_review_policy\": \"director_creative_semantic_review_v2\", \"revision_parent_stage_b_ir_fingerprint\": \"591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa\", \"source_authoring_unit_fingerprint\": \"2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f\", \"source_authority_content_fingerprint\": \"ea83de61dddd12842ea319e367f284a620bad83ad2c8643b65d331aa003db1c8\", \"stage_a_attempt_id\": \"attempt-7\", \"stage_a_materialized_fingerprint\": \"328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01\"}\nREVISION_FEEDBACK={\"constraint_count\": 4, \"constraints\": [{\"category\": \"UNSUPPORTED_CERTAINTY_COLLAPSE\", \"constraint\": \"Preserve source uncertainty. Do not turn 是否、可能、想不起、无法确认 or unknown into 首次、从未、一定、确认 or 必然.\", \"matched_term\": \"首次\", \"path\": \"beat_enrichments[0].character_effects[1].effect\"}, {\"category\": \"DOWNSTREAM_SCENEBLOCKING_LEAKAGE\", \"constraint\": \"Do not specify concrete spatial blocking, paths, placement, or movement such as walking to or bringing someone to a prop; leave SceneBlocking to its downstream authority.\", \"matched_term\": \"带到铁盒前\", \"path\": \"beat_enrichments[0].character_effects[0].effect\"}, {\"category\": \"UNSUPPORTED_STORY_ACTION\", \"constraint\": \"Do not invent canonical story actions involving key props, such as opening a box, picking up a prop, taking film, or handing over a key, unless SourceAuthoringUnits explicitly support them.\", \"matched_term\": \"打开铁盒\", \"path\": \"beat_enrichments[1].performance\"}, {\"category\": \"DOWNSTREAM_SCENEBLOCKING_LEAKAGE\", \"constraint\": \"Do not specify concrete spatial blocking, paths, placement, or movement such as walking to or bringing someone to a prop; leave SceneBlocking to its downstream authority.\", \"matched_term\": \"带到铁盒前\", \"path\": \"character_directions[1].objective\"}], \"fresh_generation_required\": true, \"is_repair_instruction\": false, \"schema_version\": \"director_revision_feedback_v2\", \"semantic_policy_fingerprint\": \"9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501\", \"semantic_review_fingerprint\": \"e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a\", \"semantic_review_policy\": \"director_creative_semantic_review_v2\"}\nSTRUCTURAL_REVISION_FEEDBACK={\"constraint_count\": 1, \"constraints\": [{\"category\": \"REQUIRED_TOP_LEVEL_FIELD_MISSING\", \"constraint\": \"The required top-level property visual_priority must be present and must satisfy the source-grounded Stage B schema (array<string>).\", \"expected_type\": \"array<string>\", \"field\": \"visual_priority\", \"path\": \"$\", \"source\": \"persisted_attempt_failure_validation\"}], \"eligibility\": {\"active_parent_ordinal\": 9, \"authoring_stage\": \"CREATIVE_ENRICHMENT\", \"deterministic_structural_failure\": true, \"failed_attempt_ordinal\": 10, \"latest_failed_attempt\": true, \"same_revision_chain\": true}, \"failed_attempt_id\": \"attempt-10\", \"failed_attempt_raw_sha256\": \"5daf096fd07ad58ffe8848b25a8d633797234ce325dba1986f21de4af4ca39f0\", \"failed_attempt_status\": \"DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_SCHEMA_INVALID\", \"fresh_generation_required\": true, \"is_repair_instruction\": false, \"parent_attempt_id\": \"attempt-9\", \"parent_ir_fingerprint\": \"591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa\", \"provider_request_fingerprint\": \"b9b0592520fd13aac0eb70c671e4fc82be901e1031b4690ae030e146e885169b\", \"schema_version\": \"director_revision_structural_feedback_v1\", \"status\": \"ELIGIBLE\", \"structural_feedback_fingerprint\": \"4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4\"}\nSEMANTIC_REVIEW_POLICY=\"director_creative_semantic_review_v2\"\nSEMANTIC_POLICY_FINGERPRINT=\"9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501\"\nUNCERTAINTY_PRESERVATION_RULE=If SOURCE_AUTHORING_UNITS says 是否、可能、想不起、无法确认、不确定、未知、未说明 or equivalent unknown, do not turn it into 首次、第一次、从未、一定、就是、确定、确认、明确知道 or 必然.\nSTORY_ACTION_BOUNDARY=Do not invent canonical story actions involving key props, including opening a box, picking up a prop, taking film, or handing over a key, unless the action is explicit in SOURCE_AUTHORING_UNITS.\nSCENEBLOCKING_BOUNDARY=Stage B must not specify concrete spatial paths, placement, or movement such as walking to a prop, bringing someone to a place, standing at a place, moving to a place, or going behind someone unless it is an explicit source event.\nPERFORMANCE_ACTION_ALLOWLIST=Low-risk playable actions such as pauses, hesitation, gaze changes, facial changes, breath, tone, speech rate, body tension, and freezing remain allowed.\nV2_SHOTPLAN_BOUNDARY=Keep shot size, camera, lens, movement, frame, keyframe, shot count, and concrete shot execution out of Stage B.\nCANONICAL_STAGE_B_TOP_LEVEL_KEYS=[\"version\",\"beat_enrichments\",\"character_directions\",\"performance_arc\",\"information_strategy\",\"rhythm_strategy\",\"visual_priority\",\"scene_exit_intent\",\"prohibited_interpretations\",\"confidence\",\"note\"]\nCANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS=[\"beat_ref\",\"audience_effect\",\"performance\",\"transition\",\"character_effects\"]\nCANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS=[\"character_ref\",\"direction\",\"objective\",\"obstacle\",\"strategy\",\"performance_notes\"]\nCANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS=[\"character_ref\",\"effect\"]\nCANONICAL_STAGE_B_INFORMATION_STRATEGY_KEYS=[\"schema_version\",\"known_to_audience\",\"withheld_from_audience\",\"reveal_plan\",\"reaction_priority\",\"audience_focus\"]\nCANONICAL_STAGE_B_INFORMATION_REVEAL_KEYS=[\"beat_id\",\"reveals\",\"withholds\",\"audience_should_notice\",\"audience_should_not_yet_know\"]\nCANONICAL_STAGE_B_RHYTHM_STRATEGY_KEYS=[\"opening\",\"reveal\",\"escalation\",\"button\"]\nSTAGE_B_REQUIRED_FIELDS={\"$\":[\"beat_enrichments\",\"character_directions\",\"confidence\",\"information_strategy\",\"note\",\"performance_arc\",\"prohibited_interpretations\",\"rhythm_strategy\",\"scene_exit_intent\",\"version\",\"visual_priority\"],\"beat_enrichments[]\":[\"beat_ref\",\"audience_effect\",\"performance\",\"transition\",\"character_effects\"],\"beat_enrichments[].character_effects[]\":[\"character_ref\",\"effect\"],\"character_directions[]\":[\"character_ref\",\"direction\"],\"information_strategy\":[\"schema_version\",\"known_to_audience\",\"withheld_from_audience\",\"reveal_plan\",\"reaction_priority\",\"audience_focus\"],\"information_strategy.reveal_plan[]\":[\"beat_id\",\"reveals\",\"withholds\",\"audience_should_notice\",\"audience_should_not_yet_know\"],\"performance_arc[]\":[\"phase\",\"state\"],\"rhythm_strategy\":[\"opening\",\"reveal\",\"escalation\",\"button\"]}\nSTAGE_B_FIELD_TYPES={\"beat_enrichments\":\"array<object>\",\"beat_enrichments[].audience_effect\":\"string\",\"beat_enrichments[].beat_ref\":\"string\",\"beat_enrichments[].character_effects\":\"array<object>\",\"beat_enrichments[].character_effects[].character_ref\":\"string\",\"beat_enrichments[].character_effects[].effect\":\"string\",\"beat_enrichments[].performance\":\"string\",\"beat_enrichments[].transition\":\"string\",\"character_directions\":\"array<object>\",\"character_directions[].character_ref\":\"string\",\"character_directions[].direction\":\"string\",\"character_directions[].objective\":\"string\",\"character_directions[].obstacle\":\"string\",\"character_directions[].performance_notes\":\"string\",\"character_directions[].strategy\":\"string\",\"confidence\":\"number|string\",\"information_strategy\":\"object\",\"information_strategy.audience_focus\":\"array<string>\",\"information_strategy.known_to_audience\":\"array<string>\",\"information_strategy.reaction_priority\":\"array<string>\",\"information_strategy.reveal_plan\":\"array<object>\",\"information_strategy.reveal_plan[].audience_should_not_yet_know\":\"string\",\"information_strategy.reveal_plan[].audience_should_notice\":\"string\",\"information_strategy.reveal_plan[].beat_id\":\"string\",\"information_strategy.reveal_plan[].reveals\":\"array<string>\",\"information_strategy.reveal_plan[].withholds\":\"array<string>\",\"information_strategy.schema_version\":\"const:director_information_strategy_v2\",\"information_strategy.withheld_from_audience\":\"array<string>\",\"note\":\"string\",\"performance_arc\":\"array<object>\",\"performance_arc[].phase\":\"string\",\"performance_arc[].state\":\"string\",\"prohibited_interpretations\":\"array<string>\",\"rhythm_strategy\":\"object\",\"rhythm_strategy.button\":\"string\",\"rhythm_strategy.escalation\":\"string\",\"rhythm_strategy.opening\":\"string\",\"rhythm_strategy.reveal\":\"string\",\"scene_exit_intent\":\"string\",\"version\":\"const:director_creative_enrichment_ir_v1\",\"visual_priority\":\"array<string>\"}\nSTAGE_B_ADDITIONAL_PROPERTIES=false\nSTAGE_B_ADDITIONAL_PROPERTIES_FALSE_PATHS=[\"$\",\"beat_enrichments[]\",\"beat_enrichments[].character_effects[]\",\"character_directions[]\",\"performance_arc[]\",\"information_strategy\",\"information_strategy.reveal_plan[]\",\"rhythm_strategy\"]\nJSON_SHAPE_EXAMPLE_ONLY={\"beat_enrichments\":[{\"audience_effect\":\"string\",\"beat_ref\":\"string\",\"character_effects\":[{\"character_ref\":\"string\",\"effect\":\"string\"}],\"performance\":\"string\",\"transition\":\"string\"}],\"character_directions\":[{\"character_ref\":\"string\",\"direction\":\"string\",\"objective\":\"string\",\"obstacle\":\"string\",\"performance_notes\":\"string\",\"strategy\":\"string\"}],\"confidence\":0,\"information_strategy\":{\"audience_focus\":[\"string\"],\"known_to_audience\":[\"string\"],\"reaction_priority\":[\"string\"],\"reveal_plan\":[{\"audience_should_not_yet_know\":\"string\",\"audience_should_notice\":\"string\",\"beat_id\":\"string\",\"reveals\":[\"string\"],\"withholds\":[\"string\"]}],\"schema_version\":\"director_information_strategy_v2\",\"withheld_from_audience\":[\"string\"]},\"note\":\"string\",\"performance_arc\":[{\"phase\":\"string\",\"state\":\"string\"}],\"prohibited_interpretations\":[\"string\"],\"rhythm_strategy\":{\"button\":\"string\",\"escalation\":\"string\",\"opening\":\"string\",\"reveal\":\"string\"},\"scene_exit_intent\":\"string\",\"version\":\"director_creative_enrichment_ir_v1\",\"visual_priority\":[\"string\"]}\nBEAT_COVERAGE=[\"DBP_E01_SC001_001\",\"DBP_E01_SC001_002\",\"DBP_E01_SC001_003\",\"DBP_E01_SC001_004\"]\nKEY_RULE=Property names must match these strings exactly, byte-for-byte. do not translate; Chinese only in values, never in keys.\nStage A is immutable: refs,purpose,objective,information_change,hook,scene_objective,dramatic_question are read-only and must not be repeated or changed.\nSOURCE_GROUNDING_RULE=Creative direction may interpret presentation, but must not introduce new story facts, hidden character knowledge, backstory, relationships, motives, past events, sensory facts, or object properties not present in SOURCE_AUTHORING_UNITS or validated Stage A.\nCHARACTER_KNOWLEDGE_CONTRACT=Do not assert 他知道、他认识、他早就知道、他经历过、他不是第一次、他曾经、他训练过 or equivalent character knowledge/history unless SOURCE_AUTHORING_UNITS explicitly support it. Phrase uncertainty as a playable performance option.\nEMOTIONAL_FACT_CONTRACT=Do not canonize love, hatred, resentment, guilt, jealousy, attachment, or fear without source support; write playable tension or performance options instead.\nSENSORY_FACT_CONTRACT=Do not invent smells, tastes, temperatures, textures, sounds, or other sensory facts absent from SOURCE_AUTHORING_UNITS.\nSTAGE_B_SHOTPLAN_BOUNDARY=Do not specify shot size, camera angle, lens, camera movement, frame number, keyframe, shot count, or concrete camera execution. 禁止特写、近景、全景、机位、焦段、推拉摇移、第一帧、最后一帧、镜头编号和具体镜头执行。\nREVISION_GENERATION_CONTRACT=Generate a fresh CreativeEnrichment IR. Do not patch or paraphrase the rejected response. Do not preserve rejected assumptions. Use source facts and Stage A as authority. 重新生成全新的 CreativeEnrichment IR；禁止修补、改写或沿用被拒绝响应中的假设。REVISION_FEEDBACK is a constraint list, not repair instructions.\nexactly one beat_enrichment per validated DBP beat; missing, duplicate, unknown, or invented beat_ref is invalid\n每个 DBP beat_ref 必须恰好有一个 beat_enrichment；character_effects 只能引用 DECLARED_PARTICIPANTS。information_strategy 必须使用 director_information_strategy_v2 对象；performance_arc 使用 phase/state 对象数组；rhythm_strategy 使用 opening/reveal/escalation/button。\nFINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEYS=[\"version\",\"beat_enrichments\",\"character_directions\",\"performance_arc\",\"information_strategy\",\"rhythm_strategy\",\"visual_priority\",\"scene_exit_intent\",\"prohibited_interpretations\",\"confidence\",\"note\"]\nFINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEY_COUNT=11\nFINAL_OUTPUT_COMPLETENESS_GATE=Before emitting the final response, self-check that the JSON object contains every required top-level key exactly once, contains no unknown top-level key, uses visual_priority as an array<string> (required and never replaced by audience_focus or rhythm_strategy), includes beat_enrichments exactly once per validated beat, information_strategy, rhythm_strategy, performance_arc, prohibited_interpretations, scene_exit_intent, confidence, and note, emits output JSON only, and contains no placeholders, TODO, null, or schema commentary. visual_priority may contain only source-supported visual subjects; never add shots, camera, lens, composition, keyframes, or concrete shot execution.\n",
+  "prompt_fingerprint": "3c641b248825354ca694131216a2806f0609fc888ab43ff93c618246408fead1",
+  "prompt_parity": {
+    "errors": [],
+    "prompt": {
+      "CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS": [
+        "beat_ref",
+        "audience_effect",
+        "performance",
+        "transition",
+        "character_effects"
+      ],
+      "CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS": [
+        "character_ref",
+        "direction",
+        "objective",
+        "obstacle",
+        "strategy",
+        "performance_notes"
+      ],
+      "CANONICAL_STAGE_B_CHARACTER_EFFECT_KEYS": [
+        "character_ref",
+        "effect"
+      ],
+      "CANONICAL_STAGE_B_INFORMATION_REVEAL_KEYS": [
+        "beat_id",
+        "reveals",
+        "withholds",
+        "audience_should_notice",
+        "audience_should_not_yet_know"
+      ],
+      "CANONICAL_STAGE_B_INFORMATION_STRATEGY_KEYS": [
+        "schema_version",
+        "known_to_audience",
+        "withheld_from_audience",
+        "reveal_plan",
+        "reaction_priority",
+        "audience_focus"
+      ],
+      "CANONICAL_STAGE_B_RHYTHM_STRATEGY_KEYS": [
+        "opening",
+        "reveal",
+        "escalation",
+        "button"
+      ],
+      "CANONICAL_STAGE_B_TOP_LEVEL_KEYS": [
+        "version",
+        "beat_enrichments",
+        "character_directions",
+        "performance_arc",
+        "information_strategy",
+        "rhythm_strategy",
+        "visual_priority",
+        "scene_exit_intent",
+        "prohibited_interpretations",
+        "confidence",
+        "note"
+      ],
+      "FINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEYS": [
+        "version",
+        "beat_enrichments",
+        "character_directions",
+        "performance_arc",
+        "information_strategy",
+        "rhythm_strategy",
+        "visual_priority",
+        "scene_exit_intent",
+        "prohibited_interpretations",
+        "confidence",
+        "note"
+      ],
+      "FINAL_OUTPUT_REQUIRED_TOP_LEVEL_KEY_COUNT": 11,
+      "JSON_SHAPE_EXAMPLE_ONLY": {
+        "beat_enrichments": [
+          {
+            "audience_effect": "string",
+            "beat_ref": "string",
+            "character_effects": [
+              {
+                "character_ref": "string",
+                "effect": "string"
+              }
+            ],
+            "performance": "string",
+            "transition": "string"
+          }
+        ],
+        "character_directions": [
+          {
+            "character_ref": "string",
+            "direction": "string",
+            "objective": "string",
+            "obstacle": "string",
+            "performance_notes": "string",
+            "strategy": "string"
+          }
+        ],
+        "confidence": 0,
+        "information_strategy": {
+          "audience_focus": [
+            "string"
+          ],
+          "known_to_audience": [
+            "string"
+          ],
+          "reaction_priority": [
+            "string"
+          ],
+          "reveal_plan": [
+            {
+              "audience_should_not_yet_know": "string",
+              "audience_should_notice": "string",
+              "beat_id": "string",
+              "reveals": [
+                "string"
+              ],
+              "withholds": [
+                "string"
+              ]
+            }
+          ],
+          "schema_version": "director_information_strategy_v2",
+          "withheld_from_audience": [
+            "string"
+          ]
+        },
+        "note": "string",
+        "performance_arc": [
+          {
+            "phase": "string",
+            "state": "string"
+          }
+        ],
+        "prohibited_interpretations": [
+          "string"
+        ],
+        "rhythm_strategy": {
+          "button": "string",
+          "escalation": "string",
+          "opening": "string",
+          "reveal": "string"
+        },
+        "scene_exit_intent": "string",
+        "version": "director_creative_enrichment_ir_v1",
+        "visual_priority": [
+          "string"
+        ]
+      },
+      "STAGE_B_ADDITIONAL_PROPERTIES": "false",
+      "STAGE_B_ADDITIONAL_PROPERTIES_FALSE_PATHS": [
+        "$",
+        "beat_enrichments[]",
+        "beat_enrichments[].character_effects[]",
+        "character_directions[]",
+        "performance_arc[]",
+        "information_strategy",
+        "information_strategy.reveal_plan[]",
+        "rhythm_strategy"
+      ],
+      "STAGE_B_FIELD_TYPES": {
+        "beat_enrichments": "array<object>",
+        "beat_enrichments[].audience_effect": "string",
+        "beat_enrichments[].beat_ref": "string",
+        "beat_enrichments[].character_effects": "array<object>",
+        "beat_enrichments[].character_effects[].character_ref": "string",
+        "beat_enrichments[].character_effects[].effect": "string",
+        "beat_enrichments[].performance": "string",
+        "beat_enrichments[].transition": "string",
+        "character_directions": "array<object>",
+        "character_directions[].character_ref": "string",
+        "character_directions[].direction": "string",
+        "character_directions[].objective": "string",
+        "character_directions[].obstacle": "string",
+        "character_directions[].performance_notes": "string",
+        "character_directions[].strategy": "string",
+        "confidence": "number|string",
+        "information_strategy": "object",
+        "information_strategy.audience_focus": "array<string>",
+        "information_strategy.known_to_audience": "array<string>",
+        "information_strategy.reaction_priority": "array<string>",
+        "information_strategy.reveal_plan": "array<object>",
+        "information_strategy.reveal_plan[].audience_should_not_yet_know": "string",
+        "information_strategy.reveal_plan[].audience_should_notice": "string",
+        "information_strategy.reveal_plan[].beat_id": "string",
+        "information_strategy.reveal_plan[].reveals": "array<string>",
+        "information_strategy.reveal_plan[].withholds": "array<string>",
+        "information_strategy.schema_version": "const:director_information_strategy_v2",
+        "information_strategy.withheld_from_audience": "array<string>",
+        "note": "string",
+        "performance_arc": "array<object>",
+        "performance_arc[].phase": "string",
+        "performance_arc[].state": "string",
+        "prohibited_interpretations": "array<string>",
+        "rhythm_strategy": "object",
+        "rhythm_strategy.button": "string",
+        "rhythm_strategy.escalation": "string",
+        "rhythm_strategy.opening": "string",
+        "rhythm_strategy.reveal": "string",
+        "scene_exit_intent": "string",
+        "version": "const:director_creative_enrichment_ir_v1",
+        "visual_priority": "array<string>"
+      },
+      "STAGE_B_REQUIRED_FIELDS": {
+        "$": [
+          "beat_enrichments",
+          "character_directions",
+          "confidence",
+          "information_strategy",
+          "note",
+          "performance_arc",
+          "prohibited_interpretations",
+          "rhythm_strategy",
+          "scene_exit_intent",
+          "version",
+          "visual_priority"
+        ],
+        "beat_enrichments[]": [
+          "beat_ref",
+          "audience_effect",
+          "performance",
+          "transition",
+          "character_effects"
+        ],
+        "beat_enrichments[].character_effects[]": [
+          "character_ref",
+          "effect"
+        ],
+        "character_directions[]": [
+          "character_ref",
+          "direction"
+        ],
+        "information_strategy": [
+          "schema_version",
+          "known_to_audience",
+          "withheld_from_audience",
+          "reveal_plan",
+          "reaction_priority",
+          "audience_focus"
+        ],
+        "information_strategy.reveal_plan[]": [
+          "beat_id",
+          "reveals",
+          "withholds",
+          "audience_should_notice",
+          "audience_should_not_yet_know"
+        ],
+        "performance_arc[]": [
+          "phase",
+          "state"
+        ],
+        "rhythm_strategy": [
+          "opening",
+          "reveal",
+          "escalation",
+          "button"
+        ]
+      }
+    },
+    "schema": {
+      "additional_properties_false_paths": [
+        "$",
+        "beat_enrichments[]",
+        "beat_enrichments[].character_effects[]",
+        "character_directions[]",
+        "performance_arc[]",
+        "information_strategy",
+        "information_strategy.reveal_plan[]",
+        "rhythm_strategy"
+      ],
+      "beat_enrichment_keys": [
+        "beat_ref",
+        "audience_effect",
+        "performance",
+        "transition",
+        "character_effects"
+      ],
+      "canonical_key_rules": {
+        "additional_properties": false,
+        "ascii_identifiers_only": true,
+        "byte_for_byte": true
+      },
+      "character_direction_keys": [
+        "character_ref",
+        "direction",
+        "objective",
+        "obstacle",
+        "strategy",
+        "performance_notes"
+      ],
+      "character_effect_keys": [
+        "character_ref",
+        "effect"
+      ],
+      "field_types": {
+        "beat_enrichments": "array<object>",
+        "beat_enrichments[].audience_effect": "string",
+        "beat_enrichments[].beat_ref": "string",
+        "beat_enrichments[].character_effects": "array<object>",
+        "beat_enrichments[].character_effects[].character_ref": "string",
+        "beat_enrichments[].character_effects[].effect": "string",
+        "beat_enrichments[].performance": "string",
+        "beat_enrichments[].transition": "string",
+        "character_directions": "array<object>",
+        "character_directions[].character_ref": "string",
+        "character_directions[].direction": "string",
+        "character_directions[].objective": "string",
+        "character_directions[].obstacle": "string",
+        "character_directions[].performance_notes": "string",
+        "character_directions[].strategy": "string",
+        "confidence": "number|string",
+        "information_strategy": "object",
+        "information_strategy.audience_focus": "array<string>",
+        "information_strategy.known_to_audience": "array<string>",
+        "information_strategy.reaction_priority": "array<string>",
+        "information_strategy.reveal_plan": "array<object>",
+        "information_strategy.reveal_plan[].audience_should_not_yet_know": "string",
+        "information_strategy.reveal_plan[].audience_should_notice": "string",
+        "information_strategy.reveal_plan[].beat_id": "string",
+        "information_strategy.reveal_plan[].reveals": "array<string>",
+        "information_strategy.reveal_plan[].withholds": "array<string>",
+        "information_strategy.schema_version": "const:director_information_strategy_v2",
+        "information_strategy.withheld_from_audience": "array<string>",
+        "note": "string",
+        "performance_arc": "array<object>",
+        "performance_arc[].phase": "string",
+        "performance_arc[].state": "string",
+        "prohibited_interpretations": "array<string>",
+        "rhythm_strategy": "object",
+        "rhythm_strategy.button": "string",
+        "rhythm_strategy.escalation": "string",
+        "rhythm_strategy.opening": "string",
+        "rhythm_strategy.reveal": "string",
+        "scene_exit_intent": "string",
+        "version": "const:director_creative_enrichment_ir_v1",
+        "visual_priority": "array<string>"
+      },
+      "information_reveal_keys": [
+        "beat_id",
+        "reveals",
+        "withholds",
+        "audience_should_notice",
+        "audience_should_not_yet_know"
+      ],
+      "information_strategy_keys": [
+        "schema_version",
+        "known_to_audience",
+        "withheld_from_audience",
+        "reveal_plan",
+        "reaction_priority",
+        "audience_focus"
+      ],
+      "nested_required": {
+        "$": [
+          "beat_enrichments",
+          "character_directions",
+          "confidence",
+          "information_strategy",
+          "note",
+          "performance_arc",
+          "prohibited_interpretations",
+          "rhythm_strategy",
+          "scene_exit_intent",
+          "version",
+          "visual_priority"
+        ],
+        "beat_enrichments[]": [
+          "beat_ref",
+          "audience_effect",
+          "performance",
+          "transition",
+          "character_effects"
+        ],
+        "beat_enrichments[].character_effects[]": [
+          "character_ref",
+          "effect"
+        ],
+        "character_directions[]": [
+          "character_ref",
+          "direction"
+        ],
+        "information_strategy": [
+          "schema_version",
+          "known_to_audience",
+          "withheld_from_audience",
+          "reveal_plan",
+          "reaction_priority",
+          "audience_focus"
+        ],
+        "information_strategy.reveal_plan[]": [
+          "beat_id",
+          "reveals",
+          "withholds",
+          "audience_should_notice",
+          "audience_should_not_yet_know"
+        ],
+        "performance_arc[]": [
+          "phase",
+          "state"
+        ],
+        "rhythm_strategy": [
+          "opening",
+          "reveal",
+          "escalation",
+          "button"
+        ]
+      },
+      "rhythm_strategy_keys": [
+        "opening",
+        "reveal",
+        "escalation",
+        "button"
+      ],
+      "shape_decisions": {
+        "information_strategy": "director_information_strategy_v2 object",
+        "performance_arc": "array<{phase:string,state:string}>",
+        "prohibited_interpretations": "array<string>",
+        "rhythm_strategy": "object<opening,reveal,escalation,button>",
+        "visual_priority": "array<string>"
+      },
+      "shape_example": {
+        "beat_enrichments": [
+          {
+            "audience_effect": "string",
+            "beat_ref": "string",
+            "character_effects": [
+              {
+                "character_ref": "string",
+                "effect": "string"
+              }
+            ],
+            "performance": "string",
+            "transition": "string"
+          }
+        ],
+        "character_directions": [
+          {
+            "character_ref": "string",
+            "direction": "string",
+            "objective": "string",
+            "obstacle": "string",
+            "performance_notes": "string",
+            "strategy": "string"
+          }
+        ],
+        "confidence": 0,
+        "information_strategy": {
+          "audience_focus": [
+            "string"
+          ],
+          "known_to_audience": [
+            "string"
+          ],
+          "reaction_priority": [
+            "string"
+          ],
+          "reveal_plan": [
+            {
+              "audience_should_not_yet_know": "string",
+              "audience_should_notice": "string",
+              "beat_id": "string",
+              "reveals": [
+                "string"
+              ],
+              "withholds": [
+                "string"
+              ]
+            }
+          ],
+          "schema_version": "director_information_strategy_v2",
+          "withheld_from_audience": [
+            "string"
+          ]
+        },
+        "note": "string",
+        "performance_arc": [
+          {
+            "phase": "string",
+            "state": "string"
+          }
+        ],
+        "prohibited_interpretations": [
+          "string"
+        ],
+        "rhythm_strategy": {
+          "button": "string",
+          "escalation": "string",
+          "opening": "string",
+          "reveal": "string"
+        },
+        "scene_exit_intent": "string",
+        "version": "director_creative_enrichment_ir_v1",
+        "visual_priority": [
+          "string"
+        ]
+      },
+      "top_level_additional_properties": false,
+      "top_level_keys": [
+        "version",
+        "beat_enrichments",
+        "character_directions",
+        "performance_arc",
+        "information_strategy",
+        "rhythm_strategy",
+        "visual_priority",
+        "scene_exit_intent",
+        "prohibited_interpretations",
+        "confidence",
+        "note"
+      ],
+      "top_level_required": [
+        "version",
+        "beat_enrichments",
+        "character_directions",
+        "performance_arc",
+        "information_strategy",
+        "rhythm_strategy",
+        "visual_priority",
+        "scene_exit_intent",
+        "prohibited_interpretations",
+        "confidence",
+        "note"
+      ],
+      "version": "director_creative_enrichment_ir_v1"
+    },
+    "status": "PASS",
+    "structural_parity": "PASS"
+  },
   "semantic_feedback_block": true,
   "status": "PASS",
   "structural_feedback_block": true,
-  "user_prompt_sha256": "cb4718dced128a7967bae5835b977543cad4555fce2b334b9015a3ff4c7e1323"
+  "user_prompt_sha256": "74e1665b6b1aaebc186141a2b795ba3f6d0ee74eabc21c6a2a9461c9ea8118f2"
 }

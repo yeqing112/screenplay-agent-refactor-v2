@@ -1,5 +1,18 @@
 {
-  "evidence": "structural pass remains semantic BLOCKED for first-entry/open-box/bring-to-box terms",
-  "provider_calls": "isolated_mock_only",
+  "evidence": {
+    "active_stage_b": "attempt-10",
+    "confirm_allowed": false,
+    "executor": "api.generate_director_creative_enrichment_revision_llm_draft",
+    "next_state": "DIRECTOR_TREATMENT_SEMANTIC_REVIEW_REQUIRED",
+    "provider": "isolated mock llm_client.call_llm",
+    "semantic": "BLOCKED",
+    "structural": "VALIDATED",
+    "test": "test_mock_semantic_blocked_and_pass_have_distinct_review_boundaries[blocked]",
+    "trigger_terms": [
+      "首次进入",
+      "打开铁盒",
+      "带到铁盒前"
+    ]
+  },
   "status": "PASS"
 }

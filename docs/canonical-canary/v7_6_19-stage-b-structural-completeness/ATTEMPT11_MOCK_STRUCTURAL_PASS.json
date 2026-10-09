@@ -1,5 +1,16 @@
 {
-  "evidence": "complete all-eleven-key isolated fixture passes schema/text/runtime/compile",
-  "provider_calls": "isolated_mock_only",
+  "evidence": {
+    "compile": "PASS",
+    "confirm_allowed": true,
+    "executor": "api.generate_director_creative_enrichment_revision_llm_draft",
+    "next_state": "DIRECTOR_TREATMENT_REVIEW_REQUIRED",
+    "provider": "isolated mock llm_client.call_llm",
+    "runtime": "PASS",
+    "schema": "PASS",
+    "semantic": "PASS",
+    "structural": "VALIDATED",
+    "test": "test_mock_complete_response_passes_all_structural_gates",
+    "text": "PASS"
+  },
   "status": "PASS"
 }

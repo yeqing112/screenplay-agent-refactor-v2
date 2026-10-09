@@ -1,5 +1,11 @@
 {
   "authority_or_confirm": false,
+  "diagnostic_counts": {
+    "SceneBlocking_leakage": 0,
+    "ShotPlan_leakage": 1,
+    "certainty_collapse": 0,
+    "unsupported_story_action": 1
+  },
   "schema_status": {
     "errors": [
       {

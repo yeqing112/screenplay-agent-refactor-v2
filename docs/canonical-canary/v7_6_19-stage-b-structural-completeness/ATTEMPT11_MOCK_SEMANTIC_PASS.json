@@ -1,5 +1,13 @@
 {
-  "evidence": "structural and semantic PASS allows review-required next state",
-  "provider_calls": "isolated_mock_only",
+  "evidence": {
+    "active_stage_b": "attempt-10",
+    "confirm_allowed": true,
+    "executor": "api.generate_director_creative_enrichment_revision_llm_draft",
+    "next_state": "DIRECTOR_TREATMENT_REVIEW_REQUIRED",
+    "provider": "isolated mock llm_client.call_llm",
+    "semantic": "PASS",
+    "structural": "VALIDATED",
+    "test": "test_mock_semantic_blocked_and_pass_have_distinct_review_boundaries[pass]"
+  },
   "status": "PASS"
 }

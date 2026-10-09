@@ -33,6 +33,9 @@
     "request_fingerprint": "b7a023dc4a3eeadefb135d7954f6cf08464fef4f822bf0414fd5284a7bb46da2",
     "status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_SCHEMA_INVALID"
   },
+  "missing_schema_fields": [
+    "visual_priority"
+  ],
   "packet": {
     "book_id": 990453,
     "episode": 1,
@@ -40,5 +43,7 @@
     "packet_id": 64,
     "scene_id": "E01_SC001"
   },
-  "source_of_truth": "persisted failure archive"
+  "root_cause_classification": "LLM_FINAL_OUTPUT_STRUCTURAL_COMPLETENESS_FAILURE; prompt/schema parity was already present",
+  "source_of_truth": "persisted failure archive",
+  "status": "PASS"
 }

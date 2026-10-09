@@ -1,5 +1,13 @@
 {
-  "evidence": "missing visual_priority fails schema and keeps attempt-9 active",
-  "provider_calls": "isolated_mock_only",
+  "evidence": {
+    "active_stage_b": "attempt-9",
+    "attempt12_created": false,
+    "executor": "api.generate_director_creative_enrichment_revision_llm_draft",
+    "failure_archive": "attempt-10",
+    "missing_field": "visual_priority",
+    "provider": "isolated mock llm_client.call_llm",
+    "structural": "SCHEMA_INVALID",
+    "test": "test_mock_missing_visual_priority_archives_failure_and_keeps_parent"
+  },
   "status": "PASS"
 }
