@@ -1,0 +1,9 @@
+{
+  "active_attempt": "attempt-10",
+  "next_state": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT11_AUTHORIZATION_REQUIRED",
+  "real_provider_posts": 0,
+  "semantic": "BLOCKED",
+  "source": "tests/test_director_semantic_v2_production_wiring_v7_6_17.py::test_attempt10_mock_blocked_uses_v2_and_preflights_attempt11",
+  "status": "PASS",
+  "structural": "VALIDATED"
+}

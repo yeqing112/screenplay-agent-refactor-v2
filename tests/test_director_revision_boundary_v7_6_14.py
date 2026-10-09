@@ -12,6 +12,7 @@ from core.director_revision import (
     semantic_review_fingerprint,
     stage_b_revision_feedback,
 )
+from core.director_semantic_grounding import SEMANTIC_REVIEW_POLICY_V2, semantic_policy_v2_fingerprint, validate_director_creative_semantic_review_v2
 from core.director_source_grounded import reconcile_source_authoring_units, source_authority_content_fingerprint
 from api import director_treatment_api as api
 from models import DecisionPacketRecord, DirectorTreatment, DirectorTreatmentAuthority, DirectorTreatmentPointer, Session, init_db
@@ -229,7 +230,8 @@ def test_revision_mock_semantic_blocked_is_reviewable_and_next_attempt_is_dynami
         row = session.query(DecisionPacketRecord).filter_by(id=packet_id).first(); info = json.loads(row.model_info)
         assert info["progressive_director_authoring"]["stage_b"]["attempt_id"] == "attempt-9"
         assert len(info["director_llm_attempts"]) == 9
-    req2 = _revision_request(packet_fp, blocked, result["semantic_review"], revision_of_attempt_id="attempt-9", revision_of_stage_b_ir_fingerprint=info["progressive_director_authoring"]["stage_b"]["ir_fingerprint"])
+    v2_parent_review = validate_director_creative_semantic_review_v2(blocked, source_authoring_units=treatment["source_constraints"]["source_authoring_units"], declared_participants=treatment["source_constraints"].get("declared_participants", []))
+    req2 = _revision_request(packet_fp, blocked, v2_parent_review, revision_of_attempt_id="attempt-9", revision_of_stage_b_ir_fingerprint=info["progressive_director_authoring"]["stage_b"]["ir_fingerprint"], semantic_review_policy=SEMANTIC_REVIEW_POLICY_V2, semantic_policy_fingerprint=semantic_policy_v2_fingerprint())
     preflight = api.generate_director_creative_enrichment_revision_llm_draft(990453, 1, req2)
     assert preflight["status"] == "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_AUTHORIZATION_REQUIRED"
 

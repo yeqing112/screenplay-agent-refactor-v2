@@ -1,0 +1,7 @@
+{
+  "eligible": true,
+  "expected_attempt": "attempt-10",
+  "resolved_policy": "director_creative_semantic_review_v2",
+  "semantic_status": "BLOCKED",
+  "status": "PASS"
+}

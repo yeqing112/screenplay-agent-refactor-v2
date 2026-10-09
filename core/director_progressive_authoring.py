@@ -811,7 +811,7 @@ def build_director_beat_plan_prompt(*, scene_id: str, source_units: list[Mapping
     return system, user
 
 
-def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None, source_authoring_unit_fingerprint: str = "", source_authority_content_fingerprint: str = "", revision_feedback: Mapping[str, Any] | None = None, revision_parent: Mapping[str, Any] | None = None) -> tuple[str, str]:
+def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mapping[str, Any], declared_participants: list[Any] | None = None, source_authoring_units: list[Mapping[str, Any]] | None = None, source_authoring_unit_fingerprint: str = "", source_authority_content_fingerprint: str = "", revision_feedback: Mapping[str, Any] | None = None, revision_parent: Mapping[str, Any] | None = None, semantic_review_policy: str = "", semantic_policy_fingerprint: str = "") -> tuple[str, str]:
     """Build the Stage B prompt over a validated local beat plan."""
 
     system = "你是受 Stage A 约束的导演表现层助手。只输出 director_creative_enrichment_ir_v1 JSON，不得重排或修改 Stage A。"
@@ -825,6 +825,17 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         if _text(item.get("speaker")):
             minimized["speaker"] = _text(item.get("speaker"))
         minimized_source_units.append(minimized)
+    v2_boundary = ""
+    if semantic_review_policy == "director_creative_semantic_review_v2":
+        v2_boundary = (
+            f"SEMANTIC_REVIEW_POLICY={json.dumps(semantic_review_policy, ensure_ascii=False)}\n"
+            f"SEMANTIC_POLICY_FINGERPRINT={json.dumps(semantic_policy_fingerprint or '', ensure_ascii=False)}\n"
+            "UNCERTAINTY_PRESERVATION_RULE=If SOURCE_AUTHORING_UNITS says 是否、可能、想不起、无法确认、不确定、未知、未说明 or equivalent unknown, do not turn it into 首次、第一次、从未、一定、就是、确定、确认、明确知道 or 必然.\n"
+            "STORY_ACTION_BOUNDARY=Do not invent canonical story actions involving key props, including opening a box, picking up a prop, taking film, or handing over a key, unless the action is explicit in SOURCE_AUTHORING_UNITS.\n"
+            "SCENEBLOCKING_BOUNDARY=Stage B must not specify concrete spatial paths, placement, or movement such as walking to a prop, bringing someone to a place, standing at a place, moving to a place, or going behind someone unless it is an explicit source event.\n"
+            "PERFORMANCE_ACTION_ALLOWLIST=Low-risk playable actions such as pauses, hesitation, gaze changes, facial changes, breath, tone, speech rate, body tension, and freezing remain allowed.\n"
+            "V2_SHOTPLAN_BOUNDARY=Keep shot size, camera, lens, movement, frame, keyframe, shot count, and concrete shot execution out of Stage B.\n"
+        )
     user = (
         "DIRECTOR_CREATIVE_ENRICHMENT_IR_V1\n"
         f"SCENE_ID={json.dumps(scene_id, ensure_ascii=False)}\n"
@@ -835,6 +846,7 @@ def build_director_creative_enrichment_prompt(*, scene_id: str, beat_plan: Mappi
         f"DECLARED_PARTICIPANTS={json.dumps(declared_participants or [], ensure_ascii=False, sort_keys=True)}\n"
         f"REVISION_PARENT={json.dumps(revision_parent or {}, ensure_ascii=False, sort_keys=True)}\n"
         f"REVISION_FEEDBACK={json.dumps(revision_feedback or {}, ensure_ascii=False, sort_keys=True)}\n"
+        f"{v2_boundary}"
         f"CANONICAL_STAGE_B_TOP_LEVEL_KEYS={json.dumps(contract['top_level_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_BEAT_ENRICHMENT_KEYS={json.dumps(contract['beat_enrichment_keys'], ensure_ascii=False, separators=(',', ':'))}\n"
         f"CANONICAL_STAGE_B_CHARACTER_DIRECTION_KEYS={json.dumps(contract['character_direction_keys'], ensure_ascii=False, separators=(',', ':'))}\n"

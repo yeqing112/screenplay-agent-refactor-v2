@@ -1,0 +1,9 @@
+{
+  "active_attempt": "attempt-10",
+  "confirm_allowed": true,
+  "real_provider_posts": 0,
+  "semantic": "PASS",
+  "source": "tests/test_director_semantic_v2_production_wiring_v7_6_17.py::test_attempt10_mock_pass_persists_v2_and_future_revision_is_not_eligible",
+  "status": "PASS",
+  "structural": "VALIDATED"
+}

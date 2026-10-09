@@ -1,0 +1,18 @@
+{
+  "append_only": true,
+  "fields": [
+    "attempt_id",
+    "ir_fingerprint",
+    "policy_version",
+    "semantic_policy_fingerprint",
+    "semantic_review_fingerprint",
+    "status",
+    "decision",
+    "review",
+    "source_projection_fingerprint",
+    "source_authority_content_fingerprint",
+    "created_at"
+  ],
+  "historical_v1_overwritten": false,
+  "status": "PASS"
+}

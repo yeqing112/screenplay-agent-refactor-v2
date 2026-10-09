@@ -1,0 +1,18 @@
+{
+  "attempt9_raw_response_in_prompt": false,
+  "contains": [
+    "SOURCE_AUTHORING_UNITS",
+    "Stage A",
+    "REVISION_PARENT",
+    "REVISION_FEEDBACK",
+    "UNCERTAINTY_PRESERVATION_RULE",
+    "STORY_ACTION_BOUNDARY",
+    "SCENEBLOCKING_BOUNDARY",
+    "V2_SHOTPLAN_BOUNDARY",
+    "REVISION_GENERATION_CONTRACT"
+  ],
+  "prompt_fingerprint": "b7a023dc4a3eeadefb135d7954f6cf08464fef4f822bf0414fd5284a7bb46da2",
+  "status": "PASS",
+  "system_sha256": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
+  "user_sha256": "1c894944d41b6b369f27e453062a515f40a2b8e9e4a179749616c5ee245f3462"
+}

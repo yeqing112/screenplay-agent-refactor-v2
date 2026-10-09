@@ -40,6 +40,7 @@ _SENSORY_INVENTION_PATTERNS = ("空气里药水味", "空气中药水味", "药�
 # Attempt-9 transport evidence; these contracts are only for reassessment and
 # future confirmation/revision gates.
 SEMANTIC_REVIEW_POLICY_V2 = "director_creative_semantic_review_v2"
+SEMANTIC_REVIEW_POLICY_V1 = "director_creative_semantic_review_v1"
 _PROHIBITION_PREFIXES = ("不要", "不得", "禁止", "切勿", "避免", "不应", "不准", "勿")
 _META_COMPLIANCE_PREFIXES = ("未指定", "未引入", "不包含", "没有指定", "没有引入", "不涉及")
 _CERTAINTY_COLLAPSE_PATTERNS = ("首次", "第一次", "从未", "一定", "就是", "确定", "确认", "明确知道", "必然")
@@ -51,6 +52,31 @@ _PHYSICAL_ACTION_PATTERNS = (
 _PERFORMANCE_ACTION_PATTERNS = ("停顿", "呼吸", "表情", "视线", "语速", "身体收紧", "迟疑", "僵住", "语气", "目光")
 _STAGE_A_TOP_LEVEL_OWNED = frozenset({"scene_objective", "dramatic_question", "beats", "refs", "purpose", "objective", "information_change", "hook", "beat_plan", "beat_plan_ir"})
 _STAGE_A_BEAT_OWNED = frozenset({"refs", "purpose", "information_change", "hook"})
+
+
+def resolve_required_semantic_review_policy(
+    *,
+    authoring_stage: str = "CREATIVE_ENRICHMENT",
+    attempt_id: str = "",
+    revision_context: bool = False,
+) -> str:
+    """Resolve the semantic policy at an execution boundary.
+
+    Historical Attempt-8/9 transport results remain V1 evidence.  A revision
+    generated from Attempt-9 or later crosses the V2 boundary, and the rule is
+    intentionally ordinal rather than hard-coded to one future attempt.
+    """
+    if str(authoring_stage or "").upper() != "CREATIVE_ENRICHMENT":
+        return SEMANTIC_REVIEW_POLICY_V1
+    try:
+        ordinal = int(str(attempt_id or "").split("-", 1)[1])
+    except (IndexError, TypeError, ValueError):
+        ordinal = 0
+    if revision_context and ordinal >= 9:
+        return SEMANTIC_REVIEW_POLICY_V2
+    if ordinal >= 10:
+        return SEMANTIC_REVIEW_POLICY_V2
+    return SEMANTIC_REVIEW_POLICY_V1
 
 
 def classify_semantic_assertion_polarity(text: Any) -> dict[str, Any]:
@@ -96,15 +122,18 @@ def semantic_policy_v2_fingerprint() -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def validate_semantic_review_assessment_binding(assessment: Mapping[str, Any] | None, *, attempt_id: str, ir_fingerprint: str) -> dict[str, Any]:
+def validate_semantic_review_assessment_binding(assessment: Mapping[str, Any] | None, *, attempt_id: str, ir_fingerprint: str, expected_status: str = "PASS", review_fingerprint: str | None = None) -> dict[str, Any]:
     assessment = assessment if isinstance(assessment, Mapping) else {}
     checks = {
         "policy_version": assessment.get("policy_version") == SEMANTIC_REVIEW_POLICY_V2,
         "attempt_id": assessment.get("attempt_id") == str(attempt_id),
         "ir_fingerprint": assessment.get("ir_fingerprint") == str(ir_fingerprint),
         "policy_fingerprint": assessment.get("semantic_policy_fingerprint") == semantic_policy_v2_fingerprint(),
-        "semantic_pass": assessment.get("status") == "PASS",
+        "semantic_status": assessment.get("status") == str(expected_status or "PASS"),
+        "semantic_pass": assessment.get("status") == str(expected_status or "PASS"),
     }
+    if review_fingerprint is not None:
+        checks["review_fingerprint"] = assessment.get("semantic_review_fingerprint") == str(review_fingerprint)
     return {"status": "PASS" if all(checks.values()) else "BLOCKED", "checks": checks, "required_policy": SEMANTIC_REVIEW_POLICY_V2}
 
 
@@ -490,6 +519,7 @@ def build_creative_enrichment_revision_preflight(*, history_count: int, authoriz
 __all__ = [
     "audit_director_downstream_semantic_leakage", "build_semantic_claim_inventory",
     "audit_director_source_grounding", "validate_director_creative_semantic_review",
+    "SEMANTIC_REVIEW_POLICY_V1", "resolve_required_semantic_review_policy",
     "classify_semantic_assertion_polarity", "semantic_policy_v2_contract", "semantic_policy_v2_fingerprint",
     "validate_semantic_review_assessment_binding",
     "audit_director_downstream_semantic_leakage_v2", "audit_source_uncertainty_preservation_v2",

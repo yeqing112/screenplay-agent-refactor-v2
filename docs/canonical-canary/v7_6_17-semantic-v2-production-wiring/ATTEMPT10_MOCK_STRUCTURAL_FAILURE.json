@@ -1,0 +1,8 @@
+{
+  "attempt10_archived": true,
+  "attempt11": 0,
+  "attempt9_remains_active": true,
+  "real_provider_posts": 0,
+  "source": "tests/test_director_semantic_v2_production_wiring_v7_6_17.py::test_attempt10_structural_failure_archives_failure_and_keeps_attempt9_active",
+  "status": "PASS"
+}

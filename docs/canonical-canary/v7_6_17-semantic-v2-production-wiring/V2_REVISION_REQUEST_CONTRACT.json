@@ -1,0 +1,12 @@
+{
+  "client_fields": [
+    "semantic_review_policy",
+    "semantic_policy_fingerprint",
+    "semantic_review_fingerprint"
+  ],
+  "client_review_body_allowed": false,
+  "policy": "director_creative_semantic_review_v2",
+  "policy_fingerprint": "9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501",
+  "review_fingerprint": "e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a",
+  "status": "PASS"
+}

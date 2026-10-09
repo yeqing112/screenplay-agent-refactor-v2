@@ -56,6 +56,8 @@ def provider_request_payload_v2(
     revision_parent_attempt_id: str | None = None,
     revision_parent_fingerprint: str | None = None,
     semantic_review_fingerprint: str | None = None,
+    semantic_review_policy: str | None = None,
+    semantic_policy_fingerprint: str | None = None,
 ) -> dict[str, Any]:
     """Return the complete non-secret Provider request identity payload."""
 
@@ -98,6 +100,10 @@ def provider_request_payload_v2(
         payload["revision_parent_fingerprint"] = str(revision_parent_fingerprint)
     if semantic_review_fingerprint:
         payload["semantic_review_fingerprint"] = str(semantic_review_fingerprint)
+    if semantic_review_policy:
+        payload["semantic_review_policy"] = str(semantic_review_policy)
+    if semantic_policy_fingerprint:
+        payload["semantic_policy_fingerprint"] = str(semantic_policy_fingerprint)
     return payload
 
 

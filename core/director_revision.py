@@ -11,6 +11,12 @@ import json
 from typing import Any, Mapping
 
 from core.director_progressive_authoring import is_progressive_stage_validated
+from core.director_semantic_grounding import (
+    SEMANTIC_REVIEW_POLICY_V1,
+    SEMANTIC_REVIEW_POLICY_V2,
+    resolve_required_semantic_review_policy,
+    semantic_policy_v2_fingerprint,
+)
 
 
 def _canonical(value: Any) -> str:
@@ -50,6 +56,63 @@ def stage_b_revision_feedback(review: Mapping[str, Any] | None) -> dict[str, Any
     return {"schema_version": "director_revision_feedback_v1", "semantic_review_fingerprint": semantic_review_fingerprint(review), "constraints": unique, "constraint_count": len(unique), "is_repair_instruction": False, "fresh_generation_required": True}
 
 
+def stage_b_revision_feedback_v2(review: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Project only V2 production-blocking findings into fresh-generation constraints."""
+    review = review if isinstance(review, Mapping) else {}
+    items: list[dict[str, Any]] = []
+    grounding = review.get("source_grounding") if isinstance(review.get("source_grounding"), Mapping) else {}
+    for finding in grounding.get("findings", []) if isinstance(grounding.get("findings"), list) else []:
+        if not isinstance(finding, Mapping):
+            continue
+        category = str(finding.get("classification") or "")
+        if category in {"SAFE_CREATIVE_DIRECTION", "SOURCE_EXPLICIT", "SAFE_PROHIBITION", "META_COMPLIANCE", "SOURCE_SUPPORTED_ACTION"}:
+            continue
+        items.append({"category": category, "path": str(finding.get("path") or ""), "matched_term": str(finding.get("matched_term") or ""), "constraint": _v2_constraint_for(category, str(finding.get("matched_term") or ""))})
+    physical = review.get("physical_action_authority") if isinstance(review.get("physical_action_authority"), Mapping) else {}
+    for finding in physical.get("findings", []) if isinstance(physical.get("findings"), list) else []:
+        if not isinstance(finding, Mapping):
+            continue
+        category = str(finding.get("classification") or "")
+        if category in {"SOURCE_SUPPORTED_ACTION", "SAFE_CREATIVE_DIRECTION", "SAFE_PROHIBITION", "META_COMPLIANCE"}:
+            continue
+        items.append({"category": category, "path": str(finding.get("path") or ""), "matched_term": str(finding.get("matched_term") or ""), "constraint": _v2_constraint_for(category, str(finding.get("matched_term") or ""))})
+    leakage = review.get("downstream_leakage") if isinstance(review.get("downstream_leakage"), Mapping) else {}
+    for violation in leakage.get("violations", []) if isinstance(leakage.get("violations"), list) else []:
+        if not isinstance(violation, Mapping):
+            continue
+        category = str(violation.get("category") or "")
+        items.append({"category": "DOWNSTREAM_SHOTPLAN_LEAKAGE", "path": str(violation.get("path") or ""), "matched_term": str(violation.get("matched_term") or ""), "constraint": _v2_constraint_for("DOWNSTREAM_SHOTPLAN_LEAKAGE", str(violation.get("matched_term") or ""))})
+    unique: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for item in items:
+        key = (item["category"], item["path"], item["matched_term"])
+        if key not in seen:
+            seen.add(key)
+            unique.append(item)
+    return {
+        "schema_version": "director_revision_feedback_v2",
+        "semantic_review_policy": SEMANTIC_REVIEW_POLICY_V2,
+        "semantic_policy_fingerprint": semantic_policy_v2_fingerprint(),
+        "semantic_review_fingerprint": semantic_review_fingerprint(review),
+        "constraints": unique,
+        "constraint_count": len(unique),
+        "is_repair_instruction": False,
+        "fresh_generation_required": True,
+    }
+
+
+def _v2_constraint_for(category: str, matched: str) -> str:
+    if category == "UNSUPPORTED_CERTAINTY_COLLAPSE":
+        return "Preserve source uncertainty. Do not turn 是否、可能、想不起、无法确认 or unknown into 首次、从未、一定、确认 or 必然."
+    if category == "UNSUPPORTED_STORY_ACTION":
+        return "Do not invent canonical story actions involving key props, such as opening a box, picking up a prop, taking film, or handing over a key, unless SourceAuthoringUnits explicitly support them."
+    if category == "DOWNSTREAM_SCENEBLOCKING_LEAKAGE":
+        return "Do not specify concrete spatial blocking, paths, placement, or movement such as walking to or bringing someone to a prop; leave SceneBlocking to its downstream authority."
+    if category in {"DOWNSTREAM_SHOTPLAN_LEAKAGE", "SHOT_EXECUTION"}:
+        return "Do not specify shot size, camera, lens, movement, frame, keyframe, or concrete shot execution."
+    return "Use only source-grounded creative direction and preserve the Stage A boundary."
+
+
 def _constraint_for(category: str, matched: str) -> str:
     if category == "UNSUPPORTED_FACT_ASSERTION":
         return f"Do not invent source fact: {matched or 'unsupported fact'}."
@@ -67,6 +130,8 @@ def evaluate_stage_b_semantic_revision_eligibility(
     proposal: Mapping[str, Any] | None,
     *,
     packet_status: str = "draft",
+    required_policy: str | None = None,
+    resolved_review: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     info = info if isinstance(info, Mapping) else {}
     proposal = proposal if isinstance(proposal, Mapping) else {}
@@ -74,7 +139,17 @@ def evaluate_stage_b_semantic_revision_eligibility(
     stage_a = progressive.get("stage_a") if isinstance(progressive, Mapping) else None
     stage_b = progressive.get("stage_b") if isinstance(progressive, Mapping) else None
     projection = proposal.get("creative_projection") if isinstance(proposal.get("creative_projection"), Mapping) else {}
-    review = stage_b.get("semantic_review") if isinstance(stage_b, Mapping) and isinstance(stage_b.get("semantic_review"), Mapping) else info.get("semantic_review")
+    stage_b_attempt_id = str(stage_b.get("attempt_id") or "") if isinstance(stage_b, Mapping) else ""
+    review = resolved_review if isinstance(resolved_review, Mapping) else (
+        stage_b.get("semantic_review_v2") if isinstance(stage_b, Mapping) and isinstance(stage_b.get("semantic_review_v2"), Mapping) else
+        stage_b.get("semantic_review") if isinstance(stage_b, Mapping) and isinstance(stage_b.get("semantic_review"), Mapping) else info.get("semantic_review")
+    )
+    policy = required_policy or resolve_required_semantic_review_policy(authoring_stage="CREATIVE_ENRICHMENT", attempt_id=stage_b_attempt_id, revision_context=bool(required_policy))
+    policy_checks = {
+        "required_policy_bound": bool(policy),
+        "semantic_review_policy": policy == SEMANTIC_REVIEW_POLICY_V1 or (isinstance(review, Mapping) and review.get("policy_version") == SEMANTIC_REVIEW_POLICY_V2),
+        "semantic_policy_fingerprint": policy == SEMANTIC_REVIEW_POLICY_V1 or (isinstance(review, Mapping) and review.get("semantic_policy_fingerprint") == semantic_policy_v2_fingerprint()),
+    }
     checks = {
         "stage_a_validated": is_progressive_stage_validated(stage_a, authoring_stage="BEAT_PLAN"),
         "stage_b_structurally_validated": is_progressive_stage_validated(stage_b, authoring_stage="CREATIVE_ENRICHMENT"),
@@ -84,6 +159,8 @@ def evaluate_stage_b_semantic_revision_eligibility(
         "production_not_confirmed": str(packet_status or "").lower() not in {"confirmed", "superseded"},
         "llm_draft_not_in_progress": not bool(info.get("llm_draft_in_progress")),
     }
+    if policy == SEMANTIC_REVIEW_POLICY_V2:
+        checks.update(policy_checks)
     return {"status": "PASS" if all(checks.values()) else "BLOCKED", "eligible": all(checks.values()), "checks": checks, "stage_b_attempt_id": str(stage_b.get("attempt_id") or "") if isinstance(stage_b, Mapping) else "", "stage_b_ir_fingerprint": str(stage_b.get("ir_fingerprint") or stage_b.get("fingerprint") or "") if isinstance(stage_b, Mapping) else "", "semantic_review": copy.deepcopy(dict(review)) if isinstance(review, Mapping) else {}}
 
 
@@ -126,6 +203,12 @@ def archive_stage_b_attempt(info: Mapping[str, Any] | None, *, proposal: Mapping
         "proposal": copy.deepcopy(dict(proposal or {})),
         "proposal_fingerprint": proposal_fingerprint(proposal if isinstance(proposal, Mapping) else {}),
     }
+    if isinstance(active.get("semantic_review_v2"), Mapping):
+        entry.update({
+            "semantic_review_policy": str(active.get("semantic_review_policy") or SEMANTIC_REVIEW_POLICY_V2),
+            "semantic_policy_fingerprint": str(active.get("semantic_policy_fingerprint") or semantic_policy_v2_fingerprint()),
+            "semantic_review_v2": copy.deepcopy(dict(active.get("semantic_review_v2") or {})),
+        })
     archives = progressive.get("stage_b_attempts") if isinstance(progressive.get("stage_b_attempts"), list) else []
     archives = copy.deepcopy(archives)
     existing = next((item for item in archives if isinstance(item, Mapping) and str(item.get("attempt_id") or "") == active_id), None)
@@ -148,4 +231,33 @@ def build_revision_parent_identity(*, parent_attempt_id: str, parent_ir_fingerpr
     }
 
 
-__all__ = ["semantic_review_fingerprint", "proposal_fingerprint", "stage_b_revision_feedback", "evaluate_stage_b_semantic_revision_eligibility", "is_stage_b_semantic_revision_required", "archive_stage_b_attempt", "build_revision_parent_identity"]
+def build_revision_parent_identity_v2(*, parent_attempt_id: str, parent_ir_fingerprint: str, semantic_review: Mapping[str, Any], stage_a_attempt_id: str, stage_a_materialized_fingerprint: str, source_authoring_unit_fingerprint: str, source_authority_content_fingerprint: str) -> dict[str, Any]:
+    """Build a V2 parent identity whose hash binds policy and review version."""
+    review_fp = semantic_review_fingerprint(semantic_review)
+    policy_fp = semantic_policy_v2_fingerprint()
+    payload = {
+        "attempt_id": str(parent_attempt_id),
+        "ir_fingerprint": str(parent_ir_fingerprint),
+        "semantic_review_policy": SEMANTIC_REVIEW_POLICY_V2,
+        "semantic_policy_fingerprint": policy_fp,
+        "semantic_review_fingerprint": review_fp,
+        "source_authoring_unit_fingerprint": str(source_authoring_unit_fingerprint),
+        "source_authority_content_fingerprint": str(source_authority_content_fingerprint),
+    }
+    parent_fp = hashlib.sha256(_canonical(payload).encode("utf-8")).hexdigest()
+    return {
+        "revision_parent_identity_version": "revision_parent_identity_v2",
+        "revision_parent_attempt_id": str(parent_attempt_id),
+        "revision_parent_stage_b_ir_fingerprint": str(parent_ir_fingerprint),
+        "revision_parent_semantic_review_policy": SEMANTIC_REVIEW_POLICY_V2,
+        "revision_parent_semantic_policy_fingerprint": policy_fp,
+        "revision_parent_semantic_review_fingerprint": review_fp,
+        "revision_parent_fingerprint": parent_fp,
+        "stage_a_attempt_id": str(stage_a_attempt_id),
+        "stage_a_materialized_fingerprint": str(stage_a_materialized_fingerprint),
+        "source_authoring_unit_fingerprint": str(source_authoring_unit_fingerprint),
+        "source_authority_content_fingerprint": str(source_authority_content_fingerprint),
+    }
+
+
+__all__ = ["semantic_review_fingerprint", "proposal_fingerprint", "stage_b_revision_feedback", "stage_b_revision_feedback_v2", "evaluate_stage_b_semantic_revision_eligibility", "is_stage_b_semantic_revision_required", "archive_stage_b_attempt", "build_revision_parent_identity", "build_revision_parent_identity_v2"]

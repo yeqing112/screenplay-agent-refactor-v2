@@ -1,0 +1,25 @@
+{
+  "75api": 0,
+  "active_attempt": "attempt-9",
+  "after": {
+    "model_info_sha256": "26f3f16628ce7aac3008e7b0d2cde0448b6970e30d6dbcfdedd40e63bf68a7c0",
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "proposal_sha256": "b2dd22fbfa197b06ba61044b44db151686564c419fa030a79201f23e39a598b4"
+  },
+  "attempt10_real_execution": 0,
+  "attempt11": 0,
+  "attempt_count": 9,
+  "before": {
+    "model_info_sha256": "26f3f16628ce7aac3008e7b0d2cde0448b6970e30d6dbcfdedd40e63bf68a7c0",
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "proposal_sha256": "b2dd22fbfa197b06ba61044b44db151686564c419fa030a79201f23e39a598b4"
+  },
+  "image": 0,
+  "poyo": 0,
+  "production_packet_mutation": 0,
+  "real_llm_provider_posts": 0,
+  "shapi": 0,
+  "status": "PASS",
+  "unchanged": true,
+  "video": 0
+}

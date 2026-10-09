@@ -1,0 +1,9 @@
+{
+  "prompt_fingerprint": "b7a023dc4a3eeadefb135d7954f6cf08464fef4f822bf0414fd5284a7bb46da2",
+  "provider_request_fingerprint": "b9b0592520fd13aac0eb70c671e4fc82be901e1031b4690ae030e146e885169b",
+  "semantic_policy_fingerprint": "9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501",
+  "semantic_review_policy": "director_creative_semantic_review_v2",
+  "status": "PASS",
+  "system_sha256": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
+  "user_sha256": "1c894944d41b6b369f27e453062a515f40a2b8e9e4a179749616c5ee245f3462"
+}

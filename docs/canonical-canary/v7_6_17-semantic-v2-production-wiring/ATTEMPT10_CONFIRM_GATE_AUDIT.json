@@ -1,0 +1,7 @@
+{
+  "confirm_endpoint_called": false,
+  "missing_or_wrong_binding_blocks": true,
+  "production_writes": 0,
+  "status": "PASS",
+  "v2_pass_assessment_allows_gate_readiness": true
+}

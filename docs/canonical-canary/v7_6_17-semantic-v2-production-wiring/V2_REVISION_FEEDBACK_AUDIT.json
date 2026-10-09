@@ -1,0 +1,36 @@
+{
+  "categories": {
+    "DOWNSTREAM_SCENEBLOCKING_LEAKAGE": 2,
+    "UNSUPPORTED_CERTAINTY_COLLAPSE": 1,
+    "UNSUPPORTED_STORY_ACTION": 1
+  },
+  "constraint_count": 4,
+  "constraints": [
+    {
+      "category": "UNSUPPORTED_CERTAINTY_COLLAPSE",
+      "constraint": "Preserve source uncertainty. Do not turn 是否、可能、想不起、无法确认 or unknown into 首次、从未、一定、确认 or 必然.",
+      "matched_term": "首次",
+      "path": "beat_enrichments[0].character_effects[1].effect"
+    },
+    {
+      "category": "DOWNSTREAM_SCENEBLOCKING_LEAKAGE",
+      "constraint": "Do not specify concrete spatial blocking, paths, placement, or movement such as walking to or bringing someone to a prop; leave SceneBlocking to its downstream authority.",
+      "matched_term": "带到铁盒前",
+      "path": "beat_enrichments[0].character_effects[0].effect"
+    },
+    {
+      "category": "UNSUPPORTED_STORY_ACTION",
+      "constraint": "Do not invent canonical story actions involving key props, such as opening a box, picking up a prop, taking film, or handing over a key, unless SourceAuthoringUnits explicitly support them.",
+      "matched_term": "打开铁盒",
+      "path": "beat_enrichments[1].performance"
+    },
+    {
+      "category": "DOWNSTREAM_SCENEBLOCKING_LEAKAGE",
+      "constraint": "Do not specify concrete spatial blocking, paths, placement, or movement such as walking to or bringing someone to a prop; leave SceneBlocking to its downstream authority.",
+      "matched_term": "带到铁盒前",
+      "path": "character_directions[1].objective"
+    }
+  ],
+  "status": "PASS",
+  "v1_false_positives_excluded": true
+}

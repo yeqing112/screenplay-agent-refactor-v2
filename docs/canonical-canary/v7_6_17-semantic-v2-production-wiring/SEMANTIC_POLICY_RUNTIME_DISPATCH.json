@@ -1,0 +1,7 @@
+{
+  "historical_attempt_8_9": "director_creative_semantic_review_v1",
+  "production_executor": "policy-aware validator dispatch",
+  "resolver": "resolve_required_semantic_review_policy",
+  "revision_attempt_10_plus": "director_creative_semantic_review_v2",
+  "status": "PASS"
+}

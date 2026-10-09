@@ -1,0 +1,6 @@
+{
+  "attempt11_provider_calls": 0,
+  "blocked_attempt10_next_state": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT11_AUTHORIZATION_REQUIRED",
+  "parent_reads_persisted_attempt10_v2_assessment": true,
+  "status": "PASS"
+}
