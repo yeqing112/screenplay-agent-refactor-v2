@@ -17,8 +17,9 @@ from core.director_progressive_authoring import (
     validate_director_creative_enrichment_text_completeness,
     validate_stage_b_prompt_schema_key_parity,
 )
-from core.director_revision import derive_structural_revision_feedback, structural_revision_feedback_fingerprint
+from core.director_revision import archive_stage_b_attempt, derive_structural_revision_feedback, structural_revision_feedback_fingerprint
 from core.director_semantic_grounding import validate_director_creative_semantic_review_v2
+from core.director_forensic import resolve_next_director_attempt_context
 from tests.test_director_creative_enrichment_boundary_v7_6_9 import stage_a, stage_b
 from tests.test_director_semantic_v2_production_wiring_v7_6_17 import _patch_runtime, _request, _seed_attempt9
 from models import DecisionPacketRecord, Session, init_db
@@ -123,6 +124,25 @@ def test_structural_feedback_becomes_stale_after_later_success():
     info["progressive_director_authoring"]["stage_b"]["status"] = "VALIDATED"
     info["progressive_director_authoring"]["stage_b_attempts"].append({"attempt_id": "attempt-11", "authoring_stage": "CREATIVE_ENRICHMENT", "structural_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT11_VALIDATED"})
     assert derive_structural_revision_feedback(info)["status"] == "NOT_ELIGIBLE"
+
+
+def test_attempt9_archive_idempotency_coexists_with_attempt10_failure_and_attempt11_preflight():
+    info = _failure_info()
+    attempt10_archive = info["progressive_director_authoring"]["stage_b_attempts"].pop()
+    archived, first = archive_stage_b_attempt(info, proposal={"decision": "ready_for_review"}, attempt_id="attempt-9")
+    assert first["archived"] is True
+    archived["progressive_director_authoring"]["stage_b_attempts"].append(attempt10_archive)
+    second_input = copy.deepcopy(archived)
+    archived_again, second = archive_stage_b_attempt(second_input, proposal={"decision": "ready_for_review"}, attempt_id="attempt-9")
+    assert second["changed"] is False
+    assert [item["attempt_id"] for item in archived_again["progressive_director_authoring"]["stage_b_attempts"]] == ["attempt-9", "attempt-10"]
+    assert derive_structural_revision_feedback(archived_again)["status"] == "ELIGIBLE"
+
+
+def test_attempt11_history_resolution_is_dynamic():
+    for count, expected in ((10, "attempt-11"), (11, "attempt-12")):
+        info = {"director_llm_attempts": [{"attempt_id": f"attempt-{i}"} for i in range(1, count + 1)]}
+        assert resolve_next_director_attempt_context(info, authoring_stage="CREATIVE_ENRICHMENT").attempt_id == expected
 
 
 def test_prompt_keeps_semantic_and_structural_feedback_independent_and_final_gate_last():

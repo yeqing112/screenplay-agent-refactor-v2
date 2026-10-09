@@ -90,10 +90,7 @@ DIRECTOR_BEAT_PLAN_IR_SCHEMA: dict[str, Any] = {
 DIRECTOR_CREATIVE_ENRICHMENT_IR_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
-    # Preserve the protocol's declared order in the formal schema.  The
-    # completeness gate and evidence therefore show the same eleven keys the
-    # contract documents, while validation remains set-like.
-    "required": list(STAGE_B_TOP_LEVEL_KEYS),
+    "required": sorted(STAGE_B_TOP_LEVEL_FIELDS),
     "properties": {
         "version": {"const": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION},
         "beat_enrichments": {"type": "array", "items": {
@@ -421,11 +418,11 @@ def render_stage_b_schema_contract() -> dict[str, Any]:
     nested_required, field_types, additional_properties_false_paths, shape_example = _stage_b_schema_projection(top)
     return {
         "version": DIRECTOR_CREATIVE_ENRICHMENT_IR_VERSION,
-        # Required top-level keys are rendered from the formal schema.  Keep
-        # this list separate from the Python compatibility tuple so adding a
-        # required field cannot leave the prompt checklist stale.
-        "top_level_keys": list(top["required"]),
-        "top_level_required": list(top["required"]),
+        # Required top-level keys are rendered from the formal schema's
+        # properties/required declarations.  Property order is presentation
+        # order; membership still comes exclusively from the formal schema.
+        "top_level_keys": [key for key in top["properties"] if key in set(top["required"])],
+        "top_level_required": [key for key in top["properties"] if key in set(top["required"])],
         "top_level_additional_properties": bool(top.get("additionalProperties", True)),
         "beat_enrichment_keys": list(STAGE_B_ENRICHMENT_KEYS),
         "character_direction_keys": list(CHARACTER_DIRECTION_KEYS),
