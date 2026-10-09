@@ -67,8 +67,8 @@ certainty collapse `0`, unsupported story action `1`, SceneBlocking leakage `0`,
 - Focused Stage B/revision/semantic/provider-free suite: `82 passed`.
 - `python -m compileall -q core api scripts`: PASS.
 - `git diff --check`: PASS.
-- Working tree: `DIRTY`.
-- Commit: `53fb9d04c6b8d1676f15533725426685f0604872`.
-- Remote HEAD: `6f0bc565559bc1ae83b73e5379c6bc720a0614d4`.
+- Working tree: `CLEAN`.
+- Commit: `217641a29e6a8c02200291264288763ede76ec5a`.
+- Remote HEAD: `217641a29e6a8c02200291264288763ede76ec5a`.
 
 All evidence is derived from persisted production failure data or isolated provider-free fixtures; evidence JSON is not used as production authority.
