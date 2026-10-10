@@ -1,0 +1,20 @@
+{
+  "changed": true,
+  "counts_before_reference": {
+    "SceneBlocking_leakage": 2,
+    "ShotPlan_leakage": 0,
+    "certainty_collapse": 1,
+    "unsupported_story_action": 1
+  },
+  "counts_current": {
+    "SceneBlocking_leakage": 2,
+    "ShotPlan_leakage": 0,
+    "certainty_collapse": 1,
+    "unsupported_story_action": 1
+  },
+  "current_policy_fingerprint": "cf75e024231e619f83f5b9ee79dc388cd199b25464d8d6f3e69ac6c0ab8cc4b8",
+  "current_review_fingerprint": "1bd69e6ceb8d2b51b098fcabd7f877a636a338759dc5550365e92bef275af198",
+  "historical_policy_fingerprint": "9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501",
+  "historical_review_fingerprint": "e021e4d1380f5d6b91092e892fc9d7a37d71ca3e13a0f17ded88320e74f6c66a",
+  "status": "PASS"
+}

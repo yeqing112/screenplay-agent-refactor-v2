@@ -1,0 +1,12 @@
+{
+  "attempt10_provider_request_fingerprint": "b9b0592520fd13aac0eb70c671e4fc82be901e1031b4690ae030e146e885169b",
+  "attempt10_raw_sha256": "5daf096fd07ad58ffe8848b25a8d633797234ce325dba1986f21de4af4ca39f0",
+  "constraint_count": 1,
+  "failed_attempt_id": "attempt-10",
+  "failed_attempt_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_SCHEMA_INVALID",
+  "missing_field": "visual_priority",
+  "recomputed": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4",
+  "status": "PASS",
+  "structural_feedback_fingerprint": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4",
+  "unchanged_from_v7_6_19": true
+}

@@ -42,7 +42,11 @@ _SENSORY_INVENTION_PATTERNS = ("空气里药水味", "空气中药水味", "药�
 SEMANTIC_REVIEW_POLICY_V2 = "director_creative_semantic_review_v2"
 SEMANTIC_REVIEW_POLICY_V1 = "director_creative_semantic_review_v1"
 _PROHIBITION_PREFIXES = ("不要", "不得", "禁止", "切勿", "避免", "不应", "不准", "勿")
-_META_COMPLIANCE_PREFIXES = ("未指定", "未引入", "不包含", "没有指定", "没有引入", "不涉及")
+_META_COMPLIANCE_PREFIXES = (
+    "未指定", "未引入", "不包含", "没有指定", "没有引入", "不涉及",
+    "未新增", "未添加", "未增加", "没有新增", "没有添加",
+)
+_POLARITY_CONNECTORS = ("但是", "而是", "改为", "改用", "但随后", "随后", "但", "却")
 _CERTAINTY_COLLAPSE_PATTERNS = ("首次", "第一次", "从未", "一定", "就是", "确定", "确认", "明确知道", "必然")
 _SOURCE_UNCERTAINTY_PATTERNS = ("是否", "也许", "可能", "想不起", "无法确认", "不确定", "未知", "未说明")
 _PHYSICAL_ACTION_PATTERNS = (
@@ -80,13 +84,36 @@ def resolve_required_semantic_review_policy(
 
 
 def classify_semantic_assertion_polarity(text: Any) -> dict[str, Any]:
-    """Classify prohibition/meta clauses without exempting mixed clauses."""
+    """Classify prohibition/meta clauses without exempting mixed clauses.
+
+    Clause boundaries are punctuation-aware and also recognize a small,
+    explicit set of contrast/replacement/continuation conjunctions.  The
+    latter is required for compact Chinese instructions such as ``不得打开
+    铁盒但随后拿起别针``.  Enumeration punctuation (``、``) and ``或`` are
+    deliberately not boundaries, so a prohibition list remains one negative
+    clause.
+    """
     value = _text(text)
     if not value:
         return {"polarity": "META_COMPLIANCE", "clauses": []}
-    clauses = [part.strip() for part in re.split(r"[，,；;。！？!?]", value) if part.strip()]
-    if not clauses:
-        clauses = [value]
+    punctuation_parts = [part.strip() for part in re.split(r"[，,；;。！？!?]", value) if part.strip()]
+    if not punctuation_parts:
+        punctuation_parts = [value]
+    clauses: list[str] = []
+    connector_pattern = re.compile("|".join(re.escape(item) for item in _POLARITY_CONNECTORS))
+    for part in punctuation_parts:
+        start = 0
+        for match in connector_pattern.finditer(part):
+            # A connector at the beginning belongs to the continuation clause;
+            # only split when there is an assertion on its left.
+            if match.start() > start:
+                left = part[start:match.start()].strip()
+                if left:
+                    clauses.append(left)
+                start = match.start()
+        tail = part[start:].strip()
+        if tail:
+            clauses.append(tail)
     classified = []
     for clause in clauses:
         lowered = clause.lower()
@@ -110,10 +137,10 @@ def semantic_policy_v2_contract() -> dict[str, Any]:
     return {
         "policy_version": SEMANTIC_REVIEW_POLICY_V2,
         "stage_a_ownership": {"top_level_owned": sorted(_STAGE_A_TOP_LEVEL_OWNED), "beat_owned": sorted(_STAGE_A_BEAT_OWNED), "stage_b_character_direction_objective_allowed": True},
-        "polarity": {"prohibition_prefixes": list(_PROHIBITION_PREFIXES), "meta_compliance_prefixes": list(_META_COMPLIANCE_PREFIXES), "mixed_clause_fail_closed": True},
+        "polarity": {"prohibition_prefixes": list(_PROHIBITION_PREFIXES), "meta_compliance_prefixes": list(_META_COMPLIANCE_PREFIXES), "contrast_continuation_connectors": list(_POLARITY_CONNECTORS), "mixed_clause_fail_closed": True},
         "uncertainty": {"source_cues": list(_SOURCE_UNCERTAINTY_PATTERNS), "certainty_cues": list(_CERTAINTY_COLLAPSE_PATTERNS), "category": "UNSUPPORTED_CERTAINTY_COLLAPSE"},
-        "shotplan": {"negated_terms_are_allowed_only_inside_negated_scope": True, "mixed_clause_positive_terms_block": True},
-        "physical_action": {"performance_actions": list(_PERFORMANCE_ACTION_PATTERNS), "story_action_categories": ["UNSUPPORTED_STORY_ACTION", "DOWNSTREAM_SCENEBLOCKING_LEAKAGE"], "ambiguous_is_not_pass": True},
+        "shotplan": {"negated_terms_are_allowed_only_inside_negated_scope": True, "mixed_clause_positive_terms_block": True, "meta_compliance_aware": True},
+        "physical_action": {"performance_actions": list(_PERFORMANCE_ACTION_PATTERNS), "story_action_categories": ["UNSUPPORTED_STORY_ACTION", "DOWNSTREAM_SCENEBLOCKING_LEAKAGE"], "ambiguous_is_not_pass": True, "polarity_aware": True, "mixed_clause_fail_closed": True},
     }
 
 
@@ -214,7 +241,7 @@ def audit_director_downstream_semantic_leakage_v2(value: Any) -> dict[str, Any]:
                     violations.append({"category": category, "path": path, "matched_term": matched, "text": text, "clause": clause_text, "polarity": polarity["polarity"]})
             if "镜头" in clause_text and not any(item["path"] == path and item["matched_term"] in clause_text for item in violations):
                 violations.append({"category": "SHOT_EXECUTION", "path": path, "matched_term": "镜头", "text": text, "clause": clause_text, "polarity": polarity["polarity"]})
-            elif "camera" in lowered and not any(item["path"] == path and item["matched_term"].lower() == "camera" for item in violations):
+            elif "camera" in clause_text.lower() and not any(item["path"] == path and item["matched_term"].lower() == "camera" for item in violations):
                 violations.append({"category": "SHOT_EXECUTION", "path": path, "matched_term": "camera", "text": text, "clause": clause_text, "polarity": polarity["polarity"]})
     unique: list[dict[str, Any]] = []
     seen: set[tuple[str, str, str]] = set()
@@ -271,24 +298,36 @@ def audit_physical_action_authority_v2(
 ) -> dict[str, Any]:
     source_text = "\n".join(_source_texts(source_authoring_units))
     findings: list[dict[str, Any]] = []
+    seen_findings: set[tuple[str, str]] = set()
     for path, text in _flatten(enrichment_ir or {}):
-        lower = text.lower()
-        if not any(term in lower for _category, terms in _PHYSICAL_ACTION_PATTERNS for term in terms):
-            continue
-        for category, terms in _PHYSICAL_ACTION_PATTERNS:
-            matched = next((term for term in terms if term.lower() in lower), None)
-            if not matched:
+        polarity = classify_semantic_assertion_polarity(text)
+        for clause in polarity["clauses"]:
+            if clause["polarity"] in {"PROHIBITION", "META_COMPLIANCE"}:
                 continue
-            if matched in source_text:
-                classification = "SOURCE_SUPPORTED_ACTION"
-                reason = "action is explicit in SourceAuthoringUnits"
-            elif category == "DOWNSTREAM_SCENEBLOCKING_LEAKAGE":
-                classification = category
-                reason = "specific spatial path or placement belongs to SceneBlocking"
-            else:
-                classification = category
-                reason = "key prop manipulation changes a canonical event and is not source-supported"
-            findings.append({"path": path, "claim": text, "matched_term": matched, "classification": classification, "source_support": matched in source_text, "creative_performance_authority": "NO" if classification != "SOURCE_SUPPORTED_ACTION" else "YES", "sceneblocking_authority": "YES" if classification == "DOWNSTREAM_SCENEBLOCKING_LEAKAGE" else "NO", "reason": reason})
+            clause_text = clause["text"]
+            lower = clause_text.lower()
+            for category, terms in _PHYSICAL_ACTION_PATTERNS:
+                matched = next((term for term in terms if term.lower() in lower), None)
+                if not matched:
+                    continue
+                if matched in source_text:
+                    classification = "SOURCE_SUPPORTED_ACTION"
+                    reason = "action is explicit in SourceAuthoringUnits"
+                elif category == "DOWNSTREAM_SCENEBLOCKING_LEAKAGE":
+                    classification = category
+                    reason = "specific spatial path or placement belongs to SceneBlocking"
+                else:
+                    classification = category
+                    reason = "key prop manipulation changes a canonical event and is not source-supported"
+                # Preserve the historical one-finding-per-field/category
+                # contract while still scanning each active clause.  This
+                # keeps a sentence containing several prop verbs from
+                # inflating the same authority violation.
+                finding_key = (path, classification)
+                if finding_key in seen_findings:
+                    continue
+                seen_findings.add(finding_key)
+                findings.append({"path": path, "claim": text, "clause": clause_text, "polarity": polarity["polarity"], "matched_term": matched, "classification": classification, "source_support": matched in source_text, "creative_performance_authority": "NO" if classification != "SOURCE_SUPPORTED_ACTION" else "YES", "sceneblocking_authority": "YES" if classification == "DOWNSTREAM_SCENEBLOCKING_LEAKAGE" else "NO", "reason": reason})
     return {"status": "BLOCKED" if any(item["classification"] in {"UNSUPPORTED_STORY_ACTION", "DOWNSTREAM_SCENEBLOCKING_LEAKAGE", "AMBIGUOUS_REVIEW_REQUIRED"} for item in findings) else "PASS", "findings": findings, "count": len(findings)}
 
 

@@ -1,0 +1,73 @@
+{
+  "cases": {
+    "meta": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "未新增任何镜头执行"
+          }
+        ],
+        "polarity": "META_COMPLIANCE"
+      },
+      "result": {
+        "status": "PASS",
+        "violation_count": 0,
+        "violations": []
+      },
+      "text": "未新增任何镜头执行。"
+    },
+    "meta_added": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "未添加机位、焦段或运镜信息"
+          }
+        ],
+        "polarity": "META_COMPLIANCE"
+      },
+      "result": {
+        "status": "PASS",
+        "violation_count": 0,
+        "violations": []
+      },
+      "text": "未添加机位、焦段或运镜信息。"
+    },
+    "meta_no_punctuation": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "没有新增具体镜头方案"
+          }
+        ],
+        "polarity": "META_COMPLIANCE"
+      },
+      "result": {
+        "status": "PASS",
+        "violation_count": 0,
+        "violations": []
+      },
+      "text": "没有新增具体镜头方案。"
+    },
+    "prohibition": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "PROHIBITION",
+            "text": "不得使用特写"
+          }
+        ],
+        "polarity": "PROHIBITION"
+      },
+      "result": {
+        "status": "PASS",
+        "violation_count": 0,
+        "violations": []
+      },
+      "text": "不得使用特写。"
+    }
+  },
+  "status": "PASS"
+}

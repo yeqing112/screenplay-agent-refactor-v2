@@ -1,0 +1,21 @@
+{
+  "contract": {
+    "meta_compliance_aware": true,
+    "mixed_clause_positive_terms_block": true,
+    "negated_terms_are_allowed_only_inside_negated_scope": true
+  },
+  "meta_prefixes": [
+    "未指定",
+    "未引入",
+    "不包含",
+    "没有指定",
+    "没有引入",
+    "不涉及",
+    "未新增",
+    "未添加",
+    "未增加",
+    "没有新增",
+    "没有添加"
+  ],
+  "status": "PASS"
+}

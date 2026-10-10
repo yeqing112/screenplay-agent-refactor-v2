@@ -1,0 +1,69 @@
+{
+  "cases": {
+    "mixed": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "未新增镜头执行"
+          },
+          {
+            "polarity": "POSITIVE_ASSERTION",
+            "text": "但使用特写"
+          }
+        ],
+        "polarity": "MIXED_CLAUSE"
+      },
+      "result": {
+        "status": "BLOCKED",
+        "violation_count": 1,
+        "violations": [
+          {
+            "category": "SHOT_SIZE",
+            "clause": "但使用特写",
+            "matched_term": "特写",
+            "path": "note",
+            "polarity": "MIXED_CLAUSE",
+            "text": "未新增镜头执行，但使用特写。"
+          }
+        ]
+      },
+      "text": "未新增镜头执行，但使用特写。"
+    },
+    "mixed_no_punctuation": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "未新增镜头执行"
+          },
+          {
+            "polarity": "POSITIVE_ASSERTION",
+            "text": "但"
+          },
+          {
+            "polarity": "POSITIVE_ASSERTION",
+            "text": "改用近景"
+          }
+        ],
+        "polarity": "MIXED_CLAUSE"
+      },
+      "result": {
+        "status": "BLOCKED",
+        "violation_count": 1,
+        "violations": [
+          {
+            "category": "SHOT_SIZE",
+            "clause": "改用近景",
+            "matched_term": "近景",
+            "path": "note",
+            "polarity": "MIXED_CLAUSE",
+            "text": "未新增镜头执行但改用近景"
+          }
+        ]
+      },
+      "text": "未新增镜头执行但改用近景"
+    }
+  },
+  "status": "PASS"
+}

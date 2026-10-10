@@ -1,0 +1,11 @@
+{
+  "semantic_feedback_count": 4,
+  "semantic_parent_attempt": "attempt-9",
+  "semantic_parent_ir_fingerprint": "591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa",
+  "semantic_parent_policy_fingerprint": "cf75e024231e619f83f5b9ee79dc388cd199b25464d8d6f3e69ac6c0ab8cc4b8",
+  "semantic_parent_review_fingerprint": "1bd69e6ceb8d2b51b098fcabd7f877a636a338759dc5550365e92bef275af198",
+  "status": "PASS",
+  "structural_failure_source_attempt": "attempt-10",
+  "structural_feedback_count": 1,
+  "structural_feedback_fingerprint": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4"
+}

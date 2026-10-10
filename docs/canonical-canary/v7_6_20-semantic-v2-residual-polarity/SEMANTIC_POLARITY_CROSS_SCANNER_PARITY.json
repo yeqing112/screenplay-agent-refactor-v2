@@ -1,0 +1,82 @@
+{
+  "cases": [
+    {
+      "grounding_polarities": [
+        "PROHIBITION"
+      ],
+      "leakage_status": "PASS",
+      "name": "physical_prohibition",
+      "physical_status": "PASS",
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "PROHIBITION",
+            "text": "不得打开铁盒"
+          }
+        ],
+        "polarity": "PROHIBITION"
+      },
+      "safe_across_scanners": true,
+      "text": "不得打开铁盒"
+    },
+    {
+      "grounding_polarities": [
+        "META_COMPLIANCE"
+      ],
+      "leakage_status": "PASS",
+      "name": "physical_meta",
+      "physical_status": "PASS",
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "未新增关键道具动作"
+          }
+        ],
+        "polarity": "META_COMPLIANCE"
+      },
+      "safe_across_scanners": true,
+      "text": "未新增关键道具动作"
+    },
+    {
+      "grounding_polarities": [
+        "PROHIBITION"
+      ],
+      "leakage_status": "PASS",
+      "name": "shot_prohibition",
+      "physical_status": "PASS",
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "PROHIBITION",
+            "text": "不得使用特写"
+          }
+        ],
+        "polarity": "PROHIBITION"
+      },
+      "safe_across_scanners": true,
+      "text": "不得使用特写"
+    },
+    {
+      "grounding_polarities": [
+        "META_COMPLIANCE"
+      ],
+      "leakage_status": "PASS",
+      "name": "shot_meta",
+      "physical_status": "PASS",
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "未新增镜头执行"
+          }
+        ],
+        "polarity": "META_COMPLIANCE"
+      },
+      "safe_across_scanners": true,
+      "text": "未新增镜头执行"
+    }
+  ],
+  "polarity_authority": "classify_semantic_assertion_polarity",
+  "status": "PASS"
+}

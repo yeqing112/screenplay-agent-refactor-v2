@@ -1,0 +1,17 @@
+{
+  "active_stage_b": "attempt-9",
+  "authorization": "REQUIRED_NOT_GRANTED",
+  "confirm_allowed": false,
+  "expected_attempt": "attempt-11",
+  "history_count": 10,
+  "provider_calls": 0,
+  "semantic_feedback_count": 4,
+  "semantic_parent": "attempt-9",
+  "semantic_policy": "director_creative_semantic_review_v2",
+  "semantic_policy_fingerprint": "cf75e024231e619f83f5b9ee79dc388cd199b25464d8d6f3e69ac6c0ab8cc4b8",
+  "semantic_review_fingerprint": "1bd69e6ceb8d2b51b098fcabd7f877a636a338759dc5550365e92bef275af198",
+  "status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT11_AUTHORIZATION_REQUIRED",
+  "structural_failure_source": "attempt-10",
+  "structural_feedback_count": 1,
+  "structural_feedback_fingerprint": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4"
+}

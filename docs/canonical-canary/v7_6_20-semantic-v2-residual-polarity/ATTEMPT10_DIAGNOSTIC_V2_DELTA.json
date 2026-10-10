@@ -1,0 +1,18 @@
+{
+  "current_counts": {
+    "SceneBlocking_leakage": 0,
+    "ShotPlan_leakage": 0,
+    "certainty_collapse": 0,
+    "unsupported_story_action": 0
+  },
+  "diagnostic_only": true,
+  "false_positive_a_fixed": true,
+  "false_positive_b_fixed": true,
+  "historical_counts": {
+    "SceneBlocking_leakage": 0,
+    "ShotPlan_leakage": 1,
+    "certainty_collapse": 0,
+    "unsupported_story_action": 1
+  },
+  "status": "PASS"
+}

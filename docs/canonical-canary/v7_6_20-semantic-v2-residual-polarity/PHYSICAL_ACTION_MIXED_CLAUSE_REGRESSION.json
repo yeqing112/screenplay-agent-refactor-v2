@@ -1,0 +1,73 @@
+{
+  "cases": {
+    "mixed": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "PROHIBITION",
+            "text": "不得打开铁盒"
+          },
+          {
+            "polarity": "POSITIVE_ASSERTION",
+            "text": "但拿起海鸥别针"
+          }
+        ],
+        "polarity": "MIXED_CLAUSE"
+      },
+      "result": {
+        "count": 1,
+        "findings": [
+          {
+            "claim": "不得打开铁盒，但拿起海鸥别针。",
+            "classification": "UNSUPPORTED_STORY_ACTION",
+            "clause": "但拿起海鸥别针",
+            "creative_performance_authority": "NO",
+            "matched_term": "拿起海鸥别针",
+            "path": "note",
+            "polarity": "MIXED_CLAUSE",
+            "reason": "key prop manipulation changes a canonical event and is not source-supported",
+            "sceneblocking_authority": "NO",
+            "source_support": false
+          }
+        ],
+        "status": "BLOCKED"
+      },
+      "text": "不得打开铁盒，但拿起海鸥别针。"
+    },
+    "mixed_no_punctuation": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "PROHIBITION",
+            "text": "不得打开铁盒"
+          },
+          {
+            "polarity": "POSITIVE_ASSERTION",
+            "text": "但随后拿起海鸥别针"
+          }
+        ],
+        "polarity": "MIXED_CLAUSE"
+      },
+      "result": {
+        "count": 1,
+        "findings": [
+          {
+            "claim": "不得打开铁盒但随后拿起海鸥别针",
+            "classification": "UNSUPPORTED_STORY_ACTION",
+            "clause": "但随后拿起海鸥别针",
+            "creative_performance_authority": "NO",
+            "matched_term": "拿起海鸥别针",
+            "path": "note",
+            "polarity": "MIXED_CLAUSE",
+            "reason": "key prop manipulation changes a canonical event and is not source-supported",
+            "sceneblocking_authority": "NO",
+            "source_support": false
+          }
+        ],
+        "status": "BLOCKED"
+      },
+      "text": "不得打开铁盒但随后拿起海鸥别针"
+    }
+  },
+  "status": "PASS"
+}

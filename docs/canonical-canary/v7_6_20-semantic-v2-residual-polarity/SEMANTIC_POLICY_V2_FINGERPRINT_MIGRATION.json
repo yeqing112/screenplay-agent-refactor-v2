@@ -1,0 +1,11 @@
+{
+  "changed": true,
+  "new_policy_fingerprint": "cf75e024231e619f83f5b9ee79dc388cd199b25464d8d6f3e69ac6c0ab8cc4b8",
+  "old_policy_fingerprint": "9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501",
+  "reason": [
+    "physical action scanner is clause-aware and polarity-aware",
+    "meta compliance prefixes include 未新增/未添加/未增加/没有新增/没有添加",
+    "mixed clauses fail closed"
+  ],
+  "status": "PASS"
+}

@@ -1,0 +1,36 @@
+{
+  "authority": "DIAGNOSTIC_ONLY_STRUCTURALLY_INVALID",
+  "authority_or_confirm": false,
+  "current": {
+    "counts": {
+      "SceneBlocking_leakage": 0,
+      "ShotPlan_leakage": 0,
+      "certainty_collapse": 0,
+      "unsupported_story_action": 0
+    },
+    "downstream_leakage": {
+      "status": "PASS",
+      "violation_count": 0,
+      "violations": []
+    },
+    "physical_action_authority": {
+      "count": 0,
+      "findings": [],
+      "status": "PASS"
+    },
+    "status": "PASS"
+  },
+  "false_positive_a_fixed": true,
+  "false_positive_b_fixed": true,
+  "historical": {
+    "diagnostic_counts": {
+      "SceneBlocking_leakage": 0,
+      "ShotPlan_leakage": 1,
+      "certainty_collapse": 0,
+      "unsupported_story_action": 1
+    },
+    "semantic_review_fingerprint": "9df29513e7bf0433dae06b148b60e93f9afcb5517fd63d75a8b7b98c3994b501",
+    "status": "DIAGNOSTIC_ONLY_STRUCTURALLY_INVALID"
+  },
+  "status": "PASS"
+}

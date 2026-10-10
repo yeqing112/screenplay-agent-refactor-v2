@@ -1,0 +1,56 @@
+{
+  "cases": {
+    "prohibition": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "PROHIBITION",
+            "text": "不得打开铁盒"
+          }
+        ],
+        "polarity": "PROHIBITION"
+      },
+      "result": {
+        "count": 0,
+        "findings": [],
+        "status": "PASS"
+      },
+      "text": "不得打开铁盒。"
+    },
+    "prohibition_list": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "PROHIBITION",
+            "text": "不得打开铁盒、拿起别针、取走胶片或交出钥匙"
+          }
+        ],
+        "polarity": "PROHIBITION"
+      },
+      "result": {
+        "count": 0,
+        "findings": [],
+        "status": "PASS"
+      },
+      "text": "不得打开铁盒、拿起别针、取走胶片或交出钥匙。"
+    },
+    "prohibition_meta": {
+      "polarity": {
+        "clauses": [
+          {
+            "polarity": "META_COMPLIANCE",
+            "text": "未新增任何关键道具动作"
+          }
+        ],
+        "polarity": "META_COMPLIANCE"
+      },
+      "result": {
+        "count": 0,
+        "findings": [],
+        "status": "PASS"
+      },
+      "text": "未新增任何关键道具动作。"
+    }
+  },
+  "status": "PASS"
+}
