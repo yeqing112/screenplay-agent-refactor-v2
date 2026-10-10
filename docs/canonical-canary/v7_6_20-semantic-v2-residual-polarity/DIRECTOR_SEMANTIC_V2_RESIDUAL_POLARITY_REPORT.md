@@ -54,9 +54,9 @@
 - `python -m compileall -q core api scripts`: PASS.
 - `git diff --check`: PASS.
 - Production row before/after hashes unchanged: `PASS`.
-- Working tree at evidence capture: `DIRTY_PENDING_FINAL_DELIVERY_COMMIT`.
-- Evidence build commit SHA: `8535578adf2ffa3ef5605ad3ba6b8ce681e5781b`.
-- Evidence build remote HEAD: `8535578adf2ffa3ef5605ad3ba6b8ce681e5781b`.
+- Working tree before final report-only commit: `CLEAN`.
+- Evidence build commit SHA: `f3f0f9d`.
+- Evidence build remote HEAD: `f3f0f9d`.
 - Final delivery commit and remote HEAD are the final report-only commit shown by the repository branch after push.
 
 All historical evidence remains immutable. The current V2 review is a new provider-free reassessment and is not production authority.
