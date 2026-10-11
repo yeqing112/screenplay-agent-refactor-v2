@@ -11,6 +11,7 @@ SEMANTIC_REVIEW_V2=BLOCKED
 - Provider profile: `local-llm-2vydoz / mimo-v2.5 / https://api.xiaomimimo.com`.
 - HTTP status: `200`; Provider request ID: `None`; finish_reason: `stop`; latency: `89251.69 ms`.
 - Tokens: `{'prompt_tokens': 6277, 'cached_tokens': None, 'completion_tokens': 3169, 'total_tokens': 9446, 'cache_hit_rate': None, 'reasoning_tokens': 0, 'completion_tokens_details': {'reasoning_tokens': 0}, 'prompt_tokens_details': {}}`; raw length: `6704`; raw SHA: `383e673412ba6c55e27965a3c1b920044bd0a5172d5d9b8772ad282bbf4cb024`.
+- Attempt-11 identity: System SHA `6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa`; User SHA `752e95af67894f5dcdccdb7d2bd66608882a17f49002d4a0d853a0936ed7dee9`; Prompt fingerprint `050f04dec12f7a41e183e7656d8bbdc7ca9864bc3490e0f25687bc95d9cb861b`; Provider request fingerprint `f6d155ae2dacae455e9d5184cabad08f287cf737df6ff8d1ec2739e436ef1e6f`.
 
 ## Structural and lineage gates
 
@@ -33,6 +34,7 @@ SEMANTIC_REVIEW_V2=BLOCKED
 
 - Active Stage B: `attempt-9 -> attempt-11`; stage_b_attempts: `attempt-8, attempt-9, attempt-10, attempt-11`.
 - semantic_review_assessments: `0 -> 1`; proposal: `ready_for_review / PROPOSED`; confirm called: `0`; confirm_allowed: `false`; next state: `DIRECTOR_TREATMENT_SEMANTIC_REVIEW_REQUIRED`.
+- Proposal provenance: `PROVIDER_PROPOSAL`, Stage B attempt `attempt-11`, IR fingerprint `78710067de3b0bb119130cd674a61be99f49a54073004ea4b68aadb6e7fa7db8`.
 - DirectorTreatment approved writes: `0`; Authority: `0`; Pointer: `0`.
 - SceneBlocking / ShotPlan / PromptIR / IMAGE / VIDEO / SHAPI / Poyo / 75API: `0 / 0 / 0 / 0 / 0 / 0 / 0 / 0`.
 - Attempt-12: `0`; automatic retry: `0`; Attempt-9 and Attempt-10 archives preserved: `true / true`.
@@ -40,9 +42,9 @@ SEMANTIC_REVIEW_V2=BLOCKED
 
 ## Verification and delivery
 
-- Provider-free regression after call: run separately; no Provider call is made by tests.
-- `python -m compileall -q core api scripts`: run separately.
-- `git diff --check`: run separately.
+- Provider-free regression after call: `92 passed`; no Provider call was made by tests.
+- `python -m compileall -q core api scripts`: `PASS`.
+- `git diff --check`: `PASS`.
 - Working tree before final report-only commit: `CLEAN`.
 - Evidence commit SHA: `3c52cc9`; remote HEAD: `3c52cc9`.
 - Final delivery commit and remote HEAD: the final report-only commit verified after push.
