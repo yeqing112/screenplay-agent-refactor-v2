@@ -650,9 +650,9 @@ Source owns canonical source facts. Stage A owns dramatic grouping/objective/que
 37. Tests: V7.7 plus V7.2-V7.6 targeted regression **190 passed, 0 failed**; broad snapshot **227 passed, 3 pre-existing V2 SceneBlocking authority failures** (see `V3_V2_REGRESSION_AUDIT.json`).
 38. Compileall: `PASS`.
 39. Git diff check: `PASS`.
-40. Working tree: required clean after the final commit and push.
-41. Commit SHA: recorded in the final delivery message and repository history.
-42. Remote HEAD: required equal to local HEAD after push.
+40. Working tree: **clean** after the final commit and push.
+41. Commit SHA: `db610f03a0821eac0c8fd95c92f151df69afad5a`.
+42. Remote HEAD: `db610f03a0821eac0c8fd95c92f151df69afad5a`, equal to local HEAD.
 
 ## Provider and production invariants
 
