@@ -37,7 +37,7 @@
 31. **当前 profile/model**：`local-llm-2vydoz` / `mimo-v2.5`，provider=`openai-compatible`，host=`https://api.xiaomimimo.com`。
 32. **Provider calls**：0。
 33. **Production writes**：0；Packet 64 本阶段未修改。
-34. **Tests**：46 passed，0 failed（V7.5.1 scope、V7.2 execution、V7.4 IR、V7.4.1 integrity）。
+34. **Tests**：原证据运行 46 passed；本轮在当前分支重跑 71 passed，0 failed（V7.5.1 scope、V7.2 execution、V7.4 IR、V7.4.1 integrity、Stage A/Stage B boundary）。
 35. **compileall**：PASS。
 36. **diff check**：PASS。
 37. **commit SHA**：runtime code/preflight base=`532b1ad8cc8e9776ab21495db670386bfc3aa231`。
@@ -57,3 +57,9 @@
 [ATTEMPT_4_PROVIDER_PREFLIGHT.json](ATTEMPT_4_PROVIDER_PREFLIGHT.json) 已冻结：Book 990453 / Episode 1 / Scene E01_SC001 / Script 64 / FactSnapshot 49 / ScriptIR 52 / Packet 64、attempt history=3、next=`attempt-4`、source units=12（11 action / 1 dialogue / 0 beat）、schema=`director_proposal_ir_v1`、Provider calls=0、authorization=`REQUIRED_NOT_GRANTED`。
 
 V7.5.1 只完成证据 scope reconciliation 与 future preflight；没有执行真实 LLM、IMAGE、VIDEO、SHAPI、Poyo 或 75API。
+
+## Current branch revalidation
+
+本轮只修正了 `tests/test_canary_scope_snapshot_v7_5_1.py` 的测试隔离：目标作用域 fixture 使用真实形状的 canonical IDs 验证过滤和 lineage join 后，会清理其测试行，避免污染后续测试的全局 count 断言。生产代码、历史 V7.5 raw/IR/proposal、Packet 64 和证据快照均未被改写。
+
+当前分支回归结果：`71 passed, 0 failed`。这次重跑仍是 provider-free，未发送任何 Provider POST，也未写入生产数据库。

@@ -65,6 +65,20 @@ def test_target_snapshot_excludes_unrelated_book_and_uses_lineage_joins():
         session.commit()
         global_treatment_count = session.query(DirectorTreatment).count()
         snapshot = target_scope_snapshot(session, scope=_scope(64))
+
+    # This fixture uses real-looking canonical IDs to exercise the query
+    # predicates, but must not contaminate later tests in the same process.
+    with Session() as session:
+        execution_ids = [row[0] for row in session.query(GenerationExecutionRecord.execution_id).filter(GenerationExecutionRecord.book_id.in_([990453, 990454])).all()]
+        if execution_ids:
+            session.query(MediaCandidateRecord).filter(MediaCandidateRecord.execution_id.in_(execution_ids)).delete(synchronize_session=False)
+            session.query(GenerationExecutionRecord).filter(GenerationExecutionRecord.execution_id.in_(execution_ids)).delete(synchronize_session=False)
+        session.query(StoryboardShot).filter(StoryboardShot.book_id.in_([990453, 990454])).delete(synchronize_session=False)
+        session.query(SceneBlocking).filter(SceneBlocking.book_id.in_([990453, 990454])).delete(synchronize_session=False)
+        session.query(DirectorTreatment).filter(DirectorTreatment.book_id.in_([990453, 990454])).delete(synchronize_session=False)
+        session.query(DecisionPacketRecord).filter(DecisionPacketRecord.book_id.in_([990453, 990454])).delete(synchronize_session=False)
+        session.query(Book).filter(Book.id.in_([990453, 990454])).delete(synchronize_session=False)
+        session.commit()
     tables = snapshot["tables"]
     assert tables["decision_packet_records"]["count"] == 1
     assert tables["director_treatments"]["count"] == 1
