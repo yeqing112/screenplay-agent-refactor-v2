@@ -43,5 +43,6 @@ SEMANTIC_REVIEW_V2=BLOCKED
 - Provider-free regression after call: run separately; no Provider call is made by tests.
 - `python -m compileall -q core api scripts`: run separately.
 - `git diff --check`: run separately.
-- Working tree at evidence generation: `DIRTY`.
-- Evidence commit SHA: `184362b693c3c4cce242e165bdba87c912f39d0b`; remote HEAD: `184362b693c3c4cce242e165bdba87c912f39d0b`.
+- Working tree before final report-only commit: `CLEAN`.
+- Evidence commit SHA: `3c52cc9`; remote HEAD: `3c52cc9`.
+- Final delivery commit and remote HEAD: the final report-only commit verified after push.
