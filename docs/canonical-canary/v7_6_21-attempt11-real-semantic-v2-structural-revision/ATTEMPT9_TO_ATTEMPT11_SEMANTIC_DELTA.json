@@ -1,0 +1,18 @@
+{
+  "attempt11_counts": {
+    "SceneBlocking_leakage": 0,
+    "ShotPlan_leakage": 1,
+    "certainty_collapse": 0,
+    "unsupported_story_action": 0
+  },
+  "attempt11_review_fingerprint": "46ce6eb79c51f6daa3605e383d5ba6e920c5915b88127e8d7e30d5a6d0aa0617",
+  "attempt9_counts": {
+    "SceneBlocking_leakage": 2,
+    "ShotPlan_leakage": 0,
+    "certainty_collapse": 1,
+    "unsupported_story_action": 1
+  },
+  "attempt9_review_fingerprint": "1bd69e6ceb8d2b51b098fcabd7f877a636a338759dc5550365e92bef275af198",
+  "polarity_false_positive_count": 1,
+  "status": "PASS"
+}

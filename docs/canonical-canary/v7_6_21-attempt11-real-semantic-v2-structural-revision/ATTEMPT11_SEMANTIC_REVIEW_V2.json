@@ -1,0 +1,784 @@
+{
+  "policy_version": "director_creative_semantic_review_v2",
+  "review": {
+    "decision": "SEMANTIC_REVIEW_BLOCKED",
+    "downstream_leakage": {
+      "status": "BLOCKED",
+      "violation_count": 1,
+      "violations": [
+        {
+          "category": "SCENEBLOCKING",
+          "clause": "交由下游 SceneBlocking 与 ShotPlan 权威处理",
+          "matched_term": "blocking",
+          "path": "note",
+          "polarity": "MIXED_CLAUSE",
+          "text": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。"
+        }
+      ]
+    },
+    "physical_action_authority": {
+      "count": 0,
+      "findings": [],
+      "status": "PASS"
+    },
+    "policy_version": "director_creative_semantic_review_v2",
+    "production_writes_allowed": false,
+    "reasons": [
+      "DOWNSTREAM_SHOTPLAN_LEAKAGE"
+    ],
+    "schema_version": "director_creative_semantic_review_v2",
+    "semantic_policy_fingerprint": "cf75e024231e619f83f5b9ee79dc388cd199b25464d8d6f3e69ac6c0ab8cc4b8",
+    "source_grounding": {
+      "classification_counts": {
+        "SAFE_CREATIVE_DIRECTION": 91,
+        "SAFE_PROHIBITION": 8,
+        "SOURCE_EXPLICIT": 5
+      },
+      "findings": [
+        {
+          "claim": "观众被红色安全灯与水渍墙面带入封闭压抑的暗房，母亲手写的'第七次潮汐'标签成为第一处悬念锚点，产生'盒子里是什么'的追问欲。",
+          "claim_kind": "beat_enrichments[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[0].audience_effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚进入暗房后保持警觉与克制，目光在红色灯光与墙面水渍之间缓慢移动，最终落在铁盒的手写标签上；她的停顿应传达出一种说不清的熟悉感与抗拒并存的状态，而非明确的回忆。",
+          "claim_kind": "beat_enrichments[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[0].performance",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "从环境的不安铺陈收束到铁盒这一具体物件，为下一步打开谜题做准备。",
+          "claim_kind": "beat_enrichments[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[0].transition",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚在红色安全灯下表现出对环境的陌生与警觉，看到母亲手写标签时出现短暂的凝滞，眼神停留但不作确认性反应。",
+          "claim_kind": "beat_enrichments[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[0].character_effects[0].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉作为引导者保持沉稳，观察林晚对暗房与铁盒的反应，不主动解释标签含义。",
+          "claim_kind": "beat_enrichments[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[0].character_effects[1].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铁盒的空缺与烧焦胶片、海鸥别针形成反差，观众与林晚一同陷入'她是否来过这里'的身份疑云，物件之谜转向身份之谜。",
+          "claim_kind": "beat_enrichments[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[1].audience_effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚认出别针时应有细微的身体反应——呼吸变化、手指微动或目光收紧，但随即被'想不起'的空白打断；她的表演要在'认出'与'无法确认'之间悬置，不给出确定答案。",
+          "claim_kind": "beat_enrichments[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[1].performance",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "由物件的空缺自然过渡到林晚对自身童年的怀疑，为顾沉的指控埋下情绪基础。",
+          "claim_kind": "beat_enrichments[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[1].transition",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚在别针前出现短暂的辨认反应，随即陷入想不起童年是否来过这里的困惑，表情在熟悉与陌生之间摇摆。",
+          "claim_kind": "beat_enrichments[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[1].character_effects[0].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉留意林晚认出别针的瞬间，但不急于追问或点破，保持观察者的克制。",
+          "claim_kind": "beat_enrichments[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[1].character_effects[1].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉'也许是你自己'的暗示将外部失窃转化为对林晚内心的拷问，观众开始怀疑林晚的记忆缺口是否就是答案本身。",
+          "claim_kind": "beat_enrichments[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[2].audience_effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉说出'也许是你自己'时语气应平静而带有试探性，不作断言；林晚的追问'是谁'应带着急切与不安，听到回答后出现明显的僵住或呼吸停滞，但不作辩解或承认。",
+          "claim_kind": "beat_enrichments[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[2].performance",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "心理对峙达到高点时被外部声响打断，为下一节的躲藏与车票情节让路。",
+          "claim_kind": "beat_enrichments[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[2].transition",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚在追问'是谁'时表现出急切，听到'也许是你自己'后出现明显的僵住与呼吸变化，不作确认或否认。",
+          "claim_kind": "beat_enrichments[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[2].character_effects[0].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉以平静的语气抛出指向林晚自身的暗示，观察她的反应，不作进一步逼问。",
+          "claim_kind": "beat_enrichments[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[2].character_effects[1].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铜铃声与门缝下的湿皮鞋将紧张感从心理层面拉向外部威胁，车票背面的指令'不要带顾沉'制造新的悬念与阵营疑云。",
+          "claim_kind": "beat_enrichments[3]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[3].audience_effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉熄灯与拉林晚躲藏的动作应迅速而果断，两人在黑暗中保持静止与屏息；林晚接过车票后阅读背面文字，表情从紧张转为困惑与警觉，不作多余动作。",
+          "claim_kind": "beat_enrichments[3]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[3].performance",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "以车票上的明确指令收束场景，为下一场戏的行动目标留下清晰钩子。",
+          "claim_kind": "beat_enrichments[3]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[3].transition",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉在铜铃声后迅速熄灭安全灯并带林晚躲藏，全程保持警觉与果断，不作多余言语。",
+          "claim_kind": "beat_enrichments[3]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[3].character_effects[0].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚在黑暗中配合躲藏，接过车票后在微弱光线下阅读背面指令，表情从紧张转为困惑与警觉。",
+          "claim_kind": "beat_enrichments[3]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "beat_enrichments[3].character_effects[1].effect",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚在暗房中保持警觉与克制，对母亲留下的物件有细微的身体反应但不作确认性表态，全程处于'认出但想不起'的悬置状态。",
+          "claim_kind": "character_directions[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[0].direction",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "在顾沉的引导下直面暗房与铁盒，试图理解自己与这个空间的关系，同时应对'也许是你自己'的指控与车票指令带来的困惑。",
+          "claim_kind": "character_directions[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[0].objective",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚无法确认自己童年是否来过暗房，记忆的空白使她无法为自己辩解，也无法确认顾沉的暗示是否成立。",
+          "claim_kind": "character_directions[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[0].obstacle",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "以细微的身体反应与表情变化传达内心的动摇，不作明确的承认或否认，保持悬置状态。",
+          "claim_kind": "character_directions[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[0].strategy",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "在别针、'也许是你自己'、车票指令三个节点上分别给出递进的身体反应：辨认的凝滞、被指控的僵住、阅读指令的困惑警觉；全程避免过度戏剧化的情绪爆发。",
+          "claim_kind": "character_directions[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[0].performance_notes",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉作为引导者与观察者，语气沉稳，行动果断，对林晚的反应保持关注但不急于点破。",
+          "claim_kind": "character_directions[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[1].direction",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。",
+          "claim_kind": "character_directions[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[1].objective",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉需要在不惊动林晚的前提下观察她的反应，同时应对门外神秘人的出现。",
+          "claim_kind": "character_directions[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[1].obstacle",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "以平静的语气抛出关键信息，观察林晚的反应，在铜铃声后迅速转入行动模式。",
+          "claim_kind": "character_directions[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[1].strategy",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "说'也许是你自己'时保持平静与试探性，不作断言；熄灯躲藏动作果断迅速，全程不作多余解释。",
+          "claim_kind": "character_directions[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "character_directions[1].performance_notes",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "进入暗房",
+          "claim_kind": "performance_arc[0]",
+          "classification": "SOURCE_EXPLICIT",
+          "path": "performance_arc[0].phase",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "警觉与陌生",
+          "claim_kind": "performance_arc[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "performance_arc[0].state",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "发现铁盒与别针",
+          "claim_kind": "performance_arc[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "performance_arc[1].phase",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "辨认与困惑并存",
+          "claim_kind": "performance_arc[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "performance_arc[1].state",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "面对'也许是你自己'",
+          "claim_kind": "performance_arc[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "performance_arc[2].phase",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "僵住与内心动摇",
+          "claim_kind": "performance_arc[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "performance_arc[2].state",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铜铃与车票",
+          "claim_kind": "performance_arc[3]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "performance_arc[3].phase",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "紧张与困惑警觉",
+          "claim_kind": "performance_arc[3]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "performance_arc[3].state",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "暗房由顾沉带林晚进入，红色安全灯忽明忽暗，墙面有水渍",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.known_to_audience[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "暗房中央有母亲手写标签'第七次潮汐'的铁盒",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.known_to_audience[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铁盒是空的，只有烧焦的胶片和海鸥别针",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.known_to_audience[2]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚认出别针与照片里小女孩佩戴的一样，但想不起童年是否来过",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.known_to_audience[3]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉说胶片被人拿走了",
+          "claim_kind": "information_strategy",
+          "classification": "SOURCE_EXPLICIT",
+          "path": "information_strategy.known_to_audience[4]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉暗示拿走胶片的'也许是你自己'",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.known_to_audience[5]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "门外出现湿透皮鞋的神秘人，塞入车票",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.known_to_audience[6]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "车票背面写着'今晚十点，北堤仓库，带钥匙，不要带顾沉'",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.known_to_audience[7]",
+          "polarity": "MIXED_CLAUSE"
+        },
+        {
+          "claim": "林晚童年是否真的来过暗房",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.withheld_from_audience[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "胶片是否真的是林晚拿走的",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.withheld_from_audience[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "门外神秘人的身份",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.withheld_from_audience[2]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "'第七次潮汐'标签的完整含义",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.withheld_from_audience[3]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "母亲与暗房、铁盒、胶片之间的关系",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.withheld_from_audience[4]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "暗房环境与红色安全灯",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[0].reveals[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "母亲手写标签'第七次潮汐'的铁盒",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[0].reveals[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铁盒内容物",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[0].withholds[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚与暗房的关系",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[0].withholds[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "母亲手写标签的字迹与'第七次潮汐'这一命名",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[0].audience_should_notice",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铁盒是空的，以及林晚与这个空间的联系",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[0].audience_should_not_yet_know",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铁盒是空的，只有烧焦胶片和海鸥别针",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[1].reveals[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚认出别针但想不起童年是否来过",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[1].reveals[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚与照片小女孩的关系",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[1].withholds[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "胶片被拿走的事实",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[1].withholds[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚认出别针时的细微身体反应与'想不起'的空白",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[1].audience_should_notice",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚是否真的来过暗房，以及胶片的下落",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[1].audience_should_not_yet_know",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "胶片被人拿走了",
+          "claim_kind": "information_strategy",
+          "classification": "SOURCE_EXPLICIT",
+          "path": "information_strategy.reveal_plan[2].reveals[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉暗示'也许是你自己'",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[2].reveals[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "拿走胶片的真正凶手",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[2].withholds[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚是否真的拿走胶片",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[2].withholds[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉语气的平静试探与林晚听到指控后的僵住反应",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[2].audience_should_notice",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚是否真的拿走胶片，以及她的记忆缺口是否就是答案",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[2].audience_should_not_yet_know",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "门外出现湿透皮鞋的神秘人",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[3].reveals[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "车票背面指令：今晚十点，北堤仓库，带钥匙，不要带顾沉",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[3].reveals[1]",
+          "polarity": "MIXED_CLAUSE"
+        },
+        {
+          "claim": "神秘人身份",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[3].withholds[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "'不要带顾沉'指令背后的原因",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[3].withholds[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "车票指令中'不要带顾沉'所暗示的阵营疑云",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[3].audience_should_notice",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "神秘人是谁，以及为何要林晚避开顾沉",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reveal_plan[3].audience_should_not_yet_know",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚对别针的辨认反应",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reaction_priority[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚听到'也许是你自己'后的僵住",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reaction_priority[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚阅读车票指令后的困惑警觉",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.reaction_priority[2]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "红色安全灯与水渍墙面的视觉基调",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.audience_focus[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "母亲手写标签'第七次潮汐'",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.audience_focus[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "烧焦胶片与海鸥别针",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.audience_focus[2]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "林晚在三个关键节点的递进身体反应",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.audience_focus[3]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "门缝下的湿皮鞋与车票指令",
+          "claim_kind": "information_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "information_strategy.audience_focus[4]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "以红色安全灯的忽明忽暗与水渍墙面的倒置地图意象开场，缓慢铺陈暗房的压抑与不安，让观众先于林晚感受到空间的异样。",
+          "claim_kind": "rhythm_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "rhythm_strategy.opening",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "铁盒的空缺、烧焦胶片与海鸥别针依次揭示，节奏由缓转紧；林晚认出别针却想不起的空白制造第一次心理悬念。",
+          "claim_kind": "rhythm_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "rhythm_strategy.reveal",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "顾沉'也许是你自己'的暗示将紧张感推向心理层面的高点，随即被铜铃声与门缝下的湿皮鞋打断，紧张感从内部转向外部。",
+          "claim_kind": "rhythm_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "rhythm_strategy.escalation",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "以车票背面的指令'今晚十点，北堤仓库，带钥匙，不要带顾沉'收束，在黑暗中留下明确的行动钩子与阵营疑云。",
+          "claim_kind": "rhythm_strategy",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "rhythm_strategy.button",
+          "polarity": "MIXED_CLAUSE"
+        },
+        {
+          "claim": "红色安全灯的忽明忽暗",
+          "claim_kind": "visual_priority[0]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "visual_priority[0]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "墙面水渍形成的倒置地图意象",
+          "claim_kind": "visual_priority[1]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "visual_priority[1]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "母亲手写标签'第七次潮汐'的铁盒",
+          "claim_kind": "visual_priority[2]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "visual_priority[2]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "烧焦的胶片",
+          "claim_kind": "visual_priority[3]",
+          "classification": "SOURCE_EXPLICIT",
+          "path": "visual_priority[3]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "海鸥别针",
+          "claim_kind": "visual_priority[4]",
+          "classification": "SOURCE_EXPLICIT",
+          "path": "visual_priority[4]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "门缝下的湿透皮鞋",
+          "claim_kind": "visual_priority[5]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "visual_priority[5]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "车票背面的手写指令",
+          "claim_kind": "visual_priority[6]",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "visual_priority[6]",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "以车票背面的指令收束场景，让林晚与观众同时被抛入'今晚十点北堤仓库'的行动悬念中，'不要带顾沉'的指令为下一场戏制造阵营疑云与紧迫感。",
+          "claim_kind": "scene_exit_intent",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "scene_exit_intent",
+          "polarity": "POSITIVE_ASSERTION"
+        },
+        {
+          "claim": "不得将林晚'想不起童年是否来过暗房'表述为'首次进入'或'从未来过'",
+          "claim_kind": "prohibited_interpretations[0]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[0]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "不得将顾沉'也许是你自己'的暗示表述为确认林晚就是拿走胶片的人",
+          "claim_kind": "prohibited_interpretations[1]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[1]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "不得为林晚或顾沉添加来源未支持的童年回忆、情感关系或背景故事",
+          "claim_kind": "prohibited_interpretations[2]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[2]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "不得为铁盒、胶片、别针添加来源未支持的属性或来历",
+          "claim_kind": "prohibited_interpretations[3]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[3]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "不得指定具体的镜头景别、机位、焦段或镜头运动",
+          "claim_kind": "prohibited_interpretations[4]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[4]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "不得指定角色在暗房中的具体走位路径或空间位置",
+          "claim_kind": "prohibited_interpretations[5]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[5]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "不得添加来源未支持的气味、温度、触感等感官细节",
+          "claim_kind": "prohibited_interpretations[6]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[6]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "不得将门外神秘人身份或'不要带顾沉'的原因提前揭示",
+          "claim_kind": "prohibited_interpretations[7]",
+          "classification": "SAFE_PROHIBITION",
+          "path": "prohibited_interpretations[7]",
+          "polarity": "PROHIBITION"
+        },
+        {
+          "claim": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。",
+          "claim_kind": "note",
+          "classification": "SAFE_CREATIVE_DIRECTION",
+          "path": "note",
+          "polarity": "MIXED_CLAUSE"
+        }
+      ],
+      "participant_grounding": "PASS",
+      "schema_version": "director_source_grounding_audit_v2",
+      "status": "PASS",
+      "uncertainty": {
+        "count": 0,
+        "findings": [],
+        "source_uncertainty_present": true,
+        "status": "PASS"
+      }
+    },
+    "stage_a_immutability_violations": [],
+    "stage_a_immutable": true,
+    "status": "BLOCKED"
+  },
+  "semantic_policy_fingerprint": "cf75e024231e619f83f5b9ee79dc388cd199b25464d8d6f3e69ac6c0ab8cc4b8",
+  "semantic_review_fingerprint": "46ce6eb79c51f6daa3605e383d5ba6e920c5915b88127e8d7e30d5a6d0aa0617",
+  "status": "BLOCKED"
+}

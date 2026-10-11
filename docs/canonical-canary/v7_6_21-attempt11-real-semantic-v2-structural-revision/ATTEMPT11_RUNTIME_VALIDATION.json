@@ -1,0 +1,12 @@
+{
+  "report": {
+    "beat_coverage": "PASS",
+    "beat_enrichment_count": 4,
+    "errors": [],
+    "source_mutation_count": 0,
+    "stage_a_beat_count": 4,
+    "status": "qualified",
+    "version": "director_creative_enrichment_ir_v1"
+  },
+  "status": "qualified"
+}

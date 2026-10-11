@@ -1,0 +1,23 @@
+{
+  "downstream": {
+    "status": "BLOCKED",
+    "violation_count": 1,
+    "violations": [
+      {
+        "category": "SCENEBLOCKING",
+        "clause": "交由下游 SceneBlocking 与 ShotPlan 权威处理",
+        "matched_term": "blocking",
+        "path": "note",
+        "polarity": "MIXED_CLAUSE",
+        "text": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。"
+      }
+    ]
+  },
+  "physical": {
+    "count": 0,
+    "findings": [],
+    "status": "PASS"
+  },
+  "polarity_false_positive_count": 1,
+  "status": "BLOCKED"
+}

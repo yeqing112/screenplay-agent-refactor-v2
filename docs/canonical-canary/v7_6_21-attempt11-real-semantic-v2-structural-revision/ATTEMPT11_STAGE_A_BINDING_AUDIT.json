@@ -1,0 +1,11 @@
+{
+  "actual": {
+    "attempt_id": "attempt-7",
+    "ir_fingerprint": "b3dbf2624289134c10d19f93c9cbd00614e9caa501dbe40cd002e24e42821086",
+    "materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01"
+  },
+  "expected_ir_fingerprint": "b3dbf2624289134c10d19f93c9cbd00614e9caa501dbe40cd002e24e42821086",
+  "expected_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+  "expected_stage_a_attempt": "attempt-7",
+  "status": "PASS"
+}

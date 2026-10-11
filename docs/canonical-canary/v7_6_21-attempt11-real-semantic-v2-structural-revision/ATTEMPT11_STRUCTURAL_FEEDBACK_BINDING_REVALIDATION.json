@@ -1,0 +1,36 @@
+{
+  "actual": {
+    "constraint_count": 1,
+    "constraints": [
+      {
+        "category": "REQUIRED_TOP_LEVEL_FIELD_MISSING",
+        "constraint": "The required top-level property visual_priority must be present and must satisfy the source-grounded Stage B schema (array<string>).",
+        "expected_type": "array<string>",
+        "field": "visual_priority",
+        "path": "$",
+        "source": "persisted_attempt_failure_validation"
+      }
+    ],
+    "eligibility": {
+      "active_parent_ordinal": 9,
+      "authoring_stage": "CREATIVE_ENRICHMENT",
+      "deterministic_structural_failure": true,
+      "failed_attempt_ordinal": 10,
+      "latest_failed_attempt": true,
+      "same_revision_chain": true
+    },
+    "failed_attempt_id": "attempt-10",
+    "failed_attempt_raw_sha256": "5daf096fd07ad58ffe8848b25a8d633797234ce325dba1986f21de4af4ca39f0",
+    "failed_attempt_status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_SCHEMA_INVALID",
+    "fresh_generation_required": true,
+    "is_repair_instruction": false,
+    "parent_attempt_id": "attempt-9",
+    "parent_ir_fingerprint": "591bf4ec2f7df8b80a8fdd3a7166c6a76c39a7de0939ba3b1323b6af2320dfaa",
+    "provider_request_fingerprint": "b9b0592520fd13aac0eb70c671e4fc82be901e1031b4690ae030e146e885169b",
+    "schema_version": "director_revision_structural_feedback_v1",
+    "status": "ELIGIBLE",
+    "structural_feedback_fingerprint": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4"
+  },
+  "expected_fingerprint": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4",
+  "status": "PASS"
+}

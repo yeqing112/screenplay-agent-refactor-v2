@@ -1,0 +1,10 @@
+{
+  "authority_writes": 0,
+  "director_treatment_approved_writes": 0,
+  "model_info_sha256_after": "d1f16239e7ab5b9cf45af104c541de66ab8a07936ac00e564122072e997cffcc",
+  "model_info_sha256_before": "6aff41437818a5aa25e5e19531e0099c087a3a16438f0cb8be09c06f2a3e5eaf",
+  "pointer_writes": 0,
+  "proposal_sha256_after": "232a8ed580d44e83883f50c0d1cdece2bee65a850e1b5d3e0342bd337b523d9a",
+  "proposal_sha256_before": "b2dd22fbfa197b06ba61044b44db151686564c419fa030a79201f23e39a598b4",
+  "status": "PASS"
+}

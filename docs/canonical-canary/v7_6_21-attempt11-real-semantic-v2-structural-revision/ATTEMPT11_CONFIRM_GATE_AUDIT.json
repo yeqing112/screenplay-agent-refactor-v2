@@ -1,0 +1,6 @@
+{
+  "confirm_allowed": false,
+  "confirm_called": 0,
+  "next_state": "DIRECTOR_TREATMENT_SEMANTIC_REVIEW_REQUIRED",
+  "status": "PASS"
+}

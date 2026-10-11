@@ -1,0 +1,28 @@
+{
+  "active_stage_b": "attempt-9",
+  "endpoint": "/api/books/990453/episodes/1/director-treatment/creative-enrichment/revision/llm-draft",
+  "expected_attempt": "attempt-11",
+  "history_count": 10,
+  "production_write": 0,
+  "profile_snapshot": {
+    "base_host": "https://api.xiaomimimo.com",
+    "enabled": true,
+    "key_configured": true,
+    "model": "mimo-v2.5",
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible"
+  },
+  "prompt_fingerprint": "050f04dec12f7a41e183e7656d8bbdc7ca9864bc3490e0f25687bc95d9cb861b",
+  "provider_calls": 0,
+  "provider_request_fingerprint_v2": "f6d155ae2dacae455e9d5184cabad08f287cf737df6ff8d1ec2739e436ef1e6f",
+  "revision_parent_fingerprint": "72d79ca4fb8c23161274d4c617e2c91bcfecb599701270534762cc010569a15c",
+  "semantic_parent": "attempt-9",
+  "semantic_policy": "director_creative_semantic_review_v2",
+  "semantic_policy_fingerprint": "cf75e024231e619f83f5b9ee79dc388cd199b25464d8d6f3e69ac6c0ab8cc4b8",
+  "semantic_review_fingerprint": "1bd69e6ceb8d2b51b098fcabd7f877a636a338759dc5550365e92bef275af198",
+  "status": "PASS",
+  "structural_failure_source": "attempt-10",
+  "structural_feedback_fingerprint": "4d17ddadda4a473154491359f2dae9a7ae3a190669113fd16a2572cc89a64be4",
+  "system_prompt_sha256": "6d2c045e97fdc3cfee6797a925010d5e7340fa71d04c41ed3ed59e65ff749baa",
+  "user_prompt_sha256": "752e95af67894f5dcdccdb7d2bd66608882a17f49002d4a0d853a0936ed7dee9"
+}

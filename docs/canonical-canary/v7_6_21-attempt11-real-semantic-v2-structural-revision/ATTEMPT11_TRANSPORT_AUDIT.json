@@ -1,0 +1,32 @@
+{
+  "choice_index": 0,
+  "finish_reason": "stop",
+  "http_status": 200,
+  "latency_ms": 89251.69,
+  "max_tokens": 8192,
+  "provider_http_post_count": 1,
+  "provider_request_id": null,
+  "raw_response_length": 6704,
+  "raw_response_sha256": "383e673412ba6c55e27965a3c1b920044bd0a5172d5d9b8772ad282bbf4cb024",
+  "response_format": {
+    "type": "json_object"
+  },
+  "status": "PASS",
+  "temperature": 0.0,
+  "thinking": {
+    "type": "disabled"
+  },
+  "transport_attempt_number": 1,
+  "usage": {
+    "cache_hit_rate": null,
+    "cached_tokens": null,
+    "completion_tokens": 3169,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 6277,
+    "prompt_tokens_details": {},
+    "reasoning_tokens": 0,
+    "total_tokens": 9446
+  }
+}

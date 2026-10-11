@@ -1,0 +1,8 @@
+{
+  "attempt10_raw_in_prompt": false,
+  "attempt9_raw_in_prompt": false,
+  "fresh_generation": true,
+  "semantic_feedback_used_as_constraints": true,
+  "status": "PASS",
+  "structural_feedback_used_as_constraints": true
+}

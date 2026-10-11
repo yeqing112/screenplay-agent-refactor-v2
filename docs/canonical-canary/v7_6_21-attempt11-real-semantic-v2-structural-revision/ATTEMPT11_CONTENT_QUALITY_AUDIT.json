@@ -1,0 +1,16 @@
+{
+  "beat_specificity": 4,
+  "performance_action_hits": [
+    "停顿",
+    "僵住",
+    "呼吸",
+    "目光",
+    "节奏",
+    "表情",
+    "语气"
+  ],
+  "semantic_status_is_not_quality_status": true,
+  "status": "PASS",
+  "template_like_hits": [],
+  "visual_priority_useful": true
+}

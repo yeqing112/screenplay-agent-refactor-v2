@@ -1,0 +1,53 @@
+{
+  "forensic": {
+    "attempt_id": "attempt-11",
+    "authoring_stage": "CREATIVE_ENRICHMENT",
+    "authorization_id": "v7.6.21-attempt11-stage-b-semantic-v2-structural-single-call",
+    "choice_index": 0,
+    "finish_reason": "stop",
+    "latency_ms": 89251.69,
+    "model": "mimo-v2.5",
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "packet_id": "64",
+    "parse_started": false,
+    "persisted_before_parse": true,
+    "profile_id": "local-llm-2vydoz",
+    "prompt_fingerprint": "050f04dec12f7a41e183e7656d8bbdc7ca9864bc3490e0f25687bc95d9cb861b",
+    "provider_host": "https://api.xiaomimimo.com",
+    "provider_request_fingerprint_v2": "f6d155ae2dacae455e9d5184cabad08f287cf737df6ff8d1ec2739e436ef1e6f",
+    "provider_request_id": "",
+    "raw_response": "{\n  \"version\": \"director_creative_enrichment_ir_v1\",\n  \"beat_enrichments\": [\n    {\n      \"beat_ref\": \"DBP_E01_SC001_001\",\n      \"audience_effect\": \"观众被红色安全灯与水渍墙面带入封闭压抑的暗房，母亲手写的'第七次潮汐'标签成为第一处悬念锚点，产生'盒子里是什么'的追问欲。\",\n      \"performance\": \"林晚进入暗房后保持警觉与克制，目光在红色灯光与墙面水渍之间缓慢移动，最终落在铁盒的手写标签上；她的停顿应传达出一种说不清的熟悉感与抗拒并存的状态，而非明确的回忆。\",\n      \"transition\": \"从环境的不安铺陈收束到铁盒这一具体物件，为下一步打开谜题做准备。\",\n      \"character_effects\": [\n        {\n          \"character_ref\": \"林晚\",\n          \"effect\": \"林晚在红色安全灯下表现出对环境的陌生与警觉，看到母亲手写标签时出现短暂的凝滞，眼神停留但不作确认性反应。\"\n        },\n        {\n          \"character_ref\": \"顾沉\",\n          \"effect\": \"顾沉作为引导者保持沉稳，观察林晚对暗房与铁盒的反应，不主动解释标签含义。\"\n        }\n      ]\n    },\n    {\n      \"beat_ref\": \"DBP_E01_SC001_002\",\n      \"audience_effect\": \"铁盒的空缺与烧焦胶片、海鸥别针形成反差，观众与林晚一同陷入'她是否来过这里'的身份疑云，物件之谜转向身份之谜。\",\n      \"performance\": \"林晚认出别针时应有细微的身体反应——呼吸变化、手指微动或目光收紧，但随即被'想不起'的空白打断；她的表演要在'认出'与'无法确认'之间悬置，不给出确定答案。\",\n      \"transition\": \"由物件的空缺自然过渡到林晚对自身童年的怀疑，为顾沉的指控埋下情绪基础。\",\n      \"character_effects\": [\n        {\n          \"character_ref\": \"林晚\",\n          \"effect\": \"林晚在别针前出现短暂的辨认反应，随即陷入想不起童年是否来过这里的困惑，表情在熟悉与陌生之间摇摆。\"\n        },\n        {\n          \"character_ref\": \"顾沉\",\n          \"effect\": \"顾沉留意林晚认出别针的瞬间，但不急于追问或点破，保持观察者的克制。\"\n        }\n      ]\n    },\n    {\n      \"beat_ref\": \"DBP_E01_SC001_003\",\n      \"audience_effect\": \"顾沉'也许是你自己'的暗示将外部失窃转化为对林晚内心的拷问，观众开始怀疑林晚的记忆缺口是否就是答案本身。\",\n      \"performance\": \"顾沉说出'也许是你自己'时语气应平静而带有试探性，不作断言；林晚的追问'是谁'应带着急切与不安，听到回答后出现明显的僵住或呼吸停滞，但不作辩解或承认。\",\n      \"transition\": \"心理对峙达到高点时被外部声响打断，为下一节的躲藏与车票情节让路。\",\n      \"character_effects\": [\n        {\n          \"character_ref\": \"林晚\",\n          \"effect\": \"林晚在追问'是谁'时表现出急切，听到'也许是你自己'后出现明显的僵住与呼吸变化，不作确认或否认。\"\n        },\n        {\n          \"character_ref\": \"顾沉\",\n          \"effect\": \"顾沉以平静的语气抛出指向林晚自身的暗示，观察她的反应，不作进一步逼问。\"\n        }\n      ]\n    },\n    {\n      \"beat_ref\": \"DBP_E01_SC001_004\",\n      \"audience_effect\": \"铜铃声与门缝下的湿皮鞋将紧张感从心理层面拉向外部威胁，车票背面的指令'不要带顾沉'制造新的悬念与阵营疑云。\",\n      \"performance\": \"顾沉熄灯与拉林晚躲藏的动作应迅速而果断，两人在黑暗中保持静止与屏息；林晚接过车票后阅读背面文字，表情从紧张转为困惑与警觉，不作多余动作。\",\n      \"transition\": \"以车票上的明确指令收束场景，为下一场戏的行动目标留下清晰钩子。\",\n      \"character_effects\": [\n        {\n          \"character_ref\": \"顾沉\",\n          \"effect\": \"顾沉在铜铃声后迅速熄灭安全灯并带林晚躲藏，全程保持警觉与果断，不作多余言语。\"\n        },\n        {\n          \"character_ref\": \"林晚\",\n          \"effect\": \"林晚在黑暗中配合躲藏，接过车票后在微弱光线下阅读背面指令，表情从紧张转为困惑与警觉。\"\n        }\n      ]\n    }\n  ],\n  \"character_directions\": [\n    {\n      \"character_ref\": \"林晚\",\n      \"direction\": \"林晚在暗房中保持警觉与克制，对母亲留下的物件有细微的身体反应但不作确认性表态，全程处于'认出但想不起'的悬置状态。\",\n      \"objective\": \"在顾沉的引导下直面暗房与铁盒，试图理解自己与这个空间的关系，同时应对'也许是你自己'的指控与车票指令带来的困惑。\",\n      \"obstacle\": \"林晚无法确认自己童年是否来过暗房，记忆的空白使她无法为自己辩解，也无法确认顾沉的暗示是否成立。\",\n      \"strategy\": \"以细微的身体反应与表情变化传达内心的动摇，不作明确的承认或否认，保持悬置状态。\",\n      \"performance_notes\": \"在别针、'也许是你自己'、车票指令三个节点上分别给出递进的身体反应：辨认的凝滞、被指控的僵住、阅读指令的困惑警觉；全程避免过度戏剧化的情绪爆发。\"\n    },\n    {\n      \"character_ref\": \"顾沉\",\n      \"direction\": \"顾沉作为引导者与观察者，语气沉稳，行动果断，对林晚的反应保持关注但不急于点破。\",\n      \"objective\": \"带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。\",\n      \"obstacle\": \"顾沉需要在不惊动林晚的前提下观察她的反应，同时应对门外神秘人的出现。\",\n      \"strategy\": \"以平静的语气抛出关键信息，观察林晚的反应，在铜铃声后迅速转入行动模式。\",\n      \"performance_notes\": \"说'也许是你自己'时保持平静与试探性，不作断言；熄灯躲藏动作果断迅速，全程不作多余解释。\"\n    }\n  ],\n  \"performance_arc\": [\n    {\n      \"phase\": \"进入暗房\",\n      \"state\": \"警觉与陌生\"\n    },\n    {\n      \"phase\": \"发现铁盒与别针\",\n      \"state\": \"辨认与困惑并存\"\n    },\n    {\n      \"phase\": \"面对'也许是你自己'\",\n      \"state\": \"僵住与内心动摇\"\n    },\n    {\n      \"phase\": \"铜铃与车票\",\n      \"state\": \"紧张与困惑警觉\"\n    }\n  ],\n  \"information_strategy\": {\n    \"schema_version\": \"director_information_strategy_v2\",\n    \"known_to_audience\": [\n      \"暗房由顾沉带林晚进入，红色安全灯忽明忽暗，墙面有水渍\",\n      \"暗房中央有母亲手写标签'第七次潮汐'的铁盒\",\n      \"铁盒是空的，只有烧焦的胶片和海鸥别针\",\n      \"林晚认出别针与照片里小女孩佩戴的一样，但想不起童年是否来过\",\n      \"顾沉说胶片被人拿走了\",\n      \"顾沉暗示拿走胶片的'也许是你自己'\",\n      \"门外出现湿透皮鞋的神秘人，塞入车票\",\n      \"车票背面写着'今晚十点，北堤仓库，带钥匙，不要带顾沉'\"\n    ],\n    \"withheld_from_audience\": [\n      \"林晚童年是否真的来过暗房\",\n      \"胶片是否真的是林晚拿走的\",\n      \"门外神秘人的身份\",\n      \"'第七次潮汐'标签的完整含义\",\n      \"母亲与暗房、铁盒、胶片之间的关系\"\n    ],\n    \"reveal_plan\": [\n      {\n        \"beat_id\": \"DBP_E01_SC001_001\",\n        \"reveals\": [\n          \"暗房环境与红色安全灯\",\n          \"母亲手写标签'第七次潮汐'的铁盒\"\n        ],\n        \"withholds\": [\n          \"铁盒内容物\",\n          \"林晚与暗房的关系\"\n        ],\n        \"audience_should_notice\": \"母亲手写标签的字迹与'第七次潮汐'这一命名\",\n        \"audience_should_not_yet_know\": \"铁盒是空的，以及林晚与这个空间的联系\"\n      },\n      {\n        \"beat_id\": \"DBP_E01_SC001_002\",\n        \"reveals\": [\n          \"铁盒是空的，只有烧焦胶片和海鸥别针\",\n          \"林晚认出别针但想不起童年是否来过\"\n        ],\n        \"withholds\": [\n          \"林晚与照片小女孩的关系\",\n          \"胶片被拿走的事实\"\n        ],\n        \"audience_should_notice\": \"林晚认出别针时的细微身体反应与'想不起'的空白\",\n        \"audience_should_not_yet_know\": \"林晚是否真的来过暗房，以及胶片的下落\"\n      },\n      {\n        \"beat_id\": \"DBP_E01_SC001_003\",\n        \"reveals\": [\n          \"胶片被人拿走了\",\n          \"顾沉暗示'也许是你自己'\"\n        ],\n        \"withholds\": [\n          \"拿走胶片的真正凶手\",\n          \"林晚是否真的拿走胶片\"\n        ],\n        \"audience_should_notice\": \"顾沉语气的平静试探与林晚听到指控后的僵住反应\",\n        \"audience_should_not_yet_know\": \"林晚是否真的拿走胶片，以及她的记忆缺口是否就是答案\"\n      },\n      {\n        \"beat_id\": \"DBP_E01_SC001_004\",\n        \"reveals\": [\n          \"门外出现湿透皮鞋的神秘人\",\n          \"车票背面指令：今晚十点，北堤仓库，带钥匙，不要带顾沉\"\n        ],\n        \"withholds\": [\n          \"神秘人身份\",\n          \"'不要带顾沉'指令背后的原因\"\n        ],\n        \"audience_should_notice\": \"车票指令中'不要带顾沉'所暗示的阵营疑云\",\n        \"audience_should_not_yet_know\": \"神秘人是谁，以及为何要林晚避开顾沉\"\n      }\n    ],\n    \"reaction_priority\": [\n      \"林晚对别针的辨认反应\",\n      \"林晚听到'也许是你自己'后的僵住\",\n      \"林晚阅读车票指令后的困惑警觉\"\n    ],\n    \"audience_focus\": [\n      \"红色安全灯与水渍墙面的视觉基调\",\n      \"母亲手写标签'第七次潮汐'\",\n      \"烧焦胶片与海鸥别针\",\n      \"林晚在三个关键节点的递进身体反应\",\n      \"门缝下的湿皮鞋与车票指令\"\n    ]\n  },\n  \"rhythm_strategy\": {\n    \"opening\": \"以红色安全灯的忽明忽暗与水渍墙面的倒置地图意象开场，缓慢铺陈暗房的压抑与不安，让观众先于林晚感受到空间的异样。\",\n    \"reveal\": \"铁盒的空缺、烧焦胶片与海鸥别针依次揭示，节奏由缓转紧；林晚认出别针却想不起的空白制造第一次心理悬念。\",\n    \"escalation\": \"顾沉'也许是你自己'的暗示将紧张感推向心理层面的高点，随即被铜铃声与门缝下的湿皮鞋打断，紧张感从内部转向外部。\",\n    \"button\": \"以车票背面的指令'今晚十点，北堤仓库，带钥匙，不要带顾沉'收束，在黑暗中留下明确的行动钩子与阵营疑云。\"\n  },\n  \"visual_priority\": [\n    \"红色安全灯的忽明忽暗\",\n    \"墙面水渍形成的倒置地图意象\",\n    \"母亲手写标签'第七次潮汐'的铁盒\",\n    \"烧焦的胶片\",\n    \"海鸥别针\",\n    \"门缝下的湿透皮鞋\",\n    \"车票背面的手写指令\"\n  ],\n  \"scene_exit_intent\": \"以车票背面的指令收束场景，让林晚与观众同时被抛入'今晚十点北堤仓库'的行动悬念中，'不要带顾沉'的指令为下一场戏制造阵营疑云与紧迫感。\",\n  \"prohibited_interpretations\": [\n    \"不得将林晚'想不起童年是否来过暗房'表述为'首次进入'或'从未来过'\",\n    \"不得将顾沉'也许是你自己'的暗示表述为确认林晚就是拿走胶片的人\",\n    \"不得为林晚或顾沉添加来源未支持的童年回忆、情感关系或背景故事\",\n    \"不得为铁盒、胶片、别针添加来源未支持的属性或来历\",\n    \"不得指定具体的镜头景别、机位、焦段或镜头运动\",\n    \"不得指定角色在暗房中的具体走位路径或空间位置\",\n    \"不得添加来源未支持的气味、温度、触感等感官细节\",\n    \"不得将门外神秘人身份或'不要带顾沉'的原因提前揭示\"\n  ],\n  \"confidence\": 0.9,\n  \"note\": \"本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。\"\n}",
+    "raw_response_length": 6704,
+    "raw_response_sha256": "383e673412ba6c55e27965a3c1b920044bd0a5172d5d9b8772ad282bbf4cb024",
+    "resolved_max_tokens": 8192,
+    "resolved_response_format": {
+      "type": "json_object"
+    },
+    "resolved_temperature": 0.0,
+    "resolved_thinking": {
+      "type": "disabled"
+    },
+    "schema_version": "director_llm_raw_response_forensic_v1",
+    "scope_fingerprint": "866fc1aa010d89d1bd5ac7c0f3029d913c8908a0829592dbc5bbe42d3f15b0f1",
+    "stage_a_attempt_id": "attempt-7",
+    "stage_a_ir_fingerprint": "b3dbf2624289134c10d19f93c9cbd00614e9caa501dbe40cd002e24e42821086",
+    "stage_a_materialized_fingerprint": "328380be4977fe19f79f574d53facb9df61e229c7098ca28c4919fe25cc5bb01",
+    "usage": {
+      "cache_hit_rate": null,
+      "cached_tokens": null,
+      "completion_tokens": 3169,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 6277,
+      "prompt_tokens_details": {},
+      "reasoning_tokens": 0,
+      "total_tokens": 9446
+    }
+  },
+  "parse_started": false,
+  "persisted_before_parse": true,
+  "raw_response_length": 6704,
+  "raw_response_sha256": "383e673412ba6c55e27965a3c1b920044bd0a5172d5d9b8772ad282bbf4cb024",
+  "status": "PASS"
+}

@@ -1,0 +1,16 @@
+{
+  "attempt10": {
+    "missing": [
+      "visual_priority"
+    ],
+    "schema": "FAIL",
+    "status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT10_SCHEMA_INVALID"
+  },
+  "attempt11": {
+    "schema": "PASS",
+    "status": "DIRECTOR_CREATIVE_ENRICHMENT_ATTEMPT11_VALIDATED",
+    "top_level_key_count": 11,
+    "visual_priority_present": true
+  },
+  "status": "PASS"
+}
