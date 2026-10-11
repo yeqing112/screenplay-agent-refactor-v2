@@ -651,8 +651,8 @@ Source owns canonical source facts. Stage A owns dramatic grouping/objective/que
 38. Compileall: `PASS`.
 39. Git diff check: `PASS`.
 40. Working tree: **clean** after the final commit and push.
-41. Commit SHA: `db610f03a0821eac0c8fd95c92f151df69afad5a`.
-42. Remote HEAD: `db610f03a0821eac0c8fd95c92f151df69afad5a`, equal to local HEAD.
+41. Implementation commit: `db610f03a0821eac0c8fd95c92f151df69afad5a`; report metadata commit: `82058c24b0fde2f7139eb4baaf74f2fda32e3277`.
+42. Remote HEAD was verified equal to local HEAD after each push; the final delivery revision is recorded in repository history.
 
 ## Provider and production invariants
 
