@@ -1,0 +1,49 @@
+{
+  "category": "ENVIRONMENT_STATE",
+  "claim_count": 1,
+  "audit": {
+    "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+    "status": "BLOCKED",
+    "claim_count": 1,
+    "supported_count": 0,
+    "unsupported_count": 1,
+    "ambiguous_count": 0,
+    "counts": {
+      "SUPPORTED_EXPLICIT": 0,
+      "SUPPORTED_ENTAILED": 0,
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 0,
+      "META_SAFE": 0,
+      "UNSUPPORTED": 1,
+      "UPSTREAM_UNSUPPORTED": 0,
+      "AMBIGUOUS_REVIEW_REQUIRED": 0
+    },
+    "blocking_finding_count": 1,
+    "findings": [
+      {
+        "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_1_effect_ENVIRONMENT_STATE_04",
+        "origin": "STAGE_B",
+        "source_path": "beat_enrichments[3].character_effects[1].effect",
+        "claim_type": "ENVIRONMENT_STATE",
+        "subject": {
+          "kind": "ENVIRONMENT",
+          "ref": "暗房"
+        },
+        "predicate": "light_level",
+        "object": {
+          "kind": "LIGHT",
+          "ref": "dim"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "A flickering red safety light and later extinguishing it do not entail a remaining dim-light state.",
+        "production_blocking": true,
+        "raw_text": "林晚在黑暗中配合躲藏，接过车票后在微弱光线下阅读背面指令，表情从紧张转为困惑与警觉。"
+      }
+    ],
+    "diagnostic_only": false
+  }
+}

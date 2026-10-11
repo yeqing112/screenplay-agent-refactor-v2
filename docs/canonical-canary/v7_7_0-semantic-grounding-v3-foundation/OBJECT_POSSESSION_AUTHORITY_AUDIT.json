@@ -1,0 +1,78 @@
+{
+  "category": "OBJECT_POSSESSION",
+  "claim_count": 2,
+  "audit": {
+    "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+    "status": "BLOCKED",
+    "claim_count": 2,
+    "supported_count": 0,
+    "unsupported_count": 0,
+    "ambiguous_count": 2,
+    "counts": {
+      "SUPPORTED_EXPLICIT": 0,
+      "SUPPORTED_ENTAILED": 0,
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 0,
+      "META_SAFE": 0,
+      "UNSUPPORTED": 0,
+      "UPSTREAM_UNSUPPORTED": 0,
+      "AMBIGUOUS_REVIEW_REQUIRED": 2
+    },
+    "blocking_finding_count": 2,
+    "findings": [
+      {
+        "claim_id": "DC_STAGE_B_beat_enrichments_3_performance_OBJECT_POSSESSION_06",
+        "origin": "STAGE_B",
+        "source_path": "beat_enrichments[3].performance",
+        "claim_type": "OBJECT_POSSESSION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "顾沉"
+        },
+        "predicate": "receives",
+        "object": {
+          "kind": "OBJECT",
+          "ref": "车票"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [
+          "SAU_E01_SC001_009",
+          "SAU_E01_SC001_010",
+          "SAU_E01_SC001_011",
+          "SAU_E01_SC001_012"
+        ],
+        "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+        "reason": "The source says an unknown person inserts a ticket; it does not state that Lin Wan takes possession of it.",
+        "production_blocking": true,
+        "raw_text": "顾沉熄灯与拉林晚躲藏的动作应迅速而果断，两人在黑暗中保持静止与屏息；林晚接过车票后阅读背面文字，表情从紧张转为困惑与警觉，不作多余动作。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_1_effect_OBJECT_POSSESSION_06",
+        "origin": "STAGE_B",
+        "source_path": "beat_enrichments[3].character_effects[1].effect",
+        "claim_type": "OBJECT_POSSESSION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "predicate": "receives",
+        "object": {
+          "kind": "OBJECT",
+          "ref": "车票"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+        "reason": "The source says an unknown person inserts a ticket; it does not state that Lin Wan takes possession of it.",
+        "production_blocking": true,
+        "raw_text": "林晚在黑暗中配合躲藏，接过车票后在微弱光线下阅读背面指令，表情从紧张转为困惑与警觉。"
+      }
+    ],
+    "diagnostic_only": false
+  }
+}

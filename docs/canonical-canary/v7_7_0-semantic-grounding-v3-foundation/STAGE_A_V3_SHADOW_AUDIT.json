@@ -1,0 +1,266 @@
+{
+  "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+  "status": "BLOCKED",
+  "claim_count": 34,
+  "supported_count": 26,
+  "unsupported_count": 7,
+  "ambiguous_count": 1,
+  "counts": {
+    "SUPPORTED_EXPLICIT": 2,
+    "SUPPORTED_ENTAILED": 0,
+    "SUPPORTED_AS_NON_CANONICAL_OPTION": 23,
+    "META_SAFE": 1,
+    "UNSUPPORTED": 7,
+    "UPSTREAM_UNSUPPORTED": 0,
+    "AMBIGUOUS_REVIEW_REQUIRED": 1
+  },
+  "blocking_finding_count": 8,
+  "findings": [
+    {
+      "claim_id": "DC_STAGE_A_scene_objective_OBJECT_PROVENANCE_07",
+      "origin": "STAGE_A",
+      "source_path": "scene_objective",
+      "claim_type": "OBJECT_PROVENANCE",
+      "subject": {
+        "kind": "PERSON",
+        "ref": "母亲"
+      },
+      "predicate": "left_by",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "暗房"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "A mother-authored label does not entail that the mother left or owned the referenced object.",
+      "production_blocking": true,
+      "raw_text": "建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_beats_0_objective_CHARACTER_INTENT_00",
+      "origin": "STAGE_A",
+      "source_path": "beats[0].objective",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_beats_0_objective_OBJECT_PROVENANCE_07",
+      "origin": "STAGE_A",
+      "source_path": "beats[0].objective",
+      "claim_type": "OBJECT_PROVENANCE",
+      "subject": {
+        "kind": "PERSON",
+        "ref": "母亲"
+      },
+      "predicate": "left_by",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "暗房"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "support_status": "UNSUPPORTED",
+      "reason": "A mother-authored label does not entail that the mother left or owned the referenced object.",
+      "production_blocking": true,
+      "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_beats_0_objective_CERTAINTY_ASSERTION_08",
+      "origin": "STAGE_A",
+      "source_path": "beats[0].objective",
+      "claim_type": "CERTAINTY_ASSERTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "first_or_never",
+      "object": {
+        "kind": "EVENT",
+        "ref": "darkroom_visit"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "support_status": "UNSUPPORTED",
+      "reason": "No typed SourceClaim supports this canonical assertion.",
+      "production_blocking": true,
+      "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_beats_1_objective_CHARACTER_INTENT_00",
+      "origin": "STAGE_A",
+      "source_path": "beats[1].objective",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让林晚在别针与照片小女孩的重合中意识到自己与这个空间可能存在被遗忘的联系。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "让林晚在别针与照片小女孩的重合中意识到自己与这个空间可能存在被遗忘的联系。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_beats_2_objective_CHARACTER_INTENT_00",
+      "origin": "STAGE_A",
+      "source_path": "beats[2].objective",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让林晚在追问是谁的过程中被迫面对顾沉那句也许是你自己的指控。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "让林晚在追问是谁的过程中被迫面对顾沉那句也许是你自己的指控。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_beats_3_objective_CHARACTER_INTENT_00",
+      "origin": "STAGE_A",
+      "source_path": "beats[3].objective",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_beats_3_objective_OBJECT_POSSESSION_06",
+      "origin": "STAGE_A",
+      "source_path": "beats[3].objective",
+      "claim_type": "OBJECT_POSSESSION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "receives",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "车票"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+      "reason": "The source says an unknown person inserts a ticket; it does not state that Lin Wan takes possession of it.",
+      "production_blocking": true,
+      "raw_text": "让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。"
+    },
+    {
+      "claim_id": "DC_STAGE_A_note_META_COMPLIANCE_00",
+      "origin": "STAGE_A",
+      "source_path": "note",
+      "claim_type": "META_COMPLIANCE",
+      "subject": {},
+      "predicate": "compliance_note",
+      "object": {
+        "kind": "META",
+        "ref": "本计划仅对来源单元进行戏剧分组与目标标注，未改写任何来源事实、对白或角色绑定。"
+      },
+      "polarity": "META_COMPLIANCE",
+      "modality": "DELEGATED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "本计划仅对来源单元进行戏剧分组与目标标注，未改写任何来源事实、对白或角色绑定。"
+    }
+  ],
+  "diagnostic_only": false,
+  "attempt_id": "attempt-7",
+  "mode": "SHADOW_ONLY",
+  "structural_status": "PASS"
+}

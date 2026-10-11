@@ -1,0 +1,7 @@
+{
+  "schema_version": "director_v3_false_positive_false_negative_audit_v1",
+  "false_positive_count": 1,
+  "false_negative_count": 17,
+  "rules_are_fixture_independent": true,
+  "notes": "V3 evaluates typed relations and authority; it does not import V2 findings."
+}

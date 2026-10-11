@@ -1,0 +1,883 @@
+{
+  "schema_version": "director_source_claim_set_v1",
+  "claim_count": 31,
+  "claim_set_fingerprint": "93218b1cd5fceb0dd97e7396250ed7ad05a95ebdfd5a0fff4b3620d3e854f0a6",
+  "claims": [
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_001_CHARACTER_ACTION_00",
+      "source_path": "source_units[SAU_E01_SC001_001]",
+      "raw_text": "顾沉带林晚进入暗房。",
+      "claim_type": "CHARACTER_ACTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "带/引导进入",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "qualifiers": {
+        "destination": "暗房"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "8f80117797967e62ee6aca34f5bc0194c22bab3984ebfead397c7b36fc937d57"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_001_SOURCE_EVENT_01",
+      "source_path": "source_units[SAU_E01_SC001_001]",
+      "raw_text": "顾沉带林晚进入暗房。",
+      "claim_type": "SOURCE_EVENT",
+      "subject": {
+        "kind": "CHARACTER_GROUP",
+        "ref": "顾沉+林晚"
+      },
+      "predicate": "进入",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "a6456285c38466aaa20c2edec068dd083b06c08c7f5b6123b48205143fe63dcb"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_002_ENVIRONMENT_STATE_00",
+      "source_path": "source_units[SAU_E01_SC001_002]",
+      "raw_text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。",
+      "claim_type": "ENVIRONMENT_STATE",
+      "subject": {
+        "kind": "ENVIRONMENT",
+        "ref": "暗房"
+      },
+      "predicate": "light_state",
+      "object": {
+        "kind": "LIGHT",
+        "ref": "红色安全灯"
+      },
+      "qualifiers": {
+        "state": "flickering"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_002"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "9f218228654d9fe77a3b386b1be750d42ad1e84f8bac84dc9db1ad2e228fb3d3"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_002_ENVIRONMENT_STATE_00",
+      "source_path": "source_units[SAU_E01_SC001_002]",
+      "raw_text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。",
+      "claim_type": "ENVIRONMENT_STATE",
+      "subject": {
+        "kind": "LOCATION",
+        "ref": "暗房"
+      },
+      "predicate": "has_surface_mark",
+      "object": {
+        "kind": "SURFACE",
+        "ref": "墙面水渍"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_002"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "e92cff81ab2b851a99f8e16a0525f65362cb2a4d5c23397023dfbea0e4782e8e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_003_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_003]",
+      "raw_text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒"
+      },
+      "predicate": "exists",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "260beae00de9134a5777a4bd211a09d296686c308d758eac79de0f33c29d5f6a"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_003_OBJECT_PROPERTY_01",
+      "source_path": "source_units[SAU_E01_SC001_003]",
+      "raw_text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "1826a2fa5b5791c9751e719e3f2a379d87e2084537aaa22ec027dd31d9d9218b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_003_OBJECT_PROVENANCE_02",
+      "source_path": "source_units[SAU_E01_SC001_003]",
+      "raw_text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。",
+      "claim_type": "OBJECT_PROVENANCE",
+      "subject": {
+        "kind": "PERSON",
+        "ref": "母亲"
+      },
+      "predicate": "authored_by",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "5b39883f1d7099919cfe80a30847064900d47855d57f75fbb1c7880d68df2c72"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_004_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_004]",
+      "raw_text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒"
+      },
+      "predicate": "exists",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "1c1681f48f54caab431b2f3a6eeaa853fb98b9f404ded51a9939e78e9deae043"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_004_OBJECT_PROPERTY_01",
+      "source_path": "source_units[SAU_E01_SC001_004]",
+      "raw_text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒"
+      },
+      "predicate": "state",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "empty"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "cc976e08d326c08b141ea0f1e9328fc13ad698589917b48259d9f38e65b77750"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_004_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_004]",
+      "raw_text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "烧焦胶片"
+      },
+      "predicate": "exists",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "铁盒"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "1b7e39b6ce22dbfac61550b9e8888a2357e22e8e049afbe25f28eacd42a5354a"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_004_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_004]",
+      "raw_text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "海鸥别针"
+      },
+      "predicate": "exists",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "铁盒"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "fc9e159882feea18332d7e75657d44a8306897b1395e190dd820f6ea9f691590"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_005_CHARACTER_KNOWLEDGE_00",
+      "source_path": "source_units[SAU_E01_SC001_005]",
+      "raw_text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+      "claim_type": "CHARACTER_KNOWLEDGE",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "recognizes",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "海鸥别针"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "dbee180c7aadaed1b9c39e097633458e5ef9bec88d29e0c2a674c60c58c3533e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_005_CHARACTER_KNOWLEDGE_00",
+      "source_path": "source_units[SAU_E01_SC001_005]",
+      "raw_text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+      "claim_type": "CHARACTER_KNOWLEDGE",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "cannot_confirm",
+      "object": {
+        "kind": "EVENT",
+        "ref": "childhood_visit_to_darkroom"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "466465912f4b94168c33e7ffb523fd36c840aac5079140e000cb687bc045d629"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_005_UNCERTAINTY_01",
+      "source_path": "source_units[SAU_E01_SC001_005]",
+      "raw_text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。",
+      "claim_type": "UNCERTAINTY",
+      "subject": {
+        "kind": "EVENT",
+        "ref": "childhood_visit_to_darkroom"
+      },
+      "predicate": "unresolved",
+      "object": {
+        "kind": "STATE",
+        "ref": "unknown"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "UNCERTAIN",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "a38ed32dacc2a266b1c3a82ca746fba6ed6d22243ceaaa15bee28aebcea64d6b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_006_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_006]",
+      "raw_text": "顾沉说胶片被人拿走了。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "烧焦胶片"
+      },
+      "predicate": "exists",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "铁盒"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_006"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "cc553c505b4d76d30a1bf3b5b46ba544231afc9ae44e26c682d24ac982028122"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_006_INFORMATION_REVEAL_00",
+      "source_path": "source_units[SAU_E01_SC001_006]",
+      "raw_text": "顾沉说胶片被人拿走了。",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "胶片"
+      },
+      "predicate": "taken_by_someone",
+      "object": {
+        "kind": "UNKNOWN_ACTOR",
+        "ref": "某人"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_006"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "049f0fa954c6ebda99564bdd877b66f33d6c08dca87d4dfc7760eb594ff0f763"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_007_CHARACTER_ACTION_00",
+      "source_path": "source_units[SAU_E01_SC001_007]",
+      "raw_text": "林晚问是谁",
+      "claim_type": "CHARACTER_ACTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "asks_identity",
+      "object": {
+        "kind": "UNKNOWN_ACTOR",
+        "ref": "胶片拿走者"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_007"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "d1cd31710ba85718b055f2554f65f5e9ac54d80cd0ae696978af69cc1404fcfb"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_008_INFORMATION_REVEAL_00",
+      "source_path": "source_units[SAU_E01_SC001_008]",
+      "raw_text": "也许是你自己",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "suggests_possible_actor",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "POSSIBLE",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "7b1bb7d81286c34487f61cbdeba233e4410a83c41b3ecec85bc5eefa33f8e3f2"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_008_UNCERTAINTY_01",
+      "source_path": "source_units[SAU_E01_SC001_008]",
+      "raw_text": "也许是你自己",
+      "claim_type": "UNCERTAINTY",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "possible_not_certain",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "UNCERTAIN",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "7ac60bbb1ef11e57304517d4233c5985dfc2a6e3b1098211ae5744ff3d767538"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_008_SOURCE_EVENT_09",
+      "source_path": "source_units[SAU_E01_SC001_008]",
+      "raw_text": "也许是你自己",
+      "claim_type": "SOURCE_EVENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "dialogue",
+      "object": {
+        "kind": "DIALOGUE",
+        "ref": "也许是你自己"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "de77631deccb94741acf7e4612aa2942af6b122cd3955a969801bc7e37c4730a"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_009_CHARACTER_ACTION_00",
+      "source_path": "source_units[SAU_E01_SC001_009]",
+      "raw_text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+      "claim_type": "CHARACTER_ACTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "熄灭",
+      "object": {
+        "kind": "LIGHT",
+        "ref": "安全灯"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "83d9c441f32999ca03ee195262c8ca1eb22dc06e809a4b0c19cb41f8e6660961"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_009_SENSORY_FACT_00",
+      "source_path": "source_units[SAU_E01_SC001_009]",
+      "raw_text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+      "claim_type": "SENSORY_FACT",
+      "subject": {
+        "kind": "CHARACTER_GROUP",
+        "ref": "顾沉+林晚"
+      },
+      "predicate": "heard",
+      "object": {
+        "kind": "SOUND",
+        "ref": "门外铜铃"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "ce845502c80ab417bedf9e947d94fcb1afcfaf7a7faafa2a563ea2121a2a5aab"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_009_CHARACTER_ACTION_00",
+      "source_path": "source_units[SAU_E01_SC001_009]",
+      "raw_text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+      "claim_type": "CHARACTER_ACTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "拉着躲到",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "qualifiers": {
+        "destination": "药水柜后"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "cec1738b0702fd5ce9585a84ba866ae0493b2041347373b6af0dd1caec71f783"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_009_SPATIAL_BLOCKING_01",
+      "source_path": "source_units[SAU_E01_SC001_009]",
+      "raw_text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。",
+      "claim_type": "SPATIAL_BLOCKING",
+      "subject": {
+        "kind": "CHARACTER_GROUP",
+        "ref": "顾沉+林晚"
+      },
+      "predicate": "hides_behind",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "药水柜后"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "090b98a484dbfc7be4d34585132062a452418d76d3307d08ffb3fb077d5cc884"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_010_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_010]",
+      "raw_text": "门缝下出现一双湿透的皮鞋。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "皮鞋"
+      },
+      "predicate": "appears",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "门缝下"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_010"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "4d45ade2dac662f28d2e00468efd2b71aaa803745cd1795ff53898cc71298f11"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_010_OBJECT_PROPERTY_01",
+      "source_path": "source_units[SAU_E01_SC001_010]",
+      "raw_text": "门缝下出现一双湿透的皮鞋。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "皮鞋"
+      },
+      "predicate": "wet",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "wet"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_010"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "67bfc79c9e8949d4ae10ff59895f64249286ede24cb764e7711f1e3a9bef43d3"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_011_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_011]",
+      "raw_text": "那人没有进门，只把一张车票塞进来。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "车票"
+      },
+      "predicate": "exists",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "门缝下"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_011"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "d9489e2743bcc8c5d8e873d351b620e2b7a98994647cc5b689668281344cdd4f"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_011_CHARACTER_ACTION_01",
+      "source_path": "source_units[SAU_E01_SC001_011]",
+      "raw_text": "那人没有进门，只把一张车票塞进来。",
+      "claim_type": "CHARACTER_ACTION",
+      "subject": {
+        "kind": "UNKNOWN_ACTOR",
+        "ref": "那人"
+      },
+      "predicate": "inserts",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "车票"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_011"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "eb16616e4df2bcdd6fef221effa40028c7d21da4dea5fc2641dbce04b21ee117"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_012_OBJECT_EXISTENCE_00",
+      "source_path": "source_units[SAU_E01_SC001_012]",
+      "raw_text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。",
+      "claim_type": "OBJECT_EXISTENCE",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "车票"
+      },
+      "predicate": "exists",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "门缝下"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "fc942cb02fd57785c6e997a90d604d6f23849a33dcc77370b47e48799a6b3158"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_012_OBJECT_PROPERTY_01",
+      "source_path": "source_units[SAU_E01_SC001_012]",
+      "raw_text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "车票背面"
+      },
+      "predicate": "text_content",
+      "object": {
+        "kind": "TEXT",
+        "ref": "今晚十点，北堤仓库，带钥匙，不要带顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "f5ea3aedbeb5b0e57ad8ff9b4ef54ccd7c9739e5c7b3893894a2155ea50db35d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_SOURCE_source_units_SAU_E01_SC001_012_INFORMATION_WITHHOLD_02",
+      "source_path": "source_units[SAU_E01_SC001_012]",
+      "raw_text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "车票背面"
+      },
+      "predicate": "instruction_recipient_unknown",
+      "object": {
+        "kind": "INFORMATION",
+        "ref": "指令"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "SOURCE",
+      "support_status": "SUPPORTED_EXPLICIT",
+      "fingerprint": "610e2c2bbe19042d8752f3c7e49697e51ab007ad9e1e91ddae55456365f67ef5"
+    }
+  ],
+  "source_unit_count": 12,
+  "source_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f"
+}

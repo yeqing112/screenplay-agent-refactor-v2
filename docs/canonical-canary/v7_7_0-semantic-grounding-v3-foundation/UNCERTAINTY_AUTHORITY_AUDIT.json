@@ -1,0 +1,125 @@
+{
+  "category": "UNCERTAINTY_AND_CERTAINTY",
+  "claim_count": 4,
+  "audit": {
+    "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+    "status": "BLOCKED",
+    "claim_count": 4,
+    "supported_count": 0,
+    "unsupported_count": 4,
+    "ambiguous_count": 0,
+    "counts": {
+      "SUPPORTED_EXPLICIT": 0,
+      "SUPPORTED_ENTAILED": 0,
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 0,
+      "META_SAFE": 0,
+      "UNSUPPORTED": 4,
+      "UPSTREAM_UNSUPPORTED": 0,
+      "AMBIGUOUS_REVIEW_REQUIRED": 0
+    },
+    "blocking_finding_count": 4,
+    "findings": [
+      {
+        "claim_id": "DC_STAGE_A_beats_0_objective_CERTAINTY_ASSERTION_08",
+        "origin": "STAGE_A",
+        "source_path": "beats[0].objective",
+        "claim_type": "CERTAINTY_ASSERTION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "顾沉"
+        },
+        "predicate": "first_or_never",
+        "object": {
+          "kind": "EVENT",
+          "ref": "darkroom_visit"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [
+          "SAU_E01_SC001_001",
+          "SAU_E01_SC001_002",
+          "SAU_E01_SC001_003"
+        ],
+        "support_status": "UNSUPPORTED",
+        "reason": "No typed SourceClaim supports this canonical assertion.",
+        "production_blocking": true,
+        "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_beat_enrichments_0_character_effects_1_effect_CERTAINTY_ASSERTION_08",
+        "origin": "STAGE_B",
+        "source_path": "beat_enrichments[0].character_effects[1].effect",
+        "claim_type": "CERTAINTY_ASSERTION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "predicate": "first_or_never",
+        "object": {
+          "kind": "EVENT",
+          "ref": "darkroom_visit"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "No typed SourceClaim supports this canonical assertion.",
+        "production_blocking": true,
+        "raw_text": "林晚首次进入暗房，对空间与铁盒标签表现出陌生与迟疑，为后续的身份之谜埋下可表演的不确定状态。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_rhythm_strategy_reveal_CERTAINTY_ASSERTION_08",
+        "origin": "STAGE_B",
+        "source_path": "rhythm_strategy.reveal",
+        "claim_type": "CERTAINTY_ASSERTION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "predicate": "first_or_never",
+        "object": {
+          "kind": "EVENT",
+          "ref": "darkroom_visit"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "No typed SourceClaim supports this canonical assertion.",
+        "production_blocking": true,
+        "raw_text": "铁盒的空缺、烧焦胶片与海鸥别针依次揭示，节奏由缓转紧；林晚认出别针却想不起的空白制造第一次心理悬念。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_prohibited_interpretations_0_CERTAINTY_ASSERTION_08",
+        "origin": "STAGE_B",
+        "source_path": "prohibited_interpretations[0]",
+        "claim_type": "CERTAINTY_ASSERTION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "predicate": "first_or_never",
+        "object": {
+          "kind": "EVENT",
+          "ref": "darkroom_visit"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "No typed SourceClaim supports this canonical assertion.",
+        "production_blocking": true,
+        "raw_text": "不得将林晚'想不起童年是否来过暗房'表述为'首次进入'或'从未来过'"
+      }
+    ],
+    "diagnostic_only": false
+  }
+}

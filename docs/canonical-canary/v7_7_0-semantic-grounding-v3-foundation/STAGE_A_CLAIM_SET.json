@@ -1,0 +1,1017 @@
+{
+  "schema_version": "director_source_claim_set_v1",
+  "claim_count": 34,
+  "claim_set_fingerprint": "2b89918195de4e51f649030e5399f4721cd377f67a45104d93d8fff4a8cb28e5",
+  "claims": [
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_scene_label_AUDIENCE_INTERPRETATION_00",
+      "source_path": "scene_label",
+      "raw_text": "E01_SC001",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "scene_label",
+      "object": {
+        "kind": "TEXT",
+        "ref": "E01_SC001"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "f855d7177c853e4612e78737a7de8741afd32564a17191c611546e8dc6d66e09"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_scene_objective_DRAMATIC_OBJECTIVE_00",
+      "source_path": "scene_objective",
+      "raw_text": "建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。",
+      "claim_type": "DRAMATIC_OBJECTIVE",
+      "subject": {
+        "kind": "SCENE",
+        "ref": "E01_SC001"
+      },
+      "predicate": "scene_objective",
+      "object": {
+        "kind": "DRAMATIC_TEXT",
+        "ref": "建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "STAGE_A",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9c93b991d12e6ed8edc94f38f74e7ee87f6bcdc7eea82d0d2d29f0abd57027a9"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_scene_objective_OBJECT_PROVENANCE_07",
+      "source_path": "scene_objective",
+      "raw_text": "建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。",
+      "claim_type": "OBJECT_PROVENANCE",
+      "subject": {
+        "kind": "PERSON",
+        "ref": "母亲"
+      },
+      "predicate": "left_by",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "bba5fcd52ccac6b0a9f44de5730a41acf760e644a81df20622fffe7c6eb60063"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_dramatic_question_DRAMATIC_QUESTION_00",
+      "source_path": "dramatic_question",
+      "raw_text": "林晚究竟是不是那个拿走胶片的人？",
+      "claim_type": "DRAMATIC_QUESTION",
+      "subject": {
+        "kind": "SCENE",
+        "ref": "E01_SC001"
+      },
+      "predicate": "dramatic_question",
+      "object": {
+        "kind": "DRAMATIC_TEXT",
+        "ref": "林晚究竟是不是那个拿走胶片的人？"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "STAGE_A",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "b29dabb6281f3b31bb7d1aefb64c4bffed9df6ca7ebf04a34a6abe24128a5459"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_refs_0_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[0].refs[0]",
+      "raw_text": "SAU_E01_SC001_001",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[0]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_001"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "1f2886e5ecbd5b50b1973cfdae634bfeacedfd6277978275036d8606d8e30c91"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_refs_1_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[0].refs[1]",
+      "raw_text": "SAU_E01_SC001_002",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[1]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_002"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "b74b699f034ba554e1d544e3937a70637666791576afedb8958325750bec69a7"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_refs_2_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[0].refs[2]",
+      "raw_text": "SAU_E01_SC001_003",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[2]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_003"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "3ef8cb480745187a42ec4f26f4d5d5cc4892b636731d9cc64840bd549ec93af2"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_purpose_DRAMATIC_GROUPING_00",
+      "source_path": "beats[0].purpose",
+      "raw_text": "把观众带入暗房这一封闭空间，用红色安全灯与水渍地图铺陈不安的视觉基调，并让母亲手写的铁盒成为场景的中心谜题。",
+      "claim_type": "DRAMATIC_GROUPING",
+      "subject": {
+        "kind": "BEAT",
+        "ref": "beats[0].purpose"
+      },
+      "predicate": "purpose",
+      "object": {
+        "kind": "DRAMATIC_PURPOSE",
+        "ref": "把观众带入暗房这一封闭空间，用红色安全灯与水渍地图铺陈不安的视觉基调，并让母亲手写的铁盒成为场景的中心谜题。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "b31a554e81fcf8e613b03f882e71e071534e12010c2af649e61b7de280de2efd"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_purpose_OBJECT_PROPERTY_05",
+      "source_path": "beats[0].purpose",
+      "raw_text": "把观众带入暗房这一封闭空间，用红色安全灯与水渍地图铺陈不安的视觉基调，并让母亲手写的铁盒成为场景的中心谜题。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "8c83bccf20cc695b1612957485f45e81c8883e4399ddc139e44c65c2de00fa1d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_objective_CHARACTER_INTENT_00",
+      "source_path": "beats[0].objective",
+      "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "ba41b969afc5a5fbe8bfed1100790c4ffcbde8aa25373a98328cf9386db56b2a"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_objective_OBJECT_PROVENANCE_07",
+      "source_path": "beats[0].objective",
+      "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。",
+      "claim_type": "OBJECT_PROVENANCE",
+      "subject": {
+        "kind": "PERSON",
+        "ref": "母亲"
+      },
+      "predicate": "left_by",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2467dbecbcb547214a7a80d5a86065ca14a756ab216eaaadd4401ce976b97a07"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_objective_CERTAINTY_ASSERTION_08",
+      "source_path": "beats[0].objective",
+      "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。",
+      "claim_type": "CERTAINTY_ASSERTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "first_or_never",
+      "object": {
+        "kind": "EVENT",
+        "ref": "darkroom_visit"
+      },
+      "qualifiers": {
+        "cue": "第一次"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2da373289f1957d5e8b9e6897417f1c9eb5a5cbc437c10de549d09c25a7b0550"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_information_change_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[0].information_change",
+      "raw_text": "林晚得知暗房中央存在一只母亲手写标签为第七次潮汐的铁盒，空间与物件的来历被初步交代。",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "information_change",
+      "object": {
+        "kind": "TEXT",
+        "ref": "林晚得知暗房中央存在一只母亲手写标签为第七次潮汐的铁盒，空间与物件的来历被初步交代。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "ab42caedb5ec719ae94ed42bf9e93f59ec6f64c874bdc761d976aeb23a5c5c04"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_0_information_change_OBJECT_PROPERTY_05",
+      "source_path": "beats[0].information_change",
+      "raw_text": "林晚得知暗房中央存在一只母亲手写标签为第七次潮汐的铁盒，空间与物件的来历被初步交代。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "8c83bccf20cc695b1612957485f45e81c8883e4399ddc139e44c65c2de00fa1d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_1_refs_0_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[1].refs[0]",
+      "raw_text": "SAU_E01_SC001_004",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[0]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_004"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "4198bc90d457d1f5c8e2420a0cd1a6640be21e95367fc44cbea96519d48cc914"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_1_refs_1_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[1].refs[1]",
+      "raw_text": "SAU_E01_SC001_005",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[1]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_005"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7003aab15d00425b057a6fbb84096eaa4f055f893763f7ad7584fdb3a7b891d7"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_1_purpose_DRAMATIC_GROUPING_00",
+      "source_path": "beats[1].purpose",
+      "raw_text": "揭开铁盒内部的空缺，用烧焦胶片与海鸥别针触发林晚对自身童年的怀疑，把物件之谜转向身份之谜。",
+      "claim_type": "DRAMATIC_GROUPING",
+      "subject": {
+        "kind": "BEAT",
+        "ref": "beats[1].purpose"
+      },
+      "predicate": "purpose",
+      "object": {
+        "kind": "DRAMATIC_PURPOSE",
+        "ref": "揭开铁盒内部的空缺，用烧焦胶片与海鸥别针触发林晚对自身童年的怀疑，把物件之谜转向身份之谜。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2706b44d02f0af117b196939c31c1ce431b36277db7c3175ad42ad3ffdcdc0c2"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_1_objective_CHARACTER_INTENT_00",
+      "source_path": "beats[1].objective",
+      "raw_text": "让林晚在别针与照片小女孩的重合中意识到自己与这个空间可能存在被遗忘的联系。",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让林晚在别针与照片小女孩的重合中意识到自己与这个空间可能存在被遗忘的联系。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "92777e0559d8f7ea7c7818f5fde0649c89d2a777a0ee2a276df6fdbfab276ff4"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_1_information_change_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[1].information_change",
+      "raw_text": "铁盒被证实为空，只剩烧焦胶片与海鸥别针，林晚认出别针却无法确认自己童年是否来过暗房。",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "information_change",
+      "object": {
+        "kind": "TEXT",
+        "ref": "铁盒被证实为空，只剩烧焦胶片与海鸥别针，林晚认出别针却无法确认自己童年是否来过暗房。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "6456150514781f6baa80e38586a924cb99c081a869b80b0647cea8ede1787529"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_2_refs_0_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[2].refs[0]",
+      "raw_text": "SAU_E01_SC001_006",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[0]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_006"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "3969f6a5fd11714f9ba5c9b531433c996d69299517395438791e260a16ce56ee"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_2_refs_1_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[2].refs[1]",
+      "raw_text": "SAU_E01_SC001_007",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[1]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_007"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9d3f17dac751c466f74bc3b6282c11e496983469394f4323712820ddf9b41e4f"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_2_refs_2_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[2].refs[2]",
+      "raw_text": "SAU_E01_SC001_008",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[2]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_008"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "30e3a59125d5adef6f47f489a3508a32878614978af887a22011b68e9dba1601"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_2_purpose_DRAMATIC_GROUPING_00",
+      "source_path": "beats[2].purpose",
+      "raw_text": "由顾沉抛出胶片被拿走的事实并给出指向林晚自身的暗示，把外部失窃转化为对林晚内心的拷问。",
+      "claim_type": "DRAMATIC_GROUPING",
+      "subject": {
+        "kind": "BEAT",
+        "ref": "beats[2].purpose"
+      },
+      "predicate": "purpose",
+      "object": {
+        "kind": "DRAMATIC_PURPOSE",
+        "ref": "由顾沉抛出胶片被拿走的事实并给出指向林晚自身的暗示，把外部失窃转化为对林晚内心的拷问。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "393810a22204f5fe4dde190de54f6ee93aa8acd05939ad4f3ce8fedb2f180a4e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_2_objective_CHARACTER_INTENT_00",
+      "source_path": "beats[2].objective",
+      "raw_text": "让林晚在追问是谁的过程中被迫面对顾沉那句也许是你自己的指控。",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让林晚在追问是谁的过程中被迫面对顾沉那句也许是你自己的指控。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "5682400a726fcc96be85799a4f920f7eed3ec85fe268d668169b6162781c946c"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_2_information_change_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[2].information_change",
+      "raw_text": "顾沉确认胶片被人拿走，并暗示拿走胶片的人可能就是林晚自己，林晚的嫌疑被直接建立。",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "information_change",
+      "object": {
+        "kind": "TEXT",
+        "ref": "顾沉确认胶片被人拿走，并暗示拿走胶片的人可能就是林晚自己，林晚的嫌疑被直接建立。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "25ef028b0e49cf757b1c3faba2c88c75cedf38b931fcdd9c6402ddc2bf86719e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_refs_0_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[3].refs[0]",
+      "raw_text": "SAU_E01_SC001_009",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[0]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_009"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "e023c7812cc82466b99acd6c8d2633f411b2552f30079f2f0d209a924ba517f1"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_refs_1_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[3].refs[1]",
+      "raw_text": "SAU_E01_SC001_010",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[1]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_010"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "cfd8b0c007abb8e7ea58a91b15477eb18ba53fa4e79fd72875bf9de5a3134345"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_refs_2_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[3].refs[2]",
+      "raw_text": "SAU_E01_SC001_011",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[2]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_011"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "35e4b85e274e2ed8c9eb64ae73340519abc6f4280b705fc93f4560765aacd622"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_refs_3_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[3].refs[3]",
+      "raw_text": "SAU_E01_SC001_012",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "refs[3]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "SAU_E01_SC001_012"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "97e1a9dccefe53f052f2bce88bed785d052bf5e5f37ea1300b7539c7ca10821e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_purpose_DRAMATIC_GROUPING_00",
+      "source_path": "beats[3].purpose",
+      "raw_text": "用铜铃声与门缝下的湿皮鞋打断审问节奏，把场景从心理对峙推向外部威胁，并以车票上的指令留下明确的下一步钩子。",
+      "claim_type": "DRAMATIC_GROUPING",
+      "subject": {
+        "kind": "BEAT",
+        "ref": "beats[3].purpose"
+      },
+      "predicate": "purpose",
+      "object": {
+        "kind": "DRAMATIC_PURPOSE",
+        "ref": "用铜铃声与门缝下的湿皮鞋打断审问节奏，把场景从心理对峙推向外部威胁，并以车票上的指令留下明确的下一步钩子。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "20090122580df61626acead376d0f3d3f22e886763b6b0dccdc63848e330d628"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_objective_CHARACTER_INTENT_00",
+      "source_path": "beats[3].objective",
+      "raw_text": "让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "aec6c341ce8f82be77a39f6b8bf8e4fbc22911ed097a55ce30168c1033b08dac"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_objective_OBJECT_POSSESSION_06",
+      "source_path": "beats[3].objective",
+      "raw_text": "让顾沉与林晚在黑暗中躲藏并接收门外陌生人递入的车票，为下一场戏埋下行动目标。",
+      "claim_type": "OBJECT_POSSESSION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "receives",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "车票"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "56a19992a6f03394b1fb1edb3bdc0c033c2cdfe9b2f91c2a5d05e538f9a8c604"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_beats_3_information_change_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beats[3].information_change",
+      "raw_text": "门外出现湿透皮鞋的神秘人，其塞入的车票背面写明今晚十点北堤仓库、带钥匙、不要带顾沉的指令。",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_A"
+      },
+      "predicate": "information_change",
+      "object": {
+        "kind": "TEXT",
+        "ref": "门外出现湿透皮鞋的神秘人，其塞入的车票背面写明今晚十点北堤仓库、带钥匙、不要带顾沉的指令。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_A",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a1246ab89a571e2799ab7ac59548e48511abea0a3cf32bd37921b1e7e329d2ea"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_A_note_META_COMPLIANCE_00",
+      "source_path": "note",
+      "raw_text": "本计划仅对来源单元进行戏剧分组与目标标注，未改写任何来源事实、对白或角色绑定。",
+      "claim_type": "META_COMPLIANCE",
+      "subject": {},
+      "predicate": "compliance_note",
+      "object": {
+        "kind": "META",
+        "ref": "本计划仅对来源单元进行戏剧分组与目标标注，未改写任何来源事实、对白或角色绑定。"
+      },
+      "qualifiers": {},
+      "polarity": "META_COMPLIANCE",
+      "modality": "DELEGATED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_A",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "bb1e4ecfcb7c81ff061f03b11ec2f9cdb910d22e42a661ee12a253106311d2dd"
+    }
+  ],
+  "attempt_id": "attempt-7",
+  "structural_status": "PASS"
+}

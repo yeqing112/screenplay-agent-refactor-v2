@@ -1,0 +1,42 @@
+{
+  "schema_version": "director_source_claim_set_fingerprint_v1",
+  "claim_set_fingerprint": "93218b1cd5fceb0dd97e7396250ed7ad05a95ebdfd5a0fff4b3620d3e854f0a6",
+  "claim_count": 31,
+  "validation": {
+    "status": "BLOCKED",
+    "errors": [
+      {
+        "index": 3,
+        "errors": [
+          "DUPLICATE_CLAIM_ID"
+        ]
+      },
+      {
+        "index": 9,
+        "errors": [
+          "DUPLICATE_CLAIM_ID"
+        ]
+      },
+      {
+        "index": 10,
+        "errors": [
+          "DUPLICATE_CLAIM_ID"
+        ]
+      },
+      {
+        "index": 12,
+        "errors": [
+          "DUPLICATE_CLAIM_ID"
+        ]
+      },
+      {
+        "index": 22,
+        "errors": [
+          "DUPLICATE_CLAIM_ID"
+        ]
+      }
+    ],
+    "claim_count": 31,
+    "fingerprint": "93218b1cd5fceb0dd97e7396250ed7ad05a95ebdfd5a0fff4b3620d3e854f0a6"
+  }
+}

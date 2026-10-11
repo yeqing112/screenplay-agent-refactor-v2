@@ -1,0 +1,9 @@
+{
+  "schema_version": "director_v3_recommended_next_action_v1",
+  "status": "REVIEW_REQUIRED",
+  "next": "STAGE_A_SEMANTIC_REVISION_BOUNDARY_REQUIRED",
+  "attempt12_authorized": false,
+  "confirm_allowed": false,
+  "v3_mode": "SHADOW_ONLY",
+  "reason": "V3 remains independent shadow evidence and does not replace V2 production gate."
+}

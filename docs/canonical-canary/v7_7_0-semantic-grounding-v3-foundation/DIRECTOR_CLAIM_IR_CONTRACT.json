@@ -1,0 +1,112 @@
+{
+  "schema_version": "director_claim_ir_v1",
+  "fingerprint_excludes": [
+    "claim_id",
+    "source_path",
+    "raw_text",
+    "metadata",
+    "timestamp",
+    "filesystem_path"
+  ],
+  "fields": {
+    "claim_id": "string",
+    "source_path": "string",
+    "raw_text": "string",
+    "claim_type": "enum",
+    "subject": "object",
+    "predicate": "string",
+    "object": "object",
+    "qualifiers": "object",
+    "polarity": "enum",
+    "modality": "enum",
+    "canonicality": "enum",
+    "authority_required": "enum",
+    "source_refs": "array[string]",
+    "upstream_claim_refs": "array[string]",
+    "origin": "enum",
+    "support_status": "enum",
+    "fingerprint": "sha256"
+  },
+  "enums": {
+    "claim_type": [
+      "SOURCE_EVENT",
+      "CHARACTER_ACTION",
+      "CHARACTER_KNOWLEDGE",
+      "CHARACTER_INTENT",
+      "CHARACTER_EMOTION",
+      "CHARACTER_RELATIONSHIP",
+      "CHARACTER_BACKSTORY",
+      "OBJECT_EXISTENCE",
+      "OBJECT_PROPERTY",
+      "OBJECT_OWNERSHIP",
+      "OBJECT_PROVENANCE",
+      "OBJECT_POSSESSION",
+      "ENVIRONMENT_STATE",
+      "SENSORY_FACT",
+      "SPATIAL_BLOCKING",
+      "SHOT_EXECUTION",
+      "PERFORMANCE_DIRECTION",
+      "PERFORMANCE_OPTION",
+      "AUDIENCE_EFFECT",
+      "AUDIENCE_INTERPRETATION",
+      "INFORMATION_REVEAL",
+      "INFORMATION_WITHHOLD",
+      "UNCERTAINTY",
+      "CERTAINTY_ASSERTION",
+      "AUTHORITY_DELEGATION",
+      "META_COMPLIANCE",
+      "PROHIBITION",
+      "DRAMATIC_GROUPING",
+      "DRAMATIC_OBJECTIVE",
+      "DRAMATIC_QUESTION",
+      "VISUAL_PRIORITY",
+      "INFORMATION_STRATEGY",
+      "RHYTHM_INTENT",
+      "CHARACTER_STATE"
+    ],
+    "polarity": [
+      "POSITIVE",
+      "NEGATED",
+      "PROHIBITION",
+      "META_COMPLIANCE",
+      "DELEGATION"
+    ],
+    "modality": [
+      "ASSERTED",
+      "UNCERTAIN",
+      "POSSIBLE",
+      "HYPOTHETICAL",
+      "PLAYABLE_OPTION",
+      "DELEGATED",
+      "PROHIBITED"
+    ],
+    "canonicality": [
+      "CANONICAL_ASSERTION",
+      "NON_CANONICAL_PERFORMANCE_OPTION",
+      "META",
+      "AUDIENCE_INTERPRETATION"
+    ],
+    "authority_required": [
+      "SOURCE",
+      "STAGE_A",
+      "STAGE_B",
+      "NONE"
+    ],
+    "origin": [
+      "SOURCE",
+      "STAGE_A",
+      "STAGE_B",
+      "COMPILED"
+    ],
+    "support_status": [
+      "UNRESOLVED",
+      "SUPPORTED_EXPLICIT",
+      "SUPPORTED_ENTAILED",
+      "SUPPORTED_AS_NON_CANONICAL_OPTION",
+      "META_SAFE",
+      "UNSUPPORTED",
+      "UPSTREAM_UNSUPPORTED",
+      "AMBIGUOUS_REVIEW_REQUIRED"
+    ]
+  }
+}

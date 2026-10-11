@@ -1,0 +1,50 @@
+{
+  "schema_version": "director_authority_delegation_audit_v1",
+  "cases": [
+    {
+      "case": "delegation",
+      "present": true,
+      "expected_claim_type": "AUTHORITY_DELEGATION",
+      "claim": {
+        "schema_version": "director_claim_ir_v1",
+        "claim_id": "DC_STAGE_B_note_AUTHORITY_DELEGATION_00",
+        "source_path": "note",
+        "raw_text": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。",
+        "claim_type": "AUTHORITY_DELEGATION",
+        "subject": {
+          "kind": "DIRECTOR",
+          "ref": "stage_b"
+        },
+        "predicate": "delegates_to",
+        "object": {
+          "kind": "AUTHORITY",
+          "ref": "SceneBlocking+ShotPlan"
+        },
+        "qualifiers": {},
+        "polarity": "DELEGATION",
+        "modality": "DELEGATED",
+        "canonicality": "META",
+        "authority_required": "NONE",
+        "source_refs": [],
+        "upstream_claim_refs": [],
+        "origin": "STAGE_B",
+        "support_status": "META_SAFE",
+        "metadata": {
+          "target_authority": [
+            "SceneBlocking",
+            "ShotPlan"
+          ]
+        },
+        "fingerprint": "3e9f21e4c6c21387a2b76a182f7af42dacbf024723252714026cfe45415fa282"
+      },
+      "support": "META_SAFE",
+      "authority": {
+        "status": "META_SAFE",
+        "authority_required": "NONE",
+        "reason": "metadata_or_delegation_does_not_assert_story_fact"
+      },
+      "result": "SAFE_META_DELEGATION",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact"
+    }
+  ]
+}

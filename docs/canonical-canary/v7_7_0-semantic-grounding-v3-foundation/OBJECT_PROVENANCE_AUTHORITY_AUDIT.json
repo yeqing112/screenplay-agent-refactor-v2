@@ -1,0 +1,101 @@
+{
+  "category": "OBJECT_PROVENANCE",
+  "claim_count": 3,
+  "audit": {
+    "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+    "status": "BLOCKED",
+    "claim_count": 3,
+    "supported_count": 0,
+    "unsupported_count": 3,
+    "ambiguous_count": 0,
+    "counts": {
+      "SUPPORTED_EXPLICIT": 0,
+      "SUPPORTED_ENTAILED": 0,
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 0,
+      "META_SAFE": 0,
+      "UNSUPPORTED": 3,
+      "UPSTREAM_UNSUPPORTED": 0,
+      "AMBIGUOUS_REVIEW_REQUIRED": 0
+    },
+    "blocking_finding_count": 3,
+    "findings": [
+      {
+        "claim_id": "DC_STAGE_A_scene_objective_OBJECT_PROVENANCE_07",
+        "origin": "STAGE_A",
+        "source_path": "scene_objective",
+        "claim_type": "OBJECT_PROVENANCE",
+        "subject": {
+          "kind": "PERSON",
+          "ref": "母亲"
+        },
+        "predicate": "left_by",
+        "object": {
+          "kind": "OBJECT",
+          "ref": "暗房"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "A mother-authored label does not entail that the mother left or owned the referenced object.",
+        "production_blocking": true,
+        "raw_text": "建立暗房的压抑氛围与林晚被卷入的悬疑处境，让母亲留下的空铁盒与海鸥别针成为撬动她记忆缺口的支点。"
+      },
+      {
+        "claim_id": "DC_STAGE_A_beats_0_objective_OBJECT_PROVENANCE_07",
+        "origin": "STAGE_A",
+        "source_path": "beats[0].objective",
+        "claim_type": "OBJECT_PROVENANCE",
+        "subject": {
+          "kind": "PERSON",
+          "ref": "母亲"
+        },
+        "predicate": "left_by",
+        "object": {
+          "kind": "OBJECT",
+          "ref": "暗房"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [
+          "SAU_E01_SC001_001",
+          "SAU_E01_SC001_002",
+          "SAU_E01_SC001_003"
+        ],
+        "support_status": "UNSUPPORTED",
+        "reason": "A mother-authored label does not entail that the mother left or owned the referenced object.",
+        "production_blocking": true,
+        "raw_text": "让林晚在顾沉的引导下第一次直面母亲留下的暗房与那只贴着标签的铁盒。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_character_directions_0_direction_OBJECT_PROVENANCE_07",
+        "origin": "STAGE_B",
+        "source_path": "character_directions[0].direction",
+        "claim_type": "OBJECT_PROVENANCE",
+        "subject": {
+          "kind": "PERSON",
+          "ref": "母亲"
+        },
+        "predicate": "left_by",
+        "object": {
+          "kind": "OBJECT",
+          "ref": "暗房"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "A mother-authored label does not entail that the mother left or owned the referenced object.",
+        "production_blocking": true,
+        "raw_text": "林晚在暗房中保持警觉与克制，对母亲留下的物件有细微的身体反应但不作确认性表态，全程处于'认出但想不起'的悬置状态。"
+      }
+    ],
+    "diagnostic_only": false
+  }
+}

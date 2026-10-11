@@ -1,0 +1,37 @@
+{
+  "schema": "director_semantic_grounding_v3_v2_regression_audit_v1",
+  "status": "PASS_WITH_PRE_EXISTING_V2_FAILURES",
+  "v3_targeted_regression": {
+    "status": "PASS",
+    "passed": 190,
+    "failed": 0,
+    "warning_count": 52,
+    "scope": "V7.7 claim grounding plus V7.2-V7.6 director and source authority suites"
+  },
+  "broad_regression_snapshot": {
+    "status": "PRE_EXISTING_FAILURES_RETAINED",
+    "passed": 227,
+    "failed": 3,
+    "failures": [
+      {
+        "test": "tests/test_scene_blocking_authority_contract.py::test_failed_activation_does_not_move_pointer_and_payload_tamper_stales_it",
+        "observed": "expected HTTP 409, got 200"
+      },
+      {
+        "test": "tests/test_scene_blocking_authority_contract.py::test_missing_scene_asset_is_production_blocker_but_not_legacy_authority",
+        "observed": "expected production blocker, got none"
+      },
+      {
+        "test": "tests/test_scene_blocking_authority_contract.py::test_shot_plan_activation_and_materializer_use_current_pointer_without_agent",
+        "observed": "expected HTTP 409, got 200"
+      }
+    ]
+  },
+  "non_regression_basis": {
+    "v3_changed_scene_blocking_or_shot_plan": false,
+    "v3_changed_prompt_ir": false,
+    "v2_raw_or_proposal_mutated": false,
+    "v2_targeted_director_suites_pass": true,
+    "interpretation": "The three failures are retained as pre-existing V2 authority-contract failures; V7.7 is shadow-only and does not mask or repair them."
+  }
+}

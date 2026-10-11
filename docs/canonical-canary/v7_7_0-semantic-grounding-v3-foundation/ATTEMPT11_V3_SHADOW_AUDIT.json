@@ -1,0 +1,656 @@
+{
+  "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+  "status": "BLOCKED",
+  "claim_count": 145,
+  "supported_count": 128,
+  "unsupported_count": 12,
+  "ambiguous_count": 5,
+  "counts": {
+    "SUPPORTED_EXPLICIT": 8,
+    "SUPPORTED_ENTAILED": 0,
+    "SUPPORTED_AS_NON_CANONICAL_OPTION": 110,
+    "META_SAFE": 10,
+    "UNSUPPORTED": 12,
+    "UPSTREAM_UNSUPPORTED": 0,
+    "AMBIGUOUS_REVIEW_REQUIRED": 5
+  },
+  "blocking_finding_count": 17,
+  "findings": [
+    {
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_performance_CHARACTER_INTENT_02",
+      "origin": "STAGE_B",
+      "source_path": "beat_enrichments[2].performance",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "test_or_probe",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "顾沉说出'也许是你自己'时语气应平静而带有试探性，不作断言；林晚的追问'是谁'应带着急切与不安，听到回答后出现明显的僵住或呼吸停滞，但不作辩解或承认。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_performance_OBJECT_POSSESSION_06",
+      "origin": "STAGE_B",
+      "source_path": "beat_enrichments[3].performance",
+      "claim_type": "OBJECT_POSSESSION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "receives",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "车票"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+      "reason": "The source says an unknown person inserts a ticket; it does not state that Lin Wan takes possession of it.",
+      "production_blocking": true,
+      "raw_text": "顾沉熄灯与拉林晚躲藏的动作应迅速而果断，两人在黑暗中保持静止与屏息；林晚接过车票后阅读背面文字，表情从紧张转为困惑与警觉，不作多余动作。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_1_effect_ENVIRONMENT_STATE_04",
+      "origin": "STAGE_B",
+      "source_path": "beat_enrichments[3].character_effects[1].effect",
+      "claim_type": "ENVIRONMENT_STATE",
+      "subject": {
+        "kind": "ENVIRONMENT",
+        "ref": "暗房"
+      },
+      "predicate": "light_level",
+      "object": {
+        "kind": "LIGHT",
+        "ref": "dim"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "A flickering red safety light and later extinguishing it do not entail a remaining dim-light state.",
+      "production_blocking": true,
+      "raw_text": "林晚在黑暗中配合躲藏，接过车票后在微弱光线下阅读背面指令，表情从紧张转为困惑与警觉。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_1_effect_OBJECT_POSSESSION_06",
+      "origin": "STAGE_B",
+      "source_path": "beat_enrichments[3].character_effects[1].effect",
+      "claim_type": "OBJECT_POSSESSION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "receives",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "车票"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+      "reason": "The source says an unknown person inserts a ticket; it does not state that Lin Wan takes possession of it.",
+      "production_blocking": true,
+      "raw_text": "林晚在黑暗中配合躲藏，接过车票后在微弱光线下阅读背面指令，表情从紧张转为困惑与警觉。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_0_direction_OBJECT_PROVENANCE_07",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[0].direction",
+      "claim_type": "OBJECT_PROVENANCE",
+      "subject": {
+        "kind": "PERSON",
+        "ref": "母亲"
+      },
+      "predicate": "left_by",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "暗房"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "A mother-authored label does not entail that the mother left or owned the referenced object.",
+      "production_blocking": true,
+      "raw_text": "林晚在暗房中保持警觉与克制，对母亲留下的物件有细微的身体反应但不作确认性表态，全程处于'认出但想不起'的悬置状态。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_0_objective_CHARACTER_INTENT_00",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[0].objective",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "在顾沉的引导下直面暗房与铁盒，试图理解自己与这个空间的关系，同时应对'也许是你自己'的指控与车票指令带来的困惑。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "在顾沉的引导下直面暗房与铁盒，试图理解自己与这个空间的关系，同时应对'也许是你自己'的指控与车票指令带来的困惑。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_0_obstacle_CHARACTER_STATE_00",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[0].obstacle",
+      "claim_type": "CHARACTER_STATE",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "condition",
+      "object": {
+        "kind": "STATE",
+        "ref": "林晚无法确认自己童年是否来过暗房，记忆的空白使她无法为自己辩解，也无法确认顾沉的暗示是否成立。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+      "reason": "Typed authority is insufficient to establish support.",
+      "production_blocking": true,
+      "raw_text": "林晚无法确认自己童年是否来过暗房，记忆的空白使她无法为自己辩解，也无法确认顾沉的暗示是否成立。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_1_objective_CHARACTER_INTENT_00",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[1].objective",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_1_objective_CHARACTER_INTENT_02",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[1].objective",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "test_or_probe",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_1_obstacle_CHARACTER_STATE_00",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[1].obstacle",
+      "claim_type": "CHARACTER_STATE",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "condition",
+      "object": {
+        "kind": "STATE",
+        "ref": "顾沉需要在不惊动林晚的前提下观察她的反应，同时应对门外神秘人的出现。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+      "reason": "Typed authority is insufficient to establish support.",
+      "production_blocking": true,
+      "raw_text": "顾沉需要在不惊动林晚的前提下观察她的反应，同时应对门外神秘人的出现。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_1_obstacle_CHARACTER_INTENT_03",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[1].obstacle",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "observe_without_alerting",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "顾沉需要在不惊动林晚的前提下观察她的反应，同时应对门外神秘人的出现。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_character_directions_1_performance_notes_CHARACTER_INTENT_02",
+      "origin": "STAGE_B",
+      "source_path": "character_directions[1].performance_notes",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "test_or_probe",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "说'也许是你自己'时保持平静与试探性，不作断言；熄灯躲藏动作果断迅速，全程不作多余解释。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_audience_should_notice_CHARACTER_INTENT_02",
+      "origin": "STAGE_B",
+      "source_path": "information_strategy.reveal_plan[2].audience_should_notice",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "test_or_probe",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+      "production_blocking": true,
+      "raw_text": "顾沉语气的平静试探与林晚听到指控后的僵住反应"
+    },
+    {
+      "claim_id": "DC_STAGE_B_rhythm_strategy_reveal_CERTAINTY_ASSERTION_08",
+      "origin": "STAGE_B",
+      "source_path": "rhythm_strategy.reveal",
+      "claim_type": "CERTAINTY_ASSERTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "first_or_never",
+      "object": {
+        "kind": "EVENT",
+        "ref": "darkroom_visit"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "No typed SourceClaim supports this canonical assertion.",
+      "production_blocking": true,
+      "raw_text": "铁盒的空缺、烧焦胶片与海鸥别针依次揭示，节奏由缓转紧；林晚认出别针却想不起的空白制造第一次心理悬念。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_visual_priority_6_OBJECT_PROPERTY_05",
+      "origin": "STAGE_B",
+      "source_path": "visual_priority[6]",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "车票背面"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+      "reason": "Source says the ticket back contains text, but does not state that the ticket writing is handwritten.",
+      "production_blocking": true,
+      "raw_text": "车票背面的手写指令"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_0_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[0]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得将林晚'想不起童年是否来过暗房'表述为'首次进入'或'从未来过'"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得将林晚'想不起童年是否来过暗房'表述为'首次进入'或'从未来过'"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_0_CERTAINTY_ASSERTION_08",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[0]",
+      "claim_type": "CERTAINTY_ASSERTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "first_or_never",
+      "object": {
+        "kind": "EVENT",
+        "ref": "darkroom_visit"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "No typed SourceClaim supports this canonical assertion.",
+      "production_blocking": true,
+      "raw_text": "不得将林晚'想不起童年是否来过暗房'表述为'首次进入'或'从未来过'"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_1_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[1]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得将顾沉'也许是你自己'的暗示表述为确认林晚就是拿走胶片的人"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得将顾沉'也许是你自己'的暗示表述为确认林晚就是拿走胶片的人"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_2_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[2]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得为林晚或顾沉添加来源未支持的童年回忆、情感关系或背景故事"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得为林晚或顾沉添加来源未支持的童年回忆、情感关系或背景故事"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_3_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[3]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得为铁盒、胶片、别针添加来源未支持的属性或来历"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得为铁盒、胶片、别针添加来源未支持的属性或来历"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_4_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[4]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得指定具体的镜头景别、机位、焦段或镜头运动"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得指定具体的镜头景别、机位、焦段或镜头运动"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_5_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[5]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得指定角色在暗房中的具体走位路径或空间位置"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得指定角色在暗房中的具体走位路径或空间位置"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_6_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[6]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得添加来源未支持的气味、温度、触感等感官细节"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得添加来源未支持的气味、温度、触感等感官细节"
+    },
+    {
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_7_PROHIBITION_00",
+      "origin": "STAGE_B",
+      "source_path": "prohibited_interpretations[7]",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得将门外神秘人身份或'不要带顾沉'的原因提前揭示"
+      },
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "不得将门外神秘人身份或'不要带顾沉'的原因提前揭示"
+    },
+    {
+      "claim_id": "DC_STAGE_B_note_META_COMPLIANCE_00",
+      "origin": "STAGE_B",
+      "source_path": "note",
+      "claim_type": "META_COMPLIANCE",
+      "subject": {},
+      "predicate": "compliance_note",
+      "object": {
+        "kind": "META",
+        "ref": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。"
+      },
+      "polarity": "META_COMPLIANCE",
+      "modality": "DELEGATED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_note_AUTHORITY_DELEGATION_00",
+      "origin": "STAGE_B",
+      "source_path": "note",
+      "claim_type": "AUTHORITY_DELEGATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "stage_b"
+      },
+      "predicate": "delegates_to",
+      "object": {
+        "kind": "AUTHORITY",
+        "ref": "SceneBlocking+ShotPlan"
+      },
+      "polarity": "DELEGATION",
+      "modality": "DELEGATED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "META_SAFE",
+      "reason": "metadata_or_delegation_does_not_assert_story_fact",
+      "production_blocking": false,
+      "raw_text": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。"
+    },
+    {
+      "claim_id": "DC_STAGE_B_note_SPATIAL_BLOCKING_01",
+      "origin": "STAGE_B",
+      "source_path": "note",
+      "claim_type": "SPATIAL_BLOCKING",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "unspecified_character"
+      },
+      "predicate": "embedded_execution",
+      "object": {
+        "kind": "EXECUTION",
+        "ref": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "support_status": "UNSUPPORTED",
+      "reason": "claim belongs to SceneBlocking or ShotPlan",
+      "production_blocking": true,
+      "raw_text": "本 IR 严格基于 SOURCE_AUTHORING_UNITS 与 Stage A 已验证的 beat plan 生成，未引入新的故事事实、角色知识或感官细节。所有表演方向均为可执行的表演选项，保留了来源中的不确定性（想不起、也许）。未指定具体镜头执行与空间走位，交由下游 SceneBlocking 与 ShotPlan 权威处理。"
+    }
+  ],
+  "diagnostic_only": false,
+  "attempt_id": "attempt-11",
+  "mode": "SHADOW_ONLY",
+  "structural_status": "PASS",
+  "structural_coverage": "11/11",
+  "visual_priority_present": true
+}

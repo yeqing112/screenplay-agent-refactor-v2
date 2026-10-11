@@ -1,0 +1,49 @@
+{
+  "category": "OBJECT_PROPERTY",
+  "claim_count": 9,
+  "audit": {
+    "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+    "status": "BLOCKED",
+    "claim_count": 9,
+    "supported_count": 8,
+    "unsupported_count": 0,
+    "ambiguous_count": 1,
+    "counts": {
+      "SUPPORTED_EXPLICIT": 8,
+      "SUPPORTED_ENTAILED": 0,
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 0,
+      "META_SAFE": 0,
+      "UNSUPPORTED": 0,
+      "UPSTREAM_UNSUPPORTED": 0,
+      "AMBIGUOUS_REVIEW_REQUIRED": 1
+    },
+    "blocking_finding_count": 1,
+    "findings": [
+      {
+        "claim_id": "DC_STAGE_B_visual_priority_6_OBJECT_PROPERTY_05",
+        "origin": "STAGE_B",
+        "source_path": "visual_priority[6]",
+        "claim_type": "OBJECT_PROPERTY",
+        "subject": {
+          "kind": "OBJECT",
+          "ref": "车票背面"
+        },
+        "predicate": "handwritten",
+        "object": {
+          "kind": "PROPERTY",
+          "ref": "handwritten"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "AMBIGUOUS_REVIEW_REQUIRED",
+        "reason": "Source says the ticket back contains text, but does not state that the ticket writing is handwritten.",
+        "production_blocking": true,
+        "raw_text": "车票背面的手写指令"
+      }
+    ],
+    "diagnostic_only": false
+  }
+}

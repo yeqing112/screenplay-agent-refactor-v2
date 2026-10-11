@@ -1,0 +1,197 @@
+{
+  "category": "CHARACTER_INTENT",
+  "claim_count": 7,
+  "audit": {
+    "schema_version": "director_semantic_grounding_v3_shadow_audit_v1",
+    "status": "BLOCKED",
+    "claim_count": 7,
+    "supported_count": 0,
+    "unsupported_count": 7,
+    "ambiguous_count": 0,
+    "counts": {
+      "SUPPORTED_EXPLICIT": 0,
+      "SUPPORTED_ENTAILED": 0,
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 0,
+      "META_SAFE": 0,
+      "UNSUPPORTED": 7,
+      "UPSTREAM_UNSUPPORTED": 0,
+      "AMBIGUOUS_REVIEW_REQUIRED": 0
+    },
+    "blocking_finding_count": 7,
+    "findings": [
+      {
+        "claim_id": "DC_STAGE_B_beat_enrichments_2_performance_CHARACTER_INTENT_02",
+        "origin": "STAGE_B",
+        "source_path": "beat_enrichments[2].performance",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "顾沉"
+        },
+        "predicate": "test_or_probe",
+        "object": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [
+          "SAU_E01_SC001_006",
+          "SAU_E01_SC001_007",
+          "SAU_E01_SC001_008"
+        ],
+        "support_status": "UNSUPPORTED",
+        "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+        "production_blocking": true,
+        "raw_text": "顾沉说出'也许是你自己'时语气应平静而带有试探性，不作断言；林晚的追问'是谁'应带着急切与不安，听到回答后出现明显的僵住或呼吸停滞，但不作辩解或承认。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_character_directions_0_objective_CHARACTER_INTENT_00",
+        "origin": "STAGE_B",
+        "source_path": "character_directions[0].objective",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "顾沉"
+        },
+        "predicate": "objective",
+        "object": {
+          "kind": "INTENT",
+          "ref": "在顾沉的引导下直面暗房与铁盒，试图理解自己与这个空间的关系，同时应对'也许是你自己'的指控与车票指令带来的困惑。"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+        "production_blocking": true,
+        "raw_text": "在顾沉的引导下直面暗房与铁盒，试图理解自己与这个空间的关系，同时应对'也许是你自己'的指控与车票指令带来的困惑。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_character_directions_1_objective_CHARACTER_INTENT_00",
+        "origin": "STAGE_B",
+        "source_path": "character_directions[1].objective",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "predicate": "objective",
+        "object": {
+          "kind": "INTENT",
+          "ref": "带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+        "production_blocking": true,
+        "raw_text": "带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_character_directions_1_objective_CHARACTER_INTENT_02",
+        "origin": "STAGE_B",
+        "source_path": "character_directions[1].objective",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "predicate": "test_or_probe",
+        "object": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+        "production_blocking": true,
+        "raw_text": "带林晚进入暗房并交代胶片被拿走的事实，以'也许是你自己'的暗示试探林晚，同时在外部威胁出现时迅速应对。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_character_directions_1_obstacle_CHARACTER_INTENT_03",
+        "origin": "STAGE_B",
+        "source_path": "character_directions[1].obstacle",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "顾沉"
+        },
+        "predicate": "observe_without_alerting",
+        "object": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+        "production_blocking": true,
+        "raw_text": "顾沉需要在不惊动林晚的前提下观察她的反应，同时应对门外神秘人的出现。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_character_directions_1_performance_notes_CHARACTER_INTENT_02",
+        "origin": "STAGE_B",
+        "source_path": "character_directions[1].performance_notes",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "顾沉"
+        },
+        "predicate": "test_or_probe",
+        "object": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+        "production_blocking": true,
+        "raw_text": "说'也许是你自己'时保持平静与试探性，不作断言；熄灯躲藏动作果断迅速，全程不作多余解释。"
+      },
+      {
+        "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_audience_should_notice_CHARACTER_INTENT_02",
+        "origin": "STAGE_B",
+        "source_path": "information_strategy.reveal_plan[2].audience_should_notice",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "顾沉"
+        },
+        "predicate": "test_or_probe",
+        "object": {
+          "kind": "CHARACTER",
+          "ref": "林晚"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "support_status": "UNSUPPORTED",
+        "reason": "Dialogue and observable action do not authorize a canonical motive or hidden strategy.",
+        "production_blocking": true,
+        "raw_text": "顾沉语气的平静试探与林晚听到指控后的僵住反应"
+      }
+    ],
+    "diagnostic_only": false
+  }
+}

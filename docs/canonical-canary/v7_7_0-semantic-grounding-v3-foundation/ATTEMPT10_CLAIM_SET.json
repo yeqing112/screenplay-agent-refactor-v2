@@ -1,0 +1,3735 @@
+{
+  "schema_version": "director_source_claim_set_v1",
+  "claim_count": 141,
+  "claim_set_fingerprint": "ae51ec1a185111d171236da46463b98e59c510ee1f7e5afeda767b9f408f6518",
+  "claims": [
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_beat_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[0].beat_ref",
+      "raw_text": "DBP_E01_SC001_001",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "beat_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "DBP_E01_SC001_001"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "17004286b3e32754883cd9e57ed64c23a8e753583ea1e1cf4aae0c3afe4e2b4b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_audience_effect_AUDIENCE_EFFECT_00",
+      "source_path": "beat_enrichments[0].audience_effect",
+      "raw_text": "观众随两人一同被红色安全灯包裹，先感到空间的压迫与陌生，再被铁盒上母亲手写的标签钉住注意力，产生这盒子里究竟是什么的悬念。",
+      "claim_type": "AUDIENCE_EFFECT",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "experience",
+      "object": {
+        "kind": "EFFECT",
+        "ref": "观众随两人一同被红色安全灯包裹，先感到空间的压迫与陌生，再被铁盒上母亲手写的标签钉住注意力，产生这盒子里究竟是什么的悬念。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "79a970916615340521c8bb3559e03ed52053f9a42488b07ba26e6bf116d18488"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_audience_effect_OBJECT_PROPERTY_05",
+      "source_path": "beat_enrichments[0].audience_effect",
+      "raw_text": "观众随两人一同被红色安全灯包裹，先感到空间的压迫与陌生，再被铁盒上母亲手写的标签钉住注意力，产生这盒子里究竟是什么的悬念。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "7db4caa85f5fe22db4d7bbad37cbcedef6190a9ad7d02668536dd9ca099908bd"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_performance_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[0].performance",
+      "raw_text": "顾沉的引导应克制而沉稳，语气平缓，不透露多余信息，只在提及标签时留出停顿，让林晚自己去读那行字。林晚的反应从进入陌生空间的拘谨与警觉，逐渐转为被母亲手写笔迹吸引的凝滞，呼吸放慢，视线在标签上停留，手指有轻微的、未触及盒面的迟疑。红色安全灯的忽明忽暗可作为两人表情明暗交替的表演依托，但不新增任何感官事实。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "顾沉的引导应克制而沉稳，语气平缓，不透露多余信息，只在提及标签时留出停顿，让林晚自己去读那行字。林晚的反应从进入陌生空间的拘谨与警觉，逐渐转为被母亲手写笔迹吸引的凝滞，呼吸放慢，视线在标签上停留，手指有轻微的、未触及盒面的迟疑。红色安全灯的忽明忽暗可作为两人表情明暗交替的表演依托，但不新增任何感官事实。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "f07538d921619aa7456296be8cd267acfe26a300c386c3a02cea467f4a324675"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_performance_OBJECT_PROPERTY_05",
+      "source_path": "beat_enrichments[0].performance",
+      "raw_text": "顾沉的引导应克制而沉稳，语气平缓，不透露多余信息，只在提及标签时留出停顿，让林晚自己去读那行字。林晚的反应从进入陌生空间的拘谨与警觉，逐渐转为被母亲手写笔迹吸引的凝滞，呼吸放慢，视线在标签上停留，手指有轻微的、未触及盒面的迟疑。红色安全灯的忽明忽暗可作为两人表情明暗交替的表演依托，但不新增任何感官事实。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "7db4caa85f5fe22db4d7bbad37cbcedef6190a9ad7d02668536dd9ca099908bd"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_transition_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[0].transition",
+      "raw_text": "从空间的陌生感过渡到物件的谜题感，铁盒标签成为本段落的落点，为下一段揭开盒内空缺做铺垫。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "从空间的陌生感过渡到物件的谜题感，铁盒标签成为本段落的落点，为下一段揭开盒内空缺做铺垫。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_001",
+        "SAU_E01_SC001_002",
+        "SAU_E01_SC001_003"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "ef1b34ddcd27a58d76266208f2944c10fa4de36fa08ddd613924a7bd5e7c61ff"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_character_effects_0_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[0].character_effects[0].character_ref",
+      "raw_text": "顾沉",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "37d893145ccb41d2156ec7614a47c157bb7199c55a2f1f99b8972783ff61b399"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_character_effects_0_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[0].character_effects[0].effect",
+      "raw_text": "以引导者的姿态出现，动作与语气都保持分寸感，把注意力交给林晚与铁盒，自身情绪不外露，只在林晚读标签时保持观察性的静默。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "林晚"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "以引导者的姿态出现，动作与语气都保持分寸感，把注意力交给林晚与铁盒，自身情绪不外露，只在林晚读标签时保持观察性的静默。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "32521cd211a204fa0bf5012454d5a9cf65997d2217052c3afc0a79ceaae0f441"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_character_effects_1_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[0].character_effects[1].character_ref",
+      "raw_text": "林晚",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "林晚"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a9384c7e24f1118f279b88c360789e476b1f0f4195fc250c9c21be1658522c67"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_character_effects_1_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[0].character_effects[1].effect",
+      "raw_text": "从进入暗房的拘谨转为被母亲手写标签牵住的凝滞，出现想辨认又不敢确认的迟疑，视线与呼吸都放慢，为后续的身份怀疑埋下表演伏笔。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "从进入暗房的拘谨转为被母亲手写标签牵住的凝滞，出现想辨认又不敢确认的迟疑，视线与呼吸都放慢，为后续的身份怀疑埋下表演伏笔。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "1e291ca772a9ffdc4984ca4a2671a45bf23a7d76e46b5736198c108db36ee95d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_0_character_effects_1_effect_OBJECT_PROPERTY_05",
+      "source_path": "beat_enrichments[0].character_effects[1].effect",
+      "raw_text": "从进入暗房的拘谨转为被母亲手写标签牵住的凝滞，出现想辨认又不敢确认的迟疑，视线与呼吸都放慢，为后续的身份怀疑埋下表演伏笔。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_beat_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[1].beat_ref",
+      "raw_text": "DBP_E01_SC001_002",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "beat_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "DBP_E01_SC001_002"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "1b523d29a091163fd9a75edade0dc1e6a62ad56a3f92030fd54b2a5b8871c6ee"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_audience_effect_AUDIENCE_EFFECT_00",
+      "source_path": "beat_enrichments[1].audience_effect",
+      "raw_text": "观众与林晚同时发现盒内空缺，烧焦胶片与海鸥别针把谜题从物件转向林晚自身，产生她与这个空间到底有过什么联系的疑问。",
+      "claim_type": "AUDIENCE_EFFECT",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "experience",
+      "object": {
+        "kind": "EFFECT",
+        "ref": "观众与林晚同时发现盒内空缺，烧焦胶片与海鸥别针把谜题从物件转向林晚自身，产生她与这个空间到底有过什么联系的疑问。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "71c6d777ae910a7adcd1918b29666f1b77006f0b23ad31c9de412394217295b6"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_performance_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[1].performance",
+      "raw_text": "林晚认出别针的瞬间不应是恍然大悟，而是一种认得却接不上的错位感：眼神先是一紧，随即陷入想不起来的空白，手指在别针附近悬停而不触碰，呼吸出现细微紊乱。她对童年是否来过这里的不确定要以可表演的犹疑呈现——欲言又止、视线游移、试图回忆却抓不住，绝不表现为确认或否定。顾沉在此段保持静观，不替她填补空白。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "林晚认出别针的瞬间不应是恍然大悟，而是一种认得却接不上的错位感：眼神先是一紧，随即陷入想不起来的空白，手指在别针附近悬停而不触碰，呼吸出现细微紊乱。她对童年是否来过这里的不确定要以可表演的犹疑呈现——欲言又止、视线游移、试图回忆却抓不住，绝不表现为确认或否定。顾沉在此段保持静观，不替她填补空白。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a5be906802faeaf746ab89a07be510a630d0ba07c6ae6d04f0ed8aab8208af49"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_transition_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[1].transition",
+      "raw_text": "物件之谜转为身份之谜，林晚的不确定成为本段落的情绪核心，为下一段顾沉抛出胶片被拿走的事实蓄势。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "物件之谜转为身份之谜，林晚的不确定成为本段落的情绪核心，为下一段顾沉抛出胶片被拿走的事实蓄势。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_004",
+        "SAU_E01_SC001_005"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "e0a7d316331e51fe069bf6f3d3edbadf541d6c6a0aeb6489441622b64bfb050e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_character_effects_0_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[1].character_effects[0].character_ref",
+      "raw_text": "林晚",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "林晚"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a9384c7e24f1118f279b88c360789e476b1f0f4195fc250c9c21be1658522c67"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_character_effects_0_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[1].character_effects[0].effect",
+      "raw_text": "认出别针却无法确认自身记忆，表演上呈现认得与想不起来之间的撕扯，出现停顿、视线游移、欲言又止的可玩味状态，不走向任何确认。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "认出别针却无法确认自身记忆，表演上呈现认得与想不起来之间的撕扯，出现停顿、视线游移、欲言又止的可玩味状态，不走向任何确认。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "24f59d970e4db68a1528125beb76a1dfc2aaae4c3deb60db86f026531bb6aea9"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_character_effects_1_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[1].character_effects[1].character_ref",
+      "raw_text": "顾沉",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "37d893145ccb41d2156ec7614a47c157bb7199c55a2f1f99b8972783ff61b399"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_1_character_effects_1_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[1].character_effects[1].effect",
+      "raw_text": "保持观察者的静默，不主动解释别针来历，只在林晚陷入空白时以克制的注视承接，情绪不外露。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "林晚"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "保持观察者的静默，不主动解释别针来历，只在林晚陷入空白时以克制的注视承接，情绪不外露。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "cf1c3605842002876a8f791cfb32e9fe2c28985c475efb6096d66aa8bfa3f8e7"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_beat_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[2].beat_ref",
+      "raw_text": "DBP_E01_SC001_003",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "beat_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "DBP_E01_SC001_003"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7d439239a7923c2dd99d9f3640e995fe5366a709a069a7edb005fd95f2188fb5"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_audience_effect_AUDIENCE_EFFECT_00",
+      "source_path": "beat_enrichments[2].audience_effect",
+      "raw_text": "观众被顾沉那句也许是你自己击中，外部失窃瞬间转为对林晚内心的拷问，戏剧问题被直接摆上台面。",
+      "claim_type": "AUDIENCE_EFFECT",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "experience",
+      "object": {
+        "kind": "EFFECT",
+        "ref": "观众被顾沉那句也许是你自己击中，外部失窃瞬间转为对林晚内心的拷问，戏剧问题被直接摆上台面。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7ae2dbcce4c24a20297bf7fcb15ced5c058bb7736a2c61c6417e18a614884eaf"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_performance_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[2].performance",
+      "raw_text": "顾沉说出也许是你自己时，语气应平直而不带审判，语速略缓，让这句话像一枚钉子落下而非一次攻击，说完后留出沉默的余地。林晚的追问是谁要带着迫切与一丝自我怀疑，被回应后表演上出现被击中的停顿——呼吸一滞、眼神失焦、身体微僵，随即转为防御性的反问或否认倾向，但不给出结论。两人的对峙依靠沉默与眼神的重量推进。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "顾沉说出也许是你自己时，语气应平直而不带审判，语速略缓，让这句话像一枚钉子落下而非一次攻击，说完后留出沉默的余地。林晚的追问是谁要带着迫切与一丝自我怀疑，被回应后表演上出现被击中的停顿——呼吸一滞、眼神失焦、身体微僵，随即转为防御性的反问或否认倾向，但不给出结论。两人的对峙依靠沉默与眼神的重量推进。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2cb31cb198148eab8c38a0c9bd0a8bdacd925779b45fcb26cf380e35f2736000"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_transition_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[2].transition",
+      "raw_text": "心理对峙达到本场景的高点，随即被门外铜铃声打断，为下一段外部威胁的介入让出通道。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "心理对峙达到本场景的高点，随即被门外铜铃声打断，为下一段外部威胁的介入让出通道。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_006",
+        "SAU_E01_SC001_007",
+        "SAU_E01_SC001_008"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "74e060397f33cab36926bb88f9abe6f15d4eda38d4f9ff66a81c219f20250941"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_character_effects_0_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[2].character_effects[0].character_ref",
+      "raw_text": "顾沉",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "37d893145ccb41d2156ec7614a47c157bb7199c55a2f1f99b8972783ff61b399"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_character_effects_0_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[2].character_effects[0].effect",
+      "raw_text": "以平直克制的语气抛出指向林晚自身的暗示，不带审判色彩，说完后保持沉默，把重量交给对方承受。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "林晚"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "以平直克制的语气抛出指向林晚自身的暗示，不带审判色彩，说完后保持沉默，把重量交给对方承受。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7cbb4ed8319ed5c3cb9d95cc9a356ae20f9338e563addaf7686220fab29234a9"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_character_effects_1_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[2].character_effects[1].character_ref",
+      "raw_text": "林晚",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "林晚"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a9384c7e24f1118f279b88c360789e476b1f0f4195fc250c9c21be1658522c67"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_2_character_effects_1_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[2].character_effects[1].effect",
+      "raw_text": "从迫切追问转为被击中的停顿，呼吸一滞、眼神失焦、身体微僵，随后出现防御性反应倾向，全程不走向确认或否认的结论。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "从迫切追问转为被击中的停顿，呼吸一滞、眼神失焦、身体微僵，随后出现防御性反应倾向，全程不走向确认或否认的结论。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "cb2972ac5f56eb4299444476a662cd28841c970bcc22673e144a352c819566ea"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_beat_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[3].beat_ref",
+      "raw_text": "DBP_E01_SC001_004",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "beat_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "DBP_E01_SC001_004"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "8005ba5715cbb3047626f1f3aa0d71a02ee6f4ddad5df8650ca8ce00477b6247"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_audience_effect_AUDIENCE_EFFECT_00",
+      "source_path": "beat_enrichments[3].audience_effect",
+      "raw_text": "观众与两人一同被拖入黑暗中的躲藏状态，湿皮鞋与车票上的指令制造强烈的外部威胁感，并留下今晚十点北堤仓库的明确行动钩子。",
+      "claim_type": "AUDIENCE_EFFECT",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "experience",
+      "object": {
+        "kind": "EFFECT",
+        "ref": "观众与两人一同被拖入黑暗中的躲藏状态，湿皮鞋与车票上的指令制造强烈的外部威胁感，并留下今晚十点北堤仓库的明确行动钩子。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a823308402329f561aa353ad2ffb0e17c1f98534c73b32c7b241c53e6effff67"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_performance_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[3].performance",
+      "raw_text": "铜铃声响起的瞬间，两人的反应要同步而克制：顾沉熄灯与拉人躲藏的动作果断无声，林晚被带动时出现短暂的惊愕与被动跟随。躲藏状态下两人呼吸压低、身体紧绷、视线共同落向门缝方向。湿皮鞋出现时表演上保持屏息的静止，不新增任何关于门外人的身份判断。车票被塞入后，林晚读到背面字迹时的反应是本段落的落点：瞳孔变化、呼吸微顿，尤其在读到不要带顾沉时出现一瞬间的、下意识的侧目或掩饰，但不表态。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "铜铃声响起的瞬间，两人的反应要同步而克制：顾沉熄灯与拉人躲藏的动作果断无声，林晚被带动时出现短暂的惊愕与被动跟随。躲藏状态下两人呼吸压低、身体紧绷、视线共同落向门缝方向。湿皮鞋出现时表演上保持屏息的静止，不新增任何关于门外人的身份判断。车票被塞入后，林晚读到背面字迹时的反应是本段落的落点：瞳孔变化、呼吸微顿，尤其在读到不要带顾沉时出现一瞬间的、下意识的侧目或掩饰，但不表态。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "10b50ad081b19ac6cb5f60d82583af6dd8154427edf10d82589e185d306faee0"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_transition_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[3].transition",
+      "raw_text": "场景从心理对峙彻底转向外部威胁与行动悬念，车票指令成为通往下一场戏的出口。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "场景从心理对峙彻底转向外部威胁与行动悬念，车票指令成为通往下一场戏的出口。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [
+        "SAU_E01_SC001_009",
+        "SAU_E01_SC001_010",
+        "SAU_E01_SC001_011",
+        "SAU_E01_SC001_012"
+      ],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "e01bc517e5723d6aea82e473f33a7f6335ab4ac312dc171b8998f735b3343177"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_0_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[3].character_effects[0].character_ref",
+      "raw_text": "顾沉",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "37d893145ccb41d2156ec7614a47c157bb7199c55a2f1f99b8972783ff61b399"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_0_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[3].character_effects[0].effect",
+      "raw_text": "面对突发状况反应果断而无声，熄灯与带人躲藏一气呵成，躲藏后保持高度警觉的静止，视线锁定门缝方向。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "面对突发状况反应果断而无声，熄灯与带人躲藏一气呵成，躲藏后保持高度警觉的静止，视线锁定门缝方向。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "fb68a92efea425e0ffccbaa735bd76b8e95a6c22cd59dd68757763e18de39e58"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_1_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "beat_enrichments[3].character_effects[1].character_ref",
+      "raw_text": "林晚",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "林晚"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a9384c7e24f1118f279b88c360789e476b1f0f4195fc250c9c21be1658522c67"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_beat_enrichments_3_character_effects_1_effect_PERFORMANCE_DIRECTION_00",
+      "source_path": "beat_enrichments[3].character_effects[1].effect",
+      "raw_text": "被突发声响惊动后出现短暂惊愕与被动跟随，躲藏中呼吸压低、身体紧绷；读到车票字迹时瞳孔与呼吸出现细微变化，在不要带顾沉一句上有一瞬下意识的侧目或掩饰，但不表态。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "被突发声响惊动后出现短暂惊愕与被动跟随，躲藏中呼吸压低、身体紧绷；读到车票字迹时瞳孔与呼吸出现细微变化，在不要带顾沉一句上有一瞬下意识的侧目或掩饰，但不表态。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "ece6e8b3c2e2090c7f7ec43529501ec1a59eb437544cff2025071b36e25365de"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "character_directions[0].character_ref",
+      "raw_text": "林晚",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "林晚"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a9384c7e24f1118f279b88c360789e476b1f0f4195fc250c9c21be1658522c67"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_direction_PERFORMANCE_DIRECTION_00",
+      "source_path": "character_directions[0].direction",
+      "raw_text": "以一个对暗房与母亲遗物既陌生又被牵引的状态进入场景，全程在认得与想不起来之间摇摆，被顾沉的暗示击中后转入防御性的自我怀疑，最终在车票指令前压下复杂反应。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "以一个对暗房与母亲遗物既陌生又被牵引的状态进入场景，全程在认得与想不起来之间摇摆，被顾沉的暗示击中后转入防御性的自我怀疑，最终在车票指令前压下复杂反应。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "4a397455a261549b5c2a3b2878de18c6fe1d1535301953c10ff9df725ca8a8b4"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_objective_CHARACTER_INTENT_00",
+      "source_path": "character_directions[0].objective",
+      "raw_text": "在母亲留下的物件与顾沉的指控之间，试图弄清自己与这个空间、与失窃胶片之间究竟存在什么联系，同时不在任何人面前暴露自己的动摇。",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "在母亲留下的物件与顾沉的指控之间，试图弄清自己与这个空间、与失窃胶片之间究竟存在什么联系，同时不在任何人面前暴露自己的动摇。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "3a68cda7fd5e826dc28d313d537416811e4e50a3ebac23d9743a41891d286305"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_objective_OBJECT_PROVENANCE_07",
+      "source_path": "character_directions[0].objective",
+      "raw_text": "在母亲留下的物件与顾沉的指控之间，试图弄清自己与这个空间、与失窃胶片之间究竟存在什么联系，同时不在任何人面前暴露自己的动摇。",
+      "claim_type": "OBJECT_PROVENANCE",
+      "subject": {
+        "kind": "PERSON",
+        "ref": "母亲"
+      },
+      "predicate": "left_by",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "物件"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "61fced1c66d8b8dd0b27951986c2d189b2a097e252355c9bda1d41e210c73414"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_obstacle_CHARACTER_STATE_00",
+      "source_path": "character_directions[0].obstacle",
+      "raw_text": "她的记忆本身是断裂的——认出别针却想不起童年是否来过，顾沉那句也许是你自己又把怀疑引向她自身，使她既无法自证也无法自清。",
+      "claim_type": "CHARACTER_STATE",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "condition",
+      "object": {
+        "kind": "STATE",
+        "ref": "她的记忆本身是断裂的——认出别针却想不起童年是否来过，顾沉那句也许是你自己又把怀疑引向她自身，使她既无法自证也无法自清。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "371a71a92672d4f13687541b194555e9ae7abe41d13c89679041e7f90d108f14"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_strategy_PERFORMANCE_DIRECTION_00",
+      "source_path": "character_directions[0].strategy",
+      "raw_text": "以克制的观察与有限的追问应对，试图用问题换取信息，同时用沉默与掩饰保护自己的不确定，不在顾沉面前露出结论。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "以克制的观察与有限的追问应对，试图用问题换取信息，同时用沉默与掩饰保护自己的不确定，不在顾沉面前露出结论。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "644e1638f129de2bdc572e04139986b9d3adb5e53938203f836c4f536dc971ca"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_performance_notes_PERFORMANCE_DIRECTION_00",
+      "source_path": "character_directions[0].performance_notes",
+      "raw_text": "关键表演节点：读母亲手写标签时的凝滞；认出别针却接不上的错位停顿；被也许是你自己击中后的呼吸一滞与眼神失焦；读到不要带顾沉时一瞬的侧目或掩饰。全程保持不确定的可玩味状态，不走向确认或否认。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "关键表演节点：读母亲手写标签时的凝滞；认出别针却接不上的错位停顿；被也许是你自己击中后的呼吸一滞与眼神失焦；读到不要带顾沉时一瞬的侧目或掩饰。全程保持不确定的可玩味状态，不走向确认或否认。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "bb1e3f35f69a4b3373f7244268d8a917a040de3fc88d85402f2ed93a8d73935f"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_0_performance_notes_OBJECT_PROPERTY_05",
+      "source_path": "character_directions[0].performance_notes",
+      "raw_text": "关键表演节点：读母亲手写标签时的凝滞；认出别针却接不上的错位停顿；被也许是你自己击中后的呼吸一滞与眼神失焦；读到不要带顾沉时一瞬的侧目或掩饰。全程保持不确定的可玩味状态，不走向确认或否认。",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_1_character_ref_AUDIENCE_INTERPRETATION_00",
+      "source_path": "character_directions[1].character_ref",
+      "raw_text": "顾沉",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "character_ref",
+      "object": {
+        "kind": "TEXT",
+        "ref": "顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "37d893145ccb41d2156ec7614a47c157bb7199c55a2f1f99b8972783ff61b399"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_1_direction_PERFORMANCE_DIRECTION_00",
+      "source_path": "character_directions[1].direction",
+      "raw_text": "以引导者与信息掌握者的姿态贯穿场景，语气克制平直，把谜题一层层交到林晚面前，面对突发状况时果断无声，全程情绪不外露。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "林晚"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "以引导者与信息掌握者的姿态贯穿场景，语气克制平直，把谜题一层层交到林晚面前，面对突发状况时果断无声，全程情绪不外露。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "ab81572a75abeace84314cd1802fc3888cf8fe5631dd182368840e6b1f6cb091"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_1_objective_CHARACTER_INTENT_00",
+      "source_path": "character_directions[1].objective",
+      "raw_text": "让林晚直面暗房与铁盒的真相，并在适当时机把胶片被拿走与指向她自身的暗示交出去，同时在外部威胁出现时迅速掌控局面。",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "objective",
+      "object": {
+        "kind": "INTENT",
+        "ref": "让林晚直面暗房与铁盒的真相，并在适当时机把胶片被拿走与指向她自身的暗示交出去，同时在外部威胁出现时迅速掌控局面。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "0c72b1849f8ea194669e49979900e598087953e82f1029c28c6afe327ae3043a"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_1_obstacle_CHARACTER_STATE_00",
+      "source_path": "character_directions[1].obstacle",
+      "raw_text": "门外神秘人的介入打断了他的节奏，他必须在保护林晚与维持自身信息优势之间即时权衡，且不能暴露自己对门外状况的判断。",
+      "claim_type": "CHARACTER_STATE",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "condition",
+      "object": {
+        "kind": "STATE",
+        "ref": "门外神秘人的介入打断了他的节奏，他必须在保护林晚与维持自身信息优势之间即时权衡，且不能暴露自己对门外状况的判断。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9fad3a5fcb989bf1dd517526fd75c6ddfed71f36f3c09590c56c81ba86d9c5e2"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_1_strategy_PERFORMANCE_DIRECTION_00",
+      "source_path": "character_directions[1].strategy",
+      "raw_text": "以少言、慢速、留白的方式推进，用沉默代替解释，把重量交给林晚承受；突发状况下以行动而非言语应对。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "林晚"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "以少言、慢速、留白的方式推进，用沉默代替解释，把重量交给林晚承受；突发状况下以行动而非言语应对。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "8dbc922640f71a2713e900f58ba4f652049b1742789d5e25ff4ce08102c3abfd"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_character_directions_1_performance_notes_PERFORMANCE_DIRECTION_00",
+      "source_path": "character_directions[1].performance_notes",
+      "raw_text": "关键表演节点：引导进入暗房时的沉稳分寸；提及标签时的停顿；说出也许是你自己时的平直语速与说完后的沉默；熄灯与带人躲藏的果断无声；躲藏后屏息警觉的静止。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "关键表演节点：引导进入暗房时的沉稳分寸；提及标签时的停顿；说出也许是你自己时的平直语速与说完后的沉默；熄灯与带人躲藏的果断无声；躲藏后屏息警觉的静止。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "c6038d9d8ed96a66b65f15ac47f64a29417a786c239de253fbd1a5c8c075e433"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_0_phase_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[0].phase",
+      "raw_text": "进入暗房",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "进入暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2df6f2f7aadaccac92615b603d099623f01d29ba100933e0c3c4349bc8ac7f74"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_0_state_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[0].state",
+      "raw_text": "拘谨、警觉、被红色安全灯与母亲手写标签逐步牵引的凝滞",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "拘谨、警觉、被红色安全灯与母亲手写标签逐步牵引的凝滞"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "fffc14051ca8094833f03c4da4e62b3bae453f09f76925a49e0f41e56eb83d17"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_0_state_OBJECT_PROPERTY_05",
+      "source_path": "performance_arc[0].state",
+      "raw_text": "拘谨、警觉、被红色安全灯与母亲手写标签逐步牵引的凝滞",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_1_phase_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[1].phase",
+      "raw_text": "发现盒内空缺",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "发现盒内空缺"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "17b3cb97bd3b790377008e08a26d803369d311101ed80b3363725cafb8267d03"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_1_state_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[1].state",
+      "raw_text": "认得却接不上的错位与想不起来的空白，不确定感加深",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "认得却接不上的错位与想不起来的空白，不确定感加深"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "15874acdb3fac2abc049bde9870065f72de4f5e40a99cf1847af40db187dc7fe"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_2_phase_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[2].phase",
+      "raw_text": "面对指控",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "面对指控"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "cecd0cb422009470910c4ab83b0d66c9d6b09d0de4c8ed48b9dce962764751b9"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_2_state_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[2].state",
+      "raw_text": "被也许是你自己击中后的停顿、失焦与防御性动摇",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "被也许是你自己击中后的停顿、失焦与防御性动摇"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2465f624b988c25073c6e8b620420121068e2d7d3c809df96f6d7e94aae6e22e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_3_phase_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[3].phase",
+      "raw_text": "遭遇外部威胁",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "遭遇外部威胁"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7ab5e982aaacd0f5b12f8c2722f58031d6666f849d144b262252cafc34950bd6"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_performance_arc_3_state_PERFORMANCE_DIRECTION_00",
+      "source_path": "performance_arc[3].state",
+      "raw_text": "屏息紧绷的躲藏，读到车票指令时压下的复杂反应",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "屏息紧绷的躲藏，读到车票指令时压下的复杂反应"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "24d86620e0fa56676c22e372de1a2caf50921012cfd32756ea5b160e7e963ab6"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_schema_version_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.schema_version",
+      "raw_text": "director_information_strategy_v2",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "schema_version",
+      "object": {
+        "kind": "TEXT",
+        "ref": "director_information_strategy_v2"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "222a9cc32cfafc489fa9c4ca8d838174d994ac8276894efa3a044d821f7b1404"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_0_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[0]",
+      "raw_text": "顾沉带林晚进入暗房",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "顾沉带林晚进入暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "dae3af1fd8e6eba93eb8821306deb04b8d0f43b1c1432b7e439d71c8b82c34b0"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_1_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[1]",
+      "raw_text": "红色安全灯忽明忽暗，墙上水渍像倒置的地图",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "红色安全灯忽明忽暗，墙上水渍像倒置的地图"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "6dd97671d87975594b8297ab69a4c361906c123a177e85a13a35b1c5e6960397"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_2_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[2]",
+      "raw_text": "暗房中央铁盒上贴着母亲手写标签：第七次潮汐",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "暗房中央铁盒上贴着母亲手写标签：第七次潮汐"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "4a62e21bb5bb47a8435125a4ae3789b0c70ac66b98f65af88ac20656d261c295"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_2_OBJECT_PROPERTY_05",
+      "source_path": "information_strategy.known_to_audience[2]",
+      "raw_text": "暗房中央铁盒上贴着母亲手写标签：第七次潮汐",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_3_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[3]",
+      "raw_text": "铁盒是空的，只有烧焦的胶片和海鸥别针",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "铁盒是空的，只有烧焦的胶片和海鸥别针"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "3284af7ed8e792e589686eb0ce14dfa2d40fefa43f9718d7f4b7e960a8ed8f67"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_4_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[4]",
+      "raw_text": "林晚认出别针与照片里小女孩佩戴的一模一样",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚认出别针与照片里小女孩佩戴的一模一样"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "b7a81e2889791e364faa3d086d467902f4b41d810338e8f3bc0da3f355d05244"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_5_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[5]",
+      "raw_text": "林晚想不起自己童年是否来过这里",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚想不起自己童年是否来过这里"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2ff0ff6085bb5f827337b16f5460998b01296fbfe4342f8d6097334c3035acee"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_6_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[6]",
+      "raw_text": "顾沉说胶片被人拿走了",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "顾沉说胶片被人拿走了"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "549f4b6247e93078d5e9a7152498bbacff6898c9e282df90951dad1c2b043e8b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_7_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[7]",
+      "raw_text": "顾沉暗示拿走胶片的也许就是林晚自己",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "顾沉暗示拿走胶片的也许就是林晚自己"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d7d48310e150afb7e4186589fbbc080fa7fb87126597ecbc5ca3bd7426de961b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_8_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[8]",
+      "raw_text": "门外出现湿透的皮鞋",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "门外出现湿透的皮鞋"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9abe4fa306efbcd12be54ef2f9bd358e15fdacc5055097880ac5395f85849652"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_9_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[9]",
+      "raw_text": "陌生人塞入一张车票",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "陌生人塞入一张车票"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "cb6e839fcbd3336b9f36be573438dbacef6f238cf7a0ace76c097352fc617844"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_known_to_audience_10_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.known_to_audience[10]",
+      "raw_text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "512b9bb7cc7fa5007fa1c67cdfdad32a6630219ce165112abbc664f4835d3053"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_withheld_from_audience_0_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.withheld_from_audience[0]",
+      "raw_text": "林晚童年是否真的来过暗房",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "withheld_from_audience[0]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "林晚童年是否真的来过暗房"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "3dbb822566a36b9c0f862bec8d8432eeeb0201621d7a2fa455bf28828aa6eab1"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_withheld_from_audience_1_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.withheld_from_audience[1]",
+      "raw_text": "照片里小女孩的身份与林晚的关系",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "withheld_from_audience[1]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "照片里小女孩的身份与林晚的关系"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "19db0d5ad657e8b8b6b343c08710f92dc6a2f0fb18b2c0fa04e8548e8bcc8ef9"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_withheld_from_audience_2_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.withheld_from_audience[2]",
+      "raw_text": "胶片究竟被谁拿走",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "withheld_from_audience[2]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "胶片究竟被谁拿走"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "abc0c89f484b8a5a8f8ab54e1a778c8172c23999d0d55f7e44fce5767e9b5752"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_withheld_from_audience_3_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.withheld_from_audience[3]",
+      "raw_text": "门外湿皮鞋主人的身份与目的",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "withheld_from_audience[3]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "门外湿皮鞋主人的身份与目的"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "28694edf9f9b30237e00fe85ff8b7bc5b1e14734146275c2321b44c1932eab02"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_withheld_from_audience_4_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.withheld_from_audience[4]",
+      "raw_text": "车票指令背后的目的与钥匙所指",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "withheld_from_audience[4]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "车票指令背后的目的与钥匙所指"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "4cc4516c3fab719f61caf62af2bcef51ec3dc9933cd47c6c1e83babfad618098"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_withheld_from_audience_5_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.withheld_from_audience[5]",
+      "raw_text": "顾沉对门外状况的真实判断",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "DIRECTOR",
+        "ref": "STAGE_B"
+      },
+      "predicate": "withheld_from_audience[5]",
+      "object": {
+        "kind": "TEXT",
+        "ref": "顾沉对门外状况的真实判断"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "268a5f08e65956d480981c16e7bb82c5f8a0453386db1efc4fcd4852af7df9b5"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_beat_id_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[0].beat_id",
+      "raw_text": "DBP_E01_SC001_001",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "DBP_E01_SC001_001"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "945378c87484052306968457f843f14a459d1839263da1200a01461267e80f40"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_reveals_0_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[0].reveals[0]",
+      "raw_text": "暗房空间与红色安全灯基调",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "暗房空间与红色安全灯基调"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "10330c4636ab999472ce48e9d98d4cfd73ae902930677582dd4d972ac1078839"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_reveals_1_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[0].reveals[1]",
+      "raw_text": "母亲手写标签：第七次潮汐",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "母亲手写标签：第七次潮汐"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9e599bbfd87f1c72aea22bc74f025ffd1b7866bd64e5d177bc07b37d8adeccb4"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_reveals_1_OBJECT_PROPERTY_05",
+      "source_path": "information_strategy.reveal_plan[0].reveals[1]",
+      "raw_text": "母亲手写标签：第七次潮汐",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_withholds_0_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[0].withholds[0]",
+      "raw_text": "铁盒内容物",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "铁盒内容物"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "864c67eee58e9f2a2c6145af25d2c65f1abd902ac5ce94e234f9bb204b16e514"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_withholds_1_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[0].withholds[1]",
+      "raw_text": "林晚与空间的联系",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚与空间的联系"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "af7a57394e0663f606d6781d9bf6d8de100d1193e85b4e08154af40cc93ee12c"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_audience_should_notice_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[0].audience_should_notice",
+      "raw_text": "母亲手写标签的字迹与林晚读到它时的凝滞反应",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_notice",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "母亲手写标签的字迹与林晚读到它时的凝滞反应"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "869335470fb122156213f3ef95a0c3f0087e0dd0a727cfb4ce6fd943e61f8164"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_audience_should_notice_OBJECT_PROPERTY_05",
+      "source_path": "information_strategy.reveal_plan[0].audience_should_notice",
+      "raw_text": "母亲手写标签的字迹与林晚读到它时的凝滞反应",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_0_audience_should_not_yet_know_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[0].audience_should_not_yet_know",
+      "raw_text": "铁盒是空的，以及林晚与这个空间可能存在的联系",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_not_yet_know",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "铁盒是空的，以及林晚与这个空间可能存在的联系"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "73ef76e73665577c7c0c279b9fbccc0bdf5b940436a5c421a97503bb72ccf453"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_beat_id_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[1].beat_id",
+      "raw_text": "DBP_E01_SC001_002",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "DBP_E01_SC001_002"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "5a5c6fcbb4e1150bc0f5a4b0a84227a67ccbe1bad04e0654c1135ce7a5544a7e"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_reveals_0_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[1].reveals[0]",
+      "raw_text": "铁盒是空的",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "铁盒是空的"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "bf25404b6d1f830eb5aaf7652b9fe7bac41c682317430f4d7bdca32efb17858f"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_reveals_1_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[1].reveals[1]",
+      "raw_text": "烧焦的胶片与海鸥别针",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "烧焦的胶片与海鸥别针"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "6b2f7c6e4bf9f7956621eef0a77c4b02d5bc47c5571779ff6a1472a6af1de9c7"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_reveals_2_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[1].reveals[2]",
+      "raw_text": "林晚认出别针与照片小女孩佩戴的一模一样",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚认出别针与照片小女孩佩戴的一模一样"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "e239c6b51f518138e8d894f8a6d1c76844b8c0b371121e5b8a9f5f3c0fa54203"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_reveals_3_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[1].reveals[3]",
+      "raw_text": "林晚想不起童年是否来过这里",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚想不起童年是否来过这里"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9b60fd6228d7f1ae823ac4768a9ef5aef843c22d0593eb2593c2da7f21ff9408"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_withholds_0_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[1].withholds[0]",
+      "raw_text": "照片小女孩的身份",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "照片小女孩的身份"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a553122504e6bd683a76c23d939184f79cd0253c8a9160ce218087ccc070986d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_withholds_1_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[1].withholds[1]",
+      "raw_text": "林晚记忆缺口的成因",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚记忆缺口的成因"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d66d95503ab0753c0dd20686742c8d6a11e1756a451dd4b670fe3f5aab29472b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_audience_should_notice_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[1].audience_should_notice",
+      "raw_text": "林晚认出别针却接不上的错位停顿",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_notice",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "林晚认出别针却接不上的错位停顿"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9c03e290c93c3b23f76544fd2f4d043fb788dd1ca577bd9f969d3558e6f3231c"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_1_audience_should_not_yet_know_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[1].audience_should_not_yet_know",
+      "raw_text": "林晚与照片小女孩是否为同一人，以及她为何想不起来",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_not_yet_know",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "林晚与照片小女孩是否为同一人，以及她为何想不起来"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2acf22c9eca7782ee5f16e8c53855be99b874e614e454bea3f6030879bb2a6f4"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_beat_id_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[2].beat_id",
+      "raw_text": "DBP_E01_SC001_003",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "DBP_E01_SC001_003"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "b78fee43ddebc9318b6524817af413816449ecc8de47e57a147c33c680cf27f6"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_reveals_0_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[2].reveals[0]",
+      "raw_text": "胶片被人拿走了",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "胶片被人拿走了"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "f0a7f7687da40286063be86012891ebacb551e1bd7003ec1ed687e5817b92b93"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_reveals_1_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[2].reveals[1]",
+      "raw_text": "顾沉暗示拿走胶片的也许就是林晚自己",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "顾沉暗示拿走胶片的也许就是林晚自己"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d7d48310e150afb7e4186589fbbc080fa7fb87126597ecbc5ca3bd7426de961b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_withholds_0_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[2].withholds[0]",
+      "raw_text": "胶片真正的去向",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "胶片真正的去向"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "6ecb5a97631db5053a2ad8fb0f677d2f4d886cff77ff597251f0c907637ed568"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_withholds_1_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[2].withholds[1]",
+      "raw_text": "顾沉此言的真实意图",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "顾沉此言的真实意图"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7fda161ca46462562eb745cd7b570125a03902ce1c5f44ee3c99b15621529796"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_audience_should_notice_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[2].audience_should_notice",
+      "raw_text": "顾沉说出也许是你自己时的平直语气与随后的沉默，以及林晚被击中的反应",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_notice",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "顾沉说出也许是你自己时的平直语气与随后的沉默，以及林晚被击中的反应"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "82494a2031764daea41906047270b27577a444b4f088816036b57c2bd1669dd8"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_audience_should_not_yet_know_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[2].audience_should_not_yet_know",
+      "raw_text": "林晚是否真的拿走胶片，顾沉是否在试探",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_not_yet_know",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "林晚是否真的拿走胶片，顾沉是否在试探"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d445c7cbb5dd995f5890bb39908287694ea221821fffcc9e3a158630497b7dcf"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_2_audience_should_not_yet_know_CHARACTER_INTENT_02",
+      "source_path": "information_strategy.reveal_plan[2].audience_should_not_yet_know",
+      "raw_text": "林晚是否真的拿走胶片，顾沉是否在试探",
+      "claim_type": "CHARACTER_INTENT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "test_or_probe",
+      "object": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "qualifiers": {
+        "dialogue_cue": ""
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d24bb7b748f192134d32450cfc60908d576be178eb558fcf054dd59cc88bce72"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_beat_id_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[3].beat_id",
+      "raw_text": "DBP_E01_SC001_004",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "DBP_E01_SC001_004"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "6d7d2d46d3e30a4f23ee5b1fa7f8861682d9e32d8d76fef07a3a1f4c3158f3cd"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_reveals_0_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[3].reveals[0]",
+      "raw_text": "门外出现湿透的皮鞋",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "门外出现湿透的皮鞋"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9abe4fa306efbcd12be54ef2f9bd358e15fdacc5055097880ac5395f85849652"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_reveals_1_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[3].reveals[1]",
+      "raw_text": "陌生人塞入车票",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "陌生人塞入车票"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "61a6cd0e507819c385de0cba56d58252cd5446c88bda00cea78a312919a45a59"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_reveals_2_INFORMATION_REVEAL_00",
+      "source_path": "information_strategy.reveal_plan[3].reveals[2]",
+      "raw_text": "车票背面指令：今晚十点，北堤仓库，带钥匙，不要带顾沉",
+      "claim_type": "INFORMATION_REVEAL",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "车票背面指令：今晚十点，北堤仓库，带钥匙，不要带顾沉"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "01ee74ad80fd0514fca8df85bdf6a03dba1d2de70821bbe1691a552dabb7117f"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_withholds_0_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[3].withholds[0]",
+      "raw_text": "门外人身份",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "门外人身份"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "01a6c8b3978b82fd7a3f06525719b3401961a0d183e9e7daa0d307acda5767b4"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_withholds_1_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[3].withholds[1]",
+      "raw_text": "钥匙所指",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "钥匙所指"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7c94f81d19fd217657b33081433bf0f7385408ef6bff0be2e20a655bf1b5954a"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_withholds_2_INFORMATION_WITHHOLD_00",
+      "source_path": "information_strategy.reveal_plan[3].withholds[2]",
+      "raw_text": "指令目的",
+      "claim_type": "INFORMATION_WITHHOLD",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "指令目的"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "ecea0475b0a977f16b9a917b23b1399ec8f25dee2cfa390d1c4c282ba18b193c"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_audience_should_notice_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[3].audience_should_notice",
+      "raw_text": "林晚读到不要带顾沉时一瞬的侧目或掩饰",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_notice",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "林晚读到不要带顾沉时一瞬的侧目或掩饰"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "a8b793c2b32f6fb5d0848e51c76d596c6ea9d896ddb63e5ecf6b8fe9b5096fc9"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reveal_plan_3_audience_should_not_yet_know_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reveal_plan[3].audience_should_not_yet_know",
+      "raw_text": "门外人是谁、为何知道林晚在暗房、以及指令的真实目的",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_should_not_yet_know",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "门外人是谁、为何知道林晚在暗房、以及指令的真实目的"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d24864929b0f80eee3138dee380efbc508c5187eda90c59eb04c2721fa5326e3"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reaction_priority_0_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reaction_priority[0]",
+      "raw_text": "林晚读母亲手写标签时的凝滞",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚读母亲手写标签时的凝滞"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "ea501038cf9eac337d6ec970d9e260ab798ea40985ca6ef40ceb55db0bc4de4a"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reaction_priority_0_OBJECT_PROPERTY_05",
+      "source_path": "information_strategy.reaction_priority[0]",
+      "raw_text": "林晚读母亲手写标签时的凝滞",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reaction_priority_1_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reaction_priority[1]",
+      "raw_text": "林晚认出别针却想不起来的错位停顿",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚认出别针却想不起来的错位停顿"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "b4d20b52f6236438d582c1107acd7b5ff65c514487a76d420c58a632f77359d0"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reaction_priority_2_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reaction_priority[2]",
+      "raw_text": "林晚被也许是你自己击中后的停顿与失焦",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚被也许是你自己击中后的停顿与失焦"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "be345b73a93d90e24f90e4e1c9f289cdc0e9d20e85793e65ab38ed41ff2eca37"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reaction_priority_3_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reaction_priority[3]",
+      "raw_text": "两人听见铜铃后的同步屏息",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "两人听见铜铃后的同步屏息"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d3e1cf3b6fdac58ad6ac33cb60f0fc58f3b8c46df7279fae031e3a74d1edcdde"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_reaction_priority_4_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.reaction_priority[4]",
+      "raw_text": "林晚读到不要带顾沉时一瞬的侧目或掩饰",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "information",
+      "object": {
+        "kind": "NARRATIVE_INFORMATION",
+        "ref": "林晚读到不要带顾沉时一瞬的侧目或掩饰"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "759579e43f49bd46b75ee8efa0fbec2ff1329cd7ddc61596fba2d84ac4e456fc"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_audience_focus_0_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.audience_focus[0]",
+      "raw_text": "铁盒与母亲手写标签",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_focus[0]",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "铁盒与母亲手写标签"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7d31ab25d2e5446c775cd4a415b4799c33c49cad54cca83af22026cc99cf39ff"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_audience_focus_0_OBJECT_PROPERTY_05",
+      "source_path": "information_strategy.audience_focus[0]",
+      "raw_text": "铁盒与母亲手写标签",
+      "claim_type": "OBJECT_PROPERTY",
+      "subject": {
+        "kind": "OBJECT",
+        "ref": "铁盒标签"
+      },
+      "predicate": "handwritten",
+      "object": {
+        "kind": "PROPERTY",
+        "ref": "handwritten"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "metadata": {
+        "explicit_target": "铁盒标签"
+      },
+      "fingerprint": "57176a7e294f7d8e46d155195e0982bd56b5dce28ac0ac541ff7b490873f2a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_audience_focus_1_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.audience_focus[1]",
+      "raw_text": "海鸥别针与林晚的反应",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_focus[1]",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "海鸥别针与林晚的反应"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "2043cdddb51d7a5786cd62d4782ae6b1a220fde06ebefce07eb9568aca6d4567"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_audience_focus_2_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.audience_focus[2]",
+      "raw_text": "顾沉说出也许是你自己时的语气与沉默",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_focus[2]",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "顾沉说出也许是你自己时的语气与沉默"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "836323a42eb90665bd5005aea16fff9274ddd356aad5cdb52a5df5eb4df947ff"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_audience_focus_3_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.audience_focus[3]",
+      "raw_text": "门缝下的湿皮鞋",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_focus[3]",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "门缝下的湿皮鞋"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "dbe07676c69af09d27d545aaabb82e4a371d7938e7674c6c25885d2e69672d55"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_information_strategy_audience_focus_4_AUDIENCE_INTERPRETATION_00",
+      "source_path": "information_strategy.audience_focus[4]",
+      "raw_text": "车票背面的字迹",
+      "claim_type": "AUDIENCE_INTERPRETATION",
+      "subject": {
+        "kind": "AUDIENCE",
+        "ref": "viewer"
+      },
+      "predicate": "audience_focus[4]",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "车票背面的字迹"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "AUDIENCE_INTERPRETATION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "1e60b10bd0627dbb7198ae03de908352e37b9bb2c0dbc9cc02c58dba8c6a3759"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_rhythm_strategy_opening_PERFORMANCE_DIRECTION_00",
+      "source_path": "rhythm_strategy.opening",
+      "raw_text": "以顾沉带林晚进入暗房的沉稳引导开场，红色安全灯与水渍墙面铺陈压抑基调，节奏缓慢而克制，让观众先适应空间再遇见铁盒。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "以顾沉带林晚进入暗房的沉稳引导开场，红色安全灯与水渍墙面铺陈压抑基调，节奏缓慢而克制，让观众先适应空间再遇见铁盒。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "5e3e71c60afb3da6cb70dce847e959859346b900b2dd58468502dae6e8c90859"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_rhythm_strategy_reveal_PERFORMANCE_DIRECTION_00",
+      "source_path": "rhythm_strategy.reveal",
+      "raw_text": "铁盒标签、盒内空缺、别针与胶片依次揭开，每一次揭示都伴随林晚的一次停顿，节奏在物件与人物反应之间交替推进。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "林晚"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "铁盒标签、盒内空缺、别针与胶片依次揭开，每一次揭示都伴随林晚的一次停顿，节奏在物件与人物反应之间交替推进。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "c0c991e4ee8aa46dbeeaa91627f74a559bb53e3ce72b80a9da4bfd2e55941081"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_rhythm_strategy_escalation_PERFORMANCE_DIRECTION_00",
+      "source_path": "rhythm_strategy.escalation",
+      "raw_text": "顾沉抛出胶片被拿走的事实并暗示指向林晚，心理对峙收紧，沉默与眼神的重量取代对白，节奏压至最密。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "顾沉抛出胶片被拿走的事实并暗示指向林晚，心理对峙收紧，沉默与眼神的重量取代对白，节奏压至最密。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "e23203055ec527dda248a907308c8526b20015adf403ed75f268c5d6aec24fa1"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_rhythm_strategy_button_PERFORMANCE_DIRECTION_00",
+      "source_path": "rhythm_strategy.button",
+      "raw_text": "铜铃声骤然打断对峙，熄灯躲藏，湿皮鞋与车票指令把场景从心理戏甩向外部威胁，以车票背面的字迹作为收束钩子。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "scene"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "铜铃声骤然打断对峙，熄灯躲藏，湿皮鞋与车票指令把场景从心理戏甩向外部威胁，以车票背面的字迹作为收束钩子。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "21b327d7e0852c241b018c176467b622146765e67409142631e3bb2e1ee89fc9"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_scene_exit_intent_PERFORMANCE_DIRECTION_00",
+      "source_path": "scene_exit_intent",
+      "raw_text": "带着林晚被指控后的未解动摇与车票指令的明确行动钩子离开本场，让观众迫切想知道林晚是否会赴今晚十点北堤仓库之约，以及她是否会带上顾沉。",
+      "claim_type": "PERFORMANCE_DIRECTION",
+      "subject": {
+        "kind": "PERFORMER",
+        "ref": "顾沉"
+      },
+      "predicate": "play",
+      "object": {
+        "kind": "DIRECTION",
+        "ref": "带着林晚被指控后的未解动摇与车票指令的明确行动钩子离开本场，让观众迫切想知道林晚是否会赴今晚十点北堤仓库之约，以及她是否会带上顾沉。"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "PLAYABLE_OPTION",
+      "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+      "authority_required": "STAGE_B",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "7123d872451beea94a50a43a0e6b0ba6df418a51424d8fa18041690c575eaff7"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_0_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[0]",
+      "raw_text": "不得将林晚想不起童年是否来过暗房表现为首次、从未或确认来过",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得将林晚想不起童年是否来过暗房表现为首次、从未或确认来过"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "c979f063b4a9d1aaf2a16b9455f860726291842aaf183f14197ae675ba992c45"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_0_CERTAINTY_ASSERTION_08",
+      "source_path": "prohibited_interpretations[0]",
+      "raw_text": "不得将林晚想不起童年是否来过暗房表现为首次、从未或确认来过",
+      "claim_type": "CERTAINTY_ASSERTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "林晚"
+      },
+      "predicate": "first_or_never",
+      "object": {
+        "kind": "EVENT",
+        "ref": "darkroom_visit"
+      },
+      "qualifiers": {
+        "cue": "首次"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "35f5dd21a27db3fc8c7257e8e9a86dcb781b02db7f962417d20179451f147b35"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_1_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[1]",
+      "raw_text": "不得将顾沉的也许是你自己表现为确凿指控或已确认林晚就是拿走胶片的人",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得将顾沉的也许是你自己表现为确凿指控或已确认林晚就是拿走胶片的人"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "d129577e53a0ee397c06992556572e52bbcc8fb0d5941e817608ec7a0387ec19"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_2_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[2]",
+      "raw_text": "不得表现林晚或顾沉打开铁盒、拿起别针、取走胶片或交出钥匙等来源未支持的关键道具动作",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得表现林晚或顾沉打开铁盒、拿起别针、取走胶片或交出钥匙等来源未支持的关键道具动作"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "e5e126bdc68fb4b1cd621653714d47cfaddc1d4bf4156d9c05c11a0511440da4"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_2_CHARACTER_ACTION_09",
+      "source_path": "prohibited_interpretations[2]",
+      "raw_text": "不得表现林晚或顾沉打开铁盒、拿起别针、取走胶片或交出钥匙等来源未支持的关键道具动作",
+      "claim_type": "CHARACTER_ACTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "顾沉"
+      },
+      "predicate": "opens",
+      "object": {
+        "kind": "OBJECT",
+        "ref": "铁盒"
+      },
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "canonicality": "CANONICAL_ASSERTION",
+      "authority_required": "SOURCE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "20cd39f6f80826fe2d580eefafdd0bf054fe87d3efdc13f9373c25b06c997373"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_3_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[3]",
+      "raw_text": "不得为林晚与顾沉指定具体走位、路径、站位或移动方式",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得为林晚与顾沉指定具体走位、路径、站位或移动方式"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "9aae172e98bdda5f76b8c1fa54cec4f90dc08ac7914be89dde9f82fdf17adfde"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_4_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[4]",
+      "raw_text": "不得指定镜头景别、机位、焦段、运镜、构图或具体镜头执行",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得指定镜头景别、机位、焦段、运镜、构图或具体镜头执行"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "1ef693bebf2f3c9c1b7e09ead3c01eae97da69aab3464a8472dc1cfa0e75230b"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_5_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[5]",
+      "raw_text": "不得断言顾沉早已知道门外人身份或早已知道胶片去向",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得断言顾沉早已知道门外人身份或早已知道胶片去向"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "38e9931a6027aa1fa22f3e216f77eb6abe0c19f95f082f106b479f10d04bf88d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_6_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[6]",
+      "raw_text": "不得为林晚或顾沉添加来源未支持的情感定性（如愧疚、怨恨、爱意）",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得为林晚或顾沉添加来源未支持的情感定性（如愧疚、怨恨、爱意）"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "8c97b29f81074ac8e183cdba8c2f990f85a7f1eba3e7890543aac19ebe9ac083"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_7_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[7]",
+      "raw_text": "不得新增来源未支持的感官事实（气味、温度、质感等）",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得新增来源未支持的感官事实（气味、温度、质感等）"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "099f9ba6c45fc6930ba75db231b0d7e84406232c1f04f4c8b26cfae5efe9b6ee"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_prohibited_interpretations_8_PROHIBITION_00",
+      "source_path": "prohibited_interpretations[8]",
+      "raw_text": "不得断言照片小女孩就是林晚本人",
+      "claim_type": "PROHIBITION",
+      "subject": {},
+      "predicate": "prohibit",
+      "object": {
+        "kind": "INTERPRETATION",
+        "ref": "不得断言照片小女孩就是林晚本人"
+      },
+      "qualifiers": {},
+      "polarity": "PROHIBITION",
+      "modality": "PROHIBITED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "aa45b11286c381cb350f8e61128ab1dacf4051a0de342c52b9bd12023f636a5d"
+    },
+    {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "DC_STAGE_B_note_META_COMPLIANCE_00",
+      "source_path": "note",
+      "raw_text": "本 IR 严格依据 SOURCE_AUTHORING_UNITS 与 Stage A 生成，保留林晚记忆不确定性的可玩味状态，未新增任何关键道具动作、走位调度或镜头执行，未断言任何来源未支持的角色知识与情感定性。",
+      "claim_type": "META_COMPLIANCE",
+      "subject": {},
+      "predicate": "compliance_note",
+      "object": {
+        "kind": "META",
+        "ref": "本 IR 严格依据 SOURCE_AUTHORING_UNITS 与 Stage A 生成，保留林晚记忆不确定性的可玩味状态，未新增任何关键道具动作、走位调度或镜头执行，未断言任何来源未支持的角色知识与情感定性。"
+      },
+      "qualifiers": {},
+      "polarity": "META_COMPLIANCE",
+      "modality": "DELEGATED",
+      "canonicality": "META",
+      "authority_required": "NONE",
+      "source_refs": [],
+      "upstream_claim_refs": [],
+      "origin": "STAGE_B",
+      "support_status": "UNRESOLVED",
+      "fingerprint": "92db72cc0d6f2ec7f4ef77482d71fc23628c84608ee62748aacf25e8e9c98151"
+    }
+  ],
+  "attempt_id": "attempt-10",
+  "structural_status": "FAIL"
+}

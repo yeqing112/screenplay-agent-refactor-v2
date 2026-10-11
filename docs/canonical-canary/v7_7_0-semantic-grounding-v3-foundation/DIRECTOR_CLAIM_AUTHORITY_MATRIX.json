@@ -1,0 +1,158 @@
+{
+  "schema_version": "director_claim_authority_matrix_v1",
+  "principle": "Stage A may organize Source facts but may not promote unsupported interpretation into source-equivalent authority.",
+  "precedence": [
+    "SOURCE",
+    "STAGE_A",
+    "STAGE_B",
+    "NONE"
+  ],
+  "origins": {
+    "SOURCE": {
+      "allowed_claim_types": [
+        "CERTAINTY_ASSERTION",
+        "CHARACTER_ACTION",
+        "CHARACTER_BACKSTORY",
+        "CHARACTER_EMOTION",
+        "CHARACTER_KNOWLEDGE",
+        "CHARACTER_RELATIONSHIP",
+        "ENVIRONMENT_STATE",
+        "INFORMATION_REVEAL",
+        "INFORMATION_WITHHOLD",
+        "OBJECT_EXISTENCE",
+        "OBJECT_OWNERSHIP",
+        "OBJECT_POSSESSION",
+        "OBJECT_PROPERTY",
+        "OBJECT_PROVENANCE",
+        "SENSORY_FACT",
+        "SOURCE_EVENT",
+        "UNCERTAINTY"
+      ],
+      "authority_role": "canonical_source_fact"
+    },
+    "STAGE_A": {
+      "allowed_claim_types": [
+        "AUDIENCE_INTERPRETATION",
+        "DRAMATIC_GROUPING",
+        "DRAMATIC_OBJECTIVE",
+        "DRAMATIC_QUESTION"
+      ],
+      "source_support_required_for": [
+        "CERTAINTY_ASSERTION",
+        "CHARACTER_ACTION",
+        "CHARACTER_BACKSTORY",
+        "CHARACTER_EMOTION",
+        "CHARACTER_INTENT",
+        "CHARACTER_KNOWLEDGE",
+        "CHARACTER_RELATIONSHIP",
+        "ENVIRONMENT_STATE",
+        "OBJECT_EXISTENCE",
+        "OBJECT_OWNERSHIP",
+        "OBJECT_POSSESSION",
+        "OBJECT_PROPERTY",
+        "OBJECT_PROVENANCE",
+        "SENSORY_FACT",
+        "SHOT_EXECUTION",
+        "SOURCE_EVENT",
+        "SPATIAL_BLOCKING",
+        "UNCERTAINTY"
+      ],
+      "authority_role": "dramatic_organization_only"
+    },
+    "STAGE_B": {
+      "allowed_claim_types": [
+        "AUDIENCE_EFFECT",
+        "AUDIENCE_INTERPRETATION",
+        "AUTHORITY_DELEGATION",
+        "INFORMATION_REVEAL",
+        "INFORMATION_STRATEGY",
+        "INFORMATION_WITHHOLD",
+        "META_COMPLIANCE",
+        "PERFORMANCE_DIRECTION",
+        "PERFORMANCE_OPTION",
+        "PROHIBITION",
+        "RHYTHM_INTENT",
+        "VISUAL_PRIORITY"
+      ],
+      "source_support_required_for": [
+        "CERTAINTY_ASSERTION",
+        "CHARACTER_ACTION",
+        "CHARACTER_BACKSTORY",
+        "CHARACTER_EMOTION",
+        "CHARACTER_INTENT",
+        "CHARACTER_KNOWLEDGE",
+        "CHARACTER_RELATIONSHIP",
+        "ENVIRONMENT_STATE",
+        "OBJECT_EXISTENCE",
+        "OBJECT_OWNERSHIP",
+        "OBJECT_POSSESSION",
+        "OBJECT_PROPERTY",
+        "OBJECT_PROVENANCE",
+        "SENSORY_FACT",
+        "SHOT_EXECUTION",
+        "SOURCE_EVENT",
+        "SPATIAL_BLOCKING",
+        "UNCERTAINTY"
+      ],
+      "forbidden_claim_types": [
+        "SHOT_EXECUTION",
+        "SPATIAL_BLOCKING"
+      ],
+      "authority_role": "creative_presentation_only"
+    },
+    "COMPILED": {
+      "allowed_claim_types": [
+        "AUDIENCE_EFFECT",
+        "AUDIENCE_INTERPRETATION",
+        "AUTHORITY_DELEGATION",
+        "CERTAINTY_ASSERTION",
+        "CHARACTER_ACTION",
+        "CHARACTER_BACKSTORY",
+        "CHARACTER_EMOTION",
+        "CHARACTER_INTENT",
+        "CHARACTER_KNOWLEDGE",
+        "CHARACTER_RELATIONSHIP",
+        "CHARACTER_STATE",
+        "DRAMATIC_GROUPING",
+        "DRAMATIC_OBJECTIVE",
+        "DRAMATIC_QUESTION",
+        "ENVIRONMENT_STATE",
+        "INFORMATION_REVEAL",
+        "INFORMATION_STRATEGY",
+        "INFORMATION_WITHHOLD",
+        "META_COMPLIANCE",
+        "OBJECT_EXISTENCE",
+        "OBJECT_OWNERSHIP",
+        "OBJECT_POSSESSION",
+        "OBJECT_PROPERTY",
+        "OBJECT_PROVENANCE",
+        "PERFORMANCE_DIRECTION",
+        "PERFORMANCE_OPTION",
+        "PROHIBITION",
+        "RHYTHM_INTENT",
+        "SENSORY_FACT",
+        "SHOT_EXECUTION",
+        "SOURCE_EVENT",
+        "SPATIAL_BLOCKING",
+        "UNCERTAINTY",
+        "VISUAL_PRIORITY"
+      ],
+      "inherits_upstream_support": true,
+      "authority_role": "derived_projection_not_new_authority"
+    }
+  },
+  "non_canonical_safe": [
+    "PERFORMANCE_OPTION",
+    "AUDIENCE_EFFECT",
+    "AUDIENCE_INTERPRETATION",
+    "AUTHORITY_DELEGATION",
+    "META_COMPLIANCE",
+    "PROHIBITION"
+  ],
+  "no_phrase_exceptions": true,
+  "validation": {
+    "status": "PASS",
+    "errors": [],
+    "schema_version": "director_claim_authority_matrix_v1"
+  }
+}
