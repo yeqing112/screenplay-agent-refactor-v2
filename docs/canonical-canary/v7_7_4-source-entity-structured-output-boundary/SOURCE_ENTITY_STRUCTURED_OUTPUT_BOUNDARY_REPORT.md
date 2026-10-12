@@ -80,4 +80,9 @@ or migrated; `CAND_` is not accepted as an alias.
 - SceneBlocking baseline: `29 passed, 3 pre-existing failures`; unchanged and out of scope
 - Required artifacts: `26 JSON + 1 Markdown`, all parse successfully
 
-Implementation commit and final remote HEAD are recorded in the final Git update.
+## Git
+
+- Implementation commit: `5f6f234b30cae1ef308abaef5c7edf570fa35b1e`
+- Branch: `codex/visual-authoring-provider-canary-reconcile`
+- Working tree after implementation push: clean
+- Remote verification at implementation push: local and remote both `5f6f234b30cae1ef308abaef5c7edf570fa35b1e`
