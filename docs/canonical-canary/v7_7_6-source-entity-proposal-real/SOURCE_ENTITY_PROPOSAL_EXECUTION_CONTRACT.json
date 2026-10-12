@@ -1,0 +1,37 @@
+{
+  "schema_version": "source_entity_proposal_execution_contract_v1",
+  "authorization_id": "v7.7.6-source-entity-proposal-single-call",
+  "scope": {
+    "book_id": 990453,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "script_ir_id": 52,
+    "packet_id": 64,
+    "source_package_id": "book:990402"
+  },
+  "ordered_steps": [
+    "PREFLIGHT",
+    "AUTHORIZATION_FREEZE",
+    "ONE_PROVIDER_POST",
+    "RAW_PERSIST",
+    "TRANSPORT_AUDIT",
+    "STRICT_JSON_PARSE",
+    "TRANSPORT_SCHEMA_VALIDATION",
+    "INTERNAL_CONTRACT_VALIDATION",
+    "EVIDENCE_BINDING",
+    "SOURCE_UNIT_BINDING",
+    "SURFACE_FORM_BINDING",
+    "EXISTING_ENTITY_DUPLICATE_AUDIT",
+    "PROPOSAL_DUPLICATE_AUDIT",
+    "PROGRAM_PEC_ASSIGNMENT",
+    "PROPOSAL_ENTITY_REGISTRY_BUILD",
+    "QUALITY_AUDIT",
+    "STOP"
+  ],
+  "provider_post_budget": 1,
+  "retry": 0,
+  "repair": 0,
+  "verifier_calls": 0,
+  "promotion": 0,
+  "production_writes": 0
+}

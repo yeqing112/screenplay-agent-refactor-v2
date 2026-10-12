@@ -1,0 +1,9 @@
+{
+  "authorization_id": "v7.7.6-source-entity-proposal-single-call",
+  "armed": true,
+  "provider_post_budget": 1,
+  "automatic_retry": false,
+  "repair_retry": false,
+  "fallback": false,
+  "armed_at_monotonic_only": 392264.359407
+}

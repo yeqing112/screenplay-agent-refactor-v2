@@ -1,0 +1,96 @@
+{
+  "status": "PASS",
+  "removed_annotation_paths": [
+    "$.$id",
+    "$.$schema",
+    "$.properties.entities.items.authority",
+    "$.properties.entities.items.provider_may_not_supply",
+    "$.properties.entities.items.schema_version",
+    "$.properties.entities.items.surface_form_semantics",
+    "$.properties.entities.items.trust",
+    "$.title"
+  ],
+  "errors": [],
+  "input_fingerprint": "f478fcd01cd2f2e41015a0c014b25ea0c336708091767ba61adb603451311e21",
+  "output_fingerprint": "f4cf9b6c0ed32fb4024dc277f30e1905192ef8014c96775a8c862e7133a16263",
+  "diagnostic_partial_output_fingerprint": null,
+  "input_unchanged": true,
+  "deterministic": true,
+  "structural_keywords": [
+    "additionalProperties",
+    "const",
+    "enum",
+    "items",
+    "minItems",
+    "minLength",
+    "properties",
+    "required",
+    "type",
+    "uniqueItems"
+  ],
+  "annotation_keywords": [
+    "$id",
+    "$schema",
+    "authority",
+    "default",
+    "deprecated",
+    "description",
+    "examples",
+    "notes",
+    "provider_may_not_supply",
+    "readOnly",
+    "schema_version",
+    "surface_form_semantics",
+    "title",
+    "trust",
+    "writeOnly"
+  ],
+  "transport_schema_present": true,
+  "claim_v2_compiler_status": "BLOCKED",
+  "claim_v2_compiler_audit": {
+    "status": "BLOCKED",
+    "removed_annotation_paths": [
+      "$.$id",
+      "$.$schema",
+      "$.title"
+    ],
+    "errors": [
+      "UNION_TYPE_UNSUPPORTED:$.properties.claims.items.properties.qualifiers.additionalProperties.type"
+    ],
+    "input_fingerprint": "e62afaec71c1a65a4fa3039f127d86c100c372af91cb9748572faefe010ccb73",
+    "output_fingerprint": null,
+    "diagnostic_partial_output_fingerprint": "2315d372a972079e2166edd1de01975318adef7d2ce9cddf12254098abdb2ca9",
+    "input_unchanged": true,
+    "deterministic": true,
+    "structural_keywords": [
+      "additionalProperties",
+      "const",
+      "enum",
+      "items",
+      "minItems",
+      "minLength",
+      "properties",
+      "required",
+      "type",
+      "uniqueItems"
+    ],
+    "annotation_keywords": [
+      "$id",
+      "$schema",
+      "authority",
+      "default",
+      "deprecated",
+      "description",
+      "examples",
+      "notes",
+      "provider_may_not_supply",
+      "readOnly",
+      "schema_version",
+      "surface_form_semantics",
+      "title",
+      "trust",
+      "writeOnly"
+    ]
+  },
+  "claim_v2_block_reason": "UNION_TYPE_UNSUPPORTED:$.properties.claims.items.properties.qualifiers.additionalProperties.type"
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "candidate_count": 15,
+  "schema_valid_count": 15,
+  "evidence_valid_count": 15,
+  "source_unit_valid_count": 15,
+  "surface_valid_count": 15,
+  "already_canonical_count": 0,
+  "exact_duplicate_count": 0,
+  "blocked_count": 0,
+  "valid_proposal_count": 15,
+  "unknown_entity_count": 1,
+  "semantic_atomicity": "NOT_SEMANTICALLY_VERIFIED",
+  "inference_quality": "NOT_SEMANTICALLY_VERIFIED",
+  "human_semantic_review_required": true
+}

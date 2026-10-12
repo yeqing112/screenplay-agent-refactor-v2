@@ -1,0 +1,20 @@
+{
+  "schema_version": "v7_7_6_anti_heuristic_patch_review_v1",
+  "status": "PASS",
+  "phrase_dependence": "NO",
+  "scene_dependence": "NO",
+  "attempt_dependence": "NO",
+  "story_specific_registration": "NO",
+  "local_NLP": "NO",
+  "noun_dictionary": "NO",
+  "regex_entity_extraction": "NO",
+  "production_modules_scanned": [
+    "core\\source_entity_proposal.py",
+    "core\\source_entity_proposal_runtime.py"
+  ],
+  "matches": {
+    "core\\source_entity_proposal.py": [],
+    "core\\source_entity_proposal_runtime.py": []
+  },
+  "story_values_are_runtime_input_only": true
+}

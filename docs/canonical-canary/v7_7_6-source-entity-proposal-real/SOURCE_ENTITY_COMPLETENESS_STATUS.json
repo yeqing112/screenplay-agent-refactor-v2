@@ -1,0 +1,6 @@
+{
+  "entity_proposal_completeness": "NOT_PROVEN",
+  "entity_semantic_completeness": "NOT_PROVEN",
+  "typed_director_requirement_manifest": "TYPED_DIRECTOR_REQUIREMENT_MANIFEST_MISSING",
+  "source_unit_coverage_is_not_completeness": true
+}

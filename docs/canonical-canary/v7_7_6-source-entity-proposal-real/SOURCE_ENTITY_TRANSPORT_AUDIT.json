@@ -1,0 +1,178 @@
+{
+  "status": "PASS",
+  "authorization_id": "v7.7.6-source-entity-proposal-single-call",
+  "provider_post_attempts": 1,
+  "provider_http_posts_confirmed": 1,
+  "semantic_verifier_posts": 0,
+  "source_claim_proposal_posts": 0,
+  "http_status": 200,
+  "finish_reason": "stop",
+  "normal_finish_required": true,
+  "normal_finish": true,
+  "latency_ms": 32513.23,
+  "usage": {
+    "prompt_tokens": 1190,
+    "cached_tokens": null,
+    "completion_tokens": 816,
+    "total_tokens": 2006,
+    "cache_hit_rate": null,
+    "reasoning_tokens": 0,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens_details": {}
+  },
+  "provider_request_id": "",
+  "transport_retry": false,
+  "request_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "source_entity_proposal_v1",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "entities"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "evidence_refs",
+                "kind",
+                "schema_version",
+                "source_unit_refs",
+                "surface_form"
+              ],
+              "properties": {
+                "evidence_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "CHARACTER",
+                    "SCENE",
+                    "LOCATION",
+                    "OBJECT",
+                    "ENVIRONMENT",
+                    "DIALOGUE_CONTENT",
+                    "TEXT_CONTENT",
+                    "PROPERTY_VALUE",
+                    "STATE_VALUE",
+                    "UNKNOWN_ENTITY"
+                  ]
+                },
+                "schema_version": {
+                  "const": "source_entity_candidate_v1"
+                },
+                "source_unit_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "surface_form": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "schema_version": {
+            "const": "source_entity_proposal_v1"
+          }
+        }
+      }
+    }
+  },
+  "resolved_response_format_actually_sent": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "source_entity_proposal_v1",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "entities"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "evidence_refs",
+                "kind",
+                "schema_version",
+                "source_unit_refs",
+                "surface_form"
+              ],
+              "properties": {
+                "evidence_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "CHARACTER",
+                    "SCENE",
+                    "LOCATION",
+                    "OBJECT",
+                    "ENVIRONMENT",
+                    "DIALOGUE_CONTENT",
+                    "TEXT_CONTENT",
+                    "PROPERTY_VALUE",
+                    "STATE_VALUE",
+                    "UNKNOWN_ENTITY"
+                  ]
+                },
+                "schema_version": {
+                  "const": "source_entity_candidate_v1"
+                },
+                "source_unit_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "surface_form": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "schema_version": {
+            "const": "source_entity_proposal_v1"
+          }
+        }
+      }
+    }
+  },
+  "response_format_matches": true,
+  "transport_error": "",
+  "business_schema_compatibility_rejected": false
+}

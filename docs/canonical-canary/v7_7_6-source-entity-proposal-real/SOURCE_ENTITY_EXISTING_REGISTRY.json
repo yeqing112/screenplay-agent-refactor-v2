@@ -1,0 +1,81 @@
+{
+  "schema_version": "source_canonical_entity_registry_snapshot_v1",
+  "authority": "CANONICAL_RUNTIME",
+  "entities": {
+    "E01_SC001": {
+      "ref": "E01_SC001",
+      "kind": "SCENE",
+      "source": "script_ir",
+      "display_forms": [
+        "E01_SC001"
+      ],
+      "evidence_refs": [
+        "S1I001",
+        "S1I002",
+        "S1I003"
+      ],
+      "evidence_identities": [
+        "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+        "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+        "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1"
+      ],
+      "source_evidence_refs": [
+        "S1I001",
+        "S1I002",
+        "S1I003"
+      ]
+    },
+    "林晚": {
+      "ref": "林晚",
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant",
+      "display_forms": [
+        "林晚"
+      ],
+      "evidence_refs": [
+        "S1P1E001",
+        "S1P1E002",
+        "S1P1E003"
+      ],
+      "evidence_identities": [
+        "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+        "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+        "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b"
+      ]
+    },
+    "顾沉": {
+      "ref": "顾沉",
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant",
+      "display_forms": [
+        "顾沉"
+      ],
+      "evidence_refs": [
+        "S1P2E001",
+        "S1P2E002",
+        "S1P2E003"
+      ],
+      "evidence_identities": [
+        "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+        "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+        "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820"
+      ]
+    },
+    "SAU_E01_SC001_008": {
+      "ref": "SAU_E01_SC001_008",
+      "kind": "DIALOGUE_CONTENT",
+      "source": "source_authoring_unit",
+      "display_forms": [
+        "E01_SC001_D001"
+      ],
+      "evidence_refs": [
+        "S1D001"
+      ],
+      "evidence_identities": [
+        "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+      ]
+    }
+  },
+  "entity_count": 4,
+  "registry_fingerprint": "2e4b60c70964e036c4f6aebf12001df8d02335b800f129393309cc4f4baf1208"
+}

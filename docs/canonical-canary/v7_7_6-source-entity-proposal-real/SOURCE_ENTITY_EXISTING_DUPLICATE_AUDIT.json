@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "index": 0,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 1,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 2,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 3,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 4,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 5,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 6,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 7,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 8,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 9,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 10,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 11,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 12,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 13,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    },
+    {
+      "index": 14,
+      "status": "NOT_CANONICAL_DUPLICATE",
+      "matches": [],
+      "promotion_allowed": null,
+      "fuzzy_match_used": false
+    }
+  ],
+  "already_canonical_count": 0,
+  "fuzzy_matching": false,
+  "embedding_merge": false,
+  "llm_merge": false,
+  "manual_alias_map": false
+}

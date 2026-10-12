@@ -1,0 +1,72 @@
+{
+  "schema_version": "source_entity_proposal_transport_schema_v1",
+  "internal_contract_schema_fingerprint": "f478fcd01cd2f2e41015a0c014b25ea0c336708091767ba61adb603451311e21",
+  "transport_schema": {
+    "type": "object",
+    "required": [
+      "schema_version",
+      "entities"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "entities": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "evidence_refs",
+            "kind",
+            "schema_version",
+            "source_unit_refs",
+            "surface_form"
+          ],
+          "properties": {
+            "evidence_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "CHARACTER",
+                "SCENE",
+                "LOCATION",
+                "OBJECT",
+                "ENVIRONMENT",
+                "DIALOGUE_CONTENT",
+                "TEXT_CONTENT",
+                "PROPERTY_VALUE",
+                "STATE_VALUE",
+                "UNKNOWN_ENTITY"
+              ]
+            },
+            "schema_version": {
+              "const": "source_entity_candidate_v1"
+            },
+            "source_unit_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "surface_form": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "schema_version": {
+        "const": "source_entity_proposal_v1"
+      }
+    }
+  },
+  "transport_schema_fingerprint": "f4cf9b6c0ed32fb4024dc277f30e1905192ef8014c96775a8c862e7133a16263"
+}

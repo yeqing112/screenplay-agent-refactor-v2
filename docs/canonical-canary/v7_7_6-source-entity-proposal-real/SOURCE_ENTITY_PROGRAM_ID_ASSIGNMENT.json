@@ -1,0 +1,283 @@
+{
+  "schema_version": "program_owned_proposal_entity_id_v1",
+  "id_owner": "program",
+  "provider_supplied_id": false,
+  "rows": [
+    {
+      "proposal_entity_ref": "PEC_0001",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "fe99712b34bf9ecf81fbdb712324352b444aa0873a309ef89138ae88d6baf099",
+      "candidate_index": 0,
+      "entity": {
+        "evidence_refs": [
+          "S1A001"
+        ],
+        "kind": "LOCATION",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_001"
+        ],
+        "surface_form": "暗房"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0002",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "a261ea749d49ea159fffde846405de298e4fd703103f68f033f4c0dabbda11f4",
+      "candidate_index": 1,
+      "entity": {
+        "evidence_refs": [
+          "S1A002"
+        ],
+        "kind": "ENVIRONMENT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_002"
+        ],
+        "surface_form": "红色安全灯"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0003",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "a8f987ee59f4425692e0868d75e20094d034b6cde0e7b581c955e89495bdda31",
+      "candidate_index": 2,
+      "entity": {
+        "evidence_refs": [
+          "S1A002"
+        ],
+        "kind": "ENVIRONMENT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_002"
+        ],
+        "surface_form": "墙上的水渍"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0004",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "f53b5473b2fc7ac23cc8f70da3760af56f4342716df9f5bf344d528d8433c9f3",
+      "candidate_index": 3,
+      "entity": {
+        "evidence_refs": [
+          "S1A003"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_003"
+        ],
+        "surface_form": "铁盒"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0005",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "445cd9d95eedd040dd0c973f4671306cad99e549d3dc4536e21f07a84d460b79",
+      "candidate_index": 4,
+      "entity": {
+        "evidence_refs": [
+          "S1A003"
+        ],
+        "kind": "TEXT_CONTENT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_003"
+        ],
+        "surface_form": "第七次潮汐"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0006",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "7a2b5043514b1a6bdfb8d1fa2b1085d53360e62040806c7983702294ce52a4a2",
+      "candidate_index": 5,
+      "entity": {
+        "evidence_refs": [
+          "S1A004"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_004"
+        ],
+        "surface_form": "烧焦的胶片"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0007",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "055670bc9cc6bd11c880d11188606abff9c0c1c384a0c6b9257fb2e732e6d473",
+      "candidate_index": 6,
+      "entity": {
+        "evidence_refs": [
+          "S1A004"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_004"
+        ],
+        "surface_form": "海鸥别针"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0008",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "93f6e0bf584029b8179b799ca2bc67bed42d53a955673886ef1e1f2a3b07ea08",
+      "candidate_index": 7,
+      "entity": {
+        "evidence_refs": [
+          "S1A005"
+        ],
+        "kind": "UNKNOWN_ENTITY",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_005"
+        ],
+        "surface_form": "照片里小女孩"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0009",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "3ce9ee6ba1e6a35d88eb988054141daacea7921c95c1cefcff77a9daebac3935",
+      "candidate_index": 8,
+      "entity": {
+        "evidence_refs": [
+          "S1A006"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_009"
+        ],
+        "surface_form": "铜铃"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0010",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "6b9c2953f077297f319e9956cfc610c46571a7ea944c9a19b9e7c52640ce3a0b",
+      "candidate_index": 9,
+      "entity": {
+        "evidence_refs": [
+          "S1A006"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_009"
+        ],
+        "surface_form": "药水柜"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0011",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "ecf09e8df0de2d45558d9d5bce18e543c7fe26c103a0075d91529182e8f3add2",
+      "candidate_index": 10,
+      "entity": {
+        "evidence_refs": [
+          "S1A007"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_010"
+        ],
+        "surface_form": "湿透的皮鞋"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0012",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "b008b85ead23191bf580afd7f92358ca32d981ea830d4aedcd0a763c51a47ec9",
+      "candidate_index": 11,
+      "entity": {
+        "evidence_refs": [
+          "S1A008"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_011"
+        ],
+        "surface_form": "车票"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0013",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "0f8ac1822fd69e738fef47ed57a429975b1ef77deacd7019ae7831624446504e",
+      "candidate_index": 12,
+      "entity": {
+        "evidence_refs": [
+          "S1A009"
+        ],
+        "kind": "TEXT_CONTENT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_012"
+        ],
+        "surface_form": "今晚十点，北堤仓库，带钥匙，不要带顾沉"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0014",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "7d0e00489082563c88da5ff729688f48e16b84b19164ece3eceee320d82cd567",
+      "candidate_index": 13,
+      "entity": {
+        "evidence_refs": [
+          "S1A009"
+        ],
+        "kind": "LOCATION",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_012"
+        ],
+        "surface_form": "北堤仓库"
+      }
+    },
+    {
+      "proposal_entity_ref": "PEC_0015",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "eda278eb5001d6a9d21d42c2fef677dc509434334cc7a654d190a44658aa39c5",
+      "candidate_index": 14,
+      "entity": {
+        "evidence_refs": [
+          "S1A009"
+        ],
+        "kind": "OBJECT",
+        "schema_version": "source_entity_candidate_v1",
+        "source_unit_refs": [
+          "SAU_E01_SC001_012"
+        ],
+        "surface_form": "钥匙"
+      }
+    }
+  ],
+  "fingerprint": "b18ca9b2cbbf5d3f9e9ad32dab4c0b6a6a2d2818c5a09ce5879ad0712c7b5fbf",
+  "status": "PASS",
+  "input_order_is_deterministic": true,
+  "ids_are_canonical_authority": false,
+  "program_owned_count": 15,
+  "provider_owned_ids": false
+}

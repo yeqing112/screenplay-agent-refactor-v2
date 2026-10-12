@@ -1,0 +1,28 @@
+{
+  "schema_version": "source_entity_proposal_preflight_v1",
+  "status": "PASS",
+  "checks": {
+    "expected_branch": true,
+    "execution_baseline_ancestor": true,
+    "working_tree_clean_at_start": true,
+    "qualification_freshness": true,
+    "qualification_raw_sha_matches": true,
+    "provider_profile_enabled": true,
+    "provider_credentials_configured": true,
+    "runtime_not_mock": true,
+    "source_contract_status": true,
+    "source_unit_count": true,
+    "source_evidence_complete": true,
+    "existing_entity_registry_nonempty": true,
+    "production_predecessor_freeze": true,
+    "entity_transport_schema_compiler": true,
+    "anti_heuristic": true,
+    "llm_transport_callable": true
+  },
+  "failed_checks": [],
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "head_before_call": "54444d9a5772a8552cff32e592d1dfbb3d22d3ec",
+  "baseline": "5ba4a32cb58d2669f4a29d1ddba12b200d352203",
+  "baseline_is_ancestor": true,
+  "provider_posts_allowed": 1
+}

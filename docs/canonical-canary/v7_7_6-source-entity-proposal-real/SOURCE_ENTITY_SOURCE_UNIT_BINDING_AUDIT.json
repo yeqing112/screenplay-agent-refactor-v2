@@ -1,0 +1,125 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "index": 0,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_001"
+      ]
+    },
+    {
+      "index": 1,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_002"
+      ]
+    },
+    {
+      "index": 2,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_002"
+      ]
+    },
+    {
+      "index": 3,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_003"
+      ]
+    },
+    {
+      "index": 4,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_003"
+      ]
+    },
+    {
+      "index": 5,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_004"
+      ]
+    },
+    {
+      "index": 6,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_004"
+      ]
+    },
+    {
+      "index": 7,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_005"
+      ]
+    },
+    {
+      "index": 8,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_009"
+      ]
+    },
+    {
+      "index": 9,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_009"
+      ]
+    },
+    {
+      "index": 10,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_010"
+      ]
+    },
+    {
+      "index": 11,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_011"
+      ]
+    },
+    {
+      "index": 12,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_012"
+      ]
+    },
+    {
+      "index": 13,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_012"
+      ]
+    },
+    {
+      "index": 14,
+      "status": "PASS",
+      "errors": [],
+      "resolved_source_unit_ids": [
+        "SAU_E01_SC001_012"
+      ]
+    }
+  ]
+}

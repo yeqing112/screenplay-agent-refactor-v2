@@ -1,0 +1,12 @@
+{
+  "status": "SOURCE_ENTITY_PROPOSAL_VALIDATED",
+  "next_state": "SOURCE_ENTITY_SEMANTIC_VERIFICATION_BOUNDARY_REQUIRED",
+  "provider_posts": 1,
+  "provider_http_posts_confirmed": 1,
+  "source_entity_proposal_authorized": false,
+  "entity_semantic_verifier_authorized": false,
+  "source_claim_proposal_authorized": false,
+  "semantic_verifier_authorized": false,
+  "entity_promotion_authorized": false,
+  "reason": "single-call proposal phase ends at UNTRUSTED proposal entity registry"
+}

@@ -1,0 +1,21 @@
+{
+  "authorization_id": "v7.7.6-source-entity-proposal-single-call",
+  "granted": true,
+  "scope": {
+    "book_id": 990453,
+    "episode": 1,
+    "source_package_id": "book:990402",
+    "operation": "SOURCE_ENTITY_PROPOSAL_ONLY"
+  },
+  "max_provider_posts": 1,
+  "retry": 0,
+  "source_claim_proposal": 0,
+  "semantic_verifier": 0,
+  "entity_promotion": 0,
+  "fact_snapshot_writes": 0,
+  "stage_a": 0,
+  "attempt_12": 0,
+  "confirm": 0,
+  "image": 0,
+  "video": 0
+}

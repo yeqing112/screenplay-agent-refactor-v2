@@ -1,0 +1,153 @@
+{
+  "status": "PASS",
+  "book_id": 990453,
+  "episode": 1,
+  "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "source_package_id": "book:990402",
+  "source_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "source_unit_count": 12,
+  "source_units": [
+    {
+      "unit_id": "SAU_E01_SC001_001",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A001",
+      "source_order": 1,
+      "evidence_refs": [
+        "S1A001"
+      ],
+      "evidence_sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+      "evidence_text_sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_002",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A002",
+      "source_order": 2,
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "evidence_sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+      "evidence_text_sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_003",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A003",
+      "source_order": 3,
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "evidence_sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+      "evidence_text_sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_004",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A004",
+      "source_order": 4,
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "evidence_sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+      "evidence_text_sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_005",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A005",
+      "source_order": 5,
+      "evidence_refs": [
+        "S1A005"
+      ],
+      "evidence_sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+      "evidence_text_sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_006",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A010",
+      "source_order": 6,
+      "evidence_refs": [
+        "S1A010"
+      ],
+      "evidence_sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+      "evidence_text_sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_007",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A011",
+      "source_order": 7,
+      "evidence_refs": [
+        "S1A011"
+      ],
+      "evidence_sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+      "evidence_text_sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_008",
+      "source_type": "SOURCE_DIALOGUE",
+      "source_ref": "E01_SC001_D001",
+      "source_order": 8,
+      "evidence_refs": [
+        "S1D001"
+      ],
+      "evidence_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+      "evidence_text_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_009",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A006",
+      "source_order": 9,
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "evidence_sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+      "evidence_text_sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_010",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A007",
+      "source_order": 10,
+      "evidence_refs": [
+        "S1A007"
+      ],
+      "evidence_sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+      "evidence_text_sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_011",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A008",
+      "source_order": 11,
+      "evidence_refs": [
+        "S1A008"
+      ],
+      "evidence_sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+      "evidence_text_sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_012",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A009",
+      "source_order": 12,
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "evidence_sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+      "evidence_text_sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117"
+    }
+  ],
+  "evidence_index_fingerprint": "cce9cdb1f2aced98e29caa73e4dfab3b16f58264ec0de81418c05a97310ec58f",
+  "evidence_anchor_count": 12,
+  "script_ir_id": 52,
+  "script_ir_payload_hash": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+  "fact_snapshot_id": 49,
+  "packet_id": 64,
+  "packet_row_hash": "40cdeb88d58940648bf812a8c0a2e05820c580ee8adccb9ec298ed81ec40b06e",
+  "director_ledger": 11,
+  "stage_a_attempt": "attempt-7",
+  "active_stage_b": "attempt-11"
+}

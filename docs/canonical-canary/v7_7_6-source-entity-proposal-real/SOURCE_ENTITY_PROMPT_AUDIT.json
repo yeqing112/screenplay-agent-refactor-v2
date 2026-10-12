@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "system_prompt_sha256": "5dd467c56f8ed5e60b43ec17f433549a65983fbd2157931d2b0f4b657521ea72",
+  "user_prompt_sha256": "fd97f2a30a5546a274bac66633cfb28d79b077903132b9ae54971e516316a9c4",
+  "request_fingerprint": "4981558a454fe7464ab6020b2d8a90f9020b0d0b56bc6bf67cdc21f7be7ad0fa",
+  "source_unit_count": 12,
+  "existing_entity_count": 4,
+  "allowed_entity_kinds": [
+    "CHARACTER",
+    "SCENE",
+    "LOCATION",
+    "OBJECT",
+    "ENVIRONMENT",
+    "DIALOGUE_CONTENT",
+    "TEXT_CONTENT",
+    "PROPERTY_VALUE",
+    "STATE_VALUE",
+    "UNKNOWN_ENTITY"
+  ],
+  "expected_entity_answers_in_prompt": false,
+  "attempt_findings_in_prompt": false,
+  "v7_7_3_invalid_candidate_repair_hints": false,
+  "business_schema_in_prompt": false
+}
