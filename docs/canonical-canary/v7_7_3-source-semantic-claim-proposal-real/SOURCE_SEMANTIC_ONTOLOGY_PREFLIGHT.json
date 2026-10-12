@@ -1,0 +1,52 @@
+{
+  "schema_version": "source_semantic_ontology_preflight_v1",
+  "status": "BLOCKED",
+  "required_relation_classes": [
+    "ACTION",
+    "ENVIRONMENT_STATE",
+    "KNOWLEDGE_STATE",
+    "OBJECT_EXISTENCE",
+    "OBJECT_PROPERTY",
+    "POSSESSION",
+    "PROVENANCE",
+    "SPEECH_ACT",
+    "UNCERTAINTY"
+  ],
+  "registered_relation_classes": [
+    "ACTION",
+    "CHARACTER_ACTION",
+    "ENVIRONMENT_STATE",
+    "KNOWLEDGE_STATE",
+    "OBJECT_EXISTENCE",
+    "OBJECT_POSSESSION",
+    "OBJECT_PROPERTY",
+    "OBJECT_PROVENANCE",
+    "PROVENANCE",
+    "SOURCE_EVENT",
+    "SPEECH_ACT",
+    "UNCERTAINTY"
+  ],
+  "missing_relation_classes": [
+    "POSSESSION"
+  ],
+  "mapping_registry_version": "source_fact_claim_mapping_registry_v1",
+  "registered_predicates": [
+    "enter_guided",
+    "has_property",
+    "knows",
+    "left_by",
+    "received_by",
+    "scene_existence",
+    "scene_identity_evidence",
+    "speech_act",
+    "state_value",
+    "uncertainty"
+  ],
+  "mapping_missing": [],
+  "relation_registry_validation": {
+    "schema_version": "director_claim_relation_registry_v1",
+    "status": "PASS",
+    "errors": []
+  },
+  "generic_only": true
+}

@@ -1,0 +1,17 @@
+{
+  "authorization_id": "v7.7.3-source-semantic-claim-proposal-single-call",
+  "granted": true,
+  "scope": {
+    "book_id": 990453,
+    "episode": 1,
+    "scene_id": "E01_SC001",
+    "fact_snapshot_id": 49,
+    "script_ir_id": 52,
+    "packet_id": 64
+  },
+  "max_real_provider_posts": 1,
+  "semantic_verifier_posts": 0,
+  "image_posts": 0,
+  "video_posts": 0,
+  "production_writes": 0
+}

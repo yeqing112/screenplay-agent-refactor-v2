@@ -1,0 +1,43 @@
+{
+  "schema_version": "source_semantic_claim_proposal_v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "candidates"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "source_semantic_claim_proposal_v1"
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "source_semantic_claim_candidate_v1"
+      }
+    }
+  },
+  "provider_must_not_supply": [
+    "authority",
+    "byte_end",
+    "byte_start",
+    "char_end",
+    "char_start",
+    "display_text",
+    "explanation",
+    "fact_id",
+    "final_authority",
+    "final_status",
+    "fingerprint",
+    "new_fact",
+    "promote",
+    "rationale",
+    "raw_text",
+    "sha256",
+    "source_claim_id",
+    "source_claim_supported",
+    "source_search",
+    "status",
+    "support_status"
+  ]
+}

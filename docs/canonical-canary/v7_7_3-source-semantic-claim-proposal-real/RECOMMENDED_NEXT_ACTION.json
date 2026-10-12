@@ -1,0 +1,7 @@
+{
+  "status": "BLOCKED",
+  "next_state": "SOURCE_SEMANTIC_CLAIM_PROPOSAL_PREFLIGHT_BLOCKED",
+  "failed_checks": [
+    "ontology"
+  ]
+}

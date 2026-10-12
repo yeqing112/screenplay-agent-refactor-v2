@@ -1,0 +1,30 @@
+{
+  "schema_version": "source_semantic_typed_qualifier_contract_v1",
+  "allowed_keys": [
+    "destination",
+    "light_state",
+    "ownership",
+    "possession",
+    "transfer_source",
+    "property_domain",
+    "state_domain",
+    "speaker_binding"
+  ],
+  "types": {
+    "destination": "string",
+    "light_state": "string",
+    "ownership": [
+      "string",
+      "boolean"
+    ],
+    "possession": [
+      "string",
+      "boolean"
+    ],
+    "transfer_source": "string",
+    "property_domain": "string",
+    "state_domain": "string",
+    "speaker_binding": "string"
+  },
+  "relation_registry_version": "director_claim_relation_registry_v1"
+}

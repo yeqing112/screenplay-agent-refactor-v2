@@ -1,0 +1,61 @@
+{
+  "schema_version": "source_unit_evidence_binding_map_v1",
+  "status": "PASS",
+  "source_unit_count": 12,
+  "source_unit_ids": [
+    "SAU_E01_SC001_001",
+    "SAU_E01_SC001_002",
+    "SAU_E01_SC001_003",
+    "SAU_E01_SC001_004",
+    "SAU_E01_SC001_005",
+    "SAU_E01_SC001_006",
+    "SAU_E01_SC001_007",
+    "SAU_E01_SC001_008",
+    "SAU_E01_SC001_009",
+    "SAU_E01_SC001_010",
+    "SAU_E01_SC001_011",
+    "SAU_E01_SC001_012"
+  ],
+  "unit_evidence_map": {
+    "SAU_E01_SC001_001": [
+      "S1A001"
+    ],
+    "SAU_E01_SC001_002": [
+      "S1A002"
+    ],
+    "SAU_E01_SC001_003": [
+      "S1A003"
+    ],
+    "SAU_E01_SC001_004": [
+      "S1A004"
+    ],
+    "SAU_E01_SC001_005": [
+      "S1A005"
+    ],
+    "SAU_E01_SC001_006": [
+      "S1A010"
+    ],
+    "SAU_E01_SC001_007": [
+      "S1A011"
+    ],
+    "SAU_E01_SC001_008": [
+      "S1D001"
+    ],
+    "SAU_E01_SC001_009": [
+      "S1A006"
+    ],
+    "SAU_E01_SC001_010": [
+      "S1A007"
+    ],
+    "SAU_E01_SC001_011": [
+      "S1A008"
+    ],
+    "SAU_E01_SC001_012": [
+      "S1A009"
+    ]
+  },
+  "evidence_index_fingerprint": "e2c6c237bcc6e7fbc6638b886c2384efc6f008fd6d3964b3b5bc536c99702ca9",
+  "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "source_package_id": "book:990402",
+  "cross_unit_laundering": false
+}

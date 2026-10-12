@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "system_prompt_sha256": "f6c3d87a7ed77f0e3aef6cf24ebcbf7110c4efa26d5804631fa7bdcef5e22cf2",
+  "user_prompt_sha256": "d5e12a0860ecdd81ee080a1ec6934f4a6bc76a389f9957390699d458763fe5fa",
+  "request_fingerprint": "74d538c170513a627d8c44ff8702d3a64f372f38f06c5f372e4327f771aed999",
+  "attempt_findings_in_prompt": false,
+  "manual_expected_answers_in_prompt": false,
+  "source_evidence_text_allowed": true,
+  "prompt_length": {
+    "system": 591,
+    "user": 12700
+  }
+}

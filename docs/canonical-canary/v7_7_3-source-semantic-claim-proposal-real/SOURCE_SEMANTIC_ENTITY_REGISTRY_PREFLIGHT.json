@@ -1,0 +1,30 @@
+{
+  "schema_version": "source_semantic_entity_registry_preflight_v1",
+  "status": "PASS",
+  "entity_count": 4,
+  "entity_registry": {
+    "E01_SC001": {
+      "kind": "SCENE",
+      "source": "script_ir"
+    },
+    "林晚": {
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant"
+    },
+    "顾沉": {
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant"
+    },
+    "SAU_E01_SC001_008": {
+      "kind": "DIALOGUE_CONTENT",
+      "source": "source_authoring_unit"
+    }
+  },
+  "entity_registry_fingerprint": "1fb4dd8322b3b0b077abe6d15f72e5db3b25537c7de768e134970c2e0d3878a4",
+  "unknown_entity_creation": false,
+  "source": [
+    "script_ir",
+    "declared_participants",
+    "source_authoring_unit_dialogue_refs"
+  ]
+}
