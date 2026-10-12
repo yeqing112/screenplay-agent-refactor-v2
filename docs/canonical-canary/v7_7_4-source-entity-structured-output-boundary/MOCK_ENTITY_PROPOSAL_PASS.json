@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "proposal": {
+    "schema_version": "source_entity_proposal_v1",
+    "entities": [
+      {
+        "schema_version": "source_entity_candidate_v1",
+        "kind": "OBJECT",
+        "surface_form": "object alpha",
+        "evidence_refs": [
+          "EV_1"
+        ],
+        "source_unit_refs": [
+          "UNIT_1"
+        ]
+      }
+    ]
+  },
+  "validation": {
+    "status": "PASS",
+    "errors": [],
+    "rows": [
+      {
+        "index": 0,
+        "validation": {
+          "status": "PASS",
+          "errors": [],
+          "authority": "UNTRUSTED_PROPOSED"
+        }
+      }
+    ],
+    "candidate_count": 1
+  },
+  "provider_post": 0,
+  "authority": "UNTRUSTED_PROPOSED"
+}

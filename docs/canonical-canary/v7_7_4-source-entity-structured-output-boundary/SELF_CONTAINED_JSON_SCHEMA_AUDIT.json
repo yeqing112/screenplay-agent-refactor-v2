@@ -1,0 +1,22 @@
+{
+  "entity_schema": {
+    "status": "PASS",
+    "ref_count": 0,
+    "dangling_refs": [],
+    "self_contained": true
+  },
+  "claim_v2_schema": {
+    "status": "PASS",
+    "ref_count": 0,
+    "dangling_refs": [],
+    "self_contained": true
+  },
+  "additional_properties": {
+    "entity_wrapper": true,
+    "claim_wrapper": true,
+    "entity_item": true,
+    "claim_item": true
+  },
+  "enum_versioned": true,
+  "status": "PASS"
+}

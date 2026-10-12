@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "validation": {
+    "status": "PASS",
+    "errors": [],
+    "authority": "UNTRUSTED_PROPOSED"
+  },
+  "program_owned": {
+    "schema_version": "source_semantic_claim_candidate_set_v2",
+    "id_owner": "program",
+    "provider_supplied_id": false,
+    "rows": [
+      {
+        "candidate_index": 0,
+        "claim_id": "SCC_0001",
+        "authority": "UNTRUSTED_PROPOSED",
+        "claim": {
+          "schema_version": "source_semantic_claim_candidate_v2",
+          "subject": {
+            "kind": "CHARACTER",
+            "ref": "CHAR_A"
+          },
+          "predicate": "has_property",
+          "object": {
+            "kind": "OBJECT",
+            "ref": "PEC_0001"
+          },
+          "qualifiers": {},
+          "polarity": "POSITIVE",
+          "modality": "ASSERTED",
+          "evidence_refs": [
+            "EV_1"
+          ],
+          "source_unit_refs": [
+            "UNIT_1"
+          ]
+        }
+      }
+    ],
+    "fingerprint": "796ee0356a9899d98ce88374f574d4b8050de4f5212c8ba5bb1cb7f6eb13050e"
+  },
+  "provider_post": 0
+}

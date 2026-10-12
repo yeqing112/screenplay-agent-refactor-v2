@@ -1,0 +1,12 @@
+{
+  "status": "BLOCKED",
+  "validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "CLAIM_V2_EXTRA_FIELD:candidate_id",
+      "CLAIM_V2_PROVIDER_AUTHORITY_FIELD_FORBIDDEN:candidate_id"
+    ],
+    "authority": "UNTRUSTED_PROPOSED"
+  },
+  "provider_post": 0
+}

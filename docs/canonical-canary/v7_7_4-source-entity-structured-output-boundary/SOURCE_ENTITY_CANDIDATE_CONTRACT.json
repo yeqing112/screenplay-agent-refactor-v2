@@ -1,0 +1,70 @@
+{
+  "schema_version": "source_entity_candidate_v1",
+  "trust": "UNTRUSTED_PROPOSED",
+  "required": [
+    "evidence_refs",
+    "kind",
+    "schema_version",
+    "source_unit_refs",
+    "surface_form"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "source_entity_candidate_v1"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "CHARACTER",
+        "SCENE",
+        "LOCATION",
+        "OBJECT",
+        "ENVIRONMENT",
+        "DIALOGUE_CONTENT",
+        "TEXT_CONTENT",
+        "PROPERTY_VALUE",
+        "STATE_VALUE",
+        "UNKNOWN_ENTITY"
+      ]
+    },
+    "surface_form": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "source_unit_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "provider_may_not_supply": [
+    "authority",
+    "byte_end",
+    "byte_start",
+    "canonical_entity_id",
+    "char_end",
+    "char_start",
+    "final_authority",
+    "final_status",
+    "fingerprint",
+    "offsets",
+    "promote",
+    "promotion",
+    "sha256",
+    "status"
+  ],
+  "surface_form_semantics": "exact evidence anchoring and human-readable forensic only; never canonical identity",
+  "authority": "UNTRUSTED_PROPOSED"
+}

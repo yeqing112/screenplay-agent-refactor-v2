@@ -1,0 +1,52 @@
+{
+  "schema_version": "source_entity_registry_gap_audit_v1",
+  "status": "GAP",
+  "entity_count": 4,
+  "canonical_entities": {
+    "E01_SC001": {
+      "kind": "SCENE",
+      "source": "script_ir"
+    },
+    "林晚": {
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant"
+    },
+    "顾沉": {
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant"
+    },
+    "SAU_E01_SC001_008": {
+      "kind": "DIALOGUE_CONTENT",
+      "source": "source_authoring_unit"
+    }
+  },
+  "canonical_entity_kinds": [
+    "CHARACTER",
+    "DIALOGUE_CONTENT",
+    "SCENE"
+  ],
+  "missing_generic_kinds": [
+    "LOCATION",
+    "OBJECT",
+    "ENVIRONMENT",
+    "TEXT_CONTENT",
+    "PROPERTY_VALUE",
+    "STATE_VALUE",
+    "UNKNOWN_ENTITY"
+  ],
+  "required_generic_kinds": [
+    "CHARACTER",
+    "SCENE",
+    "LOCATION",
+    "OBJECT",
+    "ENVIRONMENT",
+    "DIALOGUE_CONTENT",
+    "TEXT_CONTENT",
+    "PROPERTY_VALUE",
+    "STATE_VALUE",
+    "UNKNOWN_ENTITY"
+  ],
+  "story_specific_registration_added": false,
+  "current_story_entity_registration": false,
+  "authority_boundary": "runtime canonical registry only"
+}

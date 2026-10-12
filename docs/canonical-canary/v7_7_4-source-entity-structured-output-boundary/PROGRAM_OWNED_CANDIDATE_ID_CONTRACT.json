@@ -1,0 +1,8 @@
+{
+  "schema_version": "program_owned_candidate_id_v1",
+  "id_pattern": "SCC_0001",
+  "owner": "program",
+  "provider_payload_contains_candidate_id": false,
+  "v1_compatibility_alias": false,
+  "historical_v1_migration": false
+}

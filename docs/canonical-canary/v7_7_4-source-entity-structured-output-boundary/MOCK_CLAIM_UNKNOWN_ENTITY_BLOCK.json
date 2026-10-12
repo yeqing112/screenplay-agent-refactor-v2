@@ -1,0 +1,11 @@
+{
+  "status": "BLOCKED",
+  "validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "UNKNOWN_ENTITY_REF:PEC_9999"
+    ],
+    "authority": "UNTRUSTED_PROPOSED"
+  },
+  "provider_post": 0
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "provider_structured_output_capability_v1",
+  "state": "UNKNOWN",
+  "declared": false,
+  "authorization_allowed": false,
+  "fail_closed": true,
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "profile_declares_capability": false,
+  "resolved_response_format": null,
+  "provider_call_performed": false,
+  "runtime_profile_metadata_only": true,
+  "historical_v7_7_3_observed_response_format": {
+    "type": "json_object"
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "source_semantic_claim_candidate_set_v2",
+  "title": "Source Semantic Claim Candidate V2",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "claims"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "source_semantic_claim_candidate_set_v2"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "evidence_refs",
+          "modality",
+          "object",
+          "polarity",
+          "predicate",
+          "qualifiers",
+          "schema_version",
+          "source_unit_refs",
+          "subject"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "schema_version": {
+            "const": "source_semantic_claim_candidate_v2"
+          },
+          "subject": {
+            "type": "object",
+            "required": [
+              "kind",
+              "ref"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "predicate": {
+            "type": "string",
+            "enum": [
+              "enter_guided",
+              "has_property",
+              "knows",
+              "left_by",
+              "received_by",
+              "scene_existence",
+              "scene_identity_evidence",
+              "speech_act",
+              "state_value",
+              "uncertainty"
+            ]
+          },
+          "object": {
+            "type": "object",
+            "required": [
+              "kind",
+              "ref"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ref": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "qualifiers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "boolean"
+              ]
+            }
+          },
+          "polarity": {
+            "type": "string",
+            "enum": [
+              "POSITIVE",
+              "NEGATED",
+              "PROHIBITION",
+              "META_COMPLIANCE",
+              "DELEGATION"
+            ]
+          },
+          "modality": {
+            "type": "string",
+            "enum": [
+              "ASSERTED",
+              "UNCERTAIN",
+              "POSSIBLE",
+              "HYPOTHETICAL",
+              "PLAYABLE_OPTION",
+              "DELEGATED",
+              "PROHIBITED"
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "source_unit_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}

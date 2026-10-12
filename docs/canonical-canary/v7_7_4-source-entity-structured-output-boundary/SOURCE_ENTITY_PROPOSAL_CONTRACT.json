@@ -1,0 +1,11 @@
+{
+  "schema_version": "source_entity_proposal_contract_v1",
+  "wrapper": "source_entity_proposal_v1",
+  "trust": "UNTRUSTED_PROPOSED",
+  "phase": 1,
+  "provider_discovers_entities": true,
+  "provider_creates_ids": false,
+  "provider_assigns_authority": false,
+  "surface_form_is_semantic_authority": false,
+  "promotion": "not available in this phase"
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "provider_structured_output_capability_v1",
+  "states": [
+    "JSON_OBJECT_ONLY",
+    "JSON_SCHEMA_SUPPORTED",
+    "JSON_SCHEMA_STRICT_SUPPORTED",
+    "UNKNOWN"
+  ],
+  "authorization": {
+    "JSON_OBJECT_ONLY": false,
+    "JSON_SCHEMA_SUPPORTED": false,
+    "JSON_SCHEMA_STRICT_SUPPORTED": true,
+    "UNKNOWN": false
+  },
+  "unknown_is_fail_closed": true,
+  "profile_field": "structured_output_capability"
+}

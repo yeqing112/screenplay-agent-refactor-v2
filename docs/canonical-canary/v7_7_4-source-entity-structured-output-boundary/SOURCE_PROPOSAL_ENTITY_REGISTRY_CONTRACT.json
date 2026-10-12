@@ -1,0 +1,11 @@
+{
+  "schema_version": "source_proposal_entity_registry_contract_v1",
+  "registry_version": "source_proposal_entity_registry_v1",
+  "canonical_authority": "CANONICAL_RUNTIME",
+  "proposal_authority": "UNTRUSTED_PROPOSED",
+  "claim_proposal_may_reference": [
+    "canonical runtime refs",
+    "validated proposal refs"
+  ],
+  "proposal_entities_are_canonical": false
+}

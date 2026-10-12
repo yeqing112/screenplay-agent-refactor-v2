@@ -1,0 +1,19 @@
+{
+  "schema_version": "v7_7_4_anti_heuristic_patch_review_v1",
+  "status": "PASS",
+  "candidate_id_alias": "NO",
+  "free_text_subject_object": "NO",
+  "story_entity_registration": "NO",
+  "story_specific_mapping": "NO",
+  "phrase_specific_prompt": "NO",
+  "scene_dependence": "NO",
+  "attempt_dependence": "NO",
+  "production_path_local_nlp": "NO",
+  "display_prose_variation_result_consistent": true,
+  "matches": {
+    "core\\source_entity_proposal.py": [],
+    "core\\source_semantic_claim_proposal.py": []
+  },
+  "provider_calls": 0,
+  "production_writes": 0
+}

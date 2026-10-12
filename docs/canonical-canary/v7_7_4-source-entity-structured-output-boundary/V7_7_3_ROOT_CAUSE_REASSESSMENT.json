@@ -1,0 +1,18 @@
+{
+  "schema_version": "v7_7_3_root_cause_reassessment_v1",
+  "historical_raw_sha256": "c16ec191df55d937effa7246bcdb520bc573ecc6f2c1db8d08e15aa44bd46688",
+  "raw_sha256_immutable_expected": "c16ec191df55d937effa7246bcdb520bc573ecc6f2c1db8d08e15aa44bd46688",
+  "raw_immutable_match": true,
+  "semantic_failure": "NOT_DETERMINABLE_BEFORE_VERIFIER",
+  "structural_contract_failure": "YES",
+  "entity_authority_gap": "YES",
+  "semantic_verification": "NOT_REACHED",
+  "formal_classification": [
+    "STRUCTURAL_OUTPUT_CONTRACT_FAILURE",
+    "ENTITY_AUTHORITY_GAP",
+    "SEMANTIC_VERIFICATION_NOT_REACHED"
+  ],
+  "model_schema_noncompliance_only": false,
+  "historical_artifact_modified": false,
+  "next_state": "SOURCE_SEMANTIC_PROPOSAL_STRUCTURAL_BOUNDARY_REQUIRED"
+}

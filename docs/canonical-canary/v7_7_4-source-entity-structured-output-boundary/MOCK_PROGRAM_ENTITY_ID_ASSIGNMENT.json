@@ -1,0 +1,26 @@
+{
+  "schema_version": "program_owned_proposal_entity_id_v1",
+  "id_owner": "program",
+  "provider_supplied_id": false,
+  "rows": [
+    {
+      "proposal_entity_ref": "PEC_0001",
+      "status": "PROPOSED",
+      "authority": "UNTRUSTED_PROPOSED",
+      "fingerprint": "4986e2091c557117a0ac6334a0817f47cd16f4648b08b0a663a6d2794c8342e5",
+      "candidate_index": 0,
+      "entity": {
+        "schema_version": "source_entity_candidate_v1",
+        "kind": "OBJECT",
+        "surface_form": "object alpha",
+        "evidence_refs": [
+          "EV_1"
+        ],
+        "source_unit_refs": [
+          "UNIT_1"
+        ]
+      }
+    }
+  ],
+  "fingerprint": "b88956c746d1151d4b1d96f45ebdea8b4a9a0afcd6051eaffc903faa41cf1952"
+}

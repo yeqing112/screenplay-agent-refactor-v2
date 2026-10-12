@@ -1,0 +1,9 @@
+{
+  "status": "PROVIDER_STRUCTURED_OUTPUT_CAPABILITY_QUALIFICATION_REQUIRED",
+  "source_entity_proposal_authorized": false,
+  "claim_proposal_retry_allowed": false,
+  "semantic_verifier_allowed": false,
+  "provider_calls": 0,
+  "reason": "V7.7.4 is provider-free; capability and entity phase gates remain fail-closed",
+  "v7_7_3_raw_mutation": false
+}

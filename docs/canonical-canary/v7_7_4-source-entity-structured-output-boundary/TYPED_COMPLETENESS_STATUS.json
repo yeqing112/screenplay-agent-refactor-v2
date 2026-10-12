@@ -1,0 +1,8 @@
+{
+  "schema_version": "v7_7_4_typed_completeness_status_v1",
+  "entity_proposal_completeness": "CONTRACT_READY_NOT_EXECUTED",
+  "claim_proposal_completeness": "BLOCKED_BY_CAPABILITY_AND_ENTITY_PHASE",
+  "director_semantic_completeness": "NOT_PROVEN",
+  "typed_director_requirement_manifest": "TYPED_DIRECTOR_REQUIREMENT_MANIFEST_MISSING",
+  "all_three_pass": false
+}

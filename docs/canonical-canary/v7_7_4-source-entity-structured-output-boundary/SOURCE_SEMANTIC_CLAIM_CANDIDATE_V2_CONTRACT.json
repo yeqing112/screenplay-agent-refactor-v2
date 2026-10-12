@@ -1,0 +1,42 @@
+{
+  "schema_version": "source_semantic_claim_candidate_v2",
+  "trust": "UNTRUSTED_PROPOSED",
+  "required": [
+    "evidence_refs",
+    "modality",
+    "object",
+    "polarity",
+    "predicate",
+    "qualifiers",
+    "schema_version",
+    "source_unit_refs",
+    "subject"
+  ],
+  "provider_may_not_supply": [
+    "authority",
+    "byte_end",
+    "byte_start",
+    "candidate_id",
+    "char_end",
+    "char_start",
+    "fact_id",
+    "final_authority",
+    "final_status",
+    "offsets",
+    "promote",
+    "promotion",
+    "sha256",
+    "source_claim_id",
+    "status"
+  ],
+  "candidate_id": "program-owned after validation; absent from provider payload",
+  "subject_object": {
+    "required": [
+      "kind",
+      "ref"
+    ],
+    "ref_must_be_registry_member": true,
+    "free_text": false
+  },
+  "authority": "UNTRUSTED_PROPOSED"
+}

@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "provider_posts": 0,
+  "semantic_verifier_posts": 0,
+  "stage_a_posts": 0,
+  "attempt_12": 0,
+  "confirm": 0,
+  "image_posts": 0,
+  "video_posts": 0,
+  "fact_snapshot_writes": 0,
+  "source_claim_writes": 0,
+  "packet_64_mutation": 0,
+  "fact_snapshot_49_unchanged": true,
+  "script_ir_52_unchanged": true,
+  "director_ledger_before": 11,
+  "director_ledger_after": 11,
+  "active_stage_b_before": "attempt-11",
+  "active_stage_b_after": "attempt-11",
+  "db_packet_hash_before": "40cdeb88d58940648bf812a8c0a2e05820c580ee8adccb9ec298ed81ec40b06e",
+  "db_packet_hash_after": "40cdeb88d58940648bf812a8c0a2e05820c580ee8adccb9ec298ed81ec40b06e"
+}

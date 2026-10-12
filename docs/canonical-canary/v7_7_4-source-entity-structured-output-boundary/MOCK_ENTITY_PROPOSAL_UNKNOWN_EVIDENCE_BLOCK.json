@@ -1,0 +1,23 @@
+{
+  "status": "BLOCKED_ENTITY_CANDIDATE",
+  "validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "ENTITY_WRAPPER_CONTAINS_INVALID_CANDIDATE"
+    ],
+    "rows": [
+      {
+        "index": 0,
+        "validation": {
+          "status": "BLOCKED",
+          "errors": [
+            "EVIDENCE_REF_MISSING:EV_999"
+          ],
+          "authority": "UNTRUSTED_PROPOSED"
+        }
+      }
+    ],
+    "candidate_count": 1
+  },
+  "provider_post": 0
+}

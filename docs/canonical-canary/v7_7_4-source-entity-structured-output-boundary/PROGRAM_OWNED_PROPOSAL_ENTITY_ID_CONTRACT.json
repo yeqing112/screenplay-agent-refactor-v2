@@ -1,0 +1,9 @@
+{
+  "schema_version": "program_owned_proposal_entity_id_v1",
+  "id_pattern": "PEC_0001",
+  "owner": "program",
+  "provider_may_supply_id": false,
+  "identity_semantics": "structural identity only",
+  "semantic_authority": false,
+  "assignment": "deterministic validated input order"
+}

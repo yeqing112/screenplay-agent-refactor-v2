@@ -1,0 +1,12 @@
+{
+  "status": "BLOCKED",
+  "validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "OBJECT_REF_MUST_BE_OBJECT",
+      "SUBJECT_REF_MUST_BE_OBJECT"
+    ],
+    "authority": "UNTRUSTED_PROPOSED"
+  },
+  "provider_post": 0
+}
