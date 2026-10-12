@@ -1,0 +1,225 @@
+{
+  "schema_version": "source_entity_semantic_verification_transport_schema_v1",
+  "compiler_audit": {
+    "status": "PASS",
+    "removed_annotation_paths": [
+      "$.authority",
+      "$.notes",
+      "$.properties.results.items.authority",
+      "$.properties.results.items.trust",
+      "$.schema_version",
+      "$.trust"
+    ],
+    "errors": [],
+    "input_fingerprint": "9f3039a5cdb2f75fad3dce7b9c8782c333f7a7bbdd4cf4ba452538341857d989",
+    "output_fingerprint": "0bc39a14059bddedb9bb0b4e31fa84f71365607394ec6b1531ec4ee11760a812",
+    "diagnostic_partial_output_fingerprint": null,
+    "input_unchanged": true,
+    "deterministic": true,
+    "structural_keywords": [
+      "additionalProperties",
+      "const",
+      "enum",
+      "items",
+      "minItems",
+      "minLength",
+      "properties",
+      "required",
+      "type",
+      "uniqueItems"
+    ],
+    "annotation_keywords": [
+      "$id",
+      "$schema",
+      "authority",
+      "default",
+      "deprecated",
+      "description",
+      "examples",
+      "notes",
+      "provider_may_not_supply",
+      "readOnly",
+      "schema_version",
+      "surface_form_semantics",
+      "title",
+      "trust",
+      "writeOnly"
+    ]
+  },
+  "transport_schema": {
+    "type": "object",
+    "required": [
+      "schema_version",
+      "results"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "results": {
+        "type": "array",
+        "minItems": 15,
+        "items": {
+          "type": "object",
+          "required": [
+            "proposal_entity_ref",
+            "mention_verdict",
+            "kind_verdict",
+            "evidence_refs"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "enum": [
+                  "S1A001",
+                  "S1A002",
+                  "S1A003",
+                  "S1A004",
+                  "S1A005",
+                  "S1A006",
+                  "S1A007",
+                  "S1A008",
+                  "S1A009"
+                ]
+              }
+            },
+            "kind_verdict": {
+              "type": "string",
+              "enum": [
+                "SUPPORTED",
+                "UNSUPPORTED",
+                "AMBIGUOUS"
+              ]
+            },
+            "mention_verdict": {
+              "type": "string",
+              "enum": [
+                "EXPLICITLY_EVIDENCED",
+                "NOT_EXPLICITLY_EVIDENCED",
+                "AMBIGUOUS"
+              ]
+            },
+            "proposal_entity_ref": {
+              "type": "string",
+              "enum": [
+                "PEC_0001",
+                "PEC_0002",
+                "PEC_0003",
+                "PEC_0004",
+                "PEC_0005",
+                "PEC_0006",
+                "PEC_0007",
+                "PEC_0008",
+                "PEC_0009",
+                "PEC_0010",
+                "PEC_0011",
+                "PEC_0012",
+                "PEC_0013",
+                "PEC_0014",
+                "PEC_0015"
+              ]
+            }
+          }
+        }
+      },
+      "schema_version": {
+        "const": "source_entity_semantic_verification_v1"
+      }
+    }
+  },
+  "transport_schema_fingerprint": "0bc39a14059bddedb9bb0b4e31fa84f71365607394ec6b1531ec4ee11760a812",
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "source_entity_semantic_verification_v1",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "results"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "results": {
+            "type": "array",
+            "minItems": 15,
+            "items": {
+              "type": "object",
+              "required": [
+                "proposal_entity_ref",
+                "mention_verdict",
+                "kind_verdict",
+                "evidence_refs"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "S1A001",
+                      "S1A002",
+                      "S1A003",
+                      "S1A004",
+                      "S1A005",
+                      "S1A006",
+                      "S1A007",
+                      "S1A008",
+                      "S1A009"
+                    ]
+                  }
+                },
+                "kind_verdict": {
+                  "type": "string",
+                  "enum": [
+                    "SUPPORTED",
+                    "UNSUPPORTED",
+                    "AMBIGUOUS"
+                  ]
+                },
+                "mention_verdict": {
+                  "type": "string",
+                  "enum": [
+                    "EXPLICITLY_EVIDENCED",
+                    "NOT_EXPLICITLY_EVIDENCED",
+                    "AMBIGUOUS"
+                  ]
+                },
+                "proposal_entity_ref": {
+                  "type": "string",
+                  "enum": [
+                    "PEC_0001",
+                    "PEC_0002",
+                    "PEC_0003",
+                    "PEC_0004",
+                    "PEC_0005",
+                    "PEC_0006",
+                    "PEC_0007",
+                    "PEC_0008",
+                    "PEC_0009",
+                    "PEC_0010",
+                    "PEC_0011",
+                    "PEC_0012",
+                    "PEC_0013",
+                    "PEC_0014",
+                    "PEC_0015"
+                  ]
+                }
+              }
+            }
+          },
+          "schema_version": {
+            "const": "source_entity_semantic_verification_v1"
+          }
+        }
+      }
+    }
+  }
+}

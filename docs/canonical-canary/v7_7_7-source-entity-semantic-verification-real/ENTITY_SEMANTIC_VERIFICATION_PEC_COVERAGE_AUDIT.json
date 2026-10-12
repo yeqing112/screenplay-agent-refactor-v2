@@ -1,0 +1,171 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "expected_count": 15,
+  "observed_count": 15,
+  "expected_refs": [
+    "PEC_0001",
+    "PEC_0002",
+    "PEC_0003",
+    "PEC_0004",
+    "PEC_0005",
+    "PEC_0006",
+    "PEC_0007",
+    "PEC_0008",
+    "PEC_0009",
+    "PEC_0010",
+    "PEC_0011",
+    "PEC_0012",
+    "PEC_0013",
+    "PEC_0014",
+    "PEC_0015"
+  ],
+  "observed_refs": [
+    "PEC_0001",
+    "PEC_0002",
+    "PEC_0003",
+    "PEC_0004",
+    "PEC_0005",
+    "PEC_0006",
+    "PEC_0007",
+    "PEC_0008",
+    "PEC_0009",
+    "PEC_0010",
+    "PEC_0011",
+    "PEC_0012",
+    "PEC_0013",
+    "PEC_0014",
+    "PEC_0015"
+  ],
+  "missing_refs": [],
+  "duplicate_refs": [],
+  "unknown_refs": [],
+  "malformed_row_indexes": [],
+  "results_by_ref": {
+    "PEC_0001": {
+      "evidence_refs": [
+        "S1A001"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0001"
+    },
+    "PEC_0002": {
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0002"
+    },
+    "PEC_0003": {
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0003"
+    },
+    "PEC_0004": {
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0004"
+    },
+    "PEC_0005": {
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0005"
+    },
+    "PEC_0006": {
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0006"
+    },
+    "PEC_0007": {
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0007"
+    },
+    "PEC_0008": {
+      "evidence_refs": [
+        "S1A005"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0008"
+    },
+    "PEC_0009": {
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0009"
+    },
+    "PEC_0010": {
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0010"
+    },
+    "PEC_0011": {
+      "evidence_refs": [
+        "S1A007"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0011"
+    },
+    "PEC_0012": {
+      "evidence_refs": [
+        "S1A008"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0012"
+    },
+    "PEC_0013": {
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0013"
+    },
+    "PEC_0014": {
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0014"
+    },
+    "PEC_0015": {
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "kind_verdict": "SUPPORTED",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "proposal_entity_ref": "PEC_0015"
+    }
+  },
+  "missing_pec_count": 0,
+  "duplicate_pec_count": 0,
+  "unknown_pec_count": 0,
+  "pec_refs_order_is_authoritative": false,
+  "results_are_keyed_by_proposal_entity_ref": true
+}

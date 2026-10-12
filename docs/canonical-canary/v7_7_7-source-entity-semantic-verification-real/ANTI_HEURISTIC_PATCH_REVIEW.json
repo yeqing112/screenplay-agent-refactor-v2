@@ -1,0 +1,16 @@
+{
+  "schema_version": "v7_7_7_anti_heuristic_patch_review_v1",
+  "status": "PASS",
+  "phrase_dependence": "NO",
+  "scene_dependence": "NO",
+  "attempt_dependence": "NO",
+  "story_specific_verifier_rule": "NO",
+  "current_PEC_specific_special_case": "NO",
+  "local_NLP": "NO",
+  "production_modules_scanned": [
+    "core\\source_entity_semantic_verification.py"
+  ],
+  "story_literal_matches": [],
+  "local_NLP_matches": [],
+  "PEC_special_case_matches": []
+}

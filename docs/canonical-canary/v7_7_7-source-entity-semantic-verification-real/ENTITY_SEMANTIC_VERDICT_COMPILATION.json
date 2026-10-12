@@ -1,0 +1,173 @@
+{
+  "status": "SOURCE_ENTITY_SEMANTIC_VERIFICATION_VALIDATED",
+  "compiler": "program_deterministic",
+  "provider_assigns_authority": false,
+  "rows": [
+    {
+      "proposal_entity_ref": "PEC_0001",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A001"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0002",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0003",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0004",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0005",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0006",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0007",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0008",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A005"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0009",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0010",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0011",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A007"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0012",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A008"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0013",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0014",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    },
+    {
+      "proposal_entity_ref": "PEC_0015",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false
+    }
+  ],
+  "overall_status_rule": "REJECTED precedes REVIEW; all 15 verified required for VALIDATED"
+}

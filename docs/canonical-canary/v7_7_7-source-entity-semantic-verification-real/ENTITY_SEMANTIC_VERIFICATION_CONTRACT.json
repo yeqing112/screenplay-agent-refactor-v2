@@ -1,0 +1,54 @@
+{
+  "schema_version": "source_entity_semantic_verification_contract_v1",
+  "verification_version": "source_entity_semantic_verification_v1",
+  "authority_owner": "program_deterministic_compiler",
+  "provider_role": "untrusted_semantic_adjudication_only",
+  "allowed_questions": [
+    "is this exact entity mention explicitly evidenced?",
+    "is the current generic kind supported?"
+  ],
+  "forbidden_operations": [
+    "repropose",
+    "new PEC",
+    "change surface_form",
+    "change evidence_refs",
+    "change source_unit_refs",
+    "replacement kind",
+    "alias merge",
+    "entity split",
+    "canonical recommendation",
+    "fact relation",
+    "ownership",
+    "action",
+    "intent",
+    "completeness"
+  ],
+  "verdicts": {
+    "mention": [
+      "EXPLICITLY_EVIDENCED",
+      "NOT_EXPLICITLY_EVIDENCED",
+      "AMBIGUOUS"
+    ],
+    "kind": [
+      "SUPPORTED",
+      "UNSUPPORTED",
+      "AMBIGUOUS"
+    ]
+  },
+  "provider_identity": {
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "provider_identity_fingerprint": "9908c628bc8b970817674b26ff3897bb055bc24ee6505bbc2af6a80f7722c455"
+  },
+  "qualification_fingerprint": "194241dae7837d160c63a72bd1c3017bd9a9d0219d2f25e6a083637abdf3cb3b",
+  "target_book_id": 990453,
+  "origin_source_book_id": 990402,
+  "origin_source_package_id": "book:990402",
+  "origin_chapter_id": 16,
+  "provider_post_budget": 1,
+  "retry": 0,
+  "canonical_promotions": 0,
+  "production_writes": 0
+}

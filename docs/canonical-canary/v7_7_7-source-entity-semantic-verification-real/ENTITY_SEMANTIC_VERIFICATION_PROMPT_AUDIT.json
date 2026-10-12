@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "system_prompt_sha256": "a81c37f480c34b7302d0e2c9f8cc66cfb0457fcd9b276be4b39c962d72b4b300",
+  "user_prompt_sha256": "d65221d604ba92eee4ab3ed140bd49d9f14eaa42876d8501646405f647624d5c",
+  "request_fingerprint": "60359761566a62ff604d2125679643b58dc3556d5a1bed90d31f302d8c7e1be0",
+  "input_fingerprint": "3290554b533b5154bbc504e2616970ad0fffe01651725c56b1d1a6536b2e9767",
+  "PEC_count": 15,
+  "provider_visible_fields": [
+    "proposal_entity_ref",
+    "kind",
+    "surface_form",
+    "evidence_refs",
+    "source_unit_refs",
+    "bound_evidence.evidence_ref",
+    "bound_evidence.source_unit_id",
+    "bound_evidence.evidence_text",
+    "generic_entity_kind_definitions"
+  ],
+  "V7_7_6_raw_sha256_visible_to_provider": false,
+  "V7_7_6_raw_response_visible_to_provider": false,
+  "proposal_prompt_visible_to_provider": false,
+  "proposal_reasoning_visible_to_provider": false,
+  "current_entity_answer_hints": false,
+  "new_entities_requested": false,
+  "replacement_kind_requested": false,
+  "completeness_assessment_requested": false,
+  "separate_system_role": true,
+  "json_schema_not_duplicated_as_prompt_example": true
+}

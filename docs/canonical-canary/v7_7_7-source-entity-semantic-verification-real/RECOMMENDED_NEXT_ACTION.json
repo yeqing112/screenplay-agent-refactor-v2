@@ -1,0 +1,11 @@
+{
+  "status": "SOURCE_ENTITY_SEMANTIC_VERIFICATION_VALIDATED",
+  "next_state": "SOURCE_SEMANTIC_CLAIM_V2_TRANSPORT_SCHEMA_BOUNDARY_REQUIRED",
+  "provider_posts": 1,
+  "source_entity_reproposal_authorized": false,
+  "entity_verifier_authorized": false,
+  "canonical_promotion_authorized": false,
+  "claim_v2_repair_authorized": false,
+  "source_claim_proposal_authorized": false,
+  "fact_semantic_verifier_authorized": false
+}

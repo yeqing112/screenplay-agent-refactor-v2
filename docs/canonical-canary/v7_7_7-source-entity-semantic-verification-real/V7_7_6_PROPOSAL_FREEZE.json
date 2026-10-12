@@ -1,0 +1,218 @@
+{
+  "schema_version": "v7_7_6_proposal_freeze_v1",
+  "status": "PASS",
+  "target_book_id": 990453,
+  "origin_source_book_id": 990402,
+  "origin_source_package_id": "book:990402",
+  "origin_chapter_id": 16,
+  "origin_chapter_seq": 3,
+  "origin_source_raw_hash": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "proposal_registry_fingerprint": "7e1c7d37f36ae61b04504c107d0f7fc2c4bfc939a1ddfcbeb8badf4d7ff56fb4",
+  "expected_proposal_registry_fingerprint": "7e1c7d37f36ae61b04504c107d0f7fc2c4bfc939a1ddfcbeb8badf4d7ff56fb4",
+  "assignment_fingerprint": "b18ca9b2cbbf5d3f9e9ad32dab4c0b6a6a2d2818c5a09ce5879ad0712c7b5fbf",
+  "expected_assignment_fingerprint": "b18ca9b2cbbf5d3f9e9ad32dab4c0b6a6a2d2818c5a09ce5879ad0712c7b5fbf",
+  "PEC_count": 15,
+  "PEC_refs": [
+    "PEC_0001",
+    "PEC_0002",
+    "PEC_0003",
+    "PEC_0004",
+    "PEC_0005",
+    "PEC_0006",
+    "PEC_0007",
+    "PEC_0008",
+    "PEC_0009",
+    "PEC_0010",
+    "PEC_0011",
+    "PEC_0012",
+    "PEC_0013",
+    "PEC_0014",
+    "PEC_0015"
+  ],
+  "PEC_candidates": {
+    "PEC_0001": {
+      "ref": "PEC_0001",
+      "kind": "LOCATION",
+      "surface_form": "暗房",
+      "evidence_refs": [
+        "S1A001"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_001"
+      ],
+      "fingerprint": "fe99712b34bf9ecf81fbdb712324352b444aa0873a309ef89138ae88d6baf099"
+    },
+    "PEC_0002": {
+      "ref": "PEC_0002",
+      "kind": "ENVIRONMENT",
+      "surface_form": "红色安全灯",
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_002"
+      ],
+      "fingerprint": "a261ea749d49ea159fffde846405de298e4fd703103f68f033f4c0dabbda11f4"
+    },
+    "PEC_0003": {
+      "ref": "PEC_0003",
+      "kind": "ENVIRONMENT",
+      "surface_form": "墙上的水渍",
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_002"
+      ],
+      "fingerprint": "a8f987ee59f4425692e0868d75e20094d034b6cde0e7b581c955e89495bdda31"
+    },
+    "PEC_0004": {
+      "ref": "PEC_0004",
+      "kind": "OBJECT",
+      "surface_form": "铁盒",
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_003"
+      ],
+      "fingerprint": "f53b5473b2fc7ac23cc8f70da3760af56f4342716df9f5bf344d528d8433c9f3"
+    },
+    "PEC_0005": {
+      "ref": "PEC_0005",
+      "kind": "TEXT_CONTENT",
+      "surface_form": "第七次潮汐",
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_003"
+      ],
+      "fingerprint": "445cd9d95eedd040dd0c973f4671306cad99e549d3dc4536e21f07a84d460b79"
+    },
+    "PEC_0006": {
+      "ref": "PEC_0006",
+      "kind": "OBJECT",
+      "surface_form": "烧焦的胶片",
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "fingerprint": "7a2b5043514b1a6bdfb8d1fa2b1085d53360e62040806c7983702294ce52a4a2"
+    },
+    "PEC_0007": {
+      "ref": "PEC_0007",
+      "kind": "OBJECT",
+      "surface_form": "海鸥别针",
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "fingerprint": "055670bc9cc6bd11c880d11188606abff9c0c1c384a0c6b9257fb2e732e6d473"
+    },
+    "PEC_0008": {
+      "ref": "PEC_0008",
+      "kind": "UNKNOWN_ENTITY",
+      "surface_form": "照片里小女孩",
+      "evidence_refs": [
+        "S1A005"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_005"
+      ],
+      "fingerprint": "93f6e0bf584029b8179b799ca2bc67bed42d53a955673886ef1e1f2a3b07ea08"
+    },
+    "PEC_0009": {
+      "ref": "PEC_0009",
+      "kind": "OBJECT",
+      "surface_form": "铜铃",
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "fingerprint": "3ce9ee6ba1e6a35d88eb988054141daacea7921c95c1cefcff77a9daebac3935"
+    },
+    "PEC_0010": {
+      "ref": "PEC_0010",
+      "kind": "OBJECT",
+      "surface_form": "药水柜",
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "fingerprint": "6b9c2953f077297f319e9956cfc610c46571a7ea944c9a19b9e7c52640ce3a0b"
+    },
+    "PEC_0011": {
+      "ref": "PEC_0011",
+      "kind": "OBJECT",
+      "surface_form": "湿透的皮鞋",
+      "evidence_refs": [
+        "S1A007"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_010"
+      ],
+      "fingerprint": "ecf09e8df0de2d45558d9d5bce18e543c7fe26c103a0075d91529182e8f3add2"
+    },
+    "PEC_0012": {
+      "ref": "PEC_0012",
+      "kind": "OBJECT",
+      "surface_form": "车票",
+      "evidence_refs": [
+        "S1A008"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_011"
+      ],
+      "fingerprint": "b008b85ead23191bf580afd7f92358ca32d981ea830d4aedcd0a763c51a47ec9"
+    },
+    "PEC_0013": {
+      "ref": "PEC_0013",
+      "kind": "TEXT_CONTENT",
+      "surface_form": "今晚十点，北堤仓库，带钥匙，不要带顾沉",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "fingerprint": "0f8ac1822fd69e738fef47ed57a429975b1ef77deacd7019ae7831624446504e"
+    },
+    "PEC_0014": {
+      "ref": "PEC_0014",
+      "kind": "LOCATION",
+      "surface_form": "北堤仓库",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "fingerprint": "7d0e00489082563c88da5ff729688f48e16b84b19164ece3eceee320d82cd567"
+    },
+    "PEC_0015": {
+      "ref": "PEC_0015",
+      "kind": "OBJECT",
+      "surface_form": "钥匙",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "fingerprint": "eda278eb5001d6a9d21d42c2fef677dc509434334cc7a654d190a44658aa39c5"
+    }
+  },
+  "V7_7_6_raw_sha256": "1fdc30f0bb1aa6aeda4930aee3cefb4e5cf66d1c0b383bd3cd0be9338e41ff27",
+  "raw_response_included": false,
+  "verification_run_does_not_repropose": true,
+  "freeze_fingerprint": "c4fb7f07fa2202b2c2f563cb6a4adb3493627658b001d078fb4307402865630d"
+}

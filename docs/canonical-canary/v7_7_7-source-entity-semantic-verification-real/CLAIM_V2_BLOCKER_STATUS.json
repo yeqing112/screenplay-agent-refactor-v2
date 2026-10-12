@@ -1,0 +1,8 @@
+{
+  "status": "BLOCKED",
+  "reason": [
+    "UNION_TYPE_UNSUPPORTED:$.properties.claims.items.properties.qualifiers.additionalProperties.type"
+  ],
+  "repair_in_this_phase": false,
+  "source_claim_proposal_calls": 0
+}

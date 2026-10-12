@@ -1,0 +1,10 @@
+{
+  "authorization_id": "v7.7.7-source-entity-semantic-verification-single-call",
+  "armed": true,
+  "provider_post_budget": 1,
+  "automatic_retry": false,
+  "repair_retry": false,
+  "fallback_provider": false,
+  "fallback_model": false,
+  "armed_at_monotonic_only": 405783.6829372
+}

@@ -85,7 +85,8 @@ SYSTEM_PROMPT = """You are a semantic verifier for frozen source entity proposal
 
 def write(name: str, value: Any) -> None:
     EVIDENCE.mkdir(parents=True, exist_ok=True)
-    (EVIDENCE / name).write_text(json.dumps(value, ensure_ascii=False, indent=2, default=str) + "\n", encoding="utf-8")
+    content = str(value) if name.lower().endswith(".md") else json.dumps(value, ensure_ascii=False, indent=2, default=str) + "\n"
+    (EVIDENCE / name).write_text(content, encoding="utf-8")
 
 
 def read_path(path: Path) -> Any:

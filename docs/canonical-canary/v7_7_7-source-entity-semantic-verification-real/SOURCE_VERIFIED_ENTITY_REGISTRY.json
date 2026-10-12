@@ -1,0 +1,389 @@
+{
+  "status": "SOURCE_ENTITY_SEMANTIC_VERIFICATION_VALIDATED",
+  "schema_version": "source_verified_entity_registry_v1",
+  "authority_boundary": "CANONICAL_RUNTIME remains authoritative; verified PECs remain non-canonical proposals",
+  "canonical_runtime_entities": {
+    "E01_SC001": {
+      "ref": "E01_SC001",
+      "kind": "SCENE",
+      "source": "script_ir",
+      "display_forms": [
+        "E01_SC001"
+      ],
+      "evidence_refs": [
+        "S1I001",
+        "S1I002",
+        "S1I003"
+      ],
+      "evidence_identities": [
+        "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+        "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+        "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1"
+      ],
+      "source_evidence_refs": [
+        "S1I001",
+        "S1I002",
+        "S1I003"
+      ],
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "林晚": {
+      "ref": "林晚",
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant",
+      "display_forms": [
+        "林晚"
+      ],
+      "evidence_refs": [
+        "S1P1E001",
+        "S1P1E002",
+        "S1P1E003"
+      ],
+      "evidence_identities": [
+        "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+        "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+        "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b"
+      ],
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "顾沉": {
+      "ref": "顾沉",
+      "kind": "CHARACTER",
+      "source": "script_ir_declared_participant",
+      "display_forms": [
+        "顾沉"
+      ],
+      "evidence_refs": [
+        "S1P2E001",
+        "S1P2E002",
+        "S1P2E003"
+      ],
+      "evidence_identities": [
+        "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+        "3b5636545f8b18032eca474e8ff9e11cb09fd8e0c4f567069d962b3e4e480e32",
+        "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820"
+      ],
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "SAU_E01_SC001_008": {
+      "ref": "SAU_E01_SC001_008",
+      "kind": "DIALOGUE_CONTENT",
+      "source": "source_authoring_unit",
+      "display_forms": [
+        "E01_SC001_D001"
+      ],
+      "evidence_refs": [
+        "S1D001"
+      ],
+      "evidence_identities": [
+        "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+      ],
+      "authority": "CANONICAL_RUNTIME"
+    }
+  },
+  "proposal_entities": {
+    "PEC_0001": {
+      "ref": "PEC_0001",
+      "kind": "LOCATION",
+      "surface_form": "暗房",
+      "evidence_refs": [
+        "S1A001"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_001"
+      ],
+      "fingerprint": "fe99712b34bf9ecf81fbdb712324352b444aa0873a309ef89138ae88d6baf099",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A001"
+      ],
+      "canonical": false
+    },
+    "PEC_0002": {
+      "ref": "PEC_0002",
+      "kind": "ENVIRONMENT",
+      "surface_form": "红色安全灯",
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_002"
+      ],
+      "fingerprint": "a261ea749d49ea159fffde846405de298e4fd703103f68f033f4c0dabbda11f4",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A002"
+      ],
+      "canonical": false
+    },
+    "PEC_0003": {
+      "ref": "PEC_0003",
+      "kind": "ENVIRONMENT",
+      "surface_form": "墙上的水渍",
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_002"
+      ],
+      "fingerprint": "a8f987ee59f4425692e0868d75e20094d034b6cde0e7b581c955e89495bdda31",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A002"
+      ],
+      "canonical": false
+    },
+    "PEC_0004": {
+      "ref": "PEC_0004",
+      "kind": "OBJECT",
+      "surface_form": "铁盒",
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_003"
+      ],
+      "fingerprint": "f53b5473b2fc7ac23cc8f70da3760af56f4342716df9f5bf344d528d8433c9f3",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A003"
+      ],
+      "canonical": false
+    },
+    "PEC_0005": {
+      "ref": "PEC_0005",
+      "kind": "TEXT_CONTENT",
+      "surface_form": "第七次潮汐",
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_003"
+      ],
+      "fingerprint": "445cd9d95eedd040dd0c973f4671306cad99e549d3dc4536e21f07a84d460b79",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A003"
+      ],
+      "canonical": false
+    },
+    "PEC_0006": {
+      "ref": "PEC_0006",
+      "kind": "OBJECT",
+      "surface_form": "烧焦的胶片",
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "fingerprint": "7a2b5043514b1a6bdfb8d1fa2b1085d53360e62040806c7983702294ce52a4a2",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A004"
+      ],
+      "canonical": false
+    },
+    "PEC_0007": {
+      "ref": "PEC_0007",
+      "kind": "OBJECT",
+      "surface_form": "海鸥别针",
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_004"
+      ],
+      "fingerprint": "055670bc9cc6bd11c880d11188606abff9c0c1c384a0c6b9257fb2e732e6d473",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A004"
+      ],
+      "canonical": false
+    },
+    "PEC_0008": {
+      "ref": "PEC_0008",
+      "kind": "UNKNOWN_ENTITY",
+      "surface_form": "照片里小女孩",
+      "evidence_refs": [
+        "S1A005"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_005"
+      ],
+      "fingerprint": "93f6e0bf584029b8179b799ca2bc67bed42d53a955673886ef1e1f2a3b07ea08",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A005"
+      ],
+      "canonical": false
+    },
+    "PEC_0009": {
+      "ref": "PEC_0009",
+      "kind": "OBJECT",
+      "surface_form": "铜铃",
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "fingerprint": "3ce9ee6ba1e6a35d88eb988054141daacea7921c95c1cefcff77a9daebac3935",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A006"
+      ],
+      "canonical": false
+    },
+    "PEC_0010": {
+      "ref": "PEC_0010",
+      "kind": "OBJECT",
+      "surface_form": "药水柜",
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_009"
+      ],
+      "fingerprint": "6b9c2953f077297f319e9956cfc610c46571a7ea944c9a19b9e7c52640ce3a0b",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A006"
+      ],
+      "canonical": false
+    },
+    "PEC_0011": {
+      "ref": "PEC_0011",
+      "kind": "OBJECT",
+      "surface_form": "湿透的皮鞋",
+      "evidence_refs": [
+        "S1A007"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_010"
+      ],
+      "fingerprint": "ecf09e8df0de2d45558d9d5bce18e543c7fe26c103a0075d91529182e8f3add2",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A007"
+      ],
+      "canonical": false
+    },
+    "PEC_0012": {
+      "ref": "PEC_0012",
+      "kind": "OBJECT",
+      "surface_form": "车票",
+      "evidence_refs": [
+        "S1A008"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_011"
+      ],
+      "fingerprint": "b008b85ead23191bf580afd7f92358ca32d981ea830d4aedcd0a763c51a47ec9",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A008"
+      ],
+      "canonical": false
+    },
+    "PEC_0013": {
+      "ref": "PEC_0013",
+      "kind": "TEXT_CONTENT",
+      "surface_form": "今晚十点，北堤仓库，带钥匙，不要带顾沉",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "fingerprint": "0f8ac1822fd69e738fef47ed57a429975b1ef77deacd7019ae7831624446504e",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A009"
+      ],
+      "canonical": false
+    },
+    "PEC_0014": {
+      "ref": "PEC_0014",
+      "kind": "LOCATION",
+      "surface_form": "北堤仓库",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "fingerprint": "7d0e00489082563c88da5ff729688f48e16b84b19164ece3eceee320d82cd567",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A009"
+      ],
+      "canonical": false
+    },
+    "PEC_0015": {
+      "ref": "PEC_0015",
+      "kind": "OBJECT",
+      "surface_form": "钥匙",
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_012"
+      ],
+      "fingerprint": "eda278eb5001d6a9d21d42c2fef677dc509434334cc7a654d190a44658aa39c5",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "mention_verdict": "EXPLICITLY_EVIDENCED",
+      "kind_verdict": "SUPPORTED",
+      "verification_evidence_refs": [
+        "S1A009"
+      ],
+      "canonical": false
+    }
+  },
+  "canonical_promotions": 0,
+  "canonical": false,
+  "fingerprint": "88de4d7793043c11897605217c3e6a29847062eb87ac4b7bb20909b147e6b186"
+}

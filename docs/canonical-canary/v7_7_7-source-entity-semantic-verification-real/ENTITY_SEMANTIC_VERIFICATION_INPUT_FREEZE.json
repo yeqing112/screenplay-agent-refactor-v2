@@ -1,0 +1,468 @@
+{
+  "status": "PASS",
+  "target_book_id": 990453,
+  "episode": 1,
+  "origin_source_book_id": 990402,
+  "origin_source_package_id": "book:990402",
+  "origin_chapter_id": 16,
+  "origin_chapter_seq": 3,
+  "origin_source_raw_hash": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "source_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "source_unit_count": 12,
+  "evidence_index_fingerprint": "cce9cdb1f2aced98e29caa73e4dfab3b16f58264ec0de81418c05a97310ec58f",
+  "evidence_anchor_count": 12,
+  "unit_evidence_hash_checks": {
+    "SAU_E01_SC001_001": true,
+    "SAU_E01_SC001_002": true,
+    "SAU_E01_SC001_003": true,
+    "SAU_E01_SC001_004": true,
+    "SAU_E01_SC001_005": true,
+    "SAU_E01_SC001_006": true,
+    "SAU_E01_SC001_007": true,
+    "SAU_E01_SC001_008": true,
+    "SAU_E01_SC001_009": true,
+    "SAU_E01_SC001_010": true,
+    "SAU_E01_SC001_011": true,
+    "SAU_E01_SC001_012": true
+  },
+  "source_units": [
+    {
+      "unit_id": "SAU_E01_SC001_001",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A001",
+      "source_order": 1,
+      "evidence_refs": [
+        "S1A001"
+      ],
+      "evidence_text_sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59",
+      "evidence_sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_002",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A002",
+      "source_order": 2,
+      "evidence_refs": [
+        "S1A002"
+      ],
+      "evidence_text_sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95",
+      "evidence_sha256": "b9e7108f4ec271a9ad7411dfb176abdb39c752e32c861b3ad1bd8a8b02670d95"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_003",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A003",
+      "source_order": 3,
+      "evidence_refs": [
+        "S1A003"
+      ],
+      "evidence_text_sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03",
+      "evidence_sha256": "8efb148cfe5cd638721023f3df425bcc768c91d501b6d928fbb78cc416021d03"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_004",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A004",
+      "source_order": 4,
+      "evidence_refs": [
+        "S1A004"
+      ],
+      "evidence_text_sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2",
+      "evidence_sha256": "c3f525ebb7bf96a1ec61e6b9644586c098fd45840ec797f0c2fb2a978b380cd2"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_005",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A005",
+      "source_order": 5,
+      "evidence_refs": [
+        "S1A005"
+      ],
+      "evidence_text_sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b",
+      "evidence_sha256": "bba442957ac14cd466d6dc0420f2f8e8cf55e28a4c879c750dda74e0e5c4d17b"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_006",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A010",
+      "source_order": 6,
+      "evidence_refs": [
+        "S1A010"
+      ],
+      "evidence_text_sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820",
+      "evidence_sha256": "f2d993550e061e1681ad3013647cf7bf4a300d88e011d14b5d22e361f2149820"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_007",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A011",
+      "source_order": 7,
+      "evidence_refs": [
+        "S1A011"
+      ],
+      "evidence_text_sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923",
+      "evidence_sha256": "8dcda7a25703d735afc0e6902899f27a11442834c5571a7e9524bb0aed755923"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_008",
+      "source_type": "SOURCE_DIALOGUE",
+      "source_ref": "E01_SC001_D001",
+      "source_order": 8,
+      "evidence_refs": [
+        "S1D001"
+      ],
+      "evidence_text_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a",
+      "evidence_sha256": "f77d206835ad01882841e6e3c864de7543fbcf478a39cab3ad0bbce90722939a"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_009",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A006",
+      "source_order": 9,
+      "evidence_refs": [
+        "S1A006"
+      ],
+      "evidence_text_sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4",
+      "evidence_sha256": "5ad7789d782c4842a1332aa2e55ba552ab21485e5ce31e834b39ce66186d37c4"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_010",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A007",
+      "source_order": 10,
+      "evidence_refs": [
+        "S1A007"
+      ],
+      "evidence_text_sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1",
+      "evidence_sha256": "c9a3215f98656eba14992ef53512bb41b920b2f277278beee7498fbd8bf249e1"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_011",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A008",
+      "source_order": 11,
+      "evidence_refs": [
+        "S1A008"
+      ],
+      "evidence_text_sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3",
+      "evidence_sha256": "c0708dae37986272f2318fba15515c0e748f8948f9d6dcd60c98d1ba25b6afc3"
+    },
+    {
+      "unit_id": "SAU_E01_SC001_012",
+      "source_type": "SOURCE_ACTION",
+      "source_ref": "E01_SC001_A009",
+      "source_order": 12,
+      "evidence_refs": [
+        "S1A009"
+      ],
+      "evidence_text_sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117",
+      "evidence_sha256": "db2137a55feb0b185b294268526734ce4fdc8ce92514ed9629213ba7f7bb2117"
+    }
+  ],
+  "verifier_input_fingerprint": "3290554b533b5154bbc504e2616970ad0fffe01651725c56b1d1a6536b2e9767",
+  "provider_visible_input": {
+    "frozen_proposals": [
+      {
+        "proposal_entity_ref": "PEC_0001",
+        "kind": "LOCATION",
+        "surface_form": "暗房",
+        "evidence_refs": [
+          "S1A001"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_001"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A001",
+            "source_unit_id": "SAU_E01_SC001_001",
+            "evidence_text": "顾沉带林晚进入暗房。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0002",
+        "kind": "ENVIRONMENT",
+        "surface_form": "红色安全灯",
+        "evidence_refs": [
+          "S1A002"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_002"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A002",
+            "source_unit_id": "SAU_E01_SC001_002",
+            "evidence_text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0003",
+        "kind": "ENVIRONMENT",
+        "surface_form": "墙上的水渍",
+        "evidence_refs": [
+          "S1A002"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_002"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A002",
+            "source_unit_id": "SAU_E01_SC001_002",
+            "evidence_text": "红色安全灯忽明忽暗，墙上的水渍像一张张倒置的地图。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0004",
+        "kind": "OBJECT",
+        "surface_form": "铁盒",
+        "evidence_refs": [
+          "S1A003"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_003"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A003",
+            "source_unit_id": "SAU_E01_SC001_003",
+            "evidence_text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0005",
+        "kind": "TEXT_CONTENT",
+        "surface_form": "第七次潮汐",
+        "evidence_refs": [
+          "S1A003"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_003"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A003",
+            "source_unit_id": "SAU_E01_SC001_003",
+            "evidence_text": "暗房中央摆着一只铁盒，盒盖上贴着母亲的手写标签：第七次潮汐。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0006",
+        "kind": "OBJECT",
+        "surface_form": "烧焦的胶片",
+        "evidence_refs": [
+          "S1A004"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_004"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A004",
+            "source_unit_id": "SAU_E01_SC001_004",
+            "evidence_text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0007",
+        "kind": "OBJECT",
+        "surface_form": "海鸥别针",
+        "evidence_refs": [
+          "S1A004"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_004"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A004",
+            "source_unit_id": "SAU_E01_SC001_004",
+            "evidence_text": "铁盒是空的，只有一小段烧焦的胶片和一枚海鸥别针。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0008",
+        "kind": "UNKNOWN_ENTITY",
+        "surface_form": "照片里小女孩",
+        "evidence_refs": [
+          "S1A005"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_005"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A005",
+            "source_unit_id": "SAU_E01_SC001_005",
+            "evidence_text": "林晚认出别针与照片里小女孩佩戴的一模一样，却想不起自己童年是否来过这里。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0009",
+        "kind": "OBJECT",
+        "surface_form": "铜铃",
+        "evidence_refs": [
+          "S1A006"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_009"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A006",
+            "source_unit_id": "SAU_E01_SC001_009",
+            "evidence_text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0010",
+        "kind": "OBJECT",
+        "surface_form": "药水柜",
+        "evidence_refs": [
+          "S1A006"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_009"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A006",
+            "source_unit_id": "SAU_E01_SC001_009",
+            "evidence_text": "两人同时听见门外铜铃响了一声，顾沉熄灭安全灯，拉着林晚躲到药水柜后。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0011",
+        "kind": "OBJECT",
+        "surface_form": "湿透的皮鞋",
+        "evidence_refs": [
+          "S1A007"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_010"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A007",
+            "source_unit_id": "SAU_E01_SC001_010",
+            "evidence_text": "门缝下出现一双湿透的皮鞋。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0012",
+        "kind": "OBJECT",
+        "surface_form": "车票",
+        "evidence_refs": [
+          "S1A008"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_011"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A008",
+            "source_unit_id": "SAU_E01_SC001_011",
+            "evidence_text": "那人没有进门，只把一张车票塞进来。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0013",
+        "kind": "TEXT_CONTENT",
+        "surface_form": "今晚十点，北堤仓库，带钥匙，不要带顾沉",
+        "evidence_refs": [
+          "S1A009"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_012"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A009",
+            "source_unit_id": "SAU_E01_SC001_012",
+            "evidence_text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0014",
+        "kind": "LOCATION",
+        "surface_form": "北堤仓库",
+        "evidence_refs": [
+          "S1A009"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_012"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A009",
+            "source_unit_id": "SAU_E01_SC001_012",
+            "evidence_text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+          }
+        ]
+      },
+      {
+        "proposal_entity_ref": "PEC_0015",
+        "kind": "OBJECT",
+        "surface_form": "钥匙",
+        "evidence_refs": [
+          "S1A009"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_012"
+        ],
+        "bound_evidence": [
+          {
+            "evidence_ref": "S1A009",
+            "source_unit_id": "SAU_E01_SC001_012",
+            "evidence_text": "车票背面写着：今晚十点，北堤仓库，带钥匙，不要带顾沉。"
+          }
+        ]
+      }
+    ],
+    "generic_entity_kind_definitions": {
+      "CHARACTER": "An explicitly mentioned person or character.",
+      "SCENE": "An explicitly identified scene as a narrative or production unit.",
+      "LOCATION": "A place or spatial location explicitly referenced.",
+      "OBJECT": "A physical object or prop explicitly referenced.",
+      "ENVIRONMENT": "An environmental feature, condition, or material element.",
+      "DIALOGUE_CONTENT": "Explicit spoken dialogue content.",
+      "TEXT_CONTENT": "Explicit written or readable textual content.",
+      "PROPERTY_VALUE": "A value serving as a property rather than an independent physical entity.",
+      "STATE_VALUE": "A value or state rather than an independent entity.",
+      "UNKNOWN_ENTITY": "An explicit entity mention whose safe generic classification cannot be determined."
+    }
+  },
+  "production_freeze_before": {
+    "target_book_id": 990453,
+    "episode": 1,
+    "fact_snapshot_id": 49,
+    "fact_snapshot_fingerprint": "9663f929fd47c235e5fc54ee5e76cb31cc8950a187b3a019a95213df731a3f70",
+    "fact_records_fingerprint": "a4fa75c1de45fc4ae1f8bf543cc7e5fc809b04d780df27ee24966b924bd45149",
+    "script_ir_id": 52,
+    "script_ir_payload_hash": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+    "script_ir_payload_fingerprint": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+    "packet_id": 64,
+    "packet_row_hash": "40cdeb88d58940648bf812a8c0a2e05820c580ee8adccb9ec298ed81ec40b06e",
+    "packet_fingerprint": "e48b8502ab2e14b94798d19a",
+    "director_ledger": 11,
+    "stage_a_attempt": "attempt-7",
+    "active_stage_b": "attempt-11",
+    "origin_source_book_id": 990402,
+    "origin_source_package_id": "book:990402",
+    "origin_source_raw_hash": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1"
+  }
+}
