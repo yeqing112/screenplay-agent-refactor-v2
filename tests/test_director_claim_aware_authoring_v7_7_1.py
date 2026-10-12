@@ -187,3 +187,18 @@ def test_same_display_text_different_typed_claims_have_different_results():
     intent = make_manifest_claim(claim_id="AC_DISPLAY_INTENT", claim_type="CHARACTER_INTENT", subject={"kind": "CHARACTER", "ref": "CHAR_A"}, predicate="probe", object_={"kind": "CHARACTER", "ref": "CHAR_B"}, origin="STAGE_B", qualifiers={"semantic_slot": "stage_b.performance"})
     assert audit_typed_manifest(_manifest(option, stage="STAGE_B", slots=["stage_b.performance"]), source_claims=[])["status"] == "PASS"
     assert audit_typed_manifest(_manifest(intent, stage="STAGE_B", slots=["stage_b.performance"]), source_claims=[])["status"] == "BLOCKED"
+
+
+def test_different_rendered_text_with_same_typed_claim_has_same_blocking_result():
+    first = make_manifest_claim(
+        claim_id="AC_TEXT_A", claim_type="CHARACTER_INTENT", subject={"kind": "CHARACTER", "ref": "CHAR_A"},
+        predicate="probe", object_={"kind": "CHARACTER", "ref": "CHAR_B"}, origin="STAGE_B",
+        qualifiers={"semantic_slot": "stage_b.performance"}, provenance={"display_text": "display text A"},
+    )
+    second = make_manifest_claim(
+        claim_id="AC_TEXT_B", claim_type="CHARACTER_INTENT", subject={"kind": "CHARACTER", "ref": "CHAR_A"},
+        predicate="probe", object_={"kind": "CHARACTER", "ref": "CHAR_B"}, origin="STAGE_B",
+        qualifiers={"semantic_slot": "stage_b.performance"}, provenance={"display_text": "unrelated rendering B"},
+    )
+    assert resolve_typed_claim_support(first, source_claims=[])["support_status"] == "UNSUPPORTED"
+    assert resolve_typed_claim_support(second, source_claims=[])["support_status"] == "UNSUPPORTED"

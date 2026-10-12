@@ -166,6 +166,16 @@ def main() -> None:
     _write("STAGE_A_FIELD_SEMANTIC_CONTRACT.json", stage_a_field_semantic_contract())
     _write("STAGE_B_FIELD_SEMANTIC_CONTRACT.json", stage_b_field_semantic_contract())
     _write("CLAIM_MANIFEST_COMPLETENESS_CONTRACT.json", claim_manifest_completeness_contract())
+    _write("CLAIM_QUALIFIER_CONTRACT.json", {
+        "schema_version": "director_claim_qualifier_contract_v1",
+        "typed_qualifiers": {
+            "destination": {"value_shape": "canonical entity ref", "raw_text_inference": False},
+            "light_state": {"value_shape": "registered state value", "raw_text_inference": False},
+            "ownership": {"value_shape": "canonical entity ref", "raw_text_inference": False},
+            "possession": {"value_shape": "canonical entity ref plus transfer relation", "raw_text_inference": False},
+        },
+        "unknown_qualifier_policy": "BLOCKED_OR_REVIEW_REQUIRED",
+    })
     _write("CLAIM_RELATION_REGISTRY.json", {**relation_registry(), "validation": validate_relation_registry()})
     _write("CLAIM_ENTITY_BINDING_CONTRACT.json", entity_binding_contract())
 
@@ -275,6 +285,7 @@ V7.7.0's phrase extractor and special-case grounding remain `LEGACY_SHADOW_DIAGN
 - Relation registry: `director_claim_relation_registry_v1`.
 - Entity binding: runtime canonical refs from declared participants and upstream entity registry; no invented story IDs.
 - Completeness: structured semantic slots and covered slots; no lexical blacklist.
+- V3 audit naming: historical text extraction is `V3_TEXT_SHADOW_DIAGNOSTIC`; the future co-produced manifest path is `V3_TYPED_AUTHORING_SHADOW`.
 - Generic code scan: future typed production path has no forbidden phrase, scene, book or attempt token; legacy extractor/grounding are explicitly excluded and classified as shadow diagnostics.
 
 ## Typed mock results
@@ -306,7 +317,7 @@ Three SceneBlocking authority failures remain pre-existing and are recorded in `
 
 ## Delivery verification
 
-- Tests: V7.7.1 + V7.7.0 + targeted V7.2-V7.6 regression **208 passed, 0 failed**; isolated SceneBlocking baseline **12 passed, 3 pre-existing failures**.
+- Tests: V7.7.1 + V7.7.0 + targeted V7.2-V7.6 regression **209 passed, 0 failed**; isolated SceneBlocking baseline **12 passed, 3 pre-existing failures**.
 - Compileall: PASS.
 - Git diff check: PASS.
 - Working tree: required clean after push.

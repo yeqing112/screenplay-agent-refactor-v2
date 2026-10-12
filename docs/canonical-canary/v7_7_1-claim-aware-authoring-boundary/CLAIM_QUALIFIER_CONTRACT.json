@@ -1,0 +1,22 @@
+{
+  "schema_version": "director_claim_qualifier_contract_v1",
+  "typed_qualifiers": {
+    "destination": {
+      "value_shape": "canonical entity ref",
+      "raw_text_inference": false
+    },
+    "light_state": {
+      "value_shape": "registered state value",
+      "raw_text_inference": false
+    },
+    "ownership": {
+      "value_shape": "canonical entity ref",
+      "raw_text_inference": false
+    },
+    "possession": {
+      "value_shape": "canonical entity ref plus transfer relation",
+      "raw_text_inference": false
+    }
+  },
+  "unknown_qualifier_policy": "BLOCKED_OR_REVIEW_REQUIRED"
+}

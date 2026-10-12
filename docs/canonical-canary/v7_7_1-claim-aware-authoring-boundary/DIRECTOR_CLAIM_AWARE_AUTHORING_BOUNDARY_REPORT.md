@@ -26,6 +26,7 @@ V7.7.0's phrase extractor and special-case grounding remain `LEGACY_SHADOW_DIAGN
 - Relation registry: `director_claim_relation_registry_v1`.
 - Entity binding: runtime canonical refs from declared participants and upstream entity registry; no invented story IDs.
 - Completeness: structured semantic slots and covered slots; no lexical blacklist.
+- V3 audit naming: historical text extraction is `V3_TEXT_SHADOW_DIAGNOSTIC`; the future co-produced manifest path is `V3_TYPED_AUTHORING_SHADOW`.
 - Generic code scan: future typed production path has no forbidden phrase, scene, book or attempt token; legacy extractor/grounding are explicitly excluded and classified as shadow diagnostics.
 
 ## Typed mock results
@@ -57,8 +58,8 @@ Three SceneBlocking authority failures remain pre-existing and are recorded in `
 
 ## Delivery verification
 
-- Tests: V7.7.1 + V7.7.0 + targeted V7.2-V7.6 regression **208 passed, 0 failed**; isolated SceneBlocking baseline **12 passed, 3 pre-existing failures**.
+- Tests: V7.7.1 + V7.7.0 + targeted V7.2-V7.6 regression **209 passed, 0 failed**; isolated SceneBlocking baseline **12 passed, 3 pre-existing failures**.
 - Compileall: PASS.
 - Git diff check: PASS.
-- Working tree: clean at the implementation delivery checkpoint.
-- Implementation commit SHA: `6dfe05d3c65c1f0fe1d1dd1d356a73e9a5c72472`; remote HEAD matched this SHA after the implementation push. The final report metadata revision is the immediate follow-up commit in repository history.
+- Working tree: required clean after push.
+- Commit SHA and remote HEAD: recorded after final push and required equal.
