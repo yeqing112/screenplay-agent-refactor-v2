@@ -226,6 +226,7 @@ def main() -> int:
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     db_before = read_db()
     contract = read_json(SOURCE_CONTRACT)
+    initial_worktree_clean = not bool(os.popen("git status --porcelain").read().strip())
     units, entities, evidence_index, unit_evidence_map = build_source_inputs(db_before, contract)
     authority_boundary = read_json(ROOT / "docs/canonical-canary/v7_7_2-source-semantic-claim-authority/SOURCE_SEMANTIC_PROPOSAL_BOUNDARY.json")
     current_gap = read_json(ROOT / "docs/canonical-canary/v7_7_2-source-semantic-claim-authority/CURRENT_SOURCE_CLAIM_AUTHORITY_GAP.json")
@@ -266,7 +267,7 @@ def main() -> int:
         "provider_profile": bool(profile_snapshot.get("profile_id") and profile_snapshot.get("provider") and profile_snapshot.get("model") and profile_snapshot.get("base_host") and profile_snapshot.get("enabled") and profile_snapshot.get("key_configured")),
         "runtime_not_mock": runtime_env != "mock",
         "candidate_schema": True,
-        "working_tree_clean_before_call": not bool(os.popen("git status --porcelain").read().strip()),
+        "working_tree_clean_before_call": initial_worktree_clean,
     }
     write("SOURCE_SEMANTIC_PROPOSAL_PREFLIGHT.json", {"status": "PASS" if all(preflight_checks.values()) else "BLOCKED", "checks": preflight_checks, "failed_checks": [key for key, value in preflight_checks.items() if not value]})
     if not all(preflight_checks.values()):
