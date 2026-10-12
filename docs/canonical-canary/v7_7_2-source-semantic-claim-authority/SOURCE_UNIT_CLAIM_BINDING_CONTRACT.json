@@ -1,0 +1,99 @@
+{
+  "schema_version": "source_unit_claim_binding_v1",
+  "source_unit_owns": [
+    "ordering",
+    "evidence_grouping",
+    "source_type",
+    "human_readable_text"
+  ],
+  "source_claim_owns": [
+    "typed_semantic_authority"
+  ],
+  "historical_units_mutated": false,
+  "example_current_bindings": [
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_001",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_002",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_003",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_004",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_005",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_006",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_007",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_008",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_009",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_010",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_011",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    },
+    {
+      "schema_version": "source_unit_claim_binding_v1",
+      "source_unit_id": "SAU_E01_SC001_012",
+      "source_claim_ids": [],
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "director_source_claim_authority_contract_v1",
+  "dual_gate": [
+    "EVIDENCE_AUTHORITY",
+    "SEMANTIC_AUTHORITY"
+  ],
+  "confirmed_fact_alone_is_not_sourceclaim_authority": true,
+  "required_overlay": {
+    "semantic_disposition": "WORLD_FACT_CONFIRMED",
+    "downstream_eligible": true,
+    "review_required": false
+  },
+  "provider_verdict_is_non_authoritative": true,
+  "eligible_fact_authorities": [
+    "source_text",
+    "locked_fact",
+    "approved_fact"
+  ]
+}

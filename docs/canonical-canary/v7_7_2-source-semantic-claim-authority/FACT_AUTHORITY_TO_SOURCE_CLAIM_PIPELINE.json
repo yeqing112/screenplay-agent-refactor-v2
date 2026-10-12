@@ -1,0 +1,15 @@
+{
+  "schema_version": "fact_authority_to_source_claim_pipeline_v1",
+  "steps": [
+    "FactRecord",
+    "Evidence Authority",
+    "Semantic Authority Overlay",
+    "typed value validation",
+    "entity binding",
+    "relation mapping",
+    "deterministic SourceClaim",
+    "coverage qualification"
+  ],
+  "writes_this_phase": 0,
+  "raw_text_parser": false
+}

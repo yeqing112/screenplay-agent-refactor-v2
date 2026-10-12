@@ -1,0 +1,15 @@
+{
+  "schema_version": "director_source_claim_materialization_eligibility_v1",
+  "required": [
+    "confirmed_fact",
+    "eligible_fact_authority",
+    "typed_fact_value",
+    "WORLD_FACT_CONFIRMED_overlay",
+    "downstream_eligible",
+    "review_required_false",
+    "fresh_evidence",
+    "entity_binding",
+    "mapping_registry"
+  ],
+  "provider_entailed_is_non_authoritative": true
+}

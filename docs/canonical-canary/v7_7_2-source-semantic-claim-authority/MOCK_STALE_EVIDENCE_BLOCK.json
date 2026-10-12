@@ -1,0 +1,34 @@
+{
+  "verifier_verdict": "ENTAILED",
+  "materialization": {
+    "status": "BLOCKED",
+    "claim": null,
+    "eligibility": {
+      "schema_version": "director_source_claim_materialization_eligibility_v1",
+      "fact_id": "FACT_ACTION",
+      "status": "BLOCKED",
+      "errors": [
+        "EVIDENCE_STALE:EV_ACTION_1"
+      ],
+      "value_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "evidence_validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "EVIDENCE_STALE:EV_ACTION_1"
+        ],
+        "resolved_refs": [
+          "EV_ACTION_1"
+        ]
+      },
+      "entity_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "provider_verdict_is_non_authoritative": true
+    }
+  },
+  "provider_calls": 0
+}

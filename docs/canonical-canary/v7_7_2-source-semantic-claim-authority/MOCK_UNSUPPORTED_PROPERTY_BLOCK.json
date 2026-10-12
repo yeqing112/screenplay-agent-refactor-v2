@@ -1,0 +1,36 @@
+{
+  "candidate_claim_type": "OBJECT_PROPERTY",
+  "verifier_verdict": "AMBIGUOUS",
+  "materialization": {
+    "status": "BLOCKED",
+    "claim": null,
+    "eligibility": {
+      "schema_version": "director_source_claim_materialization_eligibility_v1",
+      "fact_id": "FACT_PROPERTY",
+      "status": "BLOCKED",
+      "errors": [
+        "SEMANTIC_AUTHORITY_DOWNSTREAM_NOT_ELIGIBLE",
+        "SEMANTIC_AUTHORITY_NOT_WORLD_FACT_CONFIRMED",
+        "SEMANTIC_AUTHORITY_REVIEW_REQUIRED"
+      ],
+      "value_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "evidence_validation": {
+        "status": "PASS",
+        "errors": [],
+        "resolved_refs": [
+          "EV_ACTION_1"
+        ]
+      },
+      "entity_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "provider_verdict_is_non_authoritative": true
+    }
+  },
+  "source_claim_created": false,
+  "provider_calls": 0
+}

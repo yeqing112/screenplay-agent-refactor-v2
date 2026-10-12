@@ -1,0 +1,10 @@
+{
+  "candidate_validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "CANDIDATE_PROVIDER_AUTHORITY_FIELDS_FORBIDDEN:$.final_authority,$.source_claim_supported"
+    ]
+  },
+  "expected": "REJECT",
+  "provider_calls": 0
+}

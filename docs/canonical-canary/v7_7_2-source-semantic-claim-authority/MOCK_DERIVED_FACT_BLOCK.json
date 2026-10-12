@@ -1,0 +1,31 @@
+{
+  "materialization": {
+    "status": "BLOCKED",
+    "claim": null,
+    "eligibility": {
+      "schema_version": "director_source_claim_materialization_eligibility_v1",
+      "fact_id": "FACT_DERIVED",
+      "status": "BLOCKED",
+      "errors": [
+        "FACT_AUTHORITY_NOT_ELIGIBLE"
+      ],
+      "value_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "evidence_validation": {
+        "status": "PASS",
+        "errors": [],
+        "resolved_refs": [
+          "EV_ACTION_1"
+        ]
+      },
+      "entity_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "provider_verdict_is_non_authoritative": true
+    }
+  },
+  "provider_calls": 0
+}

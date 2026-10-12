@@ -1,0 +1,32 @@
+{
+  "schema_version": "source_semantic_fact_value_v1",
+  "required": [
+    "schema_version",
+    "object",
+    "qualifiers",
+    "polarity",
+    "modality"
+  ],
+  "object": {
+    "kind": "canonical entity or typed value kind",
+    "ref": "canonical runtime reference or value token"
+  },
+  "qualifiers": "typed object; no arbitrary untyped authority payload",
+  "polarity": [
+    "POSITIVE",
+    "NEGATED",
+    "PROHIBITION",
+    "META_COMPLIANCE",
+    "DELEGATION"
+  ],
+  "modality": [
+    "ASSERTED",
+    "UNCERTAIN",
+    "POSSIBLE",
+    "HYPOTHETICAL",
+    "PLAYABLE_OPTION",
+    "DELEGATED",
+    "PROHIBITED"
+  ],
+  "display_prose_allowed": false
+}

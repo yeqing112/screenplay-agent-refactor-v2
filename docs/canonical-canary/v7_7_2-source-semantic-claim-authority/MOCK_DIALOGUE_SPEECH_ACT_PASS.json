@@ -1,0 +1,50 @@
+{
+  "result": {
+    "status": "PASS",
+    "claim": {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "SC_DIALOGUE_1",
+      "claim_type": "SOURCE_SPEECH_ACT",
+      "relation_class": "SPEECH_ACT",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "CHAR_A"
+      },
+      "predicate": "speech_act",
+      "object": {
+        "kind": "DIALOGUE_CONTENT",
+        "ref": "DIALOGUE_1"
+      },
+      "qualifiers": {
+        "speaker_binding": "DECLARED"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "source_fact_id": "DIALOGUE_1",
+      "fact_snapshot_id": "1",
+      "semantic_authority_fingerprint": "semantic-mock",
+      "evidence_refs": [
+        "EV_DIALOGUE_1"
+      ],
+      "source_fingerprint": "mock-source-fp",
+      "entity_registry_fingerprint": "bdf71674c7265fd2757ffb3ca271c93daee99694573439be7e50de230c3ae073",
+      "relation_registry_version": "director_claim_relation_registry_v1",
+      "fingerprint": "ff12c5d846330cae76ef0963a7350b2a580b8e16a454a126509214632af7b0ea"
+    },
+    "entity_validation": {
+      "status": "PASS",
+      "errors": []
+    },
+    "evidence_validation": {
+      "status": "PASS",
+      "errors": [],
+      "resolved_refs": [
+        "EV_DIALOGUE_1"
+      ]
+    },
+    "world_fact_created": false
+  },
+  "claim_type": "SOURCE_SPEECH_ACT",
+  "world_fact_created": false,
+  "provider_calls": 0
+}

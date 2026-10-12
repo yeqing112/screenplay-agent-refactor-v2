@@ -1,0 +1,10 @@
+{
+  "schema_version": "fact_snapshot_confirmation_authority_gap_v1",
+  "snapshot_id": 49,
+  "fact_snapshot_status": "confirmed",
+  "validation_report_status": "qualified",
+  "structural_confirmation": "PASS",
+  "semantic_authority": "NOT_ESTABLISHED",
+  "confirmed_fact_record_alone_is_sourceclaim_authority": false,
+  "reason": "Snapshot confirmation checks structural qualification and freshness; it does not establish semantic entailment for arbitrary FactRecords."
+}

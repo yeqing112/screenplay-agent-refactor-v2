@@ -1,0 +1,9 @@
+{
+  "speech_act": "PASS",
+  "dialogue_proposition": {
+    "status": "BLOCKED_PENDING_SEMANTIC_VERIFICATION",
+    "provider_verdict_required": true
+  },
+  "world_fact_created": false,
+  "provider_calls": 0
+}

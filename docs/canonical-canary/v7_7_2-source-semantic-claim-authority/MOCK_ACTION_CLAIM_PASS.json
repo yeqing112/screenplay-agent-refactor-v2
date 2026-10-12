@@ -1,0 +1,88 @@
+{
+  "candidate": {
+    "schema_version": "source_semantic_claim_candidate_v1",
+    "candidate_id": "SCC_ACTION_1",
+    "subject": {
+      "kind": "CHARACTER",
+      "ref": "CHAR_A"
+    },
+    "predicate": "enter_guided",
+    "object": {
+      "kind": "LOCATION",
+      "ref": "LOC_X"
+    },
+    "qualifiers": {
+      "destination": "LOC_X"
+    },
+    "polarity": "POSITIVE",
+    "modality": "ASSERTED",
+    "evidence_refs": [
+      "EV_ACTION_1"
+    ],
+    "source_unit_refs": [
+      "UNIT_ACTION_1"
+    ]
+  },
+  "candidate_validation": {
+    "status": "PASS",
+    "errors": []
+  },
+  "materialization": {
+    "status": "PASS",
+    "claim": {
+      "schema_version": "director_claim_ir_v1",
+      "claim_id": "SC_FACT_ACTION",
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION",
+      "subject": {
+        "kind": "CHARACTER",
+        "ref": "CHAR_A"
+      },
+      "predicate": "enter_guided",
+      "object": {
+        "kind": "LOCATION",
+        "ref": "LOC_X"
+      },
+      "qualifiers": {
+        "destination": "LOC_X"
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "source_fact_id": "FACT_ACTION",
+      "fact_snapshot_id": "1",
+      "semantic_authority_fingerprint": "semantic-mock",
+      "evidence_refs": [
+        "EV_ACTION_1"
+      ],
+      "source_fingerprint": "mock-source-fp",
+      "entity_registry_fingerprint": "bdf71674c7265fd2757ffb3ca271c93daee99694573439be7e50de230c3ae073",
+      "relation_registry_version": "director_claim_relation_registry_v1",
+      "fingerprint": "95bac4d3a251ebb2ccbfef66f3c1b05a11ee090a7183bbadc4c23611e163c102"
+    },
+    "eligibility": {
+      "schema_version": "director_source_claim_materialization_eligibility_v1",
+      "fact_id": "FACT_ACTION",
+      "status": "PASS",
+      "errors": [],
+      "value_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "evidence_validation": {
+        "status": "PASS",
+        "errors": [],
+        "resolved_refs": [
+          "EV_ACTION_1"
+        ]
+      },
+      "entity_validation": {
+        "status": "PASS",
+        "errors": []
+      },
+      "provider_verdict_is_non_authoritative": true
+    }
+  },
+  "verifier_verdict": "ENTAILED",
+  "semantic_disposition": "WORLD_FACT_CONFIRMED",
+  "provider_calls": 0
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "source_semantic_claim_candidate_v1",
+  "trust": "UNTRUSTED_PROPOSED",
+  "required": [
+    "schema_version",
+    "candidate_id",
+    "subject",
+    "predicate",
+    "object",
+    "qualifiers",
+    "polarity",
+    "modality",
+    "evidence_refs",
+    "source_unit_refs"
+  ],
+  "provider_may_supply": [
+    "typed claim fields",
+    "evidence_refs",
+    "source_unit_refs",
+    "candidate_id"
+  ],
+  "provider_may_not_supply": [
+    "byte_end",
+    "byte_start",
+    "char_end",
+    "char_start",
+    "final_authority",
+    "final_status",
+    "new_fact",
+    "promote",
+    "sha256",
+    "source_claim_supported",
+    "source_search"
+  ],
+  "offsets_and_hashes": "program-owned evidence resolution only"
+}

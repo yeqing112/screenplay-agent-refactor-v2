@@ -1,0 +1,7 @@
+{
+  "schema_version": "director_v7_7_2_recommended_next_action_v1",
+  "status": "SOURCE_SEMANTIC_CLAIM_AUTHORITY_BOUNDARY_READY",
+  "next_action": "SOURCE_SEMANTIC_CLAIM_PROPOSAL_CANARY_AUTHORIZATION_REQUIRED",
+  "real_provider_authorization": false,
+  "stage_a_revision": false
+}

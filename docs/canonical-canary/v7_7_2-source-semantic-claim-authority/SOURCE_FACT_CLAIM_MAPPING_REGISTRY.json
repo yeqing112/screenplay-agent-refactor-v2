@@ -1,0 +1,49 @@
+{
+  "schema_version": "source_fact_claim_mapping_registry_v1",
+  "mappings": {
+    "scene_existence": {
+      "claim_type": "SOURCE_EVENT",
+      "relation_class": "OBJECT_EXISTENCE",
+      "legacy_mapping": "STRUCTURAL_COUNT"
+    },
+    "scene_identity_evidence": {
+      "claim_type": "SOURCE_EVENT",
+      "relation_class": "SOURCE_EVENT",
+      "legacy_mapping": "STRUCTURAL_EVIDENCE_SET"
+    },
+    "enter_guided": {
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION"
+    },
+    "speech_act": {
+      "claim_type": "SOURCE_SPEECH_ACT",
+      "relation_class": "SPEECH_ACT"
+    },
+    "has_property": {
+      "claim_type": "OBJECT_PROPERTY",
+      "relation_class": "OBJECT_PROPERTY"
+    },
+    "state_value": {
+      "claim_type": "ENVIRONMENT_STATE",
+      "relation_class": "ENVIRONMENT_STATE"
+    },
+    "uncertainty": {
+      "claim_type": "UNCERTAINTY",
+      "relation_class": "UNCERTAINTY"
+    },
+    "received_by": {
+      "claim_type": "OBJECT_POSSESSION",
+      "relation_class": "POSSESSION"
+    },
+    "left_by": {
+      "claim_type": "OBJECT_PROVENANCE",
+      "relation_class": "PROVENANCE"
+    },
+    "knows": {
+      "claim_type": "CHARACTER_KNOWLEDGE",
+      "relation_class": "KNOWLEDGE_STATE"
+    }
+  },
+  "relation_registry_version": "director_claim_relation_registry_v1",
+  "raw_text_semantics": false
+}

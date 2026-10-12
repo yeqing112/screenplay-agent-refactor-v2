@@ -1,0 +1,23 @@
+{
+  "schema_version": "fact_snapshot_49_capability_audit_v1",
+  "snapshot_id": 49,
+  "status": "confirmed",
+  "record_count": 2,
+  "records": [
+    {
+      "fact_id": "SOURCE_PREP_0001",
+      "predicate": "scene_existence",
+      "authority": "source_text",
+      "status": "confirmed",
+      "typed_value_status": "LEGACY_UNTYPED"
+    },
+    {
+      "fact_id": "SOURCE_PREP_0002",
+      "predicate": "scene_identity_evidence",
+      "authority": "source_text",
+      "status": "confirmed",
+      "typed_value_status": "LEGACY_UNTYPED"
+    }
+  ],
+  "director_semantic_coverage": "INSUFFICIENT"
+}

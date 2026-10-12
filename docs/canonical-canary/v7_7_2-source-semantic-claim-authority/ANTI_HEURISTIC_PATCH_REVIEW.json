@@ -1,0 +1,42 @@
+{
+  "schema_version": "director_v7_7_2_anti_heuristic_patch_review_v1",
+  "status": "PASS",
+  "phrase_dependence": "NO",
+  "scene_dependence": "NO",
+  "attempt_dependence": "NO",
+  "fixture_dependence": "NO",
+  "heuristic_production_dependency": "NO",
+  "legacy_text_extractor_calls": 0,
+  "source_text_semantic_parser_calls": 0,
+  "keyword_semantic_branch_count": 0,
+  "scan": {
+    "schema_version": "source_semantic_generic_code_anti_heuristic_scan_v1",
+    "status": "PASS",
+    "production_files": [
+      "core/source_semantic_claim_authority.py",
+      "core/director_claim_relation_registry.py",
+      "core/fact_semantic_grounding.py",
+      "core/fact_semantic_verifier.py",
+      "core/director_claim_aware_support.py"
+    ],
+    "forbidden_tokens": [
+      "顾沉",
+      "林晚",
+      "铁盒",
+      "车票",
+      "试探",
+      "微弱",
+      "手写",
+      "E01_SC001",
+      "990453",
+      "attempt-11"
+    ],
+    "hits": [],
+    "raw_text_semantic_parsing": 0,
+    "keyword_semantic_branching": 0,
+    "scene_specific_branch": 0,
+    "attempt_specific_branch": 0,
+    "legacy_text_extractor_calls": 0
+  },
+  "decision": "V7.7.2 authority path consumes only typed FactRecord, semantic overlay, immutable evidence, entity registry and declarative mappings."
+}

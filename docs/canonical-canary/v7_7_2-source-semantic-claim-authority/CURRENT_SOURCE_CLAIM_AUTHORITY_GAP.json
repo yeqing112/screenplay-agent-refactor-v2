@@ -1,0 +1,57 @@
+{
+  "schema_version": "current_source_claim_authority_gap_v1",
+  "status": "INSUFFICIENT",
+  "book_id": 990453,
+  "episode": 1,
+  "fact_snapshot_id": 49,
+  "script_ir_id": 52,
+  "fact_snapshot_record_count": 2,
+  "available_confirmed_facts": [
+    {
+      "fact_id": "SOURCE_PREP_0001",
+      "predicate": "scene_existence",
+      "typed_value": false
+    },
+    {
+      "fact_id": "SOURCE_PREP_0002",
+      "predicate": "scene_identity_evidence",
+      "typed_value": false
+    }
+  ],
+  "semantic_overlay_count": 0,
+  "eligible_source_claim_count": 0,
+  "director_source_coverage": {
+    "schema_version": "director_source_claim_coverage_v1",
+    "status": "INSUFFICIENT",
+    "source_unit_count": 12,
+    "source_claim_count": 0,
+    "available_semantic_types": [],
+    "required_semantic_types": [
+      "ACTION",
+      "ENVIRONMENT_STATE",
+      "KNOWLEDGE_STATE",
+      "OBJECT_EXISTENCE",
+      "OBJECT_PROPERTY",
+      "POSSESSION",
+      "PROVENANCE",
+      "SPEECH_ACT",
+      "UNCERTAINTY"
+    ],
+    "missing_requirements": [
+      "ACTION",
+      "ENVIRONMENT_STATE",
+      "KNOWLEDGE_STATE",
+      "OBJECT_EXISTENCE",
+      "OBJECT_PROPERTY",
+      "POSSESSION",
+      "PROVENANCE",
+      "SPEECH_ACT",
+      "TYPED_DIRECTOR_REQUIREMENT_MANIFEST_MISSING",
+      "UNCERTAINTY"
+    ],
+    "one_source_unit_need_not_equal_one_claim": true,
+    "director_semantic_coverage": "INSUFFICIENT"
+  },
+  "legacy_extractor_calls": 0,
+  "gap_status": "INSUFFICIENT"
+}
