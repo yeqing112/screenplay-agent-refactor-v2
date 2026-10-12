@@ -52,4 +52,7 @@ Qualification is bound only to the frozen profile identity and host. Runtime pro
 - SceneBlocking baseline: `29 passed, 3 pre-existing failures`; unchanged and outside this phase
 - `compileall`: passed
 - `git diff --check`: passed
-- Implementation was prepared from baseline `38a703784a4068f83d921c81e6f341c2c8709e9f`; implementation and evidence commits are identified in Git and the final delivery.
+- Working tree after implementation/evidence push: clean
+- Implementation and evidence commit: `07940131e6c60bbeb2dcf2b4c0ef77e051989c12`
+- Remote HEAD verified after that push: `07940131e6c60bbeb2dcf2b4c0ef77e051989c12`
+- Execution baseline: `38a703784a4068f83d921c81e6f341c2c8709e9f`
