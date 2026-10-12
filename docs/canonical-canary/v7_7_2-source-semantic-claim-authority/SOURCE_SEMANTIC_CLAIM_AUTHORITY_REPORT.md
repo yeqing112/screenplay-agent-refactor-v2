@@ -29,8 +29,8 @@ Status: `SOURCE_SEMANTIC_CLAIM_AUTHORITY_BOUNDARY_READY`
 25. SceneBlocking baseline: **12 passed, 3 pre-existing failures**; not modified.
 26. Compileall: PASS.
 27. Git diff check: PASS.
-28. Working tree: required clean after push.
-29. Commit SHA: recorded in final delivery message.
-30. Remote HEAD: required equal to local HEAD after push.
+28. Working tree: clean at the implementation delivery checkpoint.
+29. Implementation commit SHA: `fad97f8b92a7cedc90ecb3bef001c2c9c59ded5e`.
+30. Remote HEAD matched the implementation commit after push; the report metadata follow-up revision is the immediate next repository commit.
 
 Snapshot confirmation is a structural/evidence boundary. It does not promote arbitrary FactRecord semantics. FactSnapshot 49 can only be audited as two confirmed structural records; it has no semantic overlay and no typed Director narrative coverage.
