@@ -60,5 +60,5 @@ Three SceneBlocking authority failures remain pre-existing and are recorded in `
 - Tests: V7.7.1 + V7.7.0 + targeted V7.2-V7.6 regression **208 passed, 0 failed**; isolated SceneBlocking baseline **12 passed, 3 pre-existing failures**.
 - Compileall: PASS.
 - Git diff check: PASS.
-- Working tree: required clean after push.
-- Commit SHA and remote HEAD: recorded after final push and required equal.
+- Working tree: clean at the implementation delivery checkpoint.
+- Implementation commit SHA: `6dfe05d3c65c1f0fe1d1dd1d356a73e9a5c72472`; remote HEAD matched this SHA after the implementation push. The final report metadata revision is the immediate follow-up commit in repository history.
