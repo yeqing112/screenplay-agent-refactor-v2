@@ -1,5 +1,5 @@
 {
-  "status": "BLOCKED",
+  "status": "PASS",
   "checks": {
     "authority_boundary": [
       "fact confirmation",
@@ -10,7 +10,7 @@
     ],
     "current_gap_is_non_blocking": true,
     "anti_heuristic": true,
-    "ontology": false,
+    "ontology": true,
     "entity_registry": true,
     "evidence_binding": true,
     "provider_profile": true,
@@ -18,7 +18,5 @@
     "candidate_schema": true,
     "working_tree_clean_before_call": true
   },
-  "failed_checks": [
-    "ontology"
-  ]
+  "failed_checks": []
 }

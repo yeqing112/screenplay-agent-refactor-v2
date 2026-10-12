@@ -1,0 +1,416 @@
+{
+  "schema_version": "source_semantic_claim_candidate_set_v1",
+  "candidate_count": 19,
+  "valid_count": 0,
+  "blocked_count": 19,
+  "candidate_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "valid_typed_candidates": [],
+  "validation_rows": [
+    {
+      "candidate_id": "CAND_001",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "CHARACTER_ACTION",
+          "relation_class": "ACTION"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "destination",
+            "transfer_source"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_002",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "CHARACTER_ACTION",
+          "relation_class": "ACTION"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "destination",
+            "transfer_source"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_003",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "ENVIRONMENT_STATE",
+          "relation_class": "ENVIRONMENT_STATE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "light_state",
+            "state_domain"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_004",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "SOURCE_EVENT",
+          "relation_class": "OBJECT_EXISTENCE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_005",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "OBJECT_PROVENANCE",
+          "relation_class": "PROVENANCE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "ownership"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_006",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "OBJECT_PROPERTY",
+          "relation_class": "OBJECT_PROPERTY"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "property_domain"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_007",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "SOURCE_EVENT",
+          "relation_class": "OBJECT_EXISTENCE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_008",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "SOURCE_EVENT",
+          "relation_class": "OBJECT_EXISTENCE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_009",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "CHARACTER_KNOWLEDGE",
+          "relation_class": "KNOWLEDGE_STATE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_010",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "UNCERTAINTY",
+          "relation_class": "UNCERTAINTY"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_011",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "CHARACTER_KNOWLEDGE",
+          "relation_class": "KNOWLEDGE_STATE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_012",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "SOURCE_SPEECH_ACT",
+          "relation_class": "SPEECH_ACT"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "speaker_binding"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_013",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "SOURCE_SPEECH_ACT",
+          "relation_class": "SPEECH_ACT"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "speaker_binding"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_014",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "ENVIRONMENT_STATE",
+          "relation_class": "ENVIRONMENT_STATE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "light_state",
+            "state_domain"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_015",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "CHARACTER_ACTION",
+          "relation_class": "ACTION"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "destination",
+            "transfer_source"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_016",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "CHARACTER_ACTION",
+          "relation_class": "ACTION"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": [
+            "destination",
+            "transfer_source"
+          ]
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_017",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "SOURCE_EVENT",
+          "relation_class": "OBJECT_EXISTENCE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_018",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "OBJECT_POSSESSION",
+          "relation_class": "POSSESSION"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    },
+    {
+      "candidate_id": "CAND_019",
+      "validation": {
+        "status": "BLOCKED",
+        "errors": [
+          "CANDIDATE_ID_INVALID",
+          "CANDIDATE_OBJECT_INVALID",
+          "CANDIDATE_SUBJECT_INVALID"
+        ],
+        "predicate_capability": {
+          "claim_type": "SOURCE_EVENT",
+          "relation_class": "OBJECT_EXISTENCE"
+        },
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "allowed_keys": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "status": "BLOCKED",
+  "uncertainty_preservation": "NOT_YET_AUTHORITY_VERIFIED",
+  "provider_authority": "NON_AUTHORITATIVE",
+  "manual_review_required": true,
+  "reason": "STRICT_CANDIDATE_SCHEMA_FAILED"
+}

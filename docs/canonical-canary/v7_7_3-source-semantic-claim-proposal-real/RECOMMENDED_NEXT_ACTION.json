@@ -1,7 +1,8 @@
 {
-  "status": "BLOCKED",
-  "next_state": "SOURCE_SEMANTIC_CLAIM_PROPOSAL_PREFLIGHT_BLOCKED",
-  "failed_checks": [
-    "ontology"
-  ]
+  "status": "SOURCE_SEMANTIC_CLAIM_PROPOSAL_BLOCKED",
+  "next_state": "SOURCE_SEMANTIC_CLAIM_VERIFICATION_BOUNDARY_REQUIRED",
+  "semantic_verifier_required": true,
+  "semantic_verifier_called": false,
+  "source_claim_promotion_allowed": false,
+  "reason": "STRICT_CANDIDATE_SCHEMA_FAILED_NO_RETRY_AUTHORIZED"
 }

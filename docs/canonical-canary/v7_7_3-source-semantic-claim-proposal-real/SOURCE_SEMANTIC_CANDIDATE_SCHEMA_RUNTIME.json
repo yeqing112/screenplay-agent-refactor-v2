@@ -1,27 +1,16 @@
 {
   "schema_version": "source_semantic_claim_candidate_runtime_schema_v1",
   "required": [
-    "CANDIDATE_EVIDENCE_REFS_INVALID",
-    "CANDIDATE_ID_INVALID",
-    "CANDIDATE_MODALITY_INVALID",
-    "CANDIDATE_OBJECT_INVALID",
-    "CANDIDATE_POLARITY_INVALID",
-    "CANDIDATE_QUALIFIERS_INVALID",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:candidate_id",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:evidence_refs",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:modality",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:object",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:polarity",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:predicate",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:qualifiers",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:schema_version",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:source_unit_refs",
-    "CANDIDATE_REQUIRED_FIELD_MISSING:subject",
-    "CANDIDATE_SCHEMA_VERSION_INVALID",
-    "CANDIDATE_SOURCE_UNIT_REFS_INVALID",
-    "CANDIDATE_SUBJECT_INVALID",
-    "PREDICATE_NOT_REGISTERED:",
-    "QUALIFIERS_MUST_BE_OBJECT"
+    "candidate_id",
+    "evidence_refs",
+    "modality",
+    "object",
+    "polarity",
+    "predicate",
+    "qualifiers",
+    "schema_version",
+    "source_unit_refs",
+    "subject"
   ],
   "exact_top_level_keys": [
     "candidate_id",
@@ -57,5 +46,12 @@
     "source_search",
     "status",
     "support_status"
-  ]
+  ],
+  "subject_object_shape": {
+    "required": [
+      "kind",
+      "ref"
+    ],
+    "additionalProperties": false
+  }
 }

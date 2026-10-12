@@ -1,0 +1,34 @@
+{
+  "schema_version": "source_semantic_proposal_surface_coverage_v1",
+  "name": "PROPOSAL_SURFACE_COVERAGE",
+  "source_unit_count": 12,
+  "referenced_source_unit_count": 12,
+  "unreferenced_source_unit_count": 0,
+  "unreferenced_source_unit_refs": [],
+  "relation_classes_proposed": [
+    "ACTION",
+    "ENVIRONMENT_STATE",
+    "KNOWLEDGE_STATE",
+    "OBJECT_EXISTENCE",
+    "OBJECT_PROPERTY",
+    "POSSESSION",
+    "PROVENANCE",
+    "SPEECH_ACT",
+    "UNCERTAINTY"
+  ],
+  "evidence_refs_used": [
+    "S1A001",
+    "S1A002",
+    "S1A003",
+    "S1A004",
+    "S1A005",
+    "S1A006",
+    "S1A007",
+    "S1A008",
+    "S1A009",
+    "S1A010",
+    "S1A011",
+    "S1D001"
+  ],
+  "semantic_completeness": "NOT_PROVEN"
+}

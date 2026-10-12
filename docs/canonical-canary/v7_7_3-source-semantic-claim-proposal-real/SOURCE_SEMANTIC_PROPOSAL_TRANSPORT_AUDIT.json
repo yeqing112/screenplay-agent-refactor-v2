@@ -1,6 +1,23 @@
 {
-  "status": "BLOCKED_PRE_PROVIDER_PREFLIGHT",
-  "provider_post_count": 0,
+  "status": "PASS",
+  "provider_post_count": 1,
   "semantic_verifier_post_count": 0,
-  "authorization_id": "v7.7.3-source-semantic-claim-proposal-single-call"
+  "authorization_id": "v7.7.3-source-semantic-claim-proposal-single-call",
+  "http_status": 200,
+  "finish_reason": "stop",
+  "latency_ms": 40731.03,
+  "usage": {
+    "prompt_tokens": 5556,
+    "cached_tokens": null,
+    "completion_tokens": 1674,
+    "total_tokens": 7230,
+    "cache_hit_rate": null,
+    "reasoning_tokens": 0,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens_details": {}
+  },
+  "provider_request_id": "",
+  "error": ""
 }

@@ -294,7 +294,10 @@ def main() -> int:
     write("SOURCE_SEMANTIC_PROPOSAL_PARSE_AUDIT.json", {**parse_audit, "repair": False, "markdown_stripping": False, "substring_extraction": False, "coercion": False})
     wrapper_audit = validate_wrapper(parsed, entity_registry=entities) if parse_audit.get("status") == "PASS" else {"status": "NOT_RUN", "errors": ["PARSE_FAILED"], "candidate_results": []}
     write("SOURCE_SEMANTIC_PROPOSAL_SCHEMA_VALIDATION.json", wrapper_audit)
-    candidates = parsed.get("candidates", []) if isinstance(parsed, Mapping) and wrapper_audit.get("status") == "PASS" else []
+    # Keep the untrusted candidate array for forensic validation even when the
+    # wrapper fails.  No repair or coercion is performed; invalid rows remain
+    # blocked in the candidate-set audit.
+    candidates = parsed.get("candidates", []) if isinstance(parsed, Mapping) and isinstance(parsed.get("candidates"), list) else []
     binding_rows = []
     for candidate in candidates:
         validation = validate_candidate_strict(candidate, entity_registry=entities)

@@ -1,6 +1,6 @@
 {
   "schema_version": "source_semantic_ontology_preflight_v1",
-  "status": "BLOCKED",
+  "status": "PASS",
   "required_relation_classes": [
     "ACTION",
     "ENVIRONMENT_STATE",
@@ -26,9 +26,7 @@
     "SPEECH_ACT",
     "UNCERTAINTY"
   ],
-  "missing_relation_classes": [
-    "POSSESSION"
-  ],
+  "missing_relation_classes": [],
   "mapping_registry_version": "source_fact_claim_mapping_registry_v1",
   "registered_predicates": [
     "enter_guided",

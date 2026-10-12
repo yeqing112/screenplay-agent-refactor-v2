@@ -34,19 +34,19 @@ RELATION_REGISTRY: dict[str, dict[str, dict[str, Any]]] = {
         },
         "custody_origin": {
             "compatible_predicates": ["left_by", "inherited_from", "originated_from"],
-            "qualifier_keys": [],
+            "qualifier_keys": ["ownership"],
         },
     },
     "OBJECT_POSSESSION": {
         "transfer": {
             "compatible_predicates": ["received_by", "possessed_by", "take_possession"],
-            "qualifier_keys": ["transfer_source"],
+            "qualifier_keys": ["transfer_source", "possession"],
         },
     },
     "ENVIRONMENT_STATE": {
         "state_value": {
             "compatible_predicates": ["state_value", "has_state", "light_state"],
-            "qualifier_keys": ["state_domain"],
+            "qualifier_keys": ["state_domain", "light_state"],
         },
     },
     # Generic ontology classes required by the source semantic proposal
@@ -79,7 +79,7 @@ RELATION_REGISTRY: dict[str, dict[str, dict[str, Any]]] = {
     "PROVENANCE": {
         "provenance": {
             "compatible_predicates": ["left_by", "authored_by", "created_by", "provenance"],
-            "qualifier_keys": [],
+            "qualifier_keys": ["ownership"],
         },
     },
     "SOURCE_EVENT": {
