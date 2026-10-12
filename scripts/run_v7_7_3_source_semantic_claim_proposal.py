@@ -171,7 +171,7 @@ def ontology_preflight() -> dict[str, Any]:
     registry = validate_relation_registry()
     relation_classes = set(RELATION_REGISTRY)
     relation_classes.update({"ACTION"})
-    aliases = {"ACTION": "CHARACTER_ACTION", "PROVENANCE": "PROVENANCE"}
+    aliases = {"ACTION": "CHARACTER_ACTION", "POSSESSION": "OBJECT_POSSESSION", "PROVENANCE": "PROVENANCE"}
     missing = []
     for required in REQUIRED_RELATION_CLASSES:
         registry_class = aliases.get(required, required)
