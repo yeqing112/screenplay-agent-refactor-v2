@@ -1,0 +1,50 @@
+{
+  "schema_version": "director_stage_a_field_semantic_contract_v1",
+  "stage": "STAGE_A",
+  "fields": {
+    "purpose": {
+      "allowed_claim_types": [
+        "DRAMATIC_GROUPING"
+      ],
+      "canonical_fact_creation": false
+    },
+    "objective": {
+      "allowed_claim_types": [
+        "DRAMATIC_OBJECTIVE"
+      ],
+      "canonical_fact_creation": false,
+      "character_intent_requires_explicit_manifest_claim": true
+    },
+    "information_change": {
+      "allowed_claim_types": [
+        "INFORMATION_REVEAL",
+        "INFORMATION_WITHHOLD"
+      ],
+      "requires_source_claim_ids_for_canonical_delta": true
+    },
+    "hook": {
+      "allowed_claim_types": [
+        "DRAMATIC_GROUPING",
+        "AUDIENCE_EFFECT"
+      ],
+      "canonical_fact_creation": false
+    },
+    "scene_objective": {
+      "allowed_claim_types": [
+        "DRAMATIC_OBJECTIVE"
+      ],
+      "canonical_fact_creation": false
+    },
+    "dramatic_question": {
+      "allowed_claim_types": [
+        "DRAMATIC_QUESTION"
+      ],
+      "canonical_fact_creation": false
+    },
+    "referenced_source_claim_ids": {
+      "role": "typed_source_reference",
+      "creates_no_new_fact": true
+    }
+  },
+  "prose_role": "human-readable rendering only"
+}

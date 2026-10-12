@@ -1,0 +1,78 @@
+{
+  "schema_version": "director_stage_b_field_semantic_contract_v1",
+  "stage": "STAGE_B",
+  "fields": {
+    "performance": {
+      "allowed_claim_types": [
+        "PERFORMANCE_DIRECTION",
+        "PERFORMANCE_OPTION"
+      ],
+      "canonical_fact_creation": false
+    },
+    "audience_effect": {
+      "allowed_claim_types": [
+        "AUDIENCE_EFFECT",
+        "AUDIENCE_INTERPRETATION"
+      ],
+      "canonical_fact_creation": false
+    },
+    "information_strategy": {
+      "allowed_claim_types": [
+        "INFORMATION_STRATEGY",
+        "INFORMATION_REVEAL",
+        "INFORMATION_WITHHOLD"
+      ],
+      "canonical_fact_creation": false
+    },
+    "visual_priority": {
+      "allowed_claim_types": [
+        "VISUAL_PRIORITY"
+      ],
+      "canonical_fact_creation": false
+    },
+    "delegation": {
+      "allowed_claim_types": [
+        "AUTHORITY_DELEGATION"
+      ],
+      "canonical_fact_creation": false
+    },
+    "canonical_facts": {
+      "allowed_claim_types": [
+        "AUDIENCE_EFFECT",
+        "AUDIENCE_INTERPRETATION",
+        "AUTHORITY_DELEGATION",
+        "CERTAINTY_ASSERTION",
+        "CHARACTER_ACTION",
+        "CHARACTER_BACKSTORY",
+        "CHARACTER_EMOTION",
+        "CHARACTER_INTENT",
+        "CHARACTER_KNOWLEDGE",
+        "CHARACTER_RELATIONSHIP",
+        "CHARACTER_STATE",
+        "DRAMATIC_GROUPING",
+        "DRAMATIC_OBJECTIVE",
+        "DRAMATIC_QUESTION",
+        "ENVIRONMENT_STATE",
+        "INFORMATION_REVEAL",
+        "INFORMATION_STRATEGY",
+        "INFORMATION_WITHHOLD",
+        "META_COMPLIANCE",
+        "OBJECT_EXISTENCE",
+        "OBJECT_OWNERSHIP",
+        "OBJECT_POSSESSION",
+        "OBJECT_PROPERTY",
+        "OBJECT_PROVENANCE",
+        "PROHIBITION",
+        "RHYTHM_INTENT",
+        "SENSORY_FACT",
+        "SHOT_EXECUTION",
+        "SOURCE_EVENT",
+        "SPATIAL_BLOCKING",
+        "UNCERTAINTY",
+        "VISUAL_PRIORITY"
+      ],
+      "source_support_required": true
+    }
+  },
+  "prose_role": "human-readable rendering only"
+}

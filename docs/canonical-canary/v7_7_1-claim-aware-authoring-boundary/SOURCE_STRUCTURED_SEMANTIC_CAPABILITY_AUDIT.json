@@ -1,0 +1,197 @@
+{
+  "schema_version": "director_source_structured_semantic_capability_audit_v1",
+  "status": "SOURCE_CLAIM_MATERIALIZATION_BOUNDARY_REQUIRED",
+  "unit_count": 12,
+  "structured_fields": {
+    "actor": false,
+    "action": false,
+    "object": false,
+    "participants": false,
+    "fact_bindings": false,
+    "entity_refs": false
+  },
+  "missing_structured_fields": [
+    "actor",
+    "action",
+    "object",
+    "participants",
+    "fact_bindings",
+    "entity_refs"
+  ],
+  "unit_capabilities": [
+    {
+      "unit_id": "SAU_E01_SC001_001",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_002",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_003",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_004",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_005",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_006",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_007",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_008",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_DIALOGUE",
+      "has_dialogue_speaker": true,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_009",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_010",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_011",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    },
+    {
+      "unit_id": "SAU_E01_SC001_012",
+      "present": {
+        "actor": false,
+        "action": false,
+        "object": false,
+        "participants": false,
+        "fact_bindings": false,
+        "entity_refs": false
+      },
+      "source_type": "SOURCE_ACTION",
+      "has_dialogue_speaker": false,
+      "has_text": true
+    }
+  ],
+  "text_role": [
+    "human_readable_evidence",
+    "provenance"
+  ],
+  "source_contract": "docs\\canonical-canary\\v7_1-director-source-grounded-authoring-contract\\SOURCE_AUTHORING_UNIT_CONTRACT.json",
+  "source_text_role": "evidence and provenance only"
+}

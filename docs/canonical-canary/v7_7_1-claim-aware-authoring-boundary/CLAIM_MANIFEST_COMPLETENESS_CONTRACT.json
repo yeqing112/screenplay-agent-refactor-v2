@@ -1,0 +1,11 @@
+{
+  "schema_version": "director_claim_manifest_completeness_contract_v1",
+  "principle": "Completeness is checked against semantic slots derived from the structured BeatPlan shape, never against a lexical blacklist.",
+  "required": [
+    "semantic_slots",
+    "covered_slots",
+    "claims"
+  ],
+  "uncovered_slot_policy": "BLOCKED",
+  "unclassified_prose_policy": "BLOCKED unless field contract marks the field human-readable-only"
+}

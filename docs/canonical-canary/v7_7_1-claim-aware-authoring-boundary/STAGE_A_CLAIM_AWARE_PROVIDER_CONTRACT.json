@@ -1,0 +1,12 @@
+{
+  "schema_version": "director_stage_a_claim_aware_provider_contract_v1",
+  "provider_calls_this_phase": 0,
+  "response_shape": {
+    "beat_plan_ir": "director_beat_plan_ir_v1 historical-compatible output",
+    "claim_manifest": "director_authoring_claim_manifest_v1"
+  },
+  "manifest_co_produced": true,
+  "raw_prose_is_rendering_only": true,
+  "source_claim_ids_are_checked_not_self_authenticated": true,
+  "production_wiring": "DESIGN_ONLY"
+}

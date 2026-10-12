@@ -1,0 +1,62 @@
+{
+  "manifest": {
+    "schema_version": "director_authoring_claim_manifest_v1",
+    "authoring_stage": "STAGE_B",
+    "semantic_slots": [
+      "stage_b.visual"
+    ],
+    "covered_slots": [
+      "stage_b.visual"
+    ],
+    "claims": [
+      {
+        "schema_version": "director_claim_ir_v1",
+        "claim_id": "AC_LIGHT_DIM",
+        "claim_type": "ENVIRONMENT_STATE",
+        "subject": {
+          "kind": "ENVIRONMENT",
+          "ref": "LOC_A"
+        },
+        "predicate": "state_value",
+        "object": {
+          "kind": "LIGHT",
+          "ref": "DIM"
+        },
+        "qualifiers": {
+          "semantic_slot": "stage_b.visual"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "source_claim_ids": [
+          "SC_LIGHT_OFF"
+        ],
+        "origin": "STAGE_B",
+        "fingerprint": "5c8c127dc6fc62390789cce6202a9e9692e8b2241d3c47ece3f1389725dd07f8"
+      }
+    ]
+  },
+  "typed_support_audit": {
+    "schema_version": "director_claim_aware_typed_support_v1",
+    "status": "BLOCKED",
+    "claim_count": 1,
+    "counts": {
+      "UNSUPPORTED": 1
+    },
+    "blocking_finding_count": 1,
+    "findings": [
+      {
+        "claim_id": "AC_LIGHT_DIM",
+        "claim_type": "ENVIRONMENT_STATE",
+        "support_status": "UNSUPPORTED",
+        "status": "BLOCKED",
+        "reason": "Bound SourceClaim IDs do not match typed subject, predicate, object or qualifiers"
+      }
+    ],
+    "raw_text_consulted": false,
+    "legacy_special_case_called": false
+  },
+  "provider_calls": 0
+}

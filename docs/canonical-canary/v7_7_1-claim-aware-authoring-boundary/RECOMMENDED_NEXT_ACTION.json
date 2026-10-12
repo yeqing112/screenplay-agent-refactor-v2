@@ -1,0 +1,8 @@
+{
+  "schema_version": "director_v7_7_1_recommended_next_action_v1",
+  "status": "SOURCE_CLAIM_MATERIALIZATION_BOUNDARY_REQUIRED",
+  "next_action": "Add typed source fact bindings in ScriptIR or SourceAuthoringUnit before Stage A semantic revision.",
+  "stage_a_revision_safe": false,
+  "attempt12_authorized": false,
+  "production_gate": "OFF"
+}

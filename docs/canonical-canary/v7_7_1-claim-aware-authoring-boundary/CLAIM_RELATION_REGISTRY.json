@@ -1,0 +1,86 @@
+{
+  "schema_version": "director_claim_relation_registry_v1",
+  "relations": {
+    "CHARACTER_ACTION": {
+      "enter_guided": {
+        "compatible_predicates": [
+          "enter_guided",
+          "lead_into",
+          "guide_into"
+        ],
+        "qualifier_keys": [
+          "destination"
+        ]
+      },
+      "receive_object": {
+        "compatible_predicates": [
+          "receive_object",
+          "take_possession"
+        ],
+        "qualifier_keys": [
+          "transfer_source"
+        ]
+      }
+    },
+    "OBJECT_PROPERTY": {
+      "typed_property": {
+        "compatible_predicates": [
+          "has_property",
+          "property_value",
+          "typed_property"
+        ],
+        "qualifier_keys": [
+          "property_domain"
+        ]
+      }
+    },
+    "OBJECT_PROVENANCE": {
+      "authorship": {
+        "compatible_predicates": [
+          "authored_by",
+          "created_by"
+        ],
+        "qualifier_keys": []
+      },
+      "custody_origin": {
+        "compatible_predicates": [
+          "left_by",
+          "inherited_from",
+          "originated_from"
+        ],
+        "qualifier_keys": []
+      }
+    },
+    "OBJECT_POSSESSION": {
+      "transfer": {
+        "compatible_predicates": [
+          "received_by",
+          "possessed_by",
+          "take_possession"
+        ],
+        "qualifier_keys": [
+          "transfer_source"
+        ]
+      }
+    },
+    "ENVIRONMENT_STATE": {
+      "state_value": {
+        "compatible_predicates": [
+          "state_value",
+          "has_state",
+          "light_state"
+        ],
+        "qualifier_keys": [
+          "state_domain"
+        ]
+      }
+    }
+  },
+  "matching": "claim_type plus typed subject/object refs plus registered predicate compatibility and typed qualifiers",
+  "raw_text_is_semantically_ignored": true,
+  "validation": {
+    "schema_version": "director_claim_relation_registry_v1",
+    "status": "PASS",
+    "errors": []
+  }
+}

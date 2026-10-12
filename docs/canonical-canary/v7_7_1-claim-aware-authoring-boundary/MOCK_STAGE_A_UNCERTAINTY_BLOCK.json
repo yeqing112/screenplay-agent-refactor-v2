@@ -1,0 +1,62 @@
+{
+  "manifest": {
+    "schema_version": "director_authoring_claim_manifest_v1",
+    "authoring_stage": "STAGE_A",
+    "semantic_slots": [
+      "beat_0.information_change"
+    ],
+    "covered_slots": [
+      "beat_0.information_change"
+    ],
+    "claims": [
+      {
+        "schema_version": "director_claim_ir_v1",
+        "claim_id": "AC_CERTAINTY",
+        "claim_type": "CERTAINTY_ASSERTION",
+        "subject": {
+          "kind": "EVENT",
+          "ref": "EVENT_VISIT"
+        },
+        "predicate": "status",
+        "object": {
+          "kind": "STATE",
+          "ref": "FIRST"
+        },
+        "qualifiers": {
+          "semantic_slot": "beat_0.information_change"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "source_claim_ids": [
+          "SC_EVENT_UNCERTAIN"
+        ],
+        "origin": "STAGE_A",
+        "fingerprint": "07dfae590bcd1c83c6d6fdc68f8ea132df39f2fd790d678d4dd16d18787107bf"
+      }
+    ]
+  },
+  "typed_support_audit": {
+    "schema_version": "director_claim_aware_typed_support_v1",
+    "status": "BLOCKED",
+    "claim_count": 1,
+    "counts": {
+      "UNSUPPORTED": 1
+    },
+    "blocking_finding_count": 1,
+    "findings": [
+      {
+        "claim_id": "AC_CERTAINTY",
+        "claim_type": "CERTAINTY_ASSERTION",
+        "support_status": "UNSUPPORTED",
+        "status": "BLOCKED",
+        "reason": "Bound SourceClaim IDs do not match typed subject, predicate, object or qualifiers"
+      }
+    ],
+    "raw_text_consulted": false,
+    "legacy_special_case_called": false
+  },
+  "provider_calls": 0
+}

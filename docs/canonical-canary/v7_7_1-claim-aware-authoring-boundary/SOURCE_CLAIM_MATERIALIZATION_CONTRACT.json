@@ -1,0 +1,15 @@
+{
+  "schema_version": "director_source_claim_materialization_contract_v1",
+  "status": "SOURCE_CLAIM_MATERIALIZATION_BOUNDARY_REQUIRED",
+  "source_priority": [
+    "ScriptIR structured metadata",
+    "SourceAuthoringUnit structured metadata",
+    "typed fact bindings"
+  ],
+  "forbidden_fallback": "NLP or keyword parsing of SourceAuthoringUnit.text",
+  "deterministic_id": "SC_<source_unit>_<relation>_<ordinal>",
+  "materialization_probe": {
+    "status": "SOURCE_CLAIM_MATERIALIZATION_BOUNDARY_REQUIRED",
+    "claim_count": 0
+  }
+}

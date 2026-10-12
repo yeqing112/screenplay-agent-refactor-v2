@@ -1,0 +1,10 @@
+{
+  "schema_version": "director_v7_7_0_heuristic_dependency_audit_v1",
+  "status": "RECORDED",
+  "phrase_dependence": "YES",
+  "scene_dependence": "YES",
+  "attempt_dependence": "NO",
+  "special_case_grounding_dependence": "YES",
+  "heuristic_production_dependency": "NO",
+  "reason": "V7.7.0 remains shadow-only; legacy text extraction and special-case grounding are not production authority."
+}

@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "read_only": true,
+  "provider_calls": {
+    "real_llm_post": 0,
+    "stage_a_revision": 0,
+    "attempt12": 0,
+    "confirm": 0,
+    "image": 0,
+    "video": 0,
+    "shapi": 0,
+    "poyo": 0,
+    "75api": 0
+  },
+  "production_writes": 0,
+  "ledger_before": 11,
+  "ledger_after": 11,
+  "active_stage_b_before": "attempt-11",
+  "active_stage_b_after": "attempt-11",
+  "proposal_unchanged": true,
+  "model_info_unchanged": true,
+  "snapshot_source": "V7.7.0 read-only forensic snapshot carried forward; V7.7.1 performs no production mutation",
+  "carried_forward_audit_schema": "director_v3_no_provider_no_production_write_audit_v1",
+  "previous_production_snapshot_unchanged": true,
+  "read_only_packet_present": true,
+  "read_only_ledger_count": 11,
+  "read_only_active_stage_b": "attempt-11"
+}

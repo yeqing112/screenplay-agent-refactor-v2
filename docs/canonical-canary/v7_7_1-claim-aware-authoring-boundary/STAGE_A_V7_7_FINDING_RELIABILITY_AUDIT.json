@@ -1,0 +1,28 @@
+{
+  "schema_version": "director_stage_a_v7_7_finding_reliability_audit_v1",
+  "status": "REVISION_DEFERRED",
+  "historical_v7_7_status": "BLOCKED",
+  "findings": [
+    {
+      "finding_class": "FIELD_SEMANTIC_MISCLASSIFICATION",
+      "evidence": "legacy beats[].objective was extracted as CHARACTER_INTENT",
+      "action": "do not use as revision authorization"
+    },
+    {
+      "finding_class": "ARCHITECTURALLY_CERTAIN",
+      "evidence": "a future typed OBJECT_PROVENANCE claim without matching SourceClaim remains unsupported",
+      "action": "typed source binding blocks"
+    },
+    {
+      "finding_class": "EXTRACTOR_DEPENDENT",
+      "evidence": "phrase-triggered embedded claims in V7.7.0",
+      "action": "retain only as legacy diagnostic"
+    },
+    {
+      "finding_class": "REQUIRES_NEW_CLAIM_AWARE_AUTHORING",
+      "evidence": "Stage A output currently has no co-produced manifest",
+      "action": "provider contract must emit BeatPlan plus manifest"
+    }
+  ],
+  "stage_a_revision_safe": false
+}

@@ -1,0 +1,60 @@
+{
+  "manifest": {
+    "schema_version": "director_authoring_claim_manifest_v1",
+    "authoring_stage": "STAGE_B",
+    "semantic_slots": [
+      "stage_b.performance"
+    ],
+    "covered_slots": [
+      "stage_b.performance"
+    ],
+    "claims": [
+      {
+        "schema_version": "director_claim_ir_v1",
+        "claim_id": "AC_INTENT",
+        "claim_type": "CHARACTER_INTENT",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "CHAR_A"
+        },
+        "predicate": "probe",
+        "object": {
+          "kind": "CHARACTER",
+          "ref": "CHAR_B"
+        },
+        "qualifiers": {
+          "semantic_slot": "stage_b.performance"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "source_claim_ids": [],
+        "origin": "STAGE_B",
+        "fingerprint": "34c721dcc323ce7a8bb413c1bdd0bad48bcd0996c8f815a743a04a5234738f7f"
+      }
+    ]
+  },
+  "typed_support_audit": {
+    "schema_version": "director_claim_aware_typed_support_v1",
+    "status": "BLOCKED",
+    "claim_count": 1,
+    "counts": {
+      "UNSUPPORTED": 1
+    },
+    "blocking_finding_count": 1,
+    "findings": [
+      {
+        "claim_id": "AC_INTENT",
+        "claim_type": "CHARACTER_INTENT",
+        "support_status": "UNSUPPORTED",
+        "status": "BLOCKED",
+        "reason": "Canonical claim has no bound SourceClaim IDs"
+      }
+    ],
+    "raw_text_consulted": false,
+    "legacy_special_case_called": false
+  },
+  "provider_calls": 0
+}

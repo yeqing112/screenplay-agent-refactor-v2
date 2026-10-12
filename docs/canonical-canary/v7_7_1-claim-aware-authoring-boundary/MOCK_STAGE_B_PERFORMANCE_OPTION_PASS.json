@@ -1,0 +1,60 @@
+{
+  "manifest": {
+    "schema_version": "director_authoring_claim_manifest_v1",
+    "authoring_stage": "STAGE_B",
+    "semantic_slots": [
+      "stage_b.performance"
+    ],
+    "covered_slots": [
+      "stage_b.performance"
+    ],
+    "claims": [
+      {
+        "schema_version": "director_claim_ir_v1",
+        "claim_id": "AC_PERFORMANCE",
+        "claim_type": "PERFORMANCE_OPTION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "CHAR_A"
+        },
+        "predicate": "playable_tone",
+        "object": {
+          "kind": "OPTION",
+          "ref": "PROBING"
+        },
+        "qualifiers": {
+          "semantic_slot": "stage_b.performance"
+        },
+        "polarity": "POSITIVE",
+        "modality": "PLAYABLE_OPTION",
+        "canonicality": "NON_CANONICAL_PERFORMANCE_OPTION",
+        "authority_required": "STAGE_B",
+        "source_refs": [],
+        "source_claim_ids": [],
+        "origin": "STAGE_B",
+        "fingerprint": "3e779c2b078519e92e3fbf8835ebd8f9603fa22d9f35c036c31b95510b541230"
+      }
+    ]
+  },
+  "typed_support_audit": {
+    "schema_version": "director_claim_aware_typed_support_v1",
+    "status": "PASS",
+    "claim_count": 1,
+    "counts": {
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 1
+    },
+    "blocking_finding_count": 0,
+    "findings": [
+      {
+        "claim_id": "AC_PERFORMANCE",
+        "claim_type": "PERFORMANCE_OPTION",
+        "support_status": "SUPPORTED_AS_NON_CANONICAL_OPTION",
+        "status": "PASS",
+        "reason": "explicit_playable_non_canonical_option"
+      }
+    ],
+    "raw_text_consulted": false,
+    "legacy_special_case_called": false
+  },
+  "provider_calls": 0
+}

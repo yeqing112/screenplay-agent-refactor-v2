@@ -130,13 +130,15 @@ def _source_refs_for_path(path: str, document: Mapping[str, Any], source_ref_map
     return []
 
 
-def _base_claim(origin: str, path: str, text: str, source_refs: list[str], document: Mapping[str, Any]) -> dict[str, Any]:
+def _base_claim(origin: str, path: str, text: str, source_refs: list[str], document: Mapping[str, Any], *, scene_id: str = "") -> dict[str, Any]:
     field = path.rsplit(".", 1)[-1]
     if origin == "STAGE_A" and field == "purpose":
         return _claim(origin, path, text, "DRAMATIC_GROUPING", subject={"kind": "BEAT", "ref": path}, predicate="purpose", object_={"kind": "DRAMATIC_PURPOSE", "ref": text}, authority="STAGE_A", source_refs=source_refs)
     if origin == "STAGE_A" and field in {"scene_objective", "dramatic_question"}:
         kind = "DRAMATIC_OBJECTIVE" if field == "scene_objective" else "DRAMATIC_QUESTION"
-        return _claim(origin, path, text, kind, subject={"kind": "SCENE", "ref": "E01_SC001"}, predicate=field, object_={"kind": "DRAMATIC_TEXT", "ref": text}, authority="STAGE_A", source_refs=source_refs)
+        return _claim(origin, path, text, kind, subject={"kind": "SCENE", "ref": scene_id or str(document.get("scene_id") or document.get("scene_label") or "runtime_scene")}, predicate=field, object_={"kind": "DRAMATIC_TEXT", "ref": text}, authority="STAGE_A", source_refs=source_refs)
+    if origin == "STAGE_A" and field == "objective":
+        return _claim(origin, path, text, "DRAMATIC_OBJECTIVE", subject={"kind": "BEAT", "ref": path}, predicate=field, object_={"kind": "DRAMATIC_TEXT", "ref": text}, authority="STAGE_A", source_refs=source_refs)
     if "audience_effect" in path:
         return _claim(origin, path, text, "AUDIENCE_EFFECT", subject={"kind": "AUDIENCE", "ref": "viewer"}, predicate="experience", object_={"kind": "EFFECT", "ref": text}, canonicality="AUDIENCE_INTERPRETATION", authority="STAGE_B", source_refs=source_refs)
     if "audience_should" in path or "audience_focus" in path:
@@ -195,13 +197,13 @@ def _embedded_claims(origin: str, path: str, text: str, source_refs: list[str]) 
     return found
 
 
-def extract_claims(document: Mapping[str, Any], *, origin: str, source_ref_map: Mapping[str, list[str]] | None = None) -> list[dict[str, Any]]:
+def extract_claims(document: Mapping[str, Any], *, origin: str, source_ref_map: Mapping[str, list[str]] | None = None, scene_id: str = "") -> list[dict[str, Any]]:
     claims: list[dict[str, Any]] = []
     for path, text in _walk(document):
         if path in {"version", "schema_version"} or not text:
             continue
         refs = _source_refs_for_path(path, document, source_ref_map)
-        base = _base_claim(origin, path, text, refs, document)
+        base = _base_claim(origin, path, text, refs, document, scene_id=scene_id)
         claims.append(base)
         claims.extend(_embedded_claims(origin, path, text, refs))
     return _dedupe_claims(claims)

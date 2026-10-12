@@ -1,0 +1,17 @@
+{
+  "schema_version": "pre_existing_scene_blocking_regression_baseline_v1",
+  "status": "RECORDED_PRE_EXISTING",
+  "known_failure_count": 3,
+  "latest_isolated_run": {
+    "passed": 12,
+    "failed": 3,
+    "status": "FAILURES_REPRODUCED_WITHOUT_V7_7_1_SCENE_CODE_CHANGES"
+  },
+  "tests": [
+    "test_failed_activation_does_not_move_pointer_and_payload_tamper_stales_it",
+    "test_missing_scene_asset_is_production_blocker_but_not_legacy_authority",
+    "test_shot_plan_activation_and_materializer_use_current_pointer_without_agent"
+  ],
+  "v7_7_1_modified_scene_blocking_or_shot_plan": false,
+  "backlog": "independent V2 authority-contract work; not changed in this phase"
+}

@@ -1,0 +1,62 @@
+{
+  "manifest": {
+    "schema_version": "director_authoring_claim_manifest_v1",
+    "authoring_stage": "STAGE_B",
+    "semantic_slots": [
+      "stage_b.action"
+    ],
+    "covered_slots": [
+      "stage_b.action"
+    ],
+    "claims": [
+      {
+        "schema_version": "director_claim_ir_v1",
+        "claim_id": "AC_POSSESSION",
+        "claim_type": "OBJECT_POSSESSION",
+        "subject": {
+          "kind": "CHARACTER",
+          "ref": "CHAR_A"
+        },
+        "predicate": "received_by",
+        "object": {
+          "kind": "OBJECT",
+          "ref": "PROP_TICKET"
+        },
+        "qualifiers": {
+          "semantic_slot": "stage_b.action"
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "canonicality": "CANONICAL_ASSERTION",
+        "authority_required": "SOURCE",
+        "source_refs": [],
+        "source_claim_ids": [
+          "SC_ACTOR_INSERT"
+        ],
+        "origin": "STAGE_B",
+        "fingerprint": "28bd414a48596634d3ce17c4a27dd01fb1c4d9a6370f8c3862a38d2bb62b731b"
+      }
+    ]
+  },
+  "typed_support_audit": {
+    "schema_version": "director_claim_aware_typed_support_v1",
+    "status": "BLOCKED",
+    "claim_count": 1,
+    "counts": {
+      "UNSUPPORTED": 1
+    },
+    "blocking_finding_count": 1,
+    "findings": [
+      {
+        "claim_id": "AC_POSSESSION",
+        "claim_type": "OBJECT_POSSESSION",
+        "support_status": "UNSUPPORTED",
+        "status": "BLOCKED",
+        "reason": "Bound SourceClaim IDs do not match typed subject, predicate, object or qualifiers"
+      }
+    ],
+    "raw_text_consulted": false,
+    "legacy_special_case_called": false
+  },
+  "provider_calls": 0
+}

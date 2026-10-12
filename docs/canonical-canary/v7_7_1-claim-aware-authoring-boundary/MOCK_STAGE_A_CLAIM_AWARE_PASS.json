@@ -1,0 +1,52 @@
+{
+  "schema_version": "mock_stage_a_claim_aware_result_v1",
+  "authoring_validation": {
+    "status": "PASS",
+    "errors": [],
+    "schema": {
+      "status": "PASS",
+      "errors": [],
+      "claim_count": 1,
+      "claim_ids": [
+        "AC_STAGE_A_OBJECTIVE"
+      ]
+    },
+    "completeness": {
+      "status": "PASS",
+      "errors": [],
+      "derived_slots": [
+        "beat_0.objective"
+      ],
+      "declared_slots": [
+        "beat_0.objective"
+      ],
+      "covered_slots": [
+        "beat_0.objective"
+      ],
+      "claim_slots": [
+        "beat_0.objective"
+      ]
+    }
+  },
+  "typed_support_audit": {
+    "schema_version": "director_claim_aware_typed_support_v1",
+    "status": "PASS",
+    "claim_count": 1,
+    "counts": {
+      "SUPPORTED_AS_NON_CANONICAL_OPTION": 1
+    },
+    "blocking_finding_count": 0,
+    "findings": [
+      {
+        "claim_id": "AC_STAGE_A_OBJECTIVE",
+        "claim_type": "DRAMATIC_OBJECTIVE",
+        "support_status": "SUPPORTED_AS_NON_CANONICAL_OPTION",
+        "status": "PASS",
+        "reason": "Typed field is within the declared dramatic or creative authority and creates no canonical fact"
+      }
+    ],
+    "raw_text_consulted": false,
+    "legacy_special_case_called": false
+  },
+  "provider_calls": 0
+}

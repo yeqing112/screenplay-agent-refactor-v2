@@ -1,0 +1,26 @@
+{
+  "schema_version": "director_authoring_claim_manifest_v1",
+  "production_semantic_authority": "structured claim sidecar emitted with authoring result",
+  "required_claim_fields": [
+    "schema_version",
+    "claim_id",
+    "claim_type",
+    "subject",
+    "predicate",
+    "object",
+    "qualifiers",
+    "polarity",
+    "modality",
+    "canonicality",
+    "authority_required",
+    "source_refs",
+    "source_claim_ids"
+  ],
+  "provenance_optional_fields": [
+    "provenance",
+    "display_text",
+    "rendered_prose"
+  ],
+  "raw_text_or_source_path_required_for_identity": false,
+  "self_asserted_source_refs_are_not_support": true
+}

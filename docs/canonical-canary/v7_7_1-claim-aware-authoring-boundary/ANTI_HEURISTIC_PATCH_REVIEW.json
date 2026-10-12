@@ -1,0 +1,70 @@
+{
+  "schema_version": "director_v7_7_1_anti_heuristic_patch_review_v1",
+  "status": "PASS_WITH_SOURCE_MATERIALIZATION_BOUNDARY",
+  "v7_7_0": {
+    "phrase_dependence": "YES",
+    "scene_dependence": "YES",
+    "attempt_dependence": "NO",
+    "heuristic_production_dependency": "NO",
+    "production_migration_ready": "NO"
+  },
+  "v7_7_1_future_typed_path": {
+    "phrase_dependence": "NO",
+    "scene_dependence": "NO",
+    "attempt_dependence": "NO",
+    "heuristic_production_dependency": "NO"
+  },
+  "legacy_extractor": "LEGACY_SHADOW_DIAGNOSTIC_ONLY",
+  "findings": [
+    {
+      "path": "core/director_claim_extraction.py",
+      "finding": "contains phrase-specific semantic extraction",
+      "classification": "LEGACY_SHADOW_TEXT_EXTRACTOR"
+    },
+    {
+      "path": "core/director_claim_grounding.py",
+      "finding": "contains special-case semantic support branches",
+      "classification": "LEGACY_SHADOW_DIAGNOSTIC_ONLY"
+    },
+    {
+      "path": "V7.7.0 baseline",
+      "finding": "scene id E01_SC001 appeared in the historical generic extraction logic",
+      "classification": "LEGACY_SCENE_COUPLING",
+      "resolution": "V7.7.1 routes scene identity through runtime input; historical V7.7.0 evidence remains immutable"
+    }
+  ],
+  "typed_path_scan": {
+    "production_path_files": [
+      "core/director_claim_ir.py",
+      "core/director_claim_authority.py",
+      "core/director_authoring_claim_contract.py",
+      "core/director_claim_aware_support.py",
+      "core/director_claim_relation_registry.py",
+      "core/director_claim_entity_binding.py",
+      "core/director_source_claim_materialization.py"
+    ],
+    "forbidden_tokens": [
+      "E01_SC001",
+      "990453",
+      "attempt-7",
+      "attempt-11",
+      "顾沉",
+      "林晚",
+      "试探",
+      "微弱光线",
+      "手写",
+      "车票",
+      "铁盒前",
+      "打开铁盒"
+    ],
+    "hits": [],
+    "status": "PASS",
+    "legacy_paths_excluded": [
+      "core/director_claim_extraction.py",
+      "core/director_claim_grounding.py"
+    ],
+    "legacy_exclusion_reason": "historical forensic shadow diagnostics only"
+  },
+  "remaining_boundary": "SOURCE_CLAIM_MATERIALIZATION_BOUNDARY_REQUIRED",
+  "stage_a_revision_safe": false
+}

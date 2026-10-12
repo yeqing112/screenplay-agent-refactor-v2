@@ -1,0 +1,17 @@
+{
+  "schema_version": "director_legacy_text_extractor_classification_v1",
+  "path": "core/director_claim_extraction.py",
+  "classification": "SHADOW_LEGACY_TEXT_EXTRACTOR",
+  "allowed_use": [
+    "historical Attempt-7/9/10/11 forensic audit",
+    "V7.7.0 diagnostic comparison"
+  ],
+  "forbidden_use": [
+    "confirm",
+    "revision",
+    "authority promotion",
+    "production PASS"
+  ],
+  "phrase_dependence": "YES",
+  "production_authority": "NO"
+}
