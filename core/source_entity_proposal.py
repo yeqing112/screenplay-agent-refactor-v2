@@ -128,13 +128,8 @@ def _evidence_text_index(evidence_index: Mapping[str, Any], source_units: Sequen
     return result
 
 
-def validate_entity_candidate(
-    candidate: Any,
-    *,
-    evidence_index: Mapping[str, Any],
-    source_units: Sequence[Mapping[str, Any]],
-    source_fingerprint: str = "",
-) -> dict[str, Any]:
+def validate_entity_candidate_contract(candidate: Any) -> dict[str, Any]:
+    """Validate only the internal candidate contract, with no evidence access."""
     errors: list[str] = []
     if not isinstance(candidate, Mapping):
         return {"status": "BLOCKED", "errors": ["ENTITY_CANDIDATE_MUST_BE_OBJECT"]}
@@ -147,11 +142,30 @@ def validate_entity_candidate(
         errors.append("ENTITY_KIND_INVALID")
     if not isinstance(candidate.get("surface_form"), str) or not candidate.get("surface_form", "").strip():
         errors.append("ENTITY_SURFACE_FORM_INVALID")
-    errors.extend(_refs(candidate.get("evidence_refs"), "evidence_refs"))
-    errors.extend(_refs(candidate.get("source_unit_refs"), "source_unit_refs"))
+    for key in ("evidence_refs", "source_unit_refs"):
+        value = candidate.get(key)
+        if not isinstance(value, list) or not value or not all(isinstance(item, str) and item.strip() for item in value):
+            errors.append(f"{key.upper()}_INVALID")
+        elif len(value) != len(set(value)):
+            errors.append(f"{key.upper()}_DUPLICATED")
+    return {"status": "PASS" if not errors else "BLOCKED", "errors": sorted(set(errors)), "authority": "UNTRUSTED_PROPOSED"}
+
+
+def validate_entity_candidate(
+    candidate: Any,
+    *,
+    evidence_index: Mapping[str, Any],
+    source_units: Sequence[Mapping[str, Any]],
+    source_fingerprint: str = "",
+) -> dict[str, Any]:
+    contract_result = validate_entity_candidate_contract(candidate)
+    if contract_result["status"] != "PASS":
+        return contract_result
+    errors: list[str] = []
     evidence_by_ref = {str(row.get("anchor_ref")): row for row in evidence_index.get("anchors", []) if isinstance(row, Mapping) and row.get("anchor_ref")}
     unit_ids = {str(unit.get("unit_id")) for unit in source_units if isinstance(unit, Mapping) and unit.get("unit_id")}
     texts = _evidence_text_index(evidence_index, source_units)
+    surface_form_found = False
     for ref in candidate.get("evidence_refs", []) if isinstance(candidate.get("evidence_refs"), list) else []:
         anchor = evidence_by_ref.get(str(ref))
         if not anchor:
@@ -163,10 +177,18 @@ def validate_entity_candidate(
         if str(anchor.get("unit_id") or "") not in {str(item) for item in candidate.get("source_unit_refs", [])}:
             errors.append(f"EVIDENCE_NOT_BOUND_TO_SOURCE_UNIT:{ref}")
         surface = str(candidate.get("surface_form") or "")
-        if ref in texts and surface not in texts[ref]:
-            errors.append(f"SURFACE_FORM_NOT_IN_EVIDENCE:{ref}")
+        if ref in texts and surface and surface in texts[ref]:
+            surface_form_found = True
         if ref not in texts:
             errors.append(f"EVIDENCE_TEXT_UNAVAILABLE:{ref}")
+    if candidate.get("evidence_refs") and not surface_form_found and isinstance(candidate.get("surface_form"), str) and candidate.get("surface_form", "").strip():
+        # Keep the historical single-anchor code for compatibility while
+        # enforcing the contract over the complete bound evidence set.
+        refs = candidate.get("evidence_refs") or []
+        if len(refs) == 1:
+            errors.append(f"SURFACE_FORM_NOT_IN_EVIDENCE:{refs[0]}")
+        else:
+            errors.append("SURFACE_FORM_NOT_IN_ANY_BOUND_EVIDENCE")
     for ref in candidate.get("source_unit_refs", []) if isinstance(candidate.get("source_unit_refs"), list) else []:
         if str(ref) not in unit_ids:
             errors.append(f"SOURCE_UNIT_REF_MISSING:{ref}")
@@ -205,15 +227,17 @@ def entity_candidate_fingerprint(candidate: Mapping[str, Any]) -> str:
 def assign_program_owned_entity_ids(candidates: Sequence[Mapping[str, Any]], *, only_valid: set[int] | None = None) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     seen: dict[str, str] = {}
+    next_id = 1
     for index, candidate in enumerate(candidates):
         if only_valid is not None and index not in only_valid:
             continue
         fp = entity_candidate_fingerprint(candidate)
         duplicate_of = seen.get(fp)
-        proposal_ref = f"PEC_{len(rows) + 1:04d}"
         if duplicate_of:
-            rows.append({"proposal_entity_ref": proposal_ref, "status": "BLOCKED_DUPLICATE", "duplicate_of": duplicate_of, "fingerprint": fp, "candidate_index": index})
+            rows.append({"proposal_entity_ref": None, "status": "BLOCKED_DUPLICATE", "duplicate_of": duplicate_of, "fingerprint": fp, "candidate_index": index})
             continue
+        proposal_ref = f"PEC_{next_id:04d}"
+        next_id += 1
         seen[fp] = proposal_ref
         rows.append({"proposal_entity_ref": proposal_ref, "status": "PROPOSED", "authority": "UNTRUSTED_PROPOSED", "fingerprint": fp, "candidate_index": index, "entity": dict(candidate)})
     return {"schema_version": "program_owned_proposal_entity_id_v1", "id_owner": "program", "provider_supplied_id": False, "rows": rows, "fingerprint": fingerprint(rows)}
@@ -327,5 +351,5 @@ def structured_response_format(schema: Mapping[str, Any], *, name: str) -> dict[
 
 
 __all__ = [
-    "ENTITY_PROPOSAL_VERSION", "ENTITY_CANDIDATE_VERSION", "PROPOSAL_ENTITY_REGISTRY_VERSION", "CLAIM_V2_VERSION", "CLAIM_V2_SET_VERSION", "ENTITY_KINDS", "ENTITY_FORBIDDEN_FIELDS", "CLAIM_V2_FORBIDDEN_FIELDS", "source_entity_candidate_contract", "source_entity_proposal_schema", "validate_entity_candidate", "validate_entity_proposal", "entity_candidate_fingerprint", "assign_program_owned_entity_ids", "proposal_entity_registry", "claim_v2_candidate_contract", "claim_v2_schema", "validate_claim_v2_candidate", "assign_program_owned_claim_ids", "structured_output_capability_contract", "resolve_structured_output_capability", "structured_response_format", "fingerprint",
+    "ENTITY_PROPOSAL_VERSION", "ENTITY_CANDIDATE_VERSION", "PROPOSAL_ENTITY_REGISTRY_VERSION", "CLAIM_V2_VERSION", "CLAIM_V2_SET_VERSION", "ENTITY_KINDS", "ENTITY_FORBIDDEN_FIELDS", "CLAIM_V2_FORBIDDEN_FIELDS", "source_entity_candidate_contract", "source_entity_proposal_schema", "validate_entity_candidate_contract", "validate_entity_candidate", "validate_entity_proposal", "entity_candidate_fingerprint", "assign_program_owned_entity_ids", "proposal_entity_registry", "claim_v2_candidate_contract", "claim_v2_schema", "validate_claim_v2_candidate", "assign_program_owned_claim_ids", "structured_output_capability_contract", "resolve_structured_output_capability", "structured_response_format", "fingerprint",
 ]
