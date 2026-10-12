@@ -157,6 +157,7 @@ def test_json_schemas_are_self_contained_and_strict():
     claim_schema = claim_v2_schema()
     assert entity_schema["additionalProperties"] is False
     assert claim_schema["additionalProperties"] is False
+    assert entity_schema["properties"]["entities"]["items"]["type"] == "object"
     assert _refs_are_self_contained(entity_schema)
     assert _refs_are_self_contained(claim_schema)
     assert claim_schema["properties"]["claims"]["items"]["additionalProperties"] is False

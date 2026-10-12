@@ -55,6 +55,7 @@ def _ref(value: Any) -> tuple[str, str]:
 
 def source_entity_candidate_contract() -> dict[str, Any]:
     return {
+        "type": "object",
         "schema_version": ENTITY_CANDIDATE_VERSION,
         "trust": "UNTRUSTED_PROPOSED",
         "required": sorted(ENTITY_REQUIRED_KEYS),

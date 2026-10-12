@@ -15,6 +15,7 @@
     "entities": {
       "type": "array",
       "items": {
+        "type": "object",
         "schema_version": "source_entity_candidate_v1",
         "trust": "UNTRUSTED_PROPOSED",
         "required": [
