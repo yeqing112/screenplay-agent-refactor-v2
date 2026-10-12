@@ -81,7 +81,7 @@ def read_db() -> dict[str, Any]:
         ir_row = connection.execute("select * from script_ir_versions where id=? and book_id=? and episode=?", (SCRIPT_IR_ID, BOOK_ID, EPISODE)).fetchone()
         packet_row = connection.execute("select * from decision_packet_records where id=? and book_id=?", (PACKET_ID, BOOK_ID)).fetchone()
         fact_row = connection.execute("select * from fact_snapshots where id=? and book_id=? and episode=?", (FACT_SNAPSHOT_ID, BOOK_ID, EPISODE)).fetchone()
-        fact_records = [dict(row) for row in connection.execute("select * from fact_records where fact_snapshot_id=? order by id", (FACT_SNAPSHOT_ID,)).fetchall()]
+        fact_records = [dict(row) for row in connection.execute("select * from fact_records where snapshot_id=? order by id", (FACT_SNAPSHOT_ID,)).fetchall()]
         if ir_row is None or packet_row is None or fact_row is None:
             return {"status": "BLOCKED", "error": "CANONICAL_PRODUCTION_ROWS_MISSING"}
         ir_payload = json.loads(ir_row["payload_json"] or "{}")
