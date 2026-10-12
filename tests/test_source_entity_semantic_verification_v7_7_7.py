@@ -206,10 +206,14 @@ def test_ambiguous_and_rejected_states_are_distinct_with_rejection_precedence():
     compiled = compile_verified_entity_registry(canonical_entities={}, candidates=freeze["candidates"], results_by_ref=validate_verification_coverage(value, expected_refs=list(freeze["candidates"]))["results_by_ref"])
     assert compiled["status"] == "SOURCE_ENTITY_SEMANTIC_REVIEW_REQUIRED"
     assert compiled["registry"]["proposal_entities"]["PEC_0002"]["authority"] == "ENTITY_SEMANTIC_REVIEW_REQUIRED"
+    assert compiled["registry"]["proposal_entities"]["PEC_0002"]["verification_state"] == "ENTITY_SEMANTIC_REVIEW_REQUIRED"
     value["results"][1]["kind_verdict"] = "UNSUPPORTED"
     rejected = compile_verified_entity_registry(canonical_entities={}, candidates=freeze["candidates"], results_by_ref=validate_verification_coverage(value, expected_refs=list(freeze["candidates"]))["results_by_ref"])
     assert rejected["status"] == "SOURCE_ENTITY_PROPOSAL_REVISION_BOUNDARY_REQUIRED"
-    assert rejected["registry"]["proposal_entities"]["PEC_0001"]["authority"] == "REJECTED_PROPOSAL"
+    rejected_pec = rejected["registry"]["proposal_entities"]["PEC_0001"]
+    assert rejected_pec["verification_state"] == "ENTITY_PROPOSAL_REJECTED"
+    assert rejected_pec["authority"] == "REJECTED_PROPOSAL"
+    assert rejected["rejected_count"] == 1
 
 
 def test_summary_keeps_entity_completeness_unproven():

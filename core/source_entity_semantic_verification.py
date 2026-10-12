@@ -208,7 +208,7 @@ def compile_verified_entity_registry(
         mention = str(result["mention_verdict"])
         kind = str(result["kind_verdict"])
         if mention == "NOT_EXPLICITLY_EVIDENCED" or kind == "UNSUPPORTED":
-            state = "REJECTED_PROPOSAL"
+            state = "ENTITY_PROPOSAL_REJECTED"
             authority = "REJECTED_PROPOSAL"
         elif mention == "EXPLICITLY_EVIDENCED" and kind == "SUPPORTED":
             state = "SEMANTICALLY_VERIFIED_PROPOSAL"
@@ -226,7 +226,7 @@ def compile_verified_entity_registry(
             "verification_evidence_refs": list(result["evidence_refs"]),
             "canonical": False,
         }
-    rejected = sum(row["verification_state"] == "REJECTED_PROPOSAL" for row in compiled.values())
+    rejected = sum(row["verification_state"] == "ENTITY_PROPOSAL_REJECTED" for row in compiled.values())
     reviews = sum(row["verification_state"] == "ENTITY_SEMANTIC_REVIEW_REQUIRED" for row in compiled.values())
     verified = sum(row["verification_state"] == "SEMANTICALLY_VERIFIED_PROPOSAL" for row in compiled.values())
     if rejected:
@@ -270,7 +270,7 @@ def verification_summary(results_by_ref: Mapping[str, Mapping[str, Any]], compil
         "kind_unsupported_count": sum(row.get("kind_verdict") == "UNSUPPORTED" for row in rows),
         "kind_ambiguous_count": sum(row.get("kind_verdict") == "AMBIGUOUS" for row in rows),
         "semantically_verified_proposal_count": states.count("SEMANTICALLY_VERIFIED_PROPOSAL"),
-        "rejected_proposal_count": states.count("REJECTED_PROPOSAL"),
+        "rejected_proposal_count": states.count("ENTITY_PROPOSAL_REJECTED"),
         "review_required_count": states.count("ENTITY_SEMANTIC_REVIEW_REQUIRED"),
         "canonical_promotions": 0,
         "entity_semantic_completeness": "NOT_PROVEN",

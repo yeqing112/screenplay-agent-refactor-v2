@@ -49,6 +49,8 @@
 - V7.7.7 and V7.7.6–V7.7.2 regression suites: `83 passed`.
 - Python compileall: `PASS`; `git diff --check`: `PASS`.
 - Provider-call implementation commit: `7afef07c5b7ef247601988d269158d0c455da9c9` (pushed before the call).
+- Branch: `codex/visual-authoring-provider-canary-reconcile`.
+- Evidence publication commit: `12a3d873ffa2e84fced53c90bc0985258027b122`; at publication, local HEAD matched remote HEAD and the working tree was clean.
 - SceneBlocking historical baseline remains `29 passed, 3 pre-existing failures`; it was not modified.
 
 The run stops here. No source-entity reproposal, canonical promotion, Claim V2 repair, Claim Proposal, or Fact Semantic Verifier was run.
