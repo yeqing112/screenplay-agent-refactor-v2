@@ -6,6 +6,7 @@
 - Next state: `SOURCE_ENTITY_SEMANTIC_VERIFICATION_BOUNDARY_REQUIRED`
 - Preflight: `PASS`; all freshness, production freeze, schema, evidence, and anti-heuristic gates passed.
 - Authorization: `v7.7.6-source-entity-proposal-single-call`
+- Scope: Book `990453`, Episode `1`; runtime origin source package: `book:990402`
 - Provider POST attempts: `1`; HTTP-confirmed: `1`; retry/fallback: `0`
 - Provider: `local-llm-2vydoz` / `openai-compatible` / `mimo-v2.5` / `https://api.xiaomimimo.com`
 - Provider identity fingerprint: `9908c628bc8b970817674b26ff3897bb055bc24ee6505bbc2af6a80f7722c455`

@@ -297,7 +297,7 @@ def main() -> int:
     if status != "READY_FOR_SINGLE_POST":
         write("SOURCE_ENTITY_TRANSPORT_AUDIT.json", {"status": status, "provider_posts": 0, "failed_checks": preflight_result.get("failed_checks", []), "qualification_fingerprint": qualification.get("qualification_fingerprint")})
         write(raw_path.name, {"status": "NOT_RUN", "raw_response": "", "raw_response_sha256": "", "raw_response_length": 0, "persisted_before_parse": True})
-        write("SOURCE_ENTITY_PROPOSAL_SCHEMA_VALIDATION.json", {"status": "NOT_RUN", "errors": []})
+        write("SOURCE_ENTITY_SCHEMA_VALIDATION.json", {"status": "NOT_RUN", "errors": []})
         write("SOURCE_ENTITY_EVIDENCE_BINDING_AUDIT.json", {"status": "NOT_RUN", "rows": []})
         write("SOURCE_ENTITY_SOURCE_UNIT_BINDING_AUDIT.json", {"status": "NOT_RUN", "rows": []})
         write("SOURCE_ENTITY_SURFACE_BINDING_AUDIT.json", {"status": "NOT_RUN", "rows": []})
@@ -341,7 +341,7 @@ def main() -> int:
     parsed, parse_audit = parse_strict_json(raw) if http_status == 200 and not transport_error else (None, {"status": "NOT_RUN", "repair": False, "markdown_stripping": False, "substring_extraction": False, "coercion": False})
     write("SOURCE_ENTITY_PARSE_AUDIT.json", {**parse_audit, "repair": False, "markdown_stripping": False, "substring_extraction": False, "coercion": False, "raw_sha256": raw_sha})
     transport_validation = validate_json_schema_subset(parsed, transport_schema) if isinstance(parsed, Mapping) and isinstance(transport_schema, Mapping) else {"status": "BLOCKED", "errors": ["JSON_SCHEMA_OR_PARSE_NOT_AVAILABLE"]}
-    write("SOURCE_ENTITY_PROPOSAL_SCHEMA_VALIDATION.json", {**transport_validation, "schema_fingerprint": transport_schema_fingerprint, "candidate_count": len(parsed.get("entities", [])) if isinstance(parsed, Mapping) and isinstance(parsed.get("entities"), list) else 0})
+    write("SOURCE_ENTITY_SCHEMA_VALIDATION.json", {**transport_validation, "schema_fingerprint": transport_schema_fingerprint, "candidate_count": len(parsed.get("entities", [])) if isinstance(parsed, Mapping) and isinstance(parsed.get("entities"), list) else 0})
     candidate_rows = parsed.get("entities", []) if isinstance(parsed, Mapping) and isinstance(parsed.get("entities"), list) else []
     wrapper_contract_errors = []
     if not isinstance(parsed, Mapping) or set(parsed) != {"schema_version", "entities"} or parsed.get("schema_version") != ENTITY_PROPOSAL_VERSION:
