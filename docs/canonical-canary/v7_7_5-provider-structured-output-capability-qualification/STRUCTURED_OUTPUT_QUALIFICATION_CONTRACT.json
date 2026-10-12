@@ -1,0 +1,13 @@
+{
+  "schema_version": "provider_structured_output_qualification_contract_v1",
+  "qualification_version": "provider_structured_output_qualification_v1",
+  "qualification_scope": "exact profile_id + provider + model + base_host",
+  "timestamp_is_identity": false,
+  "max_provider_http_posts": 1,
+  "if_preflight_pass_posts": 1,
+  "semantic_verifier_posts": 0,
+  "source_entity_proposal_posts": 0,
+  "source_claim_proposal_posts": 0,
+  "raw_first": true,
+  "qualification_does_not_mutate_profile": true
+}

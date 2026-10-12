@@ -1,0 +1,9 @@
+{
+  "status": "RAW_PERSISTED",
+  "authorization_id": "v7.7.5-provider-strict-structured-output-single-probe",
+  "raw_response": "{\n  \"probe\": \"STRICT_SCHEMA_OK\",\n  \"ordinal\": 7\n}",
+  "raw_response_sha256": "fe126984e05e6d64c6e68c1915dc9e8fcda734ab5b763dd9eb1760f35376d0ae",
+  "raw_response_length": 49,
+  "persisted_before_parse": true,
+  "transport_error": ""
+}

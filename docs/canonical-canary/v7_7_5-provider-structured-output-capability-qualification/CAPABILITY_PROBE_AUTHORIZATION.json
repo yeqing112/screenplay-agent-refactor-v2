@@ -1,0 +1,16 @@
+{
+  "authorization_id": "v7.7.5-provider-strict-structured-output-single-probe",
+  "max_http_posts": 1,
+  "exactly_one_if_preflight_pass": true,
+  "retry": 0,
+  "repair": 0,
+  "second_probe": 0,
+  "fallback_provider": false,
+  "fallback_model": false,
+  "semantic_verifier": 0,
+  "source_entity_proposal": 0,
+  "source_claim_proposal": 0,
+  "image": 0,
+  "video": 0,
+  "production_writes": 0
+}

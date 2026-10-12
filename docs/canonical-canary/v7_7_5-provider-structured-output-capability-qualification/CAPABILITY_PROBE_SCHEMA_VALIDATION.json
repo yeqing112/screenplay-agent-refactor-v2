@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "schema_fingerprint": "d8e5d4dcfb0af07f632660c83cdf3c733617c43d0f0f724420c6d95777ebf726",
+  "json_schema_validator": "provider_structured_output_qualification.validate_json_schema_subset"
+}

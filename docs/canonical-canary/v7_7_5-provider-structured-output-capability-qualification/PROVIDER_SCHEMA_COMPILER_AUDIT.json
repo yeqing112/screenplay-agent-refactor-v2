@@ -1,0 +1,269 @@
+{
+  "schema_version": "provider_schema_compiler_audit_v1",
+  "contract": "Internal Semantic Contract != Transport JSON Schema",
+  "status": "BLOCKED",
+  "compiled": {
+    "entity_proposal_schema": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "entities"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "evidence_refs",
+              "kind",
+              "schema_version",
+              "source_unit_refs",
+              "surface_form"
+            ],
+            "properties": {
+              "evidence_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "CHARACTER",
+                  "SCENE",
+                  "LOCATION",
+                  "OBJECT",
+                  "ENVIRONMENT",
+                  "DIALOGUE_CONTENT",
+                  "TEXT_CONTENT",
+                  "PROPERTY_VALUE",
+                  "STATE_VALUE",
+                  "UNKNOWN_ENTITY"
+                ]
+              },
+              "schema_version": {
+                "const": "source_entity_candidate_v1"
+              },
+              "source_unit_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "surface_form": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "schema_version": {
+          "const": "source_entity_proposal_v1"
+        }
+      }
+    },
+    "entity_candidate_schema": {
+      "type": "object",
+      "required": [
+        "evidence_refs",
+        "kind",
+        "schema_version",
+        "source_unit_refs",
+        "surface_form"
+      ],
+      "properties": {
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "CHARACTER",
+            "SCENE",
+            "LOCATION",
+            "OBJECT",
+            "ENVIRONMENT",
+            "DIALOGUE_CONTENT",
+            "TEXT_CONTENT",
+            "PROPERTY_VALUE",
+            "STATE_VALUE",
+            "UNKNOWN_ENTITY"
+          ]
+        },
+        "schema_version": {
+          "const": "source_entity_candidate_v1"
+        },
+        "source_unit_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "surface_form": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "claim_v2_schema": null
+  },
+  "audits": {
+    "entity_proposal_schema": {
+      "status": "PASS",
+      "removed_annotation_paths": [
+        "$.$id",
+        "$.$schema",
+        "$.properties.entities.items.authority",
+        "$.properties.entities.items.provider_may_not_supply",
+        "$.properties.entities.items.schema_version",
+        "$.properties.entities.items.surface_form_semantics",
+        "$.properties.entities.items.trust",
+        "$.title"
+      ],
+      "errors": [],
+      "input_fingerprint": "f478fcd01cd2f2e41015a0c014b25ea0c336708091767ba61adb603451311e21",
+      "output_fingerprint": "f4cf9b6c0ed32fb4024dc277f30e1905192ef8014c96775a8c862e7133a16263",
+      "diagnostic_partial_output_fingerprint": null,
+      "input_unchanged": true,
+      "deterministic": true,
+      "structural_keywords": [
+        "additionalProperties",
+        "const",
+        "enum",
+        "items",
+        "minItems",
+        "minLength",
+        "properties",
+        "required",
+        "type",
+        "uniqueItems"
+      ],
+      "annotation_keywords": [
+        "$id",
+        "$schema",
+        "authority",
+        "default",
+        "deprecated",
+        "description",
+        "examples",
+        "notes",
+        "provider_may_not_supply",
+        "readOnly",
+        "schema_version",
+        "surface_form_semantics",
+        "title",
+        "trust",
+        "writeOnly"
+      ]
+    },
+    "entity_candidate_schema": {
+      "status": "PASS",
+      "removed_annotation_paths": [
+        "$.authority",
+        "$.provider_may_not_supply",
+        "$.schema_version",
+        "$.surface_form_semantics",
+        "$.trust"
+      ],
+      "errors": [],
+      "input_fingerprint": "8924a1f88460706552b87f6a8c6b8ba5dd23a1a4270a619eac56c3ff1b3332f2",
+      "output_fingerprint": "15c90e2541169dc9916a9569b9e0390bf86f67ca251e6fbc65b82228d26d9276",
+      "diagnostic_partial_output_fingerprint": null,
+      "input_unchanged": true,
+      "deterministic": true,
+      "structural_keywords": [
+        "additionalProperties",
+        "const",
+        "enum",
+        "items",
+        "minItems",
+        "minLength",
+        "properties",
+        "required",
+        "type",
+        "uniqueItems"
+      ],
+      "annotation_keywords": [
+        "$id",
+        "$schema",
+        "authority",
+        "default",
+        "deprecated",
+        "description",
+        "examples",
+        "notes",
+        "provider_may_not_supply",
+        "readOnly",
+        "schema_version",
+        "surface_form_semantics",
+        "title",
+        "trust",
+        "writeOnly"
+      ]
+    },
+    "claim_v2_schema": {
+      "status": "BLOCKED",
+      "removed_annotation_paths": [
+        "$.$id",
+        "$.$schema",
+        "$.title"
+      ],
+      "errors": [
+        "UNION_TYPE_UNSUPPORTED:$.properties.claims.items.properties.qualifiers.additionalProperties.type"
+      ],
+      "input_fingerprint": "e62afaec71c1a65a4fa3039f127d86c100c372af91cb9748572faefe010ccb73",
+      "output_fingerprint": null,
+      "diagnostic_partial_output_fingerprint": "2315d372a972079e2166edd1de01975318adef7d2ce9cddf12254098abdb2ca9",
+      "input_unchanged": true,
+      "deterministic": true,
+      "structural_keywords": [
+        "additionalProperties",
+        "const",
+        "enum",
+        "items",
+        "minItems",
+        "minLength",
+        "properties",
+        "required",
+        "type",
+        "uniqueItems"
+      ],
+      "annotation_keywords": [
+        "$id",
+        "$schema",
+        "authority",
+        "default",
+        "deprecated",
+        "description",
+        "examples",
+        "notes",
+        "provider_may_not_supply",
+        "readOnly",
+        "schema_version",
+        "surface_form_semantics",
+        "title",
+        "trust",
+        "writeOnly"
+      ]
+    }
+  },
+  "input_fingerprints_before_after_equal": true,
+  "deterministic": true,
+  "failed_compilation_emits_transport_schema": false
+}

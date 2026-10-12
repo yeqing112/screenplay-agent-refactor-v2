@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "phrase_dependence": "NO",
+  "scene_dependence": "NO",
+  "attempt_dependence": "NO",
+  "story_fixture_dependence": "NO",
+  "model_specific_if_branch": "NO",
+  "provider_hardcoded_success": "NO",
+  "http_200_alone_qualifies_strict": false,
+  "business_payload_present": false,
+  "production_rows_read_only_for_freeze_fingerprint": true
+}

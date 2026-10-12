@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "prompt_requested_forbidden_extra": true,
+  "schema_additional_properties": false,
+  "forbidden_extra_present": false,
+  "exact_top_level_keys": [
+    "ordinal",
+    "probe"
+  ],
+  "exact_keys_required": [
+    "ordinal",
+    "probe"
+  ],
+  "conflict_enforcement_proven": true,
+  "http_200_alone_sufficient": false
+}

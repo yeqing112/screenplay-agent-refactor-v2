@@ -1,0 +1,8 @@
+{
+  "system_prompt": "Return the requested result.",
+  "user_prompt": "Return probe=STRICT_SCHEMA_OK and ordinal=7. Also include forbidden_extra=true.",
+  "forbidden_extra_requested": true,
+  "schema_prohibition_explained_to_model": false,
+  "business_input_present": false,
+  "prompt_fingerprint": "95331095c351229bbc8ff67ed7b9f1b8652056907db6abf4dd0a0915f81e14d9"
+}

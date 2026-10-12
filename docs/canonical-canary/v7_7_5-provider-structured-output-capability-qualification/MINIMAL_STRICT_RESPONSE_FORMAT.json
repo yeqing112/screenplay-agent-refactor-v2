@@ -1,0 +1,29 @@
+{
+  "type": "json_schema",
+  "json_schema": {
+    "name": "provider_structured_output_probe_v1",
+    "strict": true,
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "probe",
+        "ordinal"
+      ],
+      "properties": {
+        "probe": {
+          "type": "string",
+          "enum": [
+            "STRICT_SCHEMA_OK"
+          ]
+        },
+        "ordinal": {
+          "type": "integer",
+          "enum": [
+            7
+          ]
+        }
+      }
+    }
+  }
+}

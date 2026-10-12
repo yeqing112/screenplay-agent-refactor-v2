@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "probe",
+    "ordinal"
+  ],
+  "properties": {
+    "probe": {
+      "type": "string",
+      "enum": [
+        "STRICT_SCHEMA_OK"
+      ]
+    },
+    "ordinal": {
+      "type": "integer",
+      "enum": [
+        7
+      ]
+    }
+  }
+}

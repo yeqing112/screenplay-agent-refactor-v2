@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "exact_top_level_keys": [
+    "ordinal",
+    "probe"
+  ],
+  "repair": false,
+  "markdown_stripping": false,
+  "substring_extraction": false,
+  "coercion": false,
+  "probe_value": "STRICT_SCHEMA_OK",
+  "ordinal_value": 7
+}

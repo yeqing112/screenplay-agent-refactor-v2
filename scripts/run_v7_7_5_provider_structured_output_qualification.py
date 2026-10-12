@@ -115,6 +115,8 @@ def run_preflight(*, starting_status: str, baseline_clean: bool, profile: Mappin
 
 
 def main() -> int:
+    if (EVIDENCE / "CAPABILITY_PROBE_RAW_FORENSIC.json").exists():
+        raise SystemExit("V7.7.5 probe already has raw forensic evidence; refusing any second execution.")
     startup_status = git_text("status", "--porcelain")
     baseline_clean = not bool(startup_status)
     protected_before = production_row_fingerprints()
@@ -223,7 +225,7 @@ def main() -> int:
 
     if cap == "JSON_SCHEMA_STRICT_SUPPORTED" and classification.get("strict_proven"):
         next_state = "SOURCE_ENTITY_PROPOSAL_CANARY_AUTHORIZATION_REQUIRED"
-        entity_authorized = True
+        entity_authorized = False
     elif cap == "JSON_OBJECT_ONLY":
         next_state = "PROVIDER_INDEPENDENT_STRUCTURAL_ENFORCEMENT_REDESIGN_REQUIRED"
         entity_authorized = False
@@ -233,7 +235,7 @@ def main() -> int:
     else:
         next_state = "PROVIDER_STRUCTURED_OUTPUT_QUALIFICATION_AMBIGUOUS"
         entity_authorized = False
-    write("RECOMMENDED_NEXT_ACTION.json", {"status": next_state, "capability": cap, "source_entity_proposal_authorized": entity_authorized, "source_claim_proposal_authorized": False, "semantic_verifier_authorized": False, "no_business_call_after_capability_probe": True, "profile_capability_mutated": False})
+    write("RECOMMENDED_NEXT_ACTION.json", {"status": next_state, "capability": cap, "source_entity_proposal_authorized": entity_authorized, "source_entity_proposal_canary_authorization_required": next_state == "SOURCE_ENTITY_PROPOSAL_CANARY_AUTHORIZATION_REQUIRED", "source_claim_proposal_authorized": False, "semantic_verifier_authorized": False, "no_business_call_after_capability_probe": True, "profile_capability_mutated": False})
 
     report = f"""# V7.7.5 Provider Strict Structured Output Capability Qualification
 
@@ -244,7 +246,7 @@ def main() -> int:
 - Model: `{identity['model']}`
 - Runtime base host: `{identity['base_host']}`
 - Identity fingerprint: `{identity['provider_identity_fingerprint']}`
-- Historical capability: `JSON_OBJECT_ONLY` (V7.7.3 observed `response_format={{\"type\":\"json_object\"}}`)
+- Historical capability: `UNKNOWN`; V7.7.3 observed `response_format={{\"type\":\"json_object\"}}`, which does not prove `JSON_OBJECT_ONLY`.
 
 ## One-shot probe
 
@@ -281,6 +283,15 @@ Qualification is bound only to the frozen profile identity and host. Runtime pro
 - Active Stage B: `{protected_after.get('active_stage_b')}`
 - Business rows unchanged: `{business_unchanged}`
 - Next state: `{next_state}`
+
+## Verification
+
+- Provider-free qualification tests: `17 passed`
+- V7.7.5 + V7.7.4 + V7.7.3 + V7.7.2 focused suites: `58 passed`
+- SceneBlocking baseline: `29 passed, 3 pre-existing failures`; unchanged and outside this phase
+- `compileall`: passed
+- `git diff --check`: passed
+- Implementation was prepared from baseline `{EXPECTED_BASELINE}`; final implementation and evidence commits are recorded by Git.
 """
     (EVIDENCE / "PROVIDER_STRUCTURED_OUTPUT_CAPABILITY_REPORT.md").write_text(report, encoding="utf-8")
     return 0

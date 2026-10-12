@@ -1,0 +1,30 @@
+{
+  "schema_version": "v7_7_5_provider_probe_preflight_v1",
+  "status": "PASS",
+  "checks": {
+    "branch": true,
+    "execution_baseline_ancestor": true,
+    "clean_at_process_start": true,
+    "provider": true,
+    "model": true,
+    "profile_id": true,
+    "runtime_base_host": true,
+    "enabled": true,
+    "credentials_configured": true,
+    "not_mock": true,
+    "llm_transport_callable": true,
+    "minimal_schema_valid": true,
+    "strict_response_format_exact": true,
+    "no_business_prompt_terms": true,
+    "business_payload_not_loaded": true
+  },
+  "failed_checks": [],
+  "branch": "codex/visual-authoring-provider-canary-reconcile",
+  "head_before_call": "b28298961103f67769415acd0bd0205622815cef",
+  "baseline": "38a703784a4068f83d921c81e6f341c2c8709e9f",
+  "baseline_is_ancestor": true,
+  "working_tree_clean_at_start": true,
+  "working_tree_dirty_before_call_due_preflight_evidence": true,
+  "runtime_base_url_path_removed": true,
+  "provider_http_posts_authorized_if_pass": 1
+}

@@ -113,18 +113,20 @@ def compile_provider_strict_schema(schema: Mapping[str, Any]) -> dict[str, Any]:
         return output
 
     compiled = compile_node(schema, "$" )
+    has_errors = bool(errors)
     audit = {
         "status": "PASS" if not errors else "BLOCKED",
         "removed_annotation_paths": sorted(set(removed)),
         "errors": sorted(set(errors)),
         "input_fingerprint": before,
-        "output_fingerprint": fingerprint(compiled),
+        "output_fingerprint": fingerprint(compiled) if not has_errors else None,
+        "diagnostic_partial_output_fingerprint": fingerprint(compiled) if has_errors else None,
         "input_unchanged": fingerprint(schema) == before,
         "deterministic": True,
         "structural_keywords": sorted(STRUCTURAL_KEYWORDS),
         "annotation_keywords": sorted(ANNOTATION_KEYWORDS),
     }
-    return {"schema": compiled, "audit": audit}
+    return {"schema": compiled if not has_errors else None, "diagnostic_partial_schema": compiled if has_errors else None, "audit": audit}
 
 
 def validate_json_schema_subset(value: Any, schema: Mapping[str, Any]) -> dict[str, Any]:

@@ -1,0 +1,30 @@
+{
+  "schema_version": "provider_schema_compiler_contract_v1",
+  "invariant": "Internal Semantic Contract != Transport JSON Schema",
+  "retained_structural_keywords": [
+    "type",
+    "properties",
+    "required",
+    "additionalProperties",
+    "items",
+    "enum",
+    "const",
+    "minLength",
+    "minItems",
+    "uniqueItems"
+  ],
+  "stripped_internal_annotations": [
+    "trust",
+    "authority",
+    "notes",
+    "provider_may_not_supply",
+    "surface_form_semantics",
+    "title",
+    "description",
+    "$schema",
+    "$id",
+    "schema_version"
+  ],
+  "dangling_refs": "BLOCKED",
+  "unsupported_unions": "BLOCKED"
+}

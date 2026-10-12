@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "provider_http_post_count": 1,
+  "semantic_verifier_posts": 0,
+  "authorization_id": "v7.7.5-provider-strict-structured-output-single-probe",
+  "http_status": 200,
+  "finish_reason": "stop",
+  "latency_ms": 14838.66,
+  "usage": {
+    "prompt_tokens": 36,
+    "cached_tokens": null,
+    "completion_tokens": 20,
+    "total_tokens": 56,
+    "cache_hit_rate": null,
+    "reasoning_tokens": 0,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens_details": {}
+  },
+  "provider_request_id": "",
+  "transport_attempt_number": 1,
+  "transport_retry": false,
+  "response_format_requested": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "provider_structured_output_probe_v1",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "probe",
+          "ordinal"
+        ],
+        "properties": {
+          "probe": {
+            "type": "string",
+            "enum": [
+              "STRICT_SCHEMA_OK"
+            ]
+          },
+          "ordinal": {
+            "type": "integer",
+            "enum": [
+              7
+            ]
+          }
+        }
+      }
+    }
+  },
+  "resolved_response_format_actually_sent": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "provider_structured_output_probe_v1",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "probe",
+          "ordinal"
+        ],
+        "properties": {
+          "probe": {
+            "type": "string",
+            "enum": [
+              "STRICT_SCHEMA_OK"
+            ]
+          },
+          "ordinal": {
+            "type": "integer",
+            "enum": [
+              7
+            ]
+          }
+        }
+      }
+    }
+  },
+  "response_format_matches": true,
+  "explicit_response_format_rejection": false,
+  "transport_error": ""
+}

@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "fact_snapshot_49_fingerprint": "9663f929fd47c235e5fc54ee5e76cb31cc8950a187b3a019a95213df731a3f70",
+  "script_ir_52_fingerprint": "e7a5153b9adbe66d81e037e5a97dfbf9ebf68c8a5fe8810445ad74afb6567a1a",
+  "packet_64_fingerprint": "40cdeb88d58940648bf812a8c0a2e05820c580ee8adccb9ec298ed81ec40b06e",
+  "director_ledger": 11,
+  "active_stage_b": "attempt-11"
+}

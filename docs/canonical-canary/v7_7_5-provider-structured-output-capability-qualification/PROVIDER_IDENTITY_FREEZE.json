@@ -1,0 +1,9 @@
+{
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "base_host": "https://api.xiaomimimo.com",
+  "provider_identity_fingerprint": "9908c628bc8b970817674b26ff3897bb055bc24ee6505bbc2af6a80f7722c455",
+  "identity_frozen": true,
+  "runtime_base_host_only": true
+}

@@ -1,0 +1,10 @@
+{
+  "status": "SOURCE_ENTITY_PROPOSAL_CANARY_AUTHORIZATION_REQUIRED",
+  "capability": "JSON_SCHEMA_STRICT_SUPPORTED",
+  "source_entity_proposal_authorized": false,
+  "source_claim_proposal_authorized": false,
+  "semantic_verifier_authorized": false,
+  "no_business_call_after_capability_probe": true,
+  "profile_capability_mutated": false,
+  "source_entity_proposal_canary_authorization_required": true
+}
