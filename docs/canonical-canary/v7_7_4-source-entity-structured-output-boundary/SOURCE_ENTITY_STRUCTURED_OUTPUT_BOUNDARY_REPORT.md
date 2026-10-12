@@ -73,8 +73,8 @@ or migrated; `CAND_` is not accepted as an alias.
 
 ## Verification
 
-- V7.7.4 + V7.7.3 + V7.7.2 focused tests: `40 passed`
-- V7.7.4 test module alone: `18 passed`
+- V7.7.4 + V7.7.3 + V7.7.2 focused tests: `41 passed`
+- V7.7.4 test module alone: `19 passed`
 - Compileall: passed
 - `git diff --check`: passed
 - SceneBlocking baseline: `29 passed, 3 pre-existing failures`; unchanged and out of scope

@@ -188,6 +188,13 @@ def test_generic_entity_kinds_are_story_neutral():
     assert "TICKET" not in ENTITY_KINDS
 
 
+def test_different_display_prose_does_not_change_typed_result():
+    typed = entity_candidate()
+    display_a = {"display_prose": "first arbitrary prose", "typed": typed}
+    display_b = {"display_prose": "second unrelated prose", "typed": typed}
+    assert assign_program_owned_entity_ids([display_a["typed"]]) == assign_program_owned_entity_ids([display_b["typed"]])
+
+
 def test_entity_fingerprint_stability():
     candidate = entity_candidate()
     assert entity_candidate_fingerprint(candidate) == entity_candidate_fingerprint(copy.deepcopy(candidate))
