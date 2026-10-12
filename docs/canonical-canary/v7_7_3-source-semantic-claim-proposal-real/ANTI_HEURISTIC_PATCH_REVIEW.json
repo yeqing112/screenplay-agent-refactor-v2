@@ -1,0 +1,18 @@
+{
+  "schema_version": "v7_7_3_anti_heuristic_patch_review_v1",
+  "phase": "V7.7.3 Source Semantic Claim Proposal Single Real Provider Canary",
+  "review_timing": "BEFORE_IMPLEMENTATION_AND_PROVIDER_CALL",
+  "status": "PENDING_REVIEW",
+  "phrase_dependence": "NOT_YET_REVIEWED",
+  "scene_dependence": "NOT_YET_REVIEWED",
+  "attempt_dependence": "NOT_YET_REVIEWED",
+  "fixture_dependence": "NOT_YET_REVIEWED",
+  "heuristic_production_dependency": "NOT_YET_REVIEWED",
+  "production_path_story_name_or_id_literals": "NOT_YET_REVIEWED",
+  "production_path_local_source_nlp": "NOT_YET_REVIEWED",
+  "production_path_legacy_extractor": "NOT_YET_REVIEWED",
+  "production_path_reason_for_special_case": "NOT_YET_REVIEWED",
+  "provider_calls": 0,
+  "production_writes": 0,
+  "note": "Initial evidence is created before the V7.7.3 implementation. It will be replaced only by a post-implementation static scan result; no provider call is permitted before all gates pass."
+}

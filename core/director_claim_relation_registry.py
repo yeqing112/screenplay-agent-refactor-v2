@@ -49,6 +49,45 @@ RELATION_REGISTRY: dict[str, dict[str, dict[str, Any]]] = {
             "qualifier_keys": ["state_domain"],
         },
     },
+    # Generic ontology classes required by the source semantic proposal
+    # boundary.  These entries intentionally contain no story names or
+    # scene-specific exceptions; they only describe predicate capabilities.
+    "OBJECT_EXISTENCE": {
+        "existence": {
+            "compatible_predicates": ["scene_existence", "object_existence", "exists"],
+            "qualifier_keys": [],
+        },
+    },
+    "KNOWLEDGE_STATE": {
+        "knowledge": {
+            "compatible_predicates": ["knows", "knows_about", "knowledge_state"],
+            "qualifier_keys": [],
+        },
+    },
+    "SPEECH_ACT": {
+        "speech": {
+            "compatible_predicates": ["speech_act", "utters", "asks", "asserts"],
+            "qualifier_keys": ["speaker_binding"],
+        },
+    },
+    "UNCERTAINTY": {
+        "uncertainty": {
+            "compatible_predicates": ["uncertainty", "uncertain_about", "possible"],
+            "qualifier_keys": [],
+        },
+    },
+    "PROVENANCE": {
+        "provenance": {
+            "compatible_predicates": ["left_by", "authored_by", "created_by", "provenance"],
+            "qualifier_keys": [],
+        },
+    },
+    "SOURCE_EVENT": {
+        "source_event": {
+            "compatible_predicates": ["scene_identity_evidence", "source_event"],
+            "qualifier_keys": [],
+        },
+    },
 }
 
 
