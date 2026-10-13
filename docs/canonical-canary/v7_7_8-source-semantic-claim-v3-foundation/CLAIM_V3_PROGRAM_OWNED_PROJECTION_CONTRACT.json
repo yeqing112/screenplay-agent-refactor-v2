@@ -1,0 +1,47 @@
+{
+  "schema_version": "source_semantic_claim_v3_program_owned_projection_contract_v1",
+  "status": "PASS",
+  "compiled_fields": [
+    "subject.kind",
+    "object.kind",
+    "claim_type",
+    "relation_class",
+    "typed qualifiers",
+    "claim_id",
+    "fingerprint"
+  ],
+  "program_owned": [
+    "claim_type",
+    "relation_class",
+    "entity kind resolution",
+    "typed qualifier decoding",
+    "claim_id",
+    "candidate fingerprint"
+  ],
+  "provider_forbidden_fields": [
+    "authority",
+    "byte_end",
+    "byte_start",
+    "candidate_id",
+    "canonical",
+    "char_end",
+    "char_start",
+    "claim_id",
+    "claim_type",
+    "final_authority",
+    "final_status",
+    "fingerprint",
+    "object_kind",
+    "promote",
+    "promotion",
+    "relation_class",
+    "sha256",
+    "source_claim_id",
+    "source_claim_supported",
+    "subject_kind"
+  ],
+  "claim_authority": "UNTRUSTED_PROPOSED",
+  "canonical": false,
+  "production_persistence": false,
+  "candidate_id_owner": "program"
+}

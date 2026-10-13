@@ -1,0 +1,22 @@
+{
+  "schema_version": "source_semantic_claim_v3_fingerprint_contract_v1",
+  "status": "PASS",
+  "included": [
+    "typed semantic fields",
+    "sorted evidence refs",
+    "sorted source unit refs",
+    "entity registry fingerprint",
+    "qualifier registry version",
+    "relation signature registry version",
+    "predicate registry version",
+    "claim v3 schema version"
+  ],
+  "excluded": [
+    "display prose",
+    "prompt wording",
+    "output path",
+    "timestamp",
+    "provider-supplied identifiers"
+  ],
+  "deterministic": true
+}

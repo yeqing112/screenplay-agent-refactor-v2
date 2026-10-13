@@ -1,0 +1,31 @@
+{
+  "schema_version": "claim_v2_immutable_blocker_audit_v1",
+  "status": "LEGACY_BLOCKED_UNION_TYPE",
+  "candidate_schema_version": "source_semantic_claim_candidate_v2",
+  "candidate_set_schema_version": "source_semantic_claim_candidate_set_v2",
+  "candidate_schema_fingerprint": "b4e3a307e5c13203dc2efa6c0fbe2ca163508f2765fee02fecd3b39740332e84",
+  "candidate_set_schema_fingerprint": "e62afaec71c1a65a4fa3039f127d86c100c372af91cb9748572faefe010ccb73",
+  "compiler_status": "BLOCKED",
+  "compiler_errors": [
+    "UNION_TYPE_UNSUPPORTED:$.properties.claims.items.properties.qualifiers.additionalProperties.type"
+  ],
+  "qualifier_contract": {
+    "type": "object",
+    "additionalProperties": {
+      "type": [
+        "string",
+        "boolean"
+      ]
+    }
+  },
+  "v2_mutated": false,
+  "one_of_patch_used": false,
+  "v3_does_not_rewrite_v2": true,
+  "baseline_commit": "4363218530f3ba4a371b3ae9515ed036590cbdeb",
+  "v2_contract_files_unchanged_from_baseline": true,
+  "v2_contract_files": [
+    "core/source_entity_proposal.py",
+    "core/source_semantic_claim_proposal.py",
+    "core/source_semantic_claim_authority.py"
+  ]
+}

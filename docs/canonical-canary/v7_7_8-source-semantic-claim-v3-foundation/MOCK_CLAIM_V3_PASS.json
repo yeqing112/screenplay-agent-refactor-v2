@@ -1,0 +1,101 @@
+{
+  "candidate": {
+    "schema_version": "source_semantic_claim_candidate_v3",
+    "subject_ref": "CHAR_A",
+    "predicate": "enter_guided",
+    "object_ref": "LOC_C",
+    "qualifiers": {
+      "destination": "LOC_C"
+    },
+    "polarity": "POSITIVE",
+    "modality": "ASSERTED",
+    "evidence_refs": [
+      "EV_1"
+    ],
+    "source_unit_refs": [
+      "UNIT_1"
+    ]
+  },
+  "validation": {
+    "status": "PASS",
+    "errors": [],
+    "resolved_subject": {
+      "ref": "CHAR_A",
+      "kind": "CHARACTER",
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "resolved_object": {
+      "ref": "LOC_C",
+      "kind": "LOCATION",
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "claim_type": "CHARACTER_ACTION",
+    "relation_class": "ACTION",
+    "qualifier_validation": {
+      "status": "PASS",
+      "errors": [],
+      "typed_qualifiers": {
+        "destination": {
+          "value_type": "ENTITY_REF",
+          "ref": "LOC_C",
+          "kind": "LOCATION"
+        }
+      }
+    },
+    "projection": {
+      "schema_version": "source_semantic_claim_candidate_projection_v3",
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION",
+      "subject": {
+        "ref": "CHAR_A",
+        "kind": "CHARACTER"
+      },
+      "predicate": "enter_guided",
+      "object": {
+        "ref": "LOC_C",
+        "kind": "LOCATION"
+      },
+      "qualifiers": {
+        "destination": {
+          "value_type": "ENTITY_REF",
+          "ref": "LOC_C",
+          "kind": "LOCATION"
+        }
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "evidence_refs": [
+        "EV_1"
+      ],
+      "source_unit_refs": [
+        "UNIT_1"
+      ]
+    }
+  },
+  "entity_registry_fixture": {
+    "schema_version": "source_claim_input_entity_registry_v1",
+    "status": "PASS",
+    "entities": {
+      "CHAR_A": {
+        "ref": "CHAR_A",
+        "kind": "CHARACTER",
+        "authority": "CANONICAL_RUNTIME",
+        "canonical": true
+      },
+      "OBJ_B": {
+        "ref": "OBJ_B",
+        "kind": "OBJECT",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+        "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+        "canonical": false
+      },
+      "LOC_C": {
+        "ref": "LOC_C",
+        "kind": "LOCATION",
+        "authority": "CANONICAL_RUNTIME",
+        "canonical": true
+      }
+    },
+    "fingerprint": "a5b496fe4c3ba9d2541a10ca0a444c64b73a941aea5d98c06396102f45c29e52"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "status": "CLAIM_V3_RELATION_SIGNATURE_BOUNDARY_REQUIRED",
+  "next_state": "CLAIM_V3_RELATION_SIGNATURE_BOUNDARY_REQUIRED",
+  "provider_calls": 0,
+  "provider_canary_authorized": false,
+  "claim_proposal_authorized": false,
+  "unresolved_predicates": {
+    "knows": "RELATION_SIGNATURE_UNRESOLVED: object domain is not a single registered entity kind.",
+    "uncertainty": "RELATION_SIGNATURE_UNRESOLVED: proposition/value direction has no unique registered entity-kind signature."
+  },
+  "required_work": "Resolve typed directions for unresolved mapped predicates without predicate-name inference; only then reconsider V3 proposal canary authorization."
+}

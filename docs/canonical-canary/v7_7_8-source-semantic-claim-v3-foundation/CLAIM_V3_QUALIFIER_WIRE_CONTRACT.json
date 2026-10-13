@@ -1,0 +1,14 @@
+{
+  "schema_version": "source_claim_qualifier_wire_contract_v3_v1",
+  "status": "PASS",
+  "wire_type": "string",
+  "semantic_value_type_owner": "source_claim_qualifier_registry_v2",
+  "boolean_tokens": [
+    "TRUE",
+    "FALSE"
+  ],
+  "boolean_token_registry_keys": [],
+  "symbolic_token_pattern": "[A-Z][A-Z0-9_]*",
+  "natural_language_normalization": false,
+  "union_oneof_anyof": false
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "source_claim_qualifier_registry_v2",
+  "qualifiers": {
+    "destination": {
+      "value_type": "ENTITY_REF"
+    },
+    "transfer_source": {
+      "value_type": "ENTITY_REF"
+    },
+    "property_domain": {
+      "value_type": "SYMBOLIC_TOKEN"
+    },
+    "state_domain": {
+      "value_type": "SYMBOLIC_TOKEN"
+    },
+    "light_state": {
+      "value_type": "SYMBOLIC_TOKEN"
+    },
+    "speaker_binding": {
+      "value_type": "SYMBOLIC_TOKEN"
+    }
+  },
+  "wire_value_type": "string"
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "v7_7_7_verified_entity_freeze_v1",
+  "status": "PASS",
+  "checks": {
+    "verified_registry_fingerprint_exact": true,
+    "verified_registry_fingerprint_recomputes": true,
+    "registry_status_validated": true,
+    "canonical_count_exact": true,
+    "verified_proposal_count_exact": true,
+    "canonical_promotions_zero": true,
+    "semantic_completeness_not_proven": true
+  },
+  "registry_fingerprint": "88de4d7793043c11897605217c3e6a29847062eb87ac4b7bb20909b147e6b186",
+  "expected_registry_fingerprint": "88de4d7793043c11897605217c3e6a29847062eb87ac4b7bb20909b147e6b186",
+  "canonical_runtime_entity_count": 4,
+  "semantically_verified_proposal_count": 15,
+  "canonical_promotions": 0,
+  "entity_semantic_completeness": "NOT_PROVEN",
+  "source_entity_verifier_posts": 1,
+  "raw_registry_fingerprint_recomputed": "88de4d7793043c11897605217c3e6a29847062eb87ac4b7bb20909b147e6b186"
+}

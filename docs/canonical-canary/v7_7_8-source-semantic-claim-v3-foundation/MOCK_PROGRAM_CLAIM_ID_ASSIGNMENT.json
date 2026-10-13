@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "schema_version": "source_semantic_claim_candidate_set_v3",
+  "id_owner": "program",
+  "provider_supplied_id": false,
+  "rows": [
+    {
+      "claim_id": "SCC_0001",
+      "candidate_fingerprint": "96c7365c9131b34f283e5051553d6ab7258ccf6b285c6b16a33a22fe7e657677",
+      "authority": "UNTRUSTED_PROPOSED",
+      "canonical": false,
+      "projection": {
+        "schema_version": "source_semantic_claim_candidate_projection_v3",
+        "claim_type": "OBJECT_PROVENANCE",
+        "relation_class": "PROVENANCE",
+        "subject": {
+          "ref": "CHAR_A",
+          "kind": "CHARACTER"
+        },
+        "predicate": "left_by",
+        "object": {
+          "ref": "OBJ_B",
+          "kind": "OBJECT"
+        },
+        "qualifiers": {},
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "evidence_refs": [
+          "EV_1"
+        ],
+        "source_unit_refs": [
+          "UNIT_1"
+        ]
+      }
+    },
+    {
+      "claim_id": "SCC_0002",
+      "candidate_fingerprint": "e7a8d33c86024668301259b2e9aed5006d5892f6e8beed82cb83dcd2a0fd4241",
+      "authority": "UNTRUSTED_PROPOSED",
+      "canonical": false,
+      "projection": {
+        "schema_version": "source_semantic_claim_candidate_projection_v3",
+        "claim_type": "CHARACTER_ACTION",
+        "relation_class": "ACTION",
+        "subject": {
+          "ref": "CHAR_A",
+          "kind": "CHARACTER"
+        },
+        "predicate": "enter_guided",
+        "object": {
+          "ref": "LOC_C",
+          "kind": "LOCATION"
+        },
+        "qualifiers": {
+          "destination": {
+            "value_type": "ENTITY_REF",
+            "ref": "LOC_C",
+            "kind": "LOCATION"
+          }
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "evidence_refs": [
+          "EV_1"
+        ],
+        "source_unit_refs": [
+          "UNIT_1"
+        ]
+      }
+    }
+  ],
+  "fingerprint": "2cbb4cae2d51a756a9dc2d330c6f1af0a47e4f1e602fac79e20e3b0978c9601d",
+  "candidate_fingerprint_inputs": [
+    "96c7365c9131b34f283e5051553d6ab7258ccf6b285c6b16a33a22fe7e657677",
+    "e7a8d33c86024668301259b2e9aed5006d5892f6e8beed82cb83dcd2a0fd4241"
+  ]
+}

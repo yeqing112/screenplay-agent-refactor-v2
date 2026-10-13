@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "compiler": {
+    "status": "PASS",
+    "removed_annotation_paths": [
+      "$.$id",
+      "$.$schema",
+      "$.title"
+    ],
+    "errors": [],
+    "input_fingerprint": "6529ac6bde90ac7cc43a1513e7b2cdbf7e51f002b939819b53a9ee2f0531af80",
+    "output_fingerprint": "cbbb2a6a46689af9421ba192fe66f31e3b0d545545fe2f7a479d324a01bcf193",
+    "diagnostic_partial_output_fingerprint": null,
+    "input_unchanged": true,
+    "deterministic": true,
+    "structural_keywords": [
+      "additionalProperties",
+      "const",
+      "enum",
+      "items",
+      "minItems",
+      "minLength",
+      "properties",
+      "required",
+      "type",
+      "uniqueItems"
+    ],
+    "annotation_keywords": [
+      "$id",
+      "$schema",
+      "authority",
+      "default",
+      "deprecated",
+      "description",
+      "examples",
+      "notes",
+      "provider_may_not_supply",
+      "readOnly",
+      "schema_version",
+      "surface_form_semantics",
+      "title",
+      "trust",
+      "writeOnly"
+    ]
+  },
+  "transport_schema_fingerprint": "cbbb2a6a46689af9421ba192fe66f31e3b0d545545fe2f7a479d324a01bcf193",
+  "dialect_counts": {
+    "union_type": 0,
+    "oneOf": 0,
+    "anyOf": 0,
+    "dangling_ref": 0
+  },
+  "required": [
+    "evidence_refs",
+    "modality",
+    "object_ref",
+    "polarity",
+    "predicate",
+    "qualifiers",
+    "schema_version",
+    "source_unit_refs",
+    "subject_ref"
+  ],
+  "additional_properties_closed": true,
+  "qualifier_wire_scalar": "string"
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "source_semantic_claim_v3_anti_heuristic_review_v1",
+  "status": "PASS",
+  "story_phrase_dependency": false,
+  "scene_dependency": false,
+  "attempt_dependency": false,
+  "current_pec_special_case": false,
+  "current_source_literal_branch": false,
+  "local_nlp": false,
+  "predicate_name_inference": false,
+  "qualifier_name_inference": false,
+  "phrase_matches": [],
+  "heuristic_pattern_matches": {
+    "predicate_substring_branch": false,
+    "qualifier_substring_branch": false,
+    "predicate_keyword_inference": false,
+    "qualifier_keyword_inference": false
+  },
+  "signature_resolution_method": "exact lookup in versioned relation signature registry",
+  "source_sentence_consulted": false
+}

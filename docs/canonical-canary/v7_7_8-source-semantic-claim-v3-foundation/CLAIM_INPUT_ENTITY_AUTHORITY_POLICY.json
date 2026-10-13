@@ -1,0 +1,14 @@
+{
+  "schema_version": "source_claim_input_entity_authority_policy_v1",
+  "allowed_authorities": [
+    "CANONICAL_RUNTIME",
+    "SEMANTICALLY_VERIFIED_PROPOSAL"
+  ],
+  "blocked_authorities": [
+    "UNTRUSTED_PROPOSED",
+    "REJECTED_PROPOSAL",
+    "ENTITY_SEMANTIC_REVIEW_REQUIRED"
+  ],
+  "verified_proposal_remains_noncanonical": true,
+  "production_promotions": 0
+}

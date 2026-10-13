@@ -1,0 +1,45 @@
+{
+  "candidate": {
+    "schema_version": "source_semantic_claim_candidate_v3",
+    "subject_ref": "CHAR_A",
+    "predicate": "enter_guided",
+    "object_ref": "LOC_C",
+    "qualifiers": {
+      "invented_key": "ABC"
+    },
+    "polarity": "POSITIVE",
+    "modality": "ASSERTED",
+    "evidence_refs": [
+      "EV_1"
+    ],
+    "source_unit_refs": [
+      "UNIT_1"
+    ]
+  },
+  "validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "UNKNOWN_QUALIFIER_KEY:invented_key"
+    ],
+    "resolved_subject": {
+      "ref": "CHAR_A",
+      "kind": "CHARACTER",
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "resolved_object": {
+      "ref": "LOC_C",
+      "kind": "LOCATION",
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "claim_type": "CHARACTER_ACTION",
+    "relation_class": "ACTION",
+    "qualifier_validation": {
+      "status": "BLOCKED",
+      "errors": [
+        "UNKNOWN_QUALIFIER_KEY:invented_key"
+      ],
+      "typed_qualifiers": {}
+    },
+    "projection": null
+  }
+}

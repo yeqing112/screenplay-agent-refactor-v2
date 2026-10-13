@@ -1,0 +1,52 @@
+{
+  "candidate": {
+    "schema_version": "source_semantic_claim_candidate_v3",
+    "trust": "UNTRUSTED_PROPOSED",
+    "required": [
+      "evidence_refs",
+      "modality",
+      "object_ref",
+      "polarity",
+      "predicate",
+      "qualifiers",
+      "schema_version",
+      "source_unit_refs",
+      "subject_ref"
+    ],
+    "provider_may_not_supply": [
+      "authority",
+      "byte_end",
+      "byte_start",
+      "candidate_id",
+      "canonical",
+      "char_end",
+      "char_start",
+      "claim_id",
+      "claim_type",
+      "final_authority",
+      "final_status",
+      "fingerprint",
+      "object_kind",
+      "promote",
+      "promotion",
+      "relation_class",
+      "sha256",
+      "source_claim_id",
+      "source_claim_supported",
+      "subject_kind"
+    ],
+    "entity_kinds_are_program_resolved": true,
+    "claim_type_and_relation_class_are_program_resolved": true,
+    "claim_id_owner": "program_after_validation",
+    "authority": "UNTRUSTED_PROPOSED"
+  },
+  "candidate_set": {
+    "schema_version": "source_semantic_claim_candidate_set_v3",
+    "required": [
+      "schema_version",
+      "claims"
+    ],
+    "additionalProperties": false,
+    "item_contract": "source_semantic_claim_candidate_v3"
+  }
+}

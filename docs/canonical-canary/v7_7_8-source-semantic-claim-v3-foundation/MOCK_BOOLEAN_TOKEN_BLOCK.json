@@ -1,0 +1,54 @@
+{
+  "registry_is_test_only": true,
+  "registry": {
+    "schema_version": "source_claim_qualifier_registry_v2",
+    "qualifiers": {
+      "test_flag": {
+        "value_type": "BOOLEAN_TOKEN"
+      }
+    }
+  },
+  "results": {
+    "TRUE": {
+      "status": "PASS",
+      "errors": [],
+      "typed_qualifiers": {
+        "test_flag": {
+          "value_type": "BOOLEAN_TOKEN",
+          "value": true
+        }
+      }
+    },
+    "FALSE": {
+      "status": "PASS",
+      "errors": [],
+      "typed_qualifiers": {
+        "test_flag": {
+          "value_type": "BOOLEAN_TOKEN",
+          "value": false
+        }
+      }
+    },
+    "true": {
+      "status": "BLOCKED",
+      "errors": [
+        "BOOLEAN_TOKEN_INVALID:test_flag"
+      ],
+      "typed_qualifiers": {}
+    },
+    "1": {
+      "status": "BLOCKED",
+      "errors": [
+        "BOOLEAN_TOKEN_INVALID:test_flag"
+      ],
+      "typed_qualifiers": {}
+    },
+    "yes": {
+      "status": "BLOCKED",
+      "errors": [
+        "BOOLEAN_TOKEN_INVALID:test_flag"
+      ],
+      "typed_qualifiers": {}
+    }
+  }
+}

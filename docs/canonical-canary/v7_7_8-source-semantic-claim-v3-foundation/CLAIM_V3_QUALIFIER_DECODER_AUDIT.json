@@ -1,0 +1,58 @@
+{
+  "schema_version": "source_claim_qualifier_decoder_audit_v3_v1",
+  "status": "PASS",
+  "entity_ref_example": {
+    "destination": {
+      "value_type": "ENTITY_REF",
+      "ref": "LOC_C",
+      "kind": "LOCATION"
+    }
+  },
+  "boolean_qualifier_published": false,
+  "boolean_decoder_fixture_only": true,
+  "boolean_token_exactness": {
+    "TRUE": {
+      "status": "PASS",
+      "errors": [],
+      "typed_qualifiers": {
+        "test_flag": {
+          "value_type": "BOOLEAN_TOKEN",
+          "value": true
+        }
+      }
+    },
+    "FALSE": {
+      "status": "PASS",
+      "errors": [],
+      "typed_qualifiers": {
+        "test_flag": {
+          "value_type": "BOOLEAN_TOKEN",
+          "value": false
+        }
+      }
+    },
+    "true": {
+      "status": "BLOCKED",
+      "errors": [
+        "BOOLEAN_TOKEN_INVALID:test_flag"
+      ],
+      "typed_qualifiers": {}
+    },
+    "1": {
+      "status": "BLOCKED",
+      "errors": [
+        "BOOLEAN_TOKEN_INVALID:test_flag"
+      ],
+      "typed_qualifiers": {}
+    },
+    "yes": {
+      "status": "BLOCKED",
+      "errors": [
+        "BOOLEAN_TOKEN_INVALID:test_flag"
+      ],
+      "typed_qualifiers": {}
+    }
+  },
+  "symbolic_token_pattern": "[A-Z][A-Z0-9_]*",
+  "natural_language_normalization": false
+}

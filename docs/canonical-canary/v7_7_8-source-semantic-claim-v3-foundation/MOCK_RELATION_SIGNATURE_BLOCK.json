@@ -1,0 +1,49 @@
+{
+  "candidate": {
+    "schema_version": "source_semantic_claim_candidate_v3",
+    "subject_ref": "LOC_C",
+    "predicate": "enter_guided",
+    "object_ref": "LOC_C",
+    "qualifiers": {
+      "destination": "LOC_C"
+    },
+    "polarity": "POSITIVE",
+    "modality": "ASSERTED",
+    "evidence_refs": [
+      "EV_1"
+    ],
+    "source_unit_refs": [
+      "UNIT_1"
+    ]
+  },
+  "validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "RELATION_SUBJECT_KIND_MISMATCH:enter_guided:LOCATION"
+    ],
+    "resolved_subject": {
+      "ref": "LOC_C",
+      "kind": "LOCATION",
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "resolved_object": {
+      "ref": "LOC_C",
+      "kind": "LOCATION",
+      "authority": "CANONICAL_RUNTIME"
+    },
+    "claim_type": "CHARACTER_ACTION",
+    "relation_class": "ACTION",
+    "qualifier_validation": {
+      "status": "PASS",
+      "errors": [],
+      "typed_qualifiers": {
+        "destination": {
+          "value_type": "ENTITY_REF",
+          "ref": "LOC_C",
+          "kind": "LOCATION"
+        }
+      }
+    },
+    "projection": null
+  }
+}

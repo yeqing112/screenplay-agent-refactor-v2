@@ -1,0 +1,171 @@
+{
+  "schema_version": "source_claim_input_entity_registry_v1",
+  "status": "PASS",
+  "errors": [],
+  "source_verified_entity_registry_fingerprint": "88de4d7793043c11897605217c3e6a29847062eb87ac4b7bb20909b147e6b186",
+  "allowed_authorities": [
+    "CANONICAL_RUNTIME",
+    "SEMANTICALLY_VERIFIED_PROPOSAL"
+  ],
+  "entities": {
+    "E01_SC001": {
+      "ref": "E01_SC001",
+      "kind": "SCENE",
+      "authority": "CANONICAL_RUNTIME",
+      "verification_state": "CANONICAL_RUNTIME",
+      "canonical": true,
+      "entity_fingerprint": ""
+    },
+    "PEC_0001": {
+      "ref": "PEC_0001",
+      "kind": "LOCATION",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "fe99712b34bf9ecf81fbdb712324352b444aa0873a309ef89138ae88d6baf099"
+    },
+    "PEC_0002": {
+      "ref": "PEC_0002",
+      "kind": "ENVIRONMENT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "a261ea749d49ea159fffde846405de298e4fd703103f68f033f4c0dabbda11f4"
+    },
+    "PEC_0003": {
+      "ref": "PEC_0003",
+      "kind": "ENVIRONMENT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "a8f987ee59f4425692e0868d75e20094d034b6cde0e7b581c955e89495bdda31"
+    },
+    "PEC_0004": {
+      "ref": "PEC_0004",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "f53b5473b2fc7ac23cc8f70da3760af56f4342716df9f5bf344d528d8433c9f3"
+    },
+    "PEC_0005": {
+      "ref": "PEC_0005",
+      "kind": "TEXT_CONTENT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "445cd9d95eedd040dd0c973f4671306cad99e549d3dc4536e21f07a84d460b79"
+    },
+    "PEC_0006": {
+      "ref": "PEC_0006",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "7a2b5043514b1a6bdfb8d1fa2b1085d53360e62040806c7983702294ce52a4a2"
+    },
+    "PEC_0007": {
+      "ref": "PEC_0007",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "055670bc9cc6bd11c880d11188606abff9c0c1c384a0c6b9257fb2e732e6d473"
+    },
+    "PEC_0008": {
+      "ref": "PEC_0008",
+      "kind": "UNKNOWN_ENTITY",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "93f6e0bf584029b8179b799ca2bc67bed42d53a955673886ef1e1f2a3b07ea08"
+    },
+    "PEC_0009": {
+      "ref": "PEC_0009",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "3ce9ee6ba1e6a35d88eb988054141daacea7921c95c1cefcff77a9daebac3935"
+    },
+    "PEC_0010": {
+      "ref": "PEC_0010",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "6b9c2953f077297f319e9956cfc610c46571a7ea944c9a19b9e7c52640ce3a0b"
+    },
+    "PEC_0011": {
+      "ref": "PEC_0011",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "ecf09e8df0de2d45558d9d5bce18e543c7fe26c103a0075d91529182e8f3add2"
+    },
+    "PEC_0012": {
+      "ref": "PEC_0012",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "b008b85ead23191bf580afd7f92358ca32d981ea830d4aedcd0a763c51a47ec9"
+    },
+    "PEC_0013": {
+      "ref": "PEC_0013",
+      "kind": "TEXT_CONTENT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "0f8ac1822fd69e738fef47ed57a429975b1ef77deacd7019ae7831624446504e"
+    },
+    "PEC_0014": {
+      "ref": "PEC_0014",
+      "kind": "LOCATION",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "7d0e00489082563c88da5ff729688f48e16b84b19164ece3eceee320d82cd567"
+    },
+    "PEC_0015": {
+      "ref": "PEC_0015",
+      "kind": "OBJECT",
+      "authority": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL",
+      "canonical": false,
+      "entity_fingerprint": "eda278eb5001d6a9d21d42c2fef677dc509434334cc7a654d190a44658aa39c5"
+    },
+    "SAU_E01_SC001_008": {
+      "ref": "SAU_E01_SC001_008",
+      "kind": "DIALOGUE_CONTENT",
+      "authority": "CANONICAL_RUNTIME",
+      "verification_state": "CANONICAL_RUNTIME",
+      "canonical": true,
+      "entity_fingerprint": ""
+    },
+    "林晚": {
+      "ref": "林晚",
+      "kind": "CHARACTER",
+      "authority": "CANONICAL_RUNTIME",
+      "verification_state": "CANONICAL_RUNTIME",
+      "canonical": true,
+      "entity_fingerprint": ""
+    },
+    "顾沉": {
+      "ref": "顾沉",
+      "kind": "CHARACTER",
+      "authority": "CANONICAL_RUNTIME",
+      "verification_state": "CANONICAL_RUNTIME",
+      "canonical": true,
+      "entity_fingerprint": ""
+    }
+  },
+  "blocked_entities": [],
+  "canonical_entity_count": 4,
+  "verified_proposal_count": 15,
+  "blocked_entity_count": 0,
+  "canonical_promotions": 0,
+  "production_writes": 0,
+  "fingerprint": "877d43fc4cea05b487e50b6a4afcdb58e44f78338f1ebfcb388ecbe9b9740acb"
+}

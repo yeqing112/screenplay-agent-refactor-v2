@@ -1,0 +1,9 @@
+{
+  "schema_version": "source_semantic_claim_candidate_set_v3",
+  "required": [
+    "schema_version",
+    "claims"
+  ],
+  "additionalProperties": false,
+  "item_contract": "source_semantic_claim_candidate_v3"
+}

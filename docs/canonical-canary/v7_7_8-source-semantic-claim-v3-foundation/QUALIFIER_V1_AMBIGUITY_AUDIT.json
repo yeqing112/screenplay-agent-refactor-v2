@@ -1,0 +1,28 @@
+{
+  "schema_version": "source_claim_qualifier_v1_ambiguity_audit_v1",
+  "status": "PASS",
+  "audited_keys": {
+    "ownership": {
+      "legacy_v2_python_types": [
+        "BOOL",
+        "STR"
+      ],
+      "legacy_v2_contract_is_ambiguous": true,
+      "v3_supported": false,
+      "v3_resolution": "OMITTED_FROM_V3_QUALIFIER_REGISTRY",
+      "semantic_audit": "Provenance actor/object direction is represented by the typed relation; a boolean ownership modifier would assert a separate ownership fact and is not uniquely defined."
+    },
+    "possession": {
+      "legacy_v2_python_types": [
+        "BOOL",
+        "STR"
+      ],
+      "legacy_v2_contract_is_ambiguous": true,
+      "v3_supported": false,
+      "v3_resolution": "OMITTED_FROM_V3_QUALIFIER_REGISTRY",
+      "semantic_audit": "The possession/receipt relation is represented by the typed predicate; a boolean possession modifier would duplicate that relation without a unique temporal meaning."
+    }
+  },
+  "ambiguous_keys_excluded_from_v3": true,
+  "v2_unchanged": true
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "source_claim_relation_signature_completeness_audit_v2",
+  "status": "PASS",
+  "errors": [],
+  "proposable_predicate_count": 6,
+  "excluded_legacy_predicate_count": 2,
+  "unresolved_relation_count": 2,
+  "proposable_predicates": [
+    "enter_guided",
+    "has_property",
+    "left_by",
+    "received_by",
+    "speech_act",
+    "state_value"
+  ],
+  "excluded_legacy_structural_predicates": {
+    "scene_existence": "STRUCTURAL_COUNT",
+    "scene_identity_evidence": "STRUCTURAL_EVIDENCE_SET"
+  },
+  "unresolved_predicates": {
+    "knows": "RELATION_SIGNATURE_UNRESOLVED: object domain is not a single registered entity kind.",
+    "uncertainty": "RELATION_SIGNATURE_UNRESOLVED: proposition/value direction has no unique registered entity-kind signature."
+  },
+  "signature_fields_required": [
+    "allowed_object_kinds",
+    "allowed_qualifier_keys",
+    "allowed_subject_kinds",
+    "claim_type",
+    "predicate",
+    "relation_class",
+    "required_qualifier_keys"
+  ],
+  "predicate_name_inference": false,
+  "source_prose_consulted": false
+}
