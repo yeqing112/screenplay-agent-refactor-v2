@@ -1,0 +1,13 @@
+{
+  "schema_version": "v7_5_1_historical_revalidation_boundary_v1",
+  "status": "HISTORICAL_REVALIDATION_ONLY",
+  "source_record": "docs/canonical-canary/v7_7_3-source-semantic-claim-proposal-real/SOURCE_SEMANTIC_PROPOSAL_INPUT_FREEZE.json",
+  "current_branch_revalidation": "V7_5_1_REVALIDATION_BLOCKED_CURRENT_BRANCH_DRIFT",
+  "meaning": "The current branch has legally advanced and cannot recreate the historical V7.5.1 freeze.",
+  "provider_authorization_gate": false,
+  "v7_7_8_preflight_blocker": false,
+  "historical_artifacts_rewritten": false,
+  "packet_64_rollback": false,
+  "attempts_4_through_11_deleted_or_restored": false,
+  "awaiting_llm_restored": false
+}

@@ -44,6 +44,7 @@
 ## Provider and production boundary
 
 - Real Provider calls: `0` (Entity Proposal / Entity Verifier / Claim Proposal / Claim Verifier all `0`).
+- V7.5.1 current branch revalidation: `HISTORICAL_REVALIDATION_ONLY`; it is not a V7.7.8 gate or Provider authorization input. Historical V7.5.1 artifacts were not rewritten.
 - FactSnapshot / FactRecord / SourceClaim / canonical writes: `0`.
 - Production freeze unchanged: `True`.
 - FactSnapshot 49 / ScriptIR 52 / Packet 64: unchanged.
