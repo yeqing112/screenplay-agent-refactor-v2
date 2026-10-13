@@ -1,0 +1,16 @@
+{
+  "schema_version": "source_claim_first_order_relation_closure_audit_v1",
+  "status": "PASS",
+  "first_order_proposable_predicate_count": 6,
+  "first_order_unresolved_count": 0,
+  "first_order_predicates": [
+    "enter_guided",
+    "has_property",
+    "left_by",
+    "received_by",
+    "speech_act",
+    "state_value"
+  ],
+  "deferred_second_order_predicate_count": 2,
+  "second_order_predicates_are_not_in_first_order_registry": true
+}

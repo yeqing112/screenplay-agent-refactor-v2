@@ -1,0 +1,16 @@
+{
+  "schema_version": "source_claim_second_order_deferred_coverage_status_v1",
+  "status": "DEFERRED_NOT_PROVEN",
+  "deferred_second_order_predicates": [
+    "knows",
+    "uncertainty"
+  ],
+  "deferred_second_order_predicate_count": 2,
+  "second_order_unresolved_count": 0,
+  "execution_enabled": false,
+  "provider_proposable_now": false,
+  "required_before_execution": "verified first-order ClaimRefs in source_verified_first_order_claim_registry_v1",
+  "typed_director_requirement_manifest": "TYPED_DIRECTOR_REQUIREMENT_MANIFEST_MISSING",
+  "entity_semantic_completeness": "NOT_PROVEN",
+  "full_source_semantic_coverage": "NOT_PROVEN"
+}

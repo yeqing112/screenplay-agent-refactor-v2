@@ -1,0 +1,10 @@
+{
+  "schema_version": "source_claim_second_order_relation_closure_audit_v1",
+  "status": "PASS",
+  "errors": [],
+  "second_order_relation_count": 2,
+  "second_order_unresolved_count": 0,
+  "provider_proposable_now": false,
+  "existing_relation_registry_version": "director_claim_relation_registry_v1",
+  "predicate_compatibility_preserved": true
+}

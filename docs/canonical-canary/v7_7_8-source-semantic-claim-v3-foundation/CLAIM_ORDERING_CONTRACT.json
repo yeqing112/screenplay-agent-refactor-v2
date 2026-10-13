@@ -1,0 +1,18 @@
+{
+  "schema_version": "source_claim_order_registry_v1",
+  "status": "PASS",
+  "first_order": "FIRST_ORDER_SOURCE_CLAIM",
+  "second_order": "SECOND_ORDER_EPISTEMIC_CLAIM",
+  "sequence": [
+    "First-order Claim V3 Proposal",
+    "First-order Claim Semantic Verification",
+    "Verified First-Order Claim Registry",
+    "Second-order Epistemic Claim Proposal",
+    "Second-order Semantic Verification"
+  ],
+  "second_order_before_first_order_verification": false,
+  "nested_claim_json": false,
+  "inline_proposition": false,
+  "provider_local_proposition_ids": false,
+  "one_response_claim_graph": false
+}

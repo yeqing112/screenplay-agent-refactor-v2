@@ -1,0 +1,66 @@
+{
+  "schema_version": "source_claim_relation_signature_completeness_audit_v3",
+  "status": "PASS",
+  "errors": [],
+  "proposable_predicate_count": 6,
+  "first_order_proposable_predicate_count": 6,
+  "first_order_unresolved_count": 0,
+  "excluded_legacy_predicate_count": 2,
+  "unresolved_relation_count": 0,
+  "deferred_second_order_predicate_count": 2,
+  "second_order_unresolved_count": 0,
+  "proposable_predicates": [
+    "enter_guided",
+    "has_property",
+    "left_by",
+    "received_by",
+    "speech_act",
+    "state_value"
+  ],
+  "excluded_legacy_structural_predicates": {
+    "scene_existence": "STRUCTURAL_COUNT",
+    "scene_identity_evidence": "STRUCTURAL_EVIDENCE_SET"
+  },
+  "unresolved_predicates": {},
+  "deferred_second_order_predicates": {
+    "knows": {
+      "predicate": "knows",
+      "claim_type": "CHARACTER_KNOWLEDGE",
+      "relation_class": "KNOWLEDGE_STATE",
+      "status": "DEFERRED_SECOND_ORDER",
+      "proposal_order": "SECOND_ORDER",
+      "subject_ref_domain": "ENTITY_REF",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": []
+    },
+    "uncertainty": {
+      "predicate": "uncertainty",
+      "claim_type": "UNCERTAINTY",
+      "relation_class": "UNCERTAINTY",
+      "status": "DEFERRED_SECOND_ORDER",
+      "proposal_order": "SECOND_ORDER",
+      "subject_ref_domain": "ENTITY_REF",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": []
+    }
+  },
+  "signature_fields_required": [
+    "allowed_object_kinds",
+    "allowed_qualifier_keys",
+    "allowed_subject_kinds",
+    "claim_type",
+    "predicate",
+    "relation_class",
+    "required_qualifier_keys"
+  ],
+  "predicate_name_inference": false,
+  "source_prose_consulted": false
+}

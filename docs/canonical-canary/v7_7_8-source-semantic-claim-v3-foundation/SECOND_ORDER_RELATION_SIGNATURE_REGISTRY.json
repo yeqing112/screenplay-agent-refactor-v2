@@ -1,0 +1,38 @@
+{
+  "schema_version": "source_claim_second_order_relation_signature_registry_v1",
+  "status": "READY_FOR_POST_FIRST_ORDER_VERIFICATION",
+  "predicates": {
+    "knows": {
+      "predicate": "knows",
+      "claim_type": "CHARACTER_KNOWLEDGE",
+      "relation_class": "KNOWLEDGE_STATE",
+      "status": "DEFERRED_SECOND_ORDER",
+      "proposal_order": "SECOND_ORDER",
+      "subject_ref_domain": "ENTITY_REF",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": []
+    },
+    "uncertainty": {
+      "predicate": "uncertainty",
+      "claim_type": "UNCERTAINTY",
+      "relation_class": "UNCERTAINTY",
+      "status": "DEFERRED_SECOND_ORDER",
+      "proposal_order": "SECOND_ORDER",
+      "subject_ref_domain": "ENTITY_REF",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": []
+    }
+  },
+  "predicate_count": 2,
+  "unresolved_relation_count": 0,
+  "provider_proposable_now": false,
+  "execution_enabled": false
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "source_claim_second_order_epistemic_relation_contract_v1",
+  "status": "PASS",
+  "claim_order": "SECOND_ORDER_EPISTEMIC_CLAIM",
+  "predicates": {
+    "knows": {
+      "predicate": "knows",
+      "claim_type": "CHARACTER_KNOWLEDGE",
+      "relation_class": "KNOWLEDGE_STATE",
+      "status": "DEFERRED_SECOND_ORDER",
+      "subject_ref_domain": "ENTITY_REF",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": []
+    },
+    "uncertainty": {
+      "predicate": "uncertainty",
+      "claim_type": "UNCERTAINTY",
+      "relation_class": "UNCERTAINTY",
+      "status": "DEFERRED_SECOND_ORDER",
+      "subject_ref_domain": "ENTITY_REF",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": []
+    }
+  },
+  "why_not_entity_to_entity": {
+    "knows": "The object of knowledge is a proposition or verified first-order claim, which may concern an action, state, object property, or provenance relation. No single source entity kind represents those alternatives.",
+    "uncertainty": "The object of uncertainty is a proposition or verified first-order claim, not the referenced location, object, state, or other source entity itself.",
+    "object_entity_kind_question_applicable": false
+  },
+  "entity_proposal_ontology_extended": false,
+  "entity_kinds_added": [],
+  "nested_claim_json": false,
+  "inline_proposition": false,
+  "provider_local_proposition_ids": false,
+  "one_response_claim_graph": false,
+  "execution_enabled": false
+}

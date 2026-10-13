@@ -1,0 +1,24 @@
+{
+  "schema_version": "source_verified_first_order_claim_registry_v1",
+  "status": "CONTRACT_ONLY_NOT_MATERIALIZED",
+  "required_fields": [
+    "claim_ref",
+    "claim_type",
+    "relation_class",
+    "subject",
+    "predicate",
+    "object",
+    "qualifiers",
+    "semantic_verification_state",
+    "authority"
+  ],
+  "admitted_semantic_verification_state": "SEMANTICALLY_VERIFIED_SOURCE_CLAIM",
+  "admitted_authority": "SEMANTICALLY_VERIFIED_SOURCE_CLAIM",
+  "blocked_states": [
+    "UNTRUSTED_PROPOSED",
+    "REJECTED",
+    "AMBIGUOUS"
+  ],
+  "materialized_in_this_phase": false,
+  "production_writes": 0
+}
