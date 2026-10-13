@@ -58,8 +58,9 @@
 - Tests: `72 passed across the V7.7.8 foundation and V7.7.2–V7.7.7 focused regression suites`.
 - SceneBlocking historical baseline: `historical broad regression: 227 passed, 3 pre-existing V2 SceneBlocking authority failures (V7.7.0 audit); not rerun or modified`; no SceneBlocking code changed.
 - Python compileall: `PASS`; `git diff --check`: `PASS`.
-- Branch: `codex/visual-authoring-provider-canary-reconcile`; working tree: `source/tests/generator clean; generated V7.7.8 evidence pending its evidence commit`.
-- Commit: `codex/visual-authoring-provider-canary-reconcile@567553e883ad7010c8d10be2f4657a7f37ad7219`; remote HEAD: `567553e883ad7010c8d10be2f4657a7f37ad7219`.
+- Branch: `codex/visual-authoring-provider-canary-reconcile`; working tree after evidence publication: `CLEAN`, local HEAD matched remote.
+- Implementation commit: `567553e883ad7010c8d10be2f4657a7f37ad7219`; remote HEAD at evidence generation: `567553e883ad7010c8d10be2f4657a7f37ad7219`.
+- Evidence publication commit: `70a4a4f681b342dc670a99231e90971e183d19e5`; remote HEAD after evidence publication: `70a4a4f681b342dc670a99231e90971e183d19e5`.
 - Overall status: `CLAIM_V3_RELATION_SIGNATURE_BOUNDARY_REQUIRED`.
 - Next state: `CLAIM_V3_RELATION_SIGNATURE_BOUNDARY_REQUIRED`.
 
