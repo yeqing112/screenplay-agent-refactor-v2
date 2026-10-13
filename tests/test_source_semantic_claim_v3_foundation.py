@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from core.provider_structured_output_qualification import compile_provider_strict_schema, fingerprint, validate_json_schema_subset
@@ -7,21 +10,30 @@ from core.source_entity_proposal import claim_v2_schema
 from core.source_semantic_claim_v3 import (
     CLAIM_V3_SET_VERSION,
     CLAIM_V3_VERSION,
+    CLAIM_INPUT_ENTITY_REGISTRY_VERSION,
     QUALIFIER_REGISTRY_VERSION,
     RELATION_SIGNATURE_REGISTRY_VERSION,
+    SECOND_ORDER_RELATION_SIGNATURE_REGISTRY_VERSION,
+    VERIFIED_FIRST_ORDER_CLAIM_REGISTRY_VERSION,
     assign_program_owned_claim_ids,
     build_claim_input_entity_registry,
+    claim_ordering_contract_v1,
     claim_v2_immutable_blocker_audit,
     claim_v3_candidate_fingerprint,
     claim_v3_candidate_schema,
     claim_v3_candidate_set_schema,
     count_schema_dialect_extensions,
     decode_claim_qualifiers_v3,
+    first_order_relation_closure_audit,
     proposable_predicate_registry_v1,
     qualifier_registry_audit,
     qualifier_registry_v2,
     qualifier_semantic_ambiguity_audit,
     relation_signature_completeness_audit,
+    second_order_relation_closure_audit,
+    second_order_relation_signature_registry_v1,
+    validate_second_order_claim_reference,
+    verified_first_order_claim_registry_contract_v1,
     validate_claim_v3_candidate,
     validate_claim_v3_set,
 )
@@ -36,7 +48,7 @@ def entity_registry():
         "STATE_E": {"kind": "STATE_VALUE", "authority": "SEMANTICALLY_VERIFIED_PROPOSAL", "verification_state": "SEMANTICALLY_VERIFIED_PROPOSAL", "canonical": False},
         "DIALOGUE_F": {"kind": "DIALOGUE_CONTENT", "authority": "CANONICAL_RUNTIME", "canonical": True},
     }
-    return {"status": "PASS", "fingerprint": "frozen-fixture", "entities": rows}
+    return {"schema_version": CLAIM_INPUT_ENTITY_REGISTRY_VERSION, "status": "PASS", "fingerprint": "frozen-fixture", "entities": rows}
 
 
 def evidence_binding():
@@ -103,9 +115,13 @@ def test_v3_predicate_registry_excludes_legacy_and_unresolved_relations():
     assert registry["status"] == "PASS"
     assert registry["predicate_count"] == 6
     assert set(registry["excluded_legacy_structural_predicates"]) == {"scene_existence", "scene_identity_evidence"}
-    assert set(registry["unresolved_predicates"]) == {"knows", "uncertainty"}
+    assert registry["unresolved_predicates"] == {}
+    assert set(registry["deferred_second_order_predicates"]) == {"knows", "uncertainty"}
     assert audit["status"] == "PASS"
-    assert audit["unresolved_relation_count"] == 2
+    assert audit["first_order_proposable_predicate_count"] == 6
+    assert audit["first_order_unresolved_count"] == 0
+    assert audit["deferred_second_order_predicate_count"] == 2
+    assert audit["second_order_unresolved_count"] == 0
     assert all(set(row) >= {"predicate", "claim_type", "relation_class", "allowed_subject_kinds", "allowed_object_kinds", "allowed_qualifier_keys", "required_qualifier_keys"} for row in registry["predicates"].values())
 
 
@@ -263,3 +279,147 @@ def test_program_owned_claim_projection_never_mutates_authority_stores():
     assert assigned["rows"][0]["authority"] == "UNTRUSTED_PROPOSED"
     assert assigned["rows"][0]["canonical"] is False
     assert assigned["rows"][0]["projection"]["schema_version"] == "source_semantic_claim_candidate_projection_v3"
+
+
+def _verified_claim_registry(*, state="SEMANTICALLY_VERIFIED_SOURCE_CLAIM", authority="SEMANTICALLY_VERIFIED_SOURCE_CLAIM"):
+    return {
+        "schema_version": VERIFIED_FIRST_ORDER_CLAIM_REGISTRY_VERSION,
+        "status": "PASS",
+        "claims": {
+            "VERIFIED_CLAIM_1": {
+                "claim_ref": "VERIFIED_CLAIM_1",
+                "claim_type": "CHARACTER_ACTION",
+                "relation_class": "ACTION",
+                "subject": {"ref": "CHAR_A", "kind": "CHARACTER"},
+                "predicate": "enter_guided",
+                "object": {"ref": "LOC_C", "kind": "LOCATION"},
+                "qualifiers": {},
+                "semantic_verification_state": state,
+                "authority": authority,
+            }
+        },
+    }
+
+
+def _validate_second_order(predicate, *, object_ref="VERIFIED_CLAIM_1", registry=None, qualifiers=None):
+    return validate_second_order_claim_reference(
+        predicate=predicate,
+        subject_ref="CHAR_A",
+        object_ref=object_ref,
+        input_entity_registry=entity_registry(),
+        verified_first_order_claim_registry=registry or _verified_claim_registry(),
+        qualifiers=qualifiers,
+    )
+
+
+def test_second_order_knows_and_uncertainty_signatures_are_explicit_claim_ref_relations():
+    registry = second_order_relation_signature_registry_v1()
+    assert registry["schema_version"] == SECOND_ORDER_RELATION_SIGNATURE_REGISTRY_VERSION
+    assert set(registry["predicates"]) == {"knows", "uncertainty"}
+    for predicate, claim_type, relation_class in (
+        ("knows", "CHARACTER_KNOWLEDGE", "KNOWLEDGE_STATE"),
+        ("uncertainty", "UNCERTAINTY", "UNCERTAINTY"),
+    ):
+        signature = registry["predicates"][predicate]
+        assert signature["status"] == "DEFERRED_SECOND_ORDER"
+        assert signature["claim_type"] == claim_type
+        assert signature["relation_class"] == relation_class
+        assert signature["subject_ref_domain"] == "ENTITY_REF"
+        assert signature["allowed_subject_kinds"] == ["CHARACTER"]
+        assert signature["object_ref_domain"] == "VERIFIED_FIRST_ORDER_CLAIM_REF"
+        assert signature["allowed_qualifier_keys"] == []
+        assert signature["required_qualifier_keys"] == []
+
+
+def test_second_order_registry_is_deferred_and_never_first_order_provider_proposable():
+    first_order = proposable_predicate_registry_v1()
+    second_order = second_order_relation_signature_registry_v1()
+    assert first_order["status"] == "PASS"
+    assert first_order["predicate_count"] == 6
+    assert set(first_order["predicates"]) == {"enter_guided", "has_property", "left_by", "received_by", "speech_act", "state_value"}
+    assert not ({"knows", "uncertainty"} & set(first_order["predicates"]))
+    assert second_order["status"] == "READY_FOR_POST_FIRST_ORDER_VERIFICATION"
+    assert second_order["predicate_count"] == 2
+    assert second_order["unresolved_relation_count"] == 0
+    assert second_order["provider_proposable_now"] is False
+
+
+def test_first_order_and_second_order_closure_audits_are_separate_and_complete():
+    first = first_order_relation_closure_audit()
+    second = second_order_relation_closure_audit()
+    combined = relation_signature_completeness_audit()
+    assert first["status"] == "PASS"
+    assert first["first_order_proposable_predicate_count"] == 6
+    assert first["first_order_unresolved_count"] == 0
+    assert first["second_order_predicates_are_not_in_first_order_registry"] is True
+    assert second["status"] == "PASS"
+    assert second["second_order_relation_count"] == 2
+    assert second["second_order_unresolved_count"] == 0
+    assert second["provider_proposable_now"] is False
+    assert second["predicate_compatibility_preserved"] is True
+    assert combined["first_order_unresolved_count"] == combined["second_order_unresolved_count"] == 0
+
+
+@pytest.mark.parametrize("predicate", ["knows", "uncertainty"])
+def test_second_order_predicates_accept_a_verified_first_order_claim_ref(predicate):
+    result = _validate_second_order(predicate)
+    assert result["status"] == "PASS"
+    assert result["contract_mock_only"] is True
+    assert result["projection"]["object_ref_domain"] == "VERIFIED_FIRST_ORDER_CLAIM_REF"
+    assert result["projection"]["execution_enabled"] is False
+
+
+@pytest.mark.parametrize("predicate", ["knows", "uncertainty"])
+def test_second_order_predicates_reject_entity_refs_as_objects(predicate):
+    result = _validate_second_order(predicate, object_ref="OBJ_B")
+    assert result["status"] == "BLOCKED"
+    assert "SECOND_ORDER_OBJECT_DOMAIN_MISMATCH" in result["errors"]
+
+
+def test_second_order_predicates_reject_unverified_first_order_claim_refs():
+    registry = _verified_claim_registry(state="UNTRUSTED_PROPOSED", authority="UNTRUSTED_PROPOSED")
+    result = _validate_second_order("uncertainty", registry=registry)
+    assert result["status"] == "BLOCKED"
+    assert "SECOND_ORDER_TARGET_AUTHORITY_NOT_VERIFIED" in result["errors"]
+
+
+def test_second_order_predicates_reject_claim_refs_that_are_not_first_order_claims():
+    registry = _verified_claim_registry()
+    registry["claims"]["VERIFIED_CLAIM_1"]["predicate"] = "uncertainty"
+    registry["claims"]["VERIFIED_CLAIM_1"]["claim_type"] = "UNCERTAINTY"
+    registry["claims"]["VERIFIED_CLAIM_1"]["relation_class"] = "UNCERTAINTY"
+    result = _validate_second_order("knows", registry=registry)
+    assert result["status"] == "BLOCKED"
+    assert "SECOND_ORDER_TARGET_NOT_FIRST_ORDER" in result["errors"]
+
+
+@pytest.mark.parametrize("predicate", ["knows", "uncertainty"])
+def test_second_order_qualifier_injection_is_blocked(predicate):
+    result = _validate_second_order(predicate, qualifiers={"confidence": "LOW"})
+    assert result["status"] == "BLOCKED"
+    assert "SECOND_ORDER_QUALIFIER_NOT_ALLOWED:confidence" in result["errors"]
+
+
+def test_verified_first_order_claim_registry_and_claim_order_contract_are_contract_only():
+    verified_registry = verified_first_order_claim_registry_contract_v1()
+    ordering = claim_ordering_contract_v1()
+    assert verified_registry["schema_version"] == VERIFIED_FIRST_ORDER_CLAIM_REGISTRY_VERSION
+    assert verified_registry["status"] == "CONTRACT_ONLY_NOT_MATERIALIZED"
+    assert verified_registry["required_fields"] == ["claim_ref", "claim_type", "relation_class", "subject", "predicate", "object", "qualifiers", "semantic_verification_state", "authority"]
+    assert verified_registry["materialized_in_this_phase"] is False
+    assert ordering["second_order_before_first_order_verification"] is False
+    assert ordering["nested_claim_json"] is ordering["inline_proposition"] is False
+
+
+def test_first_order_transport_schema_fingerprint_does_not_change_for_second_order_contract():
+    frozen_registry_path = (
+        Path(__file__).resolve().parents[1]
+        / "docs/canonical-canary/v7_7_8-source-semantic-claim-v3-foundation/CLAIM_INPUT_ENTITY_REGISTRY.json"
+    )
+    frozen_registry = json.loads(frozen_registry_path.read_text(encoding="utf-8"))
+    predicates = proposable_predicate_registry_v1()
+    schema = claim_v3_candidate_set_schema(candidate_schema=claim_v3_candidate_schema(input_entity_registry=frozen_registry, proposable_predicates=predicates))
+    compiled = compile_provider_strict_schema(schema)
+    assert compiled["audit"]["status"] == "PASS"
+    assert compiled["audit"]["output_fingerprint"] == "cbbb2a6a46689af9421ba192fe66f31e3b0d545545fe2f7a479d324a01bcf193"
+    assert count_schema_dialect_extensions(schema) == {"union_type": 0, "oneOf": 0, "anyOf": 0, "dangling_ref": 0}

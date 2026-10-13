@@ -26,6 +26,9 @@ QUALIFIER_REGISTRY_VERSION = "source_claim_qualifier_registry_v2"
 RELATION_SIGNATURE_REGISTRY_VERSION = "source_claim_relation_signature_registry_v2"
 PROPOSABLE_PREDICATE_REGISTRY_VERSION = "source_claim_proposal_predicate_registry_v1"
 CLAIM_V3_PROJECTION_VERSION = "source_semantic_claim_candidate_projection_v3"
+SECOND_ORDER_RELATION_SIGNATURE_REGISTRY_VERSION = "source_claim_second_order_relation_signature_registry_v1"
+VERIFIED_FIRST_ORDER_CLAIM_REGISTRY_VERSION = "source_verified_first_order_claim_registry_v1"
+CLAIM_ORDER_REGISTRY_VERSION = "source_claim_order_registry_v1"
 
 CLAIM_V3_REQUIRED_KEYS = {
     "schema_version", "subject_ref", "predicate", "object_ref", "qualifiers",
@@ -91,8 +94,23 @@ LEGACY_STRUCTURAL_PREDICATES = {
     "scene_identity_evidence": "STRUCTURAL_EVIDENCE_SET",
 }
 UNRESOLVED_RELATION_REASONS = {
-    "knows": "RELATION_SIGNATURE_UNRESOLVED: object domain is not a single registered entity kind.",
-    "uncertainty": "RELATION_SIGNATURE_UNRESOLVED: proposition/value direction has no unique registered entity-kind signature.",
+    # Unknown first-order relations remain unresolved. knows/uncertainty are
+    # classified by the explicit second-order ontology below.
+}
+OBJECT_REF_DOMAINS = ("ENTITY_REF", "VERIFIED_FIRST_ORDER_CLAIM_REF")
+SECOND_ORDER_RELATION_SIGNATURES: dict[str, dict[str, Any]] = {
+    "knows": {
+        "predicate": "knows", "claim_type": "CHARACTER_KNOWLEDGE", "relation_class": "KNOWLEDGE_STATE",
+        "status": "DEFERRED_SECOND_ORDER", "proposal_order": "SECOND_ORDER", "subject_ref_domain": "ENTITY_REF",
+        "allowed_subject_kinds": ["CHARACTER"], "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+        "allowed_qualifier_keys": [], "required_qualifier_keys": [],
+    },
+    "uncertainty": {
+        "predicate": "uncertainty", "claim_type": "UNCERTAINTY", "relation_class": "UNCERTAINTY",
+        "status": "DEFERRED_SECOND_ORDER", "proposal_order": "SECOND_ORDER", "subject_ref_domain": "ENTITY_REF",
+        "allowed_subject_kinds": ["CHARACTER"], "object_ref_domain": "VERIFIED_FIRST_ORDER_CLAIM_REF",
+        "allowed_qualifier_keys": [], "required_qualifier_keys": [],
+    },
 }
 QUALIFIER_V1_AMBIGUITY_ROWS = {
     "ownership": "Provenance actor/object direction is represented by the typed relation; a boolean ownership modifier would assert a separate ownership fact and is not uniquely defined.",
@@ -186,6 +204,7 @@ def proposable_predicate_registry_v1(*, mappings: Mapping[str, Any] | None = Non
     excluded_legacy: dict[str, str] = {}
     unresolved: dict[str, str] = {}
     incomplete: dict[str, list[str]] = {}
+    deferred_second_order: dict[str, dict[str, Any]] = {}
     required_signature_keys = {"predicate", "claim_type", "relation_class", "allowed_subject_kinds", "allowed_object_kinds", "allowed_qualifier_keys", "required_qualifier_keys"}
     for predicate, mapping in sorted(mappings.items()):
         if not isinstance(mapping, Mapping):
@@ -193,6 +212,13 @@ def proposable_predicate_registry_v1(*, mappings: Mapping[str, Any] | None = Non
             continue
         if mapping.get("legacy_mapping"):
             excluded_legacy[str(predicate)] = str(mapping.get("legacy_mapping"))
+            continue
+        second_order = SECOND_ORDER_RELATION_SIGNATURES.get(str(predicate))
+        if second_order is not None:
+            if second_order.get("claim_type") != mapping.get("claim_type") or second_order.get("relation_class") != mapping.get("relation_class"):
+                incomplete[str(predicate)] = ["SECOND_ORDER_SIGNATURE_MAPPING_MISMATCH"]
+            else:
+                deferred_second_order[str(predicate)] = copy.deepcopy(second_order)
             continue
         signature = signature_rows.get(str(predicate)) if isinstance(signature_rows, Mapping) else None
         if not isinstance(signature, Mapping):
@@ -202,17 +228,23 @@ def proposable_predicate_registry_v1(*, mappings: Mapping[str, Any] | None = Non
         if missing or signature.get("predicate") != predicate or signature.get("claim_type") != mapping.get("claim_type") or signature.get("relation_class") != mapping.get("relation_class"):
             incomplete[str(predicate)] = missing or ["SIGNATURE_MAPPING_MISMATCH"]
             continue
-        proposable[str(predicate)] = dict(signature)
+        # Keep the frozen first-order transport schema byte-for-byte stable.
+        # Claim ordering is reported by the separate closure/ordering contracts.
+        proposable[str(predicate)] = copy.deepcopy(dict(signature))
     return {
         "schema_version": PROPOSABLE_PREDICATE_REGISTRY_VERSION,
-        "status": "PASS" if not incomplete else "BLOCKED",
+        "status": "PASS" if not incomplete and not unresolved else "BLOCKED",
         "predicates": proposable,
         "excluded_legacy_structural_predicates": excluded_legacy,
         "unresolved_predicates": unresolved,
         "incomplete_signatures": incomplete,
+        "deferred_second_order_predicates": deferred_second_order,
         "predicate_count": len(proposable),
         "excluded_legacy_count": len(excluded_legacy),
         "unresolved_relation_count": len(unresolved) + len(incomplete),
+        "first_order_unresolved_count": len(unresolved) + len(incomplete),
+        "deferred_second_order_predicate_count": len(deferred_second_order),
+        "provider_proposable_order": "FIRST_ORDER_ONLY",
     }
 
 
@@ -234,18 +266,193 @@ def relation_signature_completeness_audit(*, mappings: Mapping[str, Any] | None 
         if predicate not in compatible:
             errors.append(f"RELATION_SIGNATURE_NOT_BACKED_BY_RELATION_REGISTRY:{predicate}")
     return {
-        "schema_version": "source_claim_relation_signature_completeness_audit_v2",
+        "schema_version": "source_claim_relation_signature_completeness_audit_v3",
         "status": "PASS" if not errors and predicates.get("status") == "PASS" else "BLOCKED",
         "errors": sorted(set(errors)),
         "proposable_predicate_count": predicates["predicate_count"],
+        "first_order_proposable_predicate_count": predicates["predicate_count"],
+        "first_order_unresolved_count": predicates["first_order_unresolved_count"],
         "excluded_legacy_predicate_count": predicates["excluded_legacy_count"],
         "unresolved_relation_count": predicates["unresolved_relation_count"],
+        "deferred_second_order_predicate_count": predicates["deferred_second_order_predicate_count"],
+        "second_order_unresolved_count": 0,
         "proposable_predicates": sorted(signatures),
         "excluded_legacy_structural_predicates": predicates["excluded_legacy_structural_predicates"],
         "unresolved_predicates": predicates["unresolved_predicates"],
+        "deferred_second_order_predicates": predicates["deferred_second_order_predicates"],
         "signature_fields_required": sorted({"predicate", "claim_type", "relation_class", "allowed_subject_kinds", "allowed_object_kinds", "allowed_qualifier_keys", "required_qualifier_keys"}),
         "predicate_name_inference": False,
         "source_prose_consulted": False,
+    }
+
+
+def second_order_relation_signature_registry_v1() -> dict[str, Any]:
+    return {
+        "schema_version": SECOND_ORDER_RELATION_SIGNATURE_REGISTRY_VERSION,
+        "status": "READY_FOR_POST_FIRST_ORDER_VERIFICATION",
+        "predicates": copy.deepcopy(SECOND_ORDER_RELATION_SIGNATURES),
+        "predicate_count": len(SECOND_ORDER_RELATION_SIGNATURES),
+        "unresolved_relation_count": 0,
+        "provider_proposable_now": False,
+        "execution_enabled": False,
+    }
+
+
+def second_order_relation_closure_audit() -> dict[str, Any]:
+    registry = second_order_relation_signature_registry_v1()
+    errors: list[str] = []
+    mappings = FACT_CLAIM_MAPPING
+    relation_contracts = RELATION_REGISTRY
+    for predicate, signature in registry["predicates"].items():
+        mapping = mappings.get(predicate, {})
+        if signature.get("predicate") != predicate:
+            errors.append(f"SECOND_ORDER_PREDICATE_FIELD_MISMATCH:{predicate}")
+        if signature.get("claim_type") != mapping.get("claim_type") or signature.get("relation_class") != mapping.get("relation_class"):
+            errors.append(f"SECOND_ORDER_MAPPING_MISMATCH:{predicate}")
+        if signature.get("object_ref_domain") not in OBJECT_REF_DOMAINS:
+            errors.append(f"SECOND_ORDER_OBJECT_DOMAIN_INVALID:{predicate}")
+        if signature.get("subject_ref_domain") != "ENTITY_REF" or signature.get("allowed_subject_kinds") != ["CHARACTER"]:
+            errors.append(f"SECOND_ORDER_SUBJECT_DOMAIN_INVALID:{predicate}")
+        if signature.get("allowed_qualifier_keys") or signature.get("required_qualifier_keys"):
+            errors.append(f"SECOND_ORDER_QUALIFIERS_MUST_BE_EMPTY:{predicate}")
+        relation_group = relation_contracts.get(signature["relation_class"], {})
+        compatible = {str(item) for row in relation_group.values() if isinstance(row, Mapping) for item in row.get("compatible_predicates", [])}
+        if predicate not in compatible:
+            errors.append(f"SECOND_ORDER_RELATION_NOT_BACKED_BY_RELATION_REGISTRY:{predicate}")
+    return {
+        "schema_version": "source_claim_second_order_relation_closure_audit_v1",
+        "status": "PASS" if not errors else "BLOCKED",
+        "errors": sorted(errors),
+        "second_order_relation_count": registry["predicate_count"],
+        "second_order_unresolved_count": registry["unresolved_relation_count"],
+        "provider_proposable_now": registry["provider_proposable_now"],
+        "existing_relation_registry_version": "director_claim_relation_registry_v1",
+        "predicate_compatibility_preserved": not errors,
+    }
+
+
+def verified_first_order_claim_registry_contract_v1() -> dict[str, Any]:
+    return {
+        "schema_version": VERIFIED_FIRST_ORDER_CLAIM_REGISTRY_VERSION,
+        "status": "CONTRACT_ONLY_NOT_MATERIALIZED",
+        "required_fields": [
+            "claim_ref", "claim_type", "relation_class", "subject", "predicate", "object",
+            "qualifiers", "semantic_verification_state", "authority",
+        ],
+        "admitted_semantic_verification_state": "SEMANTICALLY_VERIFIED_SOURCE_CLAIM",
+        "admitted_authority": "SEMANTICALLY_VERIFIED_SOURCE_CLAIM",
+        "blocked_states": ["UNTRUSTED_PROPOSED", "REJECTED", "AMBIGUOUS"],
+        "materialized_in_this_phase": False,
+        "production_writes": 0,
+    }
+
+
+def claim_ordering_contract_v1() -> dict[str, Any]:
+    return {
+        "schema_version": CLAIM_ORDER_REGISTRY_VERSION,
+        "status": "PASS",
+        "first_order": "FIRST_ORDER_SOURCE_CLAIM",
+        "second_order": "SECOND_ORDER_EPISTEMIC_CLAIM",
+        "sequence": [
+            "First-order Claim V3 Proposal",
+            "First-order Claim Semantic Verification",
+            "Verified First-Order Claim Registry",
+            "Second-order Epistemic Claim Proposal",
+            "Second-order Semantic Verification",
+        ],
+        "second_order_before_first_order_verification": False,
+        "nested_claim_json": False,
+        "inline_proposition": False,
+        "provider_local_proposition_ids": False,
+        "one_response_claim_graph": False,
+    }
+
+
+def validate_second_order_claim_reference(
+    *, predicate: str, subject_ref: str, object_ref: str,
+    input_entity_registry: Mapping[str, Any],
+    verified_first_order_claim_registry: Mapping[str, Any],
+    qualifiers: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    errors: list[str] = []
+    signature = SECOND_ORDER_RELATION_SIGNATURES.get(predicate)
+    if not isinstance(signature, Mapping):
+        return {"status": "BLOCKED", "errors": [f"SECOND_ORDER_PREDICATE_UNREGISTERED:{predicate}"], "projection": None}
+    if input_entity_registry.get("schema_version") != CLAIM_INPUT_ENTITY_REGISTRY_VERSION or input_entity_registry.get("status") != "PASS":
+        errors.append("SECOND_ORDER_INPUT_ENTITY_REGISTRY_NOT_READY")
+    if verified_first_order_claim_registry.get("schema_version") != VERIFIED_FIRST_ORDER_CLAIM_REGISTRY_VERSION or verified_first_order_claim_registry.get("status") != "PASS":
+        errors.append("SECOND_ORDER_VERIFIED_CLAIM_REGISTRY_NOT_READY")
+    entities = input_entity_registry.get("entities") if isinstance(input_entity_registry.get("entities"), Mapping) else {}
+    subject = entities.get(subject_ref)
+    if not isinstance(subject, Mapping):
+        errors.append(f"SECOND_ORDER_SUBJECT_REF_UNKNOWN:{subject_ref}")
+    elif str(subject.get("authority") or "") not in ALLOWED_ENTITY_AUTHORITIES:
+        errors.append(f"SECOND_ORDER_SUBJECT_AUTHORITY_BLOCKED:{subject_ref}")
+    elif str(subject.get("kind") or "") not in signature["allowed_subject_kinds"]:
+        errors.append(f"SECOND_ORDER_SUBJECT_KIND_MISMATCH:{subject_ref}:{subject.get('kind')}")
+
+    claim_rows = verified_first_order_claim_registry.get("claims") if isinstance(verified_first_order_claim_registry.get("claims"), Mapping) else {}
+    if object_ref in entities:
+        errors.append("SECOND_ORDER_OBJECT_DOMAIN_MISMATCH")
+    else:
+        target = claim_rows.get(object_ref)
+        if not isinstance(target, Mapping):
+            errors.append(f"SECOND_ORDER_TARGET_NOT_FOUND:{object_ref}")
+        else:
+            required_claim_fields = {
+                "claim_ref", "claim_type", "relation_class", "subject", "predicate", "object",
+                "qualifiers", "semantic_verification_state", "authority",
+            }
+            missing_claim_fields = sorted(required_claim_fields - set(target))
+            if missing_claim_fields:
+                errors.append("SECOND_ORDER_TARGET_SCHEMA_INCOMPLETE:" + ",".join(missing_claim_fields))
+            first_order_predicates = proposable_predicate_registry_v1().get("predicates", {})
+            first_order_signature = first_order_predicates.get(str(target.get("predicate") or ""))
+            if not isinstance(first_order_signature, Mapping):
+                errors.append("SECOND_ORDER_TARGET_NOT_FIRST_ORDER")
+            elif target.get("claim_type") != first_order_signature.get("claim_type") or target.get("relation_class") != first_order_signature.get("relation_class"):
+                errors.append("SECOND_ORDER_TARGET_SIGNATURE_MISMATCH")
+            if (
+                target.get("authority") != "SEMANTICALLY_VERIFIED_SOURCE_CLAIM"
+                or target.get("semantic_verification_state") != "SEMANTICALLY_VERIFIED_SOURCE_CLAIM"
+            ):
+                errors.append("SECOND_ORDER_TARGET_AUTHORITY_NOT_VERIFIED")
+            if str(target.get("claim_ref") or object_ref) != object_ref:
+                errors.append("SECOND_ORDER_TARGET_REF_MISMATCH")
+
+    if qualifiers is None:
+        qualifiers = {}
+    if not isinstance(qualifiers, Mapping):
+        errors.append("SECOND_ORDER_QUALIFIERS_MUST_BE_OBJECT")
+    elif qualifiers:
+        errors.extend(f"SECOND_ORDER_QUALIFIER_NOT_ALLOWED:{key}" for key in sorted(str(key) for key in qualifiers))
+    projection = None
+    if not errors:
+        projection = {
+            "claim_order": "SECOND_ORDER_EPISTEMIC_CLAIM",
+            "predicate": predicate,
+            "claim_type": signature["claim_type"],
+            "relation_class": signature["relation_class"],
+            "subject_ref": subject_ref,
+            "object_ref": object_ref,
+            "object_ref_domain": signature["object_ref_domain"],
+            "qualifiers": {},
+            "execution_enabled": False,
+        }
+    return {"status": "PASS" if not errors else "BLOCKED", "errors": sorted(set(errors)), "projection": projection, "contract_mock_only": True}
+
+
+def first_order_relation_closure_audit() -> dict[str, Any]:
+    audit = relation_signature_completeness_audit()
+    registry = proposable_predicate_registry_v1()
+    return {
+        "schema_version": "source_claim_first_order_relation_closure_audit_v1",
+        "status": "PASS" if audit["status"] == "PASS" and audit["first_order_unresolved_count"] == 0 else "BLOCKED",
+        "first_order_proposable_predicate_count": registry["predicate_count"],
+        "first_order_unresolved_count": audit["first_order_unresolved_count"],
+        "first_order_predicates": sorted(registry["predicates"]),
+        "deferred_second_order_predicate_count": registry["deferred_second_order_predicate_count"],
+        "second_order_predicates_are_not_in_first_order_registry": not (set(registry["predicates"]) & set(registry["deferred_second_order_predicates"])),
     }
 
 
@@ -679,5 +886,10 @@ __all__ = [
     "claim_v3_candidate_set_contract", "claim_v3_candidate_schema", "claim_v3_candidate_set_schema",
     "count_schema_dialect_extensions", "decode_claim_qualifiers_v3", "validate_claim_v3_candidate",
     "validate_claim_v3_set", "claim_v3_candidate_fingerprint", "assign_program_owned_claim_ids",
-    "claim_v2_immutable_blocker_audit",
+    "claim_v2_immutable_blocker_audit", "SECOND_ORDER_RELATION_SIGNATURE_REGISTRY_VERSION",
+    "VERIFIED_FIRST_ORDER_CLAIM_REGISTRY_VERSION", "CLAIM_ORDER_REGISTRY_VERSION",
+    "OBJECT_REF_DOMAINS", "SECOND_ORDER_RELATION_SIGNATURES", "second_order_relation_signature_registry_v1",
+    "second_order_relation_closure_audit", "first_order_relation_closure_audit",
+    "verified_first_order_claim_registry_contract_v1", "claim_ordering_contract_v1",
+    "validate_second_order_claim_reference",
 ]
