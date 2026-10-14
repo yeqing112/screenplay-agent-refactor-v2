@@ -345,7 +345,8 @@ def _build_audit_record(
 def call_llm(prompt, system=None, temperature=None, max_tokens=None,
              retries=3, estimated_tokens=8000, model_profile=None,
              response_format=None, audit_callback=None, audit_extra=None,
-             audit_repair_request=None, image_data_urls=None):
+             audit_repair_request=None, image_data_urls=None,
+             raw_response_callback=None):
     """Call LLM with rate limiting and retry. Returns raw response text.
 
     For reasoning models (like mimo-v2.5), completion_tokens include
@@ -356,6 +357,9 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
         if not mock_runtime.enabled():
             raise RuntimeError("Deterministic mock runtime is disabled in production.")
         mock_runtime.record("llm", "chat_completion", result="success", prompt_sha256=_audit_safe_hash(str(prompt or "")))
+        mock_content = mock_runtime.response(str(prompt or ""), json_mode=bool(response_format) or str(__import__("os").environ.get("LLM_JSON_RESPONSE_FORMAT") or "") == "1")
+        if callable(raw_response_callback):
+            raw_response_callback(mock_content)
         if callable(audit_callback):
             audit_callback({
                 "vendor_model": "builtin-mock-llm",
@@ -365,7 +369,7 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 "parse_ok": True,
                 "extra": {"mock": True, "transport_retry": False},
             })
-        return mock_runtime.response(str(prompt or ""), json_mode=bool(response_format) or str(__import__("os").environ.get("LLM_JSON_RESPONSE_FORMAT") or "") == "1")
+        return mock_content
 
     profile = _resolve_llm_profile(model_profile)
     api_key = profile.get("api_key") or config.OPENAI_API_KEY
@@ -472,6 +476,11 @@ def call_llm(prompt, system=None, temperature=None, max_tokens=None,
                 # If content is empty but reasoning_content exists, use reasoning
                 if not content and msg.get("reasoning_content"):
                     content = msg["reasoning_content"]
+
+                # Canary callers can durably save the exact model content before
+                # audit helpers inspect it or downstream code parses it.
+                if callable(raw_response_callback):
+                    raw_response_callback(content)
 
                 audit_parse_ok = bool(content)
                 audit_response_text = str(content or "")
