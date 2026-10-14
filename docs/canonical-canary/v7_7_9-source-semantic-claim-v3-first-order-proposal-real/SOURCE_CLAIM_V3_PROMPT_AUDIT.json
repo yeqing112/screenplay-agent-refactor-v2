@@ -1,0 +1,23 @@
+{
+  "schema_version": "source_claim_v3_prompt_audit_v1",
+  "status": "PASS",
+  "system_prompt_sha256": "b93dfc23ddb4022ccb0a77cb6a983723a73ff27fd8e8893c6f3a50e6a513b00c",
+  "user_prompt_sha256": "2bae12cb9880dcf4ce2e9ed87588f1fed3f85087b5cbea01f13861901c29795f",
+  "request_fingerprint": "58179d1577f42caaa517d983332fa61e19598d6e5abfd335fdd967c4b18fb648",
+  "system_prompt_length": 1023,
+  "user_prompt_length": 8318,
+  "source_unit_count": 12,
+  "source_unit_texts_equal_bound_evidence": true,
+  "attempt_findings_in_prompt": false,
+  "manual_expected_answers_in_prompt": false,
+  "source_evidence_text_allowed": true,
+  "lossy_forced_mapping_prohibited": true,
+  "entity_display_form_is_identity": false,
+  "only_executable_predicates_in_prompt": [
+    "enter_guided",
+    "left_by",
+    "received_by",
+    "speech_act"
+  ],
+  "second_order_predicates_in_prompt_or_schema": false
+}

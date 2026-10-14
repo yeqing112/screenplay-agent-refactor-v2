@@ -1,0 +1,16 @@
+{
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "base_host": "https://api.xiaomimimo.com",
+  "provider_identity_fingerprint": "9908c628bc8b970817674b26ff3897bb055bc24ee6505bbc2af6a80f7722c455",
+  "enabled": true,
+  "key_configured": true,
+  "base_url_path": "/v1",
+  "qualification_fingerprint": "194241dae7837d160c63a72bd1c3017bd9a9d0219d2f25e6a083637abdf3cb3b",
+  "qualified": true,
+  "capability": "JSON_SCHEMA_STRICT_SUPPORTED",
+  "qualification_status": "PROVIDER_STRUCTURED_OUTPUT_CAPABILITY_QUALIFIED",
+  "preflight_status": "PASS",
+  "profile_mutated": false
+}

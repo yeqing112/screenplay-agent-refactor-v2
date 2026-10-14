@@ -1,0 +1,19 @@
+{
+  "status": "BLOCKED",
+  "candidate_rows": [
+    {
+      "index": 0,
+      "status": "PASS",
+      "errors": [],
+      "typed_qualifiers": {}
+    },
+    {
+      "index": 1,
+      "status": "BLOCKED",
+      "errors": [
+        "SYMBOLIC_TOKEN_INVALID:speaker_binding"
+      ],
+      "typed_qualifiers": {}
+    }
+  ]
+}

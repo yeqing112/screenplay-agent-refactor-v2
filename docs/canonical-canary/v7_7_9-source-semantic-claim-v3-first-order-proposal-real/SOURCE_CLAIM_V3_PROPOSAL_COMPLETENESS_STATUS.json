@@ -1,0 +1,10 @@
+{
+  "status": "NOT_PROVEN",
+  "typed_director_requirement_manifest": "TYPED_DIRECTOR_REQUIREMENT_MANIFEST_MISSING",
+  "entity_semantic_completeness": "NOT_PROVEN",
+  "second_order_epistemic_coverage": "DEFERRED_NOT_PROVEN",
+  "candidate_count": 2,
+  "source_unit_count": 12,
+  "proposal_surface_coverage": "PROPOSAL_SURFACE_COVERAGE",
+  "full_source_semantic_coverage_claimed": false
+}

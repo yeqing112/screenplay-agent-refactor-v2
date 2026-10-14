@@ -1,0 +1,112 @@
+{
+  "status": "BLOCKED",
+  "transport_schema_validation": {
+    "status": "PASS",
+    "errors": []
+  },
+  "internal_v3_validation": {
+    "status": "BLOCKED",
+    "errors": [
+      "CLAIM_V3_CANDIDATE_0001:SYMBOLIC_TOKEN_INVALID:speaker_binding"
+    ],
+    "candidate_count": 2,
+    "valid_count": 1,
+    "blocked_count": 1,
+    "candidate_results": [
+      {
+        "status": "PASS",
+        "errors": [],
+        "resolved_subject": {
+          "ref": "顾沉",
+          "kind": "CHARACTER",
+          "authority": "CANONICAL_RUNTIME"
+        },
+        "resolved_object": {
+          "ref": "PEC_0001",
+          "kind": "LOCATION",
+          "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+        },
+        "claim_type": "CHARACTER_ACTION",
+        "relation_class": "ACTION",
+        "qualifier_validation": {
+          "status": "PASS",
+          "errors": [],
+          "typed_qualifiers": {}
+        },
+        "projection": {
+          "schema_version": "source_semantic_claim_candidate_projection_v3",
+          "claim_type": "CHARACTER_ACTION",
+          "relation_class": "ACTION",
+          "subject": {
+            "ref": "顾沉",
+            "kind": "CHARACTER"
+          },
+          "predicate": "enter_guided",
+          "object": {
+            "ref": "PEC_0001",
+            "kind": "LOCATION"
+          },
+          "qualifiers": {},
+          "polarity": "POSITIVE",
+          "modality": "ASSERTED",
+          "evidence_refs": [
+            "S1A001"
+          ],
+          "source_unit_refs": [
+            "SAU_E01_SC001_001"
+          ]
+        }
+      },
+      {
+        "status": "BLOCKED",
+        "errors": [
+          "SYMBOLIC_TOKEN_INVALID:speaker_binding"
+        ],
+        "resolved_subject": {
+          "ref": "顾沉",
+          "kind": "CHARACTER",
+          "authority": "CANONICAL_RUNTIME"
+        },
+        "resolved_object": {
+          "ref": "SAU_E01_SC001_008",
+          "kind": "DIALOGUE_CONTENT",
+          "authority": "CANONICAL_RUNTIME"
+        },
+        "claim_type": "SOURCE_SPEECH_ACT",
+        "relation_class": "SPEECH_ACT",
+        "qualifier_validation": {
+          "status": "BLOCKED",
+          "errors": [
+            "SYMBOLIC_TOKEN_INVALID:speaker_binding"
+          ],
+          "typed_qualifiers": {}
+        },
+        "projection": null
+      }
+    ]
+  },
+  "claim_v3_schema_version": "source_semantic_claim_candidate_v3",
+  "provider_forbidden_fields": [
+    "authority",
+    "byte_end",
+    "byte_start",
+    "candidate_id",
+    "canonical",
+    "char_end",
+    "char_start",
+    "claim_id",
+    "claim_type",
+    "final_authority",
+    "final_status",
+    "fingerprint",
+    "object_kind",
+    "promote",
+    "promotion",
+    "relation_class",
+    "sha256",
+    "source_claim_id",
+    "source_claim_supported",
+    "subject_kind"
+  ],
+  "repairs": 0
+}

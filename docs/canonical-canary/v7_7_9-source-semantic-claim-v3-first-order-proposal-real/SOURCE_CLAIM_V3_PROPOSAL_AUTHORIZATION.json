@@ -1,0 +1,20 @@
+{
+  "authorization_id": "v7.7.9-source-semantic-claim-v3-first-order-proposal-single-call",
+  "granted": true,
+  "source": "explicit user instruction in V7.7.9 phase prompt",
+  "scope": {
+    "target_book_id": 990453,
+    "episode": 1,
+    "first_order_only": true,
+    "current_frozen_source": true,
+    "current_verified_entity_registry": true,
+    "current_executable_predicates": true
+  },
+  "max_real_provider_posts": 1,
+  "semantic_verifier_posts": 0,
+  "second_order_proposal_posts": 0,
+  "production_writes": 0,
+  "image_posts": 0,
+  "video_posts": 0,
+  "conditional_on_all_preflight_gates_pass": true
+}

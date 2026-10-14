@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "raw_sha256": "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585",
+  "raw_length": 607,
+  "strict_json_parse": true,
+  "repair": false,
+  "coercion": false,
+  "markdown_stripping": false,
+  "substring_extraction": false,
+  "parse_retry": 0,
+  "error": ""
+}

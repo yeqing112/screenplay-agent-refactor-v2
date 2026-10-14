@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "candidate_rows": [
+    {
+      "index": 0,
+      "predicate": "enter_guided",
+      "signature": {
+        "predicate": "enter_guided",
+        "claim_type": "CHARACTER_ACTION",
+        "relation_class": "ACTION",
+        "allowed_subject_kinds": [
+          "CHARACTER"
+        ],
+        "allowed_object_kinds": [
+          "LOCATION"
+        ],
+        "allowed_qualifier_keys": [
+          "destination"
+        ],
+        "required_qualifier_keys": [],
+        "qualifier_entity_kind_constraints": {
+          "destination": [
+            "LOCATION"
+          ]
+        },
+        "available_subject_kind_counts": {
+          "CHARACTER": 2
+        },
+        "available_object_kind_counts": {
+          "LOCATION": 2
+        },
+        "execution_status": "EXECUTABLE"
+      },
+      "status": "PASS",
+      "errors": []
+    },
+    {
+      "index": 1,
+      "predicate": "speech_act",
+      "signature": {
+        "predicate": "speech_act",
+        "claim_type": "SOURCE_SPEECH_ACT",
+        "relation_class": "SPEECH_ACT",
+        "allowed_subject_kinds": [
+          "CHARACTER"
+        ],
+        "allowed_object_kinds": [
+          "DIALOGUE_CONTENT"
+        ],
+        "allowed_qualifier_keys": [
+          "speaker_binding"
+        ],
+        "required_qualifier_keys": [],
+        "available_subject_kind_counts": {
+          "CHARACTER": 2
+        },
+        "available_object_kind_counts": {
+          "DIALOGUE_CONTENT": 1
+        },
+        "execution_status": "EXECUTABLE"
+      },
+      "status": "PASS",
+      "errors": []
+    }
+  ]
+}

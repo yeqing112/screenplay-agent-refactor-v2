@@ -1,0 +1,92 @@
+{
+  "schema_version": "source_semantic_claim_candidate_set_v3",
+  "status": "SOURCE_SEMANTIC_CLAIM_V3_PROPOSAL_PARTIAL",
+  "validation_status": "BLOCKED",
+  "candidate_count": 2,
+  "valid_count": 1,
+  "blocked_count": 1,
+  "candidate_set_fingerprint": "9332a416a93cef5e35216f18ae210b92c891ee80928029dde566d7c25371144a",
+  "candidate_fingerprint_ordering": [
+    "850bcf831790cfc3ee7a4e356c84e17f33691bb615cbfa26f925aca5e87a97a0"
+  ],
+  "candidates": [
+    {
+      "provider_candidate_index": 0,
+      "raw_candidate": {
+        "evidence_refs": [
+          "S1A001"
+        ],
+        "modality": "ASSERTED",
+        "object_ref": "PEC_0001",
+        "polarity": "POSITIVE",
+        "predicate": "enter_guided",
+        "qualifiers": {},
+        "schema_version": "source_semantic_claim_candidate_v3",
+        "source_unit_refs": [
+          "SAU_E01_SC001_001"
+        ],
+        "subject_ref": "顾沉"
+      },
+      "validation_status": "PASS",
+      "errors": [],
+      "program_candidate_fingerprint": "850bcf831790cfc3ee7a4e356c84e17f33691bb615cbfa26f925aca5e87a97a0",
+      "program_claim_id": "SCC_0001",
+      "authority": "UNTRUSTED_PROPOSED",
+      "canonical": false,
+      "projection": {
+        "schema_version": "source_semantic_claim_candidate_projection_v3",
+        "claim_type": "CHARACTER_ACTION",
+        "relation_class": "ACTION",
+        "subject": {
+          "ref": "顾沉",
+          "kind": "CHARACTER"
+        },
+        "predicate": "enter_guided",
+        "object": {
+          "ref": "PEC_0001",
+          "kind": "LOCATION"
+        },
+        "qualifiers": {},
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "evidence_refs": [
+          "S1A001"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_001"
+        ]
+      }
+    },
+    {
+      "provider_candidate_index": 1,
+      "raw_candidate": {
+        "evidence_refs": [
+          "S1D001"
+        ],
+        "modality": "ASSERTED",
+        "object_ref": "SAU_E01_SC001_008",
+        "polarity": "POSITIVE",
+        "predicate": "speech_act",
+        "qualifiers": {
+          "speaker_binding": "顾沉"
+        },
+        "schema_version": "source_semantic_claim_candidate_v3",
+        "source_unit_refs": [
+          "SAU_E01_SC001_008"
+        ],
+        "subject_ref": "顾沉"
+      },
+      "validation_status": "BLOCKED",
+      "errors": [
+        "SYMBOLIC_TOKEN_INVALID:speaker_binding"
+      ],
+      "program_candidate_fingerprint": "",
+      "program_claim_id": null,
+      "authority": "UNTRUSTED_PROPOSED",
+      "canonical": false,
+      "projection": null
+    }
+  ],
+  "all_authority_untrusted_proposed": true,
+  "persisted": false
+}

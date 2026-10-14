@@ -1,0 +1,51 @@
+{
+  "schema_version": "source_claim_v3_proposal_surface_coverage_v1",
+  "name": "PROPOSAL_SURFACE_COVERAGE",
+  "semantic_coverage_pass": false,
+  "candidate_count": 2,
+  "valid_candidate_count": 1,
+  "blocked_candidate_count": 1,
+  "source_unit_count": 12,
+  "source_units_referenced": [
+    "SAU_E01_SC001_001",
+    "SAU_E01_SC001_008"
+  ],
+  "source_units_not_referenced": [
+    "SAU_E01_SC001_002",
+    "SAU_E01_SC001_003",
+    "SAU_E01_SC001_004",
+    "SAU_E01_SC001_005",
+    "SAU_E01_SC001_006",
+    "SAU_E01_SC001_007",
+    "SAU_E01_SC001_009",
+    "SAU_E01_SC001_010",
+    "SAU_E01_SC001_011",
+    "SAU_E01_SC001_012"
+  ],
+  "evidence_refs_used": [
+    "S1A001"
+  ],
+  "predicates_proposed": [
+    "enter_guided"
+  ],
+  "executable_predicates_unused": [
+    "left_by",
+    "received_by",
+    "speech_act"
+  ],
+  "dormant_predicates": [
+    "has_property",
+    "state_value"
+  ],
+  "entity_refs_used": [
+    "PEC_0001",
+    "顾沉"
+  ],
+  "claim_proposal_completeness": "NOT_PROVEN",
+  "status": "PASS_REPORTED_NOT_SEMANTIC_COMPLETENESS",
+  "potential_contradiction_diagnostic": {
+    "status": "DIAGNOSTIC_ONLY",
+    "potential_typed_contradictions": [],
+    "automatic_resolution": false
+  }
+}

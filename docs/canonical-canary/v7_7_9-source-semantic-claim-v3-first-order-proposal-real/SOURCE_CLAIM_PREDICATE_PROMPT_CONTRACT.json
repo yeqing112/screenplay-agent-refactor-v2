@@ -1,0 +1,105 @@
+{
+  "schema_version": "source_claim_predicate_prompt_contract_v1",
+  "status": "PASS",
+  "errors": [],
+  "predicates": {
+    "enter_guided": {
+      "predicate": "enter_guided",
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "LOCATION"
+      ],
+      "allowed_qualifier_keys": [
+        "destination"
+      ],
+      "required_qualifier_keys": [],
+      "semantic_definition": "A character guides or escorts another person into a destination location. The current claim shape has no argument for the guided person. Omit an event when representing it would lose that participant; do not encode a person in a qualifier."
+    },
+    "has_property": {
+      "predicate": "has_property",
+      "claim_type": "OBJECT_PROPERTY",
+      "relation_class": "OBJECT_PROPERTY",
+      "allowed_subject_kinds": [
+        "OBJECT"
+      ],
+      "allowed_object_kinds": [
+        "PROPERTY_VALUE"
+      ],
+      "allowed_qualifier_keys": [
+        "property_domain"
+      ],
+      "required_qualifier_keys": [],
+      "semantic_definition": "An object has one typed property-value entity."
+    },
+    "left_by": {
+      "predicate": "left_by",
+      "claim_type": "OBJECT_PROVENANCE",
+      "relation_class": "PROVENANCE",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "semantic_definition": "An object was left behind by one character."
+    },
+    "received_by": {
+      "predicate": "received_by",
+      "claim_type": "OBJECT_POSSESSION",
+      "relation_class": "POSSESSION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [
+        "transfer_source"
+      ],
+      "required_qualifier_keys": [],
+      "semantic_definition": "A character receives one object."
+    },
+    "speech_act": {
+      "predicate": "speech_act",
+      "claim_type": "SOURCE_SPEECH_ACT",
+      "relation_class": "SPEECH_ACT",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "DIALOGUE_CONTENT"
+      ],
+      "allowed_qualifier_keys": [
+        "speaker_binding"
+      ],
+      "required_qualifier_keys": [],
+      "semantic_definition": "A character is the speaker of one supplied dialogue-content entity. Use only the supplied character and dialogue-content references."
+    },
+    "state_value": {
+      "predicate": "state_value",
+      "claim_type": "ENVIRONMENT_STATE",
+      "relation_class": "ENVIRONMENT_STATE",
+      "allowed_subject_kinds": [
+        "ENVIRONMENT"
+      ],
+      "allowed_object_kinds": [
+        "STATE_VALUE"
+      ],
+      "allowed_qualifier_keys": [
+        "light_state",
+        "state_domain"
+      ],
+      "required_qualifier_keys": [],
+      "semantic_definition": "An environment has one typed state-value entity."
+    }
+  },
+  "definitions_are_versioned_ontology": true,
+  "story_specific_examples": false,
+  "source_prose_used_to_define_predicates": false
+}

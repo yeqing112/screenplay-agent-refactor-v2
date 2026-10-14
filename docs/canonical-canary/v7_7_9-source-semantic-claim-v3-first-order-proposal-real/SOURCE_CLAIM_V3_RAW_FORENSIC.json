@@ -1,0 +1,208 @@
+{
+  "status": "PASS_RAW_PERSISTED",
+  "authorization_id": "v7.7.9-source-semantic-claim-v3-first-order-proposal-single-call",
+  "provider_post_count": 1,
+  "raw_response": "{\"claims\":[{\"evidence_refs\":[\"S1A001\"],\"modality\":\"ASSERTED\",\"object_ref\":\"PEC_0001\",\"polarity\":\"POSITIVE\",\"predicate\":\"enter_guided\",\"qualifiers\":{},\"schema_version\":\"source_semantic_claim_candidate_v3\",\"source_unit_refs\":[\"SAU_E01_SC001_001\"],\"subject_ref\":\"顾沉\"},{\"evidence_refs\":[\"S1D001\"],\"modality\":\"ASSERTED\",\"object_ref\":\"SAU_E01_SC001_008\",\"polarity\":\"POSITIVE\",\"predicate\":\"speech_act\",\"qualifiers\":{\"speaker_binding\":\"顾沉\"},\"schema_version\":\"source_semantic_claim_candidate_v3\",\"source_unit_refs\":[\"SAU_E01_SC001_008\"],\"subject_ref\":\"顾沉\"}],\"schema_version\":\"source_semantic_claim_candidate_set_v3\"}",
+  "raw_response_sha256": "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585",
+  "raw_response_length": 607,
+  "provider_audit": {
+    "vendor_model": "mimo-v2.5",
+    "vendor_host": "api.xiaomimimo.com",
+    "profile_id": "local-llm-2vydoz",
+    "system_prompt_sha256": "b93dfc23ddb4022ccb0a77cb6a983723",
+    "system_prompt_length": 1023,
+    "user_prompt_sha256": "2bae12cb9880dcf4ce2e9ed87588f1fe",
+    "user_prompt_length": 8318,
+    "request_messages_sha256": "76fb48e2bc84cdd847f6cd8bee1b129c",
+    "request_fingerprint": "e89dae85894b8084890fef0a549be743a85a49ab4142931b3189cd5c146308c6",
+    "has_repair_request": false,
+    "repair_request_sha256": "",
+    "repair_request_length": 0,
+    "response_sha256": "44730220ba61ce249d1ebd5b87e3a037",
+    "response_length": 607,
+    "http_status": 200,
+    "parse_ok": true,
+    "finish_reason": "stop",
+    "choice_index": 0,
+    "top_level_keys": [
+      "claims",
+      "schema_version"
+    ],
+    "returned_schema_version": "source_semantic_claim_candidate_set_v3",
+    "response_debug_excerpt": "{\"claims\": [{\"evidence_refs\": [\"S1A001\"], \"modality\": \"ASSERTED\", \"object_ref\": \"PEC_0001\", \"polarity\": \"POSITIVE\", \"predicate\": \"enter_guided\", \"qualifiers\": {}, \"schema_version\": \"source_semantic_claim_candidate_v3\", \"source_unit_refs\": [\"SAU_E01_SC001_001\"], \"subject_ref\": \"顾沉\"}, {\"evidence_refs\": [\"S1D001\"], \"modality\": \"ASSERTED\", \"object_ref\": \"SAU_E01_SC001_008\", \"polarity\": \"POSITIVE\", \"predicate\": \"speech_act\", \"qualifiers\": {\"speaker_binding\": \"顾沉\"}, \"schema_version\": \"source_semantic_claim_candidate_v3\", \"source_unit_refs\": [\"SAU_E01_SC001_008\"], \"subject_ref\": \"顾沉\"}], \"schema_version\": \"source_semantic_claim_candidate_set_v3\"}",
+    "usage": {
+      "prompt_tokens": 3030,
+      "cached_tokens": null,
+      "completion_tokens": 205,
+      "total_tokens": 3235,
+      "cache_hit_rate": null,
+      "reasoning_tokens": 0,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens_details": {}
+    },
+    "resolved_max_tokens": 8192,
+    "resolved_temperature": 0.0,
+    "resolved_response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "source_semantic_claim_candidate_set_v3",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "required": [
+            "schema_version",
+            "claims"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "evidence_refs",
+                  "modality",
+                  "object_ref",
+                  "polarity",
+                  "predicate",
+                  "qualifiers",
+                  "schema_version",
+                  "source_unit_refs",
+                  "subject_ref"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "evidence_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  },
+                  "modality": {
+                    "type": "string",
+                    "enum": [
+                      "ASSERTED",
+                      "UNCERTAIN",
+                      "POSSIBLE",
+                      "HYPOTHETICAL",
+                      "PLAYABLE_OPTION",
+                      "DELEGATED",
+                      "PROHIBITED"
+                    ]
+                  },
+                  "object_ref": {
+                    "type": "string",
+                    "enum": [
+                      "E01_SC001",
+                      "PEC_0001",
+                      "PEC_0002",
+                      "PEC_0003",
+                      "PEC_0004",
+                      "PEC_0005",
+                      "PEC_0006",
+                      "PEC_0007",
+                      "PEC_0008",
+                      "PEC_0009",
+                      "PEC_0010",
+                      "PEC_0011",
+                      "PEC_0012",
+                      "PEC_0013",
+                      "PEC_0014",
+                      "PEC_0015",
+                      "SAU_E01_SC001_008",
+                      "林晚",
+                      "顾沉"
+                    ]
+                  },
+                  "polarity": {
+                    "type": "string",
+                    "enum": [
+                      "POSITIVE",
+                      "NEGATED",
+                      "PROHIBITION",
+                      "META_COMPLIANCE",
+                      "DELEGATION"
+                    ]
+                  },
+                  "predicate": {
+                    "type": "string",
+                    "enum": [
+                      "enter_guided",
+                      "left_by",
+                      "received_by",
+                      "speech_act"
+                    ]
+                  },
+                  "qualifiers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "schema_version": {
+                    "const": "source_semantic_claim_candidate_v3"
+                  },
+                  "source_unit_refs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  },
+                  "subject_ref": {
+                    "type": "string",
+                    "enum": [
+                      "E01_SC001",
+                      "PEC_0001",
+                      "PEC_0002",
+                      "PEC_0003",
+                      "PEC_0004",
+                      "PEC_0005",
+                      "PEC_0006",
+                      "PEC_0007",
+                      "PEC_0008",
+                      "PEC_0009",
+                      "PEC_0010",
+                      "PEC_0011",
+                      "PEC_0012",
+                      "PEC_0013",
+                      "PEC_0014",
+                      "PEC_0015",
+                      "SAU_E01_SC001_008",
+                      "林晚",
+                      "顾沉"
+                    ]
+                  }
+                }
+              }
+            },
+            "schema_version": {
+              "const": "source_semantic_claim_candidate_set_v3"
+            }
+          }
+        }
+      }
+    },
+    "resolved_thinking": {
+      "type": "disabled"
+    },
+    "latency_ms": 15175.43,
+    "extra": {
+      "v7_7_9": true,
+      "authorization_id": "v7.7.9-source-semantic-claim-v3-first-order-proposal-single-call",
+      "proposal_only": true,
+      "transport_attempt_number": 1,
+      "transport_retry": false
+    }
+  },
+  "error": "",
+  "persisted_before_parse": true
+}

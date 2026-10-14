@@ -1,0 +1,18 @@
+{
+  "schema_version": "source_claim_entity_kind_inventory_v1",
+  "status": "PASS",
+  "errors": [],
+  "entity_count": 19,
+  "kind_counts": {
+    "CHARACTER": 2,
+    "DIALOGUE_CONTENT": 1,
+    "ENVIRONMENT": 2,
+    "LOCATION": 2,
+    "OBJECT": 8,
+    "SCENE": 1,
+    "TEXT_CONTENT": 2,
+    "UNKNOWN_ENTITY": 1
+  },
+  "registry_fingerprint": "877d43fc4cea05b487e50b6a4afcdb58e44f78338f1ebfcb388ecbe9b9740acb",
+  "computed_from_entity_refs_and_kinds_only": true
+}

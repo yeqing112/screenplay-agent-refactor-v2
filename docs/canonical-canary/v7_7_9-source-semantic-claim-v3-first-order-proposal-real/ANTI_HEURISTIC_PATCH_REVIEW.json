@@ -1,0 +1,21 @@
+{
+  "schema_version": "v7_7_9_anti_heuristic_patch_review_v1",
+  "status": "PASS",
+  "scanned_module": "core/source_semantic_claim_v3_canary.py",
+  "phrase_dependence": "NO",
+  "scene_dependence": "NO",
+  "attempt_dependence": "NO",
+  "current_pec_special_case": "NO",
+  "predicate_name_inference": "NO",
+  "source_prose_executability_inference": "NO",
+  "local_nlp": "NO",
+  "provider_calls": 0,
+  "production_writes": 0,
+  "literal_matches": [],
+  "pattern_checks": {
+    "local_nlp_import": false,
+    "source_regex_extraction": false,
+    "predicate_name_semantic_branch": false,
+    "attempt_specific_branch": false
+  }
+}

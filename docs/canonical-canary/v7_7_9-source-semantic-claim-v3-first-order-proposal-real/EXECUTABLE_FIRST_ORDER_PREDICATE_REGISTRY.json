@@ -1,0 +1,153 @@
+{
+  "schema_version": "source_claim_executable_predicate_registry_v1",
+  "status": "PASS",
+  "errors": [],
+  "predicates": {
+    "enter_guided": {
+      "predicate": "enter_guided",
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "LOCATION"
+      ],
+      "allowed_qualifier_keys": [
+        "destination"
+      ],
+      "required_qualifier_keys": [],
+      "qualifier_entity_kind_constraints": {
+        "destination": [
+          "LOCATION"
+        ]
+      },
+      "available_subject_kind_counts": {
+        "CHARACTER": 2
+      },
+      "available_object_kind_counts": {
+        "LOCATION": 2
+      },
+      "execution_status": "EXECUTABLE"
+    },
+    "left_by": {
+      "predicate": "left_by",
+      "claim_type": "OBJECT_PROVENANCE",
+      "relation_class": "PROVENANCE",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "available_subject_kind_counts": {
+        "CHARACTER": 2
+      },
+      "available_object_kind_counts": {
+        "OBJECT": 8
+      },
+      "execution_status": "EXECUTABLE"
+    },
+    "received_by": {
+      "predicate": "received_by",
+      "claim_type": "OBJECT_POSSESSION",
+      "relation_class": "POSSESSION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [
+        "transfer_source"
+      ],
+      "required_qualifier_keys": [],
+      "available_subject_kind_counts": {
+        "CHARACTER": 2
+      },
+      "available_object_kind_counts": {
+        "OBJECT": 8
+      },
+      "execution_status": "EXECUTABLE"
+    },
+    "speech_act": {
+      "predicate": "speech_act",
+      "claim_type": "SOURCE_SPEECH_ACT",
+      "relation_class": "SPEECH_ACT",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "DIALOGUE_CONTENT"
+      ],
+      "allowed_qualifier_keys": [
+        "speaker_binding"
+      ],
+      "required_qualifier_keys": [],
+      "available_subject_kind_counts": {
+        "CHARACTER": 2
+      },
+      "available_object_kind_counts": {
+        "DIALOGUE_CONTENT": 1
+      },
+      "execution_status": "EXECUTABLE"
+    }
+  },
+  "dormant_predicates": {
+    "has_property": {
+      "predicate": "has_property",
+      "claim_type": "OBJECT_PROPERTY",
+      "relation_class": "OBJECT_PROPERTY",
+      "allowed_subject_kinds": [
+        "OBJECT"
+      ],
+      "allowed_object_kinds": [
+        "PROPERTY_VALUE"
+      ],
+      "allowed_qualifier_keys": [
+        "property_domain"
+      ],
+      "required_qualifier_keys": [],
+      "available_subject_kind_counts": {
+        "OBJECT": 8
+      },
+      "available_object_kind_counts": {
+        "PROPERTY_VALUE": 0
+      },
+      "execution_status": "TYPE_DEPENDENCY_UNAVAILABLE"
+    },
+    "state_value": {
+      "predicate": "state_value",
+      "claim_type": "ENVIRONMENT_STATE",
+      "relation_class": "ENVIRONMENT_STATE",
+      "allowed_subject_kinds": [
+        "ENVIRONMENT"
+      ],
+      "allowed_object_kinds": [
+        "STATE_VALUE"
+      ],
+      "allowed_qualifier_keys": [
+        "light_state",
+        "state_domain"
+      ],
+      "required_qualifier_keys": [],
+      "available_subject_kind_counts": {
+        "ENVIRONMENT": 2
+      },
+      "available_object_kind_counts": {
+        "STATE_VALUE": 0
+      },
+      "execution_status": "TYPE_DEPENDENCY_UNAVAILABLE"
+    }
+  },
+  "predicate_count": 4,
+  "dormant_predicate_count": 2,
+  "unresolved_relation_count": 0,
+  "semantics": "TYPE_EXECUTABLE != SOURCE_SUPPORTED",
+  "source_prose_consulted": false,
+  "surface_forms_consulted": false,
+  "evidence_text_consulted": false,
+  "predicate_name_semantics_inferred": false
+}

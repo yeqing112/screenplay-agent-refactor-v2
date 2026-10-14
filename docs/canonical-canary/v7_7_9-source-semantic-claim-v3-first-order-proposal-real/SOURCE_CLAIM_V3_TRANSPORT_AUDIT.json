@@ -1,0 +1,175 @@
+{
+  "status": "PASS",
+  "authorization_id": "v7.7.9-source-semantic-claim-v3-first-order-proposal-single-call",
+  "provider_post_count": 1,
+  "semantic_verifier_post_count": 0,
+  "second_order_proposal_post_count": 0,
+  "retry_count": 0,
+  "http_status": 200,
+  "finish_reason": "stop",
+  "latency_ms": 15177.19,
+  "usage": {
+    "prompt_tokens": 3030,
+    "cached_tokens": null,
+    "completion_tokens": 205,
+    "total_tokens": 3235,
+    "cache_hit_rate": null,
+    "reasoning_tokens": 0,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens_details": {}
+  },
+  "provider_request_id": "",
+  "raw_response_sha256": "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585",
+  "request_fingerprint": "58179d1577f42caaa517d983332fa61e19598d6e5abfd335fdd967c4b18fb648",
+  "resolved_response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "source_semantic_claim_candidate_set_v3",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "claims"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "claims": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "evidence_refs",
+                "modality",
+                "object_ref",
+                "polarity",
+                "predicate",
+                "qualifiers",
+                "schema_version",
+                "source_unit_refs",
+                "subject_ref"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "evidence_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "modality": {
+                  "type": "string",
+                  "enum": [
+                    "ASSERTED",
+                    "UNCERTAIN",
+                    "POSSIBLE",
+                    "HYPOTHETICAL",
+                    "PLAYABLE_OPTION",
+                    "DELEGATED",
+                    "PROHIBITED"
+                  ]
+                },
+                "object_ref": {
+                  "type": "string",
+                  "enum": [
+                    "E01_SC001",
+                    "PEC_0001",
+                    "PEC_0002",
+                    "PEC_0003",
+                    "PEC_0004",
+                    "PEC_0005",
+                    "PEC_0006",
+                    "PEC_0007",
+                    "PEC_0008",
+                    "PEC_0009",
+                    "PEC_0010",
+                    "PEC_0011",
+                    "PEC_0012",
+                    "PEC_0013",
+                    "PEC_0014",
+                    "PEC_0015",
+                    "SAU_E01_SC001_008",
+                    "林晚",
+                    "顾沉"
+                  ]
+                },
+                "polarity": {
+                  "type": "string",
+                  "enum": [
+                    "POSITIVE",
+                    "NEGATED",
+                    "PROHIBITION",
+                    "META_COMPLIANCE",
+                    "DELEGATION"
+                  ]
+                },
+                "predicate": {
+                  "type": "string",
+                  "enum": [
+                    "enter_guided",
+                    "left_by",
+                    "received_by",
+                    "speech_act"
+                  ]
+                },
+                "qualifiers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "schema_version": {
+                  "const": "source_semantic_claim_candidate_v3"
+                },
+                "source_unit_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "subject_ref": {
+                  "type": "string",
+                  "enum": [
+                    "E01_SC001",
+                    "PEC_0001",
+                    "PEC_0002",
+                    "PEC_0003",
+                    "PEC_0004",
+                    "PEC_0005",
+                    "PEC_0006",
+                    "PEC_0007",
+                    "PEC_0008",
+                    "PEC_0009",
+                    "PEC_0010",
+                    "PEC_0011",
+                    "PEC_0012",
+                    "PEC_0013",
+                    "PEC_0014",
+                    "PEC_0015",
+                    "SAU_E01_SC001_008",
+                    "林晚",
+                    "顾沉"
+                  ]
+                }
+              }
+            }
+          },
+          "schema_version": {
+            "const": "source_semantic_claim_candidate_set_v3"
+          }
+        }
+      }
+    }
+  },
+  "transport_error": "",
+  "retry_authorized": false
+}

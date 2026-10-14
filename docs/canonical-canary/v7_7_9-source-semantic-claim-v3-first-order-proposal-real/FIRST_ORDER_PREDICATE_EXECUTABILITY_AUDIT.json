@@ -1,0 +1,20 @@
+{
+  "schema_version": "source_claim_first_order_predicate_executability_audit_v1",
+  "status": "PASS",
+  "predicate_count": 4,
+  "dormant_predicate_count": 2,
+  "executable_predicates": [
+    "enter_guided",
+    "left_by",
+    "received_by",
+    "speech_act"
+  ],
+  "dormant_predicates": [
+    "has_property",
+    "state_value"
+  ],
+  "source_prose_consulted": false,
+  "predicate_name_semantics_inferred": false,
+  "semantics": "TYPE_EXECUTABLE != SOURCE_SUPPORTED",
+  "derivation": "A relation is type-executable only when at least one allowed subject kind and one allowed object kind are present in the frozen Claim Input Entity Registry."
+}
