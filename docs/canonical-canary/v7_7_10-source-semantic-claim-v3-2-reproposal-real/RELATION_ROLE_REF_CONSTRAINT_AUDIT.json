@@ -1,0 +1,67 @@
+{
+  "schema_version": "relation_role_ref_constraint_audit_v1",
+  "status": "PASS",
+  "contract": {
+    "schema_version": "source_claim_role_ref_constraint_v1",
+    "supported_operators": [
+      "NOT_EQUAL"
+    ],
+    "role_resolution": "resolved typed role refs plus qualifier_ref:<key> refs",
+    "source_text_consulted": false,
+    "surface_forms_consulted": false,
+    "predicate_spelling_consulted": false
+  },
+  "mock_same_guide_and_guided": {
+    "status": "BLOCKED",
+    "errors": [
+      "RELATION_REF_CONSTRAINT_VIOLATION:enter_guided:subject_ref:qualifier_ref:guided_character"
+    ],
+    "resolved_roles": {
+      "subject_ref": "CHAR_A",
+      "object_ref": "LOC_X",
+      "qualifier_ref:guided_character": "CHAR_A"
+    },
+    "constraint_results": [
+      {
+        "operator": "NOT_EQUAL",
+        "left_role": "subject_ref",
+        "right_role": "qualifier_ref:guided_character",
+        "left_ref": "CHAR_A",
+        "right_ref": "CHAR_A",
+        "status": "BLOCKED",
+        "errors": [
+          "RELATION_REF_CONSTRAINT_VIOLATION:enter_guided:subject_ref:qualifier_ref:guided_character"
+        ]
+      }
+    ],
+    "inputs_are_typed_roles_only": true
+  },
+  "mock_distinct_guide_and_guided": {
+    "status": "PASS",
+    "errors": [],
+    "resolved_roles": {
+      "subject_ref": "CHAR_A",
+      "object_ref": "LOC_X",
+      "qualifier_ref:guided_character": "CHAR_B"
+    },
+    "constraint_results": [
+      {
+        "operator": "NOT_EQUAL",
+        "left_role": "subject_ref",
+        "right_role": "qualifier_ref:guided_character",
+        "left_ref": "CHAR_A",
+        "right_ref": "CHAR_B",
+        "status": "PASS",
+        "errors": []
+      }
+    ],
+    "inputs_are_typed_roles_only": true
+  },
+  "runtime_role_constraints": [
+    {
+      "operator": "NOT_EQUAL",
+      "left_role": "subject_ref",
+      "right_role": "qualifier_ref:guided_character"
+    }
+  ]
+}

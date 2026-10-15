@@ -1,0 +1,5 @@
+{
+  "schema_version": "provider_entity_ref_qualifier_domain_contract_v1",
+  "rule": "Every provider-writable ENTITY_REF qualifier declares a nonempty explicit entity-kind domain in each permitting provider predicate signature.",
+  "missing_domain_means_any_kind": false
+}

@@ -1,0 +1,179 @@
+{
+  "schema_version": "source_claim_proposal_predicate_registry_v3",
+  "status": "PASS",
+  "predicates": {
+    "enter_guided": {
+      "predicate": "enter_guided",
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "LOCATION"
+      ],
+      "allowed_qualifier_keys": [
+        "guided_character"
+      ],
+      "required_qualifier_keys": [
+        "guided_character"
+      ],
+      "qualifier_entity_kind_constraints": {
+        "guided_character": [
+          "CHARACTER"
+        ]
+      },
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "ref_constraints": [
+        {
+          "operator": "NOT_EQUAL",
+          "left_role": "subject_ref",
+          "right_role": "qualifier_ref:guided_character"
+        }
+      ],
+      "available_subject_kind_counts": {
+        "CHARACTER": 2
+      },
+      "available_object_kind_counts": {
+        "LOCATION": 2
+      },
+      "required_qualifier_entity_kind_counts": {
+        "guided_character": {
+          "CHARACTER": 2
+        }
+      },
+      "missing_type_dependencies": [],
+      "execution_status": "EXECUTABLE"
+    },
+    "left_by": {
+      "predicate": "left_by",
+      "claim_type": "OBJECT_PROVENANCE",
+      "relation_class": "PROVENANCE",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "ref_constraints": [],
+      "available_subject_kind_counts": {
+        "CHARACTER": 2
+      },
+      "available_object_kind_counts": {
+        "OBJECT": 8
+      },
+      "required_qualifier_entity_kind_counts": {},
+      "missing_type_dependencies": [],
+      "execution_status": "EXECUTABLE"
+    },
+    "received_by": {
+      "predicate": "received_by",
+      "claim_type": "OBJECT_POSSESSION",
+      "relation_class": "POSSESSION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "qualifier_entity_kind_constraints": {},
+      "ref_constraints": [],
+      "available_subject_kind_counts": {
+        "CHARACTER": 2
+      },
+      "available_object_kind_counts": {
+        "OBJECT": 8
+      },
+      "required_qualifier_entity_kind_counts": {},
+      "missing_type_dependencies": [],
+      "execution_status": "EXECUTABLE"
+    }
+  },
+  "dormant_predicates": {
+    "has_property": {
+      "predicate": "has_property",
+      "claim_type": "OBJECT_PROPERTY",
+      "relation_class": "OBJECT_PROPERTY",
+      "allowed_subject_kinds": [
+        "OBJECT"
+      ],
+      "allowed_object_kinds": [
+        "PROPERTY_VALUE"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "qualifier_entity_kind_constraints": {},
+      "ref_constraints": [],
+      "available_subject_kind_counts": {
+        "OBJECT": 8
+      },
+      "available_object_kind_counts": {
+        "PROPERTY_VALUE": 0
+      },
+      "required_qualifier_entity_kind_counts": {},
+      "missing_type_dependencies": [
+        "OBJECT_KIND_UNAVAILABLE"
+      ],
+      "execution_status": "TYPE_DEPENDENCY_UNAVAILABLE"
+    },
+    "state_value": {
+      "predicate": "state_value",
+      "claim_type": "ENVIRONMENT_STATE",
+      "relation_class": "ENVIRONMENT_STATE",
+      "allowed_subject_kinds": [
+        "ENVIRONMENT"
+      ],
+      "allowed_object_kinds": [
+        "STATE_VALUE"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "qualifier_entity_kind_constraints": {},
+      "ref_constraints": [],
+      "available_subject_kind_counts": {
+        "ENVIRONMENT": 2
+      },
+      "available_object_kind_counts": {
+        "STATE_VALUE": 0
+      },
+      "required_qualifier_entity_kind_counts": {},
+      "missing_type_dependencies": [
+        "OBJECT_KIND_UNAVAILABLE"
+      ],
+      "execution_status": "TYPE_DEPENDENCY_UNAVAILABLE"
+    }
+  },
+  "predicate_count": 3,
+  "dormant_predicate_count": 2,
+  "program_deterministic_predicates": [
+    "speech_act"
+  ],
+  "second_order_predicates": [
+    "knows",
+    "uncertainty"
+  ],
+  "second_order_provider_proposable": false,
+  "entity_ref_qualifier_domain_audit_status": "PASS",
+  "semantics": "TYPE_EXECUTABLE != SOURCE_SUPPORTED",
+  "errors": [],
+  "source_text_consulted": false,
+  "predicate_name_semantics_inferred": false
+}

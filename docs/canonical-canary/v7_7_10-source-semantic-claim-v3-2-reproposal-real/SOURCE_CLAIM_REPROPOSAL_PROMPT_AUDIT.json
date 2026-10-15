@@ -1,0 +1,20 @@
+{
+  "schema_version": "source_claim_reproposal_prompt_audit_v1",
+  "status": "PASS",
+  "system_prompt_sha256": "b84d2f36237e9971b92fc4f86732825be9ffd56ae61c32a4d76d6697ddc776af",
+  "user_prompt_sha256": "8c103f1c091021a1980ee59342322722d53128ca9adc20ec1efbc26d03ea8ae2",
+  "request_fingerprint": "048648bf646f74b0bcecb1adcd5ca864ea008a0357afa9ddbef1b7049027faae",
+  "system_prompt_length": 734,
+  "user_prompt_length": 6823,
+  "source_unit_count": 12,
+  "runtime_executable_predicates_only": [
+    "enter_guided",
+    "left_by",
+    "received_by"
+  ],
+  "speech_act_or_speaker_binding_in_prompt": false,
+  "dormant_or_second_order_predicates_in_prompt": false,
+  "lossy_forced_mapping_prohibited": true,
+  "source_units_zero_or_more": true,
+  "prompt_text_persisted": false
+}

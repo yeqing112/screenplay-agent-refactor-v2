@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "candidate_rows": [
+    {
+      "index": 0,
+      "predicate": "enter_guided",
+      "status": "PASS",
+      "errors": [],
+      "signature": {
+        "predicate": "enter_guided",
+        "claim_type": "CHARACTER_ACTION",
+        "relation_class": "ACTION",
+        "allowed_subject_kinds": [
+          "CHARACTER"
+        ],
+        "allowed_object_kinds": [
+          "LOCATION"
+        ],
+        "allowed_qualifier_keys": [
+          "guided_character"
+        ],
+        "required_qualifier_keys": [
+          "guided_character"
+        ],
+        "qualifier_entity_kind_constraints": {
+          "guided_character": [
+            "CHARACTER"
+          ]
+        },
+        "proposal_owner": "PROVIDER_PROPOSABLE",
+        "proposal_mode": "PROVIDER_PROPOSABLE",
+        "provider_proposable": true,
+        "ref_constraints": [
+          {
+            "operator": "NOT_EQUAL",
+            "left_role": "subject_ref",
+            "right_role": "qualifier_ref:guided_character"
+          }
+        ]
+      }
+    }
+  ]
+}

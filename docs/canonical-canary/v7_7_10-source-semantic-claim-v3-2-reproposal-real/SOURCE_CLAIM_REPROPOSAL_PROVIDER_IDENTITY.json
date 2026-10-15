@@ -1,0 +1,29 @@
+{
+  "profile_id": "local-llm-2vydoz",
+  "provider": "openai-compatible",
+  "model": "mimo-v2.5",
+  "base_host": "https://api.xiaomimimo.com",
+  "provider_identity_fingerprint": "9908c628bc8b970817674b26ff3897bb055bc24ee6505bbc2af6a80f7722c455",
+  "enabled": true,
+  "key_configured": true,
+  "base_url_path": "/v1",
+  "qualification_fingerprint": {
+    "schema_version": "provider_structured_output_qualification_v1",
+    "profile_id": "local-llm-2vydoz",
+    "provider": "openai-compatible",
+    "model": "mimo-v2.5",
+    "base_host": "https://api.xiaomimimo.com",
+    "provider_identity_fingerprint": "9908c628bc8b970817674b26ff3897bb055bc24ee6505bbc2af6a80f7722c455",
+    "capability": "JSON_SCHEMA_STRICT_SUPPORTED",
+    "probe_schema_fingerprint": "d8e5d4dcfb0af07f632660c83cdf3c733617c43d0f0f724420c6d95777ebf726",
+    "request_fingerprint": "2849d73c0c122c33dccf5ab72f1a32263c407b38b45cd461b48b8d10c622f1e6",
+    "raw_response_sha256": "fe126984e05e6d64c6e68c1915dc9e8fcda734ab5b763dd9eb1760f35376d0ae",
+    "qualified": true,
+    "qualification_fingerprint": "194241dae7837d160c63a72bd1c3017bd9a9d0219d2f25e6a083637abdf3cb3b"
+  },
+  "qualified": true,
+  "capability": "JSON_SCHEMA_STRICT_SUPPORTED",
+  "qualification_status": "PROVIDER_STRUCTURED_OUTPUT_CAPABILITY_QUALIFIED",
+  "preflight_status": "PASS",
+  "profile_mutated": false
+}

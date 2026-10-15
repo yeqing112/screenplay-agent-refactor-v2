@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "id_owner": "program",
+  "provider_supplied_id": false,
+  "historical_ids_reused": false,
+  "rows": [
+    {
+      "claim_id": "SCC_V7_7_10_0001",
+      "candidate_fingerprint": "6f5a6a567c83d674f5ecc463ef44bfcc9ecfd0e5798a44a166be929ed5f8717f",
+      "authority": "UNTRUSTED_PROPOSED",
+      "canonical": false,
+      "historical_superseded_candidate_refs": [
+        "V7.7.9:CANDIDATE_0",
+        "V7.7.9:CANDIDATE_1"
+      ],
+      "proposal_attempt_id": "v7.7.10-source-semantic-claim-v3-2-reproposal-single-call",
+      "projection": {
+        "schema_version": "source_semantic_claim_candidate_projection_v3",
+        "claim_type": "CHARACTER_ACTION",
+        "relation_class": "ACTION",
+        "subject": {
+          "ref": "顾沉",
+          "kind": "CHARACTER"
+        },
+        "predicate": "enter_guided",
+        "object": {
+          "ref": "PEC_0001",
+          "kind": "LOCATION"
+        },
+        "qualifiers": {
+          "guided_character": {
+            "value_type": "ENTITY_REF",
+            "ref": "林晚",
+            "kind": "CHARACTER"
+          }
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED",
+        "evidence_refs": [
+          "S1A001"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_001"
+        ]
+      }
+    }
+  ],
+  "candidate_fingerprint_ordering": [
+    "6f5a6a567c83d674f5ecc463ef44bfcc9ecfd0e5798a44a166be929ed5f8717f"
+  ],
+  "proposal_attempt_id": "v7.7.10-source-semantic-claim-v3-2-reproposal-single-call"
+}

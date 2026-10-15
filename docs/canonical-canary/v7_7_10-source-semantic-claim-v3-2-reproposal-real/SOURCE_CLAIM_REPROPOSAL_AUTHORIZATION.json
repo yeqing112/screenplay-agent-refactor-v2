@@ -1,0 +1,20 @@
+{
+  "authorization_id": "v7.7.10-source-semantic-claim-v3-2-reproposal-single-call",
+  "granted": true,
+  "source": "explicit user instruction in V7.7.10 phase prompt",
+  "scope": {
+    "book_id": 990453,
+    "episode": 1,
+    "first_order_only": true,
+    "provider_proposable_only": true,
+    "frozen_source_and_entity_registry": true,
+    "v4_typed_ontology": true
+  },
+  "max_real_provider_posts": 1,
+  "retries": 0,
+  "claim_verifier_posts": 0,
+  "second_order_proposal_posts": 0,
+  "production_writes": 0,
+  "image_posts": 0,
+  "video_posts": 0
+}

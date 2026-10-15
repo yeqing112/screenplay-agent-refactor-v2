@@ -86,10 +86,14 @@ def test_historical_v7_7_9_reproducibility_and_partial_freeze_remain_unchanged()
     raw = json.loads((V779 / "SOURCE_CLAIM_V3_RAW_FORENSIC.json").read_text(encoding="utf-8"))
     old_proposal = json.loads((V779 / "SOURCE_CLAIM_V3_PROPOSAL_SET.json").read_text(encoding="utf-8"))
     old_contract = json.loads((V7791 / "PROPOSAL_OWNERSHIP_CLASSIFICATION.json").read_text(encoding="utf-8"))
+    old_eligibility = json.loads((V7791 / "CURRENT_V7_7_9_VERIFIER_ELIGIBILITY.json").read_text(encoding="utf-8"))
     assert raw["raw_response_sha256"] == "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585"
     assert old_proposal["status"] == "SOURCE_SEMANTIC_CLAIM_V3_PROPOSAL_PARTIAL"
     assert old_contract["counts"] == {"PROVIDER_PROPOSABLE": 5, "PROGRAM_DETERMINISTIC": 1, "DEFERRED_SECOND_ORDER": 2}
     assert old_contract["classes"]["PROGRAM_DETERMINISTIC"] == ["speech_act"]
+    assert old_eligibility["verifier_eligible_count"] == 0
+    assert old_eligibility["candidate_0_state"] == "SUPERSEDED_SIGNATURE_NOT_VERIFIER_ELIGIBLE"
+    assert old_eligibility["candidate_1_state"] == "BLOCKED_REDUNDANT_PROVIDER_QUALIFIER"
 
 
 def test_new_execution_registries_are_isolated_from_historical_v2_and_v3():

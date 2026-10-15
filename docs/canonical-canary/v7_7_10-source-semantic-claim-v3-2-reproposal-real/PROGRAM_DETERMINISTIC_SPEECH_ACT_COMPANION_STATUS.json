@@ -1,0 +1,42 @@
+{
+  "schema_version": "program_deterministic_speech_act_companion_freshness_v1",
+  "status": "PASS",
+  "binding_count": 1,
+  "expected_binding_count": 1,
+  "frozen_bindings_fingerprint": "bb79f4e4d61e2bc61b088610c63cb269ef2bf7cc4c73e60a586a6f0a751731ac",
+  "runtime_bindings_fingerprint": "bb79f4e4d61e2bc61b088610c63cb269ef2bf7cc4c73e60a586a6f0a751731ac",
+  "binding_fingerprint_matches": true,
+  "script_ir_payload_fingerprint": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b",
+  "semantic_regeneration_performed": false,
+  "companion_added_to_provider_raw_set": false,
+  "provider_speech_act_candidate_count": 0,
+  "program_deterministic_companion_count": 1,
+  "companion_registry_frozen": {
+    "schema_version": "source_speech_act_binding_registry_v1",
+    "status": "PASS",
+    "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+    "binding_count": 1,
+    "bindings": [
+      {
+        "dialogue_content_ref": "SAU_E01_SC001_008",
+        "speaker_ref": "顾沉",
+        "evidence_refs": [
+          "S1D001",
+          "S1D1I001",
+          "S1D1U001"
+        ],
+        "source_unit_refs": [
+          "SAU_E01_SC001_008"
+        ],
+        "speaker_binding_provenance_fingerprint": "caa62129890566bde011e25f54b1c0c7ab12bbbc47efe8974e56bd8e5d00876b",
+        "speaker_binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+        "speaker_binding_type": "COREFERENCE_RESOLUTION",
+        "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1"
+      }
+    ],
+    "speaker_source": "STRUCTURED_SCRIPT_IR_DIALOGUE_SPEAKER_AND_SPEAKER_BINDING",
+    "dialogue_prose_parsed_for_speaker": false,
+    "errors": [],
+    "production_writes": 0
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": "source_claim_predicate_prompt_contract_v3_2",
+  "status": "PASS",
+  "predicates": {
+    "enter_guided": {
+      "predicate": "enter_guided",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "LOCATION"
+      ],
+      "allowed_qualifier_keys": [
+        "guided_character"
+      ],
+      "required_qualifier_keys": [
+        "guided_character"
+      ],
+      "semantic_definition": "One CHARACTER guides a DIFFERENT CHARACTER into one LOCATION. subject_ref is the guide, object_ref is the destination, and guided_character is the guided person. All three roles are required."
+    },
+    "has_property": {
+      "predicate": "has_property",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "allowed_subject_kinds": [
+        "OBJECT"
+      ],
+      "allowed_object_kinds": [
+        "PROPERTY_VALUE"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "semantic_definition": "An OBJECT has one typed PROPERTY_VALUE entity."
+    },
+    "left_by": {
+      "predicate": "left_by",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "semantic_definition": "A CHARACTER explicitly leaves one OBJECT. This relation has no qualifiers."
+    },
+    "received_by": {
+      "predicate": "received_by",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "semantic_definition": "A CHARACTER explicitly receives one OBJECT. Do not infer who transferred it. This relation has no qualifiers."
+    },
+    "state_value": {
+      "predicate": "state_value",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "allowed_subject_kinds": [
+        "ENVIRONMENT"
+      ],
+      "allowed_object_kinds": [
+        "STATE_VALUE"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "semantic_definition": "An ENVIRONMENT has one typed STATE_VALUE entity."
+    }
+  },
+  "story_specific_examples": false,
+  "source_prose_used_to_define_predicates": false,
+  "errors": []
+}

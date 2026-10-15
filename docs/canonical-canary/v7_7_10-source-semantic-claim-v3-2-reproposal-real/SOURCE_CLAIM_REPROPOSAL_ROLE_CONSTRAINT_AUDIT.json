@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "candidate_rows": [
+    {
+      "index": 0,
+      "status": "PASS",
+      "errors": [],
+      "resolved_roles": {
+        "subject_ref": "顾沉",
+        "object_ref": "PEC_0001",
+        "qualifier_ref:guided_character": "林晚"
+      },
+      "constraint_results": [
+        {
+          "operator": "NOT_EQUAL",
+          "left_role": "subject_ref",
+          "right_role": "qualifier_ref:guided_character",
+          "left_ref": "顾沉",
+          "right_ref": "林晚",
+          "status": "PASS",
+          "errors": []
+        }
+      ],
+      "inputs_are_typed_roles_only": true
+    }
+  ]
+}

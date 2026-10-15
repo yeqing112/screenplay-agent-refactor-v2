@@ -1,0 +1,19 @@
+{
+  "schema_version": "source_claim_qualifier_registry_v4",
+  "supersedes_for_new_execution_only": "source_claim_qualifier_registry_v3",
+  "qualifiers": {
+    "guided_character": {
+      "value_type": "ENTITY_REF"
+    }
+  },
+  "wire_value_type": "string",
+  "excluded_from_current_provider_surface": {
+    "speaker_binding": "PROGRAM_OWNED_PROVENANCE",
+    "destination": "DUPLICATES_OBJECT_REF",
+    "transfer_source": "ENTITY_REF_DOMAIN_UNRESOLVED",
+    "property_domain": "NO_CURRENT_EXECUTABLE_PROVIDER_RELATION",
+    "state_domain": "NO_CURRENT_EXECUTABLE_PROVIDER_RELATION",
+    "light_state": "NO_CURRENT_EXECUTABLE_PROVIDER_RELATION"
+  },
+  "historical_v3_registry_mutated": false
+}

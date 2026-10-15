@@ -388,6 +388,8 @@ def build_preflight() -> dict[str, Any]:
         "speech_binding_count": len(read_json(V7791 / "SOURCE_SPEECH_ACT_BINDING_REGISTRY.json").get("bindings", [])),
         "speech_binding_fingerprint": historical_companion_fp,
         "old_candidates_verifier_eligible_count": eligibility7791.get("verifier_eligible_count"),
+        "candidate_0_state": eligibility7791.get("candidate_0_state"),
+        "candidate_1_state": eligibility7791.get("candidate_1_state"),
         "contract_artifact_sha256": {
             name: sha256_file(V7791 / name)
             for name in ("RELATION_SIGNATURE_REGISTRY_V3.json", "QUALIFIER_REGISTRY_V3.json", "PROVIDER_PREDICATE_REGISTRY_V2.json", "SOURCE_SPEECH_ACT_BINDING_REGISTRY.json", "CURRENT_V7_7_9_VERIFIER_ELIGIBILITY.json")
@@ -446,6 +448,8 @@ def build_preflight() -> dict[str, Any]:
         "v7_7_9_raw_sha_immutable": historical_raw.get("raw_response_sha256") == EXPECTED_RAW_V779_SHA,
         "v7_7_9_1_reconciled": historical_contract_freeze.get("contract_reconciled"),
         "old_candidate_verifier_eligible_count_zero": eligibility7791.get("verifier_eligible_count") == 0,
+        "candidate_0_superseded_and_ineligible": eligibility7791.get("candidate_0_state") == "SUPERSEDED_SIGNATURE_NOT_VERIFIER_ELIGIBLE",
+        "candidate_1_redundant_qualifier_and_ineligible": eligibility7791.get("candidate_1_state") == "BLOCKED_REDUNDANT_PROVIDER_QUALIFIER",
         "source_claim_completeness_still_unproven": read_json(V7791 / "NO_PROVIDER_NO_PRODUCTION_WRITE_AUDIT.json").get("claim_proposal_completeness") == "NOT_PROVEN",
     }
     registry_checks = {
@@ -574,6 +578,10 @@ def write_preflight_artifacts(pre: Mapping[str, Any]) -> None:
         "valid_count": v["historical_set"].get("valid_count"),
         "blocked_count": v["historical_set"].get("blocked_count"),
         "verifier_eligible_count": 0,
+        "old_candidate_states": {
+            "candidate_0": v["historical_contract_freeze"].get("candidate_0_state"),
+            "candidate_1": v["historical_contract_freeze"].get("candidate_1_state"),
+        },
         "historical_artifacts_modified": False,
     })
     write_json("V7_7_9_1_CONTRACT_FREEZE.json", v["historical_contract_freeze"])
@@ -1021,6 +1029,7 @@ def final_report(pre: Mapping[str, Any], result: Mapping[str, Any]) -> str:
 - Status: `{result.get('status')}`; next state: `{result.get('next_state')}`.
 - Baseline: `{BASELINE_COMMIT}`; branch: `{runtime.get('branch')}`; implementation HEAD: `{runtime.get('head')}`.
 - V7.7.9 remains `{pre['values']['historical_set'].get('status')}`; frozen raw SHA256: `{EXPECTED_RAW_V779_SHA}`; V7.7.9.1 old verifier eligible count: `0`.
+- V7.7.9.1 candidate #0 remains `SUPERSEDED_SIGNATURE_NOT_VERIFIER_ELIGIBLE`; candidate #1 remains `BLOCKED_REDUNDANT_PROVIDER_QUALIFIER`; neither entered verification.
 - Current registries: `{runtime.get('relation_registry_version')}`, `{runtime.get('qualifier_registry_version')}`, `{runtime.get('provider_registry_version')}`.
 - Role distinctness audit: `{pre['values']['role_audit'].get('status')}`; same-guide/guided blocked and distinct-guide/guided passed.
 - Provider ENTITY_REF qualifier domain audit: `{pre['values']['domain_audit'].get('status')}`; unresolved domains: `{pre['values']['domain_audit'].get('unresolved_entity_ref_qualifier_domain_count')}`. `transfer_source` remains deferred and is not provider writable.

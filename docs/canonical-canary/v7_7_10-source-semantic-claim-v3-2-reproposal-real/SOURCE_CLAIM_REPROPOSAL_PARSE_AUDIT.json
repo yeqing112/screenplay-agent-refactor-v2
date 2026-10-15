@@ -1,0 +1,13 @@
+{
+  "schema_version": "source_claim_reproposal_parse_audit_v1",
+  "status": "PASS",
+  "raw_sha256": "39c43a5a571f220e15bc88c273f7652fe4679fc52b629886c00713a8e6d21b1a",
+  "raw_length": 370,
+  "strict_json_parse": true,
+  "repair": false,
+  "coercion": false,
+  "markdown_stripping": false,
+  "substring_extraction": false,
+  "parse_retry": 0,
+  "error": ""
+}

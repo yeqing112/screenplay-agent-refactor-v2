@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "candidate_rows": [
+    {
+      "index": 0,
+      "status": "PASS",
+      "errors": [],
+      "subject_ref": "顾沉",
+      "object_ref": "PEC_0001"
+    }
+  ]
+}

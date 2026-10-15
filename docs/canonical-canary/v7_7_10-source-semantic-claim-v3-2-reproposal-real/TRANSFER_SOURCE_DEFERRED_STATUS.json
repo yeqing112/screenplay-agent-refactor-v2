@@ -1,0 +1,8 @@
+{
+  "schema_version": "transfer_source_deferred_status_v1",
+  "status": "DEFERRED_ENTITY_KIND_DOMAIN_UNRESOLVED",
+  "historical_v3_value_type": "ENTITY_REF",
+  "v4_provider_writable": false,
+  "received_by_allowed_qualifier_keys": [],
+  "kind_guessed": false
+}

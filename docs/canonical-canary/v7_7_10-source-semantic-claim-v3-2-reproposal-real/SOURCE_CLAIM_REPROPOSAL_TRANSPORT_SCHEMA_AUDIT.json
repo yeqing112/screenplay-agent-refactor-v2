@@ -1,0 +1,84 @@
+{
+  "schema_version": "source_claim_reproposal_transport_schema_audit_v1",
+  "status": "PASS",
+  "compiler": {
+    "status": "PASS",
+    "removed_annotation_paths": [
+      "$.$id",
+      "$.$schema",
+      "$.title"
+    ],
+    "errors": [],
+    "input_fingerprint": "71bff8cd04336574c16e8ba4d367cdcbf036ea0aa23f1871ad2ee797283e0fe8",
+    "output_fingerprint": "5f4ecbd2ca8cbaf8dea0b1319350cf763a971aefea8143a346232d23e8d4c75c",
+    "diagnostic_partial_output_fingerprint": null,
+    "input_unchanged": true,
+    "deterministic": true,
+    "structural_keywords": [
+      "additionalProperties",
+      "const",
+      "enum",
+      "items",
+      "minItems",
+      "minLength",
+      "properties",
+      "required",
+      "type",
+      "uniqueItems"
+    ],
+    "annotation_keywords": [
+      "$id",
+      "$schema",
+      "authority",
+      "default",
+      "deprecated",
+      "description",
+      "examples",
+      "notes",
+      "provider_may_not_supply",
+      "readOnly",
+      "schema_version",
+      "surface_form_semantics",
+      "title",
+      "trust",
+      "writeOnly"
+    ]
+  },
+  "transport_schema_fingerprint": "5f4ecbd2ca8cbaf8dea0b1319350cf763a971aefea8143a346232d23e8d4c75c",
+  "predicate_enum": [
+    "enter_guided",
+    "left_by",
+    "received_by"
+  ],
+  "predicate_enum_runtime_derived": true,
+  "strict": true,
+  "dialect_counts": {
+    "union_type": 0,
+    "oneOf": 0,
+    "anyOf": 0,
+    "dangling_ref": 0
+  },
+  "additional_properties_false": true,
+  "provider_forbidden_fields": [
+    "authority",
+    "byte_end",
+    "byte_start",
+    "candidate_id",
+    "canonical",
+    "char_end",
+    "char_start",
+    "claim_id",
+    "claim_type",
+    "final_authority",
+    "final_status",
+    "fingerprint",
+    "object_kind",
+    "promote",
+    "promotion",
+    "relation_class",
+    "sha256",
+    "source_claim_id",
+    "source_claim_supported",
+    "subject_kind"
+  ]
+}

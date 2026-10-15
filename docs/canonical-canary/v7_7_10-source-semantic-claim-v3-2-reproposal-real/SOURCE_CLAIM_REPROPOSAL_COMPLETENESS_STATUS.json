@@ -1,0 +1,6 @@
+{
+  "claim_proposal_completeness": "NOT_PROVEN",
+  "entity_semantic_completeness": "NOT_PROVEN",
+  "second_order_epistemic_coverage": "DEFERRED_NOT_PROVEN",
+  "typed_director_requirement_manifest": "MISSING"
+}

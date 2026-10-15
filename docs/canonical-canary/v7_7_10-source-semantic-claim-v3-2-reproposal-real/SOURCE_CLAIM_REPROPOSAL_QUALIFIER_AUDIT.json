@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "candidate_rows": [
+    {
+      "index": 0,
+      "status": "PASS",
+      "errors": [],
+      "qualifiers": {
+        "guided_character": "林晚"
+      }
+    }
+  ]
+}

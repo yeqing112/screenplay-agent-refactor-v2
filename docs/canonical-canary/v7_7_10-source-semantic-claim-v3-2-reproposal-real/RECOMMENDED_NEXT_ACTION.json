@@ -1,0 +1,10 @@
+{
+  "status": "SOURCE_SEMANTIC_CLAIM_V3_REPROPOSAL_VALIDATED",
+  "next_state": "SOURCE_SEMANTIC_CLAIM_V3_SEMANTIC_VERIFICATION_BOUNDARY_REQUIRED",
+  "provider_posts": 1,
+  "semantic_verifier_authorized": false,
+  "semantic_verifier_called": false,
+  "second_order_proposal_posts": 0,
+  "source_claim_authority_written": false,
+  "production_writes": 0
+}

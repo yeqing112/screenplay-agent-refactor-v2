@@ -1,0 +1,15 @@
+{
+  "status": "RECORDED_NOT_SEMANTIC_COMPLETENESS",
+  "candidate_count": 1,
+  "valid_count": 1,
+  "blocked_count": 0,
+  "source_unit_count": 12,
+  "source_units_referenced": [
+    "SAU_E01_SC001_001"
+  ],
+  "predicate_counts": {
+    "enter_guided": 1
+  },
+  "claim_proposal_completeness": "NOT_PROVEN",
+  "semantic_coverage_pass": false
+}

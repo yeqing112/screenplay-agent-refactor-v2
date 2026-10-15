@@ -1,0 +1,132 @@
+{
+  "schema_version": "source_claim_reproposal_provider_entity_view_freshness_v1",
+  "status": "PASS",
+  "frozen_fingerprint": "6440d07c6eaa0074b3c98f84e5fb406ff79d0b936e54b444af3158db386f8a2a",
+  "runtime_fingerprint": "6440d07c6eaa0074b3c98f84e5fb406ff79d0b936e54b444af3158db386f8a2a",
+  "same_as_frozen_v7_7_9_view": true,
+  "view": {
+    "schema_version": "source_claim_provider_entity_view_v1",
+    "status": "PASS",
+    "errors": [],
+    "entities": {
+      "E01_SC001": {
+        "ref": "E01_SC001",
+        "kind": "SCENE",
+        "display_form": "E01_SC001",
+        "authority": "CANONICAL_RUNTIME"
+      },
+      "PEC_0001": {
+        "ref": "PEC_0001",
+        "kind": "LOCATION",
+        "display_form": "暗房",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0002": {
+        "ref": "PEC_0002",
+        "kind": "ENVIRONMENT",
+        "display_form": "红色安全灯",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0003": {
+        "ref": "PEC_0003",
+        "kind": "ENVIRONMENT",
+        "display_form": "墙上的水渍",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0004": {
+        "ref": "PEC_0004",
+        "kind": "OBJECT",
+        "display_form": "铁盒",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0005": {
+        "ref": "PEC_0005",
+        "kind": "TEXT_CONTENT",
+        "display_form": "第七次潮汐",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0006": {
+        "ref": "PEC_0006",
+        "kind": "OBJECT",
+        "display_form": "烧焦的胶片",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0007": {
+        "ref": "PEC_0007",
+        "kind": "OBJECT",
+        "display_form": "海鸥别针",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0008": {
+        "ref": "PEC_0008",
+        "kind": "UNKNOWN_ENTITY",
+        "display_form": "照片里小女孩",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0009": {
+        "ref": "PEC_0009",
+        "kind": "OBJECT",
+        "display_form": "铜铃",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0010": {
+        "ref": "PEC_0010",
+        "kind": "OBJECT",
+        "display_form": "药水柜",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0011": {
+        "ref": "PEC_0011",
+        "kind": "OBJECT",
+        "display_form": "湿透的皮鞋",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0012": {
+        "ref": "PEC_0012",
+        "kind": "OBJECT",
+        "display_form": "车票",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0013": {
+        "ref": "PEC_0013",
+        "kind": "TEXT_CONTENT",
+        "display_form": "今晚十点，北堤仓库，带钥匙，不要带顾沉",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0014": {
+        "ref": "PEC_0014",
+        "kind": "LOCATION",
+        "display_form": "北堤仓库",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "PEC_0015": {
+        "ref": "PEC_0015",
+        "kind": "OBJECT",
+        "display_form": "钥匙",
+        "authority": "SEMANTICALLY_VERIFIED_PROPOSAL"
+      },
+      "SAU_E01_SC001_008": {
+        "ref": "SAU_E01_SC001_008",
+        "kind": "DIALOGUE_CONTENT",
+        "display_form": "E01_SC001_D001",
+        "authority": "CANONICAL_RUNTIME"
+      },
+      "林晚": {
+        "ref": "林晚",
+        "kind": "CHARACTER",
+        "display_form": "林晚",
+        "authority": "CANONICAL_RUNTIME"
+      },
+      "顾沉": {
+        "ref": "顾沉",
+        "kind": "CHARACTER",
+        "display_form": "顾沉",
+        "authority": "CANONICAL_RUNTIME"
+      }
+    },
+    "entity_count": 19,
+    "identity_authority": false,
+    "provider_output_must_use_refs_only": true,
+    "entity_identity_derived_from_display_form": false
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "source_claim_role_ref_constraint_v1",
+  "supported_operators": [
+    "NOT_EQUAL"
+  ],
+  "role_resolution": "resolved typed role refs plus qualifier_ref:<key> refs",
+  "source_text_consulted": false,
+  "surface_forms_consulted": false,
+  "predicate_spelling_consulted": false
+}

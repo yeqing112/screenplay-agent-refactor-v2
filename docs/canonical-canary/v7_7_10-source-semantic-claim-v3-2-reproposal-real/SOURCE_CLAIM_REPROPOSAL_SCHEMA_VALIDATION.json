@@ -1,0 +1,12 @@
+{
+  "schema_version": "source_claim_reproposal_schema_validation_v1",
+  "status": "PASS",
+  "transport_schema_validation": {
+    "status": "PASS",
+    "errors": []
+  },
+  "candidate_count": 1,
+  "valid_count": 1,
+  "blocked_count": 0,
+  "repairs": 0
+}

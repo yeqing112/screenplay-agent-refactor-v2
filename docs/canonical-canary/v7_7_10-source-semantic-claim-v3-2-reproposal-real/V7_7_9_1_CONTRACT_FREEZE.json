@@ -1,0 +1,20 @@
+{
+  "schema_version": "v7_7_9_1_contract_freeze_v1",
+  "status": "PASS",
+  "contract_reconciled": true,
+  "relation_registry_version": "source_claim_relation_signature_registry_v3",
+  "qualifier_registry_version": "source_claim_qualifier_registry_v3",
+  "provider_registry_version": "source_claim_proposal_predicate_registry_v2",
+  "speech_binding_count": 1,
+  "speech_binding_fingerprint": "bb79f4e4d61e2bc61b088610c63cb269ef2bf7cc4c73e60a586a6f0a751731ac",
+  "old_candidates_verifier_eligible_count": 0,
+  "contract_artifact_sha256": {
+    "RELATION_SIGNATURE_REGISTRY_V3.json": "beca5f9e1ce4eaf4c710e6df1723ed4e37bbea1a428c207c41c0840dbd24c622",
+    "QUALIFIER_REGISTRY_V3.json": "d67e2832f9827216992b7160f0ef8d9c8683c4f1bab4130fdea1153ae8140602",
+    "PROVIDER_PREDICATE_REGISTRY_V2.json": "8b76814ed70d48225ace821bbfce389f65a097642d5dd88c72991f9d554dd1e9",
+    "SOURCE_SPEECH_ACT_BINDING_REGISTRY.json": "4875f4e3a7eca09830715359f0c2c536a34039e35e4aef35eab56df1ca702a19",
+    "CURRENT_V7_7_9_VERIFIER_ELIGIBILITY.json": "c3a163120f3f8687bfa743a9970c7b2c566b1d4c6bda67ac440f49b5c9ffc593"
+  },
+  "candidate_0_state": "SUPERSEDED_SIGNATURE_NOT_VERIFIER_ELIGIBLE",
+  "candidate_1_state": "BLOCKED_REDUNDANT_PROVIDER_QUALIFIER"
+}

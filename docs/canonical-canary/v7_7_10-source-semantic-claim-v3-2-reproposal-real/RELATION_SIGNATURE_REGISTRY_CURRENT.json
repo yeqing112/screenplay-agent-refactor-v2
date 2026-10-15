@@ -1,0 +1,127 @@
+{
+  "schema_version": "source_claim_relation_signature_registry_v4",
+  "supersedes_for_new_execution_only": "source_claim_relation_signature_registry_v3",
+  "signatures": {
+    "enter_guided": {
+      "predicate": "enter_guided",
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "LOCATION"
+      ],
+      "allowed_qualifier_keys": [
+        "guided_character"
+      ],
+      "required_qualifier_keys": [
+        "guided_character"
+      ],
+      "qualifier_entity_kind_constraints": {
+        "guided_character": [
+          "CHARACTER"
+        ]
+      },
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "ref_constraints": [
+        {
+          "operator": "NOT_EQUAL",
+          "left_role": "subject_ref",
+          "right_role": "qualifier_ref:guided_character"
+        }
+      ]
+    },
+    "speech_act": {
+      "predicate": "speech_act",
+      "claim_type": "SOURCE_SPEECH_ACT",
+      "relation_class": "SPEECH_ACT",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "DIALOGUE_CONTENT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROGRAM_DETERMINISTIC",
+      "proposal_mode": "PROGRAM_DETERMINISTIC",
+      "provider_proposable": false,
+      "ref_constraints": []
+    },
+    "has_property": {
+      "predicate": "has_property",
+      "claim_type": "OBJECT_PROPERTY",
+      "relation_class": "OBJECT_PROPERTY",
+      "allowed_subject_kinds": [
+        "OBJECT"
+      ],
+      "allowed_object_kinds": [
+        "PROPERTY_VALUE"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "qualifier_entity_kind_constraints": {},
+      "ref_constraints": []
+    },
+    "state_value": {
+      "predicate": "state_value",
+      "claim_type": "ENVIRONMENT_STATE",
+      "relation_class": "ENVIRONMENT_STATE",
+      "allowed_subject_kinds": [
+        "ENVIRONMENT"
+      ],
+      "allowed_object_kinds": [
+        "STATE_VALUE"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "qualifier_entity_kind_constraints": {},
+      "ref_constraints": []
+    },
+    "received_by": {
+      "predicate": "received_by",
+      "claim_type": "OBJECT_POSSESSION",
+      "relation_class": "POSSESSION",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "qualifier_entity_kind_constraints": {},
+      "ref_constraints": []
+    },
+    "left_by": {
+      "predicate": "left_by",
+      "claim_type": "OBJECT_PROVENANCE",
+      "relation_class": "PROVENANCE",
+      "allowed_subject_kinds": [
+        "CHARACTER"
+      ],
+      "allowed_object_kinds": [
+        "OBJECT"
+      ],
+      "allowed_qualifier_keys": [],
+      "required_qualifier_keys": [],
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true,
+      "ref_constraints": []
+    }
+  },
+  "historical_v2_and_v3_registries_mutated": false
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "v7_7_9_historical_freeze_v1",
+  "status": "PASS",
+  "proposal_status": "SOURCE_SEMANTIC_CLAIM_V3_PROPOSAL_PARTIAL",
+  "raw_sha256": "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585",
+  "raw_sha256_expected": "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585",
+  "candidate_count": 2,
+  "valid_count": 1,
+  "blocked_count": 1,
+  "verifier_eligible_count": 0,
+  "historical_artifacts_modified": false,
+  "old_candidate_states": {
+    "candidate_0": "SUPERSEDED_SIGNATURE_NOT_VERIFIER_ELIGIBLE",
+    "candidate_1": "BLOCKED_REDUNDANT_PROVIDER_QUALIFIER"
+  }
+}

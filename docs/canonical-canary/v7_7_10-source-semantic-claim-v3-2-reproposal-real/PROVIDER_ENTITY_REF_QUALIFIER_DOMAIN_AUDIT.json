@@ -1,0 +1,18 @@
+{
+  "schema_version": "provider_entity_ref_qualifier_domain_audit_v1",
+  "status": "PASS",
+  "rows": [
+    {
+      "predicate": "enter_guided",
+      "qualifier": "guided_character",
+      "value_type": "ENTITY_REF",
+      "allowed_entity_kinds": [
+        "CHARACTER"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "provider_entity_ref_qualifier_use_count": 1,
+  "unresolved_entity_ref_qualifier_domain_count": 0,
+  "errors": []
+}
