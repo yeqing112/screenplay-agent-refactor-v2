@@ -1,0 +1,47 @@
+{
+  "schema_version": "source_speech_act_deterministic_audit_v1",
+  "status": "PASS",
+  "candidate_count": 1,
+  "validation_results": [
+    {
+      "status": "PASS",
+      "errors": [],
+      "dialogue_proposition_world_fact": false,
+      "persisted": false
+    }
+  ],
+  "candidates": [
+    {
+      "schema_version": "source_speech_act_deterministic_candidate_v1",
+      "proposal_owner": "PROGRAM_DETERMINISTIC",
+      "predicate": "speech_act",
+      "claim_type": "SOURCE_SPEECH_ACT",
+      "relation_class": "SPEECH_ACT",
+      "subject_ref": "顾沉",
+      "object_ref": "SAU_E01_SC001_008",
+      "qualifiers": {},
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED",
+      "evidence_refs": [
+        "S1D001",
+        "S1D1I001",
+        "S1D1U001"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_008"
+      ],
+      "program_owned_provenance": {
+        "speaker_binding_provenance_fingerprint": "caa62129890566bde011e25f54b1c0c7ab12bbbc47efe8974e56bd8e5d00876b",
+        "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+        "speaker_binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+        "speaker_binding_type": "COREFERENCE_RESOLUTION"
+      },
+      "authority_boundary": "STRUCTURED_SPEECH_OCCURRENCE_ONLY",
+      "dialogue_proposition_world_fact": false,
+      "semantic_verifier_required_for_dialogue_proposition": true,
+      "persisted": false
+    }
+  ],
+  "dialogue_proposition_world_fact_created": false,
+  "production_persisted": false
+}

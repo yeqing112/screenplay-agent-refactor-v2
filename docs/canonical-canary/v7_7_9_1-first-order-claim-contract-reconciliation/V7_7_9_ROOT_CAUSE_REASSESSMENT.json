@@ -1,0 +1,11 @@
+{
+  "schema_version": "v7_7_9_root_cause_reassessment_v1",
+  "status": "PASS",
+  "candidate_2_direct_validator_failure": "SYMBOLIC_TOKEN_INVALID:speaker_binding",
+  "direct_validator_failure_is_real": true,
+  "architecture_root_cause": "PROVIDER_OWNED_SPEAKER_BINDING_IS_REDUNDANT",
+  "provider_token_format_failure_is_root_cause": false,
+  "reason": "speaker identity is already represented by the typed speech_act subject_ref and is owned by grounded upstream ScriptIR speaker binding provenance.",
+  "candidate_1_status_under_new_contract": "SUPERSEDED_SIGNATURE_NOT_VERIFIER_ELIGIBLE",
+  "candidate_2_status_under_new_contract": "BLOCKED_REDUNDANT_PROVIDER_QUALIFIER"
+}

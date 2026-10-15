@@ -1,0 +1,16 @@
+{
+  "schema_version": "v7_7_9_immutable_partial_freeze_v1",
+  "status": "PASS",
+  "proposal_status": "SOURCE_SEMANTIC_CLAIM_V3_PROPOSAL_PARTIAL",
+  "candidate_count": 2,
+  "valid_count": 1,
+  "blocked_count": 1,
+  "raw_sha256": "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585",
+  "raw_frozen": true,
+  "candidate_rewritten": false,
+  "reparsed_with_normalization": false,
+  "old_result_reassigned_as_pass": false,
+  "historical_artifacts_modified": false,
+  "provider_calls_this_phase": 0,
+  "production_writes_this_phase": 0
+}

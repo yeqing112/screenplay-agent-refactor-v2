@@ -1,0 +1,22 @@
+{
+  "schema_version": "v7_7_9_1_anti_heuristic_patch_review_v1",
+  "status": "PASS",
+  "scanned_module": "core/source_semantic_claim_v3_1.py",
+  "phrase_dependence": "NO",
+  "scene_dependence": "NO",
+  "attempt_dependence": "NO",
+  "PEC_specific_branch": "NO",
+  "current_story_participant_special_case": "NO",
+  "predicate_name_inference": "NO",
+  "local_NLP": "NO",
+  "source_prose_speaker_parse": "NO",
+  "pattern_checks": {
+    "story_character_literal": false,
+    "story_location_literal": false,
+    "subject_value_branch": false,
+    "predicate_name_inference": false,
+    "local_nlp_import": false
+  },
+  "provider_calls": 0,
+  "production_writes": 0
+}

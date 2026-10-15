@@ -1,0 +1,22 @@
+{
+  "schema_version": "speaker_binding_ownership_audit_v1",
+  "status": "PASS",
+  "upstream_owner": "GROUNDED_SCRIPT_IR_SOURCE_STRUCTURING_PROGRAM",
+  "structured_source_fields": [
+    "dialogue.speaker",
+    "dialogue.text",
+    "dialogue.source_evidence",
+    "dialogue.speaker_binding"
+  ],
+  "binding_fields": [
+    "classification",
+    "binding_type",
+    "identity_evidence",
+    "utterance_evidence"
+  ],
+  "provider_owned_semantic_qualifier": false,
+  "claim_v3_speech_act_subject_already_represents_speaker": true,
+  "provider_surface_in_v3": false,
+  "legacy_director_registry_mutated": false,
+  "script_ir_payload_fingerprint": "a202a9bc916b7f8a2de74a013b8ae11080dd370dbe3f02483e874f7f2dddd97b"
+}

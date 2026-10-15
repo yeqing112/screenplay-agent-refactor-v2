@@ -1,0 +1,9 @@
+{
+  "status": "SOURCE_SEMANTIC_CLAIM_V3_CONTRACT_RECONCILED",
+  "next_state": "SOURCE_SEMANTIC_CLAIM_V3_REPROPOSAL_CANARY_AUTHORIZATION_REQUIRED",
+  "provider_calls": 0,
+  "claim_verifier_calls": 0,
+  "reproposal_authorized": false,
+  "requires_new_user_authorization": true,
+  "verifier_eligible_count": 0
+}

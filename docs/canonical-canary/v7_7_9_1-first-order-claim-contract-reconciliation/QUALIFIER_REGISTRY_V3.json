@@ -1,0 +1,20 @@
+{
+  "schema_version": "source_claim_qualifier_registry_v3",
+  "qualifiers": {
+    "guided_character": {
+      "value_type": "ENTITY_REF"
+    },
+    "transfer_source": {
+      "value_type": "ENTITY_REF"
+    }
+  },
+  "wire_value_type": "string",
+  "provider_writable_keys_only": true,
+  "excluded_keys": {
+    "speaker_binding": "PROGRAM_OWNED_PROVENANCE_NOT_SEMANTIC_QUALIFIER",
+    "destination": "DUPLICATES_ENTER_GUIDED_OBJECT_REF",
+    "property_domain": "NO_CURRENT_PROVIDER_EXECUTABLE_RELATION_USES_KEY",
+    "state_domain": "NO_CURRENT_PROVIDER_EXECUTABLE_RELATION_USES_KEY",
+    "light_state": "NO_CURRENT_PROVIDER_EXECUTABLE_RELATION_USES_KEY"
+  }
+}

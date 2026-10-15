@@ -1,0 +1,19 @@
+{
+  "schema_version": "enter_guided_argument_completeness_audit_v1",
+  "status": "PASS",
+  "source_fact_roles": [
+    "guide_actor",
+    "guided_participant",
+    "destination"
+  ],
+  "new_typed_relation_roles": {
+    "subject_ref": "guide_actor CHARACTER",
+    "guided_character": "guided_participant CHARACTER",
+    "object_ref": "destination LOCATION"
+  },
+  "previous_signature_lost_role": "guided_participant",
+  "previous_provider_candidate_verifier_eligible": false,
+  "guided_character_required": true,
+  "destination_qualifier_redundant_with_object_ref": true,
+  "historical_candidate_automatically_repaired": false
+}

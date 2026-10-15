@@ -1,0 +1,57 @@
+{
+  "schema_version": "source_claim_first_order_relation_ownership_registry_v1",
+  "status": "PASS",
+  "predicates": {
+    "enter_guided": {
+      "predicate": "enter_guided",
+      "claim_type": "CHARACTER_ACTION",
+      "relation_class": "ACTION",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true
+    },
+    "has_property": {
+      "predicate": "has_property",
+      "claim_type": "OBJECT_PROPERTY",
+      "relation_class": "OBJECT_PROPERTY",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true
+    },
+    "left_by": {
+      "predicate": "left_by",
+      "claim_type": "OBJECT_PROVENANCE",
+      "relation_class": "PROVENANCE",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true
+    },
+    "received_by": {
+      "predicate": "received_by",
+      "claim_type": "OBJECT_POSSESSION",
+      "relation_class": "POSSESSION",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true
+    },
+    "speech_act": {
+      "predicate": "speech_act",
+      "claim_type": "SOURCE_SPEECH_ACT",
+      "relation_class": "SPEECH_ACT",
+      "proposal_owner": "PROGRAM_DETERMINISTIC",
+      "proposal_mode": "PROGRAM_DETERMINISTIC",
+      "provider_proposable": false
+    },
+    "state_value": {
+      "predicate": "state_value",
+      "claim_type": "ENVIRONMENT_STATE",
+      "relation_class": "ENVIRONMENT_STATE",
+      "proposal_owner": "PROVIDER_PROPOSABLE",
+      "proposal_mode": "PROVIDER_PROPOSABLE",
+      "provider_proposable": true
+    }
+  },
+  "provider_proposable_count": 5,
+  "program_deterministic_count": 1,
+  "errors": []
+}

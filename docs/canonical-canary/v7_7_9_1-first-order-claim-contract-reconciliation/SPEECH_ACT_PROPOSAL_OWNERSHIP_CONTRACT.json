@@ -1,0 +1,10 @@
+{
+  "schema_version": "source_speech_act_proposal_ownership_contract_v1",
+  "predicate": "speech_act",
+  "claim_type": "SOURCE_SPEECH_ACT",
+  "relation_class": "SPEECH_ACT",
+  "proposal_owner": "PROGRAM_DETERMINISTIC",
+  "provider_proposable": false,
+  "source": "grounded ScriptIR dialogue authority bound to immutable SourceAuthoringUnit evidence",
+  "legacy_director_relation_registry_modified": false
+}

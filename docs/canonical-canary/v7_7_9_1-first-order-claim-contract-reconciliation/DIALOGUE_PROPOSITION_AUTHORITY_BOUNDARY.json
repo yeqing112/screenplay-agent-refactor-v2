@@ -1,0 +1,8 @@
+{
+  "schema_version": "dialogue_proposition_authority_boundary_v1",
+  "speech_occurrence": "speaker uttered exact bound dialogue content",
+  "speech_act_proves_dialogue_proposition_truth": false,
+  "dialogue_proposition_world_fact_requires": "INDEPENDENT_SEMANTIC_VERIFICATION",
+  "automatic_world_fact_created": false,
+  "semantic_verifier_calls": 0
+}

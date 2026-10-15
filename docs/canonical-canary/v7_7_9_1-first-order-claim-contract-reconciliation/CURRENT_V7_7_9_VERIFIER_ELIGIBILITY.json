@@ -1,0 +1,34 @@
+{
+  "schema_version": "current_v7_7_9_verifier_eligibility_v1",
+  "status": "PASS",
+  "historical_overall_status_preserved": "SOURCE_SEMANTIC_CLAIM_V3_PROPOSAL_PARTIAL",
+  "candidate_ids": [
+    "SCC_0001",
+    null
+  ],
+  "new_contract_results": [
+    {
+      "status": "BLOCKED",
+      "errors": [
+        "REQUIRED_QUALIFIER_MISSING:enter_guided:guided_character"
+      ],
+      "typed_qualifiers": {},
+      "verifier_eligible": false,
+      "authority": "UNTRUSTED_PROPOSED"
+    },
+    {
+      "status": "BLOCKED",
+      "errors": [
+        "PREDICATE_NOT_PROVIDER_PROPOSABLE:speech_act",
+        "QUALIFIER_NOT_PROVIDER_WRITABLE:speaker_binding"
+      ],
+      "typed_qualifiers": {},
+      "verifier_eligible": false,
+      "authority": "UNTRUSTED_PROPOSED"
+    }
+  ],
+  "verifier_eligible_count": 0,
+  "candidate_0_state": "SUPERSEDED_SIGNATURE_NOT_VERIFIER_ELIGIBLE",
+  "candidate_1_state": "BLOCKED_REDUNDANT_PROVIDER_QUALIFIER",
+  "verifier_post_count": 0
+}

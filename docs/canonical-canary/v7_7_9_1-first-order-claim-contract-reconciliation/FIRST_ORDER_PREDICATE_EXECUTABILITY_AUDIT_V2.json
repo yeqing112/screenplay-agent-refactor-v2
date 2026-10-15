@@ -1,0 +1,22 @@
+{
+  "schema_version": "first_order_predicate_executability_audit_v2",
+  "status": "PASS",
+  "provider_proposable_count": 3,
+  "provider_proposable_predicates": [
+    "enter_guided",
+    "left_by",
+    "received_by"
+  ],
+  "program_deterministic_count": 1,
+  "program_deterministic_predicates": [
+    "speech_act"
+  ],
+  "dormant_count": 2,
+  "dormant_predicates": [
+    "has_property",
+    "state_value"
+  ],
+  "required_qualifier_dependencies_included": true,
+  "source_text_consulted": false,
+  "predicate_name_semantics_inferred": false
+}

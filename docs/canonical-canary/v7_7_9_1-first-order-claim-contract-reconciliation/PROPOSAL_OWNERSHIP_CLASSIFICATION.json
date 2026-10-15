@@ -1,0 +1,36 @@
+{
+  "schema_version": "source_claim_proposal_ownership_classification_v1",
+  "status": "PASS",
+  "classes": {
+    "PROVIDER_PROPOSABLE": [
+      "enter_guided",
+      "has_property",
+      "left_by",
+      "received_by",
+      "state_value"
+    ],
+    "PROGRAM_DETERMINISTIC": [
+      "speech_act"
+    ],
+    "DEFERRED_SECOND_ORDER": {
+      "knows": {
+        "predicate": "knows",
+        "proposal_owner": "DEFERRED_SECOND_ORDER",
+        "provider_proposable": false,
+        "requires": "verified first-order ClaimRef before execution"
+      },
+      "uncertainty": {
+        "predicate": "uncertainty",
+        "proposal_owner": "DEFERRED_SECOND_ORDER",
+        "provider_proposable": false,
+        "requires": "verified first-order ClaimRef before execution"
+      }
+    }
+  },
+  "counts": {
+    "PROVIDER_PROPOSABLE": 5,
+    "PROGRAM_DETERMINISTIC": 1,
+    "DEFERRED_SECOND_ORDER": 2
+  },
+  "second_order_registry_modified": false
+}

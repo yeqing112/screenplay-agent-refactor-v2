@@ -1,0 +1,26 @@
+{
+  "schema_version": "historical_v7_7_9_reproducibility_audit_v1",
+  "status": "PASS",
+  "frozen_registry_versions": {
+    "relation_signatures": "source_claim_relation_signature_registry_v2",
+    "qualifiers": "source_claim_qualifier_registry_v2",
+    "provider_predicates": "source_claim_executable_predicate_registry_v1"
+  },
+  "raw_sha256": "44730220ba61ce249d1ebd5b87e3a0373b4cc220e58b7f96eef04a5b06f40585",
+  "candidate_count": 2,
+  "valid_count": 1,
+  "blocked_count": 1,
+  "candidate_errors": [
+    [],
+    [
+      "SYMBOLIC_TOKEN_INVALID:speaker_binding"
+    ]
+  ],
+  "checks": {
+    "immutable_raw_sha_exact": true,
+    "candidate_count_two": true,
+    "legacy_result_one_pass_one_blocked": true,
+    "second_candidate_direct_failure_reproduced": true
+  },
+  "historical_artifacts_modified": false
+}

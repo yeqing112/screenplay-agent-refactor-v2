@@ -1,0 +1,13 @@
+{
+  "schema_version": "source_speech_act_deterministic_contract_v1",
+  "predicate": "speech_act",
+  "claim_type": "SOURCE_SPEECH_ACT",
+  "relation_class": "SPEECH_ACT",
+  "meaning": "The bound speaker uttered the exact supplied dialogue-content entity.",
+  "proves_dialogue_proposition_truth": false,
+  "creates_world_fact": false,
+  "semantic_verifier_required_for_dialogue_proposition": true,
+  "speaker_binding_provenance_in_qualifiers": false,
+  "provider_calls": 0,
+  "production_persistence": false
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": "source_claim_required_qualifier_executability_contract_v1",
+  "rule": "Each required ENTITY_REF qualifier must have at least one registry entity of an allowed constrained kind.",
+  "source_text_consulted": false,
+  "predicate_name_semantics_inferred": false,
+  "qualifier_name_special_cases": false
+}
