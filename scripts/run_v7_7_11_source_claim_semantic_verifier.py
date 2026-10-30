@@ -216,11 +216,13 @@ def report(pre: Mapping[str, Any], r: Mapping[str, Any]) -> str:
 - Verifier input eligibility: `VERIFIER_INPUT_ELIGIBLE`. Transport mapping: `{TRANSPORT_FACT_ID}` ↔ `{CLAIM_REF}`; transport IDs are not production Fact IDs.
 - Required components: `{v['packet']['required_semantic_components']}`. Evidence authority `{v['evidence']['status']}`; typed atomicity `{v['atomicity']['status']}`; support role `{v['packet']['support_role']}`; anchor surface `{v['packet']['anchor_surface']}`; confirmation ceiling `{v['packet']['confirmation_ceiling']}`.
 - Provider: `local-llm-2vydoz / mimo-v2.5`; verifier POSTs `{r.get('posts')}`; HTTP `{a.get('http_status')}`; finish `{a.get('finish_reason')}`; latency `{r.get('elapsed')} ms`; usage `{a.get('usage')}`.
+- Provider transport error: `{a.get('error')}`; diagnostic response excerpt is recorded in the raw forensic audit.
 - Raw SHA `{sha_text(r.get('raw','')) if r.get('raw') else ''}`; length `{len(r.get('raw',''))}`; parse `{r.get('parse')}`; schema `{r.get('schema')}`; cardinality `{r.get('cardinality')}`.
 - Verdict `{r.get('result',{}).get('verdict')}`; supported `{r.get('result',{}).get('supported_components')}`; unsupported `{r.get('result',{}).get('unsupported_components')}`; component contract `{r.get('component',{}).get('status')}`.
 - Disposition `{o.get('semantic_disposition')}`; effective authority `{o.get('effective_authority')}`; effective status `{o.get('effective_status')}`; downstream eligible `{o.get('downstream_eligible')}`; review required `{o.get('review_required')}`; shadow only `true`; production persisted `false`.
 - Program speech companion count `{len(v['companion'].get('bindings',[]))}`; speech verifier posts `0`; proposal and second-order posts `0`; SourceClaim / FactRecord writes `0 / 0`.
 - Completeness remains: proposal `NOT_PROVEN`, entity semantic `NOT_PROVEN`, second order `DEFERRED_NOT_PROVEN`, typed director manifest `MISSING`. Ledger `11`; active Stage B `attempt-11`.
+- Preflight tests: `{v['local_gates']['tests']['output'].splitlines()[-1] if v['local_gates']['tests']['output'].splitlines() else v['local_gates']['tests']['status']}`; compileall `{v['local_gates']['compileall']['status']}`; git diff check `{v['local_gates']['git_diff_check']['status']}`.
 - Status: `{r.get('status')}`. Next: `{r.get('next_state')}`. No retry, proposal, persistence, Stage A, Attempt-12, Confirm, image, video, PR, or merge was performed.
 """
 
