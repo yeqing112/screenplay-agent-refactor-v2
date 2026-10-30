@@ -1,0 +1,21 @@
+{
+  "status": "BLOCKED",
+  "provider_post_count": 1,
+  "retry_count": 0,
+  "retry_authorized": false,
+  "http_status": 400,
+  "finish_reason": "",
+  "latency_ms": 4727.54,
+  "usage": {
+    "prompt_tokens": null,
+    "cached_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cache_hit_rate": null,
+    "reasoning_tokens": null,
+    "completion_tokens_details": {},
+    "prompt_tokens_details": {}
+  },
+  "raw_response_sha256": "",
+  "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.xiaomimimo.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+}

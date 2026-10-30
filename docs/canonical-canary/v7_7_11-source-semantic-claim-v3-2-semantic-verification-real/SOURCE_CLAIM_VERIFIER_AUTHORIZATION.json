@@ -1,0 +1,16 @@
+{
+  "authorization_id": "v7.7.11-source-semantic-claim-v3-2-semantic-verifier-single-call",
+  "granted": true,
+  "scope": {
+    "claim_ref": "SCC_V7_7_10_0001",
+    "evidence_refs": [
+      "S1A001"
+    ],
+    "semantic_verification_only": true
+  },
+  "max_provider_posts": 1,
+  "retries": 0,
+  "claim_proposal_posts": 0,
+  "second_order_posts": 0,
+  "production_writes": 0
+}

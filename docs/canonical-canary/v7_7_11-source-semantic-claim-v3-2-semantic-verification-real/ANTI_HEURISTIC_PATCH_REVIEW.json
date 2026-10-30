@@ -1,0 +1,12 @@
+{
+  "schema_version": "v7_7_11_anti_heuristic_patch_review_v1",
+  "status": "PASS",
+  "phrase_dependence": "NO",
+  "scene_dependence": "NO",
+  "attempt_specific_semantic_rule": "NO",
+  "predicate_name_semantic_inference": "NO",
+  "source_prose_local_entailment": "NO",
+  "regex_entailment": "NO",
+  "names_special_cased": false,
+  "uses_ast_review": true
+}

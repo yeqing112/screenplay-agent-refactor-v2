@@ -1,0 +1,8 @@
+{
+  "status": "BLOCKED",
+  "expected_fact_ids": [
+    "FACT_0001"
+  ],
+  "result_count": 0,
+  "result_fact_ids": []
+}

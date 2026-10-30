@@ -1,0 +1,13 @@
+{
+  "schema_version": "source_claim_typed_atomicity_guard_v1",
+  "atomicity_basis": [
+    "registered_predicate",
+    "complete_relation_signature",
+    "typed_roles",
+    "required_qualifiers",
+    "role_constraints",
+    "no_nested_claim",
+    "no_conjunction_claim_list"
+  ],
+  "json_dict_implies_composite": false
+}

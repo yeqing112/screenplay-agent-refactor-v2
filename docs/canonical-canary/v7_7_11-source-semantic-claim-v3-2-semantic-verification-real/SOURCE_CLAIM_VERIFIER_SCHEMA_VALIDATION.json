@@ -1,0 +1,23 @@
+{
+  "status": "BLOCKED",
+  "transport_schema": {
+    "status": "NOT_RUN",
+    "errors": [
+      "VERIFIER_OUTPUT_JSON_INVALID"
+    ]
+  },
+  "fact_verifier_schema": {
+    "status": "FAIL",
+    "errors": [
+      {
+        "code": "VERIFIER_OUTPUT_JSON_INVALID"
+      }
+    ],
+    "results": []
+  },
+  "forbidden_provider_fields": [
+    {
+      "code": "VERIFIER_OUTPUT_JSON_INVALID"
+    }
+  ]
+}

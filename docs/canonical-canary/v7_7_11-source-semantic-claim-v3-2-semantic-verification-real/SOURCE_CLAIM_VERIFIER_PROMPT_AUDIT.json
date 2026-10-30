@@ -1,0 +1,121 @@
+{
+  "status": "PASS",
+  "system_prompt_sha256": "f74cc604d012b37bf19ca9b3c7baaa51accc9d9fd2f6c2c38d6daa730bd6ea44",
+  "user_prompt_sha256": "3076fba2b2a00b85dc8c728afde69808fb0a3e1b675973d37aca61eec8677aff",
+  "request_fingerprint": "d435aba918c45e0a5e51a8562fa2a534c14978a2eef27c168560cf34fffccfd3",
+  "proposal_prompt_included": false,
+  "proposal_raw_included": false,
+  "exact_evidence_refs": [
+    "S1A001"
+  ],
+  "all_source_units_included": false,
+  "source_retrieval": false,
+  "canonical_provider_schema": {
+    "type": "object",
+    "required": [
+      "results"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "fact_id",
+            "verdict",
+            "supported_components",
+            "unsupported_components",
+            "rationale"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "fact_id": {
+              "type": "string",
+              "pattern": "^FACT_[0-9]{4}$"
+            },
+            "verdict": {
+              "enum": [
+                "ENTAILED",
+                "PARTIAL",
+                "CLAIM_ONLY",
+                "INFERENCE",
+                "CONTRADICTED",
+                "AMBIGUOUS"
+              ]
+            },
+            "supported_components": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "unsupported_components": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "rationale": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "strict_transport_schema": {
+    "type": "object",
+    "required": [
+      "results"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "fact_id",
+            "verdict",
+            "supported_components",
+            "unsupported_components",
+            "rationale"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "fact_id": {
+              "type": "string"
+            },
+            "rationale": {
+              "type": "string"
+            },
+            "supported_components": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "unsupported_components": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "verdict": {
+              "enum": [
+                "ENTAILED",
+                "PARTIAL",
+                "CLAIM_ONLY",
+                "INFERENCE",
+                "CONTRADICTED",
+                "AMBIGUOUS"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "fact_id_pattern_enforced_by": "validate_verifier_payload"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "hard_blockers": [],
+  "confirmation_ceilings": [
+    {
+      "allowed": true,
+      "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+      "reason": "narrative_prose_still_requires_semantic_entailment"
+    }
+  ],
+  "uses_legacy_composite_guard": false
+}

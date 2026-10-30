@@ -1,0 +1,35 @@
+{
+  "schema_version": "source_claim_semantic_verifier_adapter_v1",
+  "role": "semantic_verifier_not_fact_writer_or_retriever",
+  "provider_owns": [
+    "semantic_verdict",
+    "supported_components",
+    "unsupported_components",
+    "rationale"
+  ],
+  "program_owns": [
+    "claim_ref",
+    "transport_fact_id",
+    "typed_assertion",
+    "evidence_refs",
+    "final_authority",
+    "final_status",
+    "downstream_eligibility"
+  ],
+  "provider_fact_creation": false,
+  "provider_evidence_creation": false,
+  "source_retrieval": false,
+  "proposal_raw_included": false,
+  "proposal_prompt_included": false,
+  "forbidden_provider_fields": [
+    "new_fact",
+    "corrected_fact",
+    "replacement_fact",
+    "new_evidence_refs",
+    "recommended_evidence_refs",
+    "source_search",
+    "final_authority",
+    "final_status",
+    "script_ir"
+  ]
+}

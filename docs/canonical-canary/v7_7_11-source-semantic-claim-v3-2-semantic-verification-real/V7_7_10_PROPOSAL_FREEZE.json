@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "claim_ref": "SCC_V7_7_10_0001",
+  "candidate_fingerprint": "6f5a6a567c83d674f5ecc463ef44bfcc9ecfd0e5798a44a166be929ed5f8717f",
+  "candidate_set_fingerprint": "d896b80a538f515a17a0d82058bbed45d1582675e8a563aabb9929d6f3ac1bfb",
+  "raw_sha256": "39c43a5a571f220e15bc88c273f7652fe4679fc52b629886c00713a8e6d21b1a",
+  "proposal_status": "SOURCE_SEMANTIC_CLAIM_V3_REPROPOSAL_VALIDATED",
+  "historical_artifact_mutated": false
+}

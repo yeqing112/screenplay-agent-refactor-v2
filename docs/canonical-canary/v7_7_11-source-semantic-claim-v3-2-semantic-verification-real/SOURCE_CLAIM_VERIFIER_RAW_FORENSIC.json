@@ -1,0 +1,116 @@
+{
+  "status": "NO_RAW_CONTENT_RETURNED",
+  "provider_post_count": 1,
+  "raw_response": "",
+  "raw_response_sha256": "",
+  "raw_response_length": 0,
+  "persisted_before_parse": true,
+  "provider_audit": {
+    "vendor_model": "mimo-v2.5",
+    "vendor_host": "api.xiaomimimo.com",
+    "profile_id": "local-llm-2vydoz",
+    "system_prompt_sha256": "f74cc604d012b37bf19ca9b3c7baaa51",
+    "system_prompt_length": 275,
+    "user_prompt_sha256": "3076fba2b2a00b85dc8c728afde69808",
+    "user_prompt_length": 4179,
+    "request_messages_sha256": "4f124cf316321b0cc1d97c3927d0ca88",
+    "request_fingerprint": "bdd3fae4a27bbdecaaeba059774e60604acd22011be54327e11e103ed72546f1",
+    "has_repair_request": false,
+    "repair_request_sha256": "",
+    "repair_request_length": 0,
+    "response_sha256": "1df7883b91cec0195a3c9dacca7c465e",
+    "response_length": 97,
+    "http_status": 400,
+    "parse_ok": false,
+    "finish_reason": "",
+    "choice_index": null,
+    "top_level_keys": [
+      "error"
+    ],
+    "returned_schema_version": "",
+    "response_debug_excerpt": "{\"error\": {\"code\": \"400\", \"message\": \"Unsupported model mimo-v2.5\"}}",
+    "usage": {
+      "prompt_tokens": null,
+      "cached_tokens": null,
+      "completion_tokens": null,
+      "total_tokens": null,
+      "cache_hit_rate": null,
+      "reasoning_tokens": null,
+      "completion_tokens_details": {},
+      "prompt_tokens_details": {}
+    },
+    "resolved_max_tokens": 4096,
+    "resolved_temperature": 0.0,
+    "resolved_response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "fact_semantic_verifier_v1",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "required": [
+            "results"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "fact_id",
+                  "verdict",
+                  "supported_components",
+                  "unsupported_components",
+                  "rationale"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "fact_id": {
+                    "type": "string"
+                  },
+                  "rationale": {
+                    "type": "string"
+                  },
+                  "supported_components": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "unsupported_components": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "verdict": {
+                    "enum": [
+                      "ENTAILED",
+                      "PARTIAL",
+                      "CLAIM_ONLY",
+                      "INFERENCE",
+                      "CONTRADICTED",
+                      "AMBIGUOUS"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "resolved_thinking": {
+      "type": "disabled"
+    },
+    "latency_ms": 4725.72,
+    "extra": {
+      "authorization_id": "v7.7.11-source-semantic-claim-v3-2-semantic-verifier-single-call",
+      "stage": "SOURCE_CLAIM_SEMANTIC_VERIFIER",
+      "transport_attempt_number": 1,
+      "transport_retry": false
+    }
+  },
+  "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.xiaomimimo.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+}

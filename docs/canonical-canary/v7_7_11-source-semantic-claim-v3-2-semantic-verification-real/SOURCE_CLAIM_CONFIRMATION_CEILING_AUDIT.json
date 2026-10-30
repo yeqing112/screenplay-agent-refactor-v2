@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "relation_class": "ACTION",
+  "support_role": "ACTION_OCCURRENCE",
+  "anchor_surface": "NARRATIVE_PROSE",
+  "ceiling": {
+    "allowed": true,
+    "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+    "reason": "narrative_prose_still_requires_semantic_entailment"
+  },
+  "predicate_name_inference": false
+}

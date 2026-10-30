@@ -1,0 +1,6 @@
+{
+  "status": "BLOCKED",
+  "shadow_only": true,
+  "production_persisted": false,
+  "reason": "VERIFIER_OUTPUT_CONTRACT_FAILED"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "BLOCKED",
+  "transport_fact_id": "FACT_0001",
+  "claim_ref": "SCC_V7_7_10_0001",
+  "provider_result": {},
+  "provider_owns": [
+    "verdict",
+    "supported_components",
+    "unsupported_components",
+    "rationale"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "source_claim_verifier_input_eligibility_v1",
+  "status": "VERIFIER_INPUT_ELIGIBLE",
+  "checks": {
+    "proposal_validated": true,
+    "candidate_validation": true,
+    "authority_untrusted": true,
+    "registry_versions": true,
+    "entity_fingerprints": true,
+    "evidence_binding": true,
+    "role_constraint": true,
+    "candidate_fp": true,
+    "set_fp": true,
+    "raw_sha": true,
+    "source_current": true
+  },
+  "proposal_verifier_eligible_field_mutated": false
+}

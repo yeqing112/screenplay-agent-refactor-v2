@@ -1,0 +1,13 @@
+{
+  "schema_version": "source_claim_support_role_registry_v1",
+  "mapping": {
+    "ACTION": "ACTION_OCCURRENCE",
+    "SPEECH_ACT": "SPEECH_ACT",
+    "OBJECT_PROPERTY": "WORLD_ASSERTION",
+    "ENVIRONMENT_STATE": "WORLD_ASSERTION",
+    "POSSESSION": "WORLD_ASSERTION",
+    "PROVENANCE": "WORLD_ASSERTION"
+  },
+  "predicate_name_inference": false,
+  "source_prose_consulted": false
+}

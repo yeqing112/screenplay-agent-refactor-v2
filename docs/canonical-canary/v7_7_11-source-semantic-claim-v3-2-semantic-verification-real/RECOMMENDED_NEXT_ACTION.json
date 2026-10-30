@@ -1,0 +1,7 @@
+{
+  "status": "SOURCE_SEMANTIC_CLAIM_V3_SEMANTIC_VERIFICATION_BLOCKED",
+  "next_state": "SOURCE_SEMANTIC_CLAIM_V3_SEMANTIC_VERIFICATION_REVIEW_REQUIRED",
+  "provider_posts": 1,
+  "authority_projection_authorized": false,
+  "production_writes": 0
+}

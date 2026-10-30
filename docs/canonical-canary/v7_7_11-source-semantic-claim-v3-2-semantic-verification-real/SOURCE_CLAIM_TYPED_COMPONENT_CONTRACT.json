@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "claim_ref": "SCC_V7_7_10_0001",
+  "required_components": [
+    "SUBJECT",
+    "PREDICATE",
+    "OBJECT",
+    "QUALIFIER:guided_character",
+    "POLARITY",
+    "MODALITY"
+  ],
+  "derived_from": "typed_projection_and_relation_signature",
+  "source_prose_consulted": false
+}

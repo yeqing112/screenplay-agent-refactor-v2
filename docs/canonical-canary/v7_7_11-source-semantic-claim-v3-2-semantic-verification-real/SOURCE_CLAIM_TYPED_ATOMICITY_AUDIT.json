@@ -1,0 +1,14 @@
+{
+  "schema_version": "source_claim_typed_atomicity_guard_v1",
+  "status": "PASS",
+  "predicate_count": 1,
+  "complete_relation_signature": true,
+  "typed_roles": {
+    "subject_ref": "顾沉",
+    "object_ref": "PEC_0001",
+    "qualifier_ref:guided_character": "林晚"
+  },
+  "representation_is_not_composite": true,
+  "uses_json_dict_as_composite_signal": false,
+  "errors": []
+}

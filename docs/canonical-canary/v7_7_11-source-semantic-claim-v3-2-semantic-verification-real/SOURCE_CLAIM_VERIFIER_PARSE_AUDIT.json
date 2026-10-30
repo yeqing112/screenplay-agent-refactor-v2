@@ -1,0 +1,7 @@
+{
+  "status": "BLOCKED",
+  "strict_json_parse": true,
+  "repair": false,
+  "parse_retry": 0,
+  "error": "VERIFIER_OUTPUT_JSON_INVALID"
+}

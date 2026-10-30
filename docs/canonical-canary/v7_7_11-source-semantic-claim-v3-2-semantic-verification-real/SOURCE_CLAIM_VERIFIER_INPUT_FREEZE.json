@@ -1,0 +1,126 @@
+{
+  "status": "PASS",
+  "target_book_id": 990453,
+  "episode": 1,
+  "fact_snapshot_id": 49,
+  "script_ir_id": 52,
+  "packet_id": 64,
+  "source_raw_sha256": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "source_unit_fingerprint": "2089dccea46d2392a328335a75266f1c982a66a4d53cda5c502f748fbf95e37f",
+  "verified_entity_registry_fingerprint": "88de4d7793043c11897605217c3e6a29847062eb87ac4b7bb20909b147e6b186",
+  "claim_input_entity_registry_fingerprint": "877d43fc4cea05b487e50b6a4afcdb58e44f78338f1ebfcb388ecbe9b9740acb",
+  "current_registry_versions": {
+    "relation": "source_claim_relation_signature_registry_v4",
+    "qualifier": "source_claim_qualifier_registry_v4",
+    "provider_predicate": "source_claim_proposal_predicate_registry_v3"
+  },
+  "proposal_transport_schema_fingerprint": "5f4ecbd2ca8cbaf8dea0b1319350cf763a971aefea8143a346232d23e8d4c75c",
+  "transport_fact_id": "FACT_0001",
+  "claim_ref": "SCC_V7_7_10_0001",
+  "packet": {
+    "schema_version": "source_claim_semantic_verifier_adapter_v1",
+    "status": "PASS",
+    "claim_ref": "SCC_V7_7_10_0001",
+    "id_mapping": {
+      "schema_version": "source_claim_verifier_transport_id_mapping_v1",
+      "status": "PASS",
+      "mappings": [
+        {
+          "transport_fact_id": "FACT_0001",
+          "claim_ref": "SCC_V7_7_10_0001",
+          "transport_id_is_production_fact_id": false
+        }
+      ],
+      "mapping_fingerprint": "266314b10b1785b6da3f7e7ef30179eecd23ede343f27e6f840902b237986ecd",
+      "program_owned": true,
+      "provider_may_not_modify": true
+    },
+    "fact": {
+      "fact_id": "FACT_0001",
+      "subject_id": "顾沉",
+      "predicate": "enter_guided",
+      "value": {
+        "subject": {
+          "ref": "顾沉",
+          "kind": "CHARACTER"
+        },
+        "predicate": "enter_guided",
+        "object": {
+          "ref": "PEC_0001",
+          "kind": "LOCATION"
+        },
+        "qualifiers": {
+          "guided_character": {
+            "value_type": "ENTITY_REF",
+            "ref": "林晚",
+            "kind": "CHARACTER"
+          }
+        },
+        "polarity": "POSITIVE",
+        "modality": "ASSERTED"
+      },
+      "evidence": [
+        {
+          "anchor_ref": "S1A001"
+        }
+      ]
+    },
+    "machine_context": {
+      "fact_id": "FACT_0001",
+      "provider_epistemic_class": null,
+      "resolved_evidence": [
+        {
+          "anchor_ref": "S1A001",
+          "exact_text": "顾沉带林晚进入暗房。",
+          "source_unit_ref": "SAU_E01_SC001_001"
+        }
+      ],
+      "anchor_surface_classes": [
+        "NARRATIVE_PROSE"
+      ],
+      "confirmation_ceilings": [
+        {
+          "allowed": true,
+          "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+          "reason": "narrative_prose_still_requires_semantic_entailment"
+        }
+      ],
+      "machine_guard_findings": []
+    },
+    "typed_assertion": {
+      "subject": {
+        "ref": "顾沉",
+        "kind": "CHARACTER"
+      },
+      "predicate": "enter_guided",
+      "object": {
+        "ref": "PEC_0001",
+        "kind": "LOCATION"
+      },
+      "qualifiers": {
+        "guided_character": {
+          "value_type": "ENTITY_REF",
+          "ref": "林晚",
+          "kind": "CHARACTER"
+        }
+      },
+      "polarity": "POSITIVE",
+      "modality": "ASSERTED"
+    },
+    "required_semantic_components": [
+      "SUBJECT",
+      "PREDICATE",
+      "OBJECT",
+      "QUALIFIER:guided_character",
+      "POLARITY",
+      "MODALITY"
+    ],
+    "support_role": "ACTION_OCCURRENCE",
+    "anchor_surface": "NARRATIVE_PROSE",
+    "confirmation_ceiling": {
+      "allowed": true,
+      "ceiling": "CANDIDATE_WORLD_EVIDENCE",
+      "reason": "narrative_prose_still_requires_semantic_entailment"
+    }
+  }
+}

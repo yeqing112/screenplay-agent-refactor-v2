@@ -1,0 +1,17 @@
+{
+  "schema_version": "source_claim_evidence_authority_audit_v1",
+  "status": "PASS",
+  "claim_evidence_refs": [
+    "S1A001"
+  ],
+  "claim_source_unit_refs": [
+    "SAU_E01_SC001_001"
+  ],
+  "resolved_evidence": {
+    "evidence_id": "S1A001",
+    "text": "顾沉带林晚进入暗房。",
+    "sha256": "25cfbc9d181d13974fe7e00c587c23ed0174d28a1580456ad3ed1466747dfe59"
+  },
+  "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "errors": []
+}

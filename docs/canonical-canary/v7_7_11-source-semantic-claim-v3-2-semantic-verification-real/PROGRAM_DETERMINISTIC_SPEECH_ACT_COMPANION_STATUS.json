@@ -1,0 +1,29 @@
+{
+  "schema_version": "source_speech_act_binding_registry_v1",
+  "status": "PASS",
+  "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1",
+  "binding_count": 1,
+  "bindings": [
+    {
+      "dialogue_content_ref": "SAU_E01_SC001_008",
+      "speaker_ref": "顾沉",
+      "evidence_refs": [
+        "S1D001",
+        "S1D1I001",
+        "S1D1U001"
+      ],
+      "source_unit_refs": [
+        "SAU_E01_SC001_008"
+      ],
+      "speaker_binding_provenance_fingerprint": "caa62129890566bde011e25f54b1c0c7ab12bbbc47efe8974e56bd8e5d00876b",
+      "speaker_binding_classification": "AUTHORIZED_SEMANTIC_BINDING",
+      "speaker_binding_type": "COREFERENCE_RESOLUTION",
+      "source_fingerprint": "190ab63c632ca47ae6c6fa224c1fad9622eca49218ef9f14c3fa18ce98641cb1"
+    }
+  ],
+  "speaker_source": "STRUCTURED_SCRIPT_IR_DIALOGUE_SPEAKER_AND_SPEAKER_BINDING",
+  "dialogue_prose_parsed_for_speaker": false,
+  "errors": [],
+  "production_writes": 0,
+  "speech_act_verifier_posts": 0
+}

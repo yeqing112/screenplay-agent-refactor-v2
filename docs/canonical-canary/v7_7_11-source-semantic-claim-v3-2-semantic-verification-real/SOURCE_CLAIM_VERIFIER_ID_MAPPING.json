@@ -1,0 +1,14 @@
+{
+  "schema_version": "source_claim_verifier_transport_id_mapping_v1",
+  "status": "PASS",
+  "mappings": [
+    {
+      "transport_fact_id": "FACT_0001",
+      "claim_ref": "SCC_V7_7_10_0001",
+      "transport_id_is_production_fact_id": false
+    }
+  ],
+  "mapping_fingerprint": "266314b10b1785b6da3f7e7ef30179eecd23ede343f27e6f840902b237986ecd",
+  "program_owned": true,
+  "provider_may_not_modify": true
+}
